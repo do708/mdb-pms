@@ -1,121 +1,68 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 import {
     LayoutDashboard,
-    Users,
-    FolderKanban,
     ClipboardList,
+    FolderKanban,
+    Users,
     CalendarDays,
     Package,
     FileText,
-    BarChart3,
-    UserCog,
     Settings,
 } from "lucide-react";
 
 
-const sections = [
+const menu = [
 
     {
-        title: "Werk",
-
-        items: [
-
-            {
-                name: "Dashboard",
-                href: "/dashboard",
-                icon: LayoutDashboard,
-            },
-
-            {
-                name: "Werkbonnen",
-                href: "/workorders",
-                icon: ClipboardList,
-            },
-
-            {
-                name: "Planning",
-                href: "/planning",
-                icon: CalendarDays,
-            },
-
-            {
-                name: "Projecten",
-                href: "/projects",
-                icon: FolderKanban,
-            },
-
-        ],
-
+        name: "Dashboard",
+        href: "/dashboard",
+        icon: LayoutDashboard,
     },
 
-
     {
-        title: "Bedrijf",
-
-        items: [
-
-            {
-                name: "Klanten",
-                href: "/customers",
-                icon: Users,
-            },
-
-            {
-                name: "Materialen",
-                href: "/materials",
-                icon: Package,
-            },
-
-            {
-                name: "Documenten",
-                href: "/documents",
-                icon: FileText,
-            },
-
-        ],
-
+        name: "Werkbonnen",
+        href: "/workorders",
+        icon: ClipboardList,
     },
 
-
     {
-        title: "Rapportage",
-
-        items: [
-
-            {
-                name: "Rapportages",
-                href: "/reports",
-                icon: BarChart3,
-            },
-
-        ],
-
+        name: "Projecten",
+        href: "/projects",
+        icon: FolderKanban,
     },
 
+    {
+        name: "Klanten",
+        href: "/customers",
+        icon: Users,
+    },
 
     {
-        title: "Systeem",
+        name: "Planning",
+        href: "/planning",
+        icon: CalendarDays,
+    },
 
-        items: [
+    {
+        name: "Materialen",
+        href: "/materials",
+        icon: Package,
+    },
 
-            {
-                name: "Gebruikers",
-                href: "/users",
-                icon: UserCog,
-            },
+    {
+        name: "Documenten",
+        href: "/documents",
+        icon: FileText,
+    },
 
-            {
-                name: "Instellingen",
-                href: "/settings",
-                icon: Settings,
-            },
-
-        ],
-
+    {
+        name: "Instellingen",
+        href: "/settings",
+        icon: Settings,
     },
 
 ];
@@ -124,129 +71,132 @@ const sections = [
 export default function Sidebar() {
 
 
-    const pathname = usePathname();
+return (
 
+<aside className="
+w-72
+min-h-screen
+bg-[#020617]
+text-white
+flex
+flex-col
+">
 
 
-    return (
+<div className="
+p-6
+border-b
+border-white/10
+">
 
-        <aside className="w-64 min-h-screen border-r bg-white flex flex-col">
 
+<Image
 
-            {/* Logo */}
+src="/images/mdb-logo.png"
 
-            <div className="p-6 border-b">
+alt="MDB Networks"
 
+width={180}
 
-                <h1 className="text-xl font-bold">
+height={80}
 
-                    MDB PMS
+/>
 
-                </h1>
 
+<p className="mt-4 text-sm text-gray-400">
 
-                <p className="text-sm text-gray-500">
+MDB PMS
 
-                    Project Management System
+</p>
 
-                </p>
 
+</div>
 
-            </div>
 
 
 
-            {/* Menu */}
 
-            <nav className="flex-1 p-4 space-y-6">
+<nav className="flex-1 p-4 space-y-2">
 
 
-                {sections.map((section) => (
+{menu.map((item)=>{
 
-                    <div key={section.title}>
 
+const Icon = item.icon;
 
-                        <p className="mb-2 px-3 text-xs font-semibold uppercase text-gray-400">
 
-                            {section.title}
+return (
 
-                        </p>
+<Link
 
+key={item.name}
 
+href={item.href}
 
-                        <div className="space-y-1">
+className="
+flex
+items-center
+gap-4
+rounded-xl
+px-4
+py-3
+text-gray-300
+hover:bg-blue-600
+hover:text-white
+transition
+"
 
+>
 
-                            {section.items.map((item) => {
 
+<Icon size={20}/>
 
-                                const Icon = item.icon;
 
+<span>
 
-                                const active = pathname.startsWith(item.href);
+{item.name}
 
+</span>
 
 
-                                return (
+</Link>
 
-                                    <Link
+);
 
-                                        key={item.href}
 
-                                        href={item.href}
+})}
 
-                                        className={`
-                                            flex items-center gap-3 rounded-lg px-3 py-2 text-sm
-                                            transition
-                                            ${
-                                                active
-                                                ? "bg-black text-white"
-                                                : "text-gray-700 hover:bg-gray-100"
-                                            }
-                                        `}
 
-                                    >
 
-                                        <Icon size={18}/>
+</nav>
 
 
-                                        {item.name}
 
 
-                                    </Link>
 
-                                );
 
+<div className="
+p-6
+text-sm
+text-gray-500
+border-t
+border-white/10
+">
 
-                            })}
 
+MDB Networks
 
-                        </div>
+<br/>
 
+Field Service Management
 
-                    </div>
+</div>
 
 
-                ))}
 
+</aside>
 
-            </nav>
 
-
-
-            {/* Footer */}
-
-            <div className="border-t p-4 text-xs text-gray-400">
-
-                MDB Networks
-                <br/>
-                PMS v0.2
-
-            </div>
-
-
-        </aside>
-
-    );
+);
 
 }

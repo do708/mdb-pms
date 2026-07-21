@@ -1,1 +1,125 @@
 @import "tailwindcss";
+
+
+:root {
+
+  --mdb-blue: #0066ff;
+  --mdb-dark: #020617;
+  --mdb-yellow: #ffd400;
+  --mdb-pink: #d6007e;
+
+}
+
+
+body {
+
+  background:#f5f7fb;
+  color:#111827;
+
+}
+
+
+/* Sidebar */
+
+.mdb-sidebar {
+
+  background:
+  linear-gradient(
+    180deg,
+    #020617 0%,
+    #071936 100%
+  );
+
+}
+
+
+/* MDB active menu */
+
+.mdb-active {
+
+  background:
+  linear-gradient(
+    90deg,
+    #0066ff,
+    #0047b3
+  );
+
+  color:white;
+
+}
+
+
+/* Cards */
+
+.mdb-card {
+
+  background:white;
+
+  border:1px solid #e5e7eb;
+
+  border-radius:16px;
+
+  box-shadow:
+  0 10px 25px rgba(0,0,0,.05);
+
+}
+
+
+/* Buttons */
+
+.mdb-button {
+
+  background:#0066ff;
+
+  color:white;
+
+  border-radius:10px;
+
+  transition:.2s;
+
+}
+
+
+.mdb-button:hover {
+
+  background:#0052cc;
+
+}
+
+
+/* Status colors */
+
+.status-open {
+
+ color:#0066ff;
+
+ background:#eaf2ff;
+
+}
+
+
+.status-progress {
+
+ color:#d6007e;
+
+ background:#ffe7f3;
+
+}
+
+
+.status-done {
+
+ color:#111827;
+
+ background:#e5e7eb;
+
+}
+
+
+.status-planned {
+
+ color:#b88600;
+
+ background:#fff8cc;
+
+}
