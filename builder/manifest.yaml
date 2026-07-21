@@ -1,0 +1,29 @@
+project:
+  name: MDB PMS
+  version: 1.0.0
+  company: MDB Networks
+
+application:
+  framework: Next.js
+  language: TypeScript
+  database: PostgreSQL
+  orm: Prisma
+
+modules:
+  - dashboard
+  - customers
+  - projects
+  - planning
+  - workorders
+  - materials
+  - documents
+  - reports
+  - users
+  - settings
+
+roles:
+  - admin
+  - planner
+  - projectleider
+  - monteur
+  - finance

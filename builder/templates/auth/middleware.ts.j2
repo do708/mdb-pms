@@ -1,0 +1,21 @@
+import { auth } from "./auth";
+
+
+export default auth(
+  function middleware(req) {
+
+    return;
+
+  }
+);
+
+
+export const config = {
+
+  matcher: [
+    "/dashboard/:path*",
+    "/projects/:path*",
+    "/customers/:path*"
+  ]
+
+};

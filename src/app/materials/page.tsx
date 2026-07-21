@@ -1,0 +1,41 @@
+export default function MaterialsPage() {
+
+  return (
+
+    <main>
+
+      <h1>
+        Materialen
+      </h1>
+
+
+      <p>
+        MDB PMS
+      </p>
+
+
+      <button>
+        Nieuw materiaal
+      </button>
+
+
+      <section>
+
+        <h2>
+          Materiaal overzicht
+        </h2>
+
+
+        <p>
+          Voorraad, onderdelen en gebruikte materialen.
+        </p>
+
+
+      </section>
+
+
+    </main>
+
+  );
+
+}

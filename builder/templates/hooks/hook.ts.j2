@@ -1,0 +1,31 @@
+import { useState } from "react";
+
+
+export function use{{ hook | capitalize }}() {
+
+    const [data, setData] = useState([]);
+
+
+    async function load() {
+
+        const response = await fetch(
+            "/api/{{ hook }}"
+        );
+
+        const result =
+            await response.json();
+
+        setData(result);
+
+    }
+
+
+    return {
+
+        data,
+
+        load
+
+    };
+
+}

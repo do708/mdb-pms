@@ -1,0 +1,61 @@
+export class UserService {
+
+
+    async getAll() {
+
+        return [];
+
+    }
+
+
+    async getById(
+        id: string
+    ) {
+
+        return {
+
+            id
+
+        };
+
+    }
+
+
+    async create(
+        data: unknown
+    ) {
+
+        return data;
+
+    }
+
+
+    async update(
+        id: string,
+        data: unknown
+    ) {
+
+        return {
+
+            id,
+
+            ...data as object
+
+        };
+
+    }
+
+
+    async delete(
+        id: string
+    ) {
+
+        return {
+
+            id
+
+        };
+
+    }
+
+}

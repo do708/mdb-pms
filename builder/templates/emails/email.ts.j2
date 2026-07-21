@@ -1,0 +1,14 @@
+export function {{ email | replace("-", "_") }}Email(
+    data: unknown
+) {
+
+    return {
+
+        subject:
+            "{{ email }}",
+
+        data
+
+    };
+
+}

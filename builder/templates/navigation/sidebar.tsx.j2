@@ -1,0 +1,88 @@
+"use client";
+
+import Link from "next/link";
+
+
+const menu = [
+
+    {
+        name: "Dashboard",
+        url: "/dashboard"
+    },
+
+    {
+        name: "Klanten",
+        url: "/customers"
+    },
+
+    {
+        name: "Projecten",
+        url: "/projects"
+    },
+
+    {
+        name: "Planning",
+        url: "/planning"
+    },
+
+    {
+        name: "Werkbonnen",
+        url: "/workorders"
+    },
+
+    {
+        name: "Materialen",
+        url: "/materials"
+    },
+
+    {
+        name: "Documenten",
+        url: "/documents"
+    },
+
+    {
+        name: "Rapportages",
+        url: "/reports"
+    },
+
+    {
+        name: "Gebruikers",
+        url: "/users"
+    },
+
+    {
+        name: "Instellingen",
+        url: "/settings"
+    }
+
+];
+
+
+export default function Sidebar() {
+
+    return (
+
+        <aside>
+
+            <nav>
+
+                {menu.map((item) => (
+
+                    <Link
+                        key={item.url}
+                        href={item.url}
+                    >
+
+                        {item.name}
+
+                    </Link>
+
+                ))}
+
+            </nav>
+
+        </aside>
+
+    );
+
+}
