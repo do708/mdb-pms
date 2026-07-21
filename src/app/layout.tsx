@@ -1,5 +1,5 @@
 import "./globals.css";
-
+import AppShell from "@/components/layout/AppShell";
 
 export const metadata = {
   title: "MDB PMS",
@@ -19,7 +19,11 @@ export default function RootLayout({
 
       <body>
 
-        {children}
+        <AppShell>
+
+            {children}
+
+        </AppShell>
 
       </body>
 
