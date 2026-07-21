@@ -2,20 +2,25 @@ import {
     ClipboardList,
     FolderKanban,
     Users,
-    CalendarDays,
     ArrowUpRight,
     CheckCircle,
     Clock,
     AlertCircle,
 } from "lucide-react";
 
-import { getDashboardStats } from "@/services/dashboard";
+import {
+    getDashboardStats,
+    getWorkorderStatus,
+} from "@/services/dashboard";
+
 
 
 export default async function DashboardPage() {
 
 
     const stats = await getDashboardStats();
+
+    const workorderStatus = await getWorkorderStatus();
 
 
 
@@ -24,28 +29,28 @@ export default async function DashboardPage() {
         {
             title: "Werkbonnen",
             value: stats.workorders,
-            description: "Totaal geregistreerd",
+            description: "Totaal aantal werkbonnen",
             icon: ClipboardList,
         },
 
         {
             title: "Projecten",
             value: stats.projects,
-            description: "Actieve projecten",
+            description: "Lopende projecten",
             icon: FolderKanban,
         },
 
         {
             title: "Klanten",
             value: stats.customers,
-            description: "Relaties",
+            description: "Geregistreerde klanten",
             icon: Users,
         },
 
         {
             title: "Gebruikers",
             value: stats.users,
-            description: "Systeemgebruikers",
+            description: "Systeem gebruikers",
             icon: Users,
         },
 
@@ -65,15 +70,22 @@ export default async function DashboardPage() {
 
                 <div>
 
-                    <h1 className="text-3xl font-bold">
-                        Goedemiddag 👋
+                    <h1 className="text-3xl font-bold text-gray-900">
+
+                        Dashboard 👋
+
                     </h1>
 
+
                     <p className="text-gray-500">
+
                         Overzicht van MDB Networks werkzaamheden
+
                     </p>
 
+
                 </div>
+
 
 
                 <button className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-white">
@@ -91,12 +103,13 @@ export default async function DashboardPage() {
 
 
 
-            {/* KPI kaarten */}
+            {/* KPI Cards */}
+
 
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
 
-                {cards.map((card)=>{
+                {cards.map((card) => {
 
 
                     const Icon = card.icon;
@@ -105,32 +118,42 @@ export default async function DashboardPage() {
                     return (
 
                         <div
-                            key={card.title}
-                            className="rounded-xl border bg-white p-6 shadow-sm"
-                        >
 
+                            key={card.title}
+
+                            className="rounded-xl border bg-white p-6 shadow-sm"
+
+                        >
 
                             <div className="flex justify-between">
 
 
                                 <div>
 
+
                                     <p className="text-sm text-gray-500">
+
                                         {card.title}
+
                                     </p>
 
 
                                     <p className="mt-3 text-3xl font-bold">
+
                                         {card.value}
+
                                     </p>
 
 
                                     <p className="mt-2 text-sm text-gray-400">
+
                                         {card.description}
+
                                     </p>
 
 
                                 </div>
+
 
 
                                 <div className="rounded-xl bg-gray-100 p-3">
@@ -158,98 +181,114 @@ export default async function DashboardPage() {
 
 
 
-            {/* Status */}
+            {/* Werkbon status */}
+
 
             <div className="rounded-xl border bg-white p-6">
 
 
-                <h2 className="font-semibold mb-5">
+                <h2 className="mb-5 font-semibold">
+
                     Werkbon status
+
                 </h2>
 
 
-                <div className="grid gap-4 md:grid-cols-4">
+
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 
 
-                    <div className="flex items-center gap-3">
+                    {workorderStatus.length === 0 && (
 
-                        <CheckCircle className="text-green-600"/>
+                        <p className="text-gray-500">
 
-                        <div>
+                            Geen werkbonnen beschikbaar
 
-                            <p className="font-medium">
-                                Afgerond
-                            </p>
+                        </p>
 
-                            <p className="text-sm text-gray-500">
-                                18 werkbonnen
-                            </p>
-
-                        </div>
-
-                    </div>
+                    )}
 
 
 
-                    <div className="flex items-center gap-3">
+                    {workorderStatus.map((item) => {
 
-                        <Clock className="text-blue-600"/>
 
-                        <div>
-
-                            <p className="font-medium">
-                                In behandeling
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-                                6 werkbonnen
-                            </p>
-
-                        </div>
-
-                    </div>
+                        const status = item.status.toLowerCase();
 
 
 
-
-                    <div className="flex items-center gap-3">
-
-                        <CalendarDays className="text-orange-500"/>
-
-                        <div>
-
-                            <p className="font-medium">
-                                Gepland
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-                                9 werkbonnen
-                            </p>
-
-                        </div>
-
-                    </div>
+                        let Icon = Clock;
 
 
 
+                        if(status === "completed" || status === "done") {
 
-                    <div className="flex items-center gap-3">
+                            Icon = CheckCircle;
 
-                        <AlertCircle className="text-red-600"/>
+                        }
 
-                        <div>
 
-                            <p className="font-medium">
-                                Openstaand
-                            </p>
+                        if(status === "open") {
 
-                            <p className="text-sm text-gray-500">
-                                3 werkbonnen
-                            </p>
+                            Icon = AlertCircle;
 
-                        </div>
+                        }
 
-                    </div>
+
+
+                        return (
+
+                            <div
+
+                                key={item.status}
+
+                                className="flex items-center justify-between rounded-lg bg-gray-50 p-4"
+
+                            >
+
+                                <div className="flex items-center gap-3">
+
+
+                                    <Icon size={22}/>
+
+
+                                    <div>
+
+
+                                        <p className="font-medium capitalize">
+
+                                            {item.status}
+
+                                        </p>
+
+
+                                        <p className="text-sm text-gray-500">
+
+                                            Werkbonnen
+
+                                        </p>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <p className="text-2xl font-bold">
+
+                                    {item.count}
+
+                                </p>
+
+
+                            </div>
+
+                        );
+
+
+                    })}
 
 
                 </div>
@@ -262,9 +301,11 @@ export default async function DashboardPage() {
 
 
 
-            {/* Planning */}
+            {/* Planning + Activiteiten */}
+
 
             <div className="grid gap-6 lg:grid-cols-2">
+
 
 
                 <div className="rounded-xl border bg-white">
@@ -273,23 +314,31 @@ export default async function DashboardPage() {
                     <div className="border-b p-5">
 
                         <h2 className="font-semibold">
+
                             Vandaag gepland
+
                         </h2>
+
 
                     </div>
 
 
-                    <div className="p-5 space-y-4">
+
+                    <div className="space-y-4 p-5">
 
 
                         <div>
 
                             <p className="font-medium">
+
                                 09:00 - LED installatie
+
                             </p>
 
                             <p className="text-sm text-gray-500">
+
                                 WTC Amsterdam
+
                             </p>
 
                         </div>
@@ -299,11 +348,15 @@ export default async function DashboardPage() {
                         <div>
 
                             <p className="font-medium">
+
                                 11:30 - Service bezoek
+
                             </p>
 
                             <p className="text-sm text-gray-500">
+
                                 Basic-Fit Utrecht
+
                             </p>
 
                         </div>
@@ -313,11 +366,15 @@ export default async function DashboardPage() {
                         <div>
 
                             <p className="font-medium">
+
                                 14:00 - Narrowcasting uitbreiding
+
                             </p>
 
                             <p className="text-sm text-gray-500">
+
                                 Gemeente Utrecht
+
                             </p>
 
                         </div>
@@ -332,31 +389,38 @@ export default async function DashboardPage() {
 
 
 
+
                 <div className="rounded-xl border bg-white">
 
 
                     <div className="border-b p-5">
 
                         <h2 className="font-semibold">
+
                             Recente activiteiten
+
                         </h2>
+
 
                     </div>
 
 
-                    <div className="p-5 space-y-4">
+
+                    <div className="space-y-4 p-5">
 
 
                         <p>
-                            ✓ Werkbon #1024 afgerond
+                            ✓ Dashboard gekoppeld aan database
                         </p>
 
-                        <p>
-                            ✓ Nieuw project toegevoegd
-                        </p>
 
                         <p>
-                            ✓ Materiaal aanvraag verwerkt
+                            ✓ Auth systeem actief
+                        </p>
+
+
+                        <p>
+                            ✓ Prisma verbinding actief
                         </p>
 
 

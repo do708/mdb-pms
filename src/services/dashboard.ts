@@ -3,41 +3,58 @@ import { prisma } from "@/lib/prisma";
 
 export async function getDashboardStats() {
 
-
     const [
-        workorders,
-        projects,
-        customers,
         users,
+        customers,
+        projects,
+        workorders,
     ] = await Promise.all([
-
-
-        prisma.workorder.count(),
-
-
-        prisma.project.count(),
-
-
-        prisma.customer.count(),
-
 
         prisma.user.count(),
 
+        prisma.customer.count(),
+
+        prisma.project.count(),
+
+        prisma.workorder.count(),
 
     ]);
 
 
-
     return {
-
-        workorders,
-
-        projects,
-
-        customers,
-
         users,
-
+        customers,
+        projects,
+        workorders,
     };
+
+}
+
+
+
+export async function getWorkorderStatus() {
+
+
+    const result = await prisma.workorder.groupBy({
+
+        by: ["status"],
+
+        _count: {
+
+            status: true,
+
+        },
+
+    });
+
+
+
+    return result.map((item) => ({
+
+        status: item.status,
+
+        count: item._count.status,
+
+    }));
 
 }
