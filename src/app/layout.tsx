@@ -1,33 +1,40 @@
-import "./globals.css";
+import AuthProvider from "@/components/providers/AuthProvider";
 import AppShell from "@/components/layout/AppShell";
 
-export const metadata = {
-  title: "MDB PMS",
-  description: "Project Management System",
-};
+import "./globals.css";
 
 
 export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
 
-  return (
+    children,
 
-    <html lang="nl">
+}: Readonly<{
 
-      <body>
+    children: React.ReactNode;
 
-        <AppShell>
+}>) {
 
-            {children}
 
-        </AppShell>
+    return (
 
-      </body>
+        <html lang="nl">
 
-    </html>
+            <body>
 
-  );
+                <AuthProvider>
+
+                    <AppShell>
+
+                        {children}
+
+                    </AppShell>
+
+                </AuthProvider>
+
+            </body>
+
+        </html>
+
+    );
+
 }
