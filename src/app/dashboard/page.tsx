@@ -6,35 +6,27 @@ import {
     ArrowUpRight,
 } from "lucide-react";
 
+import { getDashboardStats } from "@/services/dashboard";
 
-const cards = [
+
+const planning = [
 
     {
-        title: "Open werkbonnen",
-        value: "24",
-        description: "Wachten op verwerking",
-        icon: ClipboardList,
+        time: "09:00",
+        title: "LED installatie",
+        location: "WTC Amsterdam",
     },
 
     {
-        title: "Vandaag gepland",
-        value: "8",
-        description: "Installaties vandaag",
-        icon: CalendarDays,
+        time: "11:30",
+        title: "Service bezoek",
+        location: "Basic-Fit Utrecht",
     },
 
     {
-        title: "Actieve projecten",
-        value: "15",
-        description: "Lopende opdrachten",
-        icon: FolderKanban,
-    },
-
-    {
-        title: "Monteurs",
-        value: "12",
-        description: "Actieve medewerkers",
-        icon: Users,
+        time: "14:00",
+        title: "Narrowcasting uitbreiding",
+        location: "Gemeente Utrecht",
     },
 
 ];
@@ -63,30 +55,45 @@ const workorders = [
 ];
 
 
-const planning = [
-
-    {
-        time: "09:00",
-        title: "LED installatie",
-        location: "WTC Amsterdam",
-    },
-
-    {
-        time: "11:30",
-        title: "Service bezoek",
-        location: "Basic-Fit Utrecht",
-    },
-
-    {
-        time: "14:00",
-        title: "Narrowcasting uitbreiding",
-        location: "Gemeente Utrecht",
-    },
-
-];
+export default async function DashboardPage() {
 
 
-export default function DashboardPage() {
+    const stats = await getDashboardStats();
+
+
+
+    const cards = [
+
+        {
+            title: "Werkbonnen",
+            value: stats.workorders,
+            description: "Totaal aantal werkbonnen",
+            icon: ClipboardList,
+        },
+
+        {
+            title: "Projecten",
+            value: stats.projects,
+            description: "Actieve projecten",
+            icon: FolderKanban,
+        },
+
+        {
+            title: "Klanten",
+            value: stats.customers,
+            description: "Geregistreerde klanten",
+            icon: Users,
+        },
+
+        {
+            title: "Gebruikers",
+            value: stats.users,
+            description: "Systeem gebruikers",
+            icon: Users,
+        },
+
+    ];
+
 
 
     return (
@@ -94,12 +101,12 @@ export default function DashboardPage() {
         <div className="space-y-8">
 
 
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
 
 
                 <div>
 
-                    <h1 className="text-3xl font-bold">
+                    <h1 className="text-3xl font-bold text-gray-900">
 
                         Dashboard
 
@@ -115,6 +122,7 @@ export default function DashboardPage() {
                 </div>
 
 
+
                 <button className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-white">
 
                     Nieuwe werkbon
@@ -125,6 +133,7 @@ export default function DashboardPage() {
 
 
             </div>
+
 
 
 
@@ -148,16 +157,19 @@ export default function DashboardPage() {
 
                         >
 
+
                             <div className="flex justify-between">
 
 
                                 <div>
+
 
                                     <p className="text-sm text-gray-500">
 
                                         {card.title}
 
                                     </p>
+
 
 
                                     <p className="mt-3 text-3xl font-bold">
@@ -167,18 +179,23 @@ export default function DashboardPage() {
                                     </p>
 
 
+
                                     <p className="mt-2 text-sm text-gray-400">
 
                                         {card.description}
 
                                     </p>
 
+
                                 </div>
+
 
 
                                 <div className="rounded-lg bg-gray-100 p-3">
 
+
                                     <Icon size={22}/>
+
 
                                 </div>
 
@@ -200,7 +217,9 @@ export default function DashboardPage() {
 
 
 
+
             <div className="grid gap-6 lg:grid-cols-2">
+
 
 
                 <div className="rounded-xl border bg-white">
@@ -218,7 +237,8 @@ export default function DashboardPage() {
 
 
 
-                    {workorders.map((item)=>(
+
+                    {workorders.map((item) => (
 
 
                         <div
@@ -229,7 +249,9 @@ export default function DashboardPage() {
 
                         >
 
+
                             <div>
+
 
                                 <p className="font-medium">
 
@@ -237,13 +259,16 @@ export default function DashboardPage() {
 
                                 </p>
 
+
                                 <p className="text-sm text-gray-500">
 
                                     {item.customer}
 
                                 </p>
 
+
                             </div>
+
 
 
                             <span className="rounded-full bg-gray-100 px-3 py-1 text-sm">
@@ -265,6 +290,7 @@ export default function DashboardPage() {
 
 
 
+
                 <div className="rounded-xl border bg-white">
 
 
@@ -280,7 +306,8 @@ export default function DashboardPage() {
 
 
 
-                    {planning.map((item)=>(
+
+                    {planning.map((item) => (
 
 
                         <div
@@ -291,6 +318,7 @@ export default function DashboardPage() {
 
                         >
 
+
                             <div className="font-semibold">
 
                                 {item.time}
@@ -298,7 +326,9 @@ export default function DashboardPage() {
                             </div>
 
 
+
                             <div>
+
 
                                 <p className="font-medium">
 
@@ -307,11 +337,13 @@ export default function DashboardPage() {
                                 </p>
 
 
+
                                 <p className="text-sm text-gray-500">
 
                                     {item.location}
 
                                 </p>
+
 
                             </div>
 
@@ -325,7 +357,9 @@ export default function DashboardPage() {
                 </div>
 
 
+
             </div>
+
 
 
         </div>
