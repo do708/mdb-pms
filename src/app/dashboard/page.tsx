@@ -1,58 +1,15 @@
 import {
     ClipboardList,
-    CalendarDays,
     FolderKanban,
     Users,
+    CalendarDays,
     ArrowUpRight,
+    CheckCircle,
+    Clock,
+    AlertCircle,
 } from "lucide-react";
 
 import { getDashboardStats } from "@/services/dashboard";
-
-
-const planning = [
-
-    {
-        time: "09:00",
-        title: "LED installatie",
-        location: "WTC Amsterdam",
-    },
-
-    {
-        time: "11:30",
-        title: "Service bezoek",
-        location: "Basic-Fit Utrecht",
-    },
-
-    {
-        time: "14:00",
-        title: "Narrowcasting uitbreiding",
-        location: "Gemeente Utrecht",
-    },
-
-];
-
-
-const workorders = [
-
-    {
-        number: "#1024",
-        customer: "Basic-Fit Utrecht",
-        status: "In behandeling",
-    },
-
-    {
-        number: "#1023",
-        customer: "WTC Amsterdam",
-        status: "Gepland",
-    },
-
-    {
-        number: "#1022",
-        customer: "Gemeente Utrecht",
-        status: "Afgerond",
-    },
-
-];
 
 
 export default async function DashboardPage() {
@@ -67,7 +24,7 @@ export default async function DashboardPage() {
         {
             title: "Werkbonnen",
             value: stats.workorders,
-            description: "Totaal aantal werkbonnen",
+            description: "Totaal geregistreerd",
             icon: ClipboardList,
         },
 
@@ -81,14 +38,14 @@ export default async function DashboardPage() {
         {
             title: "Klanten",
             value: stats.customers,
-            description: "Geregistreerde klanten",
+            description: "Relaties",
             icon: Users,
         },
 
         {
             title: "Gebruikers",
             value: stats.users,
-            description: "Systeem gebruikers",
+            description: "Systeemgebruikers",
             icon: Users,
         },
 
@@ -101,26 +58,22 @@ export default async function DashboardPage() {
         <div className="space-y-8">
 
 
+            {/* Header */}
+
             <div className="flex items-center justify-between">
 
 
                 <div>
 
-                    <h1 className="text-3xl font-bold text-gray-900">
-
-                        Dashboard
-
+                    <h1 className="text-3xl font-bold">
+                        Goedemiddag 👋
                     </h1>
 
-
                     <p className="text-gray-500">
-
                         Overzicht van MDB Networks werkzaamheden
-
                     </p>
 
                 </div>
-
 
 
                 <button className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-white">
@@ -138,10 +91,12 @@ export default async function DashboardPage() {
 
 
 
+            {/* KPI kaarten */}
+
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
 
-                {cards.map((card) => {
+                {cards.map((card)=>{
 
 
                     const Icon = card.icon;
@@ -150,11 +105,8 @@ export default async function DashboardPage() {
                     return (
 
                         <div
-
                             key={card.title}
-
                             className="rounded-xl border bg-white p-6 shadow-sm"
-
                         >
 
 
@@ -163,39 +115,27 @@ export default async function DashboardPage() {
 
                                 <div>
 
-
                                     <p className="text-sm text-gray-500">
-
                                         {card.title}
-
                                     </p>
-
 
 
                                     <p className="mt-3 text-3xl font-bold">
-
                                         {card.value}
-
                                     </p>
 
 
-
                                     <p className="mt-2 text-sm text-gray-400">
-
                                         {card.description}
-
                                     </p>
 
 
                                 </div>
 
 
-
-                                <div className="rounded-lg bg-gray-100 p-3">
-
+                                <div className="rounded-xl bg-gray-100 p-3">
 
                                     <Icon size={22}/>
-
 
                                 </div>
 
@@ -218,144 +158,212 @@ export default async function DashboardPage() {
 
 
 
+            {/* Status */}
+
+            <div className="rounded-xl border bg-white p-6">
+
+
+                <h2 className="font-semibold mb-5">
+                    Werkbon status
+                </h2>
+
+
+                <div className="grid gap-4 md:grid-cols-4">
+
+
+                    <div className="flex items-center gap-3">
+
+                        <CheckCircle className="text-green-600"/>
+
+                        <div>
+
+                            <p className="font-medium">
+                                Afgerond
+                            </p>
+
+                            <p className="text-sm text-gray-500">
+                                18 werkbonnen
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div className="flex items-center gap-3">
+
+                        <Clock className="text-blue-600"/>
+
+                        <div>
+
+                            <p className="font-medium">
+                                In behandeling
+                            </p>
+
+                            <p className="text-sm text-gray-500">
+                                6 werkbonnen
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div className="flex items-center gap-3">
+
+                        <CalendarDays className="text-orange-500"/>
+
+                        <div>
+
+                            <p className="font-medium">
+                                Gepland
+                            </p>
+
+                            <p className="text-sm text-gray-500">
+                                9 werkbonnen
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div className="flex items-center gap-3">
+
+                        <AlertCircle className="text-red-600"/>
+
+                        <div>
+
+                            <p className="font-medium">
+                                Openstaand
+                            </p>
+
+                            <p className="text-sm text-gray-500">
+                                3 werkbonnen
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+            {/* Planning */}
+
             <div className="grid gap-6 lg:grid-cols-2">
 
 
-
                 <div className="rounded-xl border bg-white">
 
 
                     <div className="border-b p-5">
 
                         <h2 className="font-semibold">
-
-                            Laatste werkbonnen
-
-                        </h2>
-
-                    </div>
-
-
-
-
-                    {workorders.map((item) => (
-
-
-                        <div
-
-                            key={item.number}
-
-                            className="flex justify-between border-b p-5 last:border-0"
-
-                        >
-
-
-                            <div>
-
-
-                                <p className="font-medium">
-
-                                    {item.number}
-
-                                </p>
-
-
-                                <p className="text-sm text-gray-500">
-
-                                    {item.customer}
-
-                                </p>
-
-
-                            </div>
-
-
-
-                            <span className="rounded-full bg-gray-100 px-3 py-1 text-sm">
-
-                                {item.status}
-
-                            </span>
-
-
-                        </div>
-
-
-                    ))}
-
-
-                </div>
-
-
-
-
-
-
-                <div className="rounded-xl border bg-white">
-
-
-                    <div className="border-b p-5">
-
-                        <h2 className="font-semibold">
-
                             Vandaag gepland
-
                         </h2>
 
                     </div>
 
 
+                    <div className="p-5 space-y-4">
 
 
-                    {planning.map((item) => (
+                        <div>
 
+                            <p className="font-medium">
+                                09:00 - LED installatie
+                            </p>
 
-                        <div
-
-                            key={item.time}
-
-                            className="flex gap-5 border-b p-5 last:border-0"
-
-                        >
-
-
-                            <div className="font-semibold">
-
-                                {item.time}
-
-                            </div>
-
-
-
-                            <div>
-
-
-                                <p className="font-medium">
-
-                                    {item.title}
-
-                                </p>
-
-
-
-                                <p className="text-sm text-gray-500">
-
-                                    {item.location}
-
-                                </p>
-
-
-                            </div>
-
+                            <p className="text-sm text-gray-500">
+                                WTC Amsterdam
+                            </p>
 
                         </div>
 
 
-                    ))}
+
+                        <div>
+
+                            <p className="font-medium">
+                                11:30 - Service bezoek
+                            </p>
+
+                            <p className="text-sm text-gray-500">
+                                Basic-Fit Utrecht
+                            </p>
+
+                        </div>
+
+
+
+                        <div>
+
+                            <p className="font-medium">
+                                14:00 - Narrowcasting uitbreiding
+                            </p>
+
+                            <p className="text-sm text-gray-500">
+                                Gemeente Utrecht
+                            </p>
+
+                        </div>
+
+
+                    </div>
 
 
                 </div>
 
+
+
+
+
+                <div className="rounded-xl border bg-white">
+
+
+                    <div className="border-b p-5">
+
+                        <h2 className="font-semibold">
+                            Recente activiteiten
+                        </h2>
+
+                    </div>
+
+
+                    <div className="p-5 space-y-4">
+
+
+                        <p>
+                            ✓ Werkbon #1024 afgerond
+                        </p>
+
+                        <p>
+                            ✓ Nieuw project toegevoegd
+                        </p>
+
+                        <p>
+                            ✓ Materiaal aanvraag verwerkt
+                        </p>
+
+
+                    </div>
+
+
+                </div>
 
 
             </div>
