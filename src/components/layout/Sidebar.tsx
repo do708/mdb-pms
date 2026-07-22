@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import {
     LayoutDashboard,
@@ -12,6 +13,7 @@ import {
     Package,
     FileText,
     Settings,
+    BarChart3,
 } from "lucide-react";
 
 
@@ -60,6 +62,12 @@ const menu = [
     },
 
     {
+        name: "Rapportages",
+        href: "/reports",
+        icon: BarChart3,
+    },
+
+    {
         name: "Instellingen",
         href: "/settings",
         icon: Settings,
@@ -68,135 +76,153 @@ const menu = [
 ];
 
 
+
 export default function Sidebar() {
 
 
-return (
-
-<aside className="
-w-72
-min-h-screen
-bg-[#020617]
-text-white
-flex
-flex-col
-">
-
-
-<div className="
-p-6
-border-b
-border-white/10
-">
-
-
-<Image
-
-src="/images/mdb-logo.png"
-
-alt="MDB Networks"
-
-width={180}
-
-height={80}
-
-/>
-
-
-<p className="mt-4 text-sm text-gray-400">
-
-MDB PMS
-
-</p>
-
-
-</div>
+    const pathname = usePathname();
 
 
 
+    return (
+
+        <aside className="
+            w-72
+            min-h-screen
+            bg-white
+            border-r
+            border-gray-200
+            flex
+            flex-col
+        ">
 
 
-<nav className="flex-1 p-4 space-y-2">
+            {/* Logo */}
+
+            <div className="
+                px-2
+                py-4
+                border-b
+                border-gray-100
+                overflow-hidden
+            ">
 
 
-{menu.map((item)=>{
+                <Image
+
+                    src="/images/mdb-logo.png"
+
+                    alt="MDB Networks"
+
+                    width={500}
+
+                    height={190}
+
+                    className="
+                        object-contain
+                        object-left
+                    "
+
+                    priority
+
+                />
 
 
-const Icon = item.icon;
-
-
-return (
-
-<Link
-
-key={item.name}
-
-href={item.href}
-
-className="
-flex
-items-center
-gap-4
-rounded-xl
-px-4
-py-3
-text-gray-300
-hover:bg-blue-600
-hover:text-white
-transition
-"
-
->
-
-
-<Icon size={20}/>
-
-
-<span>
-
-{item.name}
-
-</span>
-
-
-</Link>
-
-);
-
-
-})}
-
-
-
-</nav>
+            </div>
 
 
 
 
 
+            {/* Navigatie */}
 
-<div className="
-p-6
-text-sm
-text-gray-500
-border-t
-border-white/10
-">
-
-
-MDB Networks
-
-<br/>
-
-Field Service Management
-
-</div>
+            <nav className="
+                flex-1
+                px-4
+                py-6
+                space-y-1
+            ">
 
 
+                {menu.map((item) => {
 
-</aside>
+
+                    const Icon = item.icon;
+
+                    const active = pathname === item.href;
 
 
-);
+
+                    return (
+
+                        <Link
+
+                            key={item.href}
+
+                            href={item.href}
+
+                            className={
+
+                                active
+
+                                ?
+
+                                `
+                                flex
+                                items-center
+                                gap-3
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-[#fce7f3]
+                                text-[#d6007e]
+                                font-semibold
+                                transition
+                                `
+
+                                :
+
+                                `
+                                flex
+                                items-center
+                                gap-3
+                                px-4
+                                py-3
+                                rounded-xl
+                                text-gray-600
+                                hover:bg-gray-100
+                                hover:text-gray-900
+                                transition
+                                `
+
+                            }
+
+                        >
+
+
+                            <Icon size={20}/>
+
+
+                            <span className="text-sm">
+
+                                {item.name}
+
+                            </span>
+
+
+                        </Link>
+
+                    );
+
+
+                })}
+
+
+            </nav>
+
+
+        </aside>
+
+    );
 
 }

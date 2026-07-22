@@ -1,85 +1,182 @@
+"use client";
+
+
+import { useEffect, useState } from "react";
+
+import Link from "next/link";
+
 import {
+    AlertTriangle,
+    FileWarning,
     ClipboardList,
-    FolderKanban,
-    Users,
-    ArrowUpRight,
-    CheckCircle,
-    Clock,
-    AlertCircle,
+    Euro,
+    Plus
 } from "lucide-react";
 
-import {
-    getDashboardStats,
-    getWorkorderStatus,
-} from "@/services/dashboard";
+
+
+interface DashboardData {
+
+    missingWorkorders:any[];
+
+    unbilledInspections:any[];
+
+    unpaidInvoices:any[];
+
+}
 
 
 
-export default async function DashboardPage() {
 
 
-    const stats = await getDashboardStats();
-
-    const workorderStatus = await getWorkorderStatus();
+export default function DashboardPage(){
 
 
+    const [data,setData] =
+        useState<DashboardData | null>(null);
 
-    const cards = [
 
-        {
-            title: "Werkbonnen",
-            value: stats.workorders,
-            description: "Totaal aantal werkbonnen",
-            icon: ClipboardList,
-        },
+    const [loading,setLoading] =
+        useState(true);
 
-        {
-            title: "Projecten",
-            value: stats.projects,
-            description: "Lopende projecten",
-            icon: FolderKanban,
-        },
 
-        {
-            title: "Klanten",
-            value: stats.customers,
-            description: "Geregistreerde klanten",
-            icon: Users,
-        },
 
-        {
-            title: "Gebruikers",
-            value: stats.users,
-            description: "Systeem gebruikers",
-            icon: Users,
-        },
 
-    ];
+
+    useEffect(()=>{
+
+
+        async function load(){
+
+
+            const response =
+                await fetch("/api/dashboard");
+
+
+            const result =
+                await response.json();
+
+
+            setData(result);
+
+
+            setLoading(false);
+
+
+        }
+
+
+        load();
+
+
+    },[]);
+
+
+
+
+
+
+    if(loading){
+
+        return (
+
+            <main className="p-6">
+
+                Dashboard laden...
+
+            </main>
+
+        );
+
+    }
+
+
+
 
 
 
     return (
 
-        <div className="space-y-8">
+        <main className="
+            p-6
+            space-y-6
+        ">
 
 
-            {/* Header */}
+            <header>
 
-            <div className="flex items-center justify-between">
+                <h1 className="
+                    text-3xl
+                    font-bold
+                ">
+
+                    MDB PMS Dashboard
+
+                </h1>
 
 
-                <div>
+                <p className="
+                    text-gray-500
+                ">
 
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    Overzicht van openstaande acties
 
-                        Dashboard 👋
+                </p>
 
-                    </h1>
+
+            </header>
+
+
+
+
+
+
+
+            <section className="
+                grid
+                md:grid-cols-3
+                gap-4
+            ">
+
+
+                <div className="
+                    border
+                    rounded-2xl
+                    p-5
+                    bg-white
+                ">
+
+
+                    <div className="
+                        flex
+                        gap-2
+                        items-center
+                    ">
+
+                        <AlertTriangle/>
+
+                        <h2 className="font-bold">
+
+                            Werkbonnen
+
+                        </h2>
+
+                    </div>
+
+
+                    <p className="
+                        text-3xl
+                        mt-3
+                    ">
+
+                        {data?.missingWorkorders.length}
+
+                    </p>
 
 
                     <p className="text-gray-500">
 
-                        Overzicht van MDB Networks werkzaamheden
+                        ontbreken
 
                     </p>
 
@@ -88,354 +185,261 @@ export default async function DashboardPage() {
 
 
 
-                <button className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-white">
 
-                    Nieuwe werkbon
 
-                    <ArrowUpRight size={16}/>
 
-                </button>
+                <div className="
+                    border
+                    rounded-2xl
+                    p-5
+                    bg-white
+                ">
 
 
-            </div>
+                    <div className="
+                        flex
+                        gap-2
+                        items-center
+                    ">
 
 
+                        <ClipboardList/>
 
 
+                        <h2 className="font-bold">
 
-            {/* KPI Cards */}
+                            Opnames
 
+                        </h2>
 
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
+                    </div>
 
-                {cards.map((card) => {
 
+                    <p className="
+                        text-3xl
+                        mt-3
+                    ">
 
-                    const Icon = card.icon;
 
+                        {data?.unbilledInspections.length}
 
-                    return (
 
-                        <div
+                    </p>
 
-                            key={card.title}
 
-                            className="rounded-xl border bg-white p-6 shadow-sm"
+                    <p className="text-gray-500">
 
-                        >
+                        controleren
 
-                            <div className="flex justify-between">
+                    </p>
 
 
-                                <div>
+                </div>
 
 
-                                    <p className="text-sm text-gray-500">
 
-                                        {card.title}
 
-                                    </p>
 
 
-                                    <p className="mt-3 text-3xl font-bold">
 
-                                        {card.value}
 
-                                    </p>
+                <div className="
+                    border
+                    rounded-2xl
+                    p-5
+                    bg-white
+                ">
 
 
-                                    <p className="mt-2 text-sm text-gray-400">
+                    <div className="
+                        flex
+                        gap-2
+                        items-center
+                    ">
 
-                                        {card.description}
 
-                                    </p>
+                        <Euro/>
 
 
-                                </div>
+                        <h2 className="font-bold">
 
+                            Facturen
 
+                        </h2>
 
-                                <div className="rounded-xl bg-gray-100 p-3">
 
-                                    <Icon size={22}/>
+                    </div>
 
-                                </div>
 
 
-                            </div>
+                    <p className="
+                        text-3xl
+                        mt-3
+                    ">
 
 
-                        </div>
+                        {data?.unpaidInvoices.length}
 
-                    );
 
+                    </p>
 
-                })}
 
+                    <p className="text-gray-500">
 
-            </div>
+                        openstaand
 
+                    </p>
 
 
+                </div>
 
 
+            </section>
 
-            {/* Werkbon status */}
 
 
-            <div className="rounded-xl border bg-white p-6">
 
 
-                <h2 className="mb-5 font-semibold">
 
-                    Werkbon status
+
+            <section className="
+                border
+                rounded-2xl
+                bg-white
+                p-5
+            ">
+
+
+                <h2 className="
+                    font-bold
+                    mb-4
+                ">
+
+                    Acties nodig
 
                 </h2>
 
 
 
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 
 
-                    {workorderStatus.length === 0 && (
+                {data?.missingWorkorders.map((item)=>(
 
-                        <p className="text-gray-500">
 
-                            Geen werkbonnen beschikbaar
+                    <Link
 
-                        </p>
+                        key={item.id}
 
-                    )}
+                        href={`/assignments/${item.id}`}
 
+                        className="
+                            block
+                            border-b
+                            py-3
+                        "
 
+                    >
 
-                    {workorderStatus.map((item) => {
+                        <div className="flex gap-2">
 
+                            <FileWarning size={18}/>
 
-                        const status = item.status.toLowerCase();
-
-
-
-                        let Icon = Clock;
-
-
-
-                        if(status === "completed" || status === "done") {
-
-                            Icon = CheckCircle;
-
-                        }
-
-
-                        if(status === "open") {
-
-                            Icon = AlertCircle;
-
-                        }
-
-
-
-                        return (
-
-                            <div
-
-                                key={item.status}
-
-                                className="flex items-center justify-between rounded-lg bg-gray-50 p-4"
-
-                            >
-
-                                <div className="flex items-center gap-3">
-
-
-                                    <Icon size={22}/>
-
-
-                                    <div>
-
-
-                                        <p className="font-medium capitalize">
-
-                                            {item.status}
-
-                                        </p>
-
-
-                                        <p className="text-sm text-gray-500">
-
-                                            Werkbonnen
-
-                                        </p>
-
-
-                                    </div>
-
-
-                                </div>
-
-
-
-                                <p className="text-2xl font-bold">
-
-                                    {item.count}
-
-                                </p>
-
-
-                            </div>
-
-                        );
-
-
-                    })}
-
-
-                </div>
-
-
-            </div>
-
-
-
-
-
-
-            {/* Planning + Activiteiten */}
-
-
-            <div className="grid gap-6 lg:grid-cols-2">
-
-
-
-                <div className="rounded-xl border bg-white">
-
-
-                    <div className="border-b p-5">
-
-                        <h2 className="font-semibold">
-
-                            Vandaag gepland
-
-                        </h2>
-
-
-                    </div>
-
-
-
-                    <div className="space-y-4 p-5">
-
-
-                        <div>
-
-                            <p className="font-medium">
-
-                                09:00 - LED installatie
-
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-
-                                WTC Amsterdam
-
-                            </p>
+                            {item.title}
 
                         </div>
 
 
+                        <p className="text-sm text-gray-500">
 
-                        <div>
+                            {item.customer.name}
 
-                            <p className="font-medium">
-
-                                11:30 - Service bezoek
-
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-
-                                Basic-Fit Utrecht
-
-                            </p>
-
-                        </div>
-
-
-
-                        <div>
-
-                            <p className="font-medium">
-
-                                14:00 - Narrowcasting uitbreiding
-
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-
-                                Gemeente Utrecht
-
-                            </p>
-
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-
-
-
-                <div className="rounded-xl border bg-white">
-
-
-                    <div className="border-b p-5">
-
-                        <h2 className="font-semibold">
-
-                            Recente activiteiten
-
-                        </h2>
-
-
-                    </div>
-
-
-
-                    <div className="space-y-4 p-5">
-
-
-                        <p>
-                            ✓ Dashboard gekoppeld aan database
                         </p>
 
 
-                        <p>
-                            ✓ Auth systeem actief
-                        </p>
+                    </Link>
 
 
-                        <p>
-                            ✓ Prisma verbinding actief
-                        </p>
-
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
+                ))}
 
 
 
-        </div>
+                {data?.missingWorkorders.length === 0 && (
+
+                    <p>
+
+                        Geen openstaande werkbonnen 🎉
+
+                    </p>
+
+                )}
+
+
+            </section>
+
+
+
+
+
+
+
+            <section className="
+                flex
+                gap-3
+                flex-wrap
+            ">
+
+
+                <Link
+
+                    href="/assignments"
+
+                    className="
+                        bg-black
+                        text-white
+                        px-4
+                        py-3
+                        rounded-xl
+                        flex
+                        gap-2
+                    "
+
+                >
+
+                    <Plus size={18}/>
+
+                    Nieuwe opdracht
+
+                </Link>
+
+
+
+
+                <Link
+
+                    href="/workorders/new"
+
+                    className="
+                        border
+                        px-4
+                        py-3
+                        rounded-xl
+                    "
+
+                >
+
+                    Nieuwe werkbon
+
+                </Link>
+
+
+            </section>
+
+
+
+        </main>
 
     );
+
 
 }

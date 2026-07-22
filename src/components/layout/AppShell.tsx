@@ -4,41 +4,52 @@ import Header from "./Header";
 
 export default function AppShell({
 
-children
+    children,
 
-}:{
+}: {
 
-children: React.ReactNode;
+    children: React.ReactNode;
 
 }) {
 
 
-return (
+    return (
 
-<div className="flex min-h-screen bg-[#f5f7fb]">
-
-
-<Sidebar />
-
-
-<div className="flex-1">
+        <div className="
+            min-h-screen
+            bg-[#f8fafc]
+            flex
+        ">
 
 
-<Header />
+            <Sidebar />
 
 
-<main className="p-8">
-
-{children}
-
-</main>
-
-
-</div>
+            <div className="
+                flex-1
+                flex
+                flex-col
+            ">
 
 
-</div>
+                <Header />
 
-);
+
+                <main className="
+                    flex-1
+                    p-8
+                ">
+
+                    {children}
+
+                </main>
+
+
+            </div>
+
+
+        </div>
+
+    );
 
 }

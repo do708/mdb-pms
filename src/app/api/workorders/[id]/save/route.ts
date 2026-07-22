@@ -1,0 +1,294 @@
+import { NextRequest, NextResponse } from "next/server";
+
+import { prisma } from "@/lib/prisma";
+
+
+
+export async function PUT(
+
+    request: NextRequest,
+
+    context: {
+        params: Promise<{
+            id:string;
+        }>
+    }
+
+) {
+
+
+    try {
+
+
+        const { id } = await context.params;
+
+
+        const body = await request.json();
+
+
+
+        const {
+
+            title,
+
+            description,
+
+            materials,
+
+            hardware,
+
+        } = body;
+
+
+
+
+
+        const workorder = await prisma.workorder.findUnique({
+
+            where:{
+                id
+            }
+
+        });
+
+
+
+
+
+        if(!workorder){
+
+
+            return NextResponse.json(
+
+                {
+                    success:false,
+                    error:"Werkbon niet gevonden"
+                },
+
+                {
+                    status:404
+                }
+
+            );
+
+
+        }
+
+
+
+
+
+
+
+        const updatedWorkorder = await prisma.$transaction(async(tx)=>{
+
+
+
+
+
+            await tx.workorderMaterial.deleteMany({
+
+                where:{
+                    workorderId:id
+                }
+
+            });
+
+
+
+
+
+            await tx.workorderHardware.deleteMany({
+
+                where:{
+                    workorderId:id
+                }
+
+            });
+
+
+
+
+
+
+
+            const updated = await tx.workorder.update({
+
+                where:{
+                    id
+                },
+
+
+                data:{
+
+
+                    title:
+                        title ??
+                        workorder.title,
+
+
+                    description:
+                        description ??
+                        workorder.description,
+
+
+                }
+
+            });
+
+
+
+
+
+
+            if(materials && materials.length > 0){
+
+
+                await tx.workorderMaterial.createMany({
+
+                    data:
+
+                        materials.map((item:any)=>({
+
+                            workorderId:id,
+
+                            name:item.name,
+
+                            articleNumber:
+                                item.articleNumber ?? null,
+
+                            quantity:
+                                Number(item.quantity ?? 1),
+
+                            unit:
+                                item.unit ?? "st",
+
+                            note:
+                                item.note ?? null,
+
+                        }))
+
+
+                });
+
+
+            }
+
+
+
+
+
+
+
+            if(hardware && hardware.length > 0){
+
+
+                await tx.workorderHardware.createMany({
+
+                    data:
+
+                        hardware.map((item:any)=>({
+
+
+                            workorderId:id,
+
+
+                            name:item.name,
+
+
+                            brand:
+                                item.brand ?? null,
+
+
+                            model:
+                                item.model ?? null,
+
+
+                            serialNumber:
+                                item.serialNumber ?? null,
+
+
+                            quantity:
+                                Number(item.quantity ?? 1),
+
+
+                            location:
+                                item.location ?? null,
+
+
+                            status:
+                                item.status ?? "installed",
+
+
+                        }))
+
+
+                });
+
+
+            }
+
+
+
+
+
+            return updated;
+
+
+        });
+
+
+
+
+
+
+
+
+        return NextResponse.json({
+
+            success:true,
+
+            message:"Werkbon opgeslagen",
+
+            workorder:updatedWorkorder
+
+        });
+
+
+
+
+
+    } catch(error){
+
+
+
+        console.error(
+            "SAVE WORKORDER ERROR:",
+            error
+        );
+
+
+
+        return NextResponse.json(
+
+            {
+
+                success:false,
+
+                error:"Opslaan mislukt"
+
+            },
+
+            {
+
+                status:500
+
+            }
+
+        );
+
+
+    }
+
+
+}

@@ -20,6 +20,10 @@ model User {
 
   active Boolean @default(true)
 
+  workorders Workorder[]
+
+  assignments AssignmentUser[]
+
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
@@ -28,14 +32,22 @@ model User {
 model Customer {
   id String @id @default(cuid())
 
-  name    String
-  email   String?
-  phone   String?
+  name String
+
+  email String?
+
+  phone String?
+
   address String?
+
+  color String @default("#2563eb")
 
   projects Project[]
 
+  assignments Assignment[]
+
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
 }
 
@@ -43,28 +55,237 @@ model Project {
   id String @id @default(cuid())
 
   number String @unique
-  name   String
+
+  name String
 
   customerId String
-  customer   Customer @relation(fields: [customerId], references: [id])
+
+  customer Customer @relation(fields: [customerId], references: [id])
 
   status String @default("new")
 
   workorders Workorder[]
 
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
 }
 
 model Workorder {
   id String @id @default(cuid())
 
-  title  String
+  number String @unique
+
+  title String
+
+  description String?
+
   status String @default("open")
 
+  workDate DateTime?
+
+  plannedDate DateTime?
+
+  assignedUserId String?
+
+  assignedUser User? @relation(fields: [assignedUserId], references: [id])
+
   projectId String
-  project   Project @relation(fields: [projectId], references: [id])
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  assignmentId String?
+
+  assignment Assignment? @relation(fields: [assignmentId], references: [id])
+
+  hours WorkorderHour[]
+
+  materials WorkorderMaterial[]
+
+  hardware WorkorderHardware[]
+
+  photos WorkorderPhoto[]
+
+  signature WorkorderSignature?
+
+  documents Document[]
 
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
+}
+
+model WorkorderHour {
+  id String @id @default(cuid())
+
+  workorderId String
+
+  workorder Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+
+  date DateTime?
+
+  hours Float?
+
+  travelTime Float?
+
+  kilometers Float?
+
+  hotel Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model WorkorderMaterial {
+  id String @id @default(cuid())
+
+  workorderId String
+
+  workorder Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+
+  name String
+
+  articleNumber String?
+
+  quantity Float @default(1)
+
+  unit String?
+
+  note String?
+
+  createdAt DateTime @default(now())
+}
+
+model WorkorderHardware {
+  id String @id @default(cuid())
+
+  workorderId String
+
+  workorder Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+
+  name String
+
+  brand String?
+
+  model String?
+
+  serialNumber String?
+
+  quantity Int @default(1)
+
+  location String?
+
+  status String @default("installed")
+
+  createdAt DateTime @default(now())
+}
+
+model WorkorderPhoto {
+  id String @id @default(cuid())
+
+  workorderId String
+
+  workorder Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+
+  url String
+
+  filename String?
+
+  createdAt DateTime @default(now())
+}
+
+model WorkorderSignature {
+  id String @id @default(cuid())
+
+  workorderId String @unique
+
+  workorder Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+
+  customerName String?
+
+  signatureUrl String?
+
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id String @id @default(cuid())
+
+  name String
+
+  type String
+
+  url String
+
+  workorderId String?
+
+  workorder Workorder? @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Assignment {
+  id String @id @default(cuid())
+
+  number String @unique
+
+  type String
+  // opname, installatie, onderhoud, reparatie
+
+  status String @default("new")
+  // nieuw, gebeld, gemaild, bevestigd, gepland, afgerond, gefactureerd, betaald
+
+  title String
+
+  description String?
+
+  internalNotes String?
+
+  customerId String
+
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  plannedDate DateTime?
+
+  estimatedHours Float?
+
+  workorders Workorder[]
+
+  users AssignmentUser[]
+
+  invoices Invoice[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model AssignmentUser {
+  id String @id @default(cuid())
+
+  assignmentId String
+
+  userId String
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Invoice {
+  id String @id @default(cuid())
+
+  number String @unique
+
+  status String @default("draft")
+  // concept, verzonden, betaald
+
+  amount Float?
+
+  assignmentId String?
+
+  assignment Assignment? @relation(fields: [assignmentId], references: [id])
+
+  createdAt DateTime @default(now())
 }

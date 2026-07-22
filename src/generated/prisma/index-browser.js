@@ -137,6 +137,7 @@ exports.Prisma.CustomerScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   address: 'address',
+  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -153,11 +154,108 @@ exports.Prisma.ProjectScalarFieldEnum = {
 
 exports.Prisma.WorkorderScalarFieldEnum = {
   id: 'id',
+  number: 'number',
   title: 'title',
+  description: 'description',
   status: 'status',
+  workDate: 'workDate',
+  plannedDate: 'plannedDate',
+  assignedUserId: 'assignedUserId',
   projectId: 'projectId',
+  assignmentId: 'assignmentId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkorderHourScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  date: 'date',
+  hours: 'hours',
+  travelTime: 'travelTime',
+  kilometers: 'kilometers',
+  hotel: 'hotel',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkorderMaterialScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  name: 'name',
+  articleNumber: 'articleNumber',
+  quantity: 'quantity',
+  unit: 'unit',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkorderHardwareScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  name: 'name',
+  brand: 'brand',
+  model: 'model',
+  serialNumber: 'serialNumber',
+  quantity: 'quantity',
+  location: 'location',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkorderPhotoScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  url: 'url',
+  filename: 'filename',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkorderSignatureScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  customerName: 'customerName',
+  signatureUrl: 'signatureUrl',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DocumentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  url: 'url',
+  workorderId: 'workorderId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AssignmentScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  type: 'type',
+  status: 'status',
+  title: 'title',
+  description: 'description',
+  internalNotes: 'internalNotes',
+  customerId: 'customerId',
+  plannedDate: 'plannedDate',
+  estimatedHours: 'estimatedHours',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AssignmentUserScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.InvoiceScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  status: 'status',
+  amount: 'amount',
+  assignmentId: 'assignmentId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -180,7 +278,16 @@ exports.Prisma.ModelName = {
   User: 'User',
   Customer: 'Customer',
   Project: 'Project',
-  Workorder: 'Workorder'
+  Workorder: 'Workorder',
+  WorkorderHour: 'WorkorderHour',
+  WorkorderMaterial: 'WorkorderMaterial',
+  WorkorderHardware: 'WorkorderHardware',
+  WorkorderPhoto: 'WorkorderPhoto',
+  WorkorderSignature: 'WorkorderSignature',
+  Document: 'Document',
+  Assignment: 'Assignment',
+  AssignmentUser: 'AssignmentUser',
+  Invoice: 'Invoice'
 };
 
 /**

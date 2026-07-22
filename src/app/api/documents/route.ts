@@ -1,35 +1,82 @@
 import { NextResponse } from "next/server";
 
+import { prisma } from "@/lib/prisma";
+
+
 
 export async function GET() {
 
-    return NextResponse.json({
 
-        module: "documents",
-
-        status: "ok",
-
-        message:
-            "documents API actief"
-
-    });
-
-}
+    try {
 
 
-export async function POST(
-    request: Request
-) {
+        const documents = await prisma.document.findMany({
 
-    const body = await request.json();
+            orderBy:{
+
+                createdAt:"desc"
+
+            },
 
 
-    return NextResponse.json({
+            include:{
 
-        module: "documents",
+                workorder:{
 
-        received: body
+                    include:{
 
-    });
+                        project:{
+
+                            include:{
+
+                                customer:true
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+
+
+        return NextResponse.json(
+
+            documents
+
+        );
+
+
+
+    } catch(error){
+
+
+        console.error(error);
+
+
+        return NextResponse.json(
+
+            {
+
+                error:"Documenten ophalen mislukt"
+
+            },
+
+            {
+
+                status:500
+
+            }
+
+        );
+
+
+    }
+
 
 }
