@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 
+
 const menu = [
 
     {
@@ -77,10 +78,14 @@ const menu = [
 
 
 
+
+
 export default function Sidebar() {
 
 
     const pathname = usePathname();
+
+
 
 
 
@@ -95,6 +100,7 @@ export default function Sidebar() {
             flex
             flex-col
         ">
+
 
 
             {/* Logo */}
@@ -134,6 +140,8 @@ export default function Sidebar() {
 
 
 
+
+
             {/* Navigatie */}
 
             <nav className="
@@ -144,12 +152,15 @@ export default function Sidebar() {
             ">
 
 
-                {menu.map((item) => {
+                {menu.map((item)=>{
 
 
                     const Icon = item.icon;
 
-                    const active = pathname === item.href;
+
+                    const active =
+                        pathname === item.href;
+
 
 
 
@@ -219,6 +230,120 @@ export default function Sidebar() {
 
 
             </nav>
+
+
+
+
+
+
+
+{/* Externe systemen */}
+
+<div className="
+    border-t
+    border-gray-100
+    px-4
+    py-5
+">
+
+
+    <p className="
+        text-xs
+        uppercase
+        text-gray-400
+        mb-3
+        px-4
+    ">
+
+        Externe systemen
+
+    </p>
+
+
+
+
+<button
+
+    type="button"
+
+    onClick={() => {
+
+        const bunniWindow = window.open(
+            "https://www.bunni.nl",
+            "Bunni",
+            "width=1400,height=900,left=100,top=100,resizable=yes,scrollbars=yes"
+        );
+
+
+        if (!bunniWindow) {
+
+            alert(
+                "Popup geblokkeerd. Sta pop-ups toe voor MDB PMS."
+            );
+
+        }
+
+    }}
+
+    className="
+        flex
+        items-center
+        gap-3
+        px-4
+        py-3
+        rounded-xl
+        text-gray-600
+        hover:bg-gray-100
+        hover:text-gray-900
+        transition
+        w-full
+        text-left
+    "
+
+>
+
+        <span className="text-xl">
+
+            📒
+
+        </span>
+
+
+
+        <div>
+
+
+            <div className="
+                text-sm
+                font-medium
+            ">
+
+                Bunni
+
+            </div>
+
+
+
+            <div className="
+                text-xs
+                text-gray-400
+            ">
+
+                Boekhoudsysteem
+
+            </div>
+
+
+        </div>
+
+
+    </button>
+
+
+</div>
+
+
+
 
 
         </aside>

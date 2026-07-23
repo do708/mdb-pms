@@ -1,99 +1,140 @@
 "use client";
 
-
-import Link from "next/link";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
-import {
+interface Workorder {
 
-    ArrowLeft,
-    MapPin,
-    Camera,
-    Package,
-    Monitor,
-    Save,
-    Send,
-    FileText,
-    PenLine,
+    id:string;
 
-} from "lucide-react";
+    number:string;
+
+    title:string;
+
+    description:string | null;
+
+    status:string;
 
 
+    project:{
 
-import PhotoUpload from "@/components/mobile/PhotoUpload";
+        name:string;
 
-import SignaturePad from "@/components/mobile/SignaturePad";
+        customer:{
+
+            name:string;
+
+            address:string | null;
+
+        };
+
+    };
 
 
-import MaterialModal, {
+    assignment?:{
 
-    MaterialItem
+        internalNotes:string | null;
 
-} from "@/components/mobile/MaterialModal";
+    };
 
-
-import HardwareModal, {
-
-    HardwareItem
-
-} from "@/components/mobile/HardwareModal";
-
+}
 
 
 
 
-export default function WorkOrderDetailPage({
 
-    params,
+export default function EngineerWorkorderPage({
 
-}: {
+    params
+
+}:{
 
     params:{
         id:string;
     }
 
-}) {
+}){
+
+
+    const [workorder,setWorkorder] =
+        useState<Workorder | null>(null);
 
 
 
-    const [materialModalOpen, setMaterialModalOpen] =
-        useState(false);
+    const [loading,setLoading] =
+        useState(true);
 
 
 
-    const [materials, setMaterials] =
-        useState<MaterialItem[]>([]);
-
-
-
-
-    const [hardwareModalOpen, setHardwareModalOpen] =
-        useState(false);
-
-
-
-    const [hardware, setHardware] =
-        useState<HardwareItem[]>([]);
-
-
-
-
-    const [saving, setSaving] =
-        useState(false);
-
-
-
-
-    const [saveMessage, setSaveMessage] =
+    const [notes,setNotes] =
         useState("");
 
 
 
-
-    const [description, setDescription] =
+    const [hours,setHours] =
         useState("");
+
+
+
+    const [status,setStatus] =
+        useState("open");
+
+
+
+    const [saving,setSaving] =
+        useState(false);
+
+
+
+
+
+
+    useEffect(()=>{
+
+
+        async function load(){
+
+
+            const response =
+                await fetch(
+                    `/api/workorders/${params.id}`
+                );
+
+
+            const data =
+                await response.json();
+
+
+
+            setWorkorder(data);
+
+
+
+            setNotes(
+                data.description || ""
+            );
+
+
+            setStatus(
+                data.status || "open"
+            );
+
+
+
+            setLoading(false);
+
+
+        }
+
+
+
+        load();
+
+
+
+    },[params.id]);
+
+
 
 
 
@@ -102,40 +143,34 @@ export default function WorkOrderDetailPage({
     async function saveWorkorder(){
 
 
+        setSaving(true);
+
+
+
         try {
 
 
-            setSaving(true);
-
-            setSaveMessage("");
-
-
-
-            const response = await fetch(
+            await fetch(
 
                 `/api/workorders/${params.id}/save`,
 
                 {
 
-                    method:"PUT",
+                    method:"POST",
 
                     headers:{
 
-                        "Content-Type":
-                        "application/json"
+                        "Content-Type":"application/json"
 
                     },
 
-
                     body:JSON.stringify({
 
-                        title:"Werkbon",
+                        description:notes,
 
-                        description,
+                        hours:Number(hours),
 
-                        materials,
-
-                        hardware
+                        status:status
 
                     })
 
@@ -145,50 +180,22 @@ export default function WorkOrderDetailPage({
 
 
 
-
-            const data =
-                await response.json();
-
-
-
-
-
-            if(!response.ok){
-
-                throw new Error(
-
-                    data.error ||
-
-                    "Opslaan mislukt"
-
-                );
-
-            }
-
-
-
-
-
-            setSaveMessage(
-
-                "✓ Werkbon opgeslagen"
-
+            alert(
+                "Werkbon opgeslagen"
             );
-
-
 
 
 
         } catch(error){
 
 
-            console.error(error);
+            console.error(
+                error
+            );
 
 
-            setSaveMessage(
-
+            alert(
                 "Opslaan mislukt"
-
             );
 
 
@@ -197,96 +204,39 @@ export default function WorkOrderDetailPage({
 
             setSaving(false);
 
+
         }
 
+
+    }
+    if(loading){
+
+        return (
+
+            <main className="p-5">
+
+                Werkbon laden...
+
+            </main>
+
+        );
 
     }
 
 
 
 
+    if(!workorder){
 
+        return (
 
-    async function sendWorkorder(){
+            <main className="p-5">
 
+                Werkbon niet gevonden
 
-        try {
+            </main>
 
-
-            setSaving(true);
-
-            setSaveMessage("");
-
-
-
-            const response = await fetch(
-
-                `/api/workorders/${params.id}/pdf/save`,
-
-                {
-
-                    method:"POST"
-
-                }
-
-            );
-
-
-
-
-            const data =
-                await response.json();
-
-
-
-
-
-            if(!response.ok){
-
-                throw new Error(
-
-                    data.error ||
-
-                    "Verzenden mislukt"
-
-                );
-
-            }
-
-
-
-
-            setSaveMessage(
-
-                "✓ Werkbon verzonden"
-
-            );
-
-
-
-
-
-        } catch(error){
-
-
-            console.error(error);
-
-
-            setSaveMessage(
-
-                "Verzenden mislukt"
-
-            );
-
-
-
-        } finally {
-
-
-            setSaving(false);
-
-        }
-
+        );
 
     }
 
@@ -297,115 +247,34 @@ export default function WorkOrderDetailPage({
     return (
 
         <main className="
+            p-5
             space-y-5
-            pb-10
+            bg-gray-50
+            min-h-screen
         ">
 
 
-            <div className="
-                flex
-                items-center
-                gap-3
-            ">
+            <header>
 
-
-                <Link
-
-                    href="/engineer"
-
-                    className="
-                        bg-white
-                        border
-                        rounded-xl
-                        p-2
-                    "
-
-                >
-
-                    <ArrowLeft size={20}/>
-
-                </Link>
-
-
-
-                <div>
-
-                    <p className="
-                        text-xs
-                        text-gray-500
-                    ">
-
-                        Werkbon
-
-                    </p>
-
-
-                    <h1 className="
-                        text-xl
-                        font-bold
-                    ">
-
-                        WB-2026-001
-
-                    </h1>
-
-
-                </div>
-
-
-            </div>            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-            ">
-
-
-                <div className="
-                    flex
-                    gap-2
-                    items-center
-                    mb-4
+                <h1 className="
+                    text-2xl
+                    font-bold
                 ">
 
+                    📝 Werkbon
 
-                    <FileText size={20}/>
-
-
-                    <h2 className="font-bold">
-
-                        Algemene informatie
-
-                    </h2>
+                </h1>
 
 
-                </div>
+                <p className="text-gray-500">
 
-
-                <p className="font-semibold">
-
-                    Pathé Amsterdam
+                    {workorder.number}
 
                 </p>
 
-
-                <div className="
-                    flex
-                    gap-2
-                    items-center
-                    mt-2
-                    text-sm
-                    text-gray-500
-                ">
-
-                    <MapPin size={16}/>
-
-                    Amsterdam
-
-                </div>
+            </header>
 
 
-            </section>
 
 
 
@@ -416,13 +285,71 @@ export default function WorkOrderDetailPage({
                 border
                 rounded-2xl
                 p-5
+                space-y-3
             ">
 
 
                 <h2 className="
+                    text-xl
                     font-bold
-                    mb-3
                 ">
+
+                    {workorder.title}
+
+                </h2>
+
+
+
+                <p>
+
+                    🏢 {workorder.project.customer.name}
+
+                </p>
+
+
+
+                <p>
+
+                    📍
+
+                    {" "}
+
+                    {
+                        workorder.project.customer.address
+                        ||
+                        "Geen adres"
+                    }
+
+                </p>
+
+
+
+                <p>
+
+                    📁 {workorder.project.name}
+
+                </p>
+
+
+            </section>
+
+
+
+
+
+
+
+
+            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-5
+                space-y-3
+            ">
+
+
+                <h2 className="font-bold">
 
                     Werkzaamheden
 
@@ -432,27 +359,26 @@ export default function WorkOrderDetailPage({
 
                 <textarea
 
-                    value={description}
+                    value={notes}
 
                     onChange={(e)=>
-
-                        setDescription(
-
+                        setNotes(
                             e.target.value
-
                         )
-
                     }
 
 
-                    placeholder="Beschrijf de uitgevoerde werkzaamheden..."
+                    placeholder="
+                    Beschrijf uitgevoerde werkzaamheden...
+                    "
+
 
                     className="
                         w-full
-                        min-h-[140px]
                         border
                         rounded-xl
-                        p-4
+                        p-3
+                        min-h-32
                     "
 
                 />
@@ -465,49 +391,6 @@ export default function WorkOrderDetailPage({
 
 
 
-            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-            ">
-
-
-                <div className="
-                    flex
-                    gap-2
-                    items-center
-                    mb-4
-                ">
-
-
-                    <Camera size={20}/>
-
-
-                    <h2 className="font-bold">
-
-                        Foto's
-
-                    </h2>
-
-
-                </div>
-
-
-
-                <PhotoUpload
-
-                    workorderId={params.id}
-
-                />
-
-
-            </section>
-
-
-
-
-
 
 
             <section className="
@@ -515,219 +398,88 @@ export default function WorkOrderDetailPage({
                 border
                 rounded-2xl
                 p-5
+                space-y-3
             ">
 
 
+                <h2 className="font-bold">
 
-                <div className="
-                    flex
-                    gap-2
-                    items-center
-                ">
+                    ⏱️ Urenregistratie
 
-
-                    <Package size={20}/>
-
-
-                    <h2 className="font-bold">
-
-                        Materialen
-
-                    </h2>
-
-
-                </div>
+                </h2>
 
 
 
+                <input
 
-                <button
+                    type="number"
 
-                    onClick={() =>
+                    value={hours}
 
-                        setMaterialModalOpen(true)
-
+                    onChange={(e)=>
+                        setHours(
+                            e.target.value
+                        )
                     }
 
 
-                    className="
-                        mt-4
-                        text-blue-700
-                        font-semibold
-                    "
-
-                >
-
-                    + Toevoegen
-
-                </button>
-
-
-
-                {materials.length > 0 && (
-
-                    <div className="mt-4 space-y-2">
-
-
-                        {materials.map((item,index)=>(
-
-                            <div
-
-                                key={index}
-
-                                className="
-                                    border
-                                    rounded-lg
-                                    p-3
-                                    text-sm
-                                "
-
-                            >
-
-                                {item.name}
-
-                            </div>
-
-                        ))}
-
-
-                    </div>
-
-                )}
-
-
-
-            </section>
-
-
-
-
-
-
-            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-            ">
-
-
-                <div className="
-                    flex
-                    gap-2
-                    items-center
-                ">
-
-
-                    <Monitor size={20}/>
-
-
-                    <h2 className="font-bold">
-
-                        Hardware
-
-                    </h2>
-
-
-                </div>
-
-
-
-
-                <button
-
-                    onClick={() =>
-
-                        setHardwareModalOpen(true)
-
-                    }
+                    placeholder="Aantal uren"
 
 
                     className="
-                        mt-4
-                        text-blue-700
-                        font-semibold
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
                     "
-
-                >
-
-                    + Toevoegen
-
-                </button>
-
-
-
-                {hardware.length > 0 && (
-
-                    <div className="mt-4 space-y-2">
-
-
-                        {hardware.map((item,index)=>(
-
-                            <div
-
-                                key={index}
-
-                                className="
-                                    border
-                                    rounded-lg
-                                    p-3
-                                    text-sm
-                                "
-
-                            >
-
-                                {item.name}
-
-                            </div>
-
-                        ))}
-
-
-                    </div>
-
-                )}
-
-
-
-            </section>            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-            ">
-
-
-                <div className="
-                    flex
-                    gap-2
-                    items-center
-                    mb-4
-                ">
-
-
-                    <PenLine size={20}/>
-
-
-                    <h2 className="font-bold">
-
-                        Klant akkoord
-
-                    </h2>
-
-
-                </div>
-
-
-
-                <SignaturePad
-
-                    workorderId={params.id}
 
                 />
 
 
             </section>
+
+
+
+
+
+
+
+
+            {
+                workorder.assignment?.internalNotes && (
+
+                    <section className="
+                        bg-yellow-100
+                        border
+                        border-yellow-300
+                        rounded-2xl
+                        p-5
+                    ">
+
+
+                        <h2 className="font-bold">
+
+                            📌 Interne notitie
+
+                        </h2>
+
+
+
+                        <p>
+
+                            {
+                                workorder.assignment.internalNotes
+                            }
+
+                        </p>
+
+
+                    </section>
+
+                )
+            }
+
+
 
 
 
@@ -742,32 +494,173 @@ export default function WorkOrderDetailPage({
 
                 className="
                     w-full
-                    flex
-                    justify-center
-                    gap-2
-                    items-center
-                    py-4
+                    bg-black
+                    text-white
                     rounded-xl
-                    bg-white
-                    border
-                    font-semibold
+                    py-4
+                    font-bold
                 "
 
             >
 
-                <Save size={20}/>
-
-
-                {saving
-
-                    ? "Opslaan..."
-
-                    : "Concept opslaan"
-
+                {
+                    saving
+                    ?
+                    "Opslaan..."
+                    :
+                    "💾 Werkbon opslaan"
                 }
 
 
-            </button>
+            </button>            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-5
+                space-y-3
+            ">
+
+
+                <h2 className="font-bold">
+
+                    📷 Foto's
+
+                </h2>
+
+
+
+                <button
+
+                    className="
+                        border
+                        rounded-xl
+                        px-4
+                        py-3
+                    "
+
+                >
+
+                    Foto toevoegen
+
+                </button>
+
+
+            </section>
+
+
+
+
+
+
+
+
+            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-5
+                space-y-3
+            ">
+
+
+                <h2 className="font-bold">
+
+                    ✍️ Handtekening klant
+
+                </h2>
+
+
+
+                <div className="
+                    h-40
+                    border
+                    rounded-xl
+                    flex
+                    items-center
+                    justify-center
+                    text-gray-400
+                ">
+
+
+                    Handtekening veld
+
+
+                </div>
+
+
+            </section>
+
+
+
+
+
+
+
+
+
+            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-5
+                space-y-3
+            ">
+
+
+                <h2 className="font-bold">
+
+                    Status
+
+                </h2>
+
+
+
+                <select
+
+                    value={status}
+
+                    onChange={(e)=>
+                        setStatus(
+                            e.target.value
+                        )
+                    }
+
+
+                    className="
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
+                    "
+
+                >
+
+                    <option value="open">
+
+                        Open
+
+                    </option>
+
+
+                    <option value="in_uitvoering">
+
+                        In uitvoering
+
+                    </option>
+
+
+                    <option value="afgerond">
+
+                        Afgerond
+
+                    </option>
+
+
+                </select>
+
+
+            </section>
+
 
 
 
@@ -777,35 +670,18 @@ export default function WorkOrderDetailPage({
 
             <button
 
-                onClick={sendWorkorder}
-
-                disabled={saving}
-
                 className="
                     w-full
-                    flex
-                    justify-center
-                    gap-2
-                    items-center
-                    py-4
-                    rounded-xl
-                    bg-[#12345b]
+                    bg-green-600
                     text-white
-                    font-semibold
+                    rounded-xl
+                    py-4
+                    font-bold
                 "
 
             >
 
-                <Send size={20}/>
-
-
-                {saving
-
-                    ? "Verzenden..."
-
-                    : "Werkbon verzenden"
-
-                }
+                ✅ Werkbon afronden
 
 
             </button>
@@ -815,91 +691,8 @@ export default function WorkOrderDetailPage({
 
 
 
-
-            {saveMessage && (
-
-                <p className="
-                    text-center
-                    text-sm
-                    text-green-600
-                ">
-
-                    {saveMessage}
-
-                </p>
-
-            )}
-
-
-
-
-
-
-
-
-            <MaterialModal
-
-                open={materialModalOpen}
-
-                onClose={() =>
-
-                    setMaterialModalOpen(false)
-
-                }
-
-
-                onAdd={(item)=>{
-
-
-                    setMaterials([
-
-                        ...materials,
-
-                        item
-
-                    ]);
-
-                }}
-
-            />
-
-
-
-
-
-
-
-            <HardwareModal
-
-                open={hardwareModalOpen}
-
-                onClose={() =>
-
-                    setHardwareModalOpen(false)
-
-                }
-
-
-                onAdd={(item)=>{
-
-
-                    setHardware([
-
-                        ...hardware,
-
-                        item
-
-                    ]);
-
-                }}
-
-            />
-
-
-
         </main>
 
     );
-
 
 }
