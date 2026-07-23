@@ -2,79 +2,57 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
+import { createClient } from "@supabase/supabase-js";
+
+
+
+
+
+const supabase = createClient(
+
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+);
+
+
+
+
+
 
 
 export async function POST(
 
     request: NextRequest,
 
-    context: {
-        params: Promise<{
+    context:{
+        params:Promise<{
             id:string;
         }>
     }
 
-) {
+){
 
 
     try {
 
 
-        const { id } = await context.params;
-
-
-        const body = await request.json();
-
-
-
-        const {
-
-            url,
-
-            filename,
-
-        } = body;
+        const { id } =
+            await context.params;
 
 
 
 
 
-        if(!url){
+        const workorder =
+            await prisma.workorder.findUnique({
 
-
-            return NextResponse.json(
-
-                {
-
-                    success:false,
-
-                    error:"Foto URL ontbreekt"
-
-                },
-
-                {
-
-                    status:400
-
+                where:{
+                    id
                 }
 
-            );
-
-
-        }
-
-
-
-
-
-
-        const workorder = await prisma.workorder.findUnique({
-
-            where:{
-                id
-            }
-
-        });
+            });
 
 
 
@@ -86,21 +64,15 @@ export async function POST(
             return NextResponse.json(
 
                 {
-
-                    success:false,
-
-                    error:"Werkbon niet gevonden"
-
+                    error:
+                    "Werkbon niet gevonden"
                 },
 
                 {
-
                     status:404
-
                 }
 
             );
-
 
         }
 
@@ -110,24 +82,157 @@ export async function POST(
 
 
 
-        const photo = await prisma.workorderPhoto.create({
-
-            data:{
-
-
-                workorderId:id,
+        const formData =
+            await request.formData();
 
 
-                url,
 
 
-                filename:
-                    filename ?? null,
 
+        const files =
+            formData.getAll(
+                "photos"
+            ) as File[];
+
+
+
+
+
+
+        if(files.length === 0){
+
+
+            return NextResponse.json(
+
+                {
+                    error:
+                    "Geen foto's ontvangen"
+                },
+
+                {
+                    status:400
+                }
+
+            );
+
+        }
+
+
+
+
+
+
+
+
+        const uploadedPhotos = [];
+
+
+
+
+
+
+        for(const file of files){
+
+
+
+            const buffer =
+                Buffer.from(
+                    await file.arrayBuffer()
+                );
+
+
+
+            const filename =
+
+                `${id}/${Date.now()}-${file.name}`;
+
+
+
+
+
+            const upload =
+                await supabase.storage
+
+                .from("workorder-files")
+
+                .upload(
+
+                    filename,
+
+                    buffer,
+
+                    {
+
+                        contentType:
+                        file.type,
+
+                        upsert:true
+
+                    }
+
+                );
+
+
+
+
+
+            if(upload.error){
+
+
+                throw upload.error;
 
             }
 
-        });
+
+
+
+
+
+            const url =
+
+                supabase.storage
+
+                .from("workorder-files")
+
+                .getPublicUrl(
+
+                    filename
+
+                )
+
+                .data
+
+                .publicUrl;
+
+
+
+
+
+
+            const photo =
+
+                await prisma.workorderPhoto.create({
+
+                    data:{
+
+                        workorderId:id,
+
+                        url
+
+                    }
+
+                });
+
+
+
+
+
+            uploadedPhotos.push(photo);
+
+
+
+        }
+
 
 
 
@@ -139,10 +244,9 @@ export async function POST(
 
             success:true,
 
-            photo,
+            photos:uploadedPhotos
 
         });
-
 
 
 
@@ -152,10 +256,12 @@ export async function POST(
     } catch(error){
 
 
-
         console.error(
-            "PHOTO UPLOAD ERROR:",
+
+            "PHOTO UPLOAD ERROR",
+
             error
+
         );
 
 
@@ -164,9 +270,8 @@ export async function POST(
 
             {
 
-                success:false,
-
-                error:"Foto opslaan mislukt"
+                error:
+                "Foto upload mislukt"
 
             },
 

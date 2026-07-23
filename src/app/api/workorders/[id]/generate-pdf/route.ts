@@ -4,11 +4,27 @@ import { prisma } from "@/lib/prisma";
 
 import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
 
+import { createClient } from "@supabase/supabase-js";
 
 
 
 
-export async function GET(
+
+const supabase = createClient(
+
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+);
+
+
+
+
+
+
+
+export async function POST(
 
     request: NextRequest,
 
@@ -26,7 +42,6 @@ export async function GET(
 
         const { id } =
             await context.params;
-
 
 
 
@@ -60,7 +75,7 @@ export async function GET(
                     hours:true,
 
 
-                    materials:true,
+                    materials:true
 
 
                 }
@@ -95,7 +110,6 @@ export async function GET(
 
 
         }
-
 
 
 
@@ -167,30 +181,119 @@ export async function GET(
 
 
 
-const pdfBuffer =
-    Buffer.from(pdf);
+
+        const filename =
+
+            `workorders/${workorder.number}.pdf`;
 
 
 
-return new NextResponse(
 
-    pdfBuffer,
 
-    {
 
-        headers:{
 
-            "Content-Type":
-            "application/pdf",
+        const upload =
 
-            "Content-Disposition":
-            `attachment; filename=${workorder.number}.pdf`
+            await supabase.storage
+
+            .from("workorder-files")
+
+            .upload(
+
+                filename,
+
+                Buffer.from(pdf),
+
+                {
+
+                    contentType:
+                    "application/pdf",
+
+                    upsert:true
+
+                }
+
+            );
+
+
+
+
+
+
+
+
+        if(upload.error){
+
+
+            throw upload.error;
+
 
         }
 
-    }
 
-);
+
+
+
+
+
+
+        const url =
+
+            supabase.storage
+
+            .from("workorder-files")
+
+            .getPublicUrl(
+
+                filename
+
+            )
+
+            .data
+
+            .publicUrl;
+
+
+
+
+
+
+
+
+        const document =
+
+            await prisma.document.create({
+
+                data:{
+
+    name:
+        `${workorder.number}.pdf`,
+
+    type:
+        "pdf",
+
+    url,
+
+    workorderId:id
+
+}
+
+            });
+
+
+
+
+
+
+
+
+        return NextResponse.json({
+
+            success:true,
+
+            document
+
+        });
 
 
 
@@ -203,7 +306,7 @@ return new NextResponse(
 
         console.error(
 
-            "PDF GENERATE ERROR",
+            "GENERATE PDF ERROR",
 
             error
 
@@ -216,7 +319,7 @@ return new NextResponse(
             {
 
                 error:
-                "PDF maken mislukt"
+                "PDF opslaan mislukt"
 
             },
 

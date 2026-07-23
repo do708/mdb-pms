@@ -11506,24 +11506,21 @@ export namespace Prisma {
   export type WorkorderSignatureMinAggregateOutputType = {
     id: string | null
     workorderId: string | null
-    customerName: string | null
-    signatureUrl: string | null
+    url: string | null
     createdAt: Date | null
   }
 
   export type WorkorderSignatureMaxAggregateOutputType = {
     id: string | null
     workorderId: string | null
-    customerName: string | null
-    signatureUrl: string | null
+    url: string | null
     createdAt: Date | null
   }
 
   export type WorkorderSignatureCountAggregateOutputType = {
     id: number
     workorderId: number
-    customerName: number
-    signatureUrl: number
+    url: number
     createdAt: number
     _all: number
   }
@@ -11532,24 +11529,21 @@ export namespace Prisma {
   export type WorkorderSignatureMinAggregateInputType = {
     id?: true
     workorderId?: true
-    customerName?: true
-    signatureUrl?: true
+    url?: true
     createdAt?: true
   }
 
   export type WorkorderSignatureMaxAggregateInputType = {
     id?: true
     workorderId?: true
-    customerName?: true
-    signatureUrl?: true
+    url?: true
     createdAt?: true
   }
 
   export type WorkorderSignatureCountAggregateInputType = {
     id?: true
     workorderId?: true
-    customerName?: true
-    signatureUrl?: true
+    url?: true
     createdAt?: true
     _all?: true
   }
@@ -11629,8 +11623,7 @@ export namespace Prisma {
   export type WorkorderSignatureGroupByOutputType = {
     id: string
     workorderId: string
-    customerName: string | null
-    signatureUrl: string | null
+    url: string
     createdAt: Date
     _count: WorkorderSignatureCountAggregateOutputType | null
     _min: WorkorderSignatureMinAggregateOutputType | null
@@ -11654,8 +11647,7 @@ export namespace Prisma {
   export type WorkorderSignatureSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     workorderId?: boolean
-    customerName?: boolean
-    signatureUrl?: boolean
+    url?: boolean
     createdAt?: boolean
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorderSignature"]>
@@ -11663,8 +11655,7 @@ export namespace Prisma {
   export type WorkorderSignatureSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     workorderId?: boolean
-    customerName?: boolean
-    signatureUrl?: boolean
+    url?: boolean
     createdAt?: boolean
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorderSignature"]>
@@ -11672,8 +11663,7 @@ export namespace Prisma {
   export type WorkorderSignatureSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     workorderId?: boolean
-    customerName?: boolean
-    signatureUrl?: boolean
+    url?: boolean
     createdAt?: boolean
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorderSignature"]>
@@ -11681,12 +11671,11 @@ export namespace Prisma {
   export type WorkorderSignatureSelectScalar = {
     id?: boolean
     workorderId?: boolean
-    customerName?: boolean
-    signatureUrl?: boolean
+    url?: boolean
     createdAt?: boolean
   }
 
-  export type WorkorderSignatureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workorderId" | "customerName" | "signatureUrl" | "createdAt", ExtArgs["result"]["workorderSignature"]>
+  export type WorkorderSignatureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workorderId" | "url" | "createdAt", ExtArgs["result"]["workorderSignature"]>
   export type WorkorderSignatureInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }
@@ -11705,8 +11694,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       workorderId: string
-      customerName: string | null
-      signatureUrl: string | null
+      url: string
       createdAt: Date
     }, ExtArgs["result"]["workorderSignature"]>
     composites: {}
@@ -12134,8 +12122,7 @@ export namespace Prisma {
   interface WorkorderSignatureFieldRefs {
     readonly id: FieldRef<"WorkorderSignature", 'String'>
     readonly workorderId: FieldRef<"WorkorderSignature", 'String'>
-    readonly customerName: FieldRef<"WorkorderSignature", 'String'>
-    readonly signatureUrl: FieldRef<"WorkorderSignature", 'String'>
+    readonly url: FieldRef<"WorkorderSignature", 'String'>
     readonly createdAt: FieldRef<"WorkorderSignature", 'DateTime'>
   }
     
@@ -17243,8 +17230,7 @@ export namespace Prisma {
   export const WorkorderSignatureScalarFieldEnum: {
     id: 'id',
     workorderId: 'workorderId',
-    customerName: 'customerName',
-    signatureUrl: 'signatureUrl',
+    url: 'url',
     createdAt: 'createdAt'
   };
 
@@ -18013,8 +17999,7 @@ export namespace Prisma {
     NOT?: WorkorderSignatureWhereInput | WorkorderSignatureWhereInput[]
     id?: StringFilter<"WorkorderSignature"> | string
     workorderId?: StringFilter<"WorkorderSignature"> | string
-    customerName?: StringNullableFilter<"WorkorderSignature"> | string | null
-    signatureUrl?: StringNullableFilter<"WorkorderSignature"> | string | null
+    url?: StringFilter<"WorkorderSignature"> | string
     createdAt?: DateTimeFilter<"WorkorderSignature"> | Date | string
     workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
   }
@@ -18022,8 +18007,7 @@ export namespace Prisma {
   export type WorkorderSignatureOrderByWithRelationInput = {
     id?: SortOrder
     workorderId?: SortOrder
-    customerName?: SortOrderInput | SortOrder
-    signatureUrl?: SortOrderInput | SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
     workorder?: WorkorderOrderByWithRelationInput
   }
@@ -18034,8 +18018,7 @@ export namespace Prisma {
     AND?: WorkorderSignatureWhereInput | WorkorderSignatureWhereInput[]
     OR?: WorkorderSignatureWhereInput[]
     NOT?: WorkorderSignatureWhereInput | WorkorderSignatureWhereInput[]
-    customerName?: StringNullableFilter<"WorkorderSignature"> | string | null
-    signatureUrl?: StringNullableFilter<"WorkorderSignature"> | string | null
+    url?: StringFilter<"WorkorderSignature"> | string
     createdAt?: DateTimeFilter<"WorkorderSignature"> | Date | string
     workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
   }, "id" | "workorderId">
@@ -18043,8 +18026,7 @@ export namespace Prisma {
   export type WorkorderSignatureOrderByWithAggregationInput = {
     id?: SortOrder
     workorderId?: SortOrder
-    customerName?: SortOrderInput | SortOrder
-    signatureUrl?: SortOrderInput | SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
     _count?: WorkorderSignatureCountOrderByAggregateInput
     _max?: WorkorderSignatureMaxOrderByAggregateInput
@@ -18057,8 +18039,7 @@ export namespace Prisma {
     NOT?: WorkorderSignatureScalarWhereWithAggregatesInput | WorkorderSignatureScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"WorkorderSignature"> | string
     workorderId?: StringWithAggregatesFilter<"WorkorderSignature"> | string
-    customerName?: StringNullableWithAggregatesFilter<"WorkorderSignature"> | string | null
-    signatureUrl?: StringNullableWithAggregatesFilter<"WorkorderSignature"> | string | null
+    url?: StringWithAggregatesFilter<"WorkorderSignature"> | string
     createdAt?: DateTimeWithAggregatesFilter<"WorkorderSignature"> | Date | string
   }
 
@@ -19006,8 +18987,7 @@ export namespace Prisma {
 
   export type WorkorderSignatureCreateInput = {
     id?: string
-    customerName?: string | null
-    signatureUrl?: string | null
+    url: string
     createdAt?: Date | string
     workorder: WorkorderCreateNestedOneWithoutSignatureInput
   }
@@ -19015,15 +18995,13 @@ export namespace Prisma {
   export type WorkorderSignatureUncheckedCreateInput = {
     id?: string
     workorderId: string
-    customerName?: string | null
-    signatureUrl?: string | null
+    url: string
     createdAt?: Date | string
   }
 
   export type WorkorderSignatureUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    customerName?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorder?: WorkorderUpdateOneRequiredWithoutSignatureNestedInput
   }
@@ -19031,31 +19009,27 @@ export namespace Prisma {
   export type WorkorderSignatureUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     workorderId?: StringFieldUpdateOperationsInput | string
-    customerName?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WorkorderSignatureCreateManyInput = {
     id?: string
     workorderId: string
-    customerName?: string | null
-    signatureUrl?: string | null
+    url: string
     createdAt?: Date | string
   }
 
   export type WorkorderSignatureUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    customerName?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WorkorderSignatureUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     workorderId?: StringFieldUpdateOperationsInput | string
-    customerName?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -19982,24 +19956,21 @@ export namespace Prisma {
   export type WorkorderSignatureCountOrderByAggregateInput = {
     id?: SortOrder
     workorderId?: SortOrder
-    customerName?: SortOrder
-    signatureUrl?: SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
   }
 
   export type WorkorderSignatureMaxOrderByAggregateInput = {
     id?: SortOrder
     workorderId?: SortOrder
-    customerName?: SortOrder
-    signatureUrl?: SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
   }
 
   export type WorkorderSignatureMinOrderByAggregateInput = {
     id?: SortOrder
     workorderId?: SortOrder
-    customerName?: SortOrder
-    signatureUrl?: SortOrder
+    url?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -21819,15 +21790,13 @@ export namespace Prisma {
 
   export type WorkorderSignatureCreateWithoutWorkorderInput = {
     id?: string
-    customerName?: string | null
-    signatureUrl?: string | null
+    url: string
     createdAt?: Date | string
   }
 
   export type WorkorderSignatureUncheckedCreateWithoutWorkorderInput = {
     id?: string
-    customerName?: string | null
-    signatureUrl?: string | null
+    url: string
     createdAt?: Date | string
   }
 
@@ -22105,15 +22074,13 @@ export namespace Prisma {
 
   export type WorkorderSignatureUpdateWithoutWorkorderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    customerName?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WorkorderSignatureUncheckedUpdateWithoutWorkorderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    customerName?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

@@ -4,59 +4,57 @@ import { prisma } from "@/lib/prisma";
 
 
 
+
+
 export async function GET(){
 
 
     try {
 
 
-        const today = new Date();
+        const open =
 
-
-
-
-
-        // Werkbonnen waarvan datum voorbij is
-        // maar nog geen werkbon/document aanwezig
-
-        const missingWorkorders =
-            await prisma.assignment.findMany({
+            await prisma.workorder.count({
 
                 where:{
 
-                    plannedDate:{
-
-                        lt: today
-
-                    },
-
-
-                    workorders:{
-
-                        none:{}
-
-                    },
-
-
-                    status:{
-
-                        in:[
-                            "gepland",
-                            "bevestigd",
-                            "in_uitvoering"
-                        ]
-
-                    }
-
-                },
-
-
-                include:{
-
-                    customer:true
+                    status:"open"
 
                 }
 
+            });
+
+
+
+
+
+        const inProgress =
+
+            await prisma.workorder.count({
+
+                where:{
+
+                    status:"in_uitvoering"
+
+                }
+
+            });
+
+
+
+
+
+
+
+        const completed =
+
+            await prisma.workorder.count({
+
+                where:{
+
+                    status:"afgerond"
+
+                }
 
             });
 
@@ -67,69 +65,24 @@ export async function GET(){
 
 
 
-        // Opnames die niet zijn omgezet
-        // en nog niet gefactureerd zijn
+        const recent =
 
-        const unbilledInspections =
-            await prisma.assignment.findMany({
+            await prisma.workorder.findMany({
 
-                where:{
-
-                    type:"opname",
+                take:10,
 
 
-                    status:{
+                orderBy:{
 
-                        notIn:[
-
-                            "gefactureerd",
-
-                            "betaald"
-
-                        ]
-
-                    }
+                    createdAt:"desc"
 
                 },
 
 
                 include:{
 
-                    customer:true
 
-                }
-
-
-            });
-
-
-
-
-
-
-
-
-
-
-        // Facturen die nog open staan
-
-        const unpaidInvoices =
-            await prisma.invoice.findMany({
-
-                where:{
-
-                    status:{
-
-                        not:"betaald"
-
-                    }
-
-                },
-
-
-                include:{
-
-                    assignment:{
+                    project:{
 
                         include:{
 
@@ -137,12 +90,16 @@ export async function GET(){
 
                         }
 
-                    }
+                    },
+
+
+                    assignedUser:true
+
 
                 }
 
-            });
 
+            });
 
 
 
@@ -153,13 +110,26 @@ export async function GET(){
 
         return NextResponse.json({
 
-            missingWorkorders,
+            counters:{
 
-            unbilledInspections,
 
-            unpaidInvoices
+                open,
+
+
+                inProgress,
+
+
+                completed
+
+
+            },
+
+
+            recent
+
 
         });
+
 
 
 
@@ -169,10 +139,9 @@ export async function GET(){
     } catch(error){
 
 
-
         console.error(
 
-            "DASHBOARD ERROR",
+            "DASHBOARD API ERROR",
 
             error
 
@@ -184,7 +153,8 @@ export async function GET(){
 
             {
 
-                error:"Dashboard gegevens ophalen mislukt"
+                error:
+                "Dashboard gegevens ophalen mislukt"
 
             },
 

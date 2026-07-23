@@ -1,29 +1,26 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
-
-import Link from "next/link";
-
-import {
-    AlertTriangle,
-    FileWarning,
-    ClipboardList,
-    Euro,
-    Plus
-} from "lucide-react";
-
+import { canAccessOffice } from "@/lib/auth/checkRole";
 
 
 interface DashboardData {
 
-    missingWorkorders:any[];
+    counters:{
 
-    unbilledInspections:any[];
+        open:number;
 
-    unpaidInvoices:any[];
+        inProgress:number;
+
+        completed:number;
+
+    };
+
+
+    recent:any[];
 
 }
+
 
 
 
@@ -36,8 +33,11 @@ export default function DashboardPage(){
         useState<DashboardData | null>(null);
 
 
+
     const [loading,setLoading] =
         useState(true);
+
+
 
 
 
@@ -50,11 +50,16 @@ export default function DashboardPage(){
 
 
             const response =
-                await fetch("/api/dashboard");
+                await fetch(
+
+                    "/api/dashboard"
+
+                );
 
 
             const result =
                 await response.json();
+
 
 
             setData(result);
@@ -64,6 +69,7 @@ export default function DashboardPage(){
 
 
         }
+
 
 
         load();
@@ -76,7 +82,10 @@ export default function DashboardPage(){
 
 
 
+
+
     if(loading){
+
 
         return (
 
@@ -90,6 +99,25 @@ export default function DashboardPage(){
 
     }
 
+const user = getCurrentUser();
+
+const userRole = user?.role || "";
+
+if(!canAccessOffice(userRole)){
+
+
+    return (
+
+        <main className="p-6">
+
+            Geen toegang
+
+        </main>
+
+    );
+
+}
+
 
 
 
@@ -100,26 +128,27 @@ export default function DashboardPage(){
         <main className="
             p-6
             space-y-6
+            bg-gray-50
+            min-h-screen
         ">
 
 
             <header>
+
 
                 <h1 className="
                     text-3xl
                     font-bold
                 ">
 
-                    MDB PMS Dashboard
+                    📊 MDB PMS Dashboard
 
                 </h1>
 
 
-                <p className="
-                    text-gray-500
-                ">
+                <p className="text-gray-500">
 
-                    Overzicht van openstaande acties
+                    Overzicht projecten en werkbonnen
 
                 </p>
 
@@ -132,108 +161,35 @@ export default function DashboardPage(){
 
 
 
+
             <section className="
                 grid
+                grid-cols-1
                 md:grid-cols-3
-                gap-4
+                gap-5
             ">
 
 
+
                 <div className="
+                    bg-white
                     border
                     rounded-2xl
                     p-5
-                    bg-white
                 ">
-
-
-                    <div className="
-                        flex
-                        gap-2
-                        items-center
-                    ">
-
-                        <AlertTriangle/>
-
-                        <h2 className="font-bold">
-
-                            Werkbonnen
-
-                        </h2>
-
-                    </div>
-
-
-                    <p className="
-                        text-3xl
-                        mt-3
-                    ">
-
-                        {data?.missingWorkorders.length}
-
-                    </p>
-
 
                     <p className="text-gray-500">
 
-                        ontbreken
+                        Open
 
                     </p>
 
 
-                </div>
+                    <p className="text-3xl font-bold">
 
-
-
-
-
-
-                <div className="
-                    border
-                    rounded-2xl
-                    p-5
-                    bg-white
-                ">
-
-
-                    <div className="
-                        flex
-                        gap-2
-                        items-center
-                    ">
-
-
-                        <ClipboardList/>
-
-
-                        <h2 className="font-bold">
-
-                            Opnames
-
-                        </h2>
-
-
-                    </div>
-
-
-                    <p className="
-                        text-3xl
-                        mt-3
-                    ">
-
-
-                        {data?.unbilledInspections.length}
-
+                        {data?.counters.open}
 
                     </p>
-
-
-                    <p className="text-gray-500">
-
-                        controleren
-
-                    </p>
-
 
                 </div>
 
@@ -243,56 +199,57 @@ export default function DashboardPage(){
 
 
 
-
                 <div className="
+                    bg-white
                     border
                     rounded-2xl
                     p-5
-                    bg-white
                 ">
-
-
-                    <div className="
-                        flex
-                        gap-2
-                        items-center
-                    ">
-
-
-                        <Euro/>
-
-
-                        <h2 className="font-bold">
-
-                            Facturen
-
-                        </h2>
-
-
-                    </div>
-
-
-
-                    <p className="
-                        text-3xl
-                        mt-3
-                    ">
-
-
-                        {data?.unpaidInvoices.length}
-
-
-                    </p>
-
 
                     <p className="text-gray-500">
 
-                        openstaand
+                        In uitvoering
 
                     </p>
 
 
+                    <p className="text-3xl font-bold">
+
+                        {data?.counters.inProgress}
+
+                    </p>
+
                 </div>
+
+
+
+
+
+
+
+                <div className="
+                    bg-white
+                    border
+                    rounded-2xl
+                    p-5
+                ">
+
+                    <p className="text-gray-500">
+
+                        Afgerond
+
+                    </p>
+
+
+                    <p className="text-3xl font-bold">
+
+                        {data?.counters.completed}
+
+                    </p>
+
+                </div>
+
+
 
 
             </section>
@@ -303,20 +260,23 @@ export default function DashboardPage(){
 
 
 
+
+
             <section className="
+                bg-white
                 border
                 rounded-2xl
-                bg-white
                 p-5
             ">
 
 
                 <h2 className="
+                    text-xl
                     font-bold
                     mb-4
                 ">
 
-                    Acties nodig
+                    Laatste werkbonnen
 
                 </h2>
 
@@ -324,116 +284,70 @@ export default function DashboardPage(){
 
 
 
-                {data?.missingWorkorders.map((item)=>(
+                <div className="space-y-3">
 
 
-                    <Link
-
-                        key={item.id}
-
-                        href={`/assignments/${item.id}`}
-
-                        className="
-                            block
-                            border-b
-                            py-3
-                        "
-
-                    >
-
-                        <div className="flex gap-2">
-
-                            <FileWarning size={18}/>
-
-                            {item.title}
-
-                        </div>
+                    {
+                        data?.recent.map(workorder=>(
 
 
-                        <p className="text-sm text-gray-500">
+                            <div
 
-                            {item.customer.name}
+                                key={workorder.id}
 
-                        </p>
+                                className="
+                                    border
+                                    rounded-xl
+                                    p-4
+                                "
 
+                            >
 
-                    </Link>
+                                <p className="font-bold">
 
+                                    {workorder.number}
 
-                ))}
-
-
-
-                {data?.missingWorkorders.length === 0 && (
-
-                    <p>
-
-                        Geen openstaande werkbonnen 🎉
-
-                    </p>
-
-                )}
+                                </p>
 
 
-            </section>
+                                <p>
+
+                                    {workorder.title}
+
+                                </p>
 
 
+                                <p className="text-sm text-gray-500">
+
+                                    {
+                                        workorder.project.customer.name
+                                    }
+
+                                    {" - "}
+
+                                    {
+                                        workorder.status
+                                    }
+
+                                </p>
 
 
+                            </div>
 
 
-
-            <section className="
-                flex
-                gap-3
-                flex-wrap
-            ">
+                        ))
+                    }
 
 
-                <Link
-
-                    href="/assignments"
-
-                    className="
-                        bg-black
-                        text-white
-                        px-4
-                        py-3
-                        rounded-xl
-                        flex
-                        gap-2
-                    "
-
-                >
-
-                    <Plus size={18}/>
-
-                    Nieuwe opdracht
-
-                </Link>
+                </div>
 
 
 
-
-                <Link
-
-                    href="/workorders/new"
-
-                    className="
-                        border
-                        px-4
-                        py-3
-                        rounded-xl
-                    "
-
-                >
-
-                    Nieuwe werkbon
-
-                </Link>
 
 
             </section>
+
+
 
 
 

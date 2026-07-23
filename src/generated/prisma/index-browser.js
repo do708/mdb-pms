@@ -213,8 +213,7 @@ exports.Prisma.WorkorderPhotoScalarFieldEnum = {
 exports.Prisma.WorkorderSignatureScalarFieldEnum = {
   id: 'id',
   workorderId: 'workorderId',
-  customerName: 'customerName',
-  signatureUrl: 'signatureUrl',
+  url: 'url',
   createdAt: 'createdAt'
 };
 

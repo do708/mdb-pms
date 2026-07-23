@@ -200,9 +200,7 @@ model WorkorderSignature {
 
   workorder Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
 
-  customerName String?
-
-  signatureUrl String?
+  url String
 
   createdAt DateTime @default(now())
 }

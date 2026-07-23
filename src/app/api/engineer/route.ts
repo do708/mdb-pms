@@ -22,26 +22,24 @@ export async function GET(){
 
 
 
-        const tomorrow = new Date(today);
 
 
-        tomorrow.setDate(
-            tomorrow.getDate() + 1
-        );
+        const workorders =
 
-
-
-
-
-        const assignments =
-
-            await prisma.assignment.findMany({
+            await prisma.workorder.findMany({
 
                 where:{
 
                     plannedDate:{
 
                         gte: today
+
+                    },
+
+
+                    status:{
+
+                        not:"afgerond"
 
                     }
 
@@ -51,29 +49,19 @@ export async function GET(){
                 include:{
 
 
-                    customer:true,
-
-
-                    users:{
+                    project:{
 
                         include:{
 
-                            user:true
+                            customer:true
 
                         }
 
                     },
 
 
-                    workorders:{
+                    assignedUser:true
 
-                        include:{
-
-                            documents:true
-
-                        }
-
-                    }
 
                 },
 
@@ -94,7 +82,7 @@ export async function GET(){
 
         return NextResponse.json(
 
-            assignments
+            workorders
 
         );
 
@@ -103,7 +91,6 @@ export async function GET(){
 
 
     } catch(error){
-
 
 
         console.error(
@@ -121,7 +108,7 @@ export async function GET(){
             {
 
                 error:
-                "Engineer opdrachten ophalen mislukt"
+                "Engineer werkbonnen ophalen mislukt"
 
             },
 

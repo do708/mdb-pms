@@ -2,79 +2,71 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
+import { createClient } from "@supabase/supabase-js";
+
+
+
+
+
+const supabase = createClient(
+
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+);
+
+
+
+
+
+
 
 
 export async function POST(
 
     request: NextRequest,
 
-    context: {
-        params: Promise<{
+    context:{
+
+        params:Promise<{
+
             id:string;
+
         }>
+
     }
 
-) {
+){
 
 
     try {
 
 
-        const { id } = await context.params;
-
-
-        const body = await request.json();
-
-
-
-        const {
-
-            signatureUrl,
-
-            customerName
-
-        } = body;
+        const { id } =
+            await context.params;
 
 
 
 
 
-        if(!signatureUrl){
+        const body =
+            await request.json();
 
 
-            return NextResponse.json(
 
-                {
 
-                    success:false,
 
-                    error:"Handtekening ontbreekt"
+        const workorder =
+            await prisma.workorder.findUnique({
 
-                },
+                where:{
 
-                {
-
-                    status:400
+                    id
 
                 }
 
-            );
-
-
-        }
-
-
-
-
-
-
-        const workorder = await prisma.workorder.findUnique({
-
-            where:{
-                id
-            }
-
-        });
+            });
 
 
 
@@ -87,9 +79,8 @@ export async function POST(
 
                 {
 
-                    success:false,
-
-                    error:"Werkbon niet gevonden"
+                    error:
+                    "Werkbon niet gevonden"
 
                 },
 
@@ -109,36 +100,178 @@ export async function POST(
 
 
 
-        const signature = await prisma.workorderSignature.upsert({
 
-            where:{
-
-                workorderId:id
-
-            },
+        const image =
+            body.image;
 
 
-            update:{
-
-                signatureUrl,
-
-                customerName
-
-            },
 
 
-            create:{
 
-                workorderId:id,
-
-                signatureUrl,
-
-                customerName
-
-            }
+        if(!image){
 
 
-        });
+            return NextResponse.json(
+
+                {
+
+                    error:
+                    "Geen handtekening ontvangen"
+
+                },
+
+                {
+
+                    status:400
+
+                }
+
+            );
+
+
+        }
+
+
+
+
+
+
+
+
+        const base64Data =
+            image.replace(
+
+                /^data:image\/png;base64,/,
+
+                ""
+
+            );
+
+
+
+
+
+        const buffer =
+            Buffer.from(
+
+                base64Data,
+
+                "base64"
+
+            );
+
+
+
+
+
+
+
+        const filename =
+
+            `${id}/signature-${Date.now()}.png`;
+
+
+
+
+
+
+
+
+        const upload =
+            await supabase.storage
+
+            .from("workorder-files")
+
+            .upload(
+
+                filename,
+
+                buffer,
+
+                {
+
+                    contentType:
+                    "image/png",
+
+                    upsert:true
+
+                }
+
+            );
+
+
+
+
+
+
+
+
+        if(upload.error){
+
+
+            throw upload.error;
+
+
+        }
+
+
+
+
+
+
+
+        const url =
+
+            supabase.storage
+
+            .from("workorder-files")
+
+            .getPublicUrl(
+
+                filename
+
+            )
+
+            .data
+
+            .publicUrl;
+
+
+
+
+
+
+
+
+
+        const signature =
+
+            await prisma.workorderSignature.upsert({
+
+                where:{
+
+                    workorderId:id
+
+                },
+
+
+                update:{
+
+                    url
+
+                },
+
+
+                create:{
+
+                    workorderId:id,
+
+                    url
+
+                }
+
+            });
+
 
 
 
@@ -159,14 +292,12 @@ export async function POST(
 
 
 
-
     } catch(error){
-
 
 
         console.error(
 
-            "SIGNATURE ERROR:",
+            "SIGNATURE ERROR",
 
             error
 
@@ -178,9 +309,8 @@ export async function POST(
 
             {
 
-                success:false,
-
-                error:"Handtekening opslaan mislukt"
+                error:
+                "Handtekening opslaan mislukt"
 
             },
 

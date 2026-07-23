@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import Link from "next/link";
-
+import { canAccessEngineer } from "@/lib/auth/checkRole";
 
 
 interface Assignment {
@@ -112,7 +111,23 @@ export default function EngineerPage(){
 
     }
 
+const userRole = "engineer";
 
+
+if(!canAccessEngineer(userRole)){
+
+
+    return (
+
+        <main className="p-6">
+
+            Geen toegang
+
+        </main>
+
+    );
+
+}
 
 
 

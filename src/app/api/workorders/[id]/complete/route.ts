@@ -4,11 +4,13 @@ import { prisma } from "@/lib/prisma";
 
 import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
 
+import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 
 
 
 
-export async function GET(
+
+export async function POST(
 
     request: NextRequest,
 
@@ -26,6 +28,7 @@ export async function GET(
 
         const { id } =
             await context.params;
+
 
 
 
@@ -60,13 +63,14 @@ export async function GET(
                     hours:true,
 
 
-                    materials:true,
+                    materials:true
 
 
                 }
 
 
             });
+
 
 
 
@@ -95,6 +99,33 @@ export async function GET(
 
 
         }
+
+
+
+
+
+
+
+
+        const updated =
+
+            await prisma.workorder.update({
+
+                where:{
+
+                    id
+
+                },
+
+
+                data:{
+
+                    status:
+                    "afgerond"
+
+                }
+
+            });
 
 
 
@@ -167,30 +198,46 @@ export async function GET(
 
 
 
-const pdfBuffer =
-    Buffer.from(pdf);
+
+
+        await sendWorkorderMail({
+
+            workorderNumber:
+                workorder.number,
+
+
+            customer:
+                workorder.project.customer.name,
+
+
+            project:
+                workorder.project.name,
+
+
+            pdfBuffer:
+                Buffer.from(pdf)
+
+        });
 
 
 
-return new NextResponse(
 
-    pdfBuffer,
 
-    {
 
-        headers:{
 
-            "Content-Type":
-            "application/pdf",
 
-            "Content-Disposition":
-            `attachment; filename=${workorder.number}.pdf`
 
-        }
+        return NextResponse.json({
 
-    }
+            success:true,
 
-);
+            message:
+            "Werkbon afgerond en verzonden",
+
+
+            workorder:updated
+
+        });
 
 
 
@@ -203,7 +250,7 @@ return new NextResponse(
 
         console.error(
 
-            "PDF GENERATE ERROR",
+            "COMPLETE WORKORDER ERROR",
 
             error
 
@@ -216,7 +263,7 @@ return new NextResponse(
             {
 
                 error:
-                "PDF maken mislukt"
+                "Werkbon afronden mislukt"
 
             },
 

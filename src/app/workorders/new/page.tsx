@@ -1,10 +1,251 @@
-export default function NewWorkorderPage() {
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+
+
+interface Project {
+
+    id:string;
+
+    name:string;
+
+    customer:{
+
+        name:string;
+
+    };
+
+}
+
+
+
+interface User {
+
+    id:string;
+
+    name:string;
+
+}
+
+
+
+
+
+export default function NewWorkorderPage(){
+
+
+    const router = useRouter();
+
+
+
+    const [projects,setProjects] =
+        useState<Project[]>([]);
+
+
+
+    const [users,setUsers] =
+        useState<User[]>([]);
+
+
+
+
+    const [title,setTitle] =
+        useState("");
+
+
+
+    const [description,setDescription] =
+        useState("");
+
+
+
+    const [projectId,setProjectId] =
+        useState("");
+
+
+
+    const [assignedUserId,setAssignedUserId] =
+        useState("");
+
+
+
+    const [plannedDate,setPlannedDate] =
+        useState("");
+
+
+
+    const [saving,setSaving] =
+        useState(false);
+
+
+
+
+
+
+
+    useEffect(()=>{
+
+
+        async function load(){
+
+
+            const projectsResponse =
+                await fetch("/api/projects");
+
+
+            const projectsData =
+                await projectsResponse.json();
+
+
+
+            setProjects(
+                projectsData
+            );
+
+
+
+
+            const usersResponse =
+                await fetch("/api/users");
+
+
+            const usersData =
+                await usersResponse.json();
+
+
+
+            setUsers(
+                usersData
+            );
+
+
+        }
+
+
+
+        load();
+
+
+    },[]);
+
+
+
+
+
+
+
+   async function createWorkorder(){
+
+    setSaving(true);
+
+    console.log({
+        title,
+        projectId,
+        assignedUserId,
+        plannedDate
+    });
+
+    try {
+
+
+            const response =
+                await fetch(
+
+                    "/api/workorders",
+
+                    {
+
+                        method:"POST",
+
+                        headers:{
+
+                            "Content-Type":
+                            "application/json"
+
+                        },
+
+
+                        body:JSON.stringify({
+
+                            title,
+
+                            description,
+
+                            projectId,
+
+                            assignedUserId,
+
+                            plannedDate
+
+                        })
+
+                    }
+
+                );
+
+
+
+
+
+            if(response.ok){
+
+
+                router.push(
+                    "/workorders"
+                );
+
+
+            } else {
+
+
+                alert(
+                    "Werkbon aanmaken mislukt"
+                );
+
+
+            }
+
+
+
+
+
+        }catch(error){
+
+
+            console.error(error);
+
+
+            alert(
+                "Fout bij aanmaken"
+            );
+
+
+        } finally {
+
+
+            setSaving(false);
+
+
+        }
+
+
+    }
+
+
+
+
+
+
 
     return (
 
-        <div className="
+        <main className="
             p-6
+            space-y-6
         ">
+
 
             <h1 className="
                 text-2xl
@@ -16,17 +257,243 @@ export default function NewWorkorderPage() {
             </h1>
 
 
-            <p className="
-                mt-2
-                text-gray-500
+
+
+
+            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-6
+                space-y-4
             ">
 
-                Nieuwe werkbon aanmaken
 
-            </p>
+                <input
+
+                    value={title}
+
+                    onChange={(e)=>
+                        setTitle(
+                            e.target.value
+                        )
+                    }
+
+                    placeholder="Titel opdracht"
+
+                    className="
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
+                    "
+
+                />
 
 
-        </div>
+
+
+
+                <textarea
+
+                    value={description}
+
+                    onChange={(e)=>
+                        setDescription(
+                            e.target.value
+                        )
+                    }
+
+                    placeholder="Omschrijving werkzaamheden"
+
+                    className="
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
+                        min-h-32
+                    "
+
+                />
+
+
+
+
+
+                <select
+
+                    value={projectId}
+
+                    onChange={(e)=>
+                        setProjectId(
+                            e.target.value
+                        )
+                    }
+
+                    className="
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
+                    "
+
+                >
+
+                    <option value="">
+                        Kies project
+                    </option>
+
+
+                    {projects.map(project=>(
+
+                        <option
+                            key={project.id}
+                            value={project.id}
+                        >
+
+                            {project.name}
+                            {" - "}
+                            {project.customer.name}
+
+                        </option>
+
+                    ))}
+
+
+                </select>                <select
+
+                    value={assignedUserId}
+
+                    onChange={(e)=>
+                        setAssignedUserId(
+                            e.target.value
+                        )
+                    }
+
+                    className="
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
+                    "
+
+                >
+
+                    <option value="">
+
+                        Kies monteur
+
+                    </option>
+
+
+
+                    {users.map(user=>(
+
+                        <option
+
+                            key={user.id}
+
+                            value={user.id}
+
+                        >
+
+                            {user.name}
+
+                        </option>
+
+                    ))}
+
+
+                </select>
+
+
+
+
+
+
+
+
+                <div>
+
+                    <label className="
+                        text-sm
+                        text-gray-500
+                    ">
+
+                        Geplande datum
+
+                    </label>
+
+
+
+                    <input
+
+                        type="date"
+
+                        value={plannedDate}
+
+                        onChange={(e)=>
+                            setPlannedDate(
+                                e.target.value
+                            )
+                        }
+
+
+                        className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-3
+                            mt-1
+                        "
+
+                    />
+
+                </div>
+
+
+
+
+
+
+
+
+                <button
+
+                    type="button"
+
+                    onClick={createWorkorder}
+
+                    disabled={saving}
+
+                    className="
+                        w-full
+                        bg-[#d6007e]
+                        text-white
+                        rounded-xl
+                        py-4
+                        font-bold
+                    "
+
+                >
+
+                    {
+                        saving
+                        ?
+                        "Aanmaken..."
+                        :
+                        "➕ Werkbon aanmaken"
+                    }
+
+
+                </button>
+
+
+
+            </section>
+
+
+        </main>
 
     );
 

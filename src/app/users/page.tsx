@@ -1,44 +1,332 @@
-export default function UsersPage() {
+"use client";
 
-  return (
-
-    <main>
-
-      <h1>
-        Gebruikers
-      </h1>
+import { useEffect, useState } from "react";
+import { canAccessAdmin } from "@/lib/auth/checkRole";
 
 
-      <p>
-        MDB PMS
-      </p>
+
+interface User {
 
 
-      <section>
+    id:string;
 
-        <h2>
-          Gebruikersbeheer
-        </h2>
+    name:string | null;
 
+    email:string;
 
-        <div>
-          Admin gebruikers
-        </div>
+    role:string;
 
-        <div>
-          Monteurs
-        </div>
-
-        <div>
-          Projectleiders
-        </div>
+    active:boolean;
 
 
-      </section>
+}
 
 
-    </main>
 
-  );
+
+
+
+
+export default function UsersPage(){
+
+
+    const [users,setUsers] =
+        useState<User[]>([]);
+
+
+
+    const [loading,setLoading] =
+        useState(true);
+
+
+
+
+
+
+
+
+    useEffect(()=>{
+
+
+        async function load(){
+
+
+            const response =
+                await fetch(
+
+                    "/api/users"
+
+                );
+
+
+
+            const data =
+                await response.json();
+
+
+
+            setUsers(data);
+
+
+            setLoading(false);
+
+
+        }
+
+
+        load();
+
+
+    },[]);
+
+
+
+
+
+
+
+
+
+    if(loading){
+
+
+        return (
+
+            <main className="p-6">
+
+                Gebruikers laden...
+
+            </main>
+
+        );
+
+    }
+
+const userRole = "admin";
+
+
+if(!canAccessAdmin(userRole)){
+
+
+    return (
+
+        <main className="p-6">
+
+            Geen toegang
+
+        </main>
+
+    );
+
+}
+
+
+
+
+
+    return (
+
+        <main className="
+            p-6
+            space-y-6
+            bg-gray-50
+            min-h-screen
+        ">
+
+
+            <header>
+
+
+                <h1 className="
+                    text-3xl
+                    font-bold
+                ">
+
+                    👥 Gebruikersbeheer
+
+                </h1>
+
+
+                <p className="text-gray-500">
+
+                    Beheer medewerkers en rollen
+
+                </p>
+
+
+            </header>
+
+
+
+
+
+
+
+
+
+            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-5
+            ">
+
+
+                <h2 className="
+                    font-bold
+                    mb-4
+                ">
+
+                    Rollen
+
+                </h2>
+
+
+
+                <div className="
+                    space-y-2
+                ">
+
+
+                    <p>
+
+                        👑 Admin - volledige toegang
+
+                    </p>
+
+
+                    <p>
+
+                        🏢 Kantoor - projecten en werkbonnen
+
+                    </p>
+
+
+                    <p>
+
+                        👷 Monteur - eigen opdrachten
+
+                    </p>
+
+
+                </div>
+
+
+            </section>
+
+
+
+
+
+
+
+
+
+            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-5
+            ">
+
+
+                <h2 className="
+                    font-bold
+                    mb-4
+                ">
+
+                    Gebruikers
+
+                </h2>
+
+
+
+
+
+
+
+                <div className="
+                    space-y-3
+                ">
+
+
+                    {
+                        users.map(user=>(
+
+
+                            <div
+
+                                key={user.id}
+
+                                className="
+                                    border
+                                    rounded-xl
+                                    p-4
+                                "
+
+                            >
+
+
+                                <p className="font-bold">
+
+                                    {user.name || "Geen naam"}
+
+                                </p>
+
+
+                                <p>
+
+                                    {user.email}
+
+                                </p>
+
+
+                                <p className="mt-2">
+
+                                    Rol:
+                                    {" "}
+                                    {user.role}
+
+                                </p>
+
+
+                                <p>
+
+                                    Status:
+                                    {" "}
+                                    {
+                                        user.active
+                                        ?
+                                        "Actief"
+                                        :
+                                        "Uitgeschakeld"
+                                    }
+
+                                </p>
+
+
+
+                            </div>
+
+
+                        ))
+                    }
+
+
+                </div>
+
+
+
+
+            </section>
+
+
+
+
+
+        </main>
+
+    );
+
 
 }

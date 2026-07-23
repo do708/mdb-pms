@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { useParams } from "next/navigation";
+import HoursForm from "@/components/workorders/HoursForm";
+import PhotosForm from "@/components/workorders/PhotosForm";
+import SignatureForm from "@/components/workorders/SignatureForm";
+import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 
 interface Workorder {
+
 
     id:string;
 
@@ -31,29 +36,24 @@ interface Workorder {
     };
 
 
-    assignment?:{
-
-        internalNotes:string | null;
-
-    };
-
 }
 
 
 
 
 
-export default function EngineerWorkorderPage({
 
-    params
 
-}:{
+export default function EngineerWorkorderPage(){
 
-    params:{
-        id:string;
-    }
 
-}){
+    const params = useParams();
+
+
+    const id =
+        params.id as string;
+
+
 
 
     const [workorder,setWorkorder] =
@@ -61,17 +61,7 @@ export default function EngineerWorkorderPage({
 
 
 
-    const [loading,setLoading] =
-        useState(true);
-
-
-
     const [notes,setNotes] =
-        useState("");
-
-
-
-    const [hours,setHours] =
         useState("");
 
 
@@ -86,6 +76,13 @@ export default function EngineerWorkorderPage({
 
 
 
+    const [loading,setLoading] =
+        useState(true);
+
+
+
+
+
 
 
 
@@ -97,7 +94,7 @@ export default function EngineerWorkorderPage({
 
             const response =
                 await fetch(
-                    `/api/workorders/${params.id}`
+                    `/api/workorders/${id}`
                 );
 
 
@@ -108,17 +105,14 @@ export default function EngineerWorkorderPage({
 
             setWorkorder(data);
 
-
-
             setNotes(
                 data.description || ""
             );
 
 
             setStatus(
-                data.status || "open"
+                data.status
             );
-
 
 
             setLoading(false);
@@ -127,12 +121,12 @@ export default function EngineerWorkorderPage({
         }
 
 
-
         load();
 
 
+    },[id]);
 
-    },[params.id]);
+
 
 
 
@@ -146,52 +140,62 @@ export default function EngineerWorkorderPage({
         setSaving(true);
 
 
-
         try {
 
 
-            await fetch(
+            const response =
+                await fetch(
 
-                `/api/workorders/${params.id}/save`,
+                    `/api/workorders/${id}`,
 
-                {
+                    {
 
-                    method:"POST",
+                        method:"PUT",
 
-                    headers:{
+                        headers:{
 
-                        "Content-Type":"application/json"
+                            "Content-Type":
+                            "application/json"
 
-                    },
-
-                    body:JSON.stringify({
-
-                        description:notes,
-
-                        hours:Number(hours),
-
-                        status:status
-
-                    })
-
-                }
-
-            );
+                        },
 
 
+                        body:JSON.stringify({
 
-            alert(
-                "Werkbon opgeslagen"
-            );
+                            description:notes
+
+                        })
+
+                    }
+
+                );
+
+
+
+            if(response.ok){
+
+
+                alert(
+                    "Werkbon opgeslagen"
+                );
+
+
+            } else {
+
+
+                alert(
+                    "Opslaan mislukt"
+                );
+
+
+            }
 
 
 
         } catch(error){
 
 
-            console.error(
-                error
-            );
+            console.error(error);
 
 
             alert(
@@ -209,7 +213,18 @@ export default function EngineerWorkorderPage({
 
 
     }
+
+
+
+
+
+
+
+
+
+
     if(loading){
+
 
         return (
 
@@ -224,9 +239,148 @@ export default function EngineerWorkorderPage({
     }
 
 
+async function completeWorkorder(){
+
+
+    const confirmComplete =
+        confirm(
+            "Werkbon afronden?"
+        );
+
+
+    if(!confirmComplete){
+
+        return;
+
+    }
+
+
+
+    try {
+
+
+        const completeResponse =
+            await fetch(
+
+                `/api/workorders/${id}/complete`,
+
+                {
+
+                    method:"POST"
+
+                }
+
+            );
+
+
+
+
+
+        if(!completeResponse.ok){
+
+
+            alert(
+                "Werkbon afronden mislukt"
+            );
+
+
+            return;
+
+        }
+
+
+
+
+
+
+
+        const pdfResponse =
+            await fetch(
+
+                `/api/workorders/${id}/generate-pdf`,
+
+                {
+
+                    method:"POST"
+
+                }
+
+            );
+
+
+
+
+
+
+        if(!pdfResponse.ok){
+
+
+            alert(
+                "PDF genereren mislukt"
+            );
+
+
+            return;
+
+        }
+
+
+
+
+
+
+
+
+        const pdfData =
+            await pdfResponse.json();
+
+
+
+
+
+
+        alert(
+
+            "Werkbon afgerond en PDF opgeslagen"
+
+        );
+
+
+
+        setStatus(
+
+            "afgerond"
+
+        );
+
+
+
+
+
+    } catch(error){
+
+
+        console.error(error);
+
+
+
+        alert(
+
+            "Fout bij afronden werkbon"
+
+        );
+
+
+    }
+
+
+}
+
+
 
 
     if(!workorder){
+
 
         return (
 
@@ -244,6 +398,10 @@ export default function EngineerWorkorderPage({
 
 
 
+
+
+
+
     return (
 
         <main className="
@@ -256,21 +414,23 @@ export default function EngineerWorkorderPage({
 
             <header>
 
+
                 <h1 className="
                     text-2xl
                     font-bold
                 ">
 
-                    📝 Werkbon
+                    📝 {workorder.number}
 
                 </h1>
 
 
                 <p className="text-gray-500">
 
-                    {workorder.number}
+                    {workorder.title}
 
                 </p>
+
 
             </header>
 
@@ -280,54 +440,35 @@ export default function EngineerWorkorderPage({
 
 
 
+
+
             <section className="
                 bg-white
-                border
                 rounded-2xl
+                border
                 p-5
                 space-y-3
             ">
 
 
-                <h2 className="
-                    text-xl
-                    font-bold
-                ">
-
-                    {workorder.title}
-
-                </h2>
-
-
-
                 <p>
-
                     🏢 {workorder.project.customer.name}
-
                 </p>
 
 
-
                 <p>
+                    📍 {
 
-                    📍
-
-                    {" "}
-
-                    {
                         workorder.project.customer.address
                         ||
                         "Geen adres"
-                    }
 
+                    }
                 </p>
 
 
-
                 <p>
-
                     📁 {workorder.project.name}
-
                 </p>
 
 
@@ -340,16 +481,19 @@ export default function EngineerWorkorderPage({
 
 
 
+
             <section className="
                 bg-white
-                border
                 rounded-2xl
+                border
                 p-5
-                space-y-3
             ">
 
 
-                <h2 className="font-bold">
+                <h2 className="
+                    font-bold
+                    mb-3
+                ">
 
                     Werkzaamheden
 
@@ -368,25 +512,43 @@ export default function EngineerWorkorderPage({
                     }
 
 
+                    className="
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
+                        min-h-40
+                    "
+
                     placeholder="
-                    Beschrijf uitgevoerde werkzaamheden...
-                    "
-
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                        min-h-32
+                    Beschrijf uitgevoerde werkzaamheden
                     "
 
                 />
 
 
-            </section>
+           </section>
 
 
+<HoursForm
+
+    workorderId={id}
+
+/>
+
+
+<PhotosForm
+
+    workorderId={id}
+
+/>
+
+
+<SignatureForm
+
+    workorderId={id}
+
+/>
 
 
 
@@ -395,219 +557,13 @@ export default function EngineerWorkorderPage({
 
             <section className="
                 bg-white
-                border
                 rounded-2xl
+                border
                 p-5
-                space-y-3
             ">
 
 
-                <h2 className="font-bold">
-
-                    ⏱️ Urenregistratie
-
-                </h2>
-
-
-
-                <input
-
-                    type="number"
-
-                    value={hours}
-
-                    onChange={(e)=>
-                        setHours(
-                            e.target.value
-                        )
-                    }
-
-
-                    placeholder="Aantal uren"
-
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                    "
-
-                />
-
-
-            </section>
-
-
-
-
-
-
-
-
-            {
-                workorder.assignment?.internalNotes && (
-
-                    <section className="
-                        bg-yellow-100
-                        border
-                        border-yellow-300
-                        rounded-2xl
-                        p-5
-                    ">
-
-
-                        <h2 className="font-bold">
-
-                            📌 Interne notitie
-
-                        </h2>
-
-
-
-                        <p>
-
-                            {
-                                workorder.assignment.internalNotes
-                            }
-
-                        </p>
-
-
-                    </section>
-
-                )
-            }
-
-
-
-
-
-
-
-
-            <button
-
-                onClick={saveWorkorder}
-
-                disabled={saving}
-
-                className="
-                    w-full
-                    bg-black
-                    text-white
-                    rounded-xl
-                    py-4
-                    font-bold
-                "
-
-            >
-
-                {
-                    saving
-                    ?
-                    "Opslaan..."
-                    :
-                    "💾 Werkbon opslaan"
-                }
-
-
-            </button>            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-                space-y-3
-            ">
-
-
-                <h2 className="font-bold">
-
-                    📷 Foto's
-
-                </h2>
-
-
-
-                <button
-
-                    className="
-                        border
-                        rounded-xl
-                        px-4
-                        py-3
-                    "
-
-                >
-
-                    Foto toevoegen
-
-                </button>
-
-
-            </section>
-
-
-
-
-
-
-
-
-            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-                space-y-3
-            ">
-
-
-                <h2 className="font-bold">
-
-                    ✍️ Handtekening klant
-
-                </h2>
-
-
-
-                <div className="
-                    h-40
-                    border
-                    rounded-xl
-                    flex
-                    items-center
-                    justify-center
-                    text-gray-400
-                ">
-
-
-                    Handtekening veld
-
-
-                </div>
-
-
-            </section>
-
-
-
-
-
-
-
-
-
-            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-                space-y-3
-            ">
-
-
-                <h2 className="font-bold">
+                <h2 className="font-bold mb-3">
 
                     Status
 
@@ -668,11 +624,17 @@ export default function EngineerWorkorderPage({
 
 
 
+
             <button
+
+                onClick={saveWorkorder}
+
+                disabled={saving}
+
 
                 className="
                     w-full
-                    bg-green-600
+                    bg-black
                     text-white
                     rounded-xl
                     py-4
@@ -681,18 +643,42 @@ export default function EngineerWorkorderPage({
 
             >
 
-                ✅ Werkbon afronden
+                {
+                    saving
+                    ?
+                    "Opslaan..."
+                    :
+                    "💾 Werkbon opslaan"
+                }
 
 
             </button>
 
+<button
+
+    onClick={completeWorkorder}
 
 
+    className="
+        w-full
+        bg-green-600
+        text-white
+        rounded-xl
+        py-4
+        font-bold
+    "
+
+>
+
+    ✅ Werkbon afronden
+
+</button>
 
 
 
         </main>
 
     );
+
 
 }
