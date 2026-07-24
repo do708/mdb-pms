@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { useSession } from "next-auth/react";
 
 
 interface Project {
@@ -12,24 +12,19 @@ interface Project {
     name:string;
 
     customer:{
-
         name:string;
-
     };
 
 }
-
 
 
 interface User {
 
     id:string;
 
-    name:string;
+    name:string | null;
 
 }
-
-
 
 
 
@@ -37,6 +32,20 @@ export default function NewWorkorderPage(){
 
 
     const router = useRouter();
+
+    const { data:session } =
+        useSession();
+
+
+
+    const role =
+        session?.user?.role;
+
+
+
+    const isEngineer =
+        role === "engineer";
+
 
 
 
@@ -99,7 +108,6 @@ export default function NewWorkorderPage(){
                 await projectsResponse.json();
 
 
-
             setProjects(
                 projectsData
             );
@@ -107,50 +115,75 @@ export default function NewWorkorderPage(){
 
 
 
-            const usersResponse =
-                await fetch("/api/users");
+
+            if(!isEngineer){
 
 
-            const usersData =
-                await usersResponse.json();
+                const usersResponse =
+                    await fetch("/api/users");
 
 
+                const usersData =
+                    await usersResponse.json();
 
-            setUsers(
-                usersData
-            );
+
+                setUsers(
+                    usersData
+                );
+
+
+            }
+
 
 
         }
 
 
 
-        load();
+        if(role){
 
+            load();
 
-    },[]);
-
-
-
-
+        }
 
 
 
-   async function createWorkorder(){
+    },[role,isEngineer]);
 
-    setSaving(true);
 
-    console.log({
-        title,
-        projectId,
-        assignedUserId,
-        plannedDate
-    });
 
-    try {
+
+
+
+
+    async function createWorkorder(){
+
+
+        setSaving(true);
+
+
+
+        const finalAssignedUserId =
+
+            isEngineer
+
+            ?
+
+            session?.user?.id
+
+            :
+
+            assignedUserId;
+
+
+
+
+
+        try {
 
 
             const response =
+
                 await fetch(
 
                     "/api/workorders",
@@ -175,7 +208,8 @@ export default function NewWorkorderPage(){
 
                             projectId,
 
-                            assignedUserId,
+                            assignedUserId:
+                                finalAssignedUserId,
 
                             plannedDate
 
@@ -209,9 +243,7 @@ export default function NewWorkorderPage(){
 
 
 
-
-
-        }catch(error){
+        } catch(error){
 
 
             console.error(error);
@@ -220,6 +252,7 @@ export default function NewWorkorderPage(){
             alert(
                 "Fout bij aanmaken"
             );
+
 
 
         } finally {
@@ -274,9 +307,7 @@ export default function NewWorkorderPage(){
                     value={title}
 
                     onChange={(e)=>
-                        setTitle(
-                            e.target.value
-                        )
+                        setTitle(e.target.value)
                     }
 
                     placeholder="Titel opdracht"
@@ -299,9 +330,7 @@ export default function NewWorkorderPage(){
                     value={description}
 
                     onChange={(e)=>
-                        setDescription(
-                            e.target.value
-                        )
+                        setDescription(e.target.value)
                     }
 
                     placeholder="Omschrijving werkzaamheden"
@@ -311,10 +340,11 @@ export default function NewWorkorderPage(){
                         border
                         rounded-xl
                         p-3
-                        min-h-32
                     "
 
                 />
+
+
 
 
 
@@ -325,9 +355,7 @@ export default function NewWorkorderPage(){
                     value={projectId}
 
                     onChange={(e)=>
-                        setProjectId(
-                            e.target.value
-                        )
+                        setProjectId(e.target.value)
                     }
 
                     className="
@@ -340,68 +368,34 @@ export default function NewWorkorderPage(){
                 >
 
                     <option value="">
+
                         Kies project
+
                     </option>
 
 
-                    {projects.map(project=>(
-
-                        <option
-                            key={project.id}
-                            value={project.id}
-                        >
-
-                            {project.name}
-                            {" - "}
-                            {project.customer.name}
-
-                        </option>
-
-                    ))}
+                    {
+                        projects.map(project=>(
 
 
-                </select>                <select
+                            <option
 
-                    value={assignedUserId}
+                                key={project.id}
 
-                    onChange={(e)=>
-                        setAssignedUserId(
-                            e.target.value
-                        )
+                                value={project.id}
+
+                            >
+
+                                {project.name}
+                                {" - "}
+                                {project.customer.name}
+
+
+                            </option>
+
+
+                        ))
                     }
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                    "
-
-                >
-
-                    <option value="">
-
-                        Kies monteur
-
-                    </option>
-
-
-
-                    {users.map(user=>(
-
-                        <option
-
-                            key={user.id}
-
-                            value={user.id}
-
-                        >
-
-                            {user.name}
-
-                        </option>
-
-                    ))}
 
 
                 </select>
@@ -413,7 +407,75 @@ export default function NewWorkorderPage(){
 
 
 
+                {
+
+                    !isEngineer && (
+
+
+                        <select
+
+                            value={assignedUserId}
+
+                            onChange={(e)=>
+                                setAssignedUserId(
+                                    e.target.value
+                                )
+                            }
+
+                            className="
+                                w-full
+                                border
+                                rounded-xl
+                                p-3
+                            "
+
+                        >
+
+
+                            <option value="">
+
+                                Kies monteur
+
+                            </option>
+
+
+
+                            {
+                                users.map(user=>(
+
+
+                                    <option
+
+                                        key={user.id}
+
+                                        value={user.id}
+
+                                    >
+
+                                        {user.name}
+
+                                    </option>
+
+
+                                ))
+                            }
+
+
+                        </select>
+
+
+                    )
+
+                }
+
+
+
+
+
+
+
                 <div>
+
 
                     <label className="
                         text-sm
@@ -438,16 +500,15 @@ export default function NewWorkorderPage(){
                             )
                         }
 
-
                         className="
                             w-full
                             border
                             rounded-xl
                             p-3
-                            mt-1
                         "
 
                     />
+
 
                 </div>
 
@@ -456,11 +517,7 @@ export default function NewWorkorderPage(){
 
 
 
-
-
                 <button
-
-                    type="button"
 
                     onClick={createWorkorder}
 
@@ -487,6 +544,7 @@ export default function NewWorkorderPage(){
 
 
                 </button>
+
 
 
 

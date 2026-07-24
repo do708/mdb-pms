@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 
 
 interface Workorder {
-
 
     id:string;
 
@@ -16,7 +15,6 @@ interface Workorder {
     title:string;
 
     status:string;
-
 
     project:{
 
@@ -47,6 +45,25 @@ interface Workorder {
 
 
 export default function WorkordersPage(){
+
+
+    const { data: session } =
+        useSession();
+
+
+
+    const role =
+        session?.user?.role || "";
+
+
+
+    const canCreateWorkorder =
+        role === "admin"
+        ||
+        role === "office";
+
+
+
 
 
     const [workorders,setWorkorders] =
@@ -143,25 +160,19 @@ export default function WorkordersPage(){
 
                 workorder.number
                 .toLowerCase()
-                .includes(
-                    search.toLowerCase()
-                )
+                .includes(search.toLowerCase())
 
                 ||
 
                 workorder.title
                 .toLowerCase()
-                .includes(
-                    search.toLowerCase()
-                )
+                .includes(search.toLowerCase())
 
                 ||
 
                 workorder.project.customer.name
                 .toLowerCase()
-                .includes(
-                    search.toLowerCase()
-                );
+                .includes(search.toLowerCase());
 
 
 
@@ -202,24 +213,65 @@ export default function WorkordersPage(){
 
 
 
-            <header>
+            <header className="
+                flex
+                justify-between
+                items-start
+            ">
 
 
-                <h1 className="
-                    text-3xl
-                    font-bold
-                ">
-
-                    📋 Werkbonnen
-
-                </h1>
+                <div>
 
 
-                <p className="text-gray-500">
+                    <h1 className="
+                        text-3xl
+                        font-bold
+                    ">
 
-                    Overzicht alle werkzaamheden
+                        📋 Werkbonnen
 
-                </p>
+                    </h1>
+
+
+                    <p className="text-gray-500">
+
+                        Overzicht alle werkzaamheden
+
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                {
+                    canCreateWorkorder && (
+
+                        <Link
+
+                            href="/workorders/new"
+
+                            className="
+                                bg-[#d6007e]
+                                text-white
+                                px-5
+                                py-3
+                                rounded-xl
+                                font-bold
+                            "
+
+                        >
+
+                            + Nieuwe werkbon
+
+                        </Link>
+
+                    )
+                }
+
+
 
 
             </header>
@@ -252,9 +304,7 @@ export default function WorkordersPage(){
                         )
                     }
 
-                    placeholder="
-                    Zoek werkbon, klant of project
-                    "
+                    placeholder="Zoek werkbon, klant of project"
 
                     className="
                         w-full
@@ -330,9 +380,7 @@ export default function WorkordersPage(){
 
 
 
-            <section className="
-                space-y-4
-            ">
+            <section className="space-y-4">
 
 
                 {

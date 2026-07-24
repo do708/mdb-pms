@@ -16,81 +16,175 @@ import {
     Settings,
     BarChart3,
     UserCog,
+    PlusCircle,
+    StickyNote,
 } from "lucide-react";
 
 
 
 type MenuItem = {
-    name: string;
-    href: string;
-    icon: React.ElementType;
-    adminOnly?: boolean;
+
+    name:string;
+
+    href:string;
+
+    icon:React.ElementType;
+
+    roles:string[];
+
 };
 
 
-const menu: MenuItem[] = [
+
+
+
+const menu:MenuItem[] = [
+
 
     {
-        name: "Dashboard",
-        href: "/dashboard",
-        icon: LayoutDashboard,
+        name:"Dashboard",
+        href:"/dashboard",
+        icon:LayoutDashboard,
+        roles:[
+            "admin",
+            "office"
+        ]
     },
 
-    {
-        name: "Werkbonnen",
-        href: "/workorders",
-        icon: ClipboardList,
-    },
 
     {
-        name: "Projecten",
-        href: "/projects",
-        icon: FolderKanban,
+        name:"Mijn dashboard",
+        href:"/engineer",
+        icon:LayoutDashboard,
+        roles:[
+            "engineer"
+        ]
     },
 
-    {
-        name: "Klanten",
-        href: "/customers",
-        icon: Users,
-    },
 
     {
-        name: "Planning",
-        href: "/planning",
-        icon: CalendarDays,
+        name:"Werkbonnen",
+        href:"/workorders",
+        icon:ClipboardList,
+        roles:[
+            "admin",
+            "office",
+            "engineer"
+        ]
     },
 
-    {
-        name: "Materialen",
-        href: "/materials",
-        icon: Package,
-    },
 
     {
-        name: "Documenten",
-        href: "/documents",
-        icon: FileText,
+        name:"Nieuwe werkbon",
+        href:"/workorders/new",
+        icon:PlusCircle,
+        roles:[
+            "admin",
+            "office",
+            "engineer"
+        ]
     },
 
-    {
-        name: "Rapportages",
-        href: "/reports",
-        icon: BarChart3,
-    },
 
     {
-        name: "Gebruikers",
-        href: "/users",
-        icon: UserCog,
-        adminOnly: true,
+        name:"Projecten",
+        href:"/projects",
+        icon:FolderKanban,
+        roles:[
+            "admin",
+            "office"
+        ]
     },
 
+
     {
-        name: "Instellingen",
-        href: "/settings",
-        icon: Settings,
-        adminOnly: true,
+        name:"Klanten",
+        href:"/customers",
+        icon:Users,
+        roles:[
+            "admin",
+            "office"
+        ]
     },
+
+
+    {
+        name:"Planning",
+        href:"/planning",
+        icon:CalendarDays,
+        roles:[
+            "admin",
+            "office",
+            "engineer"
+        ]
+    },
+
+
+    {
+        name:"Materialen",
+        href:"/materials",
+        icon:Package,
+        roles:[
+            "admin",
+            "office",
+            "engineer"
+        ]
+    },
+
+
+    {
+        name:"Documenten",
+        href:"/documents",
+        icon:FileText,
+        roles:[
+            "admin",
+            "office"
+        ]
+    },
+
+
+    {
+        name:"Rapportages",
+        href:"/reports",
+        icon:BarChart3,
+        roles:[
+            "admin",
+            "office"
+        ]
+    },
+
+
+    {
+        name:"Interne notities",
+        href:"/notes",
+        icon:StickyNote,
+        roles:[
+            "admin",
+            "office",
+            "engineer"
+        ]
+    },
+
+
+    {
+        name:"Gebruikers",
+        href:"/users",
+        icon:UserCog,
+        roles:[
+            "admin"
+        ]
+    },
+
+
+    {
+        name:"Instellingen",
+        href:"/settings",
+        icon:Settings,
+        roles:[
+            "admin"
+        ]
+    },
+
 
 ];
 
@@ -98,18 +192,32 @@ const menu: MenuItem[] = [
 
 
 
-export default function Sidebar() {
 
 
-    const pathname = usePathname();
+export default function Sidebar(){
 
-    const { data: session } = useSession();
 
-    const role = session?.user?.role;
+    const pathname =
+        usePathname();
 
-    const items = menu.filter(
-        (item) => !item.adminOnly || role === "admin"
-    );
+
+    const { data:session } =
+        useSession();
+
+
+
+    const role =
+        session?.user?.role || "";
+
+
+
+    const items =
+        menu.filter(
+
+            item =>
+                item.roles.includes(role)
+
+        );
 
 
 
@@ -127,9 +235,6 @@ export default function Sidebar() {
             flex-col
         ">
 
-
-
-            {/* Logo */}
 
             <div className="
                 px-2
@@ -166,10 +271,6 @@ export default function Sidebar() {
 
 
 
-
-
-            {/* Navigatie */}
-
             <nav className="
                 flex-1
                 px-4
@@ -178,81 +279,78 @@ export default function Sidebar() {
             ">
 
 
-                {items.map((item)=>{
+                {
+                    items.map((item)=>{
 
 
-                    const Icon = item.icon;
-
-
-                    const active =
-                        pathname === item.href;
-
+                        const Icon =
+                            item.icon;
 
 
 
-                    return (
-
-                        <Link
-
-                            key={item.href}
-
-                            href={item.href}
-
-                            className={
-
-                                active
-
-                                ?
-
-                                `
-                                flex
-                                items-center
-                                gap-3
-                                px-4
-                                py-3
-                                rounded-xl
-                                bg-[#fce7f3]
-                                text-[#d6007e]
-                                font-semibold
-                                transition
-                                `
-
-                                :
-
-                                `
-                                flex
-                                items-center
-                                gap-3
-                                px-4
-                                py-3
-                                rounded-xl
-                                text-gray-600
-                                hover:bg-gray-100
-                                hover:text-gray-900
-                                transition
-                                `
-
-                            }
-
-                        >
+                        const active =
+                            pathname === item.href;
 
 
-                            <Icon size={20}/>
+
+                        return (
+
+                            <Link
+
+                                key={item.href}
+
+                                href={item.href}
+
+                                className={
+
+                                    active
+
+                                    ?
+
+                                    `
+                                    flex
+                                    items-center
+                                    gap-3
+                                    px-4
+                                    py-3
+                                    rounded-xl
+                                    bg-[#fce7f3]
+                                    text-[#d6007e]
+                                    font-semibold
+                                    `
+
+                                    :
+
+                                    `
+                                    flex
+                                    items-center
+                                    gap-3
+                                    px-4
+                                    py-3
+                                    rounded-xl
+                                    text-gray-600
+                                    hover:bg-gray-100
+                                    `
+                                }
+
+                            >
+
+                                <Icon size={20}/>
+
+                                <span className="text-sm">
+
+                                    {item.name}
+
+                                </span>
 
 
-                            <span className="text-sm">
+                            </Link>
 
-                                {item.name}
-
-                            </span>
+                        );
 
 
-                        </Link>
-
-                    );
-
-
-                })}
+                    })
+                }
 
 
             </nav>
@@ -262,112 +360,94 @@ export default function Sidebar() {
 
 
 
-
-{/* Externe systemen */}
-
-<div className="
-    border-t
-    border-gray-100
-    px-4
-    py-5
-">
-
-
-    <p className="
-        text-xs
-        uppercase
-        text-gray-400
-        mb-3
-        px-4
-    ">
-
-        Externe systemen
-
-    </p>
-
-
-
-
-<button
-
-    type="button"
-
-    onClick={() => {
-
-        const bunniWindow = window.open(
-            "https://www.bunni.nl",
-            "Bunni",
-            "width=1400,height=900,left=100,top=100,resizable=yes,scrollbars=yes"
-        );
-
-
-        if (!bunniWindow) {
-
-            alert(
-                "Popup geblokkeerd. Sta pop-ups toe voor MDB PMS."
-            );
-
-        }
-
-    }}
-
-    className="
-        flex
-        items-center
-        gap-3
-        px-4
-        py-3
-        rounded-xl
-        text-gray-600
-        hover:bg-gray-100
-        hover:text-gray-900
-        transition
-        w-full
-        text-left
-    "
-
->
-
-        <span className="text-xl">
-
-            📒
-
-        </span>
-
-
-
-        <div>
-
-
             <div className="
-                text-sm
-                font-medium
+                border-t
+                border-gray-100
+                px-4
+                py-5
             ">
 
-                Bunni
+
+                <p className="
+                    text-xs
+                    uppercase
+                    text-gray-400
+                    mb-3
+                ">
+
+                    Externe systemen
+
+                </p>
+
+
+
+
+                <button
+
+                    type="button"
+
+                    onClick={()=>{
+
+
+                        window.open(
+
+                            "https://www.bunni.nl",
+
+                            "Bunni",
+
+                            "width=1400,height=900"
+
+                        );
+
+
+                    }}
+
+                    className="
+                        flex
+                        items-center
+                        gap-3
+                        px-4
+                        py-3
+                        rounded-xl
+                        text-gray-600
+                        hover:bg-gray-100
+                        w-full
+                        text-left
+                    "
+
+                >
+
+                    <span className="text-xl">
+
+                        📒
+
+                    </span>
+
+
+
+                    <div>
+
+                        <div className="text-sm font-medium">
+
+                            Bunni
+
+                        </div>
+
+
+                        <div className="text-xs text-gray-400">
+
+                            Boekhoudsysteem
+
+                        </div>
+
+
+                    </div>
+
+
+                </button>
+
 
             </div>
-
-
-
-            <div className="
-                text-xs
-                text-gray-400
-            ">
-
-                Boekhoudsysteem
-
-            </div>
-
-
-        </div>
-
-
-    </button>
-
-
-</div>
-
 
 
 
@@ -375,5 +455,6 @@ export default function Sidebar() {
         </aside>
 
     );
+
 
 }

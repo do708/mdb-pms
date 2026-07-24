@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+
 import { canAccessAdmin } from "@/lib/auth/checkRole";
 
 
@@ -31,7 +33,8 @@ interface User {
 export default function UsersPage(){
 
 
-    const { data: session, status } = useSession();
+    const { data: session, status } =
+        useSession();
 
 
 
@@ -49,7 +52,6 @@ export default function UsersPage(){
 
 
 
-
     useEffect(()=>{
 
 
@@ -57,17 +59,11 @@ export default function UsersPage(){
 
 
             const response =
-                await fetch(
-
-                    "/api/users"
-
-                );
-
+                await fetch("/api/users");
 
 
             const data =
                 await response.json();
-
 
 
             setUsers(data);
@@ -90,9 +86,17 @@ export default function UsersPage(){
 
 
 
+    const userRole =
+        session?.user?.role ?? "";
 
 
-    if(loading){
+
+
+
+
+
+
+    if(status === "loading" || loading){
 
 
         return (
@@ -107,23 +111,29 @@ export default function UsersPage(){
 
     }
 
-const userRole = session?.user?.role ?? "";
 
 
-if(status !== "loading" && !canAccessAdmin(userRole)){
 
 
-    return (
 
-        <main className="p-6">
 
-            Geen toegang
+    if(!canAccessAdmin(userRole)){
 
-        </main>
 
-    );
+        return (
 
-}
+            <main className="p-6">
+
+                Geen toegang
+
+            </main>
+
+        );
+
+    }
+
+
+
 
 
 
@@ -139,77 +149,28 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
         ">
 
 
-            <header>
-
-
-                <h1 className="
-                    text-3xl
-                    font-bold
-                ">
-
-                    👥 Gebruikersbeheer
-
-                </h1>
-
-
-                <p className="text-gray-500">
-
-                    Beheer medewerkers en rollen
-
-                </p>
-
-
-            </header>
-
-
-
-
-
-
-
-
-
-            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
+            <header className="
+                flex
+                justify-between
+                items-center
             ">
 
 
-                <h2 className="
-                    font-bold
-                    mb-4
-                ">
+                <div>
 
-                    Rollen
+                    <h1 className="
+                        text-3xl
+                        font-bold
+                    ">
 
-                </h2>
+                        👥 Gebruikersbeheer
 
-
-
-                <div className="
-                    space-y-2
-                ">
+                    </h1>
 
 
-                    <p>
+                    <p className="text-gray-500">
 
-                        👑 Admin - volledige toegang
-
-                    </p>
-
-
-                    <p>
-
-                        🏢 Kantoor - projecten en werkbonnen
-
-                    </p>
-
-
-                    <p>
-
-                        👷 Monteur - eigen opdrachten
+                        Beheer medewerkers en rollen
 
                     </p>
 
@@ -217,9 +178,31 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
                 </div>
 
 
-            </section>
 
 
+
+                <Link
+
+                    href="/users/new"
+
+                    className="
+                        bg-[#d6007e]
+                        text-white
+                        px-5
+                        py-3
+                        rounded-xl
+                        font-bold
+                    "
+
+                >
+
+                    + Nieuwe gebruiker
+
+                </Link>
+
+
+
+            </header>
 
 
 
@@ -248,11 +231,7 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
 
 
 
-
-
-                <div className="
-                    space-y-3
-                ">
+                <div className="space-y-3">
 
 
                     {
@@ -271,7 +250,6 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
 
                             >
 
-
                                 <p className="font-bold">
 
                                     {user.name || "Geen naam"}
@@ -286,7 +264,7 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
                                 </p>
 
 
-                                <p className="mt-2">
+                                <p>
 
                                     Rol:
                                     {" "}
@@ -299,6 +277,7 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
 
                                     Status:
                                     {" "}
+
                                     {
                                         user.active
                                         ?
@@ -308,7 +287,6 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
                                     }
 
                                 </p>
-
 
 
                             </div>
@@ -322,10 +300,7 @@ if(status !== "loading" && !canAccessAdmin(userRole)){
 
 
 
-
             </section>
-
-
 
 
 

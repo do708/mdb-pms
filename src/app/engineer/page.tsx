@@ -1,46 +1,52 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { canAccessEngineer } from "@/lib/auth/checkRole";
 
 
-interface Assignment {
+
+interface EngineerWorkorder {
+
 
     id:string;
 
-    title:string;
+    number:string;
 
-    type:string;
+    title:string;
 
     status:string;
 
     plannedDate:string | null;
 
 
-    customer:{
+    project?:{
 
         name:string;
 
-        address:string | null;
+        customer?:{
 
-        color:string;
+            name:string;
 
-    };
+            color?:string | null;
+
+        } | null;
 
 
-    users:{
+    } | null;
 
-        user:{
 
-            name:string | null;
 
-        }
+    assignedUser?:{
 
-    }[];
+        name:string | null;
+
+    } | null;
+
 
 }
+
+
 
 
 
@@ -49,12 +55,9 @@ interface Assignment {
 export default function EngineerPage(){
 
 
-    const { data: session, status } = useSession();
 
-
-
-    const [items,setItems] =
-        useState<Assignment[]>([]);
+    const [workorders,setWorkorders] =
+        useState<EngineerWorkorder[]>([]);
 
 
 
@@ -74,14 +77,26 @@ export default function EngineerPage(){
 
 
             const response =
-                await fetch("/api/engineer");
+                await fetch(
+
+                    "/api/engineer"
+
+                );
+
 
 
             const data =
                 await response.json();
 
 
-            setItems(data);
+
+            if(Array.isArray(data)){
+
+
+                setWorkorders(data);
+
+
+            }
 
 
             setLoading(false);
@@ -90,10 +105,12 @@ export default function EngineerPage(){
         }
 
 
+
         load();
 
 
     },[]);
+
 
 
 
@@ -108,7 +125,7 @@ export default function EngineerPage(){
 
             <main className="p-6">
 
-                Laden...
+                Werkbonnen laden...
 
             </main>
 
@@ -116,23 +133,8 @@ export default function EngineerPage(){
 
     }
 
-const userRole = session?.user?.role ?? "";
 
 
-if(status !== "loading" && !canAccessEngineer(userRole)){
-
-
-    return (
-
-        <main className="p-6">
-
-            Geen toegang
-
-        </main>
-
-    );
-
-}
 
 
 
@@ -141,9 +143,12 @@ if(status !== "loading" && !canAccessEngineer(userRole)){
     return (
 
         <main className="
-            p-4
-            space-y-5
+            p-6
+            space-y-6
+            bg-gray-50
+            min-h-screen
         ">
+
 
 
             <header>
@@ -154,14 +159,14 @@ if(status !== "loading" && !canAccessEngineer(userRole)){
                     font-bold
                 ">
 
-                    👷 Monteur planning
+                    👷 Monteur omgeving
 
                 </h1>
 
 
                 <p className="text-gray-500">
 
-                    Vandaag en komende werkzaamheden
+                    Mijn geplande werkzaamheden
 
                 </p>
 
@@ -174,113 +179,29 @@ if(status !== "loading" && !canAccessEngineer(userRole)){
 
 
 
-            {
-                items.length === 0 && (
-
-                    <div className="
-                        border
-                        rounded-2xl
-                        p-5
-                    ">
-
-                        Geen geplande werkzaamheden
-
-                    </div>
-
-                )
-
-            }
 
 
+            <section className="space-y-4">
 
 
+                {
+                    workorders.length === 0 && (
 
 
-
-            {
-                items.map(item=>(
-
-
-                    <section
-
-                        key={item.id}
-
-                        className="
+                        <div className="
                             bg-white
                             border
                             rounded-2xl
                             p-5
-                            border-l-8
-                        "
-
-                        style={{
-
-                            borderLeftColor:
-                                item.customer.color
-
-                        }}
-
-                    >
-
-
-
-                        <h2 className="
-                            text-xl
-                            font-bold
                         ">
 
-                            {item.title}
+                            Geen geplande werkbonnen
 
-                        </h2>
-
-
+                        </div>
 
 
-
-                        <p className="
-                            mt-2
-                        ">
-
-                            🏢 {item.customer.name}
-
-                        </p>
-
-
-
-
-
-                        <p>
-
-                            📍 {item.customer.address || "Geen adres"}
-
-                        </p>
-
-
-
-
-
-                        <p>
-
-                            📅 {
-
-                                item.plannedDate
-
-                                ?
-
-                                new Date(
-                                    item.plannedDate
-                                )
-                                .toLocaleDateString(
-                                    "nl-NL"
-                                )
-
-                                :
-
-                                "Geen datum"
-
-                            }
-
-                        </p>
+                    )
+                }
 
 
 
@@ -288,37 +209,119 @@ if(status !== "loading" && !canAccessEngineer(userRole)){
 
 
 
-                        <p className="
-                            mt-2
-                        ">
-
-                            👥
-
-                            {
-                                item.users
-
-                                .map(
-                                    x=>x.user.name
-                                )
-
-                                .join(", ")
-
-                            }
-
-                        </p>
+                {
+                    workorders.map(item=>(
 
 
+                        <div
+
+                            key={item.id}
+
+                            className="
+                                bg-white
+                                border
+                                rounded-2xl
+                                p-5
+                                border-l-8
+                            "
+
+                            style={{
+
+                                borderLeftColor:
+                                    item.project?.customer?.color
+                                    ||
+                                    "#000000"
+
+                            }}
+
+                        >
+
+
+                            <h2 className="
+                                text-xl
+                                font-bold
+                            ">
+
+                                {item.number}
+
+                            </h2>
+
+
+
+
+
+                            <p>
+
+                                {item.title}
+
+                            </p>
+
+
+
+
+
+                            <p className="mt-2">
+
+                                🏢{" "}
+
+                                {
+                                    item.project?.customer?.name
+                                    ||
+                                    "Geen klant"
+                                }
+
+
+                            </p>
+
+
+
+
+
+                            <p>
+
+                                📁{" "}
+
+                                {
+                                    item.project?.name
+                                    ||
+                                    "Geen project"
+                                }
+
+                            </p>
+
+
+
+
+
+                            <p>
+
+                                Status:
+                                {" "}
+                                {item.status}
+
+                            </p>
+
+
+
+
+
+                            <p>
+
+                                👷{" "}
+
+                                {
+                                    item.assignedUser?.name
+                                    ||
+                                    "Niet toegewezen"
+                                }
+
+                            </p>
 
 
 
 
 
 
-                        <div className="
-                            flex
-                            gap-3
-                            mt-5
-                        ">
 
 
                             <Link
@@ -326,6 +329,8 @@ if(status !== "loading" && !canAccessEngineer(userRole)){
                                 href={`/engineer/workorders/${item.id}`}
 
                                 className="
+                                    inline-block
+                                    mt-4
                                     bg-black
                                     text-white
                                     px-4
@@ -335,24 +340,24 @@ if(status !== "loading" && !canAccessEngineer(userRole)){
 
                             >
 
-                                Open opdracht
+                                Open werkbon
 
                             </Link>
+
+
 
 
 
                         </div>
 
 
+                    ))
+                }
 
 
 
-                    </section>
+            </section>
 
-
-                ))
-
-            }
 
 
 
