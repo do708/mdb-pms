@@ -233,8 +233,14 @@ export default function NewWorkorderPage(){
             if(response.ok){
 
 
+                const created =
+                    await response.json();
+
+
+                // Monteur wordt door de middleware automatisch naar
+                // zijn eigen invulscherm gestuurd (/engineer/workorders/...)
                 router.push(
-                    "/workorders"
+                    `/workorders/${created.id}`
                 );
 
 
