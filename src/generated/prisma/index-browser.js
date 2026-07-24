@@ -126,9 +126,9 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   role: 'role',
-  active: 'active',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  active: 'active'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {
@@ -137,9 +137,9 @@ exports.Prisma.CustomerScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   address: 'address',
-  color: 'color',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  color: 'color'
 };
 
 exports.Prisma.ProjectScalarFieldEnum = {
@@ -154,17 +154,18 @@ exports.Prisma.ProjectScalarFieldEnum = {
 
 exports.Prisma.WorkorderScalarFieldEnum = {
   id: 'id',
-  number: 'number',
   title: 'title',
-  description: 'description',
   status: 'status',
-  workDate: 'workDate',
-  plannedDate: 'plannedDate',
-  assignedUserId: 'assignedUserId',
   projectId: 'projectId',
-  assignmentId: 'assignmentId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  description: 'description',
+  workDate: 'workDate',
+  internalNotes: 'internalNotes',
+  number: 'number',
+  assignedUserId: 'assignedUserId',
+  plannedDate: 'plannedDate',
+  assignmentId: 'assignmentId'
 };
 
 exports.Prisma.WorkorderHourScalarFieldEnum = {
@@ -213,7 +214,8 @@ exports.Prisma.WorkorderPhotoScalarFieldEnum = {
 exports.Prisma.WorkorderSignatureScalarFieldEnum = {
   id: 'id',
   workorderId: 'workorderId',
-  url: 'url',
+  customerName: 'customerName',
+  signatureUrl: 'signatureUrl',
   createdAt: 'createdAt'
 };
 
