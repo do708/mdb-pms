@@ -4,6 +4,8 @@ import { auth } from "@/auth";
 
 import { prisma } from "@/lib/prisma";
 
+import { mergeOpleverData } from "@/types/oplever";
+
 
 
 
@@ -341,6 +343,17 @@ export async function POST(
 
                     internalNotes:
                         body.internalNotes || null,
+
+
+
+                    formData:
+                        body.formData
+                        ?
+                        mergeOpleverData(
+                            body.formData
+                        ) as object
+                        :
+                        undefined,
 
 
 

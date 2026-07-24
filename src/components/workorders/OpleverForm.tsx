@@ -11,9 +11,15 @@ import {
 
 interface Props {
 
-    workorderId:string;
+    workorderId?:string;
 
     initial:unknown;
+
+    // Ingebed in een groter formulier: geen eigen opslaanknop,
+    // wijzigingen gaan via onChange omhoog naar de parent.
+    embedded?:boolean;
+
+    onChange?:(data:OpleverData)=>void;
 
 }
 
@@ -298,7 +304,11 @@ export default function OpleverForm({
 
     workorderId,
 
-    initial
+    initial,
+
+    embedded = false,
+
+    onChange
 
 }:Props){
 
@@ -328,16 +338,26 @@ export default function OpleverForm({
         value:OpleverData[S][K]
     ){
 
-        setData(previous=>({
+        setData(previous=>{
 
-            ...previous,
+            const next = {
 
-            [section]:{
-                ...previous[section],
-                [key]:value
+                ...previous,
+
+                [section]:{
+                    ...previous[section],
+                    [key]:value
+                }
+
+            };
+
+            if(onChange){
+                onChange(next);
             }
 
-        }));
+            return next;
+
+        });
 
         setMessage("");
 
@@ -347,6 +367,11 @@ export default function OpleverForm({
 
 
     async function save(){
+
+
+        if(!workorderId){
+            return;
+        }
 
 
         setSaving(true);
@@ -1125,7 +1150,7 @@ export default function OpleverForm({
 
 
             {
-                message && (
+                !embedded && message && (
 
                     <p className={
                         message.includes("mislukt")
@@ -1143,32 +1168,38 @@ export default function OpleverForm({
             }
 
 
-            <button
+            {
+                !embedded && (
 
-                onClick={save}
+                    <button
 
-                disabled={saving}
+                        onClick={save}
 
-                className="
-                    bg-black
-                    text-white
-                    rounded-xl
-                    px-5
-                    py-3
-                    disabled:opacity-50
-                "
+                        disabled={saving}
 
-            >
+                        className="
+                            bg-black
+                            text-white
+                            rounded-xl
+                            px-5
+                            py-3
+                            disabled:opacity-50
+                        "
 
-                {
-                    saving
-                    ?
-                    "Bezig..."
-                    :
-                    "Opleverformulier opslaan"
-                }
+                    >
 
-            </button>
+                        {
+                            saving
+                            ?
+                            "Bezig..."
+                            :
+                            "Opleverformulier opslaan"
+                        }
+
+                    </button>
+
+                )
+            }
 
 
         </section>

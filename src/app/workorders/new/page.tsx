@@ -1,8 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { useSession } from "next-auth/react";
+
+import OpleverForm from "@/components/workorders/OpleverForm";
+
+import {
+    OpleverData,
+    emptyOpleverData
+} from "@/types/oplever";
+
 
 
 interface Project {
@@ -12,13 +22,16 @@ interface Project {
     name:string;
 
     customer:{
+
         name:string;
+
     };
 
 }
 
 
-interface User {
+
+interface Engineer {
 
     id:string;
 
@@ -31,16 +44,16 @@ interface User {
 export default function NewWorkorderPage(){
 
 
-    const router = useRouter();
+    const router =
+        useRouter();
+
 
     const { data:session } =
         useSession();
 
 
-
     const role =
         session?.user?.role;
-
 
 
     const isEngineer =
@@ -53,48 +66,46 @@ export default function NewWorkorderPage(){
         useState<Project[]>([]);
 
 
-
-    const [users,setUsers] =
-        useState<User[]>([]);
-
-
+    const [engineers,setEngineers] =
+        useState<Engineer[]>([]);
 
 
     const [title,setTitle] =
         useState("");
 
 
-
     const [description,setDescription] =
         useState("");
-
-
-
-    const [projectId,setProjectId] =
-        useState("");
-
-
-
-    const [assignedUserId,setAssignedUserId] =
-        useState("");
-
 
 
     const [internalNotes,setInternalNotes] =
         useState("");
 
 
+    const [projectId,setProjectId] =
+        useState("");
+
+
+    const [assignedUserId,setAssignedUserId] =
+        useState("");
+
 
     const [plannedDate,setPlannedDate] =
         useState("");
 
+
+    const [formData,setFormData] =
+        useState<OpleverData>(
+            emptyOpleverData()
+        );
 
 
     const [saving,setSaving] =
         useState(false);
 
 
-
+    const [error,setError] =
+        useState("");
 
 
 
@@ -114,81 +125,81 @@ export default function NewWorkorderPage(){
 
 
             setProjects(
+                Array.isArray(projectsData)
+                ?
                 projectsData
+                :
+                []
             );
 
 
 
 
-
-            if(!isEngineer){
-
-
-                const usersResponse =
-                    await fetch("/api/users");
+            const engineersResponse =
+                await fetch("/api/engineers");
 
 
-                const usersData =
-                    await usersResponse.json();
+            const engineersData =
+                await engineersResponse.json();
 
 
-                setUsers(
-                    usersData
-                );
-
-
-            }
-
+            setEngineers(
+                Array.isArray(engineersData)
+                ?
+                engineersData
+                :
+                []
+            );
 
 
         }
 
 
+        load();
 
-        if(role){
 
-            load();
+    },[]);
+
+
+
+
+    async function save(){
+
+
+        setError("");
+
+
+        if(!title){
+
+            setError("Vul een titel in");
+
+            window.scrollTo({ top:0, behavior:"smooth" });
+
+            return;
 
         }
 
 
+        if(!projectId){
 
-    },[role,isEngineer]);
+            setError("Kies een project");
+
+            window.scrollTo({ top:0, behavior:"smooth" });
+
+            return;
+
+        }
 
 
-
-
-
-
-
-    async function createWorkorder(){
 
 
         setSaving(true);
-
-
-
-        const finalAssignedUserId =
-
-            isEngineer
-
-            ?
-
-            session?.user?.id
-
-            :
-
-            assignedUserId;
-
-
-
 
 
         try {
 
 
             const response =
-
                 await fetch(
 
                     "/api/workorders",
@@ -204,7 +215,6 @@ export default function NewWorkorderPage(){
 
                         },
 
-
                         body:JSON.stringify({
 
                             title,
@@ -215,19 +225,17 @@ export default function NewWorkorderPage(){
 
                             projectId,
 
-                            assignedUserId:
-                                finalAssignedUserId,
+                            assignedUserId,
 
-                            plannedDate
+                            plannedDate,
+
+                            formData
 
                         })
 
                     }
 
                 );
-
-
-
 
 
             if(response.ok){
@@ -238,7 +246,7 @@ export default function NewWorkorderPage(){
 
 
                 // Monteur wordt door de middleware automatisch naar
-                // zijn eigen invulscherm gestuurd (/engineer/workorders/...)
+                // zijn eigen scherm gestuurd (/engineer/workorders/...)
                 router.push(
                     `/workorders/${created.id}`
                 );
@@ -247,32 +255,19 @@ export default function NewWorkorderPage(){
             } else {
 
 
-                alert(
+                setError(
                     "Werkbon aanmaken mislukt"
                 );
+
+                window.scrollTo({ top:0, behavior:"smooth" });
 
 
             }
 
 
-
-        } catch(error){
-
-
-            console.error(error);
-
-
-            alert(
-                "Fout bij aanmaken"
-            );
-
-
-
         } finally {
 
-
             setSaving(false);
-
 
         }
 
@@ -282,37 +277,80 @@ export default function NewWorkorderPage(){
 
 
 
-
-
-
     return (
 
         <main className="
             p-6
             space-y-6
+            max-w-4xl
         ">
 
 
-            <h1 className="
-                text-2xl
-                font-bold
-            ">
-
-                Nieuwe werkbon
-
-            </h1>
+            <header>
 
 
+                <h1 className="
+                    text-3xl
+                    font-bold
+                ">
+
+                    Nieuwe werkbon
+
+                </h1>
 
 
+                <p className="
+                    text-gray-500
+                ">
+
+                    Vul de werkbon in en sla onderaan op
+
+                </p>
+
+
+            </header>
+
+
+
+
+            {
+                error && (
+
+                    <p className="
+                        bg-red-100
+                        border
+                        border-red-300
+                        text-red-700
+                        rounded-xl
+                        p-3
+                    ">
+
+                        {error}
+
+                    </p>
+
+                )
+            }
+
+
+
+
+            {/* ---------- Projectgegevens ---------- */}
 
             <section className="
                 bg-white
-                border
                 rounded-2xl
-                p-6
+                border
+                p-5
                 space-y-4
             ">
+
+
+                <h2 className="font-bold">
+
+                    📁 Projectgegevens
+
+                </h2>
 
 
                 <input
@@ -335,7 +373,51 @@ export default function NewWorkorderPage(){
                 />
 
 
+                <select
 
+                    value={projectId}
+
+                    onChange={(e)=>
+                        setProjectId(e.target.value)
+                    }
+
+                    className="
+                        w-full
+                        border
+                        rounded-xl
+                        p-3
+                        bg-white
+                    "
+
+                >
+
+                    <option value="">
+
+                        Kies project
+
+                    </option>
+
+                    {
+                        projects.map(project=>(
+
+                            <option
+
+                                key={project.id}
+
+                                value={project.id}
+
+                            >
+
+                                {project.customer.name}
+                                {" — "}
+                                {project.name}
+
+                            </option>
+
+                        ))
+                    }
+
+                </select>
 
 
                 <textarea
@@ -353,178 +435,99 @@ export default function NewWorkorderPage(){
                         border
                         rounded-xl
                         p-3
+                        min-h-24
                     "
 
                 />
-
-
-
-
-
-                <textarea
-
-                    value={internalNotes}
-
-                    onChange={(e)=>
-                        setInternalNotes(e.target.value)
-                    }
-
-                    placeholder="Interne notitie (niet zichtbaar voor klant)"
-
-                    className="
-                        w-full
-                        border
-                        border-amber-300
-                        bg-amber-50
-                        rounded-xl
-                        p-3
-                    "
-
-                />
-
-
-
-
-
-
-
-                <select
-
-                    value={projectId}
-
-                    onChange={(e)=>
-                        setProjectId(e.target.value)
-                    }
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                    "
-
-                >
-
-                    <option value="">
-
-                        Kies project
-
-                    </option>
-
-
-                    {
-                        projects.map(project=>(
-
-
-                            <option
-
-                                key={project.id}
-
-                                value={project.id}
-
-                            >
-
-                                {project.name}
-                                {" - "}
-                                {project.customer.name}
-
-
-                            </option>
-
-
-                        ))
-                    }
-
-
-                </select>
-
-
-
-
-
-
 
 
                 {
-
                     !isEngineer && (
 
+                        <>
 
-                        <select
+                            <textarea
 
-                            value={assignedUserId}
+                                value={internalNotes}
 
-                            onChange={(e)=>
-                                setAssignedUserId(
-                                    e.target.value
-                                )
-                            }
+                                onChange={(e)=>
+                                    setInternalNotes(e.target.value)
+                                }
 
-                            className="
-                                w-full
-                                border
-                                rounded-xl
-                                p-3
-                            "
+                                placeholder="Interne notitie (niet zichtbaar voor klant)"
 
-                        >
+                                className="
+                                    w-full
+                                    border
+                                    border-amber-300
+                                    bg-amber-50
+                                    rounded-xl
+                                    p-3
+                                "
 
-
-                            <option value="">
-
-                                Kies monteur
-
-                            </option>
+                            />
 
 
+                            <select
 
-                            {
-                                users.map(user=>(
+                                value={assignedUserId}
 
+                                onChange={(e)=>
+                                    setAssignedUserId(e.target.value)
+                                }
 
-                                    <option
+                                className="
+                                    w-full
+                                    border
+                                    rounded-xl
+                                    p-3
+                                    bg-white
+                                "
 
-                                        key={user.id}
+                            >
 
-                                        value={user.id}
+                                <option value="">
 
-                                    >
+                                    Kies monteur
 
-                                        {user.name}
+                                </option>
 
-                                    </option>
+                                {
+                                    engineers.map(engineer=>(
 
+                                        <option
 
-                                ))
-                            }
+                                            key={engineer.id}
 
+                                            value={engineer.id}
 
-                        </select>
+                                        >
 
+                                            {engineer.name}
+
+                                        </option>
+
+                                    ))
+                                }
+
+                            </select>
+
+                        </>
 
                     )
-
                 }
 
 
+                <label className="block">
 
-
-
-
-
-                <div>
-
-
-                    <label className="
+                    <span className="
                         text-sm
-                        text-gray-500
+                        text-gray-600
                     ">
 
                         Geplande datum
 
-                    </label>
-
-
+                    </span>
 
                     <input
 
@@ -533,9 +536,7 @@ export default function NewWorkorderPage(){
                         value={plannedDate}
 
                         onChange={(e)=>
-                            setPlannedDate(
-                                e.target.value
-                            )
+                            setPlannedDate(e.target.value)
                         }
 
                         className="
@@ -543,50 +544,62 @@ export default function NewWorkorderPage(){
                             border
                             rounded-xl
                             p-3
+                            mt-1
                         "
 
                     />
 
-
-                </div>
-
-
-
-
-
-
-                <button
-
-                    onClick={createWorkorder}
-
-                    disabled={saving}
-
-                    className="
-                        w-full
-                        bg-[#d6007e]
-                        text-white
-                        rounded-xl
-                        py-4
-                        font-bold
-                    "
-
-                >
-
-                    {
-                        saving
-                        ?
-                        "Aanmaken..."
-                        :
-                        "➕ Werkbon aanmaken"
-                    }
-
-
-                </button>
-
-
+                </label>
 
 
             </section>
+
+
+
+
+            {/* ---------- Opleverformulier ---------- */}
+
+            <OpleverForm
+
+                initial={formData}
+
+                embedded
+
+                onChange={setFormData}
+
+            />
+
+
+
+
+            <button
+
+                onClick={save}
+
+                disabled={saving}
+
+                className="
+                    w-full
+                    bg-black
+                    text-white
+                    rounded-xl
+                    px-5
+                    py-4
+                    font-bold
+                    disabled:opacity-50
+                "
+
+            >
+
+                {
+                    saving
+                    ?
+                    "Bezig met opslaan..."
+                    :
+                    "✓ Werkbon opslaan"
+                }
+
+            </button>
 
 
         </main>
