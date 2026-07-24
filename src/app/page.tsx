@@ -1,20 +1,11 @@
-export default function Home() {
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth/session";
 
-  return (
+export default async function Home() {
 
-    <main>
+    const user = await getCurrentUser();
 
-      <h1>
-        MDB PMS
-      </h1>
+    if (!user) redirect("/login");
 
-
-      <p>
-        Project Management System
-      </p>
-
-
-    </main>
-
-  );
+    redirect(user.role === "engineer" ? "/engineer" : "/dashboard");
 }

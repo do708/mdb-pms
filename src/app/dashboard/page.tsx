@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
 
 
@@ -36,6 +37,11 @@ export default function DashboardPage(){
 
     const [loading,setLoading] =
         useState(true);
+
+
+    const { data: session, status } = useSession();
+
+    const userRole = session?.user?.role ?? "";
 
 
 
@@ -99,24 +105,19 @@ export default function DashboardPage(){
 
     }
 
-const user = getCurrentUser();
+    if (status !== "loading" && !canAccessOffice(userRole)) {
 
-const userRole = user?.role || "";
+        return (
 
-if(!canAccessOffice(userRole)){
+            <main className="p-6">
 
+                Geen toegang
 
-    return (
+            </main>
 
-        <main className="p-6">
+        );
 
-            Geen toegang
-
-        </main>
-
-    );
-
-}
+    }
 
 
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { canAccessEngineer } from "@/lib/auth/checkRole";
 
 
@@ -46,6 +47,10 @@ interface Assignment {
 
 
 export default function EngineerPage(){
+
+
+    const { data: session, status } = useSession();
+
 
 
     const [items,setItems] =
@@ -111,10 +116,10 @@ export default function EngineerPage(){
 
     }
 
-const userRole = "engineer";
+const userRole = session?.user?.role ?? "";
 
 
-if(!canAccessEngineer(userRole)){
+if(status !== "loading" && !canAccessEngineer(userRole)){
 
 
     return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { canAccessAdmin } from "@/lib/auth/checkRole";
 
 
@@ -28,6 +29,10 @@ interface User {
 
 
 export default function UsersPage(){
+
+
+    const { data: session, status } = useSession();
+
 
 
     const [users,setUsers] =
@@ -102,10 +107,10 @@ export default function UsersPage(){
 
     }
 
-const userRole = "admin";
+const userRole = session?.user?.role ?? "";
 
 
-if(!canAccessAdmin(userRole)){
+if(status !== "loading" && !canAccessAdmin(userRole)){
 
 
     return (

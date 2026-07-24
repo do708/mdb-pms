@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import {
     LayoutDashboard,
@@ -14,11 +15,20 @@ import {
     FileText,
     Settings,
     BarChart3,
+    UserCog,
 } from "lucide-react";
 
 
 
-const menu = [
+type MenuItem = {
+    name: string;
+    href: string;
+    icon: React.ElementType;
+    adminOnly?: boolean;
+};
+
+
+const menu: MenuItem[] = [
 
     {
         name: "Dashboard",
@@ -69,9 +79,17 @@ const menu = [
     },
 
     {
+        name: "Gebruikers",
+        href: "/users",
+        icon: UserCog,
+        adminOnly: true,
+    },
+
+    {
         name: "Instellingen",
         href: "/settings",
         icon: Settings,
+        adminOnly: true,
     },
 
 ];
@@ -84,6 +102,14 @@ export default function Sidebar() {
 
 
     const pathname = usePathname();
+
+    const { data: session } = useSession();
+
+    const role = session?.user?.role;
+
+    const items = menu.filter(
+        (item) => !item.adminOnly || role === "admin"
+    );
 
 
 
@@ -152,7 +178,7 @@ export default function Sidebar() {
             ">
 
 
-                {menu.map((item)=>{
+                {items.map((item)=>{
 
 
                     const Icon = item.icon;

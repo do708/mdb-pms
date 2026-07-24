@@ -2,11 +2,18 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
+import { requireApiRole } from "@/lib/auth/guard";
+
 
 
 
 
 export async function GET(){
+
+
+    const guard = await requireApiRole(["admin","office"]);
+    if(!guard.ok) return guard.response;
+
 
 
     try {

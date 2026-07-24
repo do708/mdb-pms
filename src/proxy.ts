@@ -1,26 +1,18 @@
-import { auth } from "./auth";
-import { NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
 
-
-export default auth((req) => {
-
-    if (!req.auth) {
-
-        return NextResponse.redirect(
-            new URL("/login", req.url)
-        );
-
-    }
-
-    return NextResponse.next();
-
-});
-
+// Let op: hier bewust authConfig (zonder Prisma/bcrypt),
+// anders crasht de middleware-runtime.
+export default NextAuth(authConfig).auth;
 
 export const config = {
-
     matcher: [
-        "/dashboard/:path*",
+        /*
+         * Alles behalve:
+         * - _next/static, _next/image
+         * - favicon, images, uploads
+         * - bestanden met een extensie (.png, .pdf, ...)
+         */
+        "/((?!_next/static|_next/image|favicon.ico|images|uploads|.*\\..*).*)",
     ],
-
 };

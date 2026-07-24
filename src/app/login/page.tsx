@@ -1,311 +1,90 @@
 "use client";
 
 import { useState } from "react";
-
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-
-
-
-
-export default function LoginPage(){
-
-
+export default function LoginPage() {
     const router = useRouter();
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
-
-    const [email,setEmail] =
-        useState("");
-
-
-
-    const [password,setPassword] =
-        useState("");
-
-
-
-    const [loading,setLoading] =
-        useState(false);
-
-
-
-
-
-
-
-    async function login(){
-
-
+    async function login() {
+        setError(null);
         setLoading(true);
 
-
-
         try {
+            const result = await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
+            });
 
-
-            const response =
-                await fetch(
-
-                    "/api/auth/login",
-
-                    {
-
-                        method:"POST",
-
-                        headers:{
-
-                            "Content-Type":
-                            "application/json"
-
-                        },
-
-
-                        body:JSON.stringify({
-
-                            email,
-
-                            password
-
-                        })
-
-                    }
-
-                );
-
-
-
-
-
-
-
-            const data =
-                await response.json();
-
-
-
-
-
-
-            if(!response.ok){
-
-
-                alert(
-
-                    data.error ||
-                    "Inloggen mislukt"
-
-                );
-
-
+            if (!result || result.error) {
+                setError("Onjuiste e-mail of wachtwoord.");
                 return;
-
-
             }
 
-
-
-
-
-
-
-
-            if(
-
-                data.user.role === "engineer"
-
-            ){
-
-
-                router.push(
-
-                    "/engineer"
-
-                );
-
-
-            } else {
-
-
-                router.push(
-
-                    "/dashboard"
-
-                );
-
-
-            }
-
-
-
-
-
-
-
-        } catch(error){
-
-
-            console.error(error);
-
-
-            alert(
-
-                "Fout bij inloggen"
-
-            );
-
-
+            // "/" wordt door de proxy doorgestuurd naar
+            // /engineer of /dashboard op basis van de rol.
+            router.replace("/");
+            router.refresh();
+        } catch (e) {
+            console.error(e);
+            setError("Er ging iets mis bij het inloggen.");
         } finally {
-
-
             setLoading(false);
-
-
         }
-
-
     }
 
-
-
-
-
-
-
-
     return (
+        <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+            <section className="bg-white border rounded-2xl p-8 w-full max-w-md space-y-5 shadow-sm">
+                <h1 className="text-2xl font-bold">MDB PMS</h1>
+                <p className="text-sm text-gray-500 -mt-3">
+                    Log in om verder te gaan
+                </p>
 
-        <main className="
-            min-h-screen
-            flex
-            items-center
-            justify-center
-            bg-gray-50
-            p-6
-        ">
-
-
-            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-6
-                w-full
-                max-w-md
-                space-y-5
-            ">
-
-
-                <h1 className="
-                    text-3xl
-                    font-bold
-                ">
-
-                    🔐 MDB PMS Login
-
-                </h1>
-
-
-
-
-
-
+                {error && (
+                    <div
+                        role="alert"
+                        className="rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm p-3"
+                    >
+                        {error}
+                    </div>
+                )}
 
                 <input
-
                     type="email"
-
                     value={email}
-
-                    onChange={(e)=>
-                        setEmail(
-                            e.target.value
-                        )
-                    }
-
+                    autoComplete="username"
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && login()}
                     placeholder="E-mail"
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                    "
-
+                    className="w-full border rounded-xl p-3"
                 />
-
-
-
-
-
-
 
                 <input
-
                     type="password"
-
                     value={password}
-
-                    onChange={(e)=>
-                        setPassword(
-                            e.target.value
-                        )
-                    }
-
+                    autoComplete="current-password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && login()}
                     placeholder="Wachtwoord"
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                    "
-
+                    className="w-full border rounded-xl p-3"
                 />
-
-
-
-
-
-
 
                 <button
-
                     onClick={login}
-
-                    disabled={loading}
-
-                    className="
-                        w-full
-                        bg-[#d6007e]
-                        text-white
-                        rounded-xl
-                        py-4
-                        font-bold
-                    "
-
+                    disabled={loading || !email || !password}
+                    className="w-full bg-[#d6007e] text-white rounded-xl py-4 font-bold disabled:opacity-50"
                 >
-
-                    {
-                        loading
-                        ?
-                        "Inloggen..."
-                        :
-                        "🔓 Inloggen"
-                    }
-
+                    {loading ? "Inloggen..." : "Inloggen"}
                 </button>
-
-
-
-
             </section>
-
-
-
         </main>
-
     );
-
-
 }

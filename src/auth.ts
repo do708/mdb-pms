@@ -2,183 +2,52 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@/generated/prisma/client";
-
-
-const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL!,
-});
-
-
-const prisma = new PrismaClient({
-    adapter,
-});
-
+import { prisma } from "@/lib/prisma";
+import { authConfig } from "./auth.config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    ...authConfig,
 
     providers: [
-
         Credentials({
-
             name: "Credentials",
 
             credentials: {
-
-                email: {
-                    label: "Email",
-                    type: "email",
-                },
-
-                password: {
-                    label: "Password",
-                    type: "password",
-                },
-
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" },
             },
-
 
             async authorize(credentials) {
-
-
                 if (!credentials?.email || !credentials?.password) {
-
                     return null;
-
                 }
 
-
-                const email = credentials.email.toString();
-
+                const email = credentials.email.toString().trim().toLowerCase();
                 const password = credentials.password.toString();
 
-
-
                 const user = await prisma.user.findUnique({
-
-                    where: {
-                        email,
-                    },
-
+                    where: { email },
                 });
 
+                // Altijd hashen vergelijken, ook als user niet bestaat,
+                // zodat responstijd niet verraadt of een account bestaat.
+                const hash =
+                    user?.password ??
+                    "$2a$10$invalidinvalidinvalidinvalidinvalidinvalidinvalidinv";
 
+                const passwordValid = await bcrypt.compare(password, hash);
 
-                if (!user) {
-
+                if (!user || !user.active || !passwordValid) {
                     return null;
-
                 }
-
-
-
-                if (!user.active) {
-
-                    return null;
-
-                }
-
-
-
-                const passwordValid = await bcrypt.compare(
-
-                    password,
-
-                    user.password
-
-                );
-
-
-
-                if (!passwordValid) {
-
-                    return null;
-
-                }
-
-
 
                 return {
-
                     id: user.id,
-
                     name: user.name,
-
                     email: user.email,
-
                     role: user.role,
-
                 };
-
-
             },
-
         }),
-
     ],
-
-
-
-    session: {
-
-        strategy: "jwt",
-
-    },
-
-
-
-    callbacks: {
-
-
-        async jwt({ token, user }) {
-
-
-            if (user) {
-
-                token.id = user.id;
-
-                token.role = user.role;
-
-            }
-
-
-            return token;
-
-        },
-
-
-
-        async session({ session, token }) {
-
-
-            if (session.user) {
-
-
-                session.user.id = token.id as string;
-
-                session.user.role = token.role as string;
-
-
-            }
-
-
-            return session;
-
-        },
-
-
-    },
-
-
-    pages: {
-
-        signIn: "/login",
-
-    },
-
-
-    secret: process.env.AUTH_SECRET,
-
-
 });

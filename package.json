@@ -14,7 +14,6 @@
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
     "@supabase/supabase-js": "^2.110.8",
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^1.25.0",
     "next": "latest",
@@ -30,7 +29,6 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/bcrypt": "^6.0.0",
     "@types/nodemailer": "^8.0.1",
     "tailwindcss": "^4.3.3",
     "tsx": "latest",
