@@ -4,6 +4,39 @@ import Link from "next/link";
 
 
 
+// ISO 8601 weeknummer (weken beginnen op maandag)
+function isoWeek(date:Date){
+
+    const d = new Date(
+        Date.UTC(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        )
+    );
+
+    const day = d.getUTCDay() || 7;
+
+    d.setUTCDate(
+        d.getUTCDate() + 4 - day
+    );
+
+    const yearStart = new Date(
+        Date.UTC(d.getUTCFullYear(),0,1)
+    );
+
+    return Math.ceil(
+        (
+            (d.getTime() - yearStart.getTime())
+            / 86400000
+            + 1
+        ) / 7
+    );
+
+}
+
+
+
 interface WeekViewProps {
 
     items:any[];
@@ -99,6 +132,16 @@ export default function WeekView({
             ">
 
                 Monteur planning
+
+                <span className="
+                    text-gray-400
+                    font-normal
+                    ml-3
+                ">
+
+                    Week {isoWeek(startOfWeek)}
+
+                </span>
 
             </h2>
 

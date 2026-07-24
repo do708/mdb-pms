@@ -6,6 +6,39 @@ import Link from "next/link";
 import DraggableAssignment from "./DraggableAssignment";
 
 
+
+// ISO 8601 weeknummer (weken beginnen op maandag)
+function isoWeek(date:Date){
+
+    const d = new Date(
+        Date.UTC(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+        )
+    );
+
+    const day = d.getUTCDay() || 7;
+
+    d.setUTCDate(
+        d.getUTCDate() + 4 - day
+    );
+
+    const yearStart = new Date(
+        Date.UTC(d.getUTCFullYear(),0,1)
+    );
+
+    return Math.ceil(
+        (
+            (d.getTime() - yearStart.getTime())
+            / 86400000
+            + 1
+        ) / 7
+    );
+
+}
+
+
 interface CalendarProps {
 
     items:any[];
@@ -79,6 +112,27 @@ export default function Calendar({
     for(let i=1;i<=daysInMonth;i++){
 
         days.push(i);
+
+    }
+
+
+
+    // Opvullen tot volledige weken en opdelen in rijen
+    while(days.length % 7 !== 0){
+
+        days.push(0);
+
+    }
+
+
+    const weeks:number[][] = [];
+
+
+    for(let i=0;i<days.length;i+=7){
+
+        weeks.push(
+            days.slice(i,i+7)
+        );
 
     }
 
@@ -307,7 +361,7 @@ export default function Calendar({
 
             <div className="
                 grid
-                grid-cols-7
+                grid-cols-8
                 gap-2
             ">
 
@@ -315,6 +369,7 @@ export default function Calendar({
 
                 {
                     [
+                        "Wk",
                         "Zo",
                         "Ma",
                         "Di",
@@ -350,7 +405,56 @@ export default function Calendar({
 
 
                 {
-                    days.map((day,index)=>(
+                    weeks.map((week,weekIndex)=>{
+
+
+                        const firstDay =
+                            week.find(d=>d>0);
+
+
+                        const weekNumber =
+                            firstDay
+                            ?
+                            isoWeek(
+                                new Date(
+                                    year,
+                                    month,
+                                    firstDay
+                                )
+                            )
+                            :
+                            null;
+
+
+                        return (
+
+                            <div
+
+                                key={weekIndex}
+
+                                className="
+                                    contents
+                                "
+
+                            >
+
+
+                                <div className="
+                                    min-h-32
+                                    rounded-xl
+                                    p-2
+                                    text-sm
+                                    text-gray-400
+                                    font-bold
+                                ">
+
+                                    {weekNumber}
+
+                                </div>
+
+
+                                {
+                                    week.map((day,index)=>(
 
 
                         <div
@@ -465,7 +569,16 @@ export default function Calendar({
                         </div>
 
 
-                    ))
+                                    ))
+                                }
+
+
+                            </div>
+
+                        );
+
+
+                    })
 
                 }
 
