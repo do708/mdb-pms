@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { requireApiRole } from "@/lib/auth/guard";
+import { requireApiUser } from "@/lib/auth/guard";
 
 
 
@@ -28,8 +30,34 @@ export async function GET(){
 
     try {
 
+        const guard =
+            await requireApiUser();
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
+
+
+        // Monteur ziet alleen projecten met een eigen werkbon
+        const engineerFilter =
+            guard.user.role === "engineer"
+            ?
+            {
+                workorders:{
+                    some:{
+                        assignedUserId:guard.user.id
+                    }
+                }
+            }
+            :
+            {};
+
 
         const projects = await prisma.project.findMany({
+
+            where:engineerFilter,
+
 
             include:{
 
@@ -107,6 +135,14 @@ export async function POST(
 
 
     try {
+
+        const guard =
+            await requireApiRole(["admin", "office"]);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
         const body =

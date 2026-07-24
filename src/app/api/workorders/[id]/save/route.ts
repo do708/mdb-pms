@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
 
@@ -21,6 +22,14 @@ export async function PUT(
 
 
         const { id } = await context.params;
+
+        const guard =
+            await requireWorkorderAccess(id);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
         const body = await request.json();

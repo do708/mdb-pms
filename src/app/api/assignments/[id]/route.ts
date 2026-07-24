@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { requireApiRole } from "@/lib/auth/guard";
+import { requireApiUser } from "@/lib/auth/guard";
 
 
 
@@ -20,6 +22,14 @@ export async function GET(
 
 
     try {
+
+        const guard =
+            await requireApiUser();
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
         const { id } = await context.params;
@@ -174,6 +184,14 @@ export async function PUT(
 
 
     try {
+
+        const guard =
+            await requireApiRole(["admin", "office"]);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
         const { id } = await context.params;

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
+import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
 
@@ -26,6 +27,14 @@ export async function GET(
 
         const { id } =
             await context.params;
+
+        const guard =
+            await requireWorkorderAccess(id);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
 

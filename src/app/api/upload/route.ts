@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@supabase/supabase-js";
+import { requireApiUser } from "@/lib/auth/guard";
 
 
 
@@ -24,6 +25,14 @@ export async function POST(
 
 
     try {
+
+        const guard =
+            await requireApiUser();
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
         const formData =

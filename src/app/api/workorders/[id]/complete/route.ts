@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
 
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
+import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
 
@@ -28,6 +29,14 @@ export async function POST(
 
         const { id } =
             await context.params;
+
+        const guard =
+            await requireWorkorderAccess(id);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
 

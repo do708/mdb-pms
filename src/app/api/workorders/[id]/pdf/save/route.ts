@@ -7,6 +7,7 @@ import { generateWorkorderPdf } from "@/lib/pdf/workorder";
 import { createClient } from "@supabase/supabase-js";
 
 import { sendWorkorderMail } from "@/lib/mail/sendWorkorderMail";
+import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
 
@@ -43,6 +44,14 @@ export async function POST(
 
 
         const { id } = await context.params;
+
+        const guard =
+            await requireWorkorderAccess(id);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
 

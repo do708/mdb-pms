@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { createClient } from "@supabase/supabase-js";
+import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
 
@@ -40,6 +41,14 @@ export async function POST(
 
         const { id } =
             await context.params;
+
+        const guard =
+            await requireWorkorderAccess(id);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
 
 
 
