@@ -2,39 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
-import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
+import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 
 import { createClient } from "@supabase/supabase-js";
+
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
 
-
-
 const supabase = createClient(
-
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-
     process.env.SUPABASE_SERVICE_ROLE_KEY!
-
 );
 
 
 
-
-
-
-
 export async function POST(
-
-    request: NextRequest,
-
+    request:NextRequest,
     context:{
         params:Promise<{
             id:string;
         }>
     }
-
 ){
 
 
@@ -44,254 +33,267 @@ export async function POST(
         const { id } =
             await context.params;
 
+
         const guard =
             await requireWorkorderAccess(id);
 
+
         if(!guard.ok){
+
             return guard.response;
+
         }
-
-
 
 
 
 
         const workorder =
-
             await prisma.workorder.findUnique({
 
                 where:{
-
                     id
-
                 },
 
-
                 include:{
-
 
                     project:{
 
                         include:{
-
                             customer:true
-
                         }
 
                     },
 
+                    assignedUser:true,
 
                     hours:true,
 
+                    hardware:true,
 
-                    materials:true
+                    materials:true,
 
+                    photos:true,
+
+                    signature:true
 
                 }
-
 
             });
 
 
-
-
-
-
         if(!workorder){
-
 
             return NextResponse.json(
 
                 {
-
-                    error:
-                    "Werkbon niet gevonden"
-
+                    error:"Werkbon niet gevonden"
                 },
 
                 {
-
                     status:404
-
                 }
 
             );
-
 
         }
 
 
 
 
-
-
+        const appUrl =
+            process.env.NEXT_PUBLIC_APP_URL
+            ?? "http://localhost:3000";
 
 
         const pdf =
+            await generateWorkorderHtmlPdf(
+                {
 
-            await generateWorkorderPdf({
+                    number:
+                        workorder.number,
 
-                number:
-                    workorder.number,
+                    title:
+                        workorder.title,
 
+                    status:
+                        workorder.status,
 
-                title:
-                    workorder.title,
+                    description:
+                        workorder.description,
 
+                    plannedDate:
+                        workorder.plannedDate,
 
-                description:
-                    workorder.description,
+                    workDate:
+                        workorder.workDate,
 
+                    createdAt:
+                        workorder.createdAt,
 
-                customer:
-                    workorder.project.customer.name,
+                    projectName:
+                        workorder.project.name,
 
-
-                address:
-                    workorder.project.customer.address,
-
-
-                project:
-                    workorder.project.name,
-
-
-                hours:
-
-                    workorder.hours.reduce(
-
-                        (total,item)=>
-
-                            total + Number(item.hours),
-
-                        0
-
-                    ),
-
-
-
-                materials:
-
-                    workorder.materials.map(item=>({
+                    customer:{
 
                         name:
-                            item.name,
+                            workorder.project.customer.name,
 
+                        address:
+                            workorder.project.customer.address,
 
-                        quantity:
-                            item.quantity
+                        phone:
+                            workorder.project.customer.phone,
 
-                    }))
+                        email:
+                            workorder.project.customer.email
 
+                    },
 
-            });
+                    engineerName:
+                        workorder.assignedUser?.name
+                        ?? null,
 
+                    hours:
+                        workorder.hours.map(item=>({
 
+                            date:
+                                item.date,
 
+                            hours:
+                                Number(item.hours ?? 0),
+
+                            travelTime:
+                                Number(item.travelTime ?? 0),
+
+                            kilometers:
+                                Number(item.kilometers ?? 0),
+
+                            hotel:
+                                item.hotel
+
+                        })),
+
+                    hardware:
+                        workorder.hardware.map(item=>({
+
+                            name:
+                                item.name,
+
+                            brand:
+                                item.brand,
+
+                            model:
+                                item.model,
+
+                            serialNumber:
+                                item.serialNumber,
+
+                            quantity:
+                                item.quantity,
+
+                            location:
+                                item.location,
+
+                            status:
+                                item.status
+
+                        })),
+
+                    materials:
+                        workorder.materials.map(item=>({
+
+                            name:
+                                item.name,
+
+                            articleNumber:
+                                item.articleNumber,
+
+                            quantity:
+                                item.quantity,
+
+                            unit:
+                                item.unit
+
+                        })),
+
+                    photoUrls:
+                        workorder.photos.map(
+                            photo=>photo.url
+                        ),
+
+                    signatureUrl:
+                        workorder.signature?.signatureUrl
+                        ?? null,
+
+                    signedBy:
+                        workorder.signature?.customerName
+                        ?? null,
+
+                    formData:
+                        workorder.formData
+
+                },
+                appUrl
+            );
 
 
 
 
         const filename =
-
             `workorders/${workorder.number}.pdf`;
 
 
-
-
-
-
-
         const upload =
-
             await supabase.storage
-
             .from("workorder-files")
-
             .upload(
-
                 filename,
-
-                Buffer.from(pdf),
-
+                pdf,
                 {
-
                     contentType:
                     "application/pdf",
-
                     upsert:true
-
                 }
-
             );
-
-
-
-
-
-
 
 
         if(upload.error){
 
-
             throw upload.error;
-
 
         }
 
 
-
-
-
-
-
-
         const url =
-
             supabase.storage
-
             .from("workorder-files")
-
             .getPublicUrl(
-
                 filename
-
             )
-
             .data
-
             .publicUrl;
 
 
 
 
-
-
-
-
         const document =
-
             await prisma.document.create({
 
                 data:{
 
-    name:
-        `${workorder.number}.pdf`,
+                    name:
+                        `${workorder.number}.pdf`,
 
-    type:
-        "pdf",
+                    type:
+                        "pdf",
 
-    url,
+                    url,
 
-    workorderId:id
+                    workorderId:id
 
-}
+                }
 
             });
-
-
-
-
 
 
 
@@ -305,37 +307,23 @@ export async function POST(
         });
 
 
-
-
-
-
-
     } catch(error){
 
 
         console.error(
-
             "GENERATE PDF ERROR",
-
             error
-
         );
-
 
 
         return NextResponse.json(
 
             {
-
-                error:
-                "PDF opslaan mislukt"
-
+                error:"PDF genereren mislukt"
             },
 
             {
-
                 status:500
-
             }
 
         );

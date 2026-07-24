@@ -22,6 +22,8 @@
     "pdf-lib": "^1.17.1",
     "pg": "^8.22.0",
     "prisma": "^7.9.0",
+    "puppeteer": "^23.10.4",
+    "qrcode": "^1.5.4",
     "react": "latest",
     "react-dom": "latest",
     "react-signature-canvas": "^1.1.0-alpha.2",
@@ -30,6 +32,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/nodemailer": "^8.0.1",
+    "@types/qrcode": "^1.5.5",
     "tailwindcss": "^4.3.3",
     "tsx": "latest",
     "typescript": "^5.9.3"

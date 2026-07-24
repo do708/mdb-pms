@@ -59,6 +59,7 @@ model Workorder {
   assignedUserId String?
   plannedDate    DateTime?
   assignmentId   String?
+  formData       Json?
   documents      Document[]
   assignedUser   User?               @relation(fields: [assignedUserId], references: [id])
   assignment     Assignment?         @relation(fields: [assignmentId], references: [id])

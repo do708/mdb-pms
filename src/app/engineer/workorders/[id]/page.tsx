@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import HoursForm from "@/components/workorders/HoursForm";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import SignatureForm from "@/components/workorders/SignatureForm";
+import OpleverForm from "@/components/workorders/OpleverForm";
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 
 interface Workorder {
@@ -19,6 +20,8 @@ interface Workorder {
     description:string | null;
 
     internalNotes:string | null;
+
+    formData:unknown;
 
     status:string;
 
@@ -566,6 +569,15 @@ async function completeWorkorder(){
 
 
            </section>
+
+
+<OpleverForm
+
+    workorderId={id}
+
+    initial={workorder.formData}
+
+/>
 
 
 <HoursForm
