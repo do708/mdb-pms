@@ -181,7 +181,9 @@ const menu:MenuItem[] = [
         href:"/settings",
         icon:Settings,
         roles:[
-            "admin"
+            "admin",
+            "office",
+            "engineer"
         ]
     },
 

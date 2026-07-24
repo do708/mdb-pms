@@ -85,18 +85,42 @@ export const authConfig = {
                 return Response.redirect(new URL(target, request.nextUrl));
             }
 
-            // Monteur komt alleen in zijn eigen omgeving
+            // Monteur: eigen omgeving + de gedeelde pagina's.
+            // De API's filteren daar al op eigen werkbonnen.
             if (role === "engineer") {
-                if (pathname.startsWith("/engineer")) return true;
+
+                // Werkbon-detail: naar de monteursversie van de pagina
+                const workorderDetail =
+                    pathname.match(/^\/workorders\/([^/]+)$/);
+
+                if (workorderDetail && workorderDetail[1] !== "new") {
+                    return Response.redirect(
+                        new URL(
+                            `/engineer/workorders/${workorderDetail[1]}`,
+                            request.nextUrl
+                        )
+                    );
+                }
+
+                const allowed = [
+                    "/engineer",
+                    "/workorders",
+                    "/planning",
+                    "/materials",
+                    "/notes",
+                    "/settings",
+                ];
+
+                if (allowed.some((p) => pathname.startsWith(p))) {
+                    return true;
+                }
+
                 return Response.redirect(new URL("/engineer", request.nextUrl));
             }
 
-            // Alleen admin bij gebruikersbeheer en instellingen
-            if (
-                (pathname.startsWith("/users") ||
-                    pathname.startsWith("/settings")) &&
-                role !== "admin"
-            ) {
+            // Alleen admin bij gebruikersbeheer.
+            // /settings is de eigen profielpagina en mag voor iedereen.
+            if (pathname.startsWith("/users") && role !== "admin") {
                 return Response.redirect(new URL("/dashboard", request.nextUrl));
             }
 
