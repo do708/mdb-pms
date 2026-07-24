@@ -339,6 +339,11 @@ export async function POST(
 
 
 
+                    internalNotes:
+                        body.internalNotes || null,
+
+
+
                     projectId:
                         body.projectId,
 

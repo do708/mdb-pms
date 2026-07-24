@@ -372,6 +372,18 @@ export async function PUT(
 
 
 
+                    internalNotes:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.internalNotes
+                        :
+                        body.internalNotes
+                        ??
+                        existingWorkorder.internalNotes,
+
+
+
                     status:
 
                         body.status

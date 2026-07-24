@@ -257,7 +257,7 @@ export async function POST(
 
                 update:{
 
-                    url
+                    signatureUrl:url
 
                 },
 
@@ -266,7 +266,7 @@ export async function POST(
 
                     workorderId:id,
 
-                    url
+                    signatureUrl:url
 
                 }
 

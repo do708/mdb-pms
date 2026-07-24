@@ -18,6 +18,8 @@ interface Workorder {
 
     description:string | null;
 
+    internalNotes:string | null;
+
     status:string;
 
 
@@ -478,6 +480,42 @@ async function completeWorkorder(){
 
 
 
+
+
+
+
+            {workorder.internalNotes && (
+
+                <section className="
+                    bg-amber-50
+                    border
+                    border-amber-300
+                    rounded-2xl
+                    p-4
+                    mb-4
+                ">
+
+
+                    <h2 className="
+                        font-bold
+                        mb-2
+                    ">
+
+                        🔒 Interne notitie
+
+                    </h2>
+
+
+                    <p className="whitespace-pre-wrap text-sm">
+
+                        {workorder.internalNotes}
+
+                    </p>
+
+
+                </section>
+
+            )}
 
 
 

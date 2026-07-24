@@ -80,6 +80,11 @@ export default function NewWorkorderPage(){
 
 
 
+    const [internalNotes,setInternalNotes] =
+        useState("");
+
+
+
     const [plannedDate,setPlannedDate] =
         useState("");
 
@@ -205,6 +210,8 @@ export default function NewWorkorderPage(){
                             title,
 
                             description,
+
+                            internalNotes,
 
                             projectId,
 
@@ -338,6 +345,31 @@ export default function NewWorkorderPage(){
                     className="
                         w-full
                         border
+                        rounded-xl
+                        p-3
+                    "
+
+                />
+
+
+
+
+
+                <textarea
+
+                    value={internalNotes}
+
+                    onChange={(e)=>
+                        setInternalNotes(e.target.value)
+                    }
+
+                    placeholder="Interne notitie (niet zichtbaar voor klant)"
+
+                    className="
+                        w-full
+                        border
+                        border-amber-300
+                        bg-amber-50
                         rounded-xl
                         p-3
                     "

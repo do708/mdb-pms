@@ -278,6 +278,46 @@ export default function WorkorderDetailPage(){
 
 
 
+            {workorder.internalNotes && (
+
+                <section className="
+                    bg-amber-50
+                    border
+                    border-amber-300
+                    rounded-2xl
+                    p-5
+                ">
+
+
+                    <h2 className="font-bold mb-3">
+
+                        🔒 Interne notitie
+
+                    </h2>
+
+
+                    <p className="whitespace-pre-wrap">
+
+                        {workorder.internalNotes}
+
+                    </p>
+
+
+                    <p className="text-xs text-amber-700 mt-3">
+
+                        Niet zichtbaar voor de klant en niet opgenomen in de PDF.
+
+                    </p>
+
+
+                </section>
+
+            )}
+
+
+
+
+
 
 
             <section className="
