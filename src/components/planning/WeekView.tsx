@@ -3,13 +3,12 @@
 import Link from "next/link";
 
 
+
 interface WeekViewProps {
 
     items:any[];
 
 }
-
-
 
 
 
@@ -47,38 +46,36 @@ export default function WeekView({
             return date;
 
         }
-
     );
 
 
 
 
-
-
+    // Monteurs afleiden uit de toegewezen werkbonnen
     const users = Array.from(
 
         new Map(
 
             items
 
-            .flatMap(
-                item=>item.users
+            .filter(
+                item=>item.assignedUser
             )
 
             .map(
-                x=>[
-                    x.user.id,
-                    x.user
+                item=>[
+                    item.assignedUser.id,
+                    item.assignedUser
                 ]
             )
 
         )
-
         .values()
 
-    );
-
-
+    ) as {
+        id:string;
+        name:string | null;
+    }[];
 
 
 
@@ -107,6 +104,18 @@ export default function WeekView({
 
 
 
+
+            {
+                users.length === 0 && (
+
+                    <p className="text-gray-500">
+
+                        Geen werkbonnen met monteur ingepland deze week.
+
+                    </p>
+
+                )
+            }
 
 
 
@@ -170,9 +179,6 @@ export default function WeekView({
 
 
 
-
-
-
                 {
                     users.map(user=>(
 
@@ -204,7 +210,6 @@ export default function WeekView({
 
 
 
-
                             {
                                 days.map(day=>(
 
@@ -223,29 +228,25 @@ export default function WeekView({
                                     >
 
 
-
                                         {
                                             items
 
                                             .filter(item=>{
 
 
-                                                const assigned =
-                                                    item.users.some(
-                                                        (x:any)=>
-                                                            x.user.id
-                                                            ===
-                                                            user.id
-                                                    );
-
-
-                                                if(!assigned)
+                                                if(
+                                                    item.assignedUser?.id
+                                                    !==
+                                                    user.id
+                                                ){
                                                     return false;
+                                                }
 
 
 
-                                                if(!item.plannedDate)
+                                                if(!item.plannedDate){
                                                     return false;
+                                                }
 
 
 
@@ -287,7 +288,7 @@ export default function WeekView({
 
                                                     key={item.id}
 
-                                                    href={`/assignments/${item.id}`}
+                                                    href={`/workorders/${item.id}`}
 
                                                     className="
                                                         block
@@ -301,7 +302,8 @@ export default function WeekView({
                                                     style={{
 
                                                         backgroundColor:
-                                                            item.customer.color
+                                                            item.project?.customer?.color
+                                                            ?? "#2563eb"
 
                                                     }}
 
@@ -317,7 +319,10 @@ export default function WeekView({
                                                     <br/>
 
 
-                                                    {item.customer.name}
+                                                    {
+                                                        item.project?.customer?.name
+                                                        ?? "Onbekende klant"
+                                                    }
 
 
                                                 </Link>

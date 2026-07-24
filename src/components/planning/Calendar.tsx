@@ -160,16 +160,18 @@ export default function Calendar({
 
         const id =
             event.dataTransfer.getData(
-                "assignmentId"
+                "workorderId"
             );
 
 
 
+        // 12:00 zodat de dag in UTC en lokale tijd gelijk blijft
         const newDate =
             new Date(
                 year,
                 month,
-                day
+                day,
+                12
             );
 
 
@@ -440,9 +442,8 @@ export default function Calendar({
 
                                                     item={item}
 
-                                                    onDropDate={
-                                                        onDropDate ||
-                                                        (()=>{})
+                                                    draggable={
+                                                        !!onDropDate
                                                     }
 
                                                 />

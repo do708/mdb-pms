@@ -1,11 +1,14 @@
 "use client";
 
+import Link from "next/link";
+
+
 
 interface Props {
 
     item:any;
 
-    onDropDate:(id:string,date:string)=>void;
+    draggable?:boolean;
 
 }
 
@@ -15,35 +18,28 @@ export default function DraggableAssignment({
 
     item,
 
-    onDropDate
+    draggable = false
 
 }:Props){
 
 
 
+    // De planning-API levert werkbonnen: de klant hangt onder project.
+    const customer =
+        item.project?.customer;
+
 
 
     function handleDragStart(
-
         event:React.DragEvent
-
     ){
 
-
         event.dataTransfer.setData(
-
-            "assignmentId",
-
+            "workorderId",
             item.id
-
         );
 
-
     }
-
-
-
-
 
 
 
@@ -51,40 +47,73 @@ export default function DraggableAssignment({
 
         <div
 
-            draggable
+            draggable={draggable}
 
-            onDragStart={handleDragStart}
+            onDragStart={
+                draggable
+                ?
+                handleDragStart
+                :
+                undefined
+            }
 
-            className="
-                cursor-move
+            className={`
                 text-xs
                 text-white
                 rounded-lg
                 p-2
                 mb-2
-            "
+                ${
+                    draggable
+                    ?
+                    "cursor-move"
+                    :
+                    ""
+                }
+            `}
 
             style={{
-
                 backgroundColor:
-                    item.customer.color
-
+                    customer?.color ?? "#2563eb"
             }}
 
         >
 
 
-            <strong>
+            <Link
 
-                {item.title}
+                href={`/workorders/${item.id}`}
 
-            </strong>
+                className="
+                    block
+                "
+
+                draggable={false}
+
+            >
 
 
-            <br/>
+                <strong>
+                    {item.title}
+                </strong>
+
+                <br/>
+
+                {customer?.name ?? "Onbekende klant"}
+
+                {
+                    item.assignedUser?.name && (
+
+                        <>
+                            <br/>
+                            👷 {item.assignedUser.name}
+                        </>
+
+                    )
+                }
 
 
-            {item.customer.name}
+            </Link>
 
 
         </div>

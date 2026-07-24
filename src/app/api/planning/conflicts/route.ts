@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+
 import { requireApiUser } from "@/lib/auth/guard";
 
 
@@ -10,24 +11,55 @@ export async function GET(){
 
     try {
 
+
         const guard =
             await requireApiUser();
 
+
         if(!guard.ok){
+
             return guard.response;
+
         }
 
 
 
-        const assignments =
-            await prisma.assignment.findMany({
+
+        // Monteur ziet alleen zijn eigen conflicten
+        const engineerFilter =
+
+            guard.user.role === "engineer"
+            ?
+            {
+                assignedUserId:
+                    guard.user.id
+            }
+            :
+            {};
+
+
+
+
+        const workorders =
+
+            await prisma.workorder.findMany({
 
                 where:{
 
+                    ...engineerFilter,
+
                     plannedDate:{
-
                         not:null
+                    },
 
+                    assignedUserId:{
+                        not:null
+                    },
+
+                    status:{
+                        notIn:[
+                            "afgerond"
+                        ]
                     }
 
                 },
@@ -35,149 +67,110 @@ export async function GET(){
 
                 include:{
 
-                    customer:true,
+                    assignedUser:true
 
-                    users:{
+                }
 
-                        include:{
+            });
 
-                            user:true
 
+
+
+        // Groepeer per monteur + dag; meer dan één werkbon = conflict
+
+        const buckets =
+            new Map<
+                string,
+                typeof workorders
+            >();
+
+
+        for(const workorder of workorders){
+
+
+            if(
+                !workorder.assignedUserId ||
+                !workorder.plannedDate
+            ){
+                continue;
+            }
+
+
+            const day =
+                workorder.plannedDate
+                .toISOString()
+                .slice(0,10);
+
+
+            const key =
+                `${workorder.assignedUserId}|${day}`;
+
+
+            const bucket =
+                buckets.get(key) ?? [];
+
+
+            bucket.push(workorder);
+
+            buckets.set(key,bucket);
+
+
+        }
+
+
+
+
+        const conflicts:{
+            user:string;
+            date:string;
+            workorders:string[];
+        }[] = [];
+
+
+        for(const bucket of buckets.values()){
+
+
+            if(bucket.length < 2){
+                continue;
+            }
+
+
+            conflicts.push({
+
+                user:
+                    bucket[0].assignedUser?.name
+                    ?? "Onbekend",
+
+                date:
+                    bucket[0].plannedDate!
+                    .toLocaleDateString(
+                        "nl-NL",
+                        {
+                            weekday:"long",
+                            day:"numeric",
+                            month:"long"
                         }
+                    ),
 
-                    }
-
-                }
+                workorders:
+                    bucket.map(
+                        w=>`${w.number} ${w.title}`
+                    )
 
             });
 
 
-
-
-
-        const conflicts:any[] = [];
-
-
-
-
-
-        assignments.forEach((assignment,index)=>{
-
-
-            assignments.forEach((other)=>{
-
-
-                if(
-                    assignment.id === other.id
-                )
-
-                    return;
-
-
-
-
-                if(
-                    assignment.plannedDate &&
-                    other.plannedDate
-                ){
-
-
-                    const date1 =
-                        new Date(
-                            assignment.plannedDate
-                        )
-                        .toDateString();
-
-
-
-                    const date2 =
-                        new Date(
-                            other.plannedDate
-                        )
-                        .toDateString();
-
-
-
-
-                    if(date1 !== date2)
-
-                        return;
-
-
-
-
-
-
-
-                    assignment.users.forEach(aUser=>{
-
-
-                        other.users.forEach(bUser=>{
-
-
-                            if(
-                                aUser.user.id ===
-                                bUser.user.id
-                            ){
-
-
-
-                                conflicts.push({
-
-                                    user:
-                                        aUser.user.name,
-
-
-                                    date:
-                                        date1,
-
-
-                                    assignments:[
-
-                                        assignment.title,
-
-                                        other.title
-
-                                    ]
-
-                                });
-
-
-                            }
-
-
-                        });
-
-
-                    });
-
-
-                }
-
-
-            });
-
-
-        });
-
-
-
+        }
 
 
 
 
         return NextResponse.json(
-
             conflicts
-
         );
 
 
-
-
-
-
-    }catch(error){
+    } catch(error){
 
 
         console.error(

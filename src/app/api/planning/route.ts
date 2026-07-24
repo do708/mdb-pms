@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+
 import { requireApiUser } from "@/lib/auth/guard";
 
 
@@ -10,96 +11,102 @@ export async function GET(){
 
     try {
 
+
         const guard =
             await requireApiUser();
 
+
         if(!guard.ok){
+
             return guard.response;
+
         }
 
 
 
-        const workorders = await prisma.workorder.findMany({
 
-            where:{
+        // Monteur ziet alleen zijn eigen planning
+        const engineerFilter =
 
-                plannedDate:{
-
-                    not:null
-
-                }
-
-            },
-
-
-            orderBy:{
-
-                plannedDate:"asc"
-
-            },
+            guard.user.role === "engineer"
+            ?
+            {
+                assignedUserId:
+                    guard.user.id
+            }
+            :
+            {};
 
 
-            include:{
 
 
-                project:{
+        const workorders =
 
-                    include:{
+            await prisma.workorder.findMany({
 
-                        customer:true
+                where:{
 
+                    ...engineerFilter,
+
+                    plannedDate:{
+                        not:null
                     }
 
                 },
 
 
-                assignedUser:true
+                orderBy:{
+                    plannedDate:"asc"
+                },
 
 
-            }
+                include:{
 
-        });
+                    project:{
+
+                        include:{
+                            customer:true
+                        }
+
+                    },
+
+                    assignedUser:true
+
+                }
+
+            });
 
 
 
 
         return NextResponse.json(
-
             workorders
-
         );
-
 
 
     } catch(error){
 
 
         console.error(
-
             "PLANNING ERROR",
-
             error
-
         );
-
 
 
         return NextResponse.json(
 
             {
-
                 error:"Planning ophalen mislukt"
-
             },
 
             {
-
                 status:500
-
             }
 
         );
 
+
     }
+
 
 }

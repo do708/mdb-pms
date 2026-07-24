@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { useSession } from "next-auth/react";
+
 import Calendar from "@/components/planning/Calendar";
 
 import WeekView from "@/components/planning/WeekView";
@@ -12,35 +14,37 @@ interface PlanningItem {
 
     id:string;
 
-    title:string;
+    number:string;
 
-    type:string;
+    title:string;
 
     status:string;
 
     plannedDate:string | null;
 
 
-    customer:{
+    project:{
 
         name:string;
 
-        color:string;
+        customer:{
+
+            name:string;
+
+            color:string;
+
+        };
 
     };
 
 
-    users:{
+    assignedUser:{
 
-        user:{
+        id:string;
 
-            id:string;
+        name:string | null;
 
-            name:string | null;
-
-        }
-
-    }[];
+    } | null;
 
 }
 
@@ -52,7 +56,7 @@ interface Conflict {
 
     date:string;
 
-    assignments:string[];
+    workorders:string[];
 
 }
 
@@ -61,6 +65,15 @@ interface Conflict {
 
 
 export default function PlanningPage(){
+
+
+    const { data:session } =
+        useSession();
+
+
+    // Monteur mag de planning inzien maar niet wijzigen
+    const canEdit =
+        session?.user?.role !== "engineer";
 
 
     const [items,setItems] =
@@ -111,10 +124,22 @@ export default function PlanningPage(){
 
 
 
-        setItems(planningData);
+        setItems(
+            Array.isArray(planningData)
+            ?
+            planningData
+            :
+            []
+        );
 
 
-        setConflicts(conflictData);
+        setConflicts(
+            Array.isArray(conflictData)
+            ?
+            conflictData
+            :
+            []
+        );
 
 
         setLoading(false);
@@ -151,29 +176,39 @@ export default function PlanningPage(){
 
 
 
-        await fetch(
+        const response =
+            await fetch(
 
-            `/api/assignments/${id}`,
+                `/api/workorders/${id}`,
 
-            {
+                {
 
-                method:"PUT",
+                    method:"PUT",
 
-                headers:{
+                    headers:{
 
-                    "Content-Type":"application/json"
+                        "Content-Type":"application/json"
 
-                },
+                    },
 
-                body:JSON.stringify({
+                    body:JSON.stringify({
 
-                    plannedDate:date
+                        plannedDate:date
 
-                })
+                    })
 
-            }
+                }
 
-        );
+            );
+
+
+        if(!response.ok){
+
+            alert(
+                "Planning bijwerken mislukt"
+            );
+
+        }
 
 
 
@@ -304,7 +339,7 @@ export default function PlanningPage(){
 
                                     <p>
 
-                                        {conflict.assignments.join(" ↔ ")}
+                                        {conflict.workorders.join(" ↔ ")}
 
                                     </p>
 
@@ -406,7 +441,13 @@ export default function PlanningPage(){
 
                     items={items}
 
-                    onDropDate={updatePlanning}
+                    onDropDate={
+                        canEdit
+                        ?
+                        updatePlanning
+                        :
+                        undefined
+                    }
 
                 />
 
