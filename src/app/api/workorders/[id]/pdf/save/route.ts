@@ -85,7 +85,6 @@ customer:true,
                 hours:true,
 
 
-                materials:true,
 
 
                 hardware:true,

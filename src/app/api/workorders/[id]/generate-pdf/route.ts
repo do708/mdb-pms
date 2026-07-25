@@ -74,7 +74,6 @@ customer:true,
 
                     hardware:true,
 
-                    materials:true,
 
                     photos:true,
 
@@ -200,23 +199,6 @@ customer:true,
 
                             status:
                                 item.status
-
-                        })),
-
-                    materials:
-                        workorder.materials.map(item=>({
-
-                            name:
-                                item.name,
-
-                            articleNumber:
-                                item.articleNumber,
-
-                            quantity:
-                                item.quantity,
-
-                            unit:
-                                item.unit
 
                         })),
 

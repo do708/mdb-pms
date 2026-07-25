@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 import { useParams, useRouter } from "next/navigation";
 
-import MaterialsForm from "@/components/workorders/MaterialsForm";
 import DocumentDropzone from "@/components/documents/DocumentDropzone";
 import DeleteButton from "@/components/DeleteButton";
 
@@ -89,6 +88,29 @@ export default function EditWorkorderPage(){
 
     const [endTime,setEndTime] =
         useState("");
+
+
+    const [multiDay,setMultiDay] =
+        useState(false);
+
+
+    const [endDate,setEndDate] =
+        useState("");
+
+
+    const [extraEngineerIds,setExtraEngineerIds] =
+        useState<string[]>([]);
+
+
+    function toggleExtra(uid:string){
+        setExtraEngineerIds(prev=>
+            prev.includes(uid)
+            ?
+            prev.filter(x=>x !== uid)
+            :
+            [...prev,uid]
+        );
+    }
 
 
     const [documents,setDocuments] =
@@ -190,21 +212,66 @@ export default function EditWorkorderPage(){
                     ""
                 );
 
-                // Tijd uit de ISO-string (HH:MM) als die er is
-                if(wo.plannedDate){
-                    const d = new Date(wo.plannedDate);
-                    const hh = String(d.getHours()).padStart(2,"0");
-                    const mm = String(d.getMinutes()).padStart(2,"0");
-                    if(hh !== "00" || mm !== "00"){
-                        setStartTime(`${hh}:${mm}`);
+                // Bepaal of dit een meerdaagse klus is: einddatum op een
+                // andere dag dan de begindatum.
+                const startDay =
+                    wo.plannedDate
+                    ?
+                    String(wo.plannedDate).slice(0,10)
+                    :
+                    "";
+
+                const endDay =
+                    wo.plannedEndDate
+                    ?
+                    (()=>{
+                        const d = new Date(wo.plannedEndDate);
+                        const y = d.getFullYear();
+                        const m = String(d.getMonth() + 1).padStart(2,"0");
+                        const dd = String(d.getDate()).padStart(2,"0");
+                        return `${y}-${m}-${dd}`;
+                    })()
+                    :
+                    "";
+
+                const isMultiDay =
+                    !!endDay && !!startDay && endDay !== startDay;
+
+                if(isMultiDay){
+
+                    setMultiDay(true);
+                    setEndDate(endDay);
+
+                } else {
+
+                    // Enkele dag: tijden uit de ISO-strings halen
+                    if(wo.plannedDate){
+                        const d = new Date(wo.plannedDate);
+                        const hh = String(d.getHours()).padStart(2,"0");
+                        const mm = String(d.getMinutes()).padStart(2,"0");
+                        if(hh !== "00" || mm !== "00"){
+                            setStartTime(`${hh}:${mm}`);
+                        }
                     }
+
+                    if(wo.plannedEndDate){
+                        const d = new Date(wo.plannedEndDate);
+                        const hh = String(d.getHours()).padStart(2,"0");
+                        const mm = String(d.getMinutes()).padStart(2,"0");
+                        if(hh !== "23" || mm !== "59"){
+                            setEndTime(`${hh}:${mm}`);
+                        }
+                    }
+
                 }
 
-                if(wo.plannedEndDate){
-                    const d = new Date(wo.plannedEndDate);
-                    const hh = String(d.getHours()).padStart(2,"0");
-                    const mm = String(d.getMinutes()).padStart(2,"0");
-                    setEndTime(`${hh}:${mm}`);
+                // Extra monteurs
+                if(Array.isArray(wo.extraEngineers)){
+                    setExtraEngineerIds(
+                        wo.extraEngineers
+                        .map((e:any)=>e.userId ?? e.user?.id)
+                        .filter(Boolean)
+                    );
                 }
 
                 setDocuments(
@@ -305,14 +372,20 @@ export default function EditWorkorderPage(){
 
                             assignedUserId,
 
+                            extraEngineerIds,
+
                             plannedDate:
-                                plannedDate && startTime
+                                plannedDate && startTime && !multiDay
                                 ?
                                 `${plannedDate}T${startTime}`
                                 :
                                 plannedDate,
 
                             plannedEndDate:
+                                multiDay && endDate
+                                ?
+                                `${endDate}T23:59`
+                                :
                                 plannedDate && endTime
                                 ?
                                 `${plannedDate}T${endTime}`
@@ -526,7 +599,7 @@ export default function EditWorkorderPage(){
 
                     <span className="text-sm text-gray-600">
 
-                        Locatie / adres
+                        Waar? (locatie / adres)
 
                     </span>
 
@@ -578,16 +651,24 @@ export default function EditWorkorderPage(){
 
 
                 <div className="
-                    flex
-                    flex-wrap
-                    gap-3
+                    border
+                    rounded-2xl
+                    p-5
+                    bg-gray-50
+                    space-y-5
                 ">
 
                     <label className="block">
 
-                        <span className="text-sm text-gray-600">
+                        <span className="
+                            block
+                            text-sm
+                            font-medium
+                            text-gray-700
+                            mb-2
+                        ">
 
-                            Geplande datum
+                            Datum:
 
                         </span>
 
@@ -600,10 +681,12 @@ export default function EditWorkorderPage(){
                             onChange={(e)=>setPlannedDate(e.target.value)}
 
                             className="
+                                w-full
+                                max-w-xs
                                 border
                                 rounded-xl
                                 p-3
-                                mt-1
+                                bg-white
                             "
 
                         />
@@ -611,60 +694,185 @@ export default function EditWorkorderPage(){
                     </label>
 
 
-                    <label className="block">
-
-                        <span className="text-sm text-gray-600">
-
-                            Van
-
-                        </span>
+                    <label className="
+                        flex
+                        items-center
+                        gap-2
+                        cursor-pointer
+                        select-none
+                    ">
 
                         <input
 
-                            type="time"
+                            type="checkbox"
 
-                            value={startTime}
+                            checked={multiDay}
 
-                            onChange={(e)=>setStartTime(e.target.value)}
-
-                            className="
-                                border
-                                rounded-xl
-                                p-3
-                                mt-1
-                            "
+                            onChange={(e)=>setMultiDay(e.target.checked)}
 
                         />
 
-                    </label>
+                        <span className="text-sm text-gray-700">
 
-
-                    <label className="block">
-
-                        <span className="text-sm text-gray-600">
-
-                            Tot
+                            Meerdere dagen
 
                         </span>
 
-                        <input
-
-                            type="time"
-
-                            value={endTime}
-
-                            onChange={(e)=>setEndTime(e.target.value)}
-
-                            className="
-                                border
-                                rounded-xl
-                                p-3
-                                mt-1
-                            "
-
-                        />
-
                     </label>
+
+
+                    {
+                        multiDay && (
+
+                            <label className="block">
+
+                                <span className="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-700
+                                    mb-2
+                                ">
+
+                                    Tot en met:
+
+                                </span>
+
+                                <input
+
+                                    type="date"
+
+                                    value={endDate}
+
+                                    min={plannedDate}
+
+                                    onChange={(e)=>setEndDate(e.target.value)}
+
+                                    className="
+                                        w-full
+                                        max-w-xs
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        bg-white
+                                    "
+
+                                />
+
+                            </label>
+
+                        )
+                    }
+
+
+                    {
+                        !multiDay && (
+
+                    <div>
+
+                        <span className="
+                            block
+                            text-sm
+                            font-medium
+                            text-gray-700
+                        ">
+
+                            Tijdstip (optioneel)
+
+                        </span>
+
+                        <div className="
+                            flex
+                            items-end
+                            gap-4
+                            mt-2
+                        ">
+
+                            <label className="block">
+
+                                <span className="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-700
+                                    mb-2
+                                ">
+
+                                    Van
+
+                                </span>
+
+                                <input
+
+                                    type="time"
+
+                                    value={startTime}
+
+                                    onChange={(e)=>setStartTime(e.target.value)}
+
+                                    className="
+                                        block
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        bg-white
+                                    "
+
+                                />
+
+                            </label>
+
+
+                            <span className="
+                                text-gray-400
+                                pb-3.5
+                            ">
+
+                                —
+
+                            </span>
+
+
+                            <label className="block">
+
+                                <span className="
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-gray-700
+                                    mb-2
+                                ">
+
+                                    Tot
+
+                                </span>
+
+                                <input
+
+                                    type="time"
+
+                                    value={endTime}
+
+                                    onChange={(e)=>setEndTime(e.target.value)}
+
+                                    className="
+                                        block
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        bg-white
+                                    "
+
+                                />
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                        )
+                    }
 
                 </div>
 
@@ -721,6 +929,73 @@ export default function EditWorkorderPage(){
                     </select>
 
                 </label>
+
+                <div>
+
+                    <span className="text-sm text-gray-600">
+
+                        Extra monteurs (optioneel)
+
+                    </span>
+
+                    <div className="
+                        mt-2
+                        flex
+                        flex-wrap
+                        gap-2
+                    ">
+
+                        {
+                            engineers
+                            .filter(e=>e.id !== assignedUserId)
+                            .map(engineer=>(
+
+                                <label
+
+                                    key={engineer.id}
+
+                                    className={`
+                                        flex
+                                        items-center
+                                        gap-2
+                                        border
+                                        rounded-lg
+                                        px-3
+                                        py-1.5
+                                        text-sm
+                                        cursor-pointer
+                                        ${
+                                            extraEngineerIds.includes(engineer.id)
+                                            ?
+                                            "bg-blue-50 border-blue-300"
+                                            :
+                                            ""
+                                        }
+                                    `}
+
+                                >
+
+                                    <input
+
+                                        type="checkbox"
+
+                                        checked={extraEngineerIds.includes(engineer.id)}
+
+                                        onChange={()=>toggleExtra(engineer.id)}
+
+                                    />
+
+                                    {engineer.name}
+
+                                </label>
+
+                            ))
+                        }
+
+                    </div>
+
+                </div>
+
 
 
                 <label className="block">
@@ -842,14 +1117,6 @@ export default function EditWorkorderPage(){
 
 
 
-
-            {/* Materialen aanpassen (ander materiaal gekozen, etc.) */}
-
-            <MaterialsForm
-
-                workorderId={id}
-
-            />
 
 
 

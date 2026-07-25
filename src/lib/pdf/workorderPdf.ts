@@ -18,14 +18,6 @@ interface WorkorderPdfData {
 
     hours?:number;
 
-    materials?:{
-
-        name:string;
-
-        quantity:number;
-
-    }[];
-
 }
 
 
@@ -215,39 +207,7 @@ export async function generateWorkorderPdf(
 
 
 
-    y -= 20;
 
-
-
-    write(
-
-        "Materialen",
-
-        14
-
-    );
-
-
-
-
-
-    if(data.materials){
-
-
-        data.materials.forEach(material=>{
-
-
-            write(
-
-                `${material.name} - ${material.quantity}`
-
-            );
-
-
-        });
-
-
-    }
 
 
 

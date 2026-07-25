@@ -409,36 +409,7 @@ export default function WorkorderDetailPage(){
 
 
 
-            <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
-            ">
 
-
-                <h2 className="font-bold mb-3">
-
-                    📦 Materialen
-
-                </h2>
-
-
-
-                {
-                    workorder.materials?.map((item:any)=>(
-
-                        <p key={item.id}>
-
-                            {item.name} ({item.quantity})
-
-                        </p>
-
-                    ))
-                }
-
-
-            </section>
 
 
 

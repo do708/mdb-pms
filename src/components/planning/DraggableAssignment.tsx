@@ -98,7 +98,23 @@ export default function DraggableAssignment({
 
                 <span className="text-[11px] font-bold block truncate">
 
-                    👷 {item.assignedUser?.name ?? "Geen monteur"}
+                    👷 {
+                        [
+                            item.assignedUser?.name,
+                            ...(
+                                Array.isArray(item.extraEngineers)
+                                ?
+                                item.extraEngineers.map(
+                                    (e:any)=>e.user?.name
+                                )
+                                :
+                                []
+                            )
+                        ]
+                        .filter(Boolean)
+                        .join(", ")
+                        || "Geen monteur"
+                    }
 
                 </span>
 

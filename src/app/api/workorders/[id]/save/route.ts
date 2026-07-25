@@ -42,8 +42,6 @@ export async function PUT(
 
             description,
 
-            materials,
-
             hardware,
 
         } = body;
@@ -95,14 +93,6 @@ export async function PUT(
 
 
 
-            await tx.workorderMaterial.deleteMany({
-
-                where:{
-                    workorderId:id
-                }
-
-            });
-
 
 
 
@@ -149,39 +139,6 @@ export async function PUT(
 
 
 
-
-            if(materials && materials.length > 0){
-
-
-                await tx.workorderMaterial.createMany({
-
-                    data:
-
-                        materials.map((item:any)=>({
-
-                            workorderId:id,
-
-                            name:item.name,
-
-                            articleNumber:
-                                item.articleNumber ?? null,
-
-                            quantity:
-                                Number(item.quantity ?? 1),
-
-                            unit:
-                                item.unit ?? "st",
-
-                            note:
-                                item.note ?? null,
-
-                        }))
-
-
-                });
-
-
-            }
 
 
 

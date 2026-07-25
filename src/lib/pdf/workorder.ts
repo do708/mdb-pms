@@ -167,30 +167,6 @@ export async function generateWorkorderPdf(workorder:any) {
 
 
     text(
-        "Materialen",
-        14,
-        true
-    );
-
-
-    for(
-        const item of workorder.materials ?? []
-    ){
-
-        text(
-            `${item.quantity ?? 1}x ${item.name}`
-        );
-
-    }
-
-
-
-
-    y -= 10;
-
-
-
-    text(
         "Hardware",
         14,
         true

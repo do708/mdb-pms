@@ -106,7 +106,6 @@ export const authConfig = {
                     "/engineer",
                     "/workorders",
                     "/planning",
-                    "/materials",
                     "/notes",
                     "/forms",
                     "/archive",

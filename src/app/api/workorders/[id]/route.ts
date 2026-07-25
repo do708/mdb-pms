@@ -91,7 +91,19 @@ customer:true,
                     },
 
 
-                    assignedUser:true
+                    assignedUser:true,
+
+
+                    extraEngineers:{
+                        include:{
+                            user:{
+                                select:{
+                                    id:true,
+                                    name:true
+                                }
+                            }
+                        }
+                    }
 
 
                 }
@@ -492,6 +504,38 @@ export async function PUT(
 
 
 
+
+        // Extra monteurs bijwerken (alleen kantoor/admin)
+        if(
+            session.user.role !== "engineer"
+            &&
+            Array.isArray(body.extraEngineerIds)
+        ){
+
+            await prisma.workorderEngineer.deleteMany({
+                where:{
+                    workorderId:id
+                }
+            });
+
+            const unique =
+                [...new Set(
+                    body.extraEngineerIds.filter(
+                        (uid:string)=>
+                            uid && uid !== body.assignedUserId
+                    )
+                )] as string[];
+
+            for(const uid of unique){
+                await prisma.workorderEngineer.create({
+                    data:{
+                        workorderId:id,
+                        userId:uid
+                    }
+                }).catch(()=>{});
+            }
+
+        }
 
 
 

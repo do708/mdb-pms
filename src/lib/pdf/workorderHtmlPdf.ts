@@ -122,13 +122,6 @@ export interface WorkorderHtmlPdfInput {
         status:string;
     }[];
 
-    materials:{
-        name:string;
-        articleNumber:string | null;
-        quantity:number;
-        unit:string | null;
-    }[];
-
     photoUrls:string[];
 
     signatureUrl:string | null;
@@ -549,7 +542,7 @@ function generateHtml(
     </div>
     <div class="order-number">
       <div class="order-number-value">${esc(data.number)}</div>
-      <div class="order-meta">Werkbon · ${formatDate(data.createdAt)}</div>
+      <div class="order-meta">${esc(oplever.opdrachtgever || data.customer.name)} Opleverdocument · ${formatDate(data.createdAt)}</div>
       <div style="margin-top:4px"><span class="status-badge">${esc(statusLabels[data.status] ?? data.status)}</span></div>
     </div>
   </div>
@@ -564,7 +557,8 @@ function generateHtml(
         <div class="info-value" style="font-size:9px;color:#64748b;margin-top:2px">${esc(data.projectName)}</div>
       </div>
       <div class="info-box">
-        <div class="info-label">Klant</div>
+        <div class="info-label">${oplever.opdrachtgever ? "Opdrachtgever · Klant" : "Klant"}</div>
+        ${oplever.opdrachtgever ? `<div class="info-value" style="font-size:11px;font-weight:700">${esc(oplever.opdrachtgever)}</div>` : ""}
         <div class="info-value" style="font-size:11px;font-weight:700">${esc(data.customer.name)}</div>
         ${data.customer.address ? `<div class="info-value" style="font-size:9px;color:#64748b">${esc(data.customer.address)}</div>` : ""}
         ${data.customer.phone ? `<div class="info-value" style="font-size:9px;color:#64748b">${esc(data.customer.phone)}</div>` : ""}
@@ -654,23 +648,6 @@ function generateHtml(
           <td style="font-family:monospace">${esc(item.serialNumber) || "—"}</td>
           <td>${item.quantity}</td>
           <td>${esc(item.location) || "—"}</td>
-        </tr>`).join("")}
-      </tbody>
-    </table>
-  </div>` : ""}
-
-  <!-- MATERIALEN -->
-  ${data.materials.length > 0 ? `
-  <div class="section">
-    <div class="section-title">Materialen</div>
-    <table>
-      <thead><tr><th>Materiaal</th><th>Artikelnummer</th><th>Aantal</th><th>Eenheid</th></tr></thead>
-      <tbody>
-        ${data.materials.map(item=>`<tr>
-          <td>${esc(item.name)}</td>
-          <td style="font-family:monospace">${esc(item.articleNumber) || "—"}</td>
-          <td>${formatNumber(Number(item.quantity),2)}</td>
-          <td>${esc(item.unit) || "st"}</td>
         </tr>`).join("")}
       </tbody>
     </table>

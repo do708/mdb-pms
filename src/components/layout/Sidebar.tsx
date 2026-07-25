@@ -10,7 +10,6 @@ import {
     ClipboardList,
     Users,
     CalendarDays,
-    Package,
     FileText,
     Settings,
     BarChart3,
@@ -102,18 +101,6 @@ const menu:MenuItem[] = [
         name:"Planning",
         href:"/planning",
         icon:CalendarDays,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
-    },
-
-
-    {
-        name:"Materialen",
-        href:"/materials",
-        icon:Package,
         roles:[
             "admin",
             "office",

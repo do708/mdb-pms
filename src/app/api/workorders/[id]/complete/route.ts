@@ -76,7 +76,6 @@ customer:true,
                     hours:true,
 
 
-                    materials:true
 
 
                 }
@@ -186,22 +185,7 @@ customer:true,
 
                         0
 
-                    ),
-
-
-
-                materials:
-
-                    workorder.materials.map(item=>({
-
-                        name:
-                            item.name,
-
-
-                        quantity:
-                            item.quantity
-
-                    }))
+                    )
 
 
             });
