@@ -155,7 +155,11 @@ export async function POST(
 
 
                     address:
-                        body.address || null
+                        body.address || null,
+
+
+                    color:
+                        body.color || "#2563eb"
 
 
                 }

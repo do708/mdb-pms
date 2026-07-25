@@ -83,6 +83,11 @@ export type Invoice = $Result.DefaultSelection<Prisma.$InvoicePayload>
  * 
  */
 export type FormSubmission = $Result.DefaultSelection<Prisma.$FormSubmissionPayload>
+/**
+ * Model WorkorderEngineer
+ * 
+ */
+export type WorkorderEngineer = $Result.DefaultSelection<Prisma.$WorkorderEngineerPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -344,6 +349,16 @@ export class PrismaClient<
     * ```
     */
   get formSubmission(): Prisma.FormSubmissionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workorderEngineer`: Exposes CRUD operations for the **WorkorderEngineer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkorderEngineers
+    * const workorderEngineers = await prisma.workorderEngineer.findMany()
+    * ```
+    */
+  get workorderEngineer(): Prisma.WorkorderEngineerDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -804,7 +819,8 @@ export namespace Prisma {
     Assignment: 'Assignment',
     AssignmentUser: 'AssignmentUser',
     Invoice: 'Invoice',
-    FormSubmission: 'FormSubmission'
+    FormSubmission: 'FormSubmission',
+    WorkorderEngineer: 'WorkorderEngineer'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -820,7 +836,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "project" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderSignature" | "document" | "assignment" | "assignmentUser" | "invoice" | "formSubmission"
+      modelProps: "user" | "customer" | "project" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderSignature" | "document" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1860,6 +1876,80 @@ export namespace Prisma {
           }
         }
       }
+      WorkorderEngineer: {
+        payload: Prisma.$WorkorderEngineerPayload<ExtArgs>
+        fields: Prisma.WorkorderEngineerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkorderEngineerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkorderEngineerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkorderEngineerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkorderEngineerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>
+          }
+          findMany: {
+            args: Prisma.WorkorderEngineerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>[]
+          }
+          create: {
+            args: Prisma.WorkorderEngineerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>
+          }
+          createMany: {
+            args: Prisma.WorkorderEngineerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkorderEngineerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkorderEngineerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>
+          }
+          update: {
+            args: Prisma.WorkorderEngineerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkorderEngineerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkorderEngineerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkorderEngineerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkorderEngineerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderEngineerPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkorderEngineerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkorderEngineer>
+          }
+          groupBy: {
+            args: Prisma.WorkorderEngineerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkorderEngineerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkorderEngineerCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkorderEngineerCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1997,6 +2087,7 @@ export namespace Prisma {
     assignmentUser?: AssignmentUserOmit
     invoice?: InvoiceOmit
     formSubmission?: FormSubmissionOmit
+    workorderEngineer?: WorkorderEngineerOmit
   }
 
   /* Types for Logging */
@@ -2079,12 +2170,14 @@ export namespace Prisma {
   export type UserCountOutputType = {
     assignments: number
     workorders: number
+    extraWorkorders: number
     forms: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | UserCountOutputTypeCountAssignmentsArgs
     workorders?: boolean | UserCountOutputTypeCountWorkordersArgs
+    extraWorkorders?: boolean | UserCountOutputTypeCountExtraWorkordersArgs
     forms?: boolean | UserCountOutputTypeCountFormsArgs
   }
 
@@ -2111,6 +2204,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountWorkordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkorderWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountExtraWorkordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderEngineerWhereInput
   }
 
   /**
@@ -2211,6 +2311,7 @@ export namespace Prisma {
     hours: number
     materials: number
     photos: number
+    extraEngineers: number
   }
 
   export type WorkorderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2219,6 +2320,7 @@ export namespace Prisma {
     hours?: boolean | WorkorderCountOutputTypeCountHoursArgs
     materials?: boolean | WorkorderCountOutputTypeCountMaterialsArgs
     photos?: boolean | WorkorderCountOutputTypeCountPhotosArgs
+    extraEngineers?: boolean | WorkorderCountOutputTypeCountExtraEngineersArgs
   }
 
   // Custom InputTypes
@@ -2265,6 +2367,13 @@ export namespace Prisma {
    */
   export type WorkorderCountOutputTypeCountPhotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkorderPhotoWhereInput
+  }
+
+  /**
+   * WorkorderCountOutputType without action
+   */
+  export type WorkorderCountOutputTypeCountExtraEngineersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderEngineerWhereInput
   }
 
 
@@ -2511,6 +2620,7 @@ export namespace Prisma {
     active?: boolean
     assignments?: boolean | User$assignmentsArgs<ExtArgs>
     workorders?: boolean | User$workordersArgs<ExtArgs>
+    extraWorkorders?: boolean | User$extraWorkordersArgs<ExtArgs>
     forms?: boolean | User$formsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -2552,6 +2662,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | User$assignmentsArgs<ExtArgs>
     workorders?: boolean | User$workordersArgs<ExtArgs>
+    extraWorkorders?: boolean | User$extraWorkordersArgs<ExtArgs>
     forms?: boolean | User$formsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2563,6 +2674,7 @@ export namespace Prisma {
     objects: {
       assignments: Prisma.$AssignmentUserPayload<ExtArgs>[]
       workorders: Prisma.$WorkorderPayload<ExtArgs>[]
+      extraWorkorders: Prisma.$WorkorderEngineerPayload<ExtArgs>[]
       forms: Prisma.$FormSubmissionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -2970,6 +3082,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     assignments<T extends User$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssignmentUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     workorders<T extends User$workordersArgs<ExtArgs> = {}>(args?: Subset<T, User$workordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    extraWorkorders<T extends User$extraWorkordersArgs<ExtArgs> = {}>(args?: Subset<T, User$extraWorkordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     forms<T extends User$formsArgs<ExtArgs> = {}>(args?: Subset<T, User$formsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3446,6 +3559,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WorkorderScalarFieldEnum | WorkorderScalarFieldEnum[]
+  }
+
+  /**
+   * User.extraWorkorders
+   */
+  export type User$extraWorkordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    where?: WorkorderEngineerWhereInput
+    orderBy?: WorkorderEngineerOrderByWithRelationInput | WorkorderEngineerOrderByWithRelationInput[]
+    cursor?: WorkorderEngineerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkorderEngineerScalarFieldEnum | WorkorderEngineerScalarFieldEnum[]
   }
 
   /**
@@ -6046,6 +6183,7 @@ export namespace Prisma {
     materials?: boolean | Workorder$materialsArgs<ExtArgs>
     photos?: boolean | Workorder$photosArgs<ExtArgs>
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
+    extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
     _count?: boolean | WorkorderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorder"]>
 
@@ -6129,6 +6267,7 @@ export namespace Prisma {
     materials?: boolean | Workorder$materialsArgs<ExtArgs>
     photos?: boolean | Workorder$photosArgs<ExtArgs>
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
+    extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
     _count?: boolean | WorkorderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type WorkorderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6157,6 +6296,7 @@ export namespace Prisma {
       materials: Prisma.$WorkorderMaterialPayload<ExtArgs>[]
       photos: Prisma.$WorkorderPhotoPayload<ExtArgs>[]
       signature: Prisma.$WorkorderSignaturePayload<ExtArgs> | null
+      extraEngineers: Prisma.$WorkorderEngineerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6580,6 +6720,7 @@ export namespace Prisma {
     materials<T extends Workorder$materialsArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     photos<T extends Workorder$photosArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$photosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     signature<T extends Workorder$signatureArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$signatureArgs<ExtArgs>>): Prisma__WorkorderSignatureClient<$Result.GetResult<Prisma.$WorkorderSignaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    extraEngineers<T extends Workorder$extraEngineersArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$extraEngineersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7239,6 +7380,30 @@ export namespace Prisma {
      */
     include?: WorkorderSignatureInclude<ExtArgs> | null
     where?: WorkorderSignatureWhereInput
+  }
+
+  /**
+   * Workorder.extraEngineers
+   */
+  export type Workorder$extraEngineersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    where?: WorkorderEngineerWhereInput
+    orderBy?: WorkorderEngineerOrderByWithRelationInput | WorkorderEngineerOrderByWithRelationInput[]
+    cursor?: WorkorderEngineerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkorderEngineerScalarFieldEnum | WorkorderEngineerScalarFieldEnum[]
   }
 
   /**
@@ -18483,6 +18648,1051 @@ export namespace Prisma {
 
 
   /**
+   * Model WorkorderEngineer
+   */
+
+  export type AggregateWorkorderEngineer = {
+    _count: WorkorderEngineerCountAggregateOutputType | null
+    _min: WorkorderEngineerMinAggregateOutputType | null
+    _max: WorkorderEngineerMaxAggregateOutputType | null
+  }
+
+  export type WorkorderEngineerMinAggregateOutputType = {
+    id: string | null
+    workorderId: string | null
+    userId: string | null
+  }
+
+  export type WorkorderEngineerMaxAggregateOutputType = {
+    id: string | null
+    workorderId: string | null
+    userId: string | null
+  }
+
+  export type WorkorderEngineerCountAggregateOutputType = {
+    id: number
+    workorderId: number
+    userId: number
+    _all: number
+  }
+
+
+  export type WorkorderEngineerMinAggregateInputType = {
+    id?: true
+    workorderId?: true
+    userId?: true
+  }
+
+  export type WorkorderEngineerMaxAggregateInputType = {
+    id?: true
+    workorderId?: true
+    userId?: true
+  }
+
+  export type WorkorderEngineerCountAggregateInputType = {
+    id?: true
+    workorderId?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type WorkorderEngineerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkorderEngineer to aggregate.
+     */
+    where?: WorkorderEngineerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderEngineers to fetch.
+     */
+    orderBy?: WorkorderEngineerOrderByWithRelationInput | WorkorderEngineerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkorderEngineerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderEngineers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderEngineers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkorderEngineers
+    **/
+    _count?: true | WorkorderEngineerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkorderEngineerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkorderEngineerMaxAggregateInputType
+  }
+
+  export type GetWorkorderEngineerAggregateType<T extends WorkorderEngineerAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkorderEngineer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkorderEngineer[P]>
+      : GetScalarType<T[P], AggregateWorkorderEngineer[P]>
+  }
+
+
+
+
+  export type WorkorderEngineerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderEngineerWhereInput
+    orderBy?: WorkorderEngineerOrderByWithAggregationInput | WorkorderEngineerOrderByWithAggregationInput[]
+    by: WorkorderEngineerScalarFieldEnum[] | WorkorderEngineerScalarFieldEnum
+    having?: WorkorderEngineerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkorderEngineerCountAggregateInputType | true
+    _min?: WorkorderEngineerMinAggregateInputType
+    _max?: WorkorderEngineerMaxAggregateInputType
+  }
+
+  export type WorkorderEngineerGroupByOutputType = {
+    id: string
+    workorderId: string
+    userId: string
+    _count: WorkorderEngineerCountAggregateOutputType | null
+    _min: WorkorderEngineerMinAggregateOutputType | null
+    _max: WorkorderEngineerMaxAggregateOutputType | null
+  }
+
+  type GetWorkorderEngineerGroupByPayload<T extends WorkorderEngineerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkorderEngineerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkorderEngineerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkorderEngineerGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkorderEngineerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkorderEngineerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    userId?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderEngineer"]>
+
+  export type WorkorderEngineerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    userId?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderEngineer"]>
+
+  export type WorkorderEngineerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    userId?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderEngineer"]>
+
+  export type WorkorderEngineerSelectScalar = {
+    id?: boolean
+    workorderId?: boolean
+    userId?: boolean
+  }
+
+  export type WorkorderEngineerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workorderId" | "userId", ExtArgs["result"]["workorderEngineer"]>
+  export type WorkorderEngineerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WorkorderEngineerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WorkorderEngineerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkorderEngineerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkorderEngineer"
+    objects: {
+      workorder: Prisma.$WorkorderPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      workorderId: string
+      userId: string
+    }, ExtArgs["result"]["workorderEngineer"]>
+    composites: {}
+  }
+
+  type WorkorderEngineerGetPayload<S extends boolean | null | undefined | WorkorderEngineerDefaultArgs> = $Result.GetResult<Prisma.$WorkorderEngineerPayload, S>
+
+  type WorkorderEngineerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkorderEngineerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkorderEngineerCountAggregateInputType | true
+    }
+
+  export interface WorkorderEngineerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkorderEngineer'], meta: { name: 'WorkorderEngineer' } }
+    /**
+     * Find zero or one WorkorderEngineer that matches the filter.
+     * @param {WorkorderEngineerFindUniqueArgs} args - Arguments to find a WorkorderEngineer
+     * @example
+     * // Get one WorkorderEngineer
+     * const workorderEngineer = await prisma.workorderEngineer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkorderEngineerFindUniqueArgs>(args: SelectSubset<T, WorkorderEngineerFindUniqueArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkorderEngineer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkorderEngineerFindUniqueOrThrowArgs} args - Arguments to find a WorkorderEngineer
+     * @example
+     * // Get one WorkorderEngineer
+     * const workorderEngineer = await prisma.workorderEngineer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkorderEngineerFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkorderEngineerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkorderEngineer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderEngineerFindFirstArgs} args - Arguments to find a WorkorderEngineer
+     * @example
+     * // Get one WorkorderEngineer
+     * const workorderEngineer = await prisma.workorderEngineer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkorderEngineerFindFirstArgs>(args?: SelectSubset<T, WorkorderEngineerFindFirstArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkorderEngineer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderEngineerFindFirstOrThrowArgs} args - Arguments to find a WorkorderEngineer
+     * @example
+     * // Get one WorkorderEngineer
+     * const workorderEngineer = await prisma.workorderEngineer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkorderEngineerFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkorderEngineerFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkorderEngineers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderEngineerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkorderEngineers
+     * const workorderEngineers = await prisma.workorderEngineer.findMany()
+     * 
+     * // Get first 10 WorkorderEngineers
+     * const workorderEngineers = await prisma.workorderEngineer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workorderEngineerWithIdOnly = await prisma.workorderEngineer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkorderEngineerFindManyArgs>(args?: SelectSubset<T, WorkorderEngineerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkorderEngineer.
+     * @param {WorkorderEngineerCreateArgs} args - Arguments to create a WorkorderEngineer.
+     * @example
+     * // Create one WorkorderEngineer
+     * const WorkorderEngineer = await prisma.workorderEngineer.create({
+     *   data: {
+     *     // ... data to create a WorkorderEngineer
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkorderEngineerCreateArgs>(args: SelectSubset<T, WorkorderEngineerCreateArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkorderEngineers.
+     * @param {WorkorderEngineerCreateManyArgs} args - Arguments to create many WorkorderEngineers.
+     * @example
+     * // Create many WorkorderEngineers
+     * const workorderEngineer = await prisma.workorderEngineer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkorderEngineerCreateManyArgs>(args?: SelectSubset<T, WorkorderEngineerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkorderEngineers and returns the data saved in the database.
+     * @param {WorkorderEngineerCreateManyAndReturnArgs} args - Arguments to create many WorkorderEngineers.
+     * @example
+     * // Create many WorkorderEngineers
+     * const workorderEngineer = await prisma.workorderEngineer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkorderEngineers and only return the `id`
+     * const workorderEngineerWithIdOnly = await prisma.workorderEngineer.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkorderEngineerCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkorderEngineerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkorderEngineer.
+     * @param {WorkorderEngineerDeleteArgs} args - Arguments to delete one WorkorderEngineer.
+     * @example
+     * // Delete one WorkorderEngineer
+     * const WorkorderEngineer = await prisma.workorderEngineer.delete({
+     *   where: {
+     *     // ... filter to delete one WorkorderEngineer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkorderEngineerDeleteArgs>(args: SelectSubset<T, WorkorderEngineerDeleteArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkorderEngineer.
+     * @param {WorkorderEngineerUpdateArgs} args - Arguments to update one WorkorderEngineer.
+     * @example
+     * // Update one WorkorderEngineer
+     * const workorderEngineer = await prisma.workorderEngineer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkorderEngineerUpdateArgs>(args: SelectSubset<T, WorkorderEngineerUpdateArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkorderEngineers.
+     * @param {WorkorderEngineerDeleteManyArgs} args - Arguments to filter WorkorderEngineers to delete.
+     * @example
+     * // Delete a few WorkorderEngineers
+     * const { count } = await prisma.workorderEngineer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkorderEngineerDeleteManyArgs>(args?: SelectSubset<T, WorkorderEngineerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkorderEngineers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderEngineerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkorderEngineers
+     * const workorderEngineer = await prisma.workorderEngineer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkorderEngineerUpdateManyArgs>(args: SelectSubset<T, WorkorderEngineerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkorderEngineers and returns the data updated in the database.
+     * @param {WorkorderEngineerUpdateManyAndReturnArgs} args - Arguments to update many WorkorderEngineers.
+     * @example
+     * // Update many WorkorderEngineers
+     * const workorderEngineer = await prisma.workorderEngineer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkorderEngineers and only return the `id`
+     * const workorderEngineerWithIdOnly = await prisma.workorderEngineer.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkorderEngineerUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkorderEngineerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkorderEngineer.
+     * @param {WorkorderEngineerUpsertArgs} args - Arguments to update or create a WorkorderEngineer.
+     * @example
+     * // Update or create a WorkorderEngineer
+     * const workorderEngineer = await prisma.workorderEngineer.upsert({
+     *   create: {
+     *     // ... data to create a WorkorderEngineer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkorderEngineer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkorderEngineerUpsertArgs>(args: SelectSubset<T, WorkorderEngineerUpsertArgs<ExtArgs>>): Prisma__WorkorderEngineerClient<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkorderEngineers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderEngineerCountArgs} args - Arguments to filter WorkorderEngineers to count.
+     * @example
+     * // Count the number of WorkorderEngineers
+     * const count = await prisma.workorderEngineer.count({
+     *   where: {
+     *     // ... the filter for the WorkorderEngineers we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkorderEngineerCountArgs>(
+      args?: Subset<T, WorkorderEngineerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkorderEngineerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkorderEngineer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderEngineerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkorderEngineerAggregateArgs>(args: Subset<T, WorkorderEngineerAggregateArgs>): Prisma.PrismaPromise<GetWorkorderEngineerAggregateType<T>>
+
+    /**
+     * Group by WorkorderEngineer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderEngineerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkorderEngineerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkorderEngineerGroupByArgs['orderBy'] }
+        : { orderBy?: WorkorderEngineerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkorderEngineerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkorderEngineerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkorderEngineer model
+   */
+  readonly fields: WorkorderEngineerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkorderEngineer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkorderEngineerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    workorder<T extends WorkorderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkorderDefaultArgs<ExtArgs>>): Prisma__WorkorderClient<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkorderEngineer model
+   */
+  interface WorkorderEngineerFieldRefs {
+    readonly id: FieldRef<"WorkorderEngineer", 'String'>
+    readonly workorderId: FieldRef<"WorkorderEngineer", 'String'>
+    readonly userId: FieldRef<"WorkorderEngineer", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkorderEngineer findUnique
+   */
+  export type WorkorderEngineerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderEngineer to fetch.
+     */
+    where: WorkorderEngineerWhereUniqueInput
+  }
+
+  /**
+   * WorkorderEngineer findUniqueOrThrow
+   */
+  export type WorkorderEngineerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderEngineer to fetch.
+     */
+    where: WorkorderEngineerWhereUniqueInput
+  }
+
+  /**
+   * WorkorderEngineer findFirst
+   */
+  export type WorkorderEngineerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderEngineer to fetch.
+     */
+    where?: WorkorderEngineerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderEngineers to fetch.
+     */
+    orderBy?: WorkorderEngineerOrderByWithRelationInput | WorkorderEngineerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkorderEngineers.
+     */
+    cursor?: WorkorderEngineerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderEngineers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderEngineers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderEngineers.
+     */
+    distinct?: WorkorderEngineerScalarFieldEnum | WorkorderEngineerScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderEngineer findFirstOrThrow
+   */
+  export type WorkorderEngineerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderEngineer to fetch.
+     */
+    where?: WorkorderEngineerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderEngineers to fetch.
+     */
+    orderBy?: WorkorderEngineerOrderByWithRelationInput | WorkorderEngineerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkorderEngineers.
+     */
+    cursor?: WorkorderEngineerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderEngineers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderEngineers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderEngineers.
+     */
+    distinct?: WorkorderEngineerScalarFieldEnum | WorkorderEngineerScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderEngineer findMany
+   */
+  export type WorkorderEngineerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderEngineers to fetch.
+     */
+    where?: WorkorderEngineerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderEngineers to fetch.
+     */
+    orderBy?: WorkorderEngineerOrderByWithRelationInput | WorkorderEngineerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkorderEngineers.
+     */
+    cursor?: WorkorderEngineerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderEngineers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderEngineers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderEngineers.
+     */
+    distinct?: WorkorderEngineerScalarFieldEnum | WorkorderEngineerScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderEngineer create
+   */
+  export type WorkorderEngineerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkorderEngineer.
+     */
+    data: XOR<WorkorderEngineerCreateInput, WorkorderEngineerUncheckedCreateInput>
+  }
+
+  /**
+   * WorkorderEngineer createMany
+   */
+  export type WorkorderEngineerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkorderEngineers.
+     */
+    data: WorkorderEngineerCreateManyInput | WorkorderEngineerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkorderEngineer createManyAndReturn
+   */
+  export type WorkorderEngineerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkorderEngineers.
+     */
+    data: WorkorderEngineerCreateManyInput | WorkorderEngineerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkorderEngineer update
+   */
+  export type WorkorderEngineerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkorderEngineer.
+     */
+    data: XOR<WorkorderEngineerUpdateInput, WorkorderEngineerUncheckedUpdateInput>
+    /**
+     * Choose, which WorkorderEngineer to update.
+     */
+    where: WorkorderEngineerWhereUniqueInput
+  }
+
+  /**
+   * WorkorderEngineer updateMany
+   */
+  export type WorkorderEngineerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkorderEngineers.
+     */
+    data: XOR<WorkorderEngineerUpdateManyMutationInput, WorkorderEngineerUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkorderEngineers to update
+     */
+    where?: WorkorderEngineerWhereInput
+    /**
+     * Limit how many WorkorderEngineers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkorderEngineer updateManyAndReturn
+   */
+  export type WorkorderEngineerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkorderEngineers.
+     */
+    data: XOR<WorkorderEngineerUpdateManyMutationInput, WorkorderEngineerUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkorderEngineers to update
+     */
+    where?: WorkorderEngineerWhereInput
+    /**
+     * Limit how many WorkorderEngineers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkorderEngineer upsert
+   */
+  export type WorkorderEngineerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkorderEngineer to update in case it exists.
+     */
+    where: WorkorderEngineerWhereUniqueInput
+    /**
+     * In case the WorkorderEngineer found by the `where` argument doesn't exist, create a new WorkorderEngineer with this data.
+     */
+    create: XOR<WorkorderEngineerCreateInput, WorkorderEngineerUncheckedCreateInput>
+    /**
+     * In case the WorkorderEngineer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkorderEngineerUpdateInput, WorkorderEngineerUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkorderEngineer delete
+   */
+  export type WorkorderEngineerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+    /**
+     * Filter which WorkorderEngineer to delete.
+     */
+    where: WorkorderEngineerWhereUniqueInput
+  }
+
+  /**
+   * WorkorderEngineer deleteMany
+   */
+  export type WorkorderEngineerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkorderEngineers to delete
+     */
+    where?: WorkorderEngineerWhereInput
+    /**
+     * Limit how many WorkorderEngineers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkorderEngineer without action
+   */
+  export type WorkorderEngineerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderEngineer
+     */
+    select?: WorkorderEngineerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderEngineer
+     */
+    omit?: WorkorderEngineerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderEngineerInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18692,6 +19902,15 @@ export namespace Prisma {
   export type FormSubmissionScalarFieldEnum = (typeof FormSubmissionScalarFieldEnum)[keyof typeof FormSubmissionScalarFieldEnum]
 
 
+  export const WorkorderEngineerScalarFieldEnum: {
+    id: 'id',
+    workorderId: 'workorderId',
+    userId: 'userId'
+  };
+
+  export type WorkorderEngineerScalarFieldEnum = (typeof WorkorderEngineerScalarFieldEnum)[keyof typeof WorkorderEngineerScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -18839,6 +20058,7 @@ export namespace Prisma {
     active?: BoolFilter<"User"> | boolean
     assignments?: AssignmentUserListRelationFilter
     workorders?: WorkorderListRelationFilter
+    extraWorkorders?: WorkorderEngineerListRelationFilter
     forms?: FormSubmissionListRelationFilter
   }
 
@@ -18853,6 +20073,7 @@ export namespace Prisma {
     active?: SortOrder
     assignments?: AssignmentUserOrderByRelationAggregateInput
     workorders?: WorkorderOrderByRelationAggregateInput
+    extraWorkorders?: WorkorderEngineerOrderByRelationAggregateInput
     forms?: FormSubmissionOrderByRelationAggregateInput
   }
 
@@ -18870,6 +20091,7 @@ export namespace Prisma {
     active?: BoolFilter<"User"> | boolean
     assignments?: AssignmentUserListRelationFilter
     workorders?: WorkorderListRelationFilter
+    extraWorkorders?: WorkorderEngineerListRelationFilter
     forms?: FormSubmissionListRelationFilter
   }, "id" | "email">
 
@@ -19076,6 +20298,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialListRelationFilter
     photos?: WorkorderPhotoListRelationFilter
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
+    extraEngineers?: WorkorderEngineerListRelationFilter
   }
 
   export type WorkorderOrderByWithRelationInput = {
@@ -19106,6 +20329,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialOrderByRelationAggregateInput
     photos?: WorkorderPhotoOrderByRelationAggregateInput
     signature?: WorkorderSignatureOrderByWithRelationInput
+    extraEngineers?: WorkorderEngineerOrderByRelationAggregateInput
   }
 
   export type WorkorderWhereUniqueInput = Prisma.AtLeast<{
@@ -19139,6 +20363,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialListRelationFilter
     photos?: WorkorderPhotoListRelationFilter
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
+    extraEngineers?: WorkorderEngineerListRelationFilter
   }, "id" | "number">
 
   export type WorkorderOrderByWithAggregationInput = {
@@ -19869,6 +21094,55 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"FormSubmission"> | Date | string
   }
 
+  export type WorkorderEngineerWhereInput = {
+    AND?: WorkorderEngineerWhereInput | WorkorderEngineerWhereInput[]
+    OR?: WorkorderEngineerWhereInput[]
+    NOT?: WorkorderEngineerWhereInput | WorkorderEngineerWhereInput[]
+    id?: StringFilter<"WorkorderEngineer"> | string
+    workorderId?: StringFilter<"WorkorderEngineer"> | string
+    userId?: StringFilter<"WorkorderEngineer"> | string
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type WorkorderEngineerOrderByWithRelationInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    userId?: SortOrder
+    workorder?: WorkorderOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type WorkorderEngineerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    workorderId_userId?: WorkorderEngineerWorkorderIdUserIdCompoundUniqueInput
+    AND?: WorkorderEngineerWhereInput | WorkorderEngineerWhereInput[]
+    OR?: WorkorderEngineerWhereInput[]
+    NOT?: WorkorderEngineerWhereInput | WorkorderEngineerWhereInput[]
+    workorderId?: StringFilter<"WorkorderEngineer"> | string
+    userId?: StringFilter<"WorkorderEngineer"> | string
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "workorderId_userId">
+
+  export type WorkorderEngineerOrderByWithAggregationInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    userId?: SortOrder
+    _count?: WorkorderEngineerCountOrderByAggregateInput
+    _max?: WorkorderEngineerMaxOrderByAggregateInput
+    _min?: WorkorderEngineerMinOrderByAggregateInput
+  }
+
+  export type WorkorderEngineerScalarWhereWithAggregatesInput = {
+    AND?: WorkorderEngineerScalarWhereWithAggregatesInput | WorkorderEngineerScalarWhereWithAggregatesInput[]
+    OR?: WorkorderEngineerScalarWhereWithAggregatesInput[]
+    NOT?: WorkorderEngineerScalarWhereWithAggregatesInput | WorkorderEngineerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkorderEngineer"> | string
+    workorderId?: StringWithAggregatesFilter<"WorkorderEngineer"> | string
+    userId?: StringWithAggregatesFilter<"WorkorderEngineer"> | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -19880,6 +21154,7 @@ export namespace Prisma {
     active?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
   }
 
@@ -19894,6 +21169,7 @@ export namespace Prisma {
     active?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -19908,6 +21184,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
   }
 
@@ -19922,6 +21199,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -20144,6 +21422,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateInput = {
@@ -20170,6 +21449,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUpdateInput = {
@@ -20196,6 +21476,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateInput = {
@@ -20222,6 +21503,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateManyInput = {
@@ -20995,6 +22277,46 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WorkorderEngineerCreateInput = {
+    id?: string
+    workorder: WorkorderCreateNestedOneWithoutExtraEngineersInput
+    user: UserCreateNestedOneWithoutExtraWorkordersInput
+  }
+
+  export type WorkorderEngineerUncheckedCreateInput = {
+    id?: string
+    workorderId: string
+    userId: string
+  }
+
+  export type WorkorderEngineerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorder?: WorkorderUpdateOneRequiredWithoutExtraEngineersNestedInput
+    user?: UserUpdateOneRequiredWithoutExtraWorkordersNestedInput
+  }
+
+  export type WorkorderEngineerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type WorkorderEngineerCreateManyInput = {
+    id?: string
+    workorderId: string
+    userId: string
+  }
+
+  export type WorkorderEngineerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type WorkorderEngineerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -21053,6 +22375,12 @@ export namespace Prisma {
     none?: WorkorderWhereInput
   }
 
+  export type WorkorderEngineerListRelationFilter = {
+    every?: WorkorderEngineerWhereInput
+    some?: WorkorderEngineerWhereInput
+    none?: WorkorderEngineerWhereInput
+  }
+
   export type FormSubmissionListRelationFilter = {
     every?: FormSubmissionWhereInput
     some?: FormSubmissionWhereInput
@@ -21069,6 +22397,10 @@ export namespace Prisma {
   }
 
   export type WorkorderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkorderEngineerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21970,6 +23302,29 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type WorkorderEngineerWorkorderIdUserIdCompoundUniqueInput = {
+    workorderId: string
+    userId: string
+  }
+
+  export type WorkorderEngineerCountOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type WorkorderEngineerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type WorkorderEngineerMinOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    userId?: SortOrder
+  }
+
   export type AssignmentUserCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -21982,6 +23337,13 @@ export namespace Prisma {
     connectOrCreate?: WorkorderCreateOrConnectWithoutAssignedUserInput | WorkorderCreateOrConnectWithoutAssignedUserInput[]
     createMany?: WorkorderCreateManyAssignedUserInputEnvelope
     connect?: WorkorderWhereUniqueInput | WorkorderWhereUniqueInput[]
+  }
+
+  export type WorkorderEngineerCreateNestedManyWithoutUserInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutUserInput, WorkorderEngineerUncheckedCreateWithoutUserInput> | WorkorderEngineerCreateWithoutUserInput[] | WorkorderEngineerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutUserInput | WorkorderEngineerCreateOrConnectWithoutUserInput[]
+    createMany?: WorkorderEngineerCreateManyUserInputEnvelope
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
   }
 
   export type FormSubmissionCreateNestedManyWithoutUserInput = {
@@ -22003,6 +23365,13 @@ export namespace Prisma {
     connectOrCreate?: WorkorderCreateOrConnectWithoutAssignedUserInput | WorkorderCreateOrConnectWithoutAssignedUserInput[]
     createMany?: WorkorderCreateManyAssignedUserInputEnvelope
     connect?: WorkorderWhereUniqueInput | WorkorderWhereUniqueInput[]
+  }
+
+  export type WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutUserInput, WorkorderEngineerUncheckedCreateWithoutUserInput> | WorkorderEngineerCreateWithoutUserInput[] | WorkorderEngineerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutUserInput | WorkorderEngineerCreateOrConnectWithoutUserInput[]
+    createMany?: WorkorderEngineerCreateManyUserInputEnvelope
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
   }
 
   export type FormSubmissionUncheckedCreateNestedManyWithoutUserInput = {
@@ -22056,6 +23425,20 @@ export namespace Prisma {
     deleteMany?: WorkorderScalarWhereInput | WorkorderScalarWhereInput[]
   }
 
+  export type WorkorderEngineerUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutUserInput, WorkorderEngineerUncheckedCreateWithoutUserInput> | WorkorderEngineerCreateWithoutUserInput[] | WorkorderEngineerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutUserInput | WorkorderEngineerCreateOrConnectWithoutUserInput[]
+    upsert?: WorkorderEngineerUpsertWithWhereUniqueWithoutUserInput | WorkorderEngineerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WorkorderEngineerCreateManyUserInputEnvelope
+    set?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    disconnect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    delete?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    update?: WorkorderEngineerUpdateWithWhereUniqueWithoutUserInput | WorkorderEngineerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WorkorderEngineerUpdateManyWithWhereWithoutUserInput | WorkorderEngineerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
+  }
+
   export type FormSubmissionUpdateManyWithoutUserNestedInput = {
     create?: XOR<FormSubmissionCreateWithoutUserInput, FormSubmissionUncheckedCreateWithoutUserInput> | FormSubmissionCreateWithoutUserInput[] | FormSubmissionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: FormSubmissionCreateOrConnectWithoutUserInput | FormSubmissionCreateOrConnectWithoutUserInput[]
@@ -22096,6 +23479,20 @@ export namespace Prisma {
     update?: WorkorderUpdateWithWhereUniqueWithoutAssignedUserInput | WorkorderUpdateWithWhereUniqueWithoutAssignedUserInput[]
     updateMany?: WorkorderUpdateManyWithWhereWithoutAssignedUserInput | WorkorderUpdateManyWithWhereWithoutAssignedUserInput[]
     deleteMany?: WorkorderScalarWhereInput | WorkorderScalarWhereInput[]
+  }
+
+  export type WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutUserInput, WorkorderEngineerUncheckedCreateWithoutUserInput> | WorkorderEngineerCreateWithoutUserInput[] | WorkorderEngineerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutUserInput | WorkorderEngineerCreateOrConnectWithoutUserInput[]
+    upsert?: WorkorderEngineerUpsertWithWhereUniqueWithoutUserInput | WorkorderEngineerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WorkorderEngineerCreateManyUserInputEnvelope
+    set?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    disconnect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    delete?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    update?: WorkorderEngineerUpdateWithWhereUniqueWithoutUserInput | WorkorderEngineerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WorkorderEngineerUpdateManyWithWhereWithoutUserInput | WorkorderEngineerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
   }
 
   export type FormSubmissionUncheckedUpdateManyWithoutUserNestedInput = {
@@ -22359,6 +23756,13 @@ export namespace Prisma {
     connect?: WorkorderSignatureWhereUniqueInput
   }
 
+  export type WorkorderEngineerCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutWorkorderInput, WorkorderEngineerUncheckedCreateWithoutWorkorderInput> | WorkorderEngineerCreateWithoutWorkorderInput[] | WorkorderEngineerUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutWorkorderInput | WorkorderEngineerCreateOrConnectWithoutWorkorderInput[]
+    createMany?: WorkorderEngineerCreateManyWorkorderInputEnvelope
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+  }
+
   export type DocumentUncheckedCreateNestedManyWithoutWorkorderInput = {
     create?: XOR<DocumentCreateWithoutWorkorderInput, DocumentUncheckedCreateWithoutWorkorderInput> | DocumentCreateWithoutWorkorderInput[] | DocumentUncheckedCreateWithoutWorkorderInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutWorkorderInput | DocumentCreateOrConnectWithoutWorkorderInput[]
@@ -22398,6 +23802,13 @@ export namespace Prisma {
     create?: XOR<WorkorderSignatureCreateWithoutWorkorderInput, WorkorderSignatureUncheckedCreateWithoutWorkorderInput>
     connectOrCreate?: WorkorderSignatureCreateOrConnectWithoutWorkorderInput
     connect?: WorkorderSignatureWhereUniqueInput
+  }
+
+  export type WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutWorkorderInput, WorkorderEngineerUncheckedCreateWithoutWorkorderInput> | WorkorderEngineerCreateWithoutWorkorderInput[] | WorkorderEngineerUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutWorkorderInput | WorkorderEngineerCreateOrConnectWithoutWorkorderInput[]
+    createMany?: WorkorderEngineerCreateManyWorkorderInputEnvelope
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -22524,6 +23935,20 @@ export namespace Prisma {
     update?: XOR<XOR<WorkorderSignatureUpdateToOneWithWhereWithoutWorkorderInput, WorkorderSignatureUpdateWithoutWorkorderInput>, WorkorderSignatureUncheckedUpdateWithoutWorkorderInput>
   }
 
+  export type WorkorderEngineerUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutWorkorderInput, WorkorderEngineerUncheckedCreateWithoutWorkorderInput> | WorkorderEngineerCreateWithoutWorkorderInput[] | WorkorderEngineerUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutWorkorderInput | WorkorderEngineerCreateOrConnectWithoutWorkorderInput[]
+    upsert?: WorkorderEngineerUpsertWithWhereUniqueWithoutWorkorderInput | WorkorderEngineerUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: WorkorderEngineerCreateManyWorkorderInputEnvelope
+    set?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    disconnect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    delete?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    update?: WorkorderEngineerUpdateWithWhereUniqueWithoutWorkorderInput | WorkorderEngineerUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: WorkorderEngineerUpdateManyWithWhereWithoutWorkorderInput | WorkorderEngineerUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
+  }
+
   export type DocumentUncheckedUpdateManyWithoutWorkorderNestedInput = {
     create?: XOR<DocumentCreateWithoutWorkorderInput, DocumentUncheckedCreateWithoutWorkorderInput> | DocumentCreateWithoutWorkorderInput[] | DocumentUncheckedCreateWithoutWorkorderInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutWorkorderInput | DocumentCreateOrConnectWithoutWorkorderInput[]
@@ -22602,6 +24027,20 @@ export namespace Prisma {
     delete?: WorkorderSignatureWhereInput | boolean
     connect?: WorkorderSignatureWhereUniqueInput
     update?: XOR<XOR<WorkorderSignatureUpdateToOneWithWhereWithoutWorkorderInput, WorkorderSignatureUpdateWithoutWorkorderInput>, WorkorderSignatureUncheckedUpdateWithoutWorkorderInput>
+  }
+
+  export type WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<WorkorderEngineerCreateWithoutWorkorderInput, WorkorderEngineerUncheckedCreateWithoutWorkorderInput> | WorkorderEngineerCreateWithoutWorkorderInput[] | WorkorderEngineerUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutWorkorderInput | WorkorderEngineerCreateOrConnectWithoutWorkorderInput[]
+    upsert?: WorkorderEngineerUpsertWithWhereUniqueWithoutWorkorderInput | WorkorderEngineerUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: WorkorderEngineerCreateManyWorkorderInputEnvelope
+    set?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    disconnect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    delete?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+    update?: WorkorderEngineerUpdateWithWhereUniqueWithoutWorkorderInput | WorkorderEngineerUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: WorkorderEngineerUpdateManyWithWhereWithoutWorkorderInput | WorkorderEngineerUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
   }
 
   export type WorkorderCreateNestedOneWithoutHoursInput = {
@@ -22912,6 +24351,34 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFormsInput, UserUpdateWithoutFormsInput>, UserUncheckedUpdateWithoutFormsInput>
   }
 
+  export type WorkorderCreateNestedOneWithoutExtraEngineersInput = {
+    create?: XOR<WorkorderCreateWithoutExtraEngineersInput, WorkorderUncheckedCreateWithoutExtraEngineersInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutExtraEngineersInput
+    connect?: WorkorderWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutExtraWorkordersInput = {
+    create?: XOR<UserCreateWithoutExtraWorkordersInput, UserUncheckedCreateWithoutExtraWorkordersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExtraWorkordersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type WorkorderUpdateOneRequiredWithoutExtraEngineersNestedInput = {
+    create?: XOR<WorkorderCreateWithoutExtraEngineersInput, WorkorderUncheckedCreateWithoutExtraEngineersInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutExtraEngineersInput
+    upsert?: WorkorderUpsertWithoutExtraEngineersInput
+    connect?: WorkorderWhereUniqueInput
+    update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutExtraEngineersInput, WorkorderUpdateWithoutExtraEngineersInput>, WorkorderUncheckedUpdateWithoutExtraEngineersInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutExtraWorkordersNestedInput = {
+    create?: XOR<UserCreateWithoutExtraWorkordersInput, UserUncheckedCreateWithoutExtraWorkordersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExtraWorkordersInput
+    upsert?: UserUpsertWithoutExtraWorkordersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutExtraWorkordersInput, UserUpdateWithoutExtraWorkordersInput>, UserUncheckedUpdateWithoutExtraWorkordersInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -23220,6 +24687,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutAssignedUserInput = {
@@ -23245,6 +24713,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutAssignedUserInput = {
@@ -23254,6 +24723,26 @@ export namespace Prisma {
 
   export type WorkorderCreateManyAssignedUserInputEnvelope = {
     data: WorkorderCreateManyAssignedUserInput | WorkorderCreateManyAssignedUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkorderEngineerCreateWithoutUserInput = {
+    id?: string
+    workorder: WorkorderCreateNestedOneWithoutExtraEngineersInput
+  }
+
+  export type WorkorderEngineerUncheckedCreateWithoutUserInput = {
+    id?: string
+    workorderId: string
+  }
+
+  export type WorkorderEngineerCreateOrConnectWithoutUserInput = {
+    where: WorkorderEngineerWhereUniqueInput
+    create: XOR<WorkorderEngineerCreateWithoutUserInput, WorkorderEngineerUncheckedCreateWithoutUserInput>
+  }
+
+  export type WorkorderEngineerCreateManyUserInputEnvelope = {
+    data: WorkorderEngineerCreateManyUserInput | WorkorderEngineerCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -23350,6 +24839,31 @@ export namespace Prisma {
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
+  }
+
+  export type WorkorderEngineerUpsertWithWhereUniqueWithoutUserInput = {
+    where: WorkorderEngineerWhereUniqueInput
+    update: XOR<WorkorderEngineerUpdateWithoutUserInput, WorkorderEngineerUncheckedUpdateWithoutUserInput>
+    create: XOR<WorkorderEngineerCreateWithoutUserInput, WorkorderEngineerUncheckedCreateWithoutUserInput>
+  }
+
+  export type WorkorderEngineerUpdateWithWhereUniqueWithoutUserInput = {
+    where: WorkorderEngineerWhereUniqueInput
+    data: XOR<WorkorderEngineerUpdateWithoutUserInput, WorkorderEngineerUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WorkorderEngineerUpdateManyWithWhereWithoutUserInput = {
+    where: WorkorderEngineerScalarWhereInput
+    data: XOR<WorkorderEngineerUpdateManyMutationInput, WorkorderEngineerUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type WorkorderEngineerScalarWhereInput = {
+    AND?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
+    OR?: WorkorderEngineerScalarWhereInput[]
+    NOT?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
+    id?: StringFilter<"WorkorderEngineer"> | string
+    workorderId?: StringFilter<"WorkorderEngineer"> | string
+    userId?: StringFilter<"WorkorderEngineer"> | string
   }
 
   export type FormSubmissionUpsertWithWhereUniqueWithoutUserInput = {
@@ -23479,6 +24993,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutCustomerInput = {
@@ -23504,6 +25019,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutCustomerInput = {
@@ -23649,6 +25165,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutProjectInput = {
@@ -23674,6 +25191,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutProjectInput = {
@@ -23775,6 +25293,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     active?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
   }
 
@@ -23788,6 +25307,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     active?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -24028,6 +25548,26 @@ export namespace Prisma {
     create: XOR<WorkorderSignatureCreateWithoutWorkorderInput, WorkorderSignatureUncheckedCreateWithoutWorkorderInput>
   }
 
+  export type WorkorderEngineerCreateWithoutWorkorderInput = {
+    id?: string
+    user: UserCreateNestedOneWithoutExtraWorkordersInput
+  }
+
+  export type WorkorderEngineerUncheckedCreateWithoutWorkorderInput = {
+    id?: string
+    userId: string
+  }
+
+  export type WorkorderEngineerCreateOrConnectWithoutWorkorderInput = {
+    where: WorkorderEngineerWhereUniqueInput
+    create: XOR<WorkorderEngineerCreateWithoutWorkorderInput, WorkorderEngineerUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type WorkorderEngineerCreateManyWorkorderInputEnvelope = {
+    data: WorkorderEngineerCreateManyWorkorderInput | WorkorderEngineerCreateManyWorkorderInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DocumentUpsertWithWhereUniqueWithoutWorkorderInput = {
     where: DocumentWhereUniqueInput
     update: XOR<DocumentUpdateWithoutWorkorderInput, DocumentUncheckedUpdateWithoutWorkorderInput>
@@ -24077,6 +25617,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
   }
 
@@ -24090,6 +25631,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -24350,6 +25892,22 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WorkorderEngineerUpsertWithWhereUniqueWithoutWorkorderInput = {
+    where: WorkorderEngineerWhereUniqueInput
+    update: XOR<WorkorderEngineerUpdateWithoutWorkorderInput, WorkorderEngineerUncheckedUpdateWithoutWorkorderInput>
+    create: XOR<WorkorderEngineerCreateWithoutWorkorderInput, WorkorderEngineerUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type WorkorderEngineerUpdateWithWhereUniqueWithoutWorkorderInput = {
+    where: WorkorderEngineerWhereUniqueInput
+    data: XOR<WorkorderEngineerUpdateWithoutWorkorderInput, WorkorderEngineerUncheckedUpdateWithoutWorkorderInput>
+  }
+
+  export type WorkorderEngineerUpdateManyWithWhereWithoutWorkorderInput = {
+    where: WorkorderEngineerScalarWhereInput
+    data: XOR<WorkorderEngineerUpdateManyMutationInput, WorkorderEngineerUncheckedUpdateManyWithoutWorkorderInput>
+  }
+
   export type WorkorderCreateWithoutHoursInput = {
     id?: string
     title: string
@@ -24373,6 +25931,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutHoursInput = {
@@ -24398,6 +25957,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutHoursInput = {
@@ -24439,6 +25999,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutHoursInput = {
@@ -24464,6 +26025,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutMaterialsInput = {
@@ -24489,6 +26051,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutMaterialsInput = {
@@ -24514,6 +26077,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutMaterialsInput = {
@@ -24555,6 +26119,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutMaterialsInput = {
@@ -24580,6 +26145,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutHardwareInput = {
@@ -24605,6 +26171,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutHardwareInput = {
@@ -24630,6 +26197,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutHardwareInput = {
@@ -24671,6 +26239,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutHardwareInput = {
@@ -24696,6 +26265,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutPhotosInput = {
@@ -24721,6 +26291,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutPhotosInput = {
@@ -24746,6 +26317,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutPhotosInput = {
@@ -24787,6 +26359,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutPhotosInput = {
@@ -24812,6 +26385,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutSignatureInput = {
@@ -24837,6 +26411,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutSignatureInput = {
@@ -24862,6 +26437,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutSignatureInput = {
@@ -24903,6 +26479,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutSignatureInput = {
@@ -24928,6 +26505,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutDocumentsInput = {
@@ -24953,6 +26531,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutDocumentsInput = {
@@ -24978,6 +26557,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutDocumentsInput = {
@@ -25019,6 +26599,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutDocumentsInput = {
@@ -25044,6 +26625,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type CustomerCreateWithoutAssignmentsInput = {
@@ -25148,6 +26730,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutAssignmentInput = {
@@ -25173,6 +26756,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutAssignmentInput = {
@@ -25331,6 +26915,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     active?: boolean
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
   }
 
@@ -25344,6 +26929,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     active?: boolean
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -25418,6 +27004,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
   }
 
@@ -25431,6 +27018,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -25529,6 +27117,7 @@ export namespace Prisma {
     active?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFormsInput = {
@@ -25542,6 +27131,7 @@ export namespace Prisma {
     active?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFormsInput = {
@@ -25571,6 +27161,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFormsInput = {
@@ -25584,6 +27175,199 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type WorkorderCreateWithoutExtraEngineersInput = {
+    id?: string
+    title: string
+    status?: string
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    number: string
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    documents?: DocumentCreateNestedManyWithoutWorkorderInput
+    assignedUser?: UserCreateNestedOneWithoutWorkordersInput
+    assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
+    project?: ProjectCreateNestedOneWithoutWorkordersInput
+    customer?: CustomerCreateNestedOneWithoutWorkordersInput
+    hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+  }
+
+  export type WorkorderUncheckedCreateWithoutExtraEngineersInput = {
+    id?: string
+    title: string
+    status?: string
+    projectId?: string | null
+    customerId?: string | null
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    number: string
+    assignedUserId?: string | null
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    assignmentId?: string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
+    hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+  }
+
+  export type WorkorderCreateOrConnectWithoutExtraEngineersInput = {
+    where: WorkorderWhereUniqueInput
+    create: XOR<WorkorderCreateWithoutExtraEngineersInput, WorkorderUncheckedCreateWithoutExtraEngineersInput>
+  }
+
+  export type UserCreateWithoutExtraWorkordersInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutExtraWorkordersInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutExtraWorkordersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutExtraWorkordersInput, UserUncheckedCreateWithoutExtraWorkordersInput>
+  }
+
+  export type WorkorderUpsertWithoutExtraEngineersInput = {
+    update: XOR<WorkorderUpdateWithoutExtraEngineersInput, WorkorderUncheckedUpdateWithoutExtraEngineersInput>
+    create: XOR<WorkorderCreateWithoutExtraEngineersInput, WorkorderUncheckedCreateWithoutExtraEngineersInput>
+    where?: WorkorderWhereInput
+  }
+
+  export type WorkorderUpdateToOneWithWhereWithoutExtraEngineersInput = {
+    where?: WorkorderWhereInput
+    data: XOR<WorkorderUpdateWithoutExtraEngineersInput, WorkorderUncheckedUpdateWithoutExtraEngineersInput>
+  }
+
+  export type WorkorderUpdateWithoutExtraEngineersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    documents?: DocumentUpdateManyWithoutWorkorderNestedInput
+    assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
+    assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
+    project?: ProjectUpdateOneWithoutWorkordersNestedInput
+    customer?: CustomerUpdateOneWithoutWorkordersNestedInput
+    hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+  }
+
+  export type WorkorderUncheckedUpdateWithoutExtraEngineersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
+    hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+  }
+
+  export type UserUpsertWithoutExtraWorkordersInput = {
+    update: XOR<UserUpdateWithoutExtraWorkordersInput, UserUncheckedUpdateWithoutExtraWorkordersInput>
+    create: XOR<UserCreateWithoutExtraWorkordersInput, UserUncheckedCreateWithoutExtraWorkordersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutExtraWorkordersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutExtraWorkordersInput, UserUncheckedUpdateWithoutExtraWorkordersInput>
+  }
+
+  export type UserUpdateWithoutExtraWorkordersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutExtraWorkordersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssignmentUserCreateManyUserInput = {
@@ -25609,6 +27393,11 @@ export namespace Prisma {
     plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type WorkorderEngineerCreateManyUserInput = {
+    id?: string
+    workorderId: string
   }
 
   export type FormSubmissionCreateManyUserInput = {
@@ -25662,6 +27451,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutAssignedUserInput = {
@@ -25687,6 +27477,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutAssignedUserInput = {
@@ -25706,6 +27497,21 @@ export namespace Prisma {
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type WorkorderEngineerUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorder?: WorkorderUpdateOneRequiredWithoutExtraEngineersNestedInput
+  }
+
+  export type WorkorderEngineerUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type WorkorderEngineerUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
   }
 
   export type FormSubmissionUpdateWithoutUserInput = {
@@ -25880,6 +27686,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutCustomerInput = {
@@ -25905,6 +27712,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutCustomerInput = {
@@ -25968,6 +27776,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutProjectInput = {
@@ -25993,6 +27802,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutProjectInput = {
@@ -26059,6 +27869,11 @@ export namespace Prisma {
     url: string
     filename?: string | null
     createdAt?: Date | string
+  }
+
+  export type WorkorderEngineerCreateManyWorkorderInput = {
+    id?: string
+    userId: string
   }
 
   export type DocumentUpdateWithoutWorkorderInput = {
@@ -26202,6 +28017,21 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WorkorderEngineerUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutExtraWorkordersNestedInput
+  }
+
+  export type WorkorderEngineerUncheckedUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type WorkorderEngineerUncheckedUpdateManyWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type AssignmentUserCreateManyAssignmentInput = {
     id?: string
     userId: string
@@ -26300,6 +28130,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutAssignmentInput = {
@@ -26325,6 +28156,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutAssignmentInput = {

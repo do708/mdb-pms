@@ -24,6 +24,9 @@ export default function NewCustomerPage(){
     const [address,setAddress] =
         useState("");
 
+    const [color,setColor] =
+        useState("#2563eb");
+
     const [saving,setSaving] =
         useState(false);
 
@@ -80,7 +83,9 @@ export default function NewCustomerPage(){
 
                             phone,
 
-                            address
+                            address,
+
+                            color
 
                         })
 
@@ -291,9 +296,51 @@ export default function NewCustomerPage(){
                 />
 
 
+                <div className="
+                    flex
+                    items-center
+                    gap-3
+                ">
 
+                    <span className="text-sm text-gray-600">
 
+                        Kleur in de planning
 
+                    </span>
+
+                    <input
+
+                        type="color"
+
+                        value={color}
+
+                        onChange={(e)=>setColor(e.target.value)}
+
+                        className="
+                            h-10
+                            w-16
+                            border
+                            rounded-lg
+                            cursor-pointer
+                        "
+
+                    />
+
+                    <span
+
+                        className="
+                            inline-block
+                            w-8
+                            h-8
+                            rounded-full
+                            border
+                        "
+
+                        style={{ backgroundColor:color }}
+
+                    />
+
+                </div>
 
 
 

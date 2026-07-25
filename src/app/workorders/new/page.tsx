@@ -76,6 +76,10 @@ function NewWorkorderInner(){
         useState("");
 
 
+    const [pendingFiles,setPendingFiles] =
+        useState<File[]>([]);
+
+
     const [customerId,setCustomerId] =
         useState("");
 
@@ -277,6 +281,27 @@ function NewWorkorderInner(){
                     await response.json();
 
 
+                // Eventueel meegegeven bijlagen nu koppelen aan de nieuwe werkbon
+                for(const file of pendingFiles){
+
+                    const fileBody =
+                        new FormData();
+
+                    fileBody.append("file",file);
+
+                    fileBody.append("workorderId",created.id);
+
+                    await fetch(
+                        "/api/documents",
+                        {
+                            method:"POST",
+                            body:fileBody
+                        }
+                    );
+
+                }
+
+
                 router.push(
                     `/workorders/${created.id}`
                 );
@@ -416,7 +441,7 @@ function NewWorkorderInner(){
                             border
                             rounded-xl
                             p-3
-                            mt-1
+                            mt-2
                         "
 
                     />
@@ -509,7 +534,7 @@ function NewWorkorderInner(){
                             border
                             rounded-xl
                             p-3
-                            mt-1
+                            mt-2
                         "
 
                     />
@@ -538,7 +563,7 @@ function NewWorkorderInner(){
                             border
                             rounded-xl
                             p-3
-                            mt-1
+                            mt-2
                             min-h-24
                         "
 
@@ -580,7 +605,7 @@ function NewWorkorderInner(){
                                             border
                                             rounded-xl
                                             p-3
-                                            mt-1
+                                            mt-2
                                         "
 
                                     />
@@ -610,7 +635,7 @@ function NewWorkorderInner(){
                                             border
                                             rounded-xl
                                             p-3
-                                            mt-1
+                                            mt-2
                                         "
 
                                     />
@@ -640,7 +665,7 @@ function NewWorkorderInner(){
                                             border
                                             rounded-xl
                                             p-3
-                                            mt-1
+                                            mt-2
                                         "
 
                                     />
@@ -671,7 +696,7 @@ function NewWorkorderInner(){
                                         border
                                         rounded-xl
                                         p-3
-                                        mt-1
+                                        mt-2
                                         bg-white
                                     "
 
@@ -730,21 +755,131 @@ function NewWorkorderInner(){
                                         bg-amber-50
                                         rounded-xl
                                         p-3
-                                        mt-1
+                                        mt-2
                                         min-h-24
                                     "
 
                                 />
 
-                                <span className="text-xs text-gray-400">
+                            </label>
 
-                                    Bijlagen (plattegronden, foto&apos;s) kun je
-                                    toevoegen nadat de werkbon is klaargezet,
-                                    via &quot;Werkbon wijzigen&quot;.
+
+                            <div>
+
+                                <span className="text-sm text-gray-600">
+
+                                    Bijlagen (plattegronden, foto&apos;s)
 
                                 </span>
 
-                            </label>
+
+                                <label className="
+                                    mt-2
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    border-2
+                                    border-dashed
+                                    border-gray-300
+                                    rounded-xl
+                                    p-4
+                                    text-center
+                                    cursor-pointer
+                                    hover:bg-gray-50
+                                ">
+
+                                    <span className="text-2xl">📁</span>
+
+                                    <span className="text-sm text-gray-600">
+
+                                        Klik om bestanden te kiezen
+
+                                    </span>
+
+                                    <input
+
+                                        type="file"
+
+                                        multiple
+
+                                        className="hidden"
+
+                                        onChange={(e)=>{
+                                            if(e.target.files){
+                                                setPendingFiles(prev=>[
+                                                    ...prev,
+                                                    ...Array.from(e.target.files!)
+                                                ]);
+                                            }
+                                            e.target.value = "";
+                                        }}
+
+                                    />
+
+                                </label>
+
+
+                                {
+                                    pendingFiles.length > 0 && (
+
+                                        <div className="mt-2 space-y-1">
+
+                                            {
+                                                pendingFiles.map((file,index)=>(
+
+                                                    <div
+
+                                                        key={index}
+
+                                                        className="
+                                                            flex
+                                                            justify-between
+                                                            items-center
+                                                            text-sm
+                                                            border
+                                                            rounded-lg
+                                                            px-2
+                                                            py-1
+                                                        "
+
+                                                    >
+
+                                                        <span className="truncate">
+
+                                                            📎 {file.name}
+
+                                                        </span>
+
+                                                        <button
+
+                                                            type="button"
+
+                                                            onClick={()=>
+                                                                setPendingFiles(prev=>
+                                                                    prev.filter((_,i)=>i !== index)
+                                                                )
+                                                            }
+
+                                                            className="text-red-500 ml-2"
+
+                                                        >
+
+                                                            ✕
+
+                                                        </button>
+
+                                                    </div>
+
+                                                ))
+                                            }
+
+                                        </div>
+
+                                    )
+                                }
+
+                            </div>
 
                         </>
 

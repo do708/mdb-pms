@@ -74,6 +74,14 @@ export default function ArchivePage(){
         useState("");
 
 
+    const [customerOptions,setCustomerOptions] =
+        useState<{ id:string; name:string }[]>([]);
+
+
+    const [engineerOptions,setEngineerOptions] =
+        useState<{ id:string; name:string | null }[]>([]);
+
+
     const [from,setFrom] =
         useState("");
 
@@ -155,6 +163,39 @@ export default function ArchivePage(){
         search();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+
+
+    // Opties voor de dropdowns ophalen
+    useEffect(()=>{
+
+        (async()=>{
+
+            try {
+
+                const [c,e] =
+                    await Promise.all([
+                        fetch("/api/customers"),
+                        fetch("/api/engineers")
+                    ]);
+
+                const cData = await c.json();
+                const eData = await e.json();
+
+                setCustomerOptions(
+                    Array.isArray(cData) ? cData : []
+                );
+
+                setEngineerOptions(
+                    Array.isArray(eData) ? eData : []
+                );
+
+            } catch {
+                // stil falen; dan blijven het lege dropdowns
+            }
+
+        })();
+
     },[]);
 
 
@@ -243,37 +284,67 @@ export default function ArchivePage(){
 
                     />
 
-                    <input
+                    <select
 
                         value={customer}
 
                         onChange={(e)=>setCustomer(e.target.value)}
 
-                        placeholder="Opdrachtgever"
-
                         className="
                             border
                             rounded-xl
                             p-2.5
+                            bg-white
                         "
 
-                    />
+                    >
 
-                    <input
+                        <option value="">Alle opdrachtgevers</option>
+
+                        {
+                            customerOptions.map(c=>(
+
+                                <option key={c.id} value={c.name}>
+
+                                    {c.name}
+
+                                </option>
+
+                            ))
+                        }
+
+                    </select>
+
+                    <select
 
                         value={engineer}
 
                         onChange={(e)=>setEngineer(e.target.value)}
 
-                        placeholder="Monteur"
-
                         className="
                             border
                             rounded-xl
                             p-2.5
+                            bg-white
                         "
 
-                    />
+                    >
+
+                        <option value="">Alle monteurs</option>
+
+                        {
+                            engineerOptions.map(e=>(
+
+                                <option key={e.id} value={e.name ?? ""}>
+
+                                    {e.name}
+
+                                </option>
+
+                            ))
+                        }
+
+                    </select>
 
                 </div>
 

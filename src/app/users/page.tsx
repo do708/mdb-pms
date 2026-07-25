@@ -246,55 +246,77 @@ export default function UsersPage(){
                                 className="
                                     border
                                     rounded-xl
-                                    p-4
+                                    p-3
+                                    flex
+                                    items-center
+                                    justify-between
+                                    gap-3
                                 "
 
                             >
 
-                                <p className="font-bold">
+                                <div className="min-w-0">
 
-                                    {user.name || "Geen naam"}
+                                    <div className="
+                                        flex
+                                        items-center
+                                        gap-2
+                                        flex-wrap
+                                    ">
 
-                                </p>
+                                        <span className="font-bold text-sm">
 
+                                            {user.name || "Geen naam"}
 
-                                <p>
+                                        </span>
 
-                                    {user.email}
+                                        <span className="
+                                            text-xs
+                                            bg-gray-100
+                                            rounded-full
+                                            px-2
+                                            py-0.5
+                                        ">
 
-                                </p>
+                                            {user.role}
 
+                                        </span>
 
-                                <p>
+                                        {
+                                            !user.active && (
 
-                                    Rol:
-                                    {" "}
-                                    {user.role}
+                                                <span className="
+                                                    text-xs
+                                                    bg-red-100
+                                                    text-red-700
+                                                    rounded-full
+                                                    px-2
+                                                    py-0.5
+                                                ">
 
-                                </p>
+                                                    Uitgeschakeld
 
+                                                </span>
 
-                                <p>
+                                            )
+                                        }
 
-                                    Status:
-                                    {" "}
+                                    </div>
 
-                                    {
-                                        user.active
-                                        ?
-                                        "Actief"
-                                        :
-                                        "Uitgeschakeld"
-                                    }
+                                    <p className="text-xs text-gray-500 truncate">
 
-                                </p>
+                                        {user.email}
+
+                                    </p>
+
+                                </div>
 
 
                                 <div className="
-                                    mt-3
                                     flex
-                                    gap-3
+                                    gap-2
                                     items-center
+                                    shrink-0
                                 ">
 
                                     <Link

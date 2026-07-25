@@ -411,6 +411,34 @@ export async function POST(
 
 
 
+        // Extra monteurs koppelen (naast de hoofdmonteur)
+        if(Array.isArray(body.extraEngineerIds)){
+
+            const unique =
+                [...new Set(
+                    body.extraEngineerIds.filter(
+                        (uid:string)=>uid && uid !== assignedUserId
+                    )
+                )] as string[];
+
+            for(const uid of unique){
+
+                await prisma.workorderEngineer.create({
+                    data:{
+                        workorderId:workorder.id,
+                        userId:uid
+                    }
+                }).catch(()=>{
+                    // dubbele koppeling negeren
+                });
+
+            }
+
+        }
+
+
+
+
 
 
 

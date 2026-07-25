@@ -18,6 +18,7 @@ model User {
   active      Boolean          @default(true)
   assignments AssignmentUser[]
   workorders  Workorder[]
+  extraWorkorders WorkorderEngineer[]
   forms       FormSubmission[]
 }
 
@@ -75,6 +76,7 @@ model Workorder {
   materials      WorkorderMaterial[]
   photos         WorkorderPhoto[]
   signature      WorkorderSignature?
+  extraEngineers WorkorderEngineer[]
 }
 
 model WorkorderHour {
@@ -191,4 +193,15 @@ model FormSubmission {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
+}
+
+
+model WorkorderEngineer {
+  id          String    @id @default(cuid())
+  workorderId String
+  userId      String
+  workorder   Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@unique([workorderId, userId])
 }

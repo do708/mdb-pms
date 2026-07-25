@@ -72,7 +72,18 @@ export async function GET(){
 
                     },
 
-                    assignedUser:true
+                    assignedUser:true,
+
+                    extraEngineers:{
+                        include:{
+                            user:{
+                                select:{
+                                    id:true,
+                                    name:true
+                                }
+                            }
+                        }
+                    }
 
                 }
 

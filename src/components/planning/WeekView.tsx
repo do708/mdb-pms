@@ -43,6 +43,9 @@ interface WeekViewProps {
 
     leave?:any[];
 
+    // Alle monteurs (zodat ook lege monteurs een rij krijgen)
+    engineers?:{ id:string; name:string | null }[];
+
     // Maandag van de te tonen week; standaard deze week
     weekStart?:Date;
 
@@ -55,6 +58,8 @@ export default function WeekView({
     items,
 
     leave = [],
+
+    engineers = [],
 
     weekStart
 
@@ -134,30 +139,35 @@ export default function WeekView({
 
 
     // Monteurs afleiden uit de toegewezen werkbonnen
-    const users = Array.from(
+    const users =
+        engineers.length > 0
+        ?
+        engineers
+        :
+        (Array.from(
 
-        new Map(
+            new Map(
 
-            items
+                items
 
-            .filter(
-                item=>item.assignedUser
+                .filter(
+                    item=>item.assignedUser
+                )
+
+                .map(
+                    item=>[
+                        item.assignedUser.id,
+                        item.assignedUser
+                    ]
+                )
+
             )
+            .values()
 
-            .map(
-                item=>[
-                    item.assignedUser.id,
-                    item.assignedUser
-                ]
-            )
-
-        )
-        .values()
-
-    ) as {
-        id:string;
-        name:string | null;
-    }[];
+        ) as {
+            id:string;
+            name:string | null;
+        }[]);
 
 
 
@@ -213,20 +223,24 @@ export default function WeekView({
 
 
             <div className="
-                min-w-[1100px]
+                min-w-[900px]
             ">
 
 
 
-                <div className="
-                    grid
-                    grid-cols-6
-                    gap-2
-                    mb-3
-                ">
+                <div
+                    className="
+                        grid
+                        gap-2
+                        mb-3
+                    "
+                    style={{
+                        gridTemplateColumns:"90px repeat(5, 1fr)"
+                    }}
+                >
 
 
-                    <div className="font-bold">
+                    <div className="font-bold text-sm">
 
                         Monteur
 
@@ -287,18 +301,23 @@ export default function WeekView({
 
                             className="
                                 grid
-                                grid-cols-6
                                 gap-2
                                 border-t
                                 py-3
                             "
+
+                            style={{
+                                gridTemplateColumns:"90px repeat(5, 1fr)"
+                            }}
 
                         >
 
 
 
                             <div className="
-                                font-bold
+                                font-medium
+                                text-xs
+                                break-words
                             ">
 
                                 👷 {user.name}
@@ -356,11 +375,17 @@ export default function WeekView({
                                             .filter(item=>{
 
 
-                                                if(
-                                                    item.assignedUser?.id
-                                                    !==
-                                                    user.id
-                                                ){
+                                                const isPrimary =
+                                                    item.assignedUser?.id === user.id;
+
+                                                const isExtra =
+                                                    Array.isArray(item.extraEngineers)
+                                                    &&
+                                                    item.extraEngineers.some(
+                                                        (e:any)=>e.user?.id === user.id
+                                                    );
+
+                                                if(!isPrimary && !isExtra){
                                                     return false;
                                                 }
 
@@ -414,12 +439,14 @@ export default function WeekView({
 
                                                     className="
                                                         block
-                                                        text-xs
                                                         text-white
-                                                        rounded-lg
-                                                        p-2
-                                                        mb-2
+                                                        rounded-md
+                                                        px-1.5
+                                                        py-1
+                                                        mb-1
+                                                        leading-tight
                                                     "
+
 
                                                     style={{
 
@@ -457,20 +484,21 @@ export default function WeekView({
                                                         })()
                                                     }
 
-                                                    <strong>
+                                                    <strong className="text-[11px] block truncate">
 
                                                         {item.title}
 
                                                     </strong>
 
 
-                                                    <br/>
+                                                    <span className="text-[10px] block truncate opacity-90">
 
+                                                        {
+                                                            (item.customer?.name ?? item.project?.customer?.name)
+                                                            ?? "Onbekende klant"
+                                                        }
 
-                                                    {
-                                                        (item.customer?.name ?? item.project?.customer?.name)
-                                                        ?? "Onbekende klant"
-                                                    }
+                                                    </span>
 
 
                                                 </Link>

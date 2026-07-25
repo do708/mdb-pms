@@ -274,6 +274,12 @@ exports.Prisma.FormSubmissionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WorkorderEngineerScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  userId: 'userId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -319,7 +325,8 @@ exports.Prisma.ModelName = {
   Assignment: 'Assignment',
   AssignmentUser: 'AssignmentUser',
   Invoice: 'Invoice',
-  FormSubmission: 'FormSubmission'
+  FormSubmission: 'FormSubmission',
+  WorkorderEngineer: 'WorkorderEngineer'
 };
 
 /**

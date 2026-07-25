@@ -97,6 +97,10 @@ export default function PlanningPage(){
         useState<any[]>([]);
 
 
+    const [engineers,setEngineers] =
+        useState<any[]>([]);
+
+
 
     const [conflicts,setConflicts] =
         useState<Conflict[]>([]);
@@ -184,6 +188,21 @@ export default function PlanningPage(){
             Array.isArray(planningData?.leave)
             ?
             planningData.leave
+            :
+            []
+        );
+
+
+        const engineersResponse =
+            await fetch("/api/engineers");
+
+        const engineersData =
+            await engineersResponse.json();
+
+        setEngineers(
+            Array.isArray(engineersData)
+            ?
+            engineersData
             :
             []
         );
@@ -321,15 +340,6 @@ export default function PlanningPage(){
                     Planning
 
                 </h1>
-
-
-                <p className="
-                    text-gray-500
-                ">
-
-                    Werkplanning MDB PMS
-
-                </p>
 
 
             </header>
@@ -614,6 +624,8 @@ export default function PlanningPage(){
                         items={items}
 
                         leave={leave}
+
+                        engineers={engineers}
 
                         weekStart={weekStart}
 

@@ -396,80 +396,70 @@ export default function WorkordersPage(){
                                 bg-white
                                 border
                                 rounded-xl
-                                p-4
+                                p-3
+                                flex
+                                items-center
+                                justify-between
+                                gap-3
                             "
 
                         >
 
 
-                            <h2 className="
-                                text-xl
-                                font-bold
-                            ">
+                            <div className="min-w-0">
 
-                                {workorder.number}
+                                <div className="
+                                    flex
+                                    items-center
+                                    gap-2
+                                    flex-wrap
+                                ">
 
-                            </h2>
+                                    <span className="font-bold text-sm">
 
+                                        {workorder.number}
 
-                            <p>
+                                    </span>
 
-                                {workorder.title}
+                                    <span className={`px-2 py-0.5 rounded-full text-xs ${getStatus(workorder.status).badge}`}>
 
-                            </p>
+                                        {getStatus(workorder.status).label}
 
+                                    </span>
 
-                            <p className="mt-2">
-
-                                🏢 {(workorder.customer?.name ?? workorder.project?.customer.name ?? "—")}
-
-                            </p>
-
-
-                            <p>
-
-                                📍 {workorder.location ?? workorder.project?.name ?? ""}
-
-                            </p>
+                                </div>
 
 
+                                <p className="text-sm truncate">
 
-                            <p>
+                                    {workorder.title}
 
-                                👷 {
-
-                                    workorder.assignedUser?.name
-                                    ||
-                                    "Geen monteur"
-
-                                }
-
-                            </p>
+                                </p>
 
 
+                                <p className="text-xs text-gray-500 truncate">
 
-                            <p className="mt-2">
+                                    🏢 {(workorder.customer?.name ?? workorder.project?.customer.name ?? "—")}
 
-Status:
-                                {" "}
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${getStatus(workorder.status).badge}`}>
-                                    {getStatus(workorder.status).label}
-                                </span>
+                                    {" · 📍 "}
 
-                            </p>
+                                    {workorder.location ?? workorder.project?.name ?? "—"}
 
+                                    {" · 👷 "}
 
+                                    {workorder.assignedUser?.name || "Geen monteur"}
 
+                                </p>
 
-
+                            </div>
 
 
                             <div className="
                                 flex
-                                gap-3
-                                mt-4
+                                gap-2
+                                items-center
+                                shrink-0
                             ">
-
 
                                 <Link
 
@@ -478,9 +468,10 @@ Status:
                                     className="
                                         bg-black
                                         text-white
-                                        px-4
-                                        py-3
-                                        rounded-xl
+                                        px-3
+                                        py-1.5
+                                        rounded-lg
+                                        text-sm
                                     "
 
                                 >
@@ -490,17 +481,16 @@ Status:
                                 </Link>
 
 
-
-
                                 <a
 
                                     href={`/api/workorders/${workorder.id}/pdf`}
 
                                     className="
                                         border
-                                        px-4
-                                        py-3
-                                        rounded-xl
+                                        px-3
+                                        py-1.5
+                                        rounded-lg
+                                        text-sm
                                     "
 
                                 >
@@ -521,16 +511,14 @@ Status:
 
                                             onDeleted={load}
 
+                                            compact
+
                                         />
 
                                     )
                                 }
 
-
-
                             </div>
-
-
 
 
                         </div>
