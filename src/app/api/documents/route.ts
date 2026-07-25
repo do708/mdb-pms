@@ -130,6 +130,10 @@ export async function POST(
             form.get("file") as File | null;
 
 
+        const workorderId =
+            (form.get("workorderId") as string | null) || null;
+
+
         if(!file){
 
             return NextResponse.json(
@@ -209,7 +213,9 @@ export async function POST(
                     type:
                         extension,
 
-                    url
+                    url,
+
+                    workorderId
 
                 }
 

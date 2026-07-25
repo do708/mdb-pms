@@ -22,6 +22,16 @@ interface Workorder {
 
     internalNotes:string | null;
 
+    documents:{
+
+        id:string;
+
+        name:string;
+
+        url:string;
+
+    }[];
+
     formData:unknown;
 
     assignedUser:{
@@ -539,6 +549,108 @@ async function completeWorkorder(){
                 </section>
 
             )}
+
+
+
+
+            {
+                workorder.documents?.length > 0 && (
+
+                    <section className="
+                        bg-white
+                        border
+                        rounded-2xl
+                        p-4
+                        mb-4
+                    ">
+
+                        <h2 className="
+                            font-bold
+                            mb-2
+                        ">
+
+                            📎 Bijlagen van kantoor
+
+                        </h2>
+
+
+                        <div className="space-y-2">
+
+                            {
+                                workorder.documents.map(doc=>{
+
+
+                                    const isImage =
+                                        /\.(png|jpe?g|gif|webp)$/i
+                                        .test(doc.name);
+
+
+                                    return (
+
+                                        <a
+
+                                            key={doc.id}
+
+                                            href={doc.url}
+
+                                            target="_blank"
+
+                                            className="
+                                                block
+                                                border
+                                                rounded-xl
+                                                p-2
+                                                hover:bg-gray-50
+                                            "
+
+                                        >
+
+                                            {
+                                                isImage
+                                                ?
+
+                                                (
+                                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                                    <img
+
+                                                        src={doc.url}
+
+                                                        alt={doc.name}
+
+                                                        className="
+                                                            max-h-48
+                                                            rounded-lg
+                                                            mb-1
+                                                        "
+
+                                                    />
+                                                )
+                                                :
+                                                null
+                                            }
+
+                                            <span className="
+                                                text-sm
+                                                text-blue-700
+                                            ">
+
+                                                📎 {doc.name}
+
+                                            </span>
+
+                                        </a>
+
+                                    );
+
+                                })
+                            }
+
+                        </div>
+
+                    </section>
+
+                )
+            }
 
 
 

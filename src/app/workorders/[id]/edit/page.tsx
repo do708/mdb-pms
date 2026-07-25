@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import MaterialsForm from "@/components/workorders/MaterialsForm";
+import DocumentDropzone from "@/components/documents/DocumentDropzone";
+import DeleteButton from "@/components/DeleteButton";
 
 
 
@@ -79,6 +81,14 @@ export default function EditWorkorderPage(){
 
     const [plannedDate,setPlannedDate] =
         useState("");
+
+
+    const [documents,setDocuments] =
+        useState<{
+            id:string;
+            name:string;
+            url:string;
+        }[]>([]);
 
 
     const [loading,setLoading] =
@@ -172,6 +182,14 @@ export default function EditWorkorderPage(){
                     ""
                 );
 
+                setDocuments(
+                    Array.isArray(wo.documents)
+                    ?
+                    wo.documents
+                    :
+                    []
+                );
+
 
             } else {
 
@@ -192,6 +210,34 @@ export default function EditWorkorderPage(){
 
 
     },[id]);
+
+
+
+
+    async function reloadDocuments(){
+
+
+        const response =
+            await fetch(`/api/workorders/${id}`);
+
+
+        if(response.ok){
+
+            const wo =
+                await response.json();
+
+            setDocuments(
+                Array.isArray(wo.documents)
+                ?
+                wo.documents
+                :
+                []
+            );
+
+        }
+
+
+    }
 
 
 
@@ -606,6 +652,91 @@ export default function EditWorkorderPage(){
                     />
 
                 </label>
+
+
+                <div>
+
+                    <p className="text-sm text-gray-600 mb-2">
+
+                        Bijlagen voor de monteur (plattegronden, foto&apos;s)
+
+                    </p>
+
+
+                    <DocumentDropzone
+
+                        workorderId={id}
+
+                        onUploaded={reloadDocuments}
+
+                    />
+
+
+                    {
+                        documents.length > 0 && (
+
+                            <div className="mt-3 space-y-2">
+
+                                {
+                                    documents.map(doc=>(
+
+                                        <div
+
+                                            key={doc.id}
+
+                                            className="
+                                                flex
+                                                justify-between
+                                                items-center
+                                                border
+                                                rounded-xl
+                                                p-2
+                                            "
+
+                                        >
+
+                                            <a
+
+                                                href={doc.url}
+
+                                                target="_blank"
+
+                                                className="
+                                                    text-sm
+                                                    text-blue-700
+                                                    truncate
+                                                "
+
+                                            >
+
+                                                📎 {doc.name}
+
+                                            </a>
+
+
+                                            <DeleteButton
+
+                                                url={`/api/documents/${doc.id}`}
+
+                                                label={`bijlage "${doc.name}"`}
+
+                                                onDeleted={reloadDocuments}
+
+                                                compact
+
+                                            />
+
+                                        </div>
+
+                                    ))
+                                }
+
+                            </div>
+
+                        )
+                    }
+
+                </div>
 
 
             </section>

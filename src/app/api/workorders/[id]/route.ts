@@ -78,6 +78,8 @@ export async function GET(
 
 customer:true,
 
+                    documents:true,
+
                     project:{
 
                         include:{

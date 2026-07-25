@@ -8,13 +8,18 @@ interface Props {
 
     onUploaded:()=>void;
 
+    // Optioneel: koppel de bijlage aan een werkbon (voor de monteur)
+    workorderId?:string;
+
 }
 
 
 
 export default function DocumentDropzone({
 
-    onUploaded
+    onUploaded,
+
+    workorderId
 
 }:Props){
 
@@ -57,6 +62,10 @@ export default function DocumentDropzone({
                     new FormData();
 
                 body.append("file",file);
+
+                if(workorderId){
+                    body.append("workorderId",workorderId);
+                }
 
 
                 const response =

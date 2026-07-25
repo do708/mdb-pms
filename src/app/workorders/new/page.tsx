@@ -646,6 +646,14 @@ export default function NewWorkorderPage(){
 
                                 />
 
+                                <span className="text-xs text-gray-400">
+
+                                    Bijlagen (plattegronden, foto&apos;s) kun je
+                                    toevoegen nadat de werkbon is klaargezet,
+                                    via &quot;Werkbon wijzigen&quot;.
+
+                                </span>
+
                             </label>
 
                         </>
