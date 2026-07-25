@@ -5805,6 +5805,7 @@ export namespace Prisma {
     number: string | null
     assignedUserId: string | null
     plannedDate: Date | null
+    plannedEndDate: Date | null
     assignmentId: string | null
   }
 
@@ -5823,6 +5824,7 @@ export namespace Prisma {
     number: string | null
     assignedUserId: string | null
     plannedDate: Date | null
+    plannedEndDate: Date | null
     assignmentId: string | null
   }
 
@@ -5841,6 +5843,7 @@ export namespace Prisma {
     number: number
     assignedUserId: number
     plannedDate: number
+    plannedEndDate: number
     assignmentId: number
     formData: number
     _all: number
@@ -5862,6 +5865,7 @@ export namespace Prisma {
     number?: true
     assignedUserId?: true
     plannedDate?: true
+    plannedEndDate?: true
     assignmentId?: true
   }
 
@@ -5880,6 +5884,7 @@ export namespace Prisma {
     number?: true
     assignedUserId?: true
     plannedDate?: true
+    plannedEndDate?: true
     assignmentId?: true
   }
 
@@ -5898,6 +5903,7 @@ export namespace Prisma {
     number?: true
     assignedUserId?: true
     plannedDate?: true
+    plannedEndDate?: true
     assignmentId?: true
     formData?: true
     _all?: true
@@ -5990,6 +5996,7 @@ export namespace Prisma {
     number: string
     assignedUserId: string | null
     plannedDate: Date | null
+    plannedEndDate: Date | null
     assignmentId: string | null
     formData: JsonValue | null
     _count: WorkorderCountAggregateOutputType | null
@@ -6026,6 +6033,7 @@ export namespace Prisma {
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
+    plannedEndDate?: boolean
     assignmentId?: boolean
     formData?: boolean
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
@@ -6056,6 +6064,7 @@ export namespace Prisma {
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
+    plannedEndDate?: boolean
     assignmentId?: boolean
     formData?: boolean
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -6079,6 +6088,7 @@ export namespace Prisma {
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
+    plannedEndDate?: boolean
     assignmentId?: boolean
     formData?: boolean
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -6102,11 +6112,12 @@ export namespace Prisma {
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
+    plannedEndDate?: boolean
     assignmentId?: boolean
     formData?: boolean
   }
 
-  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "createdAt" | "updatedAt" | "description" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "assignmentId" | "formData", ExtArgs["result"]["workorder"]>
+  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "createdAt" | "updatedAt" | "description" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "assignmentId" | "formData", ExtArgs["result"]["workorder"]>
   export type WorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -6162,6 +6173,7 @@ export namespace Prisma {
       number: string
       assignedUserId: string | null
       plannedDate: Date | null
+      plannedEndDate: Date | null
       assignmentId: string | null
       formData: Prisma.JsonValue | null
     }, ExtArgs["result"]["workorder"]>
@@ -6611,6 +6623,7 @@ export namespace Prisma {
     readonly number: FieldRef<"Workorder", 'String'>
     readonly assignedUserId: FieldRef<"Workorder", 'String'>
     readonly plannedDate: FieldRef<"Workorder", 'DateTime'>
+    readonly plannedEndDate: FieldRef<"Workorder", 'DateTime'>
     readonly assignmentId: FieldRef<"Workorder", 'String'>
     readonly formData: FieldRef<"Workorder", 'Json'>
   }
@@ -18539,6 +18552,7 @@ export namespace Prisma {
     number: 'number',
     assignedUserId: 'assignedUserId',
     plannedDate: 'plannedDate',
+    plannedEndDate: 'plannedEndDate',
     assignmentId: 'assignmentId',
     formData: 'formData'
   };
@@ -19049,6 +19063,7 @@ export namespace Prisma {
     number?: StringFilter<"Workorder"> | string
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     documents?: DocumentListRelationFilter
@@ -19078,6 +19093,7 @@ export namespace Prisma {
     number?: SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
+    plannedEndDate?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
     documents?: DocumentOrderByRelationAggregateInput
@@ -19110,6 +19126,7 @@ export namespace Prisma {
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     documents?: DocumentListRelationFilter
@@ -19139,6 +19156,7 @@ export namespace Prisma {
     number?: SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
+    plannedEndDate?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
     _count?: WorkorderCountOrderByAggregateInput
@@ -19164,6 +19182,7 @@ export namespace Prisma {
     number?: StringWithAggregatesFilter<"Workorder"> | string
     assignedUserId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
+    plannedEndDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     assignmentId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     formData?: JsonNullableWithAggregatesFilter<"Workorder">
   }
@@ -20113,6 +20132,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -20141,6 +20161,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -20163,6 +20184,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -20191,6 +20213,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -20216,6 +20239,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -20232,6 +20256,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
 
@@ -20250,6 +20275,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -21353,6 +21379,7 @@ export namespace Prisma {
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
+    plannedEndDate?: SortOrder
     assignmentId?: SortOrder
     formData?: SortOrder
   }
@@ -21372,6 +21399,7 @@ export namespace Prisma {
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
+    plannedEndDate?: SortOrder
     assignmentId?: SortOrder
   }
 
@@ -21390,6 +21418,7 @@ export namespace Prisma {
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
+    plannedEndDate?: SortOrder
     assignmentId?: SortOrder
   }
 
@@ -23180,6 +23209,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -23206,6 +23236,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -23316,6 +23347,7 @@ export namespace Prisma {
     number?: StringFilter<"Workorder"> | string
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
   }
@@ -23436,6 +23468,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -23462,6 +23495,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -23604,6 +23638,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -23630,6 +23665,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -24326,6 +24362,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -24353,6 +24390,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -24390,6 +24428,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -24417,6 +24456,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -24438,6 +24478,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -24465,6 +24506,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -24502,6 +24544,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -24529,6 +24572,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -24550,6 +24594,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -24577,6 +24622,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -24614,6 +24660,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -24641,6 +24688,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -24662,6 +24710,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -24689,6 +24738,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -24726,6 +24776,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -24753,6 +24804,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -24774,6 +24826,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -24801,6 +24854,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
@@ -24838,6 +24892,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -24865,6 +24920,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -24886,6 +24942,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -24913,6 +24970,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
@@ -24950,6 +25008,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -24977,6 +25036,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -25077,6 +25137,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
@@ -25104,6 +25165,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
@@ -25544,6 +25606,7 @@ export namespace Prisma {
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -25588,6 +25651,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -25614,6 +25678,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -25638,6 +25703,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -25709,6 +25775,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -25802,6 +25869,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -25828,6 +25896,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -25852,6 +25921,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -25870,6 +25940,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -25886,6 +25957,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -25912,6 +25984,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -25936,6 +26009,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
@@ -26157,6 +26231,7 @@ export namespace Prisma {
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
 
@@ -26214,6 +26289,7 @@ export namespace Prisma {
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
@@ -26241,6 +26317,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -26265,6 +26342,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
   }
 

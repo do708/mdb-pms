@@ -128,7 +128,7 @@ export default function NotesPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
@@ -183,8 +183,8 @@ export default function NotesPage(){
                                 bg-amber-50
                                 border
                                 border-amber-300
-                                rounded-2xl
-                                p-5
+                                rounded-xl
+                                p-4
                                 hover:bg-amber-100
                             "
 

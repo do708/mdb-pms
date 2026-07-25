@@ -191,7 +191,7 @@ export default function ProjectsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
             ">
 
 
@@ -238,7 +238,7 @@ export default function ProjectsPage(){
                                     key={project.id}
 
                                     className="
-                                        p-5
+                                        p-4
                                         flex
                                         justify-between
                                         items-center

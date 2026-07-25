@@ -41,13 +41,18 @@ interface WeekViewProps {
 
     items:any[];
 
+    // Maandag van de te tonen week; standaard deze week
+    weekStart?:Date;
+
 }
 
 
 
 export default function WeekView({
 
-    items
+    items,
+
+    weekStart
 
 }:WeekViewProps){
 
@@ -57,12 +62,18 @@ export default function WeekView({
 
 
 
-    const startOfWeek = new Date(today);
-
-
-    startOfWeek.setDate(
-        today.getDate() - today.getDay() + 1
-    );
+    const startOfWeek =
+        weekStart
+        ?
+        new Date(weekStart)
+        :
+        (()=>{
+            const d = new Date(today);
+            d.setDate(
+                today.getDate() - today.getDay() + 1
+            );
+            return d;
+        })();
 
 
 
@@ -82,6 +93,16 @@ export default function WeekView({
     );
 
 
+
+
+    function isoDate(d:Date):string {
+
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2,"0");
+        const day = String(d.getDate()).padStart(2,"0");
+        return `${y}-${m}-${day}`;
+
+    }
 
 
     // Monteurs afleiden uit de toegewezen werkbonnen
@@ -188,13 +209,19 @@ export default function WeekView({
                         days.map(day=>(
 
 
-                            <div
+                            <Link
 
                                 key={day.toISOString()}
+
+                                href={`/workorders/new?date=${isoDate(day)}`}
+
+                                title="Werkbon klaarzetten op deze dag"
 
                                 className="
                                     font-bold
                                     text-center
+                                    hover:text-blue-600
+                                    hover:underline
                                 "
 
                             >
@@ -210,7 +237,7 @@ export default function WeekView({
                                 }
 
 
-                            </div>
+                            </Link>
 
 
                         ))
@@ -400,6 +427,32 @@ export default function WeekView({
                                             ))
 
                                         }
+
+
+                                        <Link
+
+                                            href={`/workorders/new?date=${isoDate(day)}&engineer=${user.id}`}
+
+                                            title="Werkbon klaarzetten voor deze monteur op deze dag"
+
+                                            className="
+                                                block
+                                                text-center
+                                                text-xs
+                                                text-gray-400
+                                                border
+                                                border-dashed
+                                                rounded-lg
+                                                py-1
+                                                hover:bg-blue-50
+                                                hover:text-blue-600
+                                            "
+
+                                        >
+
+                                            + plannen
+
+                                        </Link>
 
 
 

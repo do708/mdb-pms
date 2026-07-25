@@ -151,7 +151,7 @@ export default function ReportsPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
@@ -186,7 +186,7 @@ export default function ReportsPage(){
                     bg-white
                     border
                     rounded-2xl
-                    p-5
+                    p-4
                 ">
 
                     <p className="text-gray-500">
@@ -207,7 +207,7 @@ export default function ReportsPage(){
                     bg-white
                     border
                     rounded-2xl
-                    p-5
+                    p-4
                 ">
 
                     <p className="text-gray-500">
@@ -228,7 +228,7 @@ export default function ReportsPage(){
                     bg-white
                     border
                     rounded-2xl
-                    p-5
+                    p-4
                 ">
 
                     <p className="text-gray-500">
@@ -253,8 +253,8 @@ export default function ReportsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
-                p-5
+                rounded-xl
+                p-4
             ">
 
 
@@ -318,8 +318,8 @@ export default function ReportsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
-                p-5
+                rounded-xl
+                p-4
             ">
 
 
@@ -434,8 +434,8 @@ export default function ReportsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
-                p-5
+                rounded-xl
+                p-4
             ">
 
 

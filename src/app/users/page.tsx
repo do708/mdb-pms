@@ -214,7 +214,7 @@ export default function UsersPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
                 p-4
             ">
 

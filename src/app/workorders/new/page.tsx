@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
@@ -35,7 +35,7 @@ interface Engineer {
 
 
 
-export default function NewWorkorderPage(){
+function NewWorkorderInner(){
 
 
     const router =
@@ -84,12 +84,16 @@ export default function NewWorkorderPage(){
         useState("");
 
 
+    const searchParams =
+        useSearchParams();
+
+
     const [assignedUserId,setAssignedUserId] =
-        useState("");
+        useState(searchParams.get("engineer") ?? "");
 
 
     const [plannedDate,setPlannedDate] =
-        useState("");
+        useState(searchParams.get("date") ?? "");
 
 
     const [startTime,setStartTime] =
@@ -809,6 +813,24 @@ export default function NewWorkorderPage(){
 
 
         </main>
+
+    );
+
+}
+
+
+
+export default function NewWorkorderPage(){
+
+    return (
+
+        <Suspense fallback={
+            <main className="p-6">Laden...</main>
+        }>
+
+            <NewWorkorderInner/>
+
+        </Suspense>
 
     );
 

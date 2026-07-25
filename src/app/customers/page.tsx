@@ -205,7 +205,7 @@ export default function CustomersPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
                 overflow-hidden
             ">
 
@@ -252,7 +252,7 @@ export default function CustomersPage(){
                                     key={customer.id}
 
                                     className="
-                                        p-5
+                                        p-4
                                         flex
                                         justify-between
                                         items-center

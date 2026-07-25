@@ -158,7 +158,7 @@ export default function DashboardPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
@@ -319,8 +319,8 @@ export default function DashboardPage(){
                         bg-red-50
                         border
                         border-red-300
-                        rounded-2xl
-                        p-5
+                        rounded-xl
+                        p-4
                     ">
 
                         <h2 className="

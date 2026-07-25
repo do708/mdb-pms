@@ -90,7 +90,7 @@ export default function FormsPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
@@ -133,8 +133,8 @@ export default function FormsPage(){
                             className="
                                 bg-white
                                 border
-                                rounded-2xl
-                                p-5
+                                rounded-xl
+                                p-4
                                 hover:bg-gray-50
                             "
 
@@ -182,7 +182,7 @@ export default function FormsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
                 p-4
             ">
 

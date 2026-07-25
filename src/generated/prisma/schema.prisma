@@ -62,6 +62,7 @@ model Workorder {
   number         String              @unique
   assignedUserId String?
   plannedDate    DateTime?
+  plannedEndDate DateTime?
   assignmentId   String?
   formData       Json?
   documents      Document[]

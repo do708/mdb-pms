@@ -147,7 +147,7 @@ export default function SettingsPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
@@ -173,8 +173,8 @@ export default function SettingsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
-                p-5
+                rounded-xl
+                p-4
                 max-w-md
             ">
 
@@ -222,8 +222,8 @@ export default function SettingsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
-                p-5
+                rounded-xl
+                p-4
                 max-w-md
                 space-y-3
             ">

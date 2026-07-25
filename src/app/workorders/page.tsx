@@ -291,7 +291,7 @@ export default function WorkordersPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
                 p-4
                 space-y-4
             ">
@@ -395,8 +395,8 @@ export default function WorkordersPage(){
                             className="
                                 bg-white
                                 border
-                                rounded-2xl
-                                p-5
+                                rounded-xl
+                                p-4
                             "
 
                         >

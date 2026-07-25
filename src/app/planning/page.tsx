@@ -103,6 +103,33 @@ export default function PlanningPage(){
         useState<"month"|"week">("month");
 
 
+    // Maandag van de getoonde week (voor de week-navigatie)
+    const [weekStart,setWeekStart] =
+        useState<Date>(()=>{
+            const d = new Date();
+            d.setDate(d.getDate() - d.getDay() + 1);
+            d.setHours(0,0,0,0);
+            return d;
+        });
+
+
+    function shiftWeek(deltaWeeks:number){
+        setWeekStart(previous=>{
+            const d = new Date(previous);
+            d.setDate(d.getDate() + deltaWeeks * 7);
+            return d;
+        });
+    }
+
+
+    function thisWeek(){
+        const d = new Date();
+        d.setDate(d.getDate() - d.getDay() + 1);
+        d.setHours(0,0,0,0);
+        setWeekStart(d);
+    }
+
+
 
     const [loading,setLoading] =
         useState(true);
@@ -271,7 +298,7 @@ export default function PlanningPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
@@ -304,8 +331,8 @@ export default function PlanningPage(){
                         bg-red-100
                         border
                         border-red-300
-                        rounded-2xl
-                        p-5
+                        rounded-xl
+                        p-4
                     ">
 
 
@@ -467,11 +494,114 @@ export default function PlanningPage(){
 
                 :
 
-                <WeekView
+                <div>
 
-                    items={items}
+                    <div className="
+                        flex
+                        items-center
+                        justify-between
+                        mb-3
+                    ">
 
-                />
+                        <button
+
+                            onClick={()=>shiftWeek(-1)}
+
+                            className="
+                                border
+                                rounded-xl
+                                px-4
+                                py-2
+                                hover:bg-gray-50
+                            "
+
+                        >
+
+                            ← Vorige week
+
+                        </button>
+
+
+                        <div className="
+                            flex
+                            items-center
+                            gap-2
+                        ">
+
+                            <span className="font-medium">
+
+                                {
+                                    weekStart.toLocaleDateString("nl-NL",{
+                                        day:"numeric",
+                                        month:"long"
+                                    })
+                                }
+
+                                {" – "}
+
+                                {
+                                    (()=>{
+                                        const end = new Date(weekStart);
+                                        end.setDate(end.getDate() + 4);
+                                        return end.toLocaleDateString("nl-NL",{
+                                            day:"numeric",
+                                            month:"long",
+                                            year:"numeric"
+                                        });
+                                    })()
+                                }
+
+                            </span>
+
+                            <button
+
+                                onClick={thisWeek}
+
+                                className="
+                                    text-sm
+                                    text-blue-600
+                                    underline
+                                "
+
+                            >
+
+                                Vandaag
+
+                            </button>
+
+                        </div>
+
+
+                        <button
+
+                            onClick={()=>shiftWeek(1)}
+
+                            className="
+                                border
+                                rounded-xl
+                                px-4
+                                py-2
+                                hover:bg-gray-50
+                            "
+
+                        >
+
+                            Volgende week →
+
+                        </button>
+
+                    </div>
+
+
+                    <WeekView
+
+                        items={items}
+
+                        weekStart={weekStart}
+
+                    />
+
+                </div>
 
             }
 

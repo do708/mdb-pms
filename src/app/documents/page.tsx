@@ -158,7 +158,7 @@ export default function DocumentsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
                 p-4
             ">
 

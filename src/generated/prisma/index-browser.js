@@ -167,6 +167,7 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   number: 'number',
   assignedUserId: 'assignedUserId',
   plannedDate: 'plannedDate',
+  plannedEndDate: 'plannedEndDate',
   assignmentId: 'assignmentId',
   formData: 'formData'
 };

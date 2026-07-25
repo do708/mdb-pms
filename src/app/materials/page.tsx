@@ -252,7 +252,7 @@ export default function MaterialsPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
@@ -301,7 +301,7 @@ export default function MaterialsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
                 p-4
             ">
 
@@ -417,7 +417,7 @@ export default function MaterialsPage(){
             <section className="
                 bg-white
                 border
-                rounded-2xl
+                rounded-xl
                 p-4
             ">
 
