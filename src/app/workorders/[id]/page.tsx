@@ -186,7 +186,7 @@ export default function WorkorderDetailPage(){
             <header>
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 

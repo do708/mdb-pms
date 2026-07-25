@@ -137,7 +137,7 @@ export default function NewFormPage(){
 
 
                 <h1 className="
-                    text-3xl
+                    text-2xl
                     font-bold
                 ">
 
