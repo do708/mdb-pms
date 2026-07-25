@@ -96,8 +96,35 @@ function NewWorkorderInner(){
         useState(searchParams.get("engineer") ?? "");
 
 
+    const [extraEngineerIds,setExtraEngineerIds] =
+        useState<string[]>([]);
+
+
+    function toggleExtra(id:string){
+        setExtraEngineerIds(prev=>
+            prev.includes(id)
+            ?
+            prev.filter(x=>x !== id)
+            :
+            [...prev,id]
+        );
+    }
+
+
     const [plannedDate,setPlannedDate] =
-        useState(searchParams.get("date") ?? "");
+        useState(()=>{
+            const fromQuery =
+                searchParams.get("date");
+            if(fromQuery){
+                return fromQuery;
+            }
+            // Standaard: vandaag (zo staat het huidige jaar al ingevuld)
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2,"0");
+            const d = String(now.getDate()).padStart(2,"0");
+            return `${y}-${m}-${d}`;
+        });
 
 
     const [startTime,setStartTime] =
@@ -240,6 +267,8 @@ function NewWorkorderInner(){
                             location,
 
                             assignedUserId,
+
+                            extraEngineerIds,
 
                             plannedDate:
                                 plannedDate && startTime
@@ -578,14 +607,20 @@ function NewWorkorderInner(){
                         <>
 
                             <div className="
-                                flex
-                                flex-wrap
-                                gap-3
+                                border
+                                rounded-2xl
+                                p-5
+                                bg-gray-50
+                                space-y-5
                             ">
 
                                 <label className="block">
 
-                                    <span className="text-sm text-gray-600">
+                                    <span className="
+                                        text-sm
+                                        font-medium
+                                        text-gray-700
+                                    ">
 
                                         Wanneer? (datum)
 
@@ -602,10 +637,13 @@ function NewWorkorderInner(){
                                         }
 
                                         className="
+                                            w-full
+                                            max-w-xs
                                             border
                                             rounded-xl
                                             p-3
                                             mt-2
+                                            bg-white
                                         "
 
                                     />
@@ -613,64 +651,101 @@ function NewWorkorderInner(){
                                 </label>
 
 
-                                <label className="block">
+                                <div>
 
-                                    <span className="text-sm text-gray-600">
+                                    <span className="
+                                        text-sm
+                                        font-medium
+                                        text-gray-700
+                                    ">
 
-                                        Van
+                                        Tijdstip (optioneel)
 
                                     </span>
 
-                                    <input
+                                    <div className="
+                                        flex
+                                        items-end
+                                        gap-4
+                                        mt-2
+                                    ">
 
-                                        type="time"
+                                        <label className="block">
 
-                                        value={startTime}
+                                            <span className="text-xs text-gray-500">
 
-                                        onChange={(e)=>
-                                            setStartTime(e.target.value)
-                                        }
+                                                Van
 
-                                        className="
-                                            border
-                                            rounded-xl
-                                            p-3
-                                            mt-2
-                                        "
+                                            </span>
 
-                                    />
+                                            <input
 
-                                </label>
+                                                type="time"
+
+                                                value={startTime}
+
+                                                onChange={(e)=>
+                                                    setStartTime(e.target.value)
+                                                }
+
+                                                className="
+                                                    block
+                                                    border
+                                                    rounded-xl
+                                                    p-3
+                                                    mt-1
+                                                    bg-white
+                                                "
+
+                                            />
+
+                                        </label>
 
 
-                                <label className="block">
+                                        <span className="
+                                            text-gray-400
+                                            pb-3
+                                        ">
 
-                                    <span className="text-sm text-gray-600">
+                                            —
 
-                                        Tot
+                                        </span>
 
-                                    </span>
 
-                                    <input
+                                        <label className="block">
 
-                                        type="time"
+                                            <span className="text-xs text-gray-500">
 
-                                        value={endTime}
+                                                Tot
 
-                                        onChange={(e)=>
-                                            setEndTime(e.target.value)
-                                        }
+                                            </span>
 
-                                        className="
-                                            border
-                                            rounded-xl
-                                            p-3
-                                            mt-2
-                                        "
+                                            <input
 
-                                    />
+                                                type="time"
 
-                                </label>
+                                                value={endTime}
+
+                                                onChange={(e)=>
+                                                    setEndTime(e.target.value)
+                                                }
+
+                                                className="
+                                                    block
+                                                    border
+                                                    rounded-xl
+                                                    p-3
+                                                    mt-1
+                                                    bg-white
+                                                "
+
+                                            />
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
@@ -729,6 +804,73 @@ function NewWorkorderInner(){
                                 </select>
 
                             </label>
+
+
+                            <div>
+
+                                <span className="text-sm text-gray-600">
+
+                                    Extra monteurs (optioneel)
+
+                                </span>
+
+                                <div className="
+                                    mt-2
+                                    flex
+                                    flex-wrap
+                                    gap-2
+                                ">
+
+                                    {
+                                        engineers
+                                        .filter(e=>e.id !== assignedUserId)
+                                        .map(engineer=>(
+
+                                            <label
+
+                                                key={engineer.id}
+
+                                                className={`
+                                                    flex
+                                                    items-center
+                                                    gap-2
+                                                    border
+                                                    rounded-lg
+                                                    px-3
+                                                    py-1.5
+                                                    text-sm
+                                                    cursor-pointer
+                                                    ${
+                                                        extraEngineerIds.includes(engineer.id)
+                                                        ?
+                                                        "bg-blue-50 border-blue-300"
+                                                        :
+                                                        ""
+                                                    }
+                                                `}
+
+                                            >
+
+                                                <input
+
+                                                    type="checkbox"
+
+                                                    checked={extraEngineerIds.includes(engineer.id)}
+
+                                                    onChange={()=>toggleExtra(engineer.id)}
+
+                                                />
+
+                                                {engineer.name}
+
+                                            </label>
+
+                                        ))
+                                    }
+
+                                </div>
+
+                            </div>
 
 
                             <label className="block">
