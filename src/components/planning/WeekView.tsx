@@ -397,31 +397,28 @@ export default function WeekView({
 
 
 
-                                                const date =
-                                                    new Date(
-                                                        item.plannedDate
-                                                    );
+                                                // Deze celdag als YYYY-MM-DD (lokaal)
+                                                const cellIso =
+                                                    isoDate(day);
 
+
+                                                const startIso =
+                                                    isoDate(new Date(item.plannedDate));
+
+
+                                                // Meerdaagse klus: elke dag in het bereik
+                                                const endIso =
+                                                    item.plannedEndDate
+                                                    ?
+                                                    isoDate(new Date(item.plannedEndDate))
+                                                    :
+                                                    startIso;
 
 
                                                 return (
-
-                                                    date.getDate()
-                                                    ===
-                                                    day.getDate()
-
+                                                    startIso <= cellIso
                                                     &&
-
-                                                    date.getMonth()
-                                                    ===
-                                                    day.getMonth()
-
-                                                    &&
-
-                                                    date.getFullYear()
-                                                    ===
-                                                    day.getFullYear()
-
+                                                    cellIso <= endIso
                                                 );
 
 

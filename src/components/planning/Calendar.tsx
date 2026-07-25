@@ -84,6 +84,16 @@ export default function Calendar({
     }
 
 
+    // Lokale datum (geen UTC-shift) als YYYY-MM-DD
+    function localIso(value:string | Date):string {
+        const d = new Date(value);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2,"0");
+        const day = String(d.getDate()).padStart(2,"0");
+        return `${y}-${m}-${day}`;
+    }
+
+
     // Geaccepteerd verlof dat op een bepaalde dag valt
     function leaveOnDay(d:number){
         const iso = isoDateOf(d);
@@ -583,28 +593,29 @@ export default function Calendar({
 
 
 
-                                                const date =
-                                                    new Date(
-                                                        item.plannedDate
-                                                    );
+                                                // Deze cel als YYYY-MM-DD
+                                                const cellIso =
+                                                    isoDateOf(day);
 
+
+                                                const startIso =
+                                                    localIso(item.plannedDate);
+
+
+                                                // Meerdaagse klus: toon op elke dag
+                                                // tussen start en eind (inclusief)
+                                                const endIso =
+                                                    item.plannedEndDate
+                                                    ?
+                                                    localIso(item.plannedEndDate)
+                                                    :
+                                                    startIso;
 
 
                                                 return (
-
-                                                    date.getDate()
-                                                    === day
-
+                                                    startIso <= cellIso
                                                     &&
-
-                                                    date.getMonth()
-                                                    === month
-
-                                                    &&
-
-                                                    date.getFullYear()
-                                                    === year
-
+                                                    cellIso <= endIso
                                                 );
 
                                             })
@@ -628,6 +639,39 @@ export default function Calendar({
 
                                             ))
 
+                                        }
+
+
+                                        {
+                                            onDropDate && (
+
+                                                <Link
+
+                                                    href={`/workorders/new?date=${isoDateOf(day)}`}
+
+                                                    title="Werkbon klaarzetten op deze dag"
+
+                                                    className="
+                                                        block
+                                                        text-center
+                                                        text-[10px]
+                                                        text-gray-400
+                                                        border
+                                                        border-dashed
+                                                        rounded-md
+                                                        py-0.5
+                                                        mt-1
+                                                        hover:bg-blue-50
+                                                        hover:text-blue-600
+                                                    "
+
+                                                >
+
+                                                    + plannen
+
+                                                </Link>
+
+                                            )
                                         }
 
 

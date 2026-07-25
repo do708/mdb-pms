@@ -135,6 +135,14 @@ function NewWorkorderInner(){
         useState("");
 
 
+    const [multiDay,setMultiDay] =
+        useState(false);
+
+
+    const [endDate,setEndDate] =
+        useState("");
+
+
     const [formData,setFormData] =
         useState<OpleverData>(
             emptyOpleverData()
@@ -271,13 +279,18 @@ function NewWorkorderInner(){
                             extraEngineerIds,
 
                             plannedDate:
-                                plannedDate && startTime
+                                plannedDate && startTime && !multiDay
                                 ?
                                 `${plannedDate}T${startTime}`
                                 :
                                 plannedDate,
 
                             plannedEndDate:
+                                multiDay && endDate
+                                ?
+                                // Meerdaagse klus: eind = einde van de laatste dag
+                                `${endDate}T23:59`
+                                :
                                 plannedDate && endTime
                                 ?
                                 `${plannedDate}T${endTime}`
@@ -651,6 +664,84 @@ function NewWorkorderInner(){
                                 </label>
 
 
+                                <label className="
+                                    flex
+                                    items-center
+                                    gap-2
+                                    cursor-pointer
+                                    select-none
+                                ">
+
+                                    <input
+
+                                        type="checkbox"
+
+                                        checked={multiDay}
+
+                                        onChange={(e)=>
+                                            setMultiDay(e.target.checked)
+                                        }
+
+                                    />
+
+                                    <span className="text-sm text-gray-700">
+
+                                        Meerdere dagen (bijv. een klus van 13 dagen)
+
+                                    </span>
+
+                                </label>
+
+
+                                {
+                                    multiDay && (
+
+                                        <label className="block">
+
+                                            <span className="
+                                                text-sm
+                                                font-medium
+                                                text-gray-700
+                                            ">
+
+                                                Tot en met (einddatum)
+
+                                            </span>
+
+                                            <input
+
+                                                type="date"
+
+                                                value={endDate}
+
+                                                min={plannedDate}
+
+                                                onChange={(e)=>
+                                                    setEndDate(e.target.value)
+                                                }
+
+                                                className="
+                                                    w-full
+                                                    max-w-xs
+                                                    border
+                                                    rounded-xl
+                                                    p-3
+                                                    mt-2
+                                                    bg-white
+                                                "
+
+                                            />
+
+                                        </label>
+
+                                    )
+                                }
+
+
+
+                                {
+                                    !multiDay && (
+
                                 <div>
 
                                     <span className="
@@ -746,6 +837,9 @@ function NewWorkorderInner(){
                                     </div>
 
                                 </div>
+
+                                    )
+                                }
 
                             </div>
 
