@@ -290,10 +290,37 @@ export default function UsersPage(){
                                 </p>
 
 
-                                {
-                                    session?.user?.id !== user.id && (
+                                <div className="
+                                    mt-3
+                                    flex
+                                    gap-3
+                                    items-center
+                                ">
 
-                                        <div className="mt-3">
+                                    <Link
+
+                                        href={`/users/${user.id}/edit`}
+
+                                        className="
+                                            text-sm
+                                            text-blue-700
+                                            border
+                                            border-blue-200
+                                            rounded-lg
+                                            px-3
+                                            py-1.5
+                                            hover:bg-blue-50
+                                        "
+
+                                    >
+
+                                        Wijzigen
+
+                                    </Link>
+
+
+                                    {
+                                        session?.user?.id !== user.id && (
 
                                             <DeleteButton
 
@@ -305,10 +332,10 @@ export default function UsersPage(){
 
                                             />
 
-                                        </div>
+                                        )
+                                    }
 
-                                    )
-                                }
+                                </div>
 
 
                             </div>

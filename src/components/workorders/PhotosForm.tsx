@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 
 
@@ -20,6 +20,15 @@ export default function PhotosForm({
     workorderId
 
 }:PhotosFormProps){
+
+
+
+    const fileRef =
+
+
+
+        useRef<HTMLInputElement | null>(null);
+
 
 
 
@@ -219,24 +228,43 @@ export default function PhotosForm({
 
             <input
 
+                ref={fileRef}
+
                 type="file"
 
                 accept="image/*"
 
                 multiple
 
-
                 onChange={selectPhotos}
 
+                className="hidden"
+
+            />
+
+
+            <button
+
+                type="button"
+
+                onClick={()=>fileRef.current?.click()}
 
                 className="
                     w-full
-                    border
+                    border-2
+                    border-dashed
+                    border-gray-300
                     rounded-xl
-                    p-3
+                    p-4
+                    text-gray-600
+                    hover:bg-gray-50
                 "
 
-            />
+            >
+
+                📷 Foto&apos;s toevoegen
+
+            </button>
 
 
 

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import DeleteButton from "@/components/DeleteButton";
+import DocumentDropzone from "@/components/documents/DocumentDropzone";
 
 import {
     FileText,
@@ -58,6 +60,19 @@ export default function DocumentsPage(){
 
 
 
+
+
+    const { data:session } =
+        useSession();
+
+
+    const role =
+        session?.user?.role;
+
+
+    const canUpload =
+        role === "admin" ||
+        role === "office";
 
 
     async function loadDocuments(){
@@ -120,6 +135,21 @@ export default function DocumentsPage(){
 
 
             </div>
+
+
+
+
+            {
+                canUpload && (
+
+                    <DocumentDropzone
+
+                        onUploaded={loadDocuments}
+
+                    />
+
+                )
+            }
 
 
 

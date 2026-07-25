@@ -256,6 +256,10 @@ function PhotoField({
         useState("");
 
 
+    const photoRef =
+        useRef<HTMLInputElement | null>(null);
+
+
 
 
     async function upload(
@@ -343,6 +347,8 @@ function PhotoField({
 
             <input
 
+                ref={photoRef}
+
                 type="file"
 
                 accept="image/*"
@@ -358,11 +364,38 @@ function PhotoField({
                         upload(file);
                     }
 
+                    e.target.value = "";
+
                 }}
 
-                className="text-sm"
+                className="hidden"
 
             />
+
+
+            <button
+
+                type="button"
+
+                onClick={()=>photoRef.current?.click()}
+
+                className="
+                    border-2
+                    border-dashed
+                    border-gray-300
+                    rounded-xl
+                    px-4
+                    py-3
+                    text-sm
+                    text-gray-600
+                    hover:bg-gray-50
+                "
+
+            >
+
+                📷 {value ? "Foto vervangen" : "Foto toevoegen"}
+
+            </button>
 
             {
                 uploading && (
