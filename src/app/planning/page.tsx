@@ -108,7 +108,7 @@ export default function PlanningPage(){
 
 
     const [view,setView] =
-        useState<"month"|"week">("month");
+        useState<"month"|"week">("week");
 
 
     // Maandag van de getoonde week (voor de week-navigatie)
@@ -449,33 +449,6 @@ export default function PlanningPage(){
 
                 <button
 
-                    onClick={()=>setView("month")}
-
-                    className={`
-                        px-4
-                        py-2
-                        rounded-xl
-                        ${
-                            view==="month"
-                            ?
-                            "bg-blue-600 text-white"
-                            :
-                            "border"
-                        }
-                    `}
-
-                >
-
-                    Maand
-
-                </button>
-
-
-
-
-
-                <button
-
                     onClick={()=>setView("week")}
 
                     className={`
@@ -494,6 +467,33 @@ export default function PlanningPage(){
                 >
 
                     Week
+
+                </button>
+
+
+
+
+
+                <button
+
+                    onClick={()=>setView("month")}
+
+                    className={`
+                        px-4
+                        py-2
+                        rounded-xl
+                        ${
+                            view==="month"
+                            ?
+                            "bg-blue-600 text-white"
+                            :
+                            "border"
+                        }
+                    `}
+
+                >
+
+                    Maand
 
                 </button>
 

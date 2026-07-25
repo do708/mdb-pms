@@ -41,11 +41,28 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+        <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
+
+            <div className="w-full max-w-md mb-6 flex flex-col items-center text-center">
+
+                <img
+                    src="/images/MDB-Logo.png"
+                    alt="MDB Networks"
+                    className="h-16 w-auto mb-4"
+                />
+
+                <h1 className="text-2xl font-bold">MDB Networks</h1>
+
+                <p className="text-sm text-gray-500">
+                    Project Management Systeem
+                </p>
+
+            </div>
+
             <section className="bg-white border rounded-2xl p-8 w-full max-w-md space-y-5 shadow-sm">
-                <h1 className="text-2xl font-bold">MDB Project Management Systeem</h1>
-                <p className="text-sm text-gray-500 -mt-3">
-                    Log in om verder te gaan
+
+                <p className="text-sm text-gray-600">
+                    Login om verder te gaan.
                 </p>
 
                 {error && (
