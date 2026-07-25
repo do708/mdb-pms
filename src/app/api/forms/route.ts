@@ -6,6 +6,8 @@ import { requireApiUser } from "@/lib/auth/guard";
 
 import { getFormDefinition } from "@/constants/formDefinitions";
 
+import { excludeArchivedForms } from "@/lib/archive";
+
 
 
 export async function GET(){
@@ -34,10 +36,14 @@ export async function GET(){
             ?
             {
                 userId:
-                    guard.user.id
+                    guard.user.id,
+
+                ...excludeArchivedForms()
             }
             :
-            {};
+            {
+                ...excludeArchivedForms()
+            };
 
 
 

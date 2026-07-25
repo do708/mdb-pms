@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 import { mergeOpleverData } from "@/types/oplever";
+import { excludeArchivedWorkorders } from "@/lib/archive";
 
 
 
@@ -86,13 +87,19 @@ export async function GET(){
             {
 
                 assignedUserId:
-                    session.user.id
+                    session.user.id,
+
+                ...excludeArchivedWorkorders()
 
             }
 
             :
 
-            {};
+            {
+
+                ...excludeArchivedWorkorders()
+
+            };
 
 
 

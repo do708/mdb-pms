@@ -17,6 +17,7 @@ import {
     UserCog,
     PlusCircle,
     StickyNote,
+    Archive
 } from "lucide-react";
 
 
@@ -86,12 +87,13 @@ const menu:MenuItem[] = [
 
 
     {
-        name:"Klanten",
-        href:"/customers",
-        icon:Users,
+        name:"Formulieren",
+        href:"/forms",
+        icon:ClipboardList,
         roles:[
             "admin",
-            "office"
+            "office",
+            "engineer"
         ]
     },
 
@@ -153,9 +155,20 @@ const menu:MenuItem[] = [
         ]
     },
     {
-        name:"Formulieren",
-        href:"/forms",
-        icon:ClipboardList,
+        name:"Klanten",
+        href:"/customers",
+        icon:Users,
+        roles:[
+            "admin",
+            "office"
+        ]
+    },
+
+
+    {
+        name:"Archief",
+        href:"/archive",
+        icon:Archive,
         roles:[
             "admin",
             "office",
@@ -164,7 +177,7 @@ const menu:MenuItem[] = [
     },
 
 
-    {
+        {
         name:"Gebruikers",
         href:"/users",
         icon:UserCog,

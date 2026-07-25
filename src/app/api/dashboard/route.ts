@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiRole } from "@/lib/auth/guard";
 
+import { excludeArchivedWorkorders, excludeArchivedForms } from "@/lib/archive";
+
 
 
 
@@ -131,6 +133,10 @@ export async function GET(){
 
                 take:10,
 
+                where:{
+                    ...excludeArchivedWorkorders()
+                },
+
 
                 orderBy:{
 
@@ -176,6 +182,10 @@ export async function GET(){
             await prisma.formSubmission.findMany({
 
                 take:10,
+
+                where:{
+                    ...excludeArchivedForms()
+                },
 
                 orderBy:{
                     createdAt:"desc"
