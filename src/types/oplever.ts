@@ -168,9 +168,20 @@ export interface OpleverData {
         afvalverwijdering:boolean | null;
     };
 
+    // Hardware geïnstalleerd / ontmanteld (tabel)
+    hardware:HardwareRegel[];
+
     // Per-opdrachtgever extra velden (dynamisch, afhankelijk van klant)
     custom:Record<string,unknown>;
 
+}
+
+
+export interface HardwareRegel {
+    actie:"" | "Geïnstalleerd" | "Ontmanteld";
+    merk:string;
+    type:string;
+    serienummer:string;
 }
 
 
@@ -287,6 +298,8 @@ export function emptyOpleverData():OpleverData {
             afvalverwijdering:null
         },
 
+        hardware:[],
+
         custom:{}
 
     };
@@ -393,6 +406,22 @@ export function mergeOpleverData(
             ...empty.checklist,
             ...data.checklist
         },
+
+        hardware:
+            Array.isArray(data.hardware)
+            ?
+            data.hardware.map((h:Record<string,unknown>)=>({
+                actie:
+                    typeof h.actie === "string" ? h.actie as HardwareRegel["actie"] : "",
+                merk:
+                    typeof h.merk === "string" ? h.merk : "",
+                type:
+                    typeof h.type === "string" ? h.type : "",
+                serienummer:
+                    typeof h.serienummer === "string" ? h.serienummer : ""
+            }))
+            :
+            [],
 
         custom:{
             ...empty.custom,

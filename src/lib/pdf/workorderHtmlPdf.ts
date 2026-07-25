@@ -389,6 +389,29 @@ function opleverSections(
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
   </div>
 
+  ${data.hardware.length > 0 ? `
+  <div class="section">
+    <div class="section-title">Hardware geïnstalleerd / ontmanteld</div>
+    <table class="hardware-table">
+      <thead>
+        <tr>
+          <th>Geïnstalleerd / ontmanteld</th>
+          <th>Merk</th>
+          <th>Type</th>
+          <th>Serienummer</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.hardware.map(h=>`<tr>
+          <td>${esc(h.actie) || "—"}</td>
+          <td>${esc(h.merk) || "—"}</td>
+          <td>${esc(h.type) || "—"}</td>
+          <td>${esc(h.serienummer) || "—"}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>` : ""}
+
   <div class="section">
     <div class="section-title">Gebruikte materialen</div>
     <table class="qa">
@@ -584,6 +607,10 @@ function generateHtml(
   .qa td { padding: 4px 8px; border-bottom: 1px solid #eef2f7; }
   .qa .q { color: #334155; width: 62%; }
   .qa .a { text-align: right; }
+  /* Hardware-tabel */
+  .hardware-table { width: 100%; border-collapse: collapse; font-size: 9px; }
+  .hardware-table th { background: #f1f5f9; text-align: left; padding: 5px 8px; font-weight: 700; color: #334155; border: 1px solid #e2e8f0; }
+  .hardware-table td { padding: 5px 8px; border: 1px solid #e2e8f0; color: #1e293b; }
   .txt { font-weight: 600; color: #1e293b; }
   .pill { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 8.5px; font-weight: 600; }
   .pill-yes { background: #dcf5e4; color: #15803d; }

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
     BEUGEL_TYPES,
     ExtraKosten,
+    HardwareRegel,
     OpleverData,
     SchermBlok,
     emptyExtraKosten,
@@ -633,41 +634,6 @@ function SchermBlokken({
 
                             />
 
-                            <Veld
-
-                                small
-
-                                label="Aantal schermen ingesteld"
-
-                                value={blok.aantalIngesteld}
-
-                                onChange={(v)=>
-                                    update(index,{ aantalIngesteld:v })
-                                }
-
-                            />
-
-                        </div>
-
-
-                        <div className="space-y-2">
-
-                            <p className="text-sm">
-
-                                Heb je tilhulp gehad?
-
-                            </p>
-
-                            <JaNee
-
-                                value={blok.tilhulp}
-
-                                onChange={(v)=>
-                                    update(index,{ tilhulp:v })
-                                }
-
-                            />
-
                         </div>
 
 
@@ -718,19 +684,6 @@ function SchermBlokken({
                             />
 
                         </div>
-
-
-                        <Veld
-
-                            label="Bekabeling t.b.v. de schermen"
-
-                            value={blok.bekabeling}
-
-                            onChange={(v)=>
-                                update(index,{ bekabeling:v })
-                            }
-
-                        />
 
 
                     </div>
@@ -816,6 +769,19 @@ export default function OpleverForm({
 
             return merged;
 
+        });
+
+
+    // Hoeveel monteur-blokken tonen we? Alleen monteur 1 + degenen die al
+    // een naam hebben (uit het klaarzetten of eerder ingevuld). Minimaal 1.
+    const [zichtbareMonteurs,setZichtbareMonteurs] =
+        useState<number>(()=>{
+            const merged = mergeOpleverData(initial);
+            let n = 1;
+            if(merged.tarief.monteur2 || extraEngineerNames[0]) n = 2;
+            if(merged.tarief.monteur3 || extraEngineerNames[1]) n = 3;
+            if(merged.tarief.monteur4 || extraEngineerNames[2]) n = 4;
+            return n;
         });
 
 
@@ -1255,37 +1221,55 @@ export default function OpleverForm({
 
                     />
 
-                    <MonteurUren
+                    {
+                        zichtbareMonteurs >= 2 && (
+                            <MonteurUren
+                                nummer={2}
+                                naamVeld="monteur2"
+                                urenVeld="urenMonteur2"
+                            />
+                        )
+                    }
 
-                        nummer={2}
+                    {
+                        zichtbareMonteurs >= 3 && (
+                            <MonteurUren
+                                nummer={3}
+                                naamVeld="monteur3"
+                                urenVeld="urenMonteur3"
+                            />
+                        )
+                    }
 
-                        naamVeld="monteur2"
-
-                        urenVeld="urenMonteur2"
-
-                    />
-
-                    <MonteurUren
-
-                        nummer={3}
-
-                        naamVeld="monteur3"
-
-                        urenVeld="urenMonteur3"
-
-                    />
-
-                    <MonteurUren
-
-                        nummer={4}
-
-                        naamVeld="monteur4"
-
-                        urenVeld="urenMonteur4"
-
-                    />
+                    {
+                        zichtbareMonteurs >= 4 && (
+                            <MonteurUren
+                                nummer={4}
+                                naamVeld="monteur4"
+                                urenVeld="urenMonteur4"
+                            />
+                        )
+                    }
 
                 </div>
+
+
+                {
+                    zichtbareMonteurs < 4 && (
+                        <button
+                            type="button"
+                            onClick={()=>setZichtbareMonteurs(n=>Math.min(4, n + 1))}
+                            className="
+                                text-sm
+                                text-blue-600
+                                hover:underline
+                                mb-3
+                            "
+                        >
+                            + Monteur toevoegen
+                        </button>
+                    )
+                }
 
 
                 <div className="
@@ -1734,6 +1718,159 @@ export default function OpleverForm({
                     />
 
                 </Vraag>
+
+            </div>
+
+
+
+
+            {/* ================= Hardware geïnstalleerd/ontmanteld ================= */}
+
+            <div>
+
+                <Kop>Hardware geïnstalleerd / ontmanteld</Kop>
+
+                <div className="overflow-x-auto">
+
+                    <table className="w-full text-sm border-collapse">
+
+                        <thead>
+
+                            <tr className="bg-gray-50">
+
+                                <th className="border p-2 text-left font-medium text-gray-600 w-48">
+                                    Geïnstalleerd / ontmanteld
+                                </th>
+
+                                <th className="border p-2 text-left font-medium text-gray-600">
+                                    Merk
+                                </th>
+
+                                <th className="border p-2 text-left font-medium text-gray-600">
+                                    Type
+                                </th>
+
+                                <th className="border p-2 text-left font-medium text-gray-600">
+                                    Serienummer
+                                </th>
+
+                                <th className="border p-2 w-10"></th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {
+                                data.hardware.map((regel,index)=>(
+
+                                    <tr key={index}>
+
+                                        <td className="border p-1">
+                                            <select
+                                                value={regel.actie}
+                                                onChange={(e)=>update(draft=>{
+                                                    draft.hardware[index].actie =
+                                                        e.target.value as HardwareRegel["actie"];
+                                                })}
+                                                className="w-full p-1.5 rounded-lg bg-white"
+                                            >
+                                                <option value="">—</option>
+                                                <option value="Geïnstalleerd">Geïnstalleerd</option>
+                                                <option value="Ontmanteld">Ontmanteld</option>
+                                            </select>
+                                        </td>
+
+                                        <td className="border p-1">
+                                            <input
+                                                value={regel.merk}
+                                                onChange={(e)=>update(draft=>{
+                                                    draft.hardware[index].merk = e.target.value;
+                                                })}
+                                                className="w-full p-1.5 rounded-lg bg-white"
+                                            />
+                                        </td>
+
+                                        <td className="border p-1">
+                                            <input
+                                                value={regel.type}
+                                                onChange={(e)=>update(draft=>{
+                                                    draft.hardware[index].type = e.target.value;
+                                                })}
+                                                className="w-full p-1.5 rounded-lg bg-white"
+                                            />
+                                        </td>
+
+                                        <td className="border p-1">
+                                            <input
+                                                value={regel.serienummer}
+                                                onChange={(e)=>update(draft=>{
+                                                    draft.hardware[index].serienummer = e.target.value;
+                                                })}
+                                                className="w-full p-1.5 rounded-lg bg-white"
+                                            />
+                                        </td>
+
+                                        <td className="border p-1 text-center">
+                                            <button
+                                                type="button"
+                                                onClick={()=>update(draft=>{
+                                                    draft.hardware.splice(index,1);
+                                                })}
+                                                className="text-red-500 hover:text-red-700"
+                                                title="Regel verwijderen"
+                                            >
+                                                ×
+                                            </button>
+                                        </td>
+
+                                    </tr>
+
+                                ))
+                            }
+
+                            {
+                                data.hardware.length === 0 && (
+                                    <tr>
+                                        <td colSpan={5} className="border p-3 text-center text-gray-400">
+                                            Nog geen hardware toegevoegd
+                                        </td>
+                                    </tr>
+                                )
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    onClick={()=>update(draft=>{
+                        draft.hardware.push({
+                            actie:"",
+                            merk:"",
+                            type:"",
+                            serienummer:""
+                        });
+                    })}
+                    className="
+                        mt-3
+                        text-sm
+                        border
+                        border-dashed
+                        rounded-xl
+                        px-4
+                        py-2
+                        text-gray-600
+                        hover:bg-gray-50
+                    "
+                >
+                    + Regel toevoegen
+                </button>
 
             </div>
 
