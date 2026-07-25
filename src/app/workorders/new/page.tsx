@@ -630,12 +630,14 @@ function NewWorkorderInner(){
                                 <label className="block">
 
                                     <span className="
+                                        block
                                         text-sm
                                         font-medium
                                         text-gray-700
+                                        mb-2
                                     ">
 
-                                        Wanneer?
+                                        Datum:
 
                                     </span>
 
@@ -655,7 +657,6 @@ function NewWorkorderInner(){
                                             border
                                             rounded-xl
                                             p-3
-                                            mt-2
                                             bg-white
                                         "
 
@@ -699,12 +700,14 @@ function NewWorkorderInner(){
                                         <label className="block">
 
                                             <span className="
+                                                block
                                                 text-sm
                                                 font-medium
                                                 text-gray-700
+                                                mb-2
                                             ">
 
-                                                Tot en met (einddatum)
+                                                Tot en met:
 
                                             </span>
 
@@ -726,7 +729,6 @@ function NewWorkorderInner(){
                                                     border
                                                     rounded-xl
                                                     p-3
-                                                    mt-2
                                                     bg-white
                                                 "
 
@@ -764,9 +766,11 @@ function NewWorkorderInner(){
                                         <label className="block">
 
                                             <span className="
+                                                block
                                                 text-sm
                                                 font-medium
                                                 text-gray-700
+                                                mb-2
                                             ">
 
                                                 Van
@@ -788,7 +792,6 @@ function NewWorkorderInner(){
                                                     border
                                                     rounded-xl
                                                     p-3
-                                                    mt-2
                                                     bg-white
                                                 "
 
@@ -810,9 +813,11 @@ function NewWorkorderInner(){
                                         <label className="block">
 
                                             <span className="
+                                                block
                                                 text-sm
                                                 font-medium
                                                 text-gray-700
+                                                mb-2
                                             ">
 
                                                 Tot
@@ -834,7 +839,6 @@ function NewWorkorderInner(){
                                                     border
                                                     rounded-xl
                                                     p-3
-                                                    mt-2
                                                     bg-white
                                                 "
 
