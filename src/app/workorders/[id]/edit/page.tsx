@@ -375,7 +375,11 @@ export default function EditWorkorderPage(){
                             extraEngineerIds,
 
                             plannedDate:
-                                plannedDate && startTime && !multiDay
+                                multiDay
+                                ?
+                                `${plannedDate}T09:00`
+                                :
+                                plannedDate && startTime
                                 ?
                                 `${plannedDate}T${startTime}`
                                 :
@@ -384,7 +388,7 @@ export default function EditWorkorderPage(){
                             plannedEndDate:
                                 multiDay && endDate
                                 ?
-                                `${endDate}T23:59`
+                                `${endDate}T16:00`
                                 :
                                 plannedDate && endTime
                                 ?

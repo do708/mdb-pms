@@ -279,7 +279,12 @@ function NewWorkorderInner(){
                             extraEngineerIds,
 
                             plannedDate:
-                                plannedDate && startTime && !multiDay
+                                multiDay
+                                ?
+                                // Meerdaagse klus: automatisch 09:00 op de eerste dag
+                                `${plannedDate}T09:00`
+                                :
+                                plannedDate && startTime
                                 ?
                                 `${plannedDate}T${startTime}`
                                 :
@@ -288,8 +293,8 @@ function NewWorkorderInner(){
                             plannedEndDate:
                                 multiDay && endDate
                                 ?
-                                // Meerdaagse klus: eind = einde van de laatste dag
-                                `${endDate}T23:59`
+                                // Meerdaagse klus: automatisch tot 16:00 op de laatste dag
+                                `${endDate}T16:00`
                                 :
                                 plannedDate && endTime
                                 ?

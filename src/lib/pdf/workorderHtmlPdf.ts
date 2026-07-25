@@ -437,6 +437,11 @@ function generateHtml(
         );
 
 
+    // Veilig uitlezen; oudere opleverdata heeft dit veld mogelijk niet.
+    const opdrachtgever =
+        (oplever as { opdrachtgever?:string }).opdrachtgever ?? "";
+
+
     const totalHours =
         data.hours.reduce(
             (sum,item)=>sum + Number(item.hours),
@@ -542,7 +547,7 @@ function generateHtml(
     </div>
     <div class="order-number">
       <div class="order-number-value">${esc(data.number)}</div>
-      <div class="order-meta">${esc(oplever.opdrachtgever || data.customer.name)} Opleverdocument · ${formatDate(data.createdAt)}</div>
+      <div class="order-meta">${esc(opdrachtgever || data.customer.name)} Opleverdocument · ${formatDate(data.createdAt)}</div>
       <div style="margin-top:4px"><span class="status-badge">${esc(statusLabels[data.status] ?? data.status)}</span></div>
     </div>
   </div>
@@ -557,8 +562,8 @@ function generateHtml(
         <div class="info-value" style="font-size:9px;color:#64748b;margin-top:2px">${esc(data.projectName)}</div>
       </div>
       <div class="info-box">
-        <div class="info-label">${oplever.opdrachtgever ? "Opdrachtgever · Klant" : "Klant"}</div>
-        ${oplever.opdrachtgever ? `<div class="info-value" style="font-size:11px;font-weight:700">${esc(oplever.opdrachtgever)}</div>` : ""}
+        <div class="info-label">${opdrachtgever ? "Opdrachtgever · Klant" : "Klant"}</div>
+        ${opdrachtgever ? `<div class="info-value" style="font-size:11px;font-weight:700">${esc(opdrachtgever)}</div>` : ""}
         <div class="info-value" style="font-size:11px;font-weight:700">${esc(data.customer.name)}</div>
         ${data.customer.address ? `<div class="info-value" style="font-size:9px;color:#64748b">${esc(data.customer.address)}</div>` : ""}
         ${data.customer.phone ? `<div class="info-value" style="font-size:9px;color:#64748b">${esc(data.customer.phone)}</div>` : ""}
