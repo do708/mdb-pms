@@ -686,7 +686,7 @@ function NewWorkorderInner(){
 
                                     <span className="text-sm text-gray-700">
 
-                                        Meerdere dagen (bijv. een klus van 13 dagen)
+                                        Meerdere dagen
 
                                     </span>
 
@@ -763,7 +763,11 @@ function NewWorkorderInner(){
 
                                         <label className="block">
 
-                                            <span className="text-xs text-gray-500">
+                                            <span className="
+                                                text-sm
+                                                font-medium
+                                                text-gray-700
+                                            ">
 
                                                 Van
 
@@ -784,7 +788,7 @@ function NewWorkorderInner(){
                                                     border
                                                     rounded-xl
                                                     p-3
-                                                    mt-1
+                                                    mt-2
                                                     bg-white
                                                 "
 
@@ -795,7 +799,7 @@ function NewWorkorderInner(){
 
                                         <span className="
                                             text-gray-400
-                                            pb-3
+                                            pb-3.5
                                         ">
 
                                             —
@@ -805,7 +809,11 @@ function NewWorkorderInner(){
 
                                         <label className="block">
 
-                                            <span className="text-xs text-gray-500">
+                                            <span className="
+                                                text-sm
+                                                font-medium
+                                                text-gray-700
+                                            ">
 
                                                 Tot
 
@@ -826,7 +834,7 @@ function NewWorkorderInner(){
                                                     border
                                                     rounded-xl
                                                     p-3
-                                                    mt-1
+                                                    mt-2
                                                     bg-white
                                                 "
 
