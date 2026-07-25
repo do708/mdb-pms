@@ -48,7 +48,7 @@ export default function LoginPage() {
                 <img
                     src="/images/MDB-Logo.png"
                     alt="MDB Networks"
-                    className="w-[512px] max-w-full h-auto object-contain mb-4"
+                    className="w-[512px] max-w-full h-auto object-contain mb-4 mdb-logo-animate"
                 />
 
                 <h1 className="text-2xl font-bold">MDB Networks</h1>

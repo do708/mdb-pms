@@ -123,3 +123,25 @@ body {
  background:#fff8cc;
 
 }
+
+/* Zachte fade-in met opschaling voor het login-logo */
+@keyframes mdb-logo-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.mdb-logo-animate {
+  animation: mdb-logo-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdb-logo-animate {
+    animation: none;
+  }
+}
