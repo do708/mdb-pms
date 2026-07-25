@@ -183,7 +183,7 @@ export default function FormsPage(){
                 bg-white
                 border
                 rounded-2xl
-                p-5
+                p-4
             ">
 
 

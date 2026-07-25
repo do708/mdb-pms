@@ -302,7 +302,7 @@ export default function MaterialsPage(){
                 bg-white
                 border
                 rounded-2xl
-                p-5
+                p-4
             ">
 
 
@@ -418,7 +418,7 @@ export default function MaterialsPage(){
                 bg-white
                 border
                 rounded-2xl
-                p-5
+                p-4
             ">
 
 

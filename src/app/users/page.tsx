@@ -215,7 +215,7 @@ export default function UsersPage(){
                 bg-white
                 border
                 rounded-2xl
-                p-5
+                p-4
             ">
 
 

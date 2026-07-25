@@ -3,6 +3,18 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
+import { getStatus } from "@/constants/workorderStatus";
+import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
+
+
+function formIcon(type:string):string {
+
+    return (
+        FORM_DEFINITIONS.find(d=>d.type === type)?.icon
+        ?? "📝"
+    );
+
+}
 
 
 interface DashboardData {
@@ -15,6 +27,8 @@ interface DashboardData {
 
         teLaat:number;
 
+        openForms:number;
+
     };
 
 
@@ -22,6 +36,9 @@ interface DashboardData {
 
 
     recent:any[];
+
+
+    recentForms:any[];
 
 }
 
@@ -161,28 +178,29 @@ export default function DashboardPage(){
 
             <section className="
                 grid
-                grid-cols-1
-                md:grid-cols-3
-                gap-5
+                grid-cols-2
+                md:grid-cols-4
+                gap-3
             ">
 
 
 
                 <div className="
-                    bg-white
+                    bg-blue-50
                     border
-                    rounded-2xl
-                    p-5
+                    border-blue-200
+                    rounded-xl
+                    p-4
                 ">
 
-                    <p className="text-gray-500">
+                    <p className="text-sm text-blue-700">
 
                         Ingepland
 
                     </p>
 
 
-                    <p className="text-3xl font-bold text-blue-600">
+                    <p className="text-2xl font-bold text-blue-700">
 
                         {data?.counters.ingepland ?? 0}
 
@@ -193,20 +211,21 @@ export default function DashboardPage(){
 
 
                 <div className="
-                    bg-white
+                    bg-indigo-50
                     border
-                    rounded-2xl
-                    p-5
+                    border-indigo-200
+                    rounded-xl
+                    p-4
                 ">
 
-                    <p className="text-gray-500">
+                    <p className="text-sm text-indigo-700">
 
                         Uitgevoerd
 
                     </p>
 
 
-                    <p className="text-3xl font-bold text-indigo-600">
+                    <p className="text-2xl font-bold text-indigo-700">
 
                         {data?.counters.uitgevoerd ?? 0}
 
@@ -216,25 +235,50 @@ export default function DashboardPage(){
 
 
 
+                <div className="
+                    bg-purple-50
+                    border
+                    border-purple-200
+                    rounded-xl
+                    p-4
+                ">
+
+                    <p className="text-sm text-purple-700">
+
+                        Formulieren
+
+                    </p>
+
+
+                    <p className="text-2xl font-bold text-purple-700">
+
+                        {data?.counters.openForms ?? 0}
+
+                    </p>
+
+                </div>
+
+
+
                 <div className={`
                     border
-                    rounded-2xl
-                    p-5
+                    rounded-xl
+                    p-4
                     ${
                         (data?.counters.teLaat ?? 0) > 0
                         ?
                         "bg-red-50 border-red-300"
                         :
-                        "bg-white"
+                        "bg-gray-50 border-gray-200"
                     }
                 `}>
 
                     <p className={
                         (data?.counters.teLaat ?? 0) > 0
                         ?
-                        "text-red-700 font-medium"
+                        "text-sm text-red-700 font-medium"
                         :
-                        "text-gray-500"
+                        "text-sm text-gray-500"
                     }>
 
                         Nog in te vullen
@@ -243,25 +287,18 @@ export default function DashboardPage(){
 
 
                     <p className={`
-                        text-3xl
+                        text-2xl
                         font-bold
                         ${
                             (data?.counters.teLaat ?? 0) > 0
                             ?
                             "text-red-600"
                             :
-                            ""
+                            "text-gray-400"
                         }
                     `}>
 
                         {data?.counters.teLaat ?? 0}
-
-                    </p>
-
-
-                    <p className="text-xs text-gray-500 mt-1">
-
-                        Datum verstreken, monteur nog niet ingevuld
 
                     </p>
 
@@ -379,86 +416,212 @@ export default function DashboardPage(){
 
 
             <section className="
-                bg-white
-                border
-                rounded-2xl
-                p-5
+                grid
+                grid-cols-1
+                lg:grid-cols-2
+                gap-4
             ">
 
 
-                <h2 className="
-                    text-xl
-                    font-bold
-                    mb-4
+                <div className="
+                    bg-white
+                    border
+                    rounded-2xl
+                    p-4
                 ">
 
-                    Laatste werkbonnen
+                    <h2 className="
+                        font-bold
+                        mb-3
+                    ">
 
-                </h2>
+                        📋 Laatste werkbonnen
 
-
-
-
-
-                <div className="space-y-3">
-
-
-                    {
-                        data?.recent.map(workorder=>(
+                    </h2>
 
 
-                            <div
+                    <div className="space-y-2">
 
-                                key={workorder.id}
+                        {
+                            data?.recent.map(workorder=>(
 
-                                className="
-                                    border
-                                    rounded-xl
-                                    p-4
-                                "
+                                <a
 
-                            >
+                                    key={workorder.id}
 
-                                <p className="font-bold">
+                                    href={`/workorders/${workorder.id}`}
 
-                                    {workorder.number}
+                                    className="
+                                        flex
+                                        justify-between
+                                        items-center
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        hover:bg-gray-50
+                                    "
+
+                                >
+
+                                    <div className="min-w-0">
+
+                                        <p className="
+                                            font-medium
+                                            text-sm
+                                            truncate
+                                        ">
+
+                                            {workorder.number} — {workorder.title}
+
+                                        </p>
+
+                                        <p className="text-xs text-gray-500 truncate">
+
+                                            🏢 {
+                                                workorder.customer?.name
+                                                ?? workorder.project?.customer?.name
+                                                ?? "—"
+                                            }
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <span className={`
+                                        shrink-0
+                                        ml-2
+                                        px-2
+                                        py-0.5
+                                        rounded-full
+                                        text-xs
+                                        ${getStatus(workorder.status).badge}
+                                    `}>
+
+                                        {getStatus(workorder.status).label}
+
+                                    </span>
+
+                                </a>
+
+                            ))
+                        }
+
+                        {
+                            (data?.recent?.length ?? 0) === 0 && (
+
+                                <p className="text-sm text-gray-400">
+
+                                    Nog geen werkbonnen.
 
                                 </p>
 
+                            )
+                        }
 
-                                <p>
-
-                                    {workorder.title}
-
-                                </p>
-
-
-                                <p className="text-sm text-gray-500">
-
-                                    {
-                                        (workorder.customer?.name ?? workorder.project?.customer?.name ?? "—")
-                                    }
-
-                                    {" - "}
-
-                                    {
-                                        workorder.status
-                                    }
-
-                                </p>
-
-
-                            </div>
-
-
-                        ))
-                    }
-
+                    </div>
 
                 </div>
 
 
 
+
+                <div className="
+                    bg-white
+                    border
+                    rounded-2xl
+                    p-4
+                ">
+
+                    <h2 className="
+                        font-bold
+                        mb-3
+                    ">
+
+                        📝 Laatste formulieren
+
+                    </h2>
+
+
+                    <div className="space-y-2">
+
+                        {
+                            data?.recentForms?.map(form=>(
+
+                                <a
+
+                                    key={form.id}
+
+                                    href={`/forms/${form.id}`}
+
+                                    className="
+                                        flex
+                                        justify-between
+                                        items-center
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        hover:bg-gray-50
+                                    "
+
+                                >
+
+                                    <div className="min-w-0">
+
+                                        <p className="
+                                            font-medium
+                                            text-sm
+                                            truncate
+                                        ">
+
+                                            {formIcon(form.type)} {form.title}
+
+                                        </p>
+
+                                        <p className="text-xs text-gray-500 truncate">
+
+                                            {form.user?.name ?? ""}
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <span className="
+                                        shrink-0
+                                        ml-2
+                                        px-2
+                                        py-0.5
+                                        rounded-full
+                                        text-xs
+                                        bg-fuchsia-100
+                                        text-fuchsia-700
+                                    ">
+
+                                        {form.status}
+
+                                    </span>
+
+                                </a>
+
+                            ))
+                        }
+
+                        {
+                            (data?.recentForms?.length ?? 0) === 0 && (
+
+                                <p className="text-sm text-gray-400">
+
+                                    Nog geen formulieren.
+
+                                </p>
+
+                            )
+                        }
+
+                    </div>
+
+                </div>
 
 
             </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import StatusFlow from "@/components/workorders/StatusFlow";
 import { useParams, useRouter } from "next/navigation";
 
@@ -199,6 +200,30 @@ export default function WorkorderDetailPage(){
                     {workorder.title}
 
                 </p>
+
+
+                <Link
+
+                    href={`/workorders/${workorder.id}/edit`}
+
+                    className="
+                        inline-block
+                        mt-3
+                        text-sm
+                        text-blue-700
+                        border
+                        border-blue-200
+                        rounded-lg
+                        px-4
+                        py-2
+                        hover:bg-blue-50
+                    "
+
+                >
+
+                    ✏️ Werkbon wijzigen
+
+                </Link>
 
 
             </header>

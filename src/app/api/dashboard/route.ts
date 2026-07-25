@@ -171,6 +171,39 @@ export async function GET(){
 
 
 
+        const recentForms =
+
+            await prisma.formSubmission.findMany({
+
+                take:10,
+
+                orderBy:{
+                    createdAt:"desc"
+                },
+
+                include:{
+
+                    user:{
+                        select:{
+                            name:true
+                        }
+                    }
+
+                }
+
+            });
+
+
+        const openForms =
+            await prisma.formSubmission.count({
+                where:{
+                    status:"ingediend"
+                }
+            });
+
+
+
+
         return NextResponse.json({
 
             counters:{
@@ -182,7 +215,10 @@ export async function GET(){
                 uitgevoerd,
 
 
-                teLaat:teLaatCount
+                teLaat:teLaatCount,
+
+
+                openForms
 
 
             },
@@ -191,7 +227,10 @@ export async function GET(){
             teLaat,
 
 
-            recent
+            recent,
+
+
+            recentForms
 
 
         });
