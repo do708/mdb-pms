@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import HoursForm from "@/components/workorders/HoursForm";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import SignatureForm from "@/components/workorders/SignatureForm";
 import OpleverForm from "@/components/workorders/OpleverForm";
@@ -39,6 +38,12 @@ interface Workorder {
         name:string | null;
 
     } | null;
+
+    extraEngineers?:{
+        user:{
+            name:string | null;
+        };
+    }[];
 
     status:string;
 
@@ -751,12 +756,11 @@ async function completeWorkorder(){
 
     monteur1Name={workorder.assignedUser?.name ?? null}
 
-/>
-
-
-<HoursForm
-
-    workorderId={id}
+    extraEngineerNames={
+        (workorder.extraEngineers ?? [])
+        .map(e=>e.user?.name)
+        .filter((n):n is string => !!n)
+    }
 
 />
 

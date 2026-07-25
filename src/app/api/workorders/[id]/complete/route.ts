@@ -6,6 +6,8 @@ import { customerName, workorderLocation, resolveCustomer } from "@/lib/workorde
 
 import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
 
+import { mergeOpleverData } from "@/types/oplever";
+
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
@@ -147,74 +149,89 @@ customer:true,
 
 
 
-        const pdf =
+        // PDF genereren en mailen mag het afronden NIET blokkeren.
+        // Lukt het versturen niet (bijv. geen mailconfiguratie lokaal),
+        // dan wordt de werkbon toch gewoon afgerond.
+        try {
 
-            await generateWorkorderPdf({
+            const pdf =
 
-                number:
+                await generateWorkorderPdf({
+
+                    number:
+                        workorder.number,
+
+
+                    title:
+                        workorder.title,
+
+
+                    description:
+                        workorder.description,
+
+
+                    customer:
+                        customerName(workorder),
+
+
+                    address:
+                        (resolveCustomer(workorder)?.address ?? null),
+
+
+                    project:
+                        (workorder.project?.name ?? customerName(workorder)),
+
+
+                    hours:
+
+                        (()=>{
+                            const o = mergeOpleverData(workorder.formData);
+                            const n = (v:unknown)=>{
+                                const x = parseFloat(String(v ?? "").replace(",", "."));
+                                return isNaN(x) ? 0 : x;
+                            };
+                            return (
+                                n(o.tarief.urenMonteur1) +
+                                n(o.tarief.urenMonteur2) +
+                                n(o.tarief.urenMonteur3) +
+                                n(o.tarief.urenMonteur4)
+                            );
+                        })()
+
+
+                });
+
+
+
+
+            await sendWorkorderMail({
+
+                workorderNumber:
                     workorder.number,
-
-
-                title:
-                    workorder.title,
-
-
-                description:
-                    workorder.description,
 
 
                 customer:
                     customerName(workorder),
 
 
-                address:
-                    (resolveCustomer(workorder)?.address ?? null),
-
-
                 project:
                     (workorder.project?.name ?? customerName(workorder)),
 
 
-                hours:
-
-                    workorder.hours.reduce(
-
-                        (total,item)=>
-
-                            total + Number(item.hours),
-
-                        0
-
-                    )
-
+                pdfBuffer:
+                    Buffer.from(pdf)
 
             });
 
 
+        } catch(mailError){
 
+            console.error(
+                "WERKBON PDF/MAIL MISLUKT (afronden gaat door)",
+                mailError
+            );
 
-
-
-
-
-        await sendWorkorderMail({
-
-            workorderNumber:
-                workorder.number,
-
-
-            customer:
-                customerName(workorder),
-
-
-            project:
-                (workorder.project?.name ?? customerName(workorder)),
-
-
-            pdfBuffer:
-                Buffer.from(pdf)
-
-        });
+        }
 
 
 

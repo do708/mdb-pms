@@ -5,6 +5,8 @@ import Link from "next/link";
 
 import DraggableAssignment from "./DraggableAssignment";
 
+import { dutchHolidays } from "@/lib/holidays";
+
 
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
@@ -75,6 +77,13 @@ export default function Calendar({
 
     const month =
         currentDate.getMonth();
+
+
+    // Feestdagen voor het getoonde jaar (automatisch berekend)
+    const holidayLookup:Record<string,string> = {};
+    for(const h of dutchHolidays(year)){
+        holidayLookup[h.date] = h.name;
+    }
 
 
     function isoDateOf(d:number):string {
@@ -547,11 +556,33 @@ export default function Calendar({
                                     <>
 
                                         <div className="
-                                            font-bold
+                                            flex
+                                            items-baseline
+                                            justify-between
+                                            gap-1
                                             mb-2
                                         ">
 
-                                            {day}
+                                            <span className="font-bold">
+                                                {day}
+                                            </span>
+
+                                            {
+                                                holidayLookup[isoDateOf(day)] && (
+                                                    <span
+                                                        className="
+                                                            text-[9px]
+                                                            text-rose-600
+                                                            font-medium
+                                                            truncate
+                                                            text-right
+                                                        "
+                                                        title={holidayLookup[isoDateOf(day)]}
+                                                    >
+                                                        {holidayLookup[isoDateOf(day)]}
+                                                    </span>
+                                                )
+                                            }
 
                                         </div>
 

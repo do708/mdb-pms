@@ -4,6 +4,28 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiRole } from "@/lib/auth/guard";
 
+import { mergeOpleverData } from "@/types/oplever";
+
+
+
+// Hulp: een getal uit een tekstveld halen ("3,5" of "3.5" -> 3.5)
+function num(value:unknown):number {
+
+    if(typeof value === "number"){
+        return isNaN(value) ? 0 : value;
+    }
+
+    if(typeof value === "string"){
+        const cleaned =
+            value.replace(",", ".").trim();
+        const n = parseFloat(cleaned);
+        return isNaN(n) ? 0 : n;
+    }
+
+    return 0;
+
+}
+
 
 
 export async function GET(){
@@ -20,9 +42,7 @@ export async function GET(){
 
 
         if(!guard.ok){
-
             return guard.response;
-
         }
 
 
@@ -42,101 +62,64 @@ export async function GET(){
 
 
 
-        const [
-            workorders,
-            hours
-        ] =
-            await Promise.all([
+        // Alle werkbonnen met de gegevens die we nodig hebben. De uren,
+        // reisuren en kilometers komen uit het opleverformulier (formData),
+        // dus uit het bovenste gedeelte van de werkbon.
+        const workorders =
+            await prisma.workorder.findMany({
 
+                select:{
 
-                prisma.workorder.findMany({
+                    id:true,
 
-                    select:{
+                    status:true,
 
-                        id:true,
+                    createdAt:true,
 
-                        status:true,
+                    formData:true,
 
-                        createdAt:true
-
-                    }
-
-                }),
-
-
-                prisma.workorderHour.findMany({
-
-                    include:{
-
-                        workorder:{
-
-                            select:{
-
-                                assignedUser:{
-
-                                    select:{
-                                        id:true,
-                                        name:true
-                                    }
-
-                                },
-
-                                customer:{
-
-                                    select:{
-                                        id:true,
-                                        name:true
-                                    }
-
-                                },
-
-                                project:{
-
-                                    select:{
-
-                                        customer:{
-
-                                            select:{
-                                                id:true,
-                                                name:true
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
+                    assignedUser:{
+                        select:{
+                            id:true,
+                            name:true
                         }
+                    },
 
+                    customer:{
+                        select:{
+                            id:true,
+                            name:true
+                        }
+                    },
+
+                    project:{
+                        select:{
+                            customer:{
+                                select:{
+                                    id:true,
+                                    name:true
+                                }
+                            }
+                        }
                     }
 
-                })
+                }
 
-
-            ]);
+            });
 
 
 
 
         // Werkbonnen per status
-
         const byStatus:Record<string,number> = {};
 
-
         for(const workorder of workorders){
-
             byStatus[workorder.status] =
                 (byStatus[workorder.status] ?? 0) + 1;
-
         }
 
 
 
-
-        // Uren per monteur en per klant
 
         const byEngineer =
             new Map<string,{
@@ -159,75 +142,75 @@ export async function GET(){
         let hoursTotal = 0;
 
 
-        for(const entry of hours){
 
 
-            const amount =
-                entry.hours ?? 0;
+        for(const workorder of workorders){
 
 
-            hoursTotal += amount;
+            const oplever =
+                mergeOpleverData(workorder.formData);
 
 
-            if(
-                entry.date &&
-                entry.date >= monthStart
-            ){
+            // Alle monteururen bij elkaar (monteur 1 t/m 4)
+            const uren =
+                num(oplever.tarief.urenMonteur1) +
+                num(oplever.tarief.urenMonteur2) +
+                num(oplever.tarief.urenMonteur3) +
+                num(oplever.tarief.urenMonteur4);
 
-                hoursThisMonth += amount;
 
+            const reisuren =
+                num(oplever.tarief.reisuren);
+
+
+            const kilometers =
+                num(oplever.tarief.kilometers);
+
+
+            hoursTotal += uren;
+
+
+            if(workorder.createdAt >= monthStart){
+                hoursThisMonth += uren;
             }
 
 
 
 
+            // Toeschrijven aan de toegewezen monteur
             const engineer =
-                entry.workorder.assignedUser;
+                workorder.assignedUser;
 
 
             if(engineer){
-
 
                 const existing =
                     byEngineer.get(engineer.id)
                     ??
                     {
                         name:
-                            engineer.name
-                            ?? "Onbekend",
-
+                            engineer.name ?? "Onbekend",
                         hours:0,
-
                         travel:0,
-
                         kilometers:0
                     };
 
+                existing.hours += uren;
+                existing.travel += reisuren;
+                existing.kilometers += kilometers;
 
-                existing.hours += amount;
-
-                existing.travel +=
-                    entry.travelTime ?? 0;
-
-                existing.kilometers +=
-                    entry.kilometers ?? 0;
-
-
-                byEngineer.set(
-                    engineer.id,
-                    existing
-                );
-
+                byEngineer.set(engineer.id, existing);
 
             }
 
 
 
 
+            // Uren per opdrachtgever
             const customer =
-                entry.workorder.customer
+                workorder.customer
                 ??
-                entry.workorder.project?.customer
+                workorder.project?.customer
                 ??
                 { id:"onbekend", name:"Onbekende opdrachtgever" };
 
@@ -240,14 +223,9 @@ export async function GET(){
                     hours:0
                 };
 
+            existingCustomer.hours += uren;
 
-            existingCustomer.hours += amount;
-
-
-            byCustomer.set(
-                customer.id,
-                existingCustomer
-            );
+            byCustomer.set(customer.id, existingCustomer);
 
 
         }
@@ -258,29 +236,21 @@ export async function GET(){
         return NextResponse.json({
 
             totals:{
-
                 workorders:
                     workorders.length,
-
                 hoursTotal,
-
                 hoursThisMonth
-
             },
 
             byStatus,
 
             byEngineer:
                 Array.from(byEngineer.values())
-                .sort(
-                    (a,b)=>b.hours - a.hours
-                ),
+                .sort((a,b)=>b.hours - a.hours),
 
             byCustomer:
                 Array.from(byCustomer.values())
-                .sort(
-                    (a,b)=>b.hours - a.hours
-                )
+                .sort((a,b)=>b.hours - a.hours)
 
         });
 
@@ -288,22 +258,11 @@ export async function GET(){
     } catch(error){
 
 
-        console.error(
-            "REPORTS ERROR",
-            error
-        );
-
+        console.error("REPORTS ERROR", error);
 
         return NextResponse.json(
-
-            {
-                error:"Rapportage ophalen mislukt"
-            },
-
-            {
-                status:500
-            }
-
+            { error:"Rapportage ophalen mislukt" },
+            { status:500 }
         );
 
 

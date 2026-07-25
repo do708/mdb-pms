@@ -23,6 +23,9 @@ interface Props {
     // Naam van monteur 1 (de toegewezen monteur), voor de urenlabels
     monteur1Name?:string | null;
 
+    // Namen van de extra monteurs (uit het klaarzetten), voor monteur 2-4
+    extraEngineerNames?:string[];
+
     // Ingebed in een groter formulier: geen eigen opslaanknop,
     // wijzigingen gaan via onChange omhoog naar de parent.
     embedded?:boolean;
@@ -775,6 +778,8 @@ export default function OpleverForm({
 
     monteur1Name,
 
+    extraEngineerNames = [],
+
     embedded = false,
 
     onChange
@@ -783,9 +788,24 @@ export default function OpleverForm({
 
 
     const [data,setData] =
-        useState<OpleverData>(
-            mergeOpleverData(initial)
-        );
+        useState<OpleverData>(()=>{
+
+            const merged = mergeOpleverData(initial);
+
+            // Extra monteurs uit het klaarzetten voorvullen (alleen als leeg)
+            if(extraEngineerNames[0] && !merged.tarief.monteur2){
+                merged.tarief.monteur2 = extraEngineerNames[0];
+            }
+            if(extraEngineerNames[1] && !merged.tarief.monteur3){
+                merged.tarief.monteur3 = extraEngineerNames[1];
+            }
+            if(extraEngineerNames[2] && !merged.tarief.monteur4){
+                merged.tarief.monteur4 = extraEngineerNames[2];
+            }
+
+            return merged;
+
+        });
 
 
     const [engineers,setEngineers] =
