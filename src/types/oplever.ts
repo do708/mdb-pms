@@ -182,6 +182,7 @@ export interface HardwareRegel {
     merk:string;
     type:string;
     serienummer:string;
+    macAddress:string;
 }
 
 
@@ -418,7 +419,9 @@ export function mergeOpleverData(
                 type:
                     typeof h.type === "string" ? h.type : "",
                 serienummer:
-                    typeof h.serienummer === "string" ? h.serienummer : ""
+                    typeof h.serienummer === "string" ? h.serienummer : "",
+                macAddress:
+                    typeof h.macAddress === "string" ? h.macAddress : ""
             }))
             :
             [],

@@ -217,7 +217,12 @@ function Veld({
 
         <label className={`block ${small ? "w-36" : ""}`}>
 
-            <span className="text-sm text-gray-600">
+            <span className="
+                block
+                text-sm
+                text-gray-600
+                min-h-[2.5rem]
+            ">
 
                 {label}
 
@@ -234,7 +239,6 @@ function Veld({
                     border
                     rounded-xl
                     p-2
-                    mt-1
                 "
 
             />
@@ -836,6 +840,20 @@ export default function OpleverForm({
 
 
 
+    // De parent op de hoogte brengen ná het renderen (niet tijdens),
+    // om "setState tijdens render" te voorkomen.
+    useEffect(()=>{
+
+        if(onChange){
+            onChange(data);
+        }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[data]);
+
+
+
+
     function update(
         mutate:(draft:OpleverData)=>void
     ){
@@ -846,10 +864,6 @@ export default function OpleverForm({
                 structuredClone(previous);
 
             mutate(next);
-
-            if(onChange){
-                onChange(next);
-            }
 
             return next;
 
@@ -1031,11 +1045,19 @@ export default function OpleverForm({
                     :
                     (
 
-                        <p className="text-sm">
+                        <div className="
+                            w-full
+                            border
+                            border-transparent
+                            rounded-xl
+                            p-2
+                            text-sm
+                            bg-gray-50
+                        ">
 
                             {naam ?? "—"}
 
-                        </p>
+                        </div>
 
                     )
                 }
@@ -1458,14 +1480,13 @@ export default function OpleverForm({
                         i.videowall === true && (
 
                             <div className="
-                                flex
-                                flex-wrap
+                                grid
+                                grid-cols-1
+                                sm:grid-cols-3
                                 gap-3
                             ">
 
                                 <Veld
-
-                                    small
 
                                     label="Configuratie (bijv. 2x2)"
 
@@ -1481,8 +1502,6 @@ export default function OpleverForm({
 
                                 <Veld
 
-                                    small
-
                                     label="Formaat schermen"
 
                                     value={i.videowallFormaat}
@@ -1496,8 +1515,6 @@ export default function OpleverForm({
                                 />
 
                                 <Veld
-
-                                    small
 
                                     label="Aantal schermen"
 
@@ -1754,6 +1771,10 @@ export default function OpleverForm({
                                     Serienummer
                                 </th>
 
+                                <th className="border p-2 text-left font-medium text-gray-600">
+                                    MAC Address
+                                </th>
+
                                 <th className="border p-2 w-10"></th>
 
                             </tr>
@@ -1812,6 +1833,16 @@ export default function OpleverForm({
                                             />
                                         </td>
 
+                                        <td className="border p-1">
+                                            <input
+                                                value={regel.macAddress}
+                                                onChange={(e)=>update(draft=>{
+                                                    draft.hardware[index].macAddress = e.target.value;
+                                                })}
+                                                className="w-full p-1.5 rounded-lg bg-white"
+                                            />
+                                        </td>
+
                                         <td className="border p-1 text-center">
                                             <button
                                                 type="button"
@@ -1833,7 +1864,7 @@ export default function OpleverForm({
                             {
                                 data.hardware.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="border p-3 text-center text-gray-400">
+                                        <td colSpan={6} className="border p-3 text-center text-gray-400">
                                             Nog geen hardware toegevoegd
                                         </td>
                                     </tr>
@@ -1854,7 +1885,8 @@ export default function OpleverForm({
                             actie:"",
                             merk:"",
                             type:"",
-                            serienummer:""
+                            serienummer:"",
+                            macAddress:""
                         });
                     })}
                     className="

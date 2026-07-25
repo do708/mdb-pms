@@ -399,6 +399,7 @@ function opleverSections(
           <th>Merk</th>
           <th>Type</th>
           <th>Serienummer</th>
+          <th>MAC Address</th>
         </tr>
       </thead>
       <tbody>
@@ -407,6 +408,7 @@ function opleverSections(
           <td>${esc(h.merk) || "—"}</td>
           <td>${esc(h.type) || "—"}</td>
           <td>${esc(h.serienummer) || "—"}</td>
+          <td>${esc(h.macAddress) || "—"}</td>
         </tr>`).join("")}
       </tbody>
     </table>
