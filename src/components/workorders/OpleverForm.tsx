@@ -268,20 +268,33 @@ function Vraag({
     return (
 
         <div className="
+            flex
+            flex-col
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+            gap-2
+            sm:gap-4
             border-b
-            border-dashed
-            pb-3
-            mb-3
-            space-y-2
+            border-slate-100
+            py-2.5
         ">
 
-            <p className="text-sm">
+            <p className="
+                text-sm
+                text-slate-700
+                sm:flex-1
+            ">
 
                 {label}
 
             </p>
 
-            {children}
+            <div className="sm:flex-shrink-0">
+
+                {children}
+
+            </div>
 
         </div>
 
@@ -304,14 +317,25 @@ function Kop({
     return (
 
         <h3 className="
-            bg-gray-100
-            font-bold
-            text-sm
-            rounded-lg
-            px-3
-            py-2
-            mb-4
+            flex
+            items-center
+            gap-2.5
+            font-semibold
+            text-[15px]
+            text-slate-800
+            border-b
+            border-slate-200
+            pb-2
+            mb-5
         ">
+
+            <span className="
+                inline-block
+                w-1
+                h-5
+                rounded-full
+                bg-blue-600
+            "></span>
 
             {children}
 
@@ -1115,16 +1139,42 @@ export default function OpleverForm({
             bg-white
             rounded-2xl
             border
-            p-5
-            space-y-6
+            border-slate-200
+            shadow-sm
+            p-6
+            sm:p-8
+            space-y-8
         ">
 
 
-            <h2 className="font-bold">
+            <div className="
+                border-b
+                border-slate-200
+                pb-4
+                mb-2
+            ">
 
-                📋 Opleverformulier
+                <h2 className="
+                    text-xl
+                    font-bold
+                    text-slate-900
+                ">
 
-            </h2>
+                    Opleverformulier
+
+                </h2>
+
+                <p className="
+                    text-sm
+                    text-slate-500
+                    mt-0.5
+                ">
+
+                    Vul de gegevens van de opgeleverde installatie in
+
+                </p>
+
+            </div>
 
 
 

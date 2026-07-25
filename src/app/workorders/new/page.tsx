@@ -355,7 +355,14 @@ function NewWorkorderInner(){
                 }
 
 
+                // Een monteur die zelf een werkbon aanmaakt gaat meteen naar
+                // de uitvoerpagina, zodat hij daar foto's en handtekening kan
+                // toevoegen (die kunnen pas nadat de werkbon is opgeslagen).
                 router.push(
+                    isEngineer
+                    ?
+                    `/engineer/workorders/${created.id}`
+                    :
                     `/workorders/${created.id}`
                 );
 
