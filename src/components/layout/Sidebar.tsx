@@ -164,6 +164,16 @@ const menu:MenuItem[] = [
             "engineer"
         ]
     },
+    {
+        name:"Formulieren",
+        href:"/forms",
+        icon:ClipboardList,
+        roles:[
+            "admin",
+            "office",
+            "engineer"
+        ]
+    },
 
 
     {

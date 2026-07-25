@@ -260,6 +260,17 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.FormSubmissionScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  title: 'title',
+  status: 'status',
+  data: 'data',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -267,6 +278,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -300,7 +315,8 @@ exports.Prisma.ModelName = {
   Document: 'Document',
   Assignment: 'Assignment',
   AssignmentUser: 'AssignmentUser',
-  Invoice: 'Invoice'
+  Invoice: 'Invoice',
+  FormSubmission: 'FormSubmission'
 };
 
 /**
