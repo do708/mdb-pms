@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import SignatureForm from "@/components/workorders/SignatureForm";
 import OpleverForm from "@/components/workorders/OpleverForm";
+
+import { parseCustomerSchema } from "@/types/customerForms";
 import { getStatus } from "@/constants/workorderStatus";
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 
@@ -56,6 +58,8 @@ interface Workorder {
         name:string;
 
         address:string | null;
+
+        formSchema?:unknown;
 
     } | null;
 
@@ -760,6 +764,10 @@ async function completeWorkorder(){
         (workorder.extraEngineers ?? [])
         .map(e=>e.user?.name)
         .filter((n):n is string => !!n)
+    }
+
+    customerSchema={
+        parseCustomerSchema(workorder.customer?.formSchema)
     }
 
 />

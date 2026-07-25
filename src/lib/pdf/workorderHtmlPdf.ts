@@ -130,6 +130,9 @@ export interface WorkorderHtmlPdfInput {
 
     formData:unknown;
 
+    // Per-opdrachtgever schema (voor de labels van de extra velden)
+    customerSchema?:unknown;
+
 }
 
 
@@ -425,6 +428,74 @@ function opleverSections(
 
 
 
+// Per-opdrachtgever extra velden voor in de PDF
+function customFieldsSection(
+    schemaRaw:unknown,
+    custom:Record<string,unknown>
+):string {
+
+    if(
+        !schemaRaw ||
+        typeof schemaRaw !== "object" ||
+        !Array.isArray((schemaRaw as { sections?:unknown }).sections)
+    ){
+        return "";
+    }
+
+    const sections =
+        (schemaRaw as { sections:Array<{
+            id:string;
+            title:string;
+            fields:Array<{ id:string; label:string; type:string }>;
+        }> }).sections;
+
+
+    const blocks =
+        sections.map(section=>{
+
+            const rows =
+                section.fields.map(field=>{
+
+                    const raw = custom[field.id];
+
+                    let value:string;
+
+                    if(field.type === "checkbox"){
+                        value = raw ? "Ja" : "Nee";
+                    } else {
+                        value =
+                            raw === undefined || raw === null || raw === ""
+                            ?
+                            "—"
+                            :
+                            String(raw);
+                    }
+
+                    return row(field.label, textAnswer(value));
+
+                }).join("");
+
+
+            return `
+              <div class="section-title">${esc(section.title)}</div>
+              <table class="qa">
+                ${rows}
+              </table>`;
+
+        }).join("");
+
+
+    return `
+  <div class="section">
+    <div class="section-title">Klant-specifieke gegevens</div>
+    ${blocks}
+  </div>`;
+
+}
+
+
+
+
 function generateHtml(
     data:WorkorderHtmlPdfInput,
     qrDataUrl:string
@@ -660,6 +731,9 @@ function generateHtml(
 
   <!-- OPLEVERFORMULIER -->
   ${opleverSections(oplever,data.engineerName)}
+
+  <!-- KLANT-SPECIFIEKE VELDEN -->
+  ${customFieldsSection(data.customerSchema, oplever.custom)}
 
   <!-- FOTO'S -->
   ${data.photoUrls.length > 0 ? `

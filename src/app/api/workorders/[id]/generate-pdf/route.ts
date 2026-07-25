@@ -216,7 +216,10 @@ customer:true,
                         ?? null,
 
                     formData:
-                        workorder.formData
+                        workorder.formData,
+
+                    customerSchema:
+                        workorder.customer?.formSchema ?? null
 
                 },
                 appUrl

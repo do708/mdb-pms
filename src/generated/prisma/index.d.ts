@@ -3669,6 +3669,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     color: number
+    formSchema: number
     _all: number
   }
 
@@ -3704,6 +3705,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     color?: true
+    formSchema?: true
     _all?: true
   }
 
@@ -3788,6 +3790,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     color: string
+    formSchema: JsonValue | null
     _count: CustomerCountAggregateOutputType | null
     _min: CustomerMinAggregateOutputType | null
     _max: CustomerMaxAggregateOutputType | null
@@ -3816,6 +3819,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     color?: boolean
+    formSchema?: boolean
     assignments?: boolean | Customer$assignmentsArgs<ExtArgs>
     projects?: boolean | Customer$projectsArgs<ExtArgs>
     workorders?: boolean | Customer$workordersArgs<ExtArgs>
@@ -3831,6 +3835,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     color?: boolean
+    formSchema?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3842,6 +3847,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     color?: boolean
+    formSchema?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectScalar = {
@@ -3853,9 +3859,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     color?: boolean
+    formSchema?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "createdAt" | "updatedAt" | "color", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "createdAt" | "updatedAt" | "color" | "formSchema", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | Customer$assignmentsArgs<ExtArgs>
     projects?: boolean | Customer$projectsArgs<ExtArgs>
@@ -3881,6 +3888,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       color: string
+      formSchema: Prisma.JsonValue | null
     }, ExtArgs["result"]["customer"]>
     composites: {}
   }
@@ -4315,6 +4323,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Customer", 'DateTime'>
     readonly updatedAt: FieldRef<"Customer", 'DateTime'>
     readonly color: FieldRef<"Customer", 'String'>
+    readonly formSchema: FieldRef<"Customer", 'Json'>
   }
     
 
@@ -19741,7 +19750,8 @@ export namespace Prisma {
     address: 'address',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    color: 'color'
+    color: 'color',
+    formSchema: 'formSchema'
   };
 
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
@@ -20149,6 +20159,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     color?: StringFilter<"Customer"> | string
+    formSchema?: JsonNullableFilter<"Customer">
     assignments?: AssignmentListRelationFilter
     projects?: ProjectListRelationFilter
     workorders?: WorkorderListRelationFilter
@@ -20163,6 +20174,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     color?: SortOrder
+    formSchema?: SortOrderInput | SortOrder
     assignments?: AssignmentOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
     workorders?: WorkorderOrderByRelationAggregateInput
@@ -20180,6 +20192,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     color?: StringFilter<"Customer"> | string
+    formSchema?: JsonNullableFilter<"Customer">
     assignments?: AssignmentListRelationFilter
     projects?: ProjectListRelationFilter
     workorders?: WorkorderListRelationFilter
@@ -20194,6 +20207,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     color?: SortOrder
+    formSchema?: SortOrderInput | SortOrder
     _count?: CustomerCountOrderByAggregateInput
     _max?: CustomerMaxOrderByAggregateInput
     _min?: CustomerMinOrderByAggregateInput
@@ -20211,6 +20225,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
     color?: StringWithAggregatesFilter<"Customer"> | string
+    formSchema?: JsonNullableWithAggregatesFilter<"Customer">
   }
 
   export type ProjectWhereInput = {
@@ -21264,6 +21279,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
@@ -21278,6 +21294,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
@@ -21292,6 +21309,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
@@ -21306,6 +21324,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
@@ -21320,6 +21339,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type CustomerUpdateManyMutationInput = {
@@ -21331,6 +21351,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type CustomerUncheckedUpdateManyInput = {
@@ -21342,6 +21363,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type ProjectCreateInput = {
@@ -22524,6 +22546,29 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type AssignmentListRelationFilter = {
     every?: AssignmentWhereInput
@@ -22554,6 +22599,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     color?: SortOrder
+    formSchema?: SortOrder
   }
 
   export type CustomerMaxOrderByAggregateInput = {
@@ -22576,6 +22622,32 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     color?: SortOrder
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type CustomerScalarRelationFilter = {
@@ -22622,29 +22694,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type DocumentListRelationFilter = {
@@ -22795,32 +22844,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableFilter<$PrismaModel = never> = {
@@ -24529,6 +24552,29 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
@@ -24553,29 +24599,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -25154,6 +25177,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
   }
@@ -25167,6 +25191,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
   }
@@ -25260,6 +25285,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
   }
@@ -25273,6 +25299,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
   }
@@ -25425,6 +25452,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     projects?: ProjectCreateNestedManyWithoutCustomerInput
   }
@@ -25438,6 +25466,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
   }
@@ -25767,6 +25796,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
   }
@@ -25780,6 +25810,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
   }
@@ -26697,6 +26728,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
   }
@@ -26710,6 +26742,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
   }
@@ -26851,6 +26884,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
   }
@@ -26864,6 +26898,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
   }

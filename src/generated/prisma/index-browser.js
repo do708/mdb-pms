@@ -139,7 +139,8 @@ exports.Prisma.CustomerScalarFieldEnum = {
   address: 'address',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  color: 'color'
+  color: 'color',
+  formSchema: 'formSchema'
 };
 
 exports.Prisma.ProjectScalarFieldEnum = {

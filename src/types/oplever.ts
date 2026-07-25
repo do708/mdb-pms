@@ -3,6 +3,28 @@
 //
 // Wordt opgeslagen in Workorder.formData (Json).
 
+export const OPDRACHTGEVERS = [
+    "Axians",
+    "Comsysco",
+    "Display4All",
+    "eValue8",
+    "First Impression",
+    "Hofcon",
+    "HQ Healthcare",
+    "IP Care",
+    "Marketing in Beeld",
+    "MDB Networks",
+    "Merit Media",
+    "NDI ICT Solutions",
+    "Screenlink",
+    "TSS Cross Media",
+    "Viewie Media",
+    "Virupa",
+    "ZetaDisplay"
+] as const;
+
+
+
 export const BEUGEL_TYPES = [
     "Muurbeugel",
     "Zwenkbeugel",
@@ -48,6 +70,8 @@ export interface ExtraKosten {
 
 
 export interface OpleverData {
+
+    opdrachtgever:string;
 
     tarief:{
         voorrijtarief:boolean | null;
@@ -144,6 +168,9 @@ export interface OpleverData {
         afvalverwijdering:boolean | null;
     };
 
+    // Per-opdrachtgever extra velden (dynamisch, afhankelijk van klant)
+    custom:Record<string,unknown>;
+
 }
 
 
@@ -180,6 +207,8 @@ export function emptyExtraKosten():ExtraKosten {
 export function emptyOpleverData():OpleverData {
 
     return {
+
+        opdrachtgever:"",
 
         tarief:{
             voorrijtarief:null,
@@ -256,7 +285,9 @@ export function emptyOpleverData():OpleverData {
             locatieMediaplayer:"",
             aantalMediaplayers:"",
             afvalverwijdering:null
-        }
+        },
+
+        custom:{}
 
     };
 
@@ -290,6 +321,13 @@ export function mergeOpleverData(
 
 
     const merged:OpleverData = {
+
+        opdrachtgever:
+            typeof data.opdrachtgever === "string"
+            ?
+            data.opdrachtgever
+            :
+            "",
 
         tarief:{
             ...empty.tarief,
@@ -354,6 +392,18 @@ export function mergeOpleverData(
         checklist:{
             ...empty.checklist,
             ...data.checklist
+        },
+
+        custom:{
+            ...empty.custom,
+            ...(
+                data.custom &&
+                typeof data.custom === "object"
+                ?
+                data.custom
+                :
+                {}
+            )
         }
 
     };

@@ -12,6 +12,12 @@ import {
     mergeOpleverData
 } from "@/types/oplever";
 
+import {
+    CustomerFormSchema
+} from "@/types/customerForms";
+
+import CustomerFormSection from "./CustomerFormSection";
+
 
 
 interface Props {
@@ -25,6 +31,9 @@ interface Props {
 
     // Namen van de extra monteurs (uit het klaarzetten), voor monteur 2-4
     extraEngineerNames?:string[];
+
+    // Per-opdrachtgever vragen (uit Customer.formSchema)
+    customerSchema?:CustomerFormSchema | null;
 
     // Ingebed in een groter formulier: geen eigen opslaanknop,
     // wijzigingen gaan via onChange omhoog naar de parent.
@@ -779,6 +788,8 @@ export default function OpleverForm({
     monteur1Name,
 
     extraEngineerNames = [],
+
+    customerSchema = null,
 
     embedded = false,
 
@@ -2185,6 +2196,41 @@ export default function OpleverForm({
                 </Vraag>
 
             </div>
+
+
+            {
+                customerSchema && (
+
+                    <div className="
+                        border
+                        rounded-2xl
+                        p-5
+                        bg-gray-50
+                    ">
+
+                        <Kop>Klant-specifieke gegevens</Kop>
+
+                        <div className="mt-3">
+
+                            <CustomerFormSection
+                                schema={customerSchema}
+                                values={data.custom}
+                                onChange={(fieldId, value)=>{
+                                    update(draft=>{
+                                        draft.custom = {
+                                            ...draft.custom,
+                                            [fieldId]:value
+                                        };
+                                    });
+                                }}
+                            />
+
+                        </div>
+
+                    </div>
+
+                )
+            }
 
 
 
