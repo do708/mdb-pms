@@ -81,6 +81,15 @@ export async function GET(){
 
                                 },
 
+                                customer:{
+
+                                    select:{
+                                        id:true,
+                                        name:true
+                                    }
+
+                                },
+
                                 project:{
 
                                     select:{
@@ -216,7 +225,11 @@ export async function GET(){
 
 
             const customer =
-                entry.workorder.project.customer;
+                entry.workorder.customer
+                ??
+                entry.workorder.project?.customer
+                ??
+                { id:"onbekend", name:"Onbekende opdrachtgever" };
 
 
             const existingCustomer =

@@ -123,6 +123,8 @@ export async function GET(){
 
                     },
 
+                    customer:true,
+
 
                     assignedUser:true
 
@@ -249,42 +251,28 @@ export async function POST(
 
 
 
-        const project =
+        // Klant is optioneel maar aanbevolen; controleren als hij is meegegeven
+        if(body.customerId){
 
-            await prisma.project.findUnique({
+            const customer =
+                await prisma.customer.findUnique({
+                    where:{
+                        id:body.customerId
+                    }
+                });
 
-                where:{
+            if(!customer){
 
-                    id:body.projectId
+                return NextResponse.json(
+                    {
+                        error:"Gekozen opdrachtgever bestaat niet"
+                    },
+                    {
+                        status:400
+                    }
+                );
 
-                }
-
-            });
-
-
-
-
-
-        if(!project){
-
-
-            return NextResponse.json(
-
-                {
-
-                    error:
-                    "Gekozen project bestaat niet"
-
-                },
-
-                {
-
-                    status:400
-
-                }
-
-            );
-
+            }
 
         }
 
@@ -358,7 +346,17 @@ export async function POST(
 
 
                     projectId:
-                        body.projectId,
+                        body.projectId || null,
+
+
+
+                    customerId:
+                        body.customerId || null,
+
+
+
+                    location:
+                        body.location || null,
 
 
 
@@ -381,7 +379,7 @@ export async function POST(
 
 
                     status:
-                        "open"
+                        body.status || "ontvangen"
 
 
                 }

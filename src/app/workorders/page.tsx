@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import DeleteButton from "@/components/DeleteButton";
+import { getStatus, WORKORDER_STATUSES } from "@/constants/workorderStatus";
 
 
 
@@ -17,6 +18,14 @@ interface Workorder {
 
     status:string;
 
+    location:string | null;
+
+    customer:{
+
+        name:string;
+
+    } | null;
+
     project:{
 
         name:string;
@@ -27,8 +36,7 @@ interface Workorder {
 
         };
 
-    };
-
+    } | null;
 
     assignedUser?:{
 
@@ -166,7 +174,7 @@ export default function WorkordersPage(){
 
                 ||
 
-                workorder.project.customer.name
+                (workorder.customer?.name ?? workorder.project?.customer.name ?? "—")
                 .toLowerCase()
                 .includes(search.toLowerCase());
 
@@ -341,26 +349,23 @@ export default function WorkordersPage(){
 
                     </option>
 
+                    {
+                        WORKORDER_STATUSES.map(status=>(
 
-                    <option value="open">
+                            <option
 
-                        Open
+                                key={status.key}
 
-                    </option>
+                                value={status.key}
 
+                            >
 
-                    <option value="in_uitvoering">
+                                {status.label}
 
-                        In uitvoering
+                            </option>
 
-                    </option>
-
-
-                    <option value="afgerond">
-
-                        Afgerond
-
-                    </option>
+                        ))
+                    }
 
 
                 </select>
@@ -416,14 +421,14 @@ export default function WorkordersPage(){
 
                             <p className="mt-2">
 
-                                🏢 {workorder.project.customer.name}
+                                🏢 {(workorder.customer?.name ?? workorder.project?.customer.name ?? "—")}
 
                             </p>
 
 
                             <p>
 
-                                📁 {workorder.project.name}
+                                📍 {workorder.location ?? workorder.project?.name ?? ""}
 
                             </p>
 
@@ -445,9 +450,11 @@ export default function WorkordersPage(){
 
                             <p className="mt-2">
 
-                                Status:
+Status:
                                 {" "}
-                                {workorder.status}
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${getStatus(workorder.status).badge}`}>
+                                    {getStatus(workorder.status).label}
+                                </span>
 
                             </p>
 

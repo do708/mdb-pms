@@ -26,6 +26,8 @@ export default function DraggableAssignment({
 
     // De planning-API levert werkbonnen: de klant hangt onder project.
     const customer =
+        item.customer
+        ??
         item.project?.customer;
 
 

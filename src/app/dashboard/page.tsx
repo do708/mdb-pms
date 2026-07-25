@@ -321,7 +321,7 @@ export default function DashboardPage(){
                                 <p className="text-sm text-gray-500">
 
                                     {
-                                        workorder.project.customer.name
+                                        (workorder.customer?.name ?? workorder.project?.customer?.name ?? "—")
                                     }
 
                                     {" - "}

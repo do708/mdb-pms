@@ -85,6 +85,9 @@ export async function GET(){
                 include:{
 
 
+                    customer:true,
+
+
                     project:{
 
                         include:{

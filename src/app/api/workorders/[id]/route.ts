@@ -76,6 +76,8 @@ export async function GET(
                 include:{
 
 
+customer:true,
+
                     project:{
 
                         include:{
@@ -424,9 +426,41 @@ export async function PUT(
 
                     status:
 
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.status
+                        :
                         body.status
                         ??
-                        existingWorkorder.status
+                        existingWorkorder.status,
+
+
+
+                    customerId:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.customerId
+                        :
+                        body.customerId !== undefined
+                        ?
+                        (body.customerId || null)
+                        :
+                        existingWorkorder.customerId,
+
+
+
+                    location:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.location
+                        :
+                        body.location !== undefined
+                        ?
+                        (body.location || null)
+                        :
+                        existingWorkorder.location
 
 
                 }

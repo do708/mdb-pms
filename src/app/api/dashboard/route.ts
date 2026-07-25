@@ -25,7 +25,7 @@ export async function GET(){
 
                 where:{
 
-                    status:"open"
+                    status:{ notIn:["afgerond","betaald","gefactureerd"] }
 
                 }
 
@@ -41,7 +41,7 @@ export async function GET(){
 
                 where:{
 
-                    status:"in_uitvoering"
+                    status:{ in:["ingepland","uitgevoerd"] }
 
                 }
 
@@ -87,6 +87,9 @@ export async function GET(){
 
 
                 include:{
+
+
+                    customer:true,
 
 
                     project:{

@@ -23,6 +23,17 @@ interface PlanningItem {
     plannedDate:string | null;
 
 
+    location:string | null;
+
+    customer:{
+
+        name:string;
+
+        color:string;
+
+    } | null;
+
+
     project:{
 
         name:string;
@@ -35,7 +46,7 @@ interface PlanningItem {
 
         };
 
-    };
+    } | null;
 
 
     assignedUser:{

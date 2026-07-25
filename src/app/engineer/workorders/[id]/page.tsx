@@ -6,6 +6,7 @@ import HoursForm from "@/components/workorders/HoursForm";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import SignatureForm from "@/components/workorders/SignatureForm";
 import OpleverForm from "@/components/workorders/OpleverForm";
+import { getStatus } from "@/constants/workorderStatus";
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 
 interface Workorder {
@@ -31,6 +32,16 @@ interface Workorder {
 
     status:string;
 
+    location:string | null;
+
+    customer:{
+
+        name:string;
+
+        address:string | null;
+
+    } | null;
+
 
     project:{
 
@@ -44,7 +55,7 @@ interface Workorder {
 
         };
 
-    };
+    } | null;
 
 
 }
@@ -78,7 +89,7 @@ export default function EngineerWorkorderPage(){
 
 
     const [status,setStatus] =
-        useState("open");
+        useState("ontvangen");
 
 
 
@@ -360,7 +371,7 @@ async function completeWorkorder(){
 
         setStatus(
 
-            "afgerond"
+            "uitgevoerd"
 
         );
 
@@ -463,23 +474,26 @@ async function completeWorkorder(){
 
 
                 <p>
-                    🏢 {workorder.project.customer.name}
-                </p>
-
-
-                <p>
-                    📍 {
-
-                        workorder.project.customer.address
-                        ||
-                        "Geen adres"
-
+                    🏢 {
+                        workorder.customer?.name
+                        ??
+                        workorder.project?.customer.name
+                        ??
+                        "—"
                     }
                 </p>
 
 
                 <p>
-                    📁 {workorder.project.name}
+                    📍 {
+                        workorder.location
+                        ??
+                        workorder.customer?.address
+                        ??
+                        workorder.project?.customer.address
+                        ??
+                        "Geen locatie"
+                    }
                 </p>
 
 
@@ -628,49 +642,18 @@ async function completeWorkorder(){
                 </h2>
 
 
+                <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatus(status).badge}`}>
 
-                <select
+                    {getStatus(status).label}
 
-                    value={status}
-
-                    onChange={(e)=>
-                        setStatus(
-                            e.target.value
-                        )
-                    }
+                </span>
 
 
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                    "
+                <p className="text-sm text-gray-500 mt-2">
 
-                >
+                    De status wordt door kantoor beheerd.
 
-                    <option value="open">
-
-                        Open
-
-                    </option>
-
-
-                    <option value="in_uitvoering">
-
-                        In uitvoering
-
-                    </option>
-
-
-                    <option value="afgerond">
-
-                        Afgerond
-
-                    </option>
-
-
-                </select>
+                </p>
 
 
             </section>

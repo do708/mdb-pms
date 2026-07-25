@@ -18,6 +18,12 @@ interface WorkorderWithNote {
 
     internalNotes:string | null;
 
+    location:string | null;
+
+    customer:{
+        name:string;
+    } | null;
+
     project:{
 
         name:string;
@@ -28,7 +34,7 @@ interface WorkorderWithNote {
 
         };
 
-    };
+    } | null;
 
     assignedUser:{
 
@@ -220,9 +226,9 @@ export default function NotesPage(){
                                 mb-2
                             ">
 
-                                🏢 {workorder.project.customer.name}
+                                🏢 {workorder.customer?.name ?? workorder.project?.customer.name ?? "—"}
                                 {" · "}
-                                📁 {workorder.project.name}
+                                📍 {workorder.location ?? workorder.project?.name ?? ""}
 
                                 {
                                     workorder.assignedUser?.name && (

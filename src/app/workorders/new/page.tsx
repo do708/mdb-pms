@@ -15,17 +15,11 @@ import {
 
 
 
-interface Project {
+interface Customer {
 
     id:string;
 
     name:string;
-
-    customer:{
-
-        name:string;
-
-    };
 
 }
 
@@ -62,8 +56,8 @@ export default function NewWorkorderPage(){
 
 
 
-    const [projects,setProjects] =
-        useState<Project[]>([]);
+    const [customers,setCustomers] =
+        useState<Customer[]>([]);
 
 
     const [engineers,setEngineers] =
@@ -82,7 +76,11 @@ export default function NewWorkorderPage(){
         useState("");
 
 
-    const [projectId,setProjectId] =
+    const [customerId,setCustomerId] =
+        useState("");
+
+
+    const [location,setLocation] =
         useState("");
 
 
@@ -116,18 +114,18 @@ export default function NewWorkorderPage(){
         async function load(){
 
 
-            const projectsResponse =
-                await fetch("/api/projects");
+            const customersResponse =
+                await fetch("/api/customers");
 
 
-            const projectsData =
-                await projectsResponse.json();
+            const customersData =
+                await customersResponse.json();
 
 
-            setProjects(
-                Array.isArray(projectsData)
+            setCustomers(
+                Array.isArray(customersData)
                 ?
-                projectsData
+                customersData
                 :
                 []
             );
@@ -180,9 +178,9 @@ export default function NewWorkorderPage(){
         }
 
 
-        if(!projectId){
+        if(!isEngineer && !customerId){
 
-            setError("Kies een project");
+            setError("Kies een opdrachtgever");
 
             window.scrollTo({ top:0, behavior:"smooth" });
 
@@ -209,10 +207,8 @@ export default function NewWorkorderPage(){
                         method:"POST",
 
                         headers:{
-
                             "Content-Type":
                             "application/json"
-
                         },
 
                         body:JSON.stringify({
@@ -223,13 +219,25 @@ export default function NewWorkorderPage(){
 
                             internalNotes,
 
-                            projectId,
+                            customerId,
+
+                            location,
 
                             assignedUserId,
 
                             plannedDate,
 
-                            formData
+                            // Kantoor zet klaar zonder het opleverformulier;
+                            // de monteur vult dat later in. Een monteur die
+                            // zelf een werkbon maakt vult het meteen in.
+                            formData:
+                                isEngineer
+                                ?
+                                formData
+                                :
+                                undefined,
+
+                            status:"ontvangen"
 
                         })
 
@@ -245,8 +253,6 @@ export default function NewWorkorderPage(){
                     await response.json();
 
 
-                // Monteur wordt door de middleware automatisch naar
-                // zijn eigen scherm gestuurd (/engineer/workorders/...)
                 router.push(
                     `/workorders/${created.id}`
                 );
@@ -294,7 +300,13 @@ export default function NewWorkorderPage(){
                     font-bold
                 ">
 
-                    Nieuwe werkbon
+                    {
+                        isEngineer
+                        ?
+                        "Nieuwe werkbon"
+                        :
+                        "Werkbon klaarzetten"
+                    }
 
                 </h1>
 
@@ -303,7 +315,13 @@ export default function NewWorkorderPage(){
                     text-gray-500
                 ">
 
-                    Vul de werkbon in en sla onderaan op
+                    {
+                        isEngineer
+                        ?
+                        "Vul de werkbon in en sla onderaan op"
+                        :
+                        "Zet een klus klaar voor een monteur"
+                    }
 
                 </p>
 
@@ -335,8 +353,6 @@ export default function NewWorkorderPage(){
 
 
 
-            {/* ---------- Projectgegevens ---------- */}
-
             <section className="
                 bg-white
                 rounded-2xl
@@ -348,196 +364,28 @@ export default function NewWorkorderPage(){
 
                 <h2 className="font-bold">
 
-                    📁 Projectgegevens
+                    📋 Opdracht
 
                 </h2>
 
 
-                <input
-
-                    value={title}
-
-                    onChange={(e)=>
-                        setTitle(e.target.value)
-                    }
-
-                    placeholder="Titel opdracht"
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                    "
-
-                />
-
-
-                <select
-
-                    value={projectId}
-
-                    onChange={(e)=>
-                        setProjectId(e.target.value)
-                    }
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                        bg-white
-                    "
-
-                >
-
-                    <option value="">
-
-                        Kies project
-
-                    </option>
-
-                    {
-                        projects.map(project=>(
-
-                            <option
-
-                                key={project.id}
-
-                                value={project.id}
-
-                            >
-
-                                {project.customer.name}
-                                {" — "}
-                                {project.name}
-
-                            </option>
-
-                        ))
-                    }
-
-                </select>
-
-
-                <textarea
-
-                    value={description}
-
-                    onChange={(e)=>
-                        setDescription(e.target.value)
-                    }
-
-                    placeholder="Omschrijving werkzaamheden"
-
-                    className="
-                        w-full
-                        border
-                        rounded-xl
-                        p-3
-                        min-h-24
-                    "
-
-                />
-
-
-                {
-                    !isEngineer && (
-
-                        <>
-
-                            <textarea
-
-                                value={internalNotes}
-
-                                onChange={(e)=>
-                                    setInternalNotes(e.target.value)
-                                }
-
-                                placeholder="Interne notitie (niet zichtbaar voor klant)"
-
-                                className="
-                                    w-full
-                                    border
-                                    border-amber-300
-                                    bg-amber-50
-                                    rounded-xl
-                                    p-3
-                                "
-
-                            />
-
-
-                            <select
-
-                                value={assignedUserId}
-
-                                onChange={(e)=>
-                                    setAssignedUserId(e.target.value)
-                                }
-
-                                className="
-                                    w-full
-                                    border
-                                    rounded-xl
-                                    p-3
-                                    bg-white
-                                "
-
-                            >
-
-                                <option value="">
-
-                                    Kies monteur
-
-                                </option>
-
-                                {
-                                    engineers.map(engineer=>(
-
-                                        <option
-
-                                            key={engineer.id}
-
-                                            value={engineer.id}
-
-                                        >
-
-                                            {engineer.name}
-
-                                        </option>
-
-                                    ))
-                                }
-
-                            </select>
-
-                        </>
-
-                    )
-                }
-
-
                 <label className="block">
 
-                    <span className="
-                        text-sm
-                        text-gray-600
-                    ">
+                    <span className="text-sm text-gray-600">
 
-                        Geplande datum
+                        Wat moet er gebeuren? (titel)
 
                     </span>
 
                     <input
 
-                        type="date"
-
-                        value={plannedDate}
+                        value={title}
 
                         onChange={(e)=>
-                            setPlannedDate(e.target.value)
+                            setTitle(e.target.value)
                         }
+
+                        placeholder="Bijv. Installatie 3 schermen etalage"
 
                         className="
                             w-full
@@ -552,33 +400,282 @@ export default function NewWorkorderPage(){
                 </label>
 
 
+                {
+                    !isEngineer && (
+
+                        <label className="block">
+
+                            <span className="text-sm text-gray-600">
+
+                                Opdrachtgever
+
+                            </span>
+
+                            <select
+
+                                value={customerId}
+
+                                onChange={(e)=>
+                                    setCustomerId(e.target.value)
+                                }
+
+                                className="
+                                    w-full
+                                    border
+                                    rounded-xl
+                                    p-3
+                                    mt-1
+                                    bg-white
+                                "
+
+                            >
+
+                                <option value="">
+
+                                    Kies opdrachtgever
+
+                                </option>
+
+                                {
+                                    customers.map(customer=>(
+
+                                        <option
+
+                                            key={customer.id}
+
+                                            value={customer.id}
+
+                                        >
+
+                                            {customer.name}
+
+                                        </option>
+
+                                    ))
+                                }
+
+                            </select>
+
+                        </label>
+
+                    )
+                }
+
+
+                <label className="block">
+
+                    <span className="text-sm text-gray-600">
+
+                        Waar? (locatie / adres)
+
+                    </span>
+
+                    <input
+
+                        value={location}
+
+                        onChange={(e)=>
+                            setLocation(e.target.value)
+                        }
+
+                        placeholder="Straat, plaats"
+
+                        className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-3
+                            mt-1
+                        "
+
+                    />
+
+                </label>
+
+
+                <label className="block">
+
+                    <span className="text-sm text-gray-600">
+
+                        Omschrijving werkzaamheden
+
+                    </span>
+
+                    <textarea
+
+                        value={description}
+
+                        onChange={(e)=>
+                            setDescription(e.target.value)
+                        }
+
+                        className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-3
+                            mt-1
+                            min-h-24
+                        "
+
+                    />
+
+                </label>
+
+
+                {
+                    !isEngineer && (
+
+                        <>
+
+                            <label className="block">
+
+                                <span className="text-sm text-gray-600">
+
+                                    Wanneer? (geplande datum)
+
+                                </span>
+
+                                <input
+
+                                    type="date"
+
+                                    value={plannedDate}
+
+                                    onChange={(e)=>
+                                        setPlannedDate(e.target.value)
+                                    }
+
+                                    className="
+                                        w-full
+                                        max-w-xs
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        mt-1
+                                    "
+
+                                />
+
+                            </label>
+
+
+                            <label className="block">
+
+                                <span className="text-sm text-gray-600">
+
+                                    Monteur
+
+                                </span>
+
+                                <select
+
+                                    value={assignedUserId}
+
+                                    onChange={(e)=>
+                                        setAssignedUserId(e.target.value)
+                                    }
+
+                                    className="
+                                        w-full
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        mt-1
+                                        bg-white
+                                    "
+
+                                >
+
+                                    <option value="">
+
+                                        Kies monteur
+
+                                    </option>
+
+                                    {
+                                        engineers.map(engineer=>(
+
+                                            <option
+
+                                                key={engineer.id}
+
+                                                value={engineer.id}
+
+                                            >
+
+                                                {engineer.name}
+
+                                            </option>
+
+                                        ))
+                                    }
+
+                                </select>
+
+                            </label>
+
+
+                            <label className="block">
+
+                                <span className="text-sm text-gray-600">
+
+                                    Interne opmerkingen (niet zichtbaar voor klant) —
+                                    denk aan plattegronden, foto&apos;s, bijzonderheden
+
+                                </span>
+
+                                <textarea
+
+                                    value={internalNotes}
+
+                                    onChange={(e)=>
+                                        setInternalNotes(e.target.value)
+                                    }
+
+                                    className="
+                                        w-full
+                                        border
+                                        border-amber-300
+                                        bg-amber-50
+                                        rounded-xl
+                                        p-3
+                                        mt-1
+                                        min-h-24
+                                    "
+
+                                />
+
+                            </label>
+
+                        </>
+
+                    )
+                }
+
+
             </section>
 
 
 
 
-            {/* ---------- Opleverformulier ---------- */}
+            {
+                isEngineer && (
 
-            <OpleverForm
+                    <OpleverForm
 
-                initial={formData}
+                        initial={formData}
 
-                embedded
+                        embedded
 
-                onChange={setFormData}
+                        onChange={setFormData}
 
-                monteur1Name={
-                    isEngineer
-                    ?
-                    session?.user?.name ?? null
-                    :
-                    engineers.find(
-                        engineer=>
-                            engineer.id === assignedUserId
-                    )?.name ?? null
-                }
+                        monteur1Name={session?.user?.name ?? null}
 
-            />
+                    />
+
+                )
+            }
 
 
 
@@ -607,7 +704,11 @@ export default function NewWorkorderPage(){
                     ?
                     "Bezig met opslaan..."
                     :
+                    isEngineer
+                    ?
                     "✓ Werkbon opslaan"
+                    :
+                    "✓ Werkbon klaarzetten"
                 }
 
             </button>

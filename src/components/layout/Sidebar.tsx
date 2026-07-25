@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 import {
     LayoutDashboard,
     ClipboardList,
-    FolderKanban,
     Users,
     CalendarDays,
     Package,
@@ -82,17 +81,6 @@ const menu:MenuItem[] = [
             "admin",
             "office",
             "engineer"
-        ]
-    },
-
-
-    {
-        name:"Projecten",
-        href:"/projects",
-        icon:FolderKanban,
-        roles:[
-            "admin",
-            "office"
         ]
     },
 

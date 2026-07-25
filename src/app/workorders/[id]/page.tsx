@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import StatusFlow from "@/components/workorders/StatusFlow";
 import { useParams, useRouter } from "next/navigation";
 
 
@@ -218,17 +219,17 @@ export default function WorkorderDetailPage(){
 
 
                 <p>
-                    🏢 {workorder.project.customer.name}
+                    🏢 {workorder.customer?.name ?? workorder.project?.customer?.name ?? "—"}
                 </p>
 
 
                 <p>
-                    📍 {workorder.project.customer.address || "-"}
+                    📍 {workorder.location ?? workorder.customer?.address ?? workorder.project?.customer?.address ?? "-"}
                 </p>
 
 
                 <p>
-                    📁 {workorder.project.name}
+                    
                 </p>
 
 
@@ -237,10 +238,37 @@ export default function WorkorderDetailPage(){
                 </p>
 
 
-                <p>
-                    Status: {workorder.status}
-                </p>
+            </section>
 
+
+            <section className="
+                bg-white
+                border
+                rounded-2xl
+                p-5
+                mt-4
+            ">
+
+                <h2 className="font-bold mb-3">
+
+                    Status
+
+                </h2>
+
+                <StatusFlow
+
+                    workorderId={workorder.id}
+
+                    current={workorder.status}
+
+                    onChanged={(newStatus)=>
+                        setWorkorder({
+                            ...workorder,
+                            status:newStatus
+                        })
+                    }
+
+                />
 
             </section>
 

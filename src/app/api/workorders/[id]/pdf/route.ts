@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
+import { customerName, workorderLocation, resolveCustomer } from "@/lib/workorderCustomer";
+
 import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
@@ -54,6 +56,8 @@ export async function GET(
 
                 include:{
 
+
+customer:true,
 
                     project:{
 
@@ -130,15 +134,15 @@ export async function GET(
 
 
                 customer:
-                    workorder.project.customer.name,
+                    customerName(workorder),
 
 
                 address:
-                    workorder.project.customer.address,
+                    (resolveCustomer(workorder)?.address ?? null),
 
 
                 project:
-                    workorder.project.name,
+                    (workorder.project?.name ?? customerName(workorder)),
 
 
                 hours:

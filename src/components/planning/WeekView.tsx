@@ -345,7 +345,7 @@ export default function WeekView({
                                                     style={{
 
                                                         backgroundColor:
-                                                            item.project?.customer?.color
+                                                            (item.customer?.color ?? item.project?.customer?.color)
                                                             ?? "#2563eb"
 
                                                     }}
@@ -363,7 +363,7 @@ export default function WeekView({
 
 
                                                     {
-                                                        item.project?.customer?.name
+                                                        (item.customer?.name ?? item.project?.customer?.name)
                                                         ?? "Onbekende klant"
                                                     }
 

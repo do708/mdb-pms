@@ -31,6 +31,12 @@ interface MaterialItem {
 
         title:string;
 
+        location:string | null;
+
+        customer:{
+            name:string;
+        } | null;
+
         project:{
 
             name:string;
@@ -41,7 +47,7 @@ interface MaterialItem {
 
             };
 
-        };
+        } | null;
 
     };
 
@@ -489,9 +495,9 @@ export default function MaterialsPage(){
 
                                     {item.workorder.number}
                                     {" · "}
-                                    {item.workorder.project.customer.name}
+                                    {item.workorder.customer?.name ?? item.workorder.project?.customer.name ?? "—"}
                                     {" · "}
-                                    {item.workorder.project.name}
+                                    {item.workorder.location ?? item.workorder.project?.name ?? ""}
 
                                 </p>
 

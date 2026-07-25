@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
+import { customerName, workorderLocation, resolveCustomer } from "@/lib/workorderCustomer";
+
 import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
 
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
@@ -57,6 +59,8 @@ export async function POST(
 
                 include:{
 
+
+customer:true,
 
                     project:{
 
@@ -130,7 +134,7 @@ export async function POST(
                 data:{
 
                     status:
-                    "afgerond"
+                    "uitgevoerd"
 
                 }
 
@@ -161,15 +165,15 @@ export async function POST(
 
 
                 customer:
-                    workorder.project.customer.name,
+                    customerName(workorder),
 
 
                 address:
-                    workorder.project.customer.address,
+                    (resolveCustomer(workorder)?.address ?? null),
 
 
                 project:
-                    workorder.project.name,
+                    (workorder.project?.name ?? customerName(workorder)),
 
 
                 hours:
@@ -216,11 +220,11 @@ export async function POST(
 
 
             customer:
-                workorder.project.customer.name,
+                customerName(workorder),
 
 
             project:
-                workorder.project.name,
+                (workorder.project?.name ?? customerName(workorder)),
 
 
             pdfBuffer:

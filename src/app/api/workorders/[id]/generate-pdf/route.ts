@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
+import { customerName, workorderLocation, resolveCustomer } from "@/lib/workorderCustomer";
+
 import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 
 import { createClient } from "@supabase/supabase-js";
@@ -55,6 +57,8 @@ export async function POST(
                 },
 
                 include:{
+
+customer:true,
 
                     project:{
 
@@ -131,21 +135,21 @@ export async function POST(
                         workorder.createdAt,
 
                     projectName:
-                        workorder.project.name,
+                        (workorder.project?.name ?? customerName(workorder)),
 
                     customer:{
 
                         name:
-                            workorder.project.customer.name,
+                            customerName(workorder),
 
                         address:
-                            workorder.project.customer.address,
+                            (resolveCustomer(workorder)?.address ?? null),
 
                         phone:
-                            workorder.project.customer.phone,
+                            (resolveCustomer(workorder)?.phone ?? null),
 
                         email:
-                            workorder.project.customer.email
+                            (resolveCustomer(workorder)?.email ?? null)
 
                     },
 
