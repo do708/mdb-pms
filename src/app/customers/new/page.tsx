@@ -173,7 +173,7 @@ export default function NewCustomerPage(){
                     text-gray-500
                 ">
 
-                    Klant toevoegen aan MDB PMS
+                    Klant toevoegen aan MDB Project Management Systeem
 
                 </p>
 

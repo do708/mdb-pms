@@ -215,7 +215,7 @@ export default function NewProjectPage(){
                     text-gray-500
                 ">
 
-                    Project toevoegen aan MDB PMS
+                    Project toevoegen aan MDB Project Management Systeem
 
                 </p>
 

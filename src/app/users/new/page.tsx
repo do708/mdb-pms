@@ -170,7 +170,7 @@ export default function NewUserPage(){
 
                 <p className="text-gray-500">
 
-                    Medewerker toevoegen aan MDB PMS
+                    Medewerker toevoegen aan MDB Project Management Systeem
 
                 </p>
 

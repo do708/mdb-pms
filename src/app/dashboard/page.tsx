@@ -17,6 +17,77 @@ function formIcon(type:string):string {
 }
 
 
+function formTypeLabel(type:string):string {
+
+    const map:Record<string,string> = {
+        verlof:"Verlof",
+        declaratie:"Bon declareren",
+        werkplekinspectie:"Werkplekinspectie"
+    };
+
+    return (
+        map[type]
+        ??
+        (FORM_DEFINITIONS.find(d=>d.type === type)?.label ?? type)
+    );
+
+}
+
+
+function nlDate(value:unknown):string {
+
+    if(!value || typeof value !== "string"){
+        return "";
+    }
+
+    const d = new Date(value);
+
+    if(isNaN(d.getTime())){
+        return "";
+    }
+
+    return d.toLocaleDateString("nl-NL");
+
+}
+
+
+// Korte samenvatting per formulier: bij verlof de van-tot datums
+function formSummary(form:any):string {
+
+    if(form.type === "verlof"){
+
+        const from = nlDate(form.data?.eersteDag);
+        const to = nlDate(form.data?.laatsteDag);
+
+        if(from && to){
+            return `Verlof · ${from} t/m ${to}`;
+        }
+
+        if(from){
+            return `Verlof · ${from}`;
+        }
+
+        return "Verlof";
+
+    }
+
+    if(form.type === "declaratie"){
+
+        const datum = nlDate(form.data?.datum);
+
+        return datum
+            ?
+            `Bon declareren · ${datum}`
+            :
+            "Bon declareren";
+
+    }
+
+    return formTypeLabel(form.type);
+
+}
+
+
 interface DashboardData {
 
     counters:{
@@ -154,20 +225,7 @@ export default function DashboardPage(){
         ">
 
 
-            <header>
 
-
-                <h1 className="
-                    text-2xl
-                    font-bold
-                ">
-
-                    Dashboard
-
-                </h1>
-
-
-            </header>
 
 
 
@@ -574,13 +632,13 @@ export default function DashboardPage(){
                                             truncate
                                         ">
 
-                                            {formIcon(form.type)} {form.title}
+                                            {formIcon(form.type)} {form.user?.name ?? "Onbekend"}
 
                                         </p>
 
                                         <p className="text-xs text-gray-500 truncate">
 
-                                            {form.user?.name ?? ""}
+                                            {formSummary(form)}
 
                                         </p>
 

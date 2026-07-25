@@ -458,7 +458,7 @@ export default function PlanningPage(){
                         ${
                             view==="month"
                             ?
-                            "bg-black text-white"
+                            "bg-blue-600 text-white"
                             :
                             "border"
                         }
@@ -485,7 +485,7 @@ export default function PlanningPage(){
                         ${
                             view==="week"
                             ?
-                            "bg-black text-white"
+                            "bg-blue-600 text-white"
                             :
                             "border"
                         }

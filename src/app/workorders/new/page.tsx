@@ -635,7 +635,7 @@ function NewWorkorderInner(){
                                         text-gray-700
                                     ">
 
-                                        Wanneer? (datum)
+                                        Wanneer?
 
                                     </span>
 

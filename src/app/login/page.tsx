@@ -43,7 +43,7 @@ export default function LoginPage() {
     return (
         <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
             <section className="bg-white border rounded-2xl p-8 w-full max-w-md space-y-5 shadow-sm">
-                <h1 className="text-2xl font-bold">MDB PMS</h1>
+                <h1 className="text-2xl font-bold">MDB Project Management Systeem</h1>
                 <p className="text-sm text-gray-500 -mt-3">
                     Log in om verder te gaan
                 </p>

@@ -134,7 +134,7 @@ export default function CustomersPage(){
                         text-gray-500
                     ">
 
-                        Beheer klanten binnen MDB PMS
+                        Beheer klanten binnen MDB Project Management Systeem
 
                     </p>
 
@@ -320,7 +320,32 @@ export default function CustomersPage(){
                                         </p>
 
 
-                                        <div className="mt-3">
+                                        <div className="
+                                            mt-3
+                                            flex
+                                            gap-2
+                                            justify-end
+                                            items-center
+                                        ">
+
+                                            <Link
+
+                                                href={`/customers/${customer.id}/edit`}
+
+                                                className="
+                                                    border
+                                                    rounded-lg
+                                                    px-3
+                                                    py-1.5
+                                                    text-sm
+                                                    hover:bg-gray-50
+                                                "
+
+                                            >
+
+                                                Wijzigen
+
+                                            </Link>
 
                                             <DeleteButton
 

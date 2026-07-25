@@ -119,7 +119,7 @@ export async function sendWorkorderMail({
 
         <p>
             De werkbon is automatisch gegenereerd
-            vanuit MDB PMS.
+            vanuit MDB Project Management Systeem.
         </p>
 
         `,

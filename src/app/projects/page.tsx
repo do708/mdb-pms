@@ -122,7 +122,7 @@ export default function ProjectsPage(){
                         text-gray-500
                     ">
 
-                        Beheer projecten binnen MDB PMS
+                        Beheer projecten binnen MDB Project Management Systeem
 
                     </p>
 
