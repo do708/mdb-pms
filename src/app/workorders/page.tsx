@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import DeleteButton from "@/components/DeleteButton";
 
 
 
@@ -90,35 +91,30 @@ export default function WorkordersPage(){
 
 
 
+    async function load(){
+
+
+        const response =
+            await fetch(
+                "/api/workorders"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        setWorkorders(data);
+
+
+        setLoading(false);
+
+    }
+
+
     useEffect(()=>{
 
-
-        async function load(){
-
-
-            const response =
-                await fetch(
-                    "/api/workorders"
-                );
-
-
-            const data =
-                await response.json();
-
-
-
-            setWorkorders(data);
-
-
-            setLoading(false);
-
-
-        }
-
-
-
         load();
-
 
     },[]);
 
@@ -505,6 +501,23 @@ export default function WorkordersPage(){
                                     PDF
 
                                 </a>
+
+
+                                {
+                                    (role === "admin" || role === "office") && (
+
+                                        <DeleteButton
+
+                                            url={`/api/workorders/${workorder.id}`}
+
+                                            label={`werkbon ${workorder.number}`}
+
+                                            onDeleted={load}
+
+                                        />
+
+                                    )
+                                }
 
 
 

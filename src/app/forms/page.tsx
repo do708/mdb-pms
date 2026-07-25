@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
+import DeleteButton from "@/components/DeleteButton";
 
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 
@@ -43,37 +44,34 @@ export default function FormsPage(){
 
 
 
+    async function load(){
+
+
+        const response =
+            await fetch("/api/forms");
+
+
+        const data =
+            await response.json();
+
+
+        setForms(
+            Array.isArray(data)
+            ?
+            data
+            :
+            []
+        );
+
+
+        setLoading(false);
+
+    }
+
+
     useEffect(()=>{
 
-
-        async function load(){
-
-
-            const response =
-                await fetch("/api/forms");
-
-
-            const data =
-                await response.json();
-
-
-            setForms(
-                Array.isArray(data)
-                ?
-                data
-                :
-                []
-            );
-
-
-            setLoading(false);
-
-
-        }
-
-
         load();
-
 
     },[]);
 
@@ -232,13 +230,24 @@ export default function FormsPage(){
                         forms.map(form=>(
 
 
-                            <Link
+                          <div
 
-                                key={form.id}
+                            key={form.id}
+
+                            className="
+                                flex
+                                items-center
+                                gap-2
+                            "
+
+                          >
+
+                            <Link
 
                                 href={`/forms/${form.id}`}
 
                                 className="
+                                    flex-1
                                     flex
                                     justify-between
                                     items-center
@@ -292,6 +301,21 @@ export default function FormsPage(){
 
 
                             </Link>
+
+
+                            <DeleteButton
+
+                                url={`/api/forms/${form.id}`}
+
+                                label={`formulier "${form.title}"`}
+
+                                onDeleted={load}
+
+                                compact
+
+                            />
+
+                          </div>
 
 
                         ))

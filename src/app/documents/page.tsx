@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DeleteButton from "@/components/DeleteButton";
 
 import {
     FileText,
@@ -59,33 +60,28 @@ export default function DocumentsPage(){
 
 
 
+    async function loadDocuments(){
+
+
+        const response =
+            await fetch("/api/documents");
+
+
+        const data =
+            await response.json();
+
+
+        setDocuments(data);
+
+
+        setLoading(false);
+
+    }
+
+
     useEffect(()=>{
 
-
-        async function loadDocuments(){
-
-
-            const response =
-                await fetch("/api/documents");
-
-
-            const data =
-                await response.json();
-
-
-
-            setDocuments(data);
-
-
-            setLoading(false);
-
-
-        }
-
-
-
         loadDocuments();
-
 
     },[]);
 
@@ -246,26 +242,47 @@ export default function DocumentsPage(){
 
 
 
-                            <a
+                            <div className="
+                                flex
+                                gap-4
+                                items-center
+                            ">
 
-                                href={doc.url}
+                                <a
 
-                                target="_blank"
+                                    href={doc.url}
 
-                                className="
-                                    text-blue-700
-                                    flex
-                                    gap-2
-                                    items-center
-                                "
+                                    target="_blank"
 
-                            >
+                                    className="
+                                        text-blue-700
+                                        flex
+                                        gap-2
+                                        items-center
+                                    "
 
-                                Open
+                                >
 
-                                <ExternalLink size={16}/>
+                                    Open
 
-                            </a>
+                                    <ExternalLink size={16}/>
+
+                                </a>
+
+
+                                <DeleteButton
+
+                                    url={`/api/documents/${doc.id}`}
+
+                                    label={`document "${doc.name}"`}
+
+                                    onDeleted={loadDocuments}
+
+                                    compact
+
+                                />
+
+                            </div>
 
 
 

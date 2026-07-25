@@ -4,6 +4,8 @@ import { auth } from "@/auth";
 
 import { prisma } from "@/lib/prisma";
 
+import { requireApiRole } from "@/lib/auth/guard";
+
 
 
 
@@ -475,6 +477,79 @@ export async function PUT(
 
                 status:500
 
+            }
+
+        );
+
+
+    }
+
+
+}
+
+
+
+export async function DELETE(
+    request:Request,
+    context:{
+        params:Promise<{
+            id:string;
+        }>
+    }
+){
+
+
+    // Alleen kantoor en admin mogen werkbonnen verwijderen.
+    const guard =
+        await requireApiRole(["admin","office"]);
+
+
+    if(!guard.ok){
+
+        return guard.response;
+
+    }
+
+
+    try {
+
+
+        const { id } =
+            await context.params;
+
+
+        // Subtabellen (uren, materialen, foto's, handtekening,
+        // hardware, documenten) verdwijnen mee via onDelete: Cascade.
+        await prisma.workorder.delete({
+            where:{
+                id
+            }
+        });
+
+
+        return NextResponse.json({
+            success:true,
+            deleted:true
+        });
+
+
+    } catch(error){
+
+
+        console.error(
+            "WORKORDER DELETE ERROR",
+            error
+        );
+
+
+        return NextResponse.json(
+
+            {
+                error:"Werkbon verwijderen mislukt"
+            },
+
+            {
+                status:500
             }
 
         );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DeleteButton from "@/components/DeleteButton";
 import Link from "next/link";
 
 
@@ -50,36 +51,32 @@ export default function CustomersPage(){
 
 
 
-    useEffect(()=>{
+    async function loadCustomers(){
 
 
-        async function loadCustomers(){
-
-
-            const response =
-                await fetch(
-                    "/api/customers"
-                );
-
-
-            const data =
-                await response.json();
-
-
-
-            setCustomers(
-                data
+        const response =
+            await fetch(
+                "/api/customers"
             );
 
 
-            setLoading(false);
+        const data =
+            await response.json();
 
 
-        }
+        setCustomers(
+            data
+        );
 
+
+        setLoading(false);
+
+    }
+
+
+    useEffect(()=>{
 
         loadCustomers();
-
 
     },[]);
 
@@ -321,6 +318,23 @@ export default function CustomersPage(){
                                             projecten
 
                                         </p>
+
+
+                                        <div className="mt-3">
+
+                                            <DeleteButton
+
+                                                url={`/api/customers/${customer.id}`}
+
+                                                label={`klant ${customer.name}`}
+
+                                                onDeleted={loadCustomers}
+
+                                                compact
+
+                                            />
+
+                                        </div>
 
 
                                     </div>

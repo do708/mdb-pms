@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import DeleteButton from "@/components/DeleteButton";
 import Link from "next/link";
 
 import { canAccessAdmin } from "@/lib/auth/checkRole";
@@ -52,27 +53,27 @@ export default function UsersPage(){
 
 
 
+    async function load(){
+
+
+        const response =
+            await fetch("/api/users");
+
+
+        const data =
+            await response.json();
+
+
+        setUsers(data);
+
+
+        setLoading(false);
+
+
+    }
+
+
     useEffect(()=>{
-
-
-        async function load(){
-
-
-            const response =
-                await fetch("/api/users");
-
-
-            const data =
-                await response.json();
-
-
-            setUsers(data);
-
-
-            setLoading(false);
-
-
-        }
 
 
         load();
@@ -287,6 +288,27 @@ export default function UsersPage(){
                                     }
 
                                 </p>
+
+
+                                {
+                                    session?.user?.id !== user.id && (
+
+                                        <div className="mt-3">
+
+                                            <DeleteButton
+
+                                                url={`/api/users/${user.id}`}
+
+                                                label={`gebruiker ${user.name || user.email}`}
+
+                                                onDeleted={load}
+
+                                            />
+
+                                        </div>
+
+                                    )
+                                }
 
 
                             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DeleteButton from "@/components/DeleteButton";
 import Link from "next/link";
 
 
@@ -42,33 +43,29 @@ export default function ProjectsPage(){
 
 
 
+    async function loadProjects(){
+
+
+        const response =
+            await fetch(
+                "/api/projects"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        setProjects(data);
+
+        setLoading(false);
+
+    }
+
+
     useEffect(()=>{
 
-
-        async function loadProjects(){
-
-
-            const response =
-                await fetch(
-                    "/api/projects"
-                );
-
-
-            const data =
-                await response.json();
-
-
-
-            setProjects(data);
-
-            setLoading(false);
-
-
-        }
-
-
         loadProjects();
-
 
     },[]);
 
@@ -301,6 +298,24 @@ export default function ProjectsPage(){
                                         {project.status}
 
                                     </span>
+
+
+
+                                    <div className="ml-3">
+
+                                        <DeleteButton
+
+                                            url={`/api/projects/${project.id}`}
+
+                                            label={`project ${project.name}`}
+
+                                            onDeleted={loadProjects}
+
+                                            compact
+
+                                        />
+
+                                    </div>
 
 
 
