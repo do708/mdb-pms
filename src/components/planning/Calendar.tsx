@@ -470,19 +470,34 @@ export default function Calendar({
                             key={index}
 
                             onDragOver={
-                                e=>e.preventDefault()
+                                day > 0
+                                ?
+                                (e=>e.preventDefault())
+                                :
+                                undefined
                             }
 
                             onDrop={
-                                e=>handleDrop(e,day)
+                                day > 0
+                                ?
+                                (e=>handleDrop(e,day))
+                                :
+                                undefined
                             }
 
-                            className="
+                            className={`
                                 min-h-40
                                 border
                                 rounded-xl
                                 p-1.5
-                            "
+                                ${
+                                    day > 0
+                                    ?
+                                    ""
+                                    :
+                                    "bg-gray-50 border-gray-100"
+                                }
+                            `}
 
                         >
 
