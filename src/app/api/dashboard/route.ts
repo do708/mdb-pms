@@ -19,13 +19,27 @@ export async function GET(){
     try {
 
 
-        const open =
+        // Vandaag om middernacht: alles daarvoor is "verstreken"
+        const startVandaag =
+            new Date();
+
+        startVandaag.setHours(0,0,0,0);
+
+
+        // Statussen waarin de werkbon nog door de monteur ingevuld moet worden
+        const NOG_IN_TE_VULLEN =
+            ["ontvangen","afspraak","materiaal","ingepland"];
+
+
+
+
+        const ingepland =
 
             await prisma.workorder.count({
 
                 where:{
 
-                    status:{ notIn:["afgerond","betaald","gefactureerd"] }
+                    status:"ingepland"
 
                 }
 
@@ -34,14 +48,13 @@ export async function GET(){
 
 
 
-
-        const inProgress =
+        const uitgevoerd =
 
             await prisma.workorder.count({
 
                 where:{
 
-                    status:{ in:["ingepland","uitgevoerd"] }
+                    status:"uitgevoerd"
 
                 }
 
@@ -50,24 +63,64 @@ export async function GET(){
 
 
 
+        // Rood: klaargezet, datum verstreken, nog niet ingevuld
+        const teLaatWhere = {
+
+            plannedDate:{
+
+                lt:startVandaag
+
+            },
+
+            status:{
+
+                in:NOG_IN_TE_VULLEN
+
+            }
+
+        };
 
 
-
-        const completed =
+        const teLaatCount =
 
             await prisma.workorder.count({
 
-                where:{
-
-                    status:"afgerond"
-
-                }
+                where:teLaatWhere
 
             });
 
 
+        const teLaat =
 
+            await prisma.workorder.findMany({
 
+                where:teLaatWhere,
+
+                orderBy:{
+
+                    plannedDate:"asc"
+
+                },
+
+                include:{
+
+                    customer:true,
+
+                    project:{
+
+                        include:{
+
+                            customer:true
+
+                        }
+
+                    },
+
+                    assignedUser:true
+
+                }
+
+            });
 
 
 
@@ -123,16 +176,19 @@ export async function GET(){
             counters:{
 
 
-                open,
+                ingepland,
 
 
-                inProgress,
+                uitgevoerd,
 
 
-                completed
+                teLaat:teLaatCount
 
 
             },
+
+
+            teLaat,
 
 
             recent

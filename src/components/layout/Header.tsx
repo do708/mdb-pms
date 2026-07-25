@@ -1,9 +1,10 @@
 "use client";
 
-import { Search, Bell } from "lucide-react";
+import { Search } from "lucide-react";
 
 import UserMenu from "./UserMenu";
 import DateTime from "./DateTime";
+import NotificationBell from "./NotificationBell";
 
 
 export default function Header() {
@@ -119,33 +120,7 @@ export default function Header() {
 
                 {/* Meldingen */}
 
-                <button
-
-                    className="
-                        relative
-                        p-2
-                        rounded-full
-                        hover:bg-gray-100
-                        transition
-                    "
-
-                >
-
-                    <Bell size={21}/>
-
-
-                    <span className="
-                        absolute
-                        top-1
-                        right-1
-                        w-2
-                        h-2
-                        bg-[#d6007e]
-                        rounded-full
-                    "/>
-
-
-                </button>
+                <NotificationBell/>
 
 
 

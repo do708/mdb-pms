@@ -9,13 +9,16 @@ interface DashboardData {
 
     counters:{
 
-        open:number;
+        ingepland:number;
 
-        inProgress:number;
+        uitgevoerd:number;
 
-        completed:number;
+        teLaat:number;
 
     };
+
+
+    teLaat:any[];
 
 
     recent:any[];
@@ -142,16 +145,9 @@ export default function DashboardPage(){
                     font-bold
                 ">
 
-                    📊 MDB PMS Dashboard
+                    Dashboard
 
                 </h1>
-
-
-                <p className="text-gray-500">
-
-                    Overzicht projecten en werkbonnen
-
-                </p>
 
 
             </header>
@@ -181,22 +177,18 @@ export default function DashboardPage(){
 
                     <p className="text-gray-500">
 
-                        Open
+                        Ingepland
 
                     </p>
 
 
-                    <p className="text-3xl font-bold">
+                    <p className="text-3xl font-bold text-blue-600">
 
-                        {data?.counters.open}
+                        {data?.counters.ingepland ?? 0}
 
                     </p>
 
                 </div>
-
-
-
-
 
 
 
@@ -209,14 +201,14 @@ export default function DashboardPage(){
 
                     <p className="text-gray-500">
 
-                        In uitvoering
+                        Uitgevoerd
 
                     </p>
 
 
-                    <p className="text-3xl font-bold">
+                    <p className="text-3xl font-bold text-indigo-600">
 
-                        {data?.counters.inProgress}
+                        {data?.counters.uitgevoerd ?? 0}
 
                     </p>
 
@@ -224,27 +216,52 @@ export default function DashboardPage(){
 
 
 
-
-
-
-
-                <div className="
-                    bg-white
+                <div className={`
                     border
                     rounded-2xl
                     p-5
-                ">
+                    ${
+                        (data?.counters.teLaat ?? 0) > 0
+                        ?
+                        "bg-red-50 border-red-300"
+                        :
+                        "bg-white"
+                    }
+                `}>
 
-                    <p className="text-gray-500">
+                    <p className={
+                        (data?.counters.teLaat ?? 0) > 0
+                        ?
+                        "text-red-700 font-medium"
+                        :
+                        "text-gray-500"
+                    }>
 
-                        Afgerond
+                        Nog in te vullen
 
                     </p>
 
 
-                    <p className="text-3xl font-bold">
+                    <p className={`
+                        text-3xl
+                        font-bold
+                        ${
+                            (data?.counters.teLaat ?? 0) > 0
+                            ?
+                            "text-red-600"
+                            :
+                            ""
+                        }
+                    `}>
 
-                        {data?.counters.completed}
+                        {data?.counters.teLaat ?? 0}
+
+                    </p>
+
+
+                    <p className="text-xs text-gray-500 mt-1">
+
+                        Datum verstreken, monteur nog niet ingevuld
 
                     </p>
 
@@ -258,7 +275,105 @@ export default function DashboardPage(){
 
 
 
+            {
+                (data?.teLaat?.length ?? 0) > 0 && (
 
+                    <section className="
+                        bg-red-50
+                        border
+                        border-red-300
+                        rounded-2xl
+                        p-5
+                    ">
+
+                        <h2 className="
+                            text-xl
+                            font-bold
+                            mb-4
+                            text-red-700
+                        ">
+
+                            ⚠️ Nog in te vullen ({data?.teLaat?.length})
+
+                        </h2>
+
+
+                        <div className="space-y-3">
+
+                            {
+                                data?.teLaat?.map(workorder=>(
+
+                                    <a
+
+                                        key={workorder.id}
+
+                                        href={`/workorders/${workorder.id}`}
+
+                                        className="
+                                            flex
+                                            justify-between
+                                            items-center
+                                            bg-white
+                                            border
+                                            border-red-200
+                                            rounded-xl
+                                            p-3
+                                            hover:bg-red-50
+                                        "
+
+                                    >
+
+                                        <div>
+
+                                            <p className="font-bold">
+
+                                                {workorder.number} — {workorder.title}
+
+                                            </p>
+
+                                            <p className="text-sm text-gray-500">
+
+                                                🏢 {
+                                                    workorder.customer?.name
+                                                    ?? workorder.project?.customer?.name
+                                                    ?? "—"
+                                                }
+
+                                                {" · "}
+
+                                                👷 {workorder.assignedUser?.name ?? "Geen monteur"}
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <span className="text-sm text-red-600 font-medium">
+
+                                            Gepland:
+                                            {" "}
+                                            {
+                                                workorder.plannedDate
+                                                ?
+                                                new Date(workorder.plannedDate)
+                                                    .toLocaleDateString("nl-NL")
+                                                :
+                                                "—"
+                                            }
+
+                                        </span>
+
+                                    </a>
+
+                                ))
+                            }
+
+                        </div>
+
+                    </section>
+
+                )
+            }
 
 
 
