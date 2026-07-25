@@ -589,7 +589,7 @@ export default function PlanningPage(){
                                 {
                                     (()=>{
                                         const end = new Date(weekStart);
-                                        end.setDate(end.getDate() + 4);
+                                        end.setDate(end.getDate() + 5);
                                         return end.toLocaleDateString("nl-NL",{
                                             day:"numeric",
                                             month:"long",

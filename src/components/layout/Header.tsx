@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import SearchBox from "./SearchBox";
 
 import UserMenu from "./UserMenu";
 import DateTime from "./DateTime";
@@ -50,49 +50,7 @@ export default function Header() {
 
                 {/* Zoekbalk */}
 
-                <div className="
-                    flex
-                    items-center
-                    w-[420px]
-                    h-11
-                    bg-gray-50
-                    border
-                    border-gray-200
-                    rounded-xl
-                    px-4
-                ">
-
-
-                    <Search
-
-                        size={19}
-
-                        className="
-                            text-gray-400
-                        "
-
-                    />
-
-
-                    <input
-
-                        type="text"
-
-                        placeholder="Zoeken..."
-
-                        className="
-                            ml-3
-                            w-full
-                            bg-transparent
-                            outline-none
-                            text-sm
-                            text-gray-700
-                        "
-
-                    />
-
-
-                </div>
+                <SearchBox/>
 
 
             </div>

@@ -294,7 +294,9 @@ export default function Calendar({
             border
             rounded-2xl
             p-5
-            overflow-x-auto
+            w-full
+            max-w-full
+            overflow-hidden
         ">
 
 
@@ -398,11 +400,11 @@ export default function Calendar({
             <div
                 className="
                     grid
-                    gap-2
-                    min-w-[760px]
+                    gap-1.5
+                    w-full
                 "
                 style={{
-                    gridTemplateColumns:"44px repeat(7, 1fr)"
+                    gridTemplateColumns:"36px repeat(7, minmax(0, 1fr))"
                 }}
             >
 
@@ -521,6 +523,8 @@ export default function Calendar({
 
                             className={`
                                 min-h-28
+                                min-w-0
+                                overflow-hidden
                                 border
                                 rounded-xl
                                 p-1.5

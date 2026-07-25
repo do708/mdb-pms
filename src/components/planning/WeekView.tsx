@@ -87,7 +87,7 @@ export default function WeekView({
 
 
     const days = Array.from(
-        {length:5},
+        {length:6},
         (_,index)=>{
 
             const date = new Date(startOfWeek);
@@ -235,7 +235,7 @@ export default function WeekView({
                         mb-3
                     "
                     style={{
-                        gridTemplateColumns:"90px repeat(5, 1fr)"
+                        gridTemplateColumns:"90px repeat(6, minmax(0, 1fr))"
                     }}
                 >
 
@@ -307,7 +307,7 @@ export default function WeekView({
                             "
 
                             style={{
-                                gridTemplateColumns:"90px repeat(5, 1fr)"
+                                gridTemplateColumns:"90px repeat(6, minmax(0, 1fr))"
                             }}
 
                         >
