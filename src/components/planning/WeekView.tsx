@@ -41,6 +41,8 @@ interface WeekViewProps {
 
     items:any[];
 
+    leave?:any[];
+
     // Maandag van de te tonen week; standaard deze week
     weekStart?:Date;
 
@@ -51,6 +53,8 @@ interface WeekViewProps {
 export default function WeekView({
 
     items,
+
+    leave = [],
 
     weekStart
 
@@ -101,6 +105,30 @@ export default function WeekView({
         const m = String(d.getMonth() + 1).padStart(2,"0");
         const day = String(d.getDate()).padStart(2,"0");
         return `${y}-${m}-${day}`;
+
+    }
+
+
+    // Geaccepteerd verlof van een monteur op een bepaalde dag
+    function leaveOn(
+        userId:string,
+        day:Date
+    ){
+
+        const iso = isoDate(day);
+
+        return leave.find(l=>{
+
+            if(l.userId !== userId){
+                return false;
+            }
+
+            const from = l.from;
+            const to = l.to || l.from;
+
+            return from <= iso && iso <= to;
+
+        });
 
     }
 
@@ -296,6 +324,30 @@ export default function WeekView({
                                         "
 
                                     >
+
+
+                                        {
+                                            (()=>{
+                                                const verlof = leaveOn(user.id, day);
+                                                if(!verlof){
+                                                    return null;
+                                                }
+                                                return (
+                                                    <div className="
+                                                        bg-orange-100
+                                                        text-orange-800
+                                                        text-xs
+                                                        rounded-lg
+                                                        p-2
+                                                        mb-2
+                                                        text-center
+                                                        font-medium
+                                                    ">
+                                                        🌴 {verlof.type || "Verlof"}
+                                                    </div>
+                                                );
+                                            })()
+                                        }
 
 
                                         {

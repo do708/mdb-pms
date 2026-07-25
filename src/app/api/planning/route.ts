@@ -81,9 +81,58 @@ export async function GET(){
 
 
 
-        return NextResponse.json(
-            workorders
-        );
+        // Geaccepteerde verlofaanvragen -> als blokkades in de planning
+        const leaveForms =
+            await prisma.formSubmission.findMany({
+
+                where:{
+                    type:"verlof",
+                    status:"geaccepteerd",
+                    ...(
+                        guard.user.role === "engineer"
+                        ?
+                        { userId:guard.user.id }
+                        :
+                        {}
+                    )
+                },
+
+                include:{
+                    user:{
+                        select:{
+                            id:true,
+                            name:true
+                        }
+                    }
+                }
+
+            });
+
+
+        // Omzetten naar simpele leave-objecten met datumbereik
+        const leave =
+            leaveForms.map(f=>{
+
+                const data =
+                    (f.data ?? {}) as Record<string,unknown>;
+
+                return {
+                    id:f.id,
+                    userId:f.user.id,
+                    userName:f.user.name,
+                    from:(data.eersteDag as string) ?? null,
+                    to:(data.laatsteDag as string) ?? null,
+                    type:(data.typeVerlof as string) ?? "Verlof"
+                };
+
+            })
+            .filter(l=>l.from);
+
+
+        return NextResponse.json({
+            workorders,
+            leave
+        });
 
 
     } catch(error){

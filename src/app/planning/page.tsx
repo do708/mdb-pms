@@ -93,6 +93,10 @@ export default function PlanningPage(){
         useState<PlanningItem[]>([]);
 
 
+    const [leave,setLeave] =
+        useState<any[]>([]);
+
+
 
     const [conflicts,setConflicts] =
         useState<Conflict[]>([]);
@@ -164,10 +168,22 @@ export default function PlanningPage(){
 
 
 
-        setItems(
+        // De API geeft nu { workorders, leave } terug (met terugvalop een array)
+        const workordersData =
             Array.isArray(planningData)
             ?
             planningData
+            :
+            (planningData?.workorders ?? []);
+
+
+        setItems(workordersData);
+
+
+        setLeave(
+            Array.isArray(planningData?.leave)
+            ?
+            planningData.leave
             :
             []
         );
@@ -596,6 +612,8 @@ export default function PlanningPage(){
                     <WeekView
 
                         items={items}
+
+                        leave={leave}
 
                         weekStart={weekStart}
 

@@ -260,3 +260,104 @@ export async function DELETE(
 
 
 }
+
+
+
+// Kantoor/admin wijzigt de status van een formulier.
+//   verlof:     ingediend -> geaccepteerd / afgewezen
+//   declaratie: ingediend -> behandeld
+//   (andere types: vrije status)
+
+export async function PUT(
+    request:Request,
+    context:{
+        params:Promise<{
+            id:string;
+        }>
+    }
+){
+
+
+    const guard =
+        await requireApiRole(["admin","office"]);
+
+
+    if(!guard.ok){
+
+        return guard.response;
+
+    }
+
+
+    try {
+
+
+        const { id } =
+            await context.params;
+
+
+        const body =
+            await request.json();
+
+
+        const status =
+            String(body.status || "").trim();
+
+
+        if(!status){
+
+            return NextResponse.json(
+                {
+                    error:"Geen status meegegeven"
+                },
+                {
+                    status:400
+                }
+            );
+
+        }
+
+
+        const form =
+            await prisma.formSubmission.update({
+
+                where:{
+                    id
+                },
+
+                data:{
+                    status
+                }
+
+            });
+
+
+        return NextResponse.json(form);
+
+
+    } catch(error){
+
+
+        console.error(
+            "FORM STATUS ERROR",
+            error
+        );
+
+
+        return NextResponse.json(
+
+            {
+                error:"Status wijzigen mislukt"
+            },
+
+            {
+                status:500
+            }
+
+        );
+
+
+    }
+
+
+}

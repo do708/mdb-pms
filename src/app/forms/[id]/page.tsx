@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";
 
+import { useSession } from "next-auth/react";
+
 import {
     FormField,
     getFormDefinition
@@ -44,6 +46,19 @@ export default function FormDetailPage(){
 
     const id =
         params.id as string;
+
+
+    const { data:session } =
+        useSession();
+
+
+    const canManage =
+        session?.user?.role === "admin" ||
+        session?.user?.role === "office";
+
+
+    const [busy,setBusy] =
+        useState(false);
 
 
     const [form,setForm] =
@@ -127,6 +142,48 @@ export default function FormDetailPage(){
 
     const definition =
         getFormDefinition(form.type);
+
+
+    async function setStatus(newStatus:string){
+
+        if(!form){
+            return;
+        }
+
+        setBusy(true);
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/forms/${form.id}`,
+                    {
+                        method:"PUT",
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
+                        body:JSON.stringify({
+                            status:newStatus
+                        })
+                    }
+                );
+
+            if(response.ok){
+                setForm({
+                    ...form,
+                    status:newStatus
+                });
+            } else {
+                const data =
+                    await response.json().catch(()=>({}));
+                alert(data.error ?? "Status wijzigen mislukt");
+            }
+
+        } finally {
+            setBusy(false);
+        }
+
+    }
 
 
 
@@ -303,9 +360,160 @@ export default function FormDetailPage(){
 
                     {" · "}
 
-                    {form.status}
+                    <span className={`
+                        px-2
+                        py-0.5
+                        rounded-full
+                        text-xs
+                        ${
+                            form.status === "geaccepteerd"
+                            ?
+                            "bg-green-100 text-green-700"
+                            :
+                            form.status === "afgewezen"
+                            ?
+                            "bg-red-100 text-red-700"
+                            :
+                            form.status === "behandeld"
+                            ?
+                            "bg-blue-100 text-blue-700"
+                            :
+                            "bg-amber-100 text-amber-700"
+                        }
+                    `}>
+
+                        {form.status}
+
+                    </span>
 
                 </p>
+
+
+                {
+                    canManage && form.status === "ingediend" && (
+
+                        <div className="
+                            flex
+                            gap-2
+                            mt-3
+                            flex-wrap
+                        ">
+
+                            {
+                                form.type === "verlof" && (
+
+                                    <>
+
+                                        <button
+
+                                            onClick={()=>setStatus("geaccepteerd")}
+
+                                            disabled={busy}
+
+                                            className="
+                                                bg-green-600
+                                                text-white
+                                                rounded-lg
+                                                px-4
+                                                py-2
+                                                text-sm
+                                                disabled:opacity-50
+                                            "
+
+                                        >
+
+                                            ✓ Accepteren
+
+                                        </button>
+
+                                        <button
+
+                                            onClick={()=>setStatus("afgewezen")}
+
+                                            disabled={busy}
+
+                                            className="
+                                                border
+                                                border-red-300
+                                                text-red-700
+                                                rounded-lg
+                                                px-4
+                                                py-2
+                                                text-sm
+                                                disabled:opacity-50
+                                            "
+
+                                        >
+
+                                            Afwijzen
+
+                                        </button>
+
+                                    </>
+
+                                )
+                            }
+
+                            {
+                                form.type === "declaratie" && (
+
+                                    <button
+
+                                        onClick={()=>setStatus("behandeld")}
+
+                                        disabled={busy}
+
+                                        className="
+                                            bg-blue-600
+                                            text-white
+                                            rounded-lg
+                                            px-4
+                                            py-2
+                                            text-sm
+                                            disabled:opacity-50
+                                        "
+
+                                    >
+
+                                        ✓ Markeer als behandeld (terugbetaald)
+
+                                    </button>
+
+                                )
+                            }
+
+                            {
+                                form.type !== "verlof" && form.type !== "declaratie" && (
+
+                                    <button
+
+                                        onClick={()=>setStatus("behandeld")}
+
+                                        disabled={busy}
+
+                                        className="
+                                            bg-black
+                                            text-white
+                                            rounded-lg
+                                            px-4
+                                            py-2
+                                            text-sm
+                                            disabled:opacity-50
+                                        "
+
+                                    >
+
+                                        ✓ Markeer als behandeld
+
+                                    </button>
+
+                                )
+                            }
+
+                        </div>
+
+                    )
+                }
 
 
             </header>
