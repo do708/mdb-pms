@@ -60,11 +60,12 @@ export default function DraggableAssignment({
             }
 
             className={`
-                text-xs
                 text-white
-                rounded-lg
-                p-2
-                mb-2
+                rounded-md
+                px-1.5
+                py-1
+                mb-1
+                leading-tight
                 ${
                     draggable
                     ?
@@ -95,24 +96,25 @@ export default function DraggableAssignment({
             >
 
 
-                <strong>
+                <span className="text-[11px] font-bold block truncate">
+
+                    👷 {item.assignedUser?.name ?? "Geen monteur"}
+
+                </span>
+
+
+                <span className="text-[11px] block truncate">
+
+                    🏢 {customer?.name ?? "Onbekende klant"}
+
+                </span>
+
+
+                <span className="text-[10px] block truncate opacity-90">
+
                     {item.title}
-                </strong>
 
-                <br/>
-
-                {customer?.name ?? "Onbekende klant"}
-
-                {
-                    item.assignedUser?.name && (
-
-                        <>
-                            <br/>
-                            👷 {item.assignedUser.name}
-                        </>
-
-                    )
-                }
+                </span>
 
 
             </Link>

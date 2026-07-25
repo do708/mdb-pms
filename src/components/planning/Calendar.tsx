@@ -77,11 +77,14 @@ export default function Calendar({
 
 
     const firstDay =
-        new Date(
-            year,
-            month,
-            1
-        ).getDay();
+        (
+            new Date(
+                year,
+                month,
+                1
+            ).getDay()
+            + 6
+        ) % 7;
 
 
 
@@ -359,24 +362,28 @@ export default function Calendar({
 
 
 
-            <div className="
-                grid
-                grid-cols-8
-                gap-2
-            ">
+            <div
+                className="
+                    grid
+                    gap-2
+                "
+                style={{
+                    gridTemplateColumns:"44px repeat(7, 1fr)"
+                }}
+            >
 
 
 
                 {
                     [
                         "Wk",
-                        "Zo",
                         "Ma",
                         "Di",
                         "Wo",
                         "Do",
                         "Vr",
-                        "Za"
+                        "Za",
+                        "Zo"
                     ]
 
                     .map(day=>(
@@ -440,12 +447,13 @@ export default function Calendar({
 
 
                                 <div className="
-                                    min-h-32
+                                    min-h-40
                                     rounded-xl
-                                    p-2
-                                    text-sm
+                                    py-2
+                                    text-xs
                                     text-gray-400
                                     font-bold
+                                    text-center
                                 ">
 
                                     {weekNumber}
@@ -470,10 +478,10 @@ export default function Calendar({
                             }
 
                             className="
-                                min-h-32
+                                min-h-40
                                 border
                                 rounded-xl
-                                p-2
+                                p-1.5
                             "
 
                         >
