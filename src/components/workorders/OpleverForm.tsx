@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
+    BEUGEL_TYPES,
+    ExtraKosten,
     OpleverData,
+    SchermBlok,
+    emptyExtraKosten,
+    emptySchermBlok,
     mergeOpleverData
 } from "@/types/oplever";
 
@@ -14,6 +19,9 @@ interface Props {
     workorderId?:string;
 
     initial:unknown;
+
+    // Naam van monteur 1 (de toegewezen monteur), voor de urenlabels
+    monteur1Name?:string | null;
 
     // Ingebed in een groter formulier: geen eigen opslaanknop,
     // wijzigingen gaan via onChange omhoog naar de parent.
@@ -119,7 +127,7 @@ function Keuze({
 
     value:string;
 
-    options:string[];
+    options:readonly string[];
 
     onChange:(value:string)=>void;
 
@@ -194,7 +202,7 @@ function Veld({
 
     return (
 
-        <label className={`block ${small ? "w-32" : ""}`}>
+        <label className={`block ${small ? "w-36" : ""}`}>
 
             <span className="text-sm text-gray-600">
 
@@ -298,6 +306,465 @@ function Kop({
 
 
 
+// ---------- extra kosten (Parkeerkosten / Materiaal / Sejour) ----------
+
+function ExtraKostenBlok({
+
+    label,
+
+    value,
+
+    onChange
+
+}:{
+
+    label:string;
+
+    value:ExtraKosten;
+
+    onChange:(value:ExtraKosten)=>void;
+
+}){
+
+    return (
+
+        <div>
+
+
+            <button
+
+                type="button"
+
+                onClick={()=>
+                    onChange(
+                        value.actief
+                        ?
+                        emptyExtraKosten()
+                        :
+                        { ...value, actief:true }
+                    )
+                }
+
+                className={`
+                    px-4
+                    py-1.5
+                    rounded-full
+                    border
+                    text-sm
+                    ${
+                        value.actief
+                        ?
+                        "bg-orange-400 border-orange-400 text-white"
+                        :
+                        "text-gray-400"
+                    }
+                `}
+
+            >
+
+                {label}
+
+            </button>
+
+
+            {
+                value.actief && (
+
+                    <div className="
+                        border
+                        rounded-xl
+                        p-3
+                        mt-2
+                        space-y-3
+                        bg-gray-50
+                    ">
+
+
+                        <label className="block w-40">
+
+                            <span className="
+                                text-sm
+                                text-gray-600
+                            ">
+
+                                Kosten
+
+                            </span>
+
+                            <div className="
+                                flex
+                                items-center
+                                gap-2
+                            ">
+
+                                <span>€</span>
+
+                                <input
+
+                                    inputMode="decimal"
+
+                                    value={value.kosten}
+
+                                    onChange={(e)=>
+                                        onChange({
+                                            ...value,
+                                            kosten:e.target.value
+                                        })
+                                    }
+
+                                    className="
+                                        w-full
+                                        border
+                                        rounded-xl
+                                        p-2
+                                        mt-1
+                                    "
+
+                                />
+
+                            </div>
+
+                        </label>
+
+
+                        <div className="space-y-2">
+
+                            <p className="text-sm">
+
+                                Heb je dit voorgeschoten?
+
+                            </p>
+
+                            <JaNee
+
+                                value={value.voorgeschoten}
+
+                                onChange={(v)=>
+                                    onChange({
+                                        ...value,
+                                        voorgeschoten:v
+                                    })
+                                }
+
+                            />
+
+                        </div>
+
+
+                        {
+                            value.voorgeschoten === true && (
+
+                                <p className="
+                                    text-sm
+                                    text-orange-600
+                                    underline
+                                ">
+
+                                    * Vergeet het formulier
+                                    &apos;Bon declareren&apos; niet.
+
+                                </p>
+
+                            )
+                        }
+
+
+                    </div>
+
+                )
+            }
+
+
+        </div>
+
+    );
+
+}
+
+
+
+// ---------- schermblok (herhaalbaar per formaat) ----------
+
+function SchermBlokken({
+
+    blokken,
+
+    onChange
+
+}:{
+
+    blokken:SchermBlok[];
+
+    onChange:(blokken:SchermBlok[])=>void;
+
+}){
+
+
+    function update(
+        index:number,
+        patch:Partial<SchermBlok>
+    ){
+
+        onChange(
+            blokken.map(
+                (blok,i)=>
+                    i === index
+                    ?
+                    { ...blok, ...patch }
+                    :
+                    blok
+            )
+        );
+
+    }
+
+
+
+
+    return (
+
+        <div className="space-y-4">
+
+
+            {
+                blokken.map((blok,index)=>(
+
+
+                    <div
+
+                        key={index}
+
+                        className="
+                            border
+                            rounded-xl
+                            p-4
+                            bg-gray-50
+                            space-y-3
+                        "
+
+                    >
+
+
+                        <div className="
+                            flex
+                            justify-between
+                            items-center
+                        ">
+
+                            <p className="
+                                font-bold
+                                text-sm
+                            ">
+
+                                Formaat {index + 1}
+
+                            </p>
+
+                            <button
+
+                                type="button"
+
+                                onClick={()=>
+                                    onChange(
+                                        blokken.filter(
+                                            (_,i)=>i !== index
+                                        )
+                                    )
+                                }
+
+                                className="
+                                    text-sm
+                                    text-red-500
+                                    underline
+                                "
+
+                            >
+
+                                Verwijderen
+
+                            </button>
+
+                        </div>
+
+
+                        <div className="
+                            flex
+                            flex-wrap
+                            gap-3
+                        ">
+
+                            <Veld
+
+                                small
+
+                                label={'Welk formaat scherm? (bijv. 55")'}
+
+                                value={blok.formaat}
+
+                                onChange={(v)=>
+                                    update(index,{ formaat:v })
+                                }
+
+                            />
+
+                            <Veld
+
+                                small
+
+                                label="Hoeveel schermen van dit formaat?"
+
+                                value={blok.aantal}
+
+                                onChange={(v)=>
+                                    update(index,{ aantal:v })
+                                }
+
+                            />
+
+                            <Veld
+
+                                small
+
+                                label="Aantal schermen ingesteld"
+
+                                value={blok.aantalIngesteld}
+
+                                onChange={(v)=>
+                                    update(index,{ aantalIngesteld:v })
+                                }
+
+                            />
+
+                        </div>
+
+
+                        <div className="space-y-2">
+
+                            <p className="text-sm">
+
+                                Heb je tilhulp gehad?
+
+                            </p>
+
+                            <JaNee
+
+                                value={blok.tilhulp}
+
+                                onChange={(v)=>
+                                    update(index,{ tilhulp:v })
+                                }
+
+                            />
+
+                        </div>
+
+
+                        <div className="space-y-2">
+
+                            <p className="text-sm">
+
+                                Oriëntatie:
+
+                            </p>
+
+                            <Keuze
+
+                                value={blok.orientatie}
+
+                                options={["Landscape","Portrait"]}
+
+                                onChange={(v)=>
+                                    update(index,{
+                                        orientatie:
+                                            v as SchermBlok["orientatie"]
+                                    })
+                                }
+
+                            />
+
+                        </div>
+
+
+                        <div className="space-y-2">
+
+                            <p className="text-sm">
+
+                                Type beugel:
+
+                            </p>
+
+                            <Keuze
+
+                                value={blok.typeBeugel}
+
+                                options={BEUGEL_TYPES}
+
+                                onChange={(v)=>
+                                    update(index,{ typeBeugel:v })
+                                }
+
+                            />
+
+                        </div>
+
+
+                        <Veld
+
+                            label="Bekabeling t.b.v. de schermen"
+
+                            value={blok.bekabeling}
+
+                            onChange={(v)=>
+                                update(index,{ bekabeling:v })
+                            }
+
+                        />
+
+
+                    </div>
+
+
+                ))
+            }
+
+
+            <button
+
+                type="button"
+
+                onClick={()=>
+                    onChange([
+                        ...blokken,
+                        emptySchermBlok()
+                    ])
+                }
+
+                className="
+                    text-sm
+                    border
+                    border-dashed
+                    rounded-xl
+                    px-4
+                    py-2
+                    text-gray-600
+                    hover:bg-gray-50
+                "
+
+            >
+
+                ＋ Voeg nog een formaat toe
+
+            </button>
+
+
+        </div>
+
+    );
+
+}
+
+
+
 // ---------- het formulier ----------
 
 export default function OpleverForm({
@@ -305,6 +772,8 @@ export default function OpleverForm({
     workorderId,
 
     initial,
+
+    monteur1Name,
 
     embedded = false,
 
@@ -319,6 +788,13 @@ export default function OpleverForm({
         );
 
 
+    const [engineers,setEngineers] =
+        useState<{
+            id:string;
+            name:string | null;
+        }[]>([]);
+
+
     const [saving,setSaving] =
         useState(false);
 
@@ -329,27 +805,50 @@ export default function OpleverForm({
 
 
 
-    function set<
-        S extends keyof OpleverData,
-        K extends keyof OpleverData[S]
-    >(
-        section:S,
-        key:K,
-        value:OpleverData[S][K]
+    useEffect(()=>{
+
+
+        async function load(){
+
+
+            const response =
+                await fetch("/api/engineers");
+
+
+            const engineersData =
+                await response.json();
+
+
+            setEngineers(
+                Array.isArray(engineersData)
+                ?
+                engineersData
+                :
+                []
+            );
+
+
+        }
+
+
+        load();
+
+
+    },[]);
+
+
+
+
+    function update(
+        mutate:(draft:OpleverData)=>void
     ){
 
         setData(previous=>{
 
-            const next = {
+            const next =
+                structuredClone(previous);
 
-                ...previous,
-
-                [section]:{
-                    ...previous[section],
-                    [key]:value
-                }
-
-            };
+            mutate(next);
 
             if(onChange){
                 onChange(next);
@@ -436,6 +935,161 @@ export default function OpleverForm({
 
 
 
+    function MonteurUren({
+
+        nummer,
+
+        naam,
+
+        naamVeld,
+
+        urenVeld
+
+    }:{
+
+        nummer:number;
+
+        naam?:string | null;
+
+        naamVeld?:"monteur2" | "monteur3" | "monteur4";
+
+        urenVeld:"urenMonteur1" | "urenMonteur2" | "urenMonteur3" | "urenMonteur4";
+
+    }){
+
+        return (
+
+            <div className="
+                border
+                rounded-xl
+                p-3
+                space-y-2
+            ">
+
+
+                <p className="
+                    text-sm
+                    font-bold
+                ">
+
+                    Monteur {nummer}
+
+                </p>
+
+
+                {
+                    naamVeld
+                    ?
+                    (
+
+                        <select
+
+                            value={t[naamVeld]}
+
+                            onChange={(e)=>
+                                update(draft=>{
+                                    draft.tarief[naamVeld] =
+                                        e.target.value;
+                                })
+                            }
+
+                            className="
+                                w-full
+                                border
+                                rounded-xl
+                                p-2
+                                bg-white
+                                text-sm
+                            "
+
+                        >
+
+                            <option value="">
+
+                                — Geen —
+
+                            </option>
+
+                            {
+                                engineers.map(engineer=>(
+
+                                    <option
+
+                                        key={engineer.id}
+
+                                        value={engineer.name ?? ""}
+
+                                    >
+
+                                        {engineer.name}
+
+                                    </option>
+
+                                ))
+                            }
+
+                        </select>
+
+                    )
+                    :
+                    (
+
+                        <p className="text-sm">
+
+                            {naam ?? "—"}
+
+                        </p>
+
+                    )
+                }
+
+
+                <label className="block">
+
+                    <span className="
+                        text-xs
+                        text-gray-500
+                    ">
+
+                        Uren (regiebasis)
+
+                    </span>
+
+                    <input
+
+                        inputMode="decimal"
+
+                        value={t[urenVeld]}
+
+                        onChange={(e)=>
+                            update(draft=>{
+                                draft.tarief[urenVeld] =
+                                    e.target.value;
+                            })
+                        }
+
+                        className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-2
+                            mt-1
+                        "
+
+                    />
+
+                </label>
+
+
+            </div>
+
+        );
+
+    }
+
+
+
+
     return (
 
         <section className="
@@ -456,7 +1110,7 @@ export default function OpleverForm({
 
 
 
-            {/* ---------- Installatiegegevens ---------- */}
+            {/* ================= Installatiegegevens ================= */}
 
             <div>
 
@@ -470,22 +1124,89 @@ export default function OpleverForm({
                 </p>
 
 
-                <Vraag label="Voorrijtarief?">
-
-                    <JaNee
-
-                        value={t.voorrijtarief}
-
-                        onChange={v=>set("tarief","voorrijtarief",v)}
-
-                    />
-
-                </Vraag>
-
-
                 <div className="
                     flex
                     flex-wrap
+                    items-end
+                    gap-4
+                    border-b
+                    border-dashed
+                    pb-3
+                    mb-3
+                ">
+
+                    <div className="space-y-2">
+
+                        <p className="text-sm">
+
+                            Voorrijtarief?
+
+                        </p>
+
+                        <JaNee
+
+                            value={t.voorrijtarief}
+
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.tarief.voorrijtarief = v;
+                                })
+                            }
+
+                        />
+
+                    </div>
+
+                    <p className="
+                        text-sm
+                        font-bold
+                        underline
+                        pb-2
+                    ">
+
+                        of
+
+                    </p>
+
+                    <Veld
+
+                        small
+
+                        label="Aantal gereden kilometers?"
+
+                        value={t.kilometers}
+
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.tarief.kilometers = v;
+                            })
+                        }
+
+                    />
+
+                    <Veld
+
+                        small
+
+                        label="Reisuren:"
+
+                        value={t.reisuren}
+
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.tarief.reisuren = v;
+                            })
+                        }
+
+                    />
+
+                </div>
+
+
+                <div className="
+                    grid
+                    grid-cols-1
+                    md:grid-cols-2
                     gap-3
                     border-b
                     border-dashed
@@ -493,65 +1214,112 @@ export default function OpleverForm({
                     mb-3
                 ">
 
-                    <Veld
+                    <MonteurUren
 
-                        small
+                        nummer={1}
 
-                        label="Kilometers"
+                        naam={monteur1Name}
 
-                        value={t.kilometers}
-
-                        onChange={v=>set("tarief","kilometers",v)}
+                        urenVeld="urenMonteur1"
 
                     />
 
-                    <Veld
+                    <MonteurUren
 
-                        small
+                        nummer={2}
 
-                        label="Reisuren"
+                        naamVeld="monteur2"
 
-                        value={t.reisuren}
-
-                        onChange={v=>set("tarief","reisuren",v)}
+                        urenVeld="urenMonteur2"
 
                     />
 
-                    <Veld
+                    <MonteurUren
 
-                        small
+                        nummer={3}
 
-                        label="Parkeerkosten"
+                        naamVeld="monteur3"
 
-                        value={t.parkeerkosten}
-
-                        onChange={v=>set("tarief","parkeerkosten",v)}
+                        urenVeld="urenMonteur3"
 
                     />
 
-                    <Veld
+                    <MonteurUren
 
-                        small
+                        nummer={4}
 
-                        label="Materiaal (€)"
+                        naamVeld="monteur4"
 
-                        value={t.materiaalkosten}
-
-                        onChange={v=>set("tarief","materiaalkosten",v)}
+                        urenVeld="urenMonteur4"
 
                     />
 
-                    <Veld
+                </div>
 
-                        small
 
-                        label="Hotel / sejour"
+                <div className="
+                    border-b
+                    border-dashed
+                    pb-3
+                    mb-3
+                    space-y-2
+                ">
 
-                        value={t.hotelSejour}
+                    <p className="text-sm">
 
-                        onChange={v=>set("tarief","hotelSejour",v)}
+                        Heb je extra kosten gemaakt?
 
-                    />
+                    </p>
+
+                    <div className="
+                        flex
+                        flex-wrap
+                        gap-3
+                    ">
+
+                        <ExtraKostenBlok
+
+                            label="Parkeerkosten"
+
+                            value={t.parkeerkosten}
+
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.tarief.parkeerkosten = v;
+                                })
+                            }
+
+                        />
+
+                        <ExtraKostenBlok
+
+                            label="Materiaal"
+
+                            value={t.materiaalkosten}
+
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.tarief.materiaalkosten = v;
+                                })
+                            }
+
+                        />
+
+                        <ExtraKostenBlok
+
+                            label="Sejour"
+
+                            value={t.sejour}
+
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.tarief.sejour = v;
+                                })
+                            }
+
+                        />
+
+                    </div>
 
                 </div>
 
@@ -569,9 +1337,43 @@ export default function OpleverForm({
 
                         value={i.nieuweSchermen}
 
-                        onChange={v=>set("installatie","nieuweSchermen",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+
+                                draft.installatie.nieuweSchermen = v;
+
+                                if(
+                                    v &&
+                                    draft.installatie.nieuweFormaten.length === 0
+                                ){
+                                    draft.installatie.nieuweFormaten = [
+                                        emptySchermBlok()
+                                    ];
+                                }
+
+                            })
+                        }
 
                     />
+
+                    {
+                        i.nieuweSchermen === true && (
+
+                            <SchermBlokken
+
+                                blokken={i.nieuweFormaten}
+
+                                onChange={(blokken)=>
+                                    update(draft=>{
+                                        draft.installatie.nieuweFormaten =
+                                            blokken;
+                                    })
+                                }
+
+                            />
+
+                        )
+                    }
 
                 </Vraag>
 
@@ -582,131 +1384,188 @@ export default function OpleverForm({
 
                         value={i.hergebruikteSchermen}
 
-                        onChange={v=>set("installatie","hergebruikteSchermen",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+
+                                draft.installatie.hergebruikteSchermen = v;
+
+                                if(
+                                    v &&
+                                    draft.installatie.hergebruikteFormaten.length === 0
+                                ){
+                                    draft.installatie.hergebruikteFormaten = [
+                                        emptySchermBlok()
+                                    ];
+                                }
+
+                            })
+                        }
 
                     />
+
+                    {
+                        i.hergebruikteSchermen === true && (
+
+                            <SchermBlokken
+
+                                blokken={i.hergebruikteFormaten}
+
+                                onChange={(blokken)=>
+                                    update(draft=>{
+                                        draft.installatie.hergebruikteFormaten =
+                                            blokken;
+                                    })
+                                }
+
+                            />
+
+                        )
+                    }
 
                 </Vraag>
 
 
-                <div className="
-                    flex
-                    flex-wrap
-                    gap-3
-                    border-b
-                    border-dashed
-                    pb-3
-                    mb-3
-                ">
-
-                    <Veld
-
-                        small
-
-                        label={'Formaat (bijv. 55")'}
-
-                        value={i.schermFormaat}
-
-                        onChange={v=>set("installatie","schermFormaat",v)}
-
-                    />
-
-                    <Veld
-
-                        small
-
-                        label="Aantal schermen"
-
-                        value={i.aantalSchermen}
-
-                        onChange={v=>set("installatie","aantalSchermen",v)}
-
-                    />
-
-                    <Veld
-
-                        small
-
-                        label="Aantal ingesteld"
-
-                        value={i.aantalIngesteld}
-
-                        onChange={v=>set("installatie","aantalIngesteld",v)}
-
-                    />
-
-                    <Veld
-
-                        label="Type beugel"
-
-                        value={i.typeBeugel}
-
-                        onChange={v=>set("installatie","typeBeugel",v)}
-
-                    />
-
-                </div>
-
-
-                <Vraag label="Heb je tilhulp gehad?">
+                <Vraag label="3. Videowall — heb je een videowall geïnstalleerd?">
 
                     <JaNee
 
-                        value={i.tilhulp}
-
-                        onChange={v=>set("installatie","tilhulp",v)}
-
-                    />
-
-                </Vraag>
-
-
-                <Vraag label="Oriëntatie:">
-
-                    <Keuze
-
-                        value={i.orientatie}
-
-                        options={["Landscape","Portrait"]}
-
-                        onChange={v=>set("installatie","orientatie",v as OpleverData["installatie"]["orientatie"])}
-
-                    />
-
-                </Vraag>
-
-
-                <Vraag label="3. Videowall (opmerking)">
-
-                    <input
-
                         value={i.videowall}
 
-                        onChange={e=>set("installatie","videowall",e.target.value)}
-
-                        className="w-full border rounded-xl p-2"
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.installatie.videowall = v;
+                            })
+                        }
 
                     />
+
+                    {
+                        i.videowall === true && (
+
+                            <div className="
+                                flex
+                                flex-wrap
+                                gap-3
+                            ">
+
+                                <Veld
+
+                                    small
+
+                                    label="Configuratie (bijv. 2x2)"
+
+                                    value={i.videowallConfiguratie}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.videowallConfiguratie = v;
+                                        })
+                                    }
+
+                                />
+
+                                <Veld
+
+                                    small
+
+                                    label="Formaat schermen"
+
+                                    value={i.videowallFormaat}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.videowallFormaat = v;
+                                        })
+                                    }
+
+                                />
+
+                                <Veld
+
+                                    small
+
+                                    label="Aantal schermen"
+
+                                    value={i.videowallAantal}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.videowallAantal = v;
+                                        })
+                                    }
+
+                                />
+
+                            </div>
+
+                        )
+                    }
 
                 </Vraag>
 
 
-                <Vraag label="4. Kiosk (opmerking)">
+                <Vraag label="4. Kiosk — heb je een kiosk geïnstalleerd?">
 
-                    <input
+                    <JaNee
 
                         value={i.kiosk}
 
-                        onChange={e=>set("installatie","kiosk",e.target.value)}
-
-                        className="w-full border rounded-xl p-2"
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.installatie.kiosk = v;
+                            })
+                        }
 
                     />
+
+                    {
+                        i.kiosk === true && (
+
+                            <div className="
+                                flex
+                                flex-wrap
+                                gap-3
+                            ">
+
+                                <Veld
+
+                                    label="Omschrijving"
+
+                                    value={i.kioskOmschrijving}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.kioskOmschrijving = v;
+                                        })
+                                    }
+
+                                />
+
+                                <Veld
+
+                                    small
+
+                                    label="Aantal"
+
+                                    value={i.kioskAantal}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.kioskAantal = v;
+                                        })
+                                    }
+
+                                />
+
+                            </div>
+
+                        )
+                    }
 
                 </Vraag>
 
 
-                <Vraag label="5. Mediaplayers">
+                <Vraag label="5. Mediaplayers — heb je mediaplayers;">
 
                     <Keuze
 
@@ -714,47 +1573,112 @@ export default function OpleverForm({
 
                         options={["Geïnstalleerd","Gedemonteerd"]}
 
-                        onChange={v=>set("installatie","mediaplayers",v as OpleverData["installatie"]["mediaplayers"])}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.installatie.mediaplayers =
+                                    v as OpleverData["installatie"]["mediaplayers"];
+                            })
+                        }
 
                     />
 
-                    <Veld
+                    {
+                        i.mediaplayers && (
 
-                        small
+                            <Veld
 
-                        label="Aantal"
+                                small
 
-                        value={i.aantalMediaplayers}
+                                label="Aantal:"
 
-                        onChange={v=>set("installatie","aantalMediaplayers",v)}
+                                value={i.aantalMediaplayers}
 
-                    />
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.installatie.aantalMediaplayers = v;
+                                    })
+                                }
+
+                            />
+
+                        )
+                    }
 
                 </Vraag>
 
 
-                <Vraag label="6. Audio (opmerking)">
+                <Vraag label="6. Audio — heb je audio geïnstalleerd?">
 
-                    <input
+                    <JaNee
 
                         value={i.audio}
 
-                        onChange={e=>set("installatie","audio",e.target.value)}
-
-                        className="w-full border rounded-xl p-2"
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.installatie.audio = v;
+                            })
+                        }
 
                     />
+
+                    {
+                        i.audio === true && (
+
+                            <div className="
+                                flex
+                                flex-wrap
+                                gap-3
+                            ">
+
+                                <Veld
+
+                                    label="Omschrijving"
+
+                                    value={i.audioOmschrijving}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.audioOmschrijving = v;
+                                        })
+                                    }
+
+                                />
+
+                                <Veld
+
+                                    small
+
+                                    label="Aantal"
+
+                                    value={i.audioAantal}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.audioAantal = v;
+                                        })
+                                    }
+
+                                />
+
+                            </div>
+
+                        )
+                    }
 
                 </Vraag>
 
 
-                <Vraag label="7. Is het een project (offertebasis)?">
+                <Vraag label="7. Project (offerte basis) — is het een project?">
 
                     <JaNee
 
                         value={i.isProject}
 
-                        onChange={v=>set("installatie","isProject",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.installatie.isProject = v;
+                            })
+                        }
 
                     />
 
@@ -767,7 +1691,12 @@ export default function OpleverForm({
 
                         value={i.opmerkingen}
 
-                        onChange={e=>set("installatie","opmerkingen",e.target.value)}
+                        onChange={(e)=>
+                            update(draft=>{
+                                draft.installatie.opmerkingen =
+                                    e.target.value;
+                            })
+                        }
 
                         className="w-full border rounded-xl p-2 min-h-20"
 
@@ -780,7 +1709,7 @@ export default function OpleverForm({
 
 
 
-            {/* ---------- Gebruikte materialen ---------- */}
+            {/* ================= Gebruikte materialen ================= */}
 
             <div>
 
@@ -793,7 +1722,11 @@ export default function OpleverForm({
 
                         value={m.nieuweBeugels}
 
-                        onChange={v=>set("materialen","nieuweBeugels",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.nieuweBeugels = v;
+                            })
+                        }
 
                     />
 
@@ -806,36 +1739,49 @@ export default function OpleverForm({
 
                         value={m.bestaandeBeugels}
 
-                        onChange={v=>set("materialen","bestaandeBeugels",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.bestaandeBeugels = v;
+                            })
+                        }
 
                     />
 
                 </Vraag>
 
 
-                <div className="
-                    flex
-                    flex-wrap
-                    gap-3
-                    border-b
-                    border-dashed
-                    pb-3
-                    mb-3
-                ">
+                {
+                    (
+                        m.nieuweBeugels === true ||
+                        m.bestaandeBeugels === true
+                    ) && (
 
-                    <Veld small label="Muurbeugel" value={m.muurbeugel} onChange={v=>set("materialen","muurbeugel",v)} />
+                        <div className="
+                            flex
+                            flex-wrap
+                            gap-3
+                            border-b
+                            border-dashed
+                            pb-3
+                            mb-3
+                        ">
 
-                    <Veld small label="Zwenkbeugel" value={m.zwenkbeugel} onChange={v=>set("materialen","zwenkbeugel",v)} />
+                            <Veld small label="Muurbeugel" value={m.muurbeugel} onChange={(v)=>update(d=>{d.materialen.muurbeugel=v;})} />
 
-                    <Veld small label="Plafond 150cm" value={m.plafond150} onChange={v=>set("materialen","plafond150",v)} />
+                            <Veld small label="Zwenkbeugel" value={m.zwenkbeugel} onChange={(v)=>update(d=>{d.materialen.zwenkbeugel=v;})} />
 
-                    <Veld small label="Plafond 300cm" value={m.plafond300} onChange={v=>set("materialen","plafond300",v)} />
+                            <Veld small label="Plafondbeugel 150cm" value={m.plafond150} onChange={(v)=>update(d=>{d.materialen.plafond150=v;})} />
 
-                    <Veld small label="Vloerstandaard" value={m.vloerstandaard} onChange={v=>set("materialen","vloerstandaard",v)} />
+                            <Veld small label="Plafondbeugel 300cm" value={m.plafond300} onChange={(v)=>update(d=>{d.materialen.plafond300=v;})} />
 
-                    <Veld small label="Overig" value={m.overigBeugel} onChange={v=>set("materialen","overigBeugel",v)} />
+                            <Veld small label="Vloerstandaard" value={m.vloerstandaard} onChange={(v)=>update(d=>{d.materialen.vloerstandaard=v;})} />
 
-                </div>
+                            <Veld small label="Overig" value={m.overigBeugel} onChange={(v)=>update(d=>{d.materialen.overigBeugel=v;})} />
+
+                        </div>
+
+                    )
+                }
 
 
                 <Vraag label="2. Heb je extra HDMI kabels gebruikt?">
@@ -844,7 +1790,11 @@ export default function OpleverForm({
 
                         value={m.extraHdmiKabels}
 
-                        onChange={v=>set("materialen","extraHdmiKabels",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.extraHdmiKabels = v;
+                            })
+                        }
 
                     />
 
@@ -857,7 +1807,11 @@ export default function OpleverForm({
 
                         value={m.extraHdmiSplitters}
 
-                        onChange={v=>set("materialen","extraHdmiSplitters",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.extraHdmiSplitters = v;
+                            })
+                        }
 
                     />
 
@@ -870,42 +1824,41 @@ export default function OpleverForm({
 
                         value={m.extraPatchkabels}
 
-                        onChange={v=>set("materialen","extraPatchkabels",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.extraPatchkabels = v;
+                            })
+                        }
 
                     />
 
+                    {
+                        m.extraPatchkabels === true && (
+
+                            <div className="
+                                flex
+                                flex-wrap
+                                gap-3
+                            ">
+
+                                <Veld small label="Patch kabel, 1 meter" value={m.patch1} onChange={(v)=>update(d=>{d.materialen.patch1=v;})} />
+
+                                <Veld small label="Patch kabel, 2 meter" value={m.patch2} onChange={(v)=>update(d=>{d.materialen.patch2=v;})} />
+
+                                <Veld small label="Patch kabel, 3 meter" value={m.patch3} onChange={(v)=>update(d=>{d.materialen.patch3=v;})} />
+
+                                <Veld small label="Patch kabel, 5 meter" value={m.patch5} onChange={(v)=>update(d=>{d.materialen.patch5=v;})} />
+
+                                <Veld small label="Patch kabel, 7,5 meter" value={m.patch75} onChange={(v)=>update(d=>{d.materialen.patch75=v;})} />
+
+                                <Veld small label="Patch kabel, 10 meter" value={m.patch10} onChange={(v)=>update(d=>{d.materialen.patch10=v;})} />
+
+                            </div>
+
+                        )
+                    }
+
                 </Vraag>
-
-
-                {
-                    m.extraPatchkabels === true && (
-
-                        <div className="
-                            flex
-                            flex-wrap
-                            gap-3
-                            border-b
-                            border-dashed
-                            pb-3
-                            mb-3
-                        ">
-
-                            <Veld small label="1 meter" value={m.patch1} onChange={v=>set("materialen","patch1",v)} />
-
-                            <Veld small label="2 meter" value={m.patch2} onChange={v=>set("materialen","patch2",v)} />
-
-                            <Veld small label="3 meter" value={m.patch3} onChange={v=>set("materialen","patch3",v)} />
-
-                            <Veld small label="5 meter" value={m.patch5} onChange={v=>set("materialen","patch5",v)} />
-
-                            <Veld small label="7,5 meter" value={m.patch75} onChange={v=>set("materialen","patch75",v)} />
-
-                            <Veld small label="10 meter" value={m.patch10} onChange={v=>set("materialen","patch10",v)} />
-
-                        </div>
-
-                    )
-                }
 
 
                 <Vraag label="Heb je extra switches gebruikt?">
@@ -914,7 +1867,11 @@ export default function OpleverForm({
 
                         value={m.extraSwitches}
 
-                        onChange={v=>set("materialen","extraSwitches",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.extraSwitches = v;
+                            })
+                        }
 
                     />
 
@@ -927,7 +1884,11 @@ export default function OpleverForm({
 
                         value={m.utpGetrokken}
 
-                        onChange={v=>set("materialen","utpGetrokken",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.utpGetrokken = v;
+                            })
+                        }
 
                     />
 
@@ -940,7 +1901,11 @@ export default function OpleverForm({
 
                         value={m.stroomkabelGetrokken}
 
-                        onChange={v=>set("materialen","stroomkabelGetrokken",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.stroomkabelGetrokken = v;
+                            })
+                        }
 
                     />
 
@@ -953,45 +1918,48 @@ export default function OpleverForm({
 
                         value={m.verlengsnoeren}
 
-                        onChange={v=>set("materialen","verlengsnoeren",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.verlengsnoeren = v;
+                            })
+                        }
 
                     />
+
+                    {
+                        m.verlengsnoeren === true && (
+
+                            <div className="
+                                flex
+                                flex-wrap
+                                gap-3
+                            ">
+
+                                <Veld small label="3-voudig, 1,5 meter" value={m.verleng15} onChange={(v)=>update(d=>{d.materialen.verleng15=v;})} />
+
+                                <Veld small label="3-voudig, 3 meter" value={m.verleng3} onChange={(v)=>update(d=>{d.materialen.verleng3=v;})} />
+
+                                <Veld small label="3-voudig, 5 meter" value={m.verleng5} onChange={(v)=>update(d=>{d.materialen.verleng5=v;})} />
+
+                            </div>
+
+                        )
+                    }
 
                 </Vraag>
 
 
-                {
-                    m.verlengsnoeren === true && (
-
-                        <div className="
-                            flex
-                            flex-wrap
-                            gap-3
-                            border-b
-                            border-dashed
-                            pb-3
-                            mb-3
-                        ">
-
-                            <Veld small label="3-voudig, 1,5 m" value={m.verleng15} onChange={v=>set("materialen","verleng15",v)} />
-
-                            <Veld small label="3-voudig, 3 m" value={m.verleng3} onChange={v=>set("materialen","verleng3",v)} />
-
-                            <Veld small label="3-voudig, 5 m" value={m.verleng5} onChange={v=>set("materialen","verleng5",v)} />
-
-                        </div>
-
-                    )
-                }
-
-
-                <Vraag label="7. Heb je extra seriële en/of USB speakers gebruikt?">
+                <Vraag label="7. Besturing & Audio — heb je extra seriële en/of USB speakers gebruikt?">
 
                     <JaNee
 
                         value={m.extraSpeakers}
 
-                        onChange={v=>set("materialen","extraSpeakers",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.materialen.extraSpeakers = v;
+                            })
+                        }
 
                     />
 
@@ -1004,7 +1972,12 @@ export default function OpleverForm({
 
                         value={m.opmerkingen}
 
-                        onChange={e=>set("materialen","opmerkingen",e.target.value)}
+                        onChange={(e)=>
+                            update(draft=>{
+                                draft.materialen.opmerkingen =
+                                    e.target.value;
+                            })
+                        }
 
                         className="w-full border rounded-xl p-2 min-h-20"
 
@@ -1017,7 +1990,7 @@ export default function OpleverForm({
 
 
 
-            {/* ---------- Checklist ---------- */}
+            {/* ================= Checklist ================= */}
 
             <div>
 
@@ -1030,20 +2003,28 @@ export default function OpleverForm({
 
                         value={c.werkendOpgeleverd}
 
-                        onChange={v=>set("checklist","werkendOpgeleverd",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.checklist.werkendOpgeleverd = v;
+                            })
+                        }
 
                     />
 
                 </Vraag>
 
 
-                <Vraag label="2. Is de hardware aangesloten op een schakelstroompunt dat handmatig uit te zetten is?">
+                <Vraag label="2. Is de hardware aangesloten op het lichtnet of een ander schakelstroompunt dat handmatig uit te zetten is?">
 
                     <JaNee
 
                         value={c.lichtnetSchakelbaar}
 
-                        onChange={v=>set("checklist","lichtnetSchakelbaar",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.checklist.lichtnetSchakelbaar = v;
+                            })
+                        }
 
                     />
 
@@ -1056,32 +2037,47 @@ export default function OpleverForm({
 
                         value={c.wifiVanToepassing}
 
-                        onChange={v=>set("checklist","wifiVanToepassing",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.checklist.wifiVanToepassing = v;
+                            })
+                        }
 
                     />
 
+                    {
+                        c.wifiVanToepassing === true && (
+
+                            <div className="space-y-2">
+
+                                <p className="text-sm">
+
+                                    Is de WiFi verbinding op moment van
+                                    installatie sterk genoeg?
+
+                                </p>
+
+                                <Keuze
+
+                                    value={c.wifiSterkte}
+
+                                    options={["Ja","Matig","Slecht"]}
+
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.checklist.wifiSterkte =
+                                                v as OpleverData["checklist"]["wifiSterkte"];
+                                        })
+                                    }
+
+                                />
+
+                            </div>
+
+                        )
+                    }
+
                 </Vraag>
-
-
-                {
-                    c.wifiVanToepassing === true && (
-
-                        <Vraag label="Is de WiFi verbinding sterk genoeg?">
-
-                            <Keuze
-
-                                value={c.wifiSterkte}
-
-                                options={["Ja","Matig","Slecht"]}
-
-                                onChange={v=>set("checklist","wifiSterkte",v as OpleverData["checklist"]["wifiSterkte"])}
-
-                            />
-
-                        </Vraag>
-
-                    )
-                }
 
 
                 <Vraag label="4. Zijn de schermen gekoppeld aan Remote Services?">
@@ -1092,7 +2088,12 @@ export default function OpleverForm({
 
                         options={["Ja","Nee","n.v.t."]}
 
-                        onChange={v=>set("checklist","remoteServices",v as OpleverData["checklist"]["remoteServices"])}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.checklist.remoteServices =
+                                    v as OpleverData["checklist"]["remoteServices"];
+                            })
+                        }
 
                     />
 
@@ -1113,21 +2114,36 @@ export default function OpleverForm({
                             "Anders"
                         ]}
 
-                        onChange={v=>set("checklist","locatieMediaplayer",v as OpleverData["checklist"]["locatieMediaplayer"])}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.checklist.locatieMediaplayer =
+                                    v as OpleverData["checklist"]["locatieMediaplayer"];
+                            })
+                        }
 
                     />
 
-                    <Veld
+                    {
+                        c.locatieMediaplayer && (
 
-                        small
+                            <Veld
 
-                        label="Aantal"
+                                small
 
-                        value={c.aantalMediaplayers}
+                                label="Aantal:"
 
-                        onChange={v=>set("checklist","aantalMediaplayers",v)}
+                                value={c.aantalMediaplayers}
 
-                    />
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.checklist.aantalMediaplayers = v;
+                                    })
+                                }
+
+                            />
+
+                        )
+                    }
 
                 </Vraag>
 
@@ -1138,7 +2154,11 @@ export default function OpleverForm({
 
                         value={c.afvalverwijdering}
 
-                        onChange={v=>set("checklist","afvalverwijdering",v)}
+                        onChange={(v)=>
+                            update(draft=>{
+                                draft.checklist.afvalverwijdering = v;
+                            })
+                        }
 
                     />
 

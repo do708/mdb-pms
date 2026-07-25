@@ -3,7 +3,9 @@ import puppeteer from "puppeteer";
 import QRCode from "qrcode";
 
 import {
+    ExtraKosten,
     OpleverData,
+    SchermBlok,
     mergeOpleverData
 } from "@/types/oplever";
 
@@ -206,7 +208,8 @@ function textAnswer(
 
 
 function opleverSections(
-    data:OpleverData
+    data:OpleverData,
+    monteur1:string | null
 ):string {
 
     const t = data.tarief;
@@ -216,6 +219,103 @@ function opleverSections(
     const m = data.materialen;
 
     const c = data.checklist;
+
+
+    // ---- uren per monteur ----
+
+    const monteurs:[string,string][] = [];
+
+    if(t.urenMonteur1 || monteur1){
+        monteurs.push([
+            monteur1 ?? "Monteur 1",
+            t.urenMonteur1
+        ]);
+    }
+
+    if(t.monteur2){
+        monteurs.push([t.monteur2,t.urenMonteur2]);
+    }
+
+    if(t.monteur3){
+        monteurs.push([t.monteur3,t.urenMonteur3]);
+    }
+
+    if(t.monteur4){
+        monteurs.push([t.monteur4,t.urenMonteur4]);
+    }
+
+
+    const urenRows =
+        monteurs
+        .filter(([,uren])=>uren)
+        .map(([naam,uren])=>
+            row(
+                `Uren ${naam} (regiebasis)`,
+                textAnswer(`${uren} uur`)
+            )
+        )
+        .join("");
+
+
+    // ---- extra kosten ----
+
+    const kosten:[string,ExtraKosten][] = [
+        ["Parkeerkosten",t.parkeerkosten],
+        ["Materiaal",t.materiaalkosten],
+        ["Sejour",t.sejour]
+    ];
+
+    const kostenRows =
+        kosten
+        .filter(([,blok])=>blok.actief)
+        .map(([label,blok])=>
+            row(
+                `${label}${blok.voorgeschoten === true ? " (voorgeschoten)" : ""}`,
+                textAnswer(blok.kosten ? `€ ${blok.kosten}` : "—")
+            )
+        )
+        .join("");
+
+
+    // ---- schermblokken ----
+
+    function schermBlokken(
+        titel:string,
+        blokken:SchermBlok[]
+    ):string {
+
+        return blokken
+        .filter(blok=>
+            blok.formaat ||
+            blok.aantal
+        )
+        .map((blok,index)=>{
+
+            const parts:string[] = [];
+
+            if(blok.formaat) parts.push(`Formaat: ${blok.formaat}`);
+
+            if(blok.aantal) parts.push(`Aantal: ${blok.aantal}`);
+
+            if(blok.orientatie) parts.push(`Oriëntatie: ${blok.orientatie}`);
+
+            if(blok.typeBeugel) parts.push(`Beugel: ${blok.typeBeugel}`);
+
+            if(blok.tilhulp !== null) parts.push(`Tilhulp: ${blok.tilhulp ? "Ja" : "Nee"}`);
+
+            if(blok.bekabeling) parts.push(`Bekabeling: ${blok.bekabeling}`);
+
+            if(blok.aantalIngesteld) parts.push(`Ingesteld: ${blok.aantalIngesteld}`);
+
+            return row(
+                `${titel} ${index + 1}`,
+                textAnswer(parts.join(" · "))
+            );
+
+        })
+        .join("");
+
+    }
 
 
     const beugels =
@@ -259,28 +359,36 @@ function opleverSections(
 
     return `
   <div class="section">
-    <div class="section-title">Installatiegegevens</div>
+    <div class="section-title">Installatiegegevens — 1. Tarief &amp; Uren</div>
     <table class="qa">
       ${row("Voorrijtarief?",pill(t.voorrijtarief))}
       ${t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
       ${t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
-      ${t.parkeerkosten ? row("Parkeerkosten",textAnswer(t.parkeerkosten)) : ""}
-      ${t.materiaalkosten ? row("Materiaalkosten",textAnswer(t.materiaalkosten)) : ""}
-      ${t.hotelSejour ? row("Hotel / sejour",textAnswer(t.hotelSejour)) : ""}
-      ${row("Nieuwe schermen geïnstalleerd?",pill(i.nieuweSchermen))}
-      ${row("Hergebruikte schermen geïnstalleerd?",pill(i.hergebruikteSchermen))}
-      ${i.schermFormaat ? row("Formaat scherm",textAnswer(i.schermFormaat)) : ""}
-      ${i.aantalSchermen ? row("Aantal schermen van dit formaat",textAnswer(i.aantalSchermen)) : ""}
-      ${row("Tilhulp gehad?",pill(i.tilhulp))}
-      ${i.orientatie ? row("Oriëntatie",choicePill(i.orientatie)) : ""}
-      ${i.typeBeugel ? row("Type beugel",textAnswer(i.typeBeugel)) : ""}
-      ${i.aantalIngesteld ? row("Aantal schermen ingesteld",textAnswer(i.aantalIngesteld)) : ""}
-      ${i.videowall ? row("Videowall",textAnswer(i.videowall)) : ""}
-      ${i.kiosk ? row("Kiosk",textAnswer(i.kiosk)) : ""}
-      ${i.mediaplayers ? row("Mediaplayers",choicePill(i.mediaplayers)) : ""}
+      ${urenRows}
+      ${kostenRows}
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">2. Installatie werkzaamheden</div>
+    <table class="qa">
+      ${row("Heb je nieuwe schermen geïnstalleerd?",pill(i.nieuweSchermen))}
+      ${i.nieuweSchermen === true ? schermBlokken("Nieuw formaat",i.nieuweFormaten) : ""}
+      ${row("Heb je hergebruikte schermen geïnstalleerd?",pill(i.hergebruikteSchermen))}
+      ${i.hergebruikteSchermen === true ? schermBlokken("Hergebruikt formaat",i.hergebruikteFormaten) : ""}
+      ${row("3. Videowall geïnstalleerd?",pill(i.videowall))}
+      ${i.videowall === true && i.videowallConfiguratie ? row("Videowall configuratie",textAnswer(i.videowallConfiguratie)) : ""}
+      ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat)) : ""}
+      ${i.videowall === true && i.videowallAantal ? row("Videowall aantal schermen",textAnswer(i.videowallAantal)) : ""}
+      ${row("4. Kiosk geïnstalleerd?",pill(i.kiosk))}
+      ${i.kiosk === true && i.kioskOmschrijving ? row("Kiosk omschrijving",textAnswer(i.kioskOmschrijving)) : ""}
+      ${i.kiosk === true && i.kioskAantal ? row("Kiosk aantal",textAnswer(i.kioskAantal)) : ""}
+      ${i.mediaplayers ? row("5. Mediaplayers",choicePill(i.mediaplayers)) : row("5. Mediaplayers",`<span class="pill pill-empty">—</span>`)}
       ${i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
-      ${i.audio ? row("Audio",textAnswer(i.audio)) : ""}
-      ${row("Project (offertebasis)?",pill(i.isProject))}
+      ${row("6. Audio geïnstalleerd?",pill(i.audio))}
+      ${i.audio === true && i.audioOmschrijving ? row("Audio omschrijving",textAnswer(i.audioOmschrijving)) : ""}
+      ${i.audio === true && i.audioAantal ? row("Audio aantal",textAnswer(i.audioAantal)) : ""}
+      ${row("7. Project (offertebasis)?",pill(i.isProject))}
     </table>
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
   </div>
@@ -288,19 +396,19 @@ function opleverSections(
   <div class="section">
     <div class="section-title">Gebruikte materialen</div>
     <table class="qa">
-      ${row("Nieuwe TV beugels gemonteerd?",pill(m.nieuweBeugels))}
-      ${row("Bestaande TV beugels gemonteerd?",pill(m.bestaandeBeugels))}
+      ${row("1. Heb je nieuwe TV beugels gemonteerd?",pill(m.nieuweBeugels))}
+      ${row("Heb je bestaande TV beugels gemonteerd?",pill(m.bestaandeBeugels))}
       ${beugels ? row("Beugels",textAnswer(beugels)) : ""}
-      ${row("Extra HDMI kabels gebruikt?",pill(m.extraHdmiKabels))}
-      ${row("Extra HDMI splitters gebruikt?",pill(m.extraHdmiSplitters))}
-      ${row("Extra patchkabels gebruikt?",pill(m.extraPatchkabels))}
+      ${row("2. Heb je extra HDMI kabels gebruikt?",pill(m.extraHdmiKabels))}
+      ${row("Heb je extra HDMI splitters gebruikt?",pill(m.extraHdmiSplitters))}
+      ${row("3. Heb je extra patchkabels gebruikt?",pill(m.extraPatchkabels))}
       ${patch ? row("Patchkabels",textAnswer(patch)) : ""}
-      ${row("Extra switches gebruikt?",pill(m.extraSwitches))}
-      ${row("Extra UTP kabel getrokken?",pill(m.utpGetrokken))}
-      ${row("Extra stroomkabel getrokken?",pill(m.stroomkabelGetrokken))}
-      ${row("Verlengsnoeren (stekkerdozen) gebruikt?",pill(m.verlengsnoeren))}
+      ${row("Heb je extra switches gebruikt?",pill(m.extraSwitches))}
+      ${row("4. Heb je extra UTP kabel getrokken?",pill(m.utpGetrokken))}
+      ${row("5. Heb je extra stroomkabel getrokken?",pill(m.stroomkabelGetrokken))}
+      ${row("6. Heb je verlengsnoeren (stekkerdozen) gebruikt?",pill(m.verlengsnoeren))}
       ${verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
-      ${row("Extra seriële en/of USB speakers gebruikt?",pill(m.extraSpeakers))}
+      ${row("7. Heb je extra seriële en/of USB speakers gebruikt?",pill(m.extraSpeakers))}
     </table>
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>
@@ -308,14 +416,14 @@ function opleverSections(
   <div class="section">
     <div class="section-title">Checklist</div>
     <table class="qa">
-      ${row("Installatie werkend opgeleverd?",pill(c.werkendOpgeleverd))}
-      ${row("Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar))}
-      ${row("WiFi verbinding van toepassing?",pill(c.wifiVanToepassing))}
+      ${row("1. Is de installatie werkend opgeleverd?",pill(c.werkendOpgeleverd))}
+      ${row("2. Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar))}
+      ${row("3. WiFi verbinding van toepassing?",pill(c.wifiVanToepassing))}
       ${c.wifiVanToepassing === true ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
-      ${row("Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices))}
-      ${row("Locatie mediaplayer(s)",c.locatieMediaplayer ? choicePill(c.locatieMediaplayer) : `<span class="pill pill-empty">—</span>`)}
+      ${row("4. Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices))}
+      ${row("5. Locatie mediaplayer(s)",c.locatieMediaplayer ? choicePill(c.locatieMediaplayer) : `<span class="pill pill-empty">—</span>`)}
       ${c.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(c.aantalMediaplayers)) : ""}
-      ${row("Afvalverwijdering?",pill(c.afvalverwijdering))}
+      ${row("6. Afvalverwijdering?",pill(c.afvalverwijdering))}
     </table>
   </div>`;
 
@@ -466,11 +574,25 @@ function generateHtml(
 
   <!-- META -->
   <div class="section">
-    <div class="grid-3">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px">
       <div class="info-box">
-        <div class="info-label">Monteur</div>
+        <div class="info-label">Monteur 1</div>
         <div class="info-value">${esc(data.engineerName ?? "—")}</div>
       </div>
+      <div class="info-box">
+        <div class="info-label">Monteur 2</div>
+        <div class="info-value">${esc(oplever.tarief.monteur2) || "—"}</div>
+      </div>
+      <div class="info-box">
+        <div class="info-label">Monteur 3</div>
+        <div class="info-value">${esc(oplever.tarief.monteur3) || "—"}</div>
+      </div>
+      <div class="info-box">
+        <div class="info-label">Monteur 4</div>
+        <div class="info-value">${esc(oplever.tarief.monteur4) || "—"}</div>
+      </div>
+    </div>
+    <div class="grid-2" style="gap:8px">
       <div class="info-box">
         <div class="info-label">Geplande datum</div>
         <div class="info-value">${formatDate(data.plannedDate)}</div>
@@ -555,7 +677,7 @@ function generateHtml(
   </div>` : ""}
 
   <!-- OPLEVERFORMULIER -->
-  ${opleverSections(oplever)}
+  ${opleverSections(oplever,data.engineerName)}
 
   <!-- FOTO'S -->
   ${data.photoUrls.length > 0 ? `

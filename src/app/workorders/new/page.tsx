@@ -567,6 +567,17 @@ export default function NewWorkorderPage(){
 
                 onChange={setFormData}
 
+                monteur1Name={
+                    isEngineer
+                    ?
+                    session?.user?.name ?? null
+                    :
+                    engineers.find(
+                        engineer=>
+                            engineer.id === assignedUserId
+                    )?.name ?? null
+                }
+
             />
 
 

@@ -23,6 +23,12 @@ interface Workorder {
 
     formData:unknown;
 
+    assignedUser:{
+
+        name:string | null;
+
+    } | null;
+
     status:string;
 
 
@@ -576,6 +582,8 @@ async function completeWorkorder(){
     workorderId={id}
 
     initial={workorder.formData}
+
+    monteur1Name={workorder.assignedUser?.name ?? null}
 
 />
 
