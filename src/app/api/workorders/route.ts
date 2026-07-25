@@ -365,6 +365,9 @@ export async function POST(
                     location:
                         body.location || null,
 
+                    city:
+                        body.city || null,
+
 
 
                     assignedUserId,

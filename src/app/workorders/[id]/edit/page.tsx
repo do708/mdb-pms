@@ -66,6 +66,10 @@ export default function EditWorkorderPage(){
         useState("");
 
 
+    const [city,setCity] =
+        useState("");
+
+
     const [description,setDescription] =
         useState("");
 
@@ -197,6 +201,8 @@ export default function EditWorkorderPage(){
                 );
 
                 setLocation(wo.location ?? "");
+
+                setCity(wo.city ?? "");
 
                 setDescription(wo.description ?? "");
 
@@ -365,6 +371,8 @@ export default function EditWorkorderPage(){
                             customerId,
 
                             location,
+
+                            city,
 
                             description,
 
@@ -599,31 +607,59 @@ export default function EditWorkorderPage(){
                 </label>
 
 
-                <label className="block">
+                <div>
 
                     <span className="text-sm text-gray-600">
 
-                        Waar? (locatie / adres)
+                        Waar? (adres en plaats)
 
                     </span>
 
-                    <input
+                    <div className="
+                        flex
+                        flex-wrap
+                        gap-3
+                        mt-2
+                    ">
 
-                        value={location}
+                        <input
 
-                        onChange={(e)=>setLocation(e.target.value)}
+                            value={location}
 
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-1
-                        "
+                            onChange={(e)=>setLocation(e.target.value)}
 
-                    />
+                            placeholder="Straat en huisnummer"
 
-                </label>
+                            className="
+                                flex-1
+                                min-w-[200px]
+                                border
+                                rounded-xl
+                                p-3
+                            "
+
+                        />
+
+                        <input
+
+                            value={city}
+
+                            onChange={(e)=>setCity(e.target.value)}
+
+                            placeholder="Plaats"
+
+                            className="
+                                w-48
+                                border
+                                rounded-xl
+                                p-3
+                            "
+
+                        />
+
+                    </div>
+
+                </div>
 
 
                 <label className="block">

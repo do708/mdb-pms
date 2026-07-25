@@ -494,7 +494,20 @@ export async function PUT(
                         ?
                         (body.location || null)
                         :
-                        existingWorkorder.location
+                        existingWorkorder.location,
+
+
+                    city:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.city
+                        :
+                        body.city !== undefined
+                        ?
+                        (body.city || null)
+                        :
+                        existingWorkorder.city
 
 
                 }

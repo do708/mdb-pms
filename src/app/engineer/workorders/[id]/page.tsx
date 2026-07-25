@@ -44,6 +44,8 @@ interface Workorder {
 
     location:string | null;
 
+    city:string | null;
+
     customer:{
 
         name:string;
@@ -494,17 +496,55 @@ async function completeWorkorder(){
                 </p>
 
 
-                <p>
-                    📍 {
-                        workorder.location
-                        ??
-                        workorder.customer?.address
-                        ??
-                        workorder.project?.customer.address
-                        ??
-                        "Geen locatie"
-                    }
-                </p>
+                {
+                    (()=>{
+
+                        const adres =
+                            workorder.location
+                            ??
+                            workorder.customer?.address
+                            ??
+                            workorder.project?.customer.address
+                            ??
+                            "";
+
+                        const stad =
+                            workorder.city ?? "";
+
+                        const volledig =
+                            [adres, stad]
+                            .filter(Boolean)
+                            .join(", ");
+
+                        if(!volledig){
+                            return (
+                                <p>📍 Geen locatie</p>
+                            );
+                        }
+
+                        const mapsUrl =
+                            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(volledig)}`;
+
+                        return (
+                            <a
+                                href={mapsUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="
+                                    text-blue-600
+                                    underline
+                                    inline-flex
+                                    items-center
+                                    gap-1
+                                "
+                            >
+                                📍 {volledig}
+                                <span className="text-xs">↗</span>
+                            </a>
+                        );
+
+                    })()
+                }
 
 
             </section>

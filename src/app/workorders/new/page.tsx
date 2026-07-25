@@ -88,6 +88,10 @@ function NewWorkorderInner(){
         useState("");
 
 
+    const [city,setCity] =
+        useState("");
+
+
     const searchParams =
         useSearchParams();
 
@@ -273,6 +277,8 @@ function NewWorkorderInner(){
                             customerId,
 
                             location,
+
+                            city,
 
                             assignedUserId,
 
@@ -558,35 +564,63 @@ function NewWorkorderInner(){
                 }
 
 
-                <label className="block">
+                <div>
 
                     <span className="text-sm text-gray-600">
 
-                        Waar? (locatie / adres)
+                        Waar? (adres en plaats)
 
                     </span>
 
-                    <input
+                    <div className="
+                        flex
+                        flex-wrap
+                        gap-3
+                        mt-2
+                    ">
 
-                        value={location}
+                        <input
 
-                        onChange={(e)=>
-                            setLocation(e.target.value)
-                        }
+                            value={location}
 
-                        placeholder="Straat, plaats"
+                            onChange={(e)=>
+                                setLocation(e.target.value)
+                            }
 
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-2
-                        "
+                            placeholder="Straat en huisnummer"
 
-                    />
+                            className="
+                                flex-1
+                                min-w-[200px]
+                                border
+                                rounded-xl
+                                p-3
+                            "
 
-                </label>
+                        />
+
+                        <input
+
+                            value={city}
+
+                            onChange={(e)=>
+                                setCity(e.target.value)
+                            }
+
+                            placeholder="Plaats"
+
+                            className="
+                                w-48
+                                border
+                                rounded-xl
+                                p-3
+                            "
+
+                        />
+
+                    </div>
+
+                </div>
 
 
                 <label className="block">

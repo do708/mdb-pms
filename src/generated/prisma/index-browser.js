@@ -159,6 +159,7 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   projectId: 'projectId',
   customerId: 'customerId',
   location: 'location',
+  city: 'city',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   description: 'description',
