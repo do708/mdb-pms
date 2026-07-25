@@ -192,7 +192,14 @@ export async function PUT(
                     email:body.email || null,
                     phone:body.phone || null,
                     address:body.address || null,
-                    color:body.color || "#2563eb"
+                    color:body.color || "#2563eb",
+                    ...(
+                        body.formSchema !== undefined
+                        ?
+                        { formSchema:body.formSchema }
+                        :
+                        {}
+                    )
                 }
 
             });

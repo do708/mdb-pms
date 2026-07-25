@@ -380,6 +380,30 @@ export default function EditCustomerPage(){
 
                 </button>
 
+
+                <button
+
+                    type="button"
+
+                    onClick={()=>router.push(`/customers/${id}/form`)}
+
+                    className="
+                        border
+                        rounded-xl
+                        px-5
+                        py-2.5
+                        text-blue-600
+                        border-blue-200
+                        hover:bg-blue-50
+                        ml-auto
+                    "
+
+                >
+
+                    Werkbon-vragen beheren →
+
+                </button>
+
             </div>
 
 

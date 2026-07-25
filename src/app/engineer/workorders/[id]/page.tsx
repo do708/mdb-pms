@@ -770,6 +770,8 @@ async function completeWorkorder(){
         parseCustomerSchema(workorder.customer?.formSchema)
     }
 
+    customerName={workorder.customer?.name ?? null}
+
 />
 
 

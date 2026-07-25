@@ -36,6 +36,9 @@ interface Props {
     // Per-opdrachtgever vragen (uit Customer.formSchema)
     customerSchema?:CustomerFormSchema | null;
 
+    // Naam van de opdrachtgever (voor de kop van het klantspecifieke blok)
+    customerName?:string | null;
+
     // Ingebed in een groter formulier: geen eigen opslaanknop,
     // wijzigingen gaan via onChange omhoog naar de parent.
     embedded?:boolean;
@@ -772,6 +775,8 @@ export default function OpleverForm({
 
     customerSchema = null,
 
+    customerName = null,
+
     embedded = false,
 
     onChange
@@ -1175,6 +1180,74 @@ export default function OpleverForm({
                 </p>
 
             </div>
+
+
+
+
+            {/* ================= Klantspecifiek (bovenaan) ================= */}
+
+            {
+                customerSchema && (
+
+                    <div className="
+                        border
+                        border-blue-200
+                        rounded-2xl
+                        p-5
+                        bg-blue-50/40
+                    ">
+
+                        <h3 className="
+                            flex
+                            items-center
+                            gap-2.5
+                            font-semibold
+                            text-[15px]
+                            text-slate-800
+                            border-b
+                            border-blue-200
+                            pb-2
+                            mb-5
+                        ">
+
+                            <span className="
+                                inline-block
+                                w-1
+                                h-5
+                                rounded-full
+                                bg-blue-600
+                            "></span>
+
+                            Klantspecifiek{customerName ? ` — ${customerName}` : ""}
+
+                            <span className="
+                                text-xs
+                                font-normal
+                                text-slate-400
+                                ml-1
+                            ">
+                                alleen voor deze opdrachtgever
+                            </span>
+
+                        </h3>
+
+                        <CustomerFormSection
+                            schema={customerSchema}
+                            values={data.custom}
+                            onChange={(fieldId, value)=>{
+                                update(draft=>{
+                                    draft.custom = {
+                                        ...draft.custom,
+                                        [fieldId]:value
+                                    };
+                                });
+                            }}
+                        />
+
+                    </div>
+
+                )
+            }
 
 
 
@@ -2562,43 +2635,6 @@ export default function OpleverForm({
                 </div>
 
             </div>
-
-
-
-            {
-                customerSchema && (
-
-                    <div className="
-                        border
-                        rounded-2xl
-                        p-5
-                        bg-gray-50
-                    ">
-
-                        <Kop>Klant-specifieke gegevens</Kop>
-
-                        <div className="mt-3">
-
-                            <CustomerFormSection
-                                schema={customerSchema}
-                                values={data.custom}
-                                onChange={(fieldId, value)=>{
-                                    update(draft=>{
-                                        draft.custom = {
-                                            ...draft.custom,
-                                            [fieldId]:value
-                                        };
-                                    });
-                                }}
-                            />
-
-                        </div>
-
-                    </div>
-
-                )
-            }
-
 
 
 
