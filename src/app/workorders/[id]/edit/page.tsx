@@ -83,6 +83,14 @@ export default function EditWorkorderPage(){
         useState("");
 
 
+    const [startTime,setStartTime] =
+        useState("");
+
+
+    const [endTime,setEndTime] =
+        useState("");
+
+
     const [documents,setDocuments] =
         useState<{
             id:string;
@@ -182,6 +190,23 @@ export default function EditWorkorderPage(){
                     ""
                 );
 
+                // Tijd uit de ISO-string (HH:MM) als die er is
+                if(wo.plannedDate){
+                    const d = new Date(wo.plannedDate);
+                    const hh = String(d.getHours()).padStart(2,"0");
+                    const mm = String(d.getMinutes()).padStart(2,"0");
+                    if(hh !== "00" || mm !== "00"){
+                        setStartTime(`${hh}:${mm}`);
+                    }
+                }
+
+                if(wo.plannedEndDate){
+                    const d = new Date(wo.plannedEndDate);
+                    const hh = String(d.getHours()).padStart(2,"0");
+                    const mm = String(d.getMinutes()).padStart(2,"0");
+                    setEndTime(`${hh}:${mm}`);
+                }
+
                 setDocuments(
                     Array.isArray(wo.documents)
                     ?
@@ -280,7 +305,19 @@ export default function EditWorkorderPage(){
 
                             assignedUserId,
 
-                            plannedDate
+                            plannedDate:
+                                plannedDate && startTime
+                                ?
+                                `${plannedDate}T${startTime}`
+                                :
+                                plannedDate,
+
+                            plannedEndDate:
+                                plannedDate && endTime
+                                ?
+                                `${plannedDate}T${endTime}`
+                                :
+                                null
 
                         })
 
@@ -540,34 +577,96 @@ export default function EditWorkorderPage(){
                 </label>
 
 
-                <label className="block">
+                <div className="
+                    flex
+                    flex-wrap
+                    gap-3
+                ">
 
-                    <span className="text-sm text-gray-600">
+                    <label className="block">
 
-                        Geplande datum
+                        <span className="text-sm text-gray-600">
 
-                    </span>
+                            Geplande datum
 
-                    <input
+                        </span>
 
-                        type="date"
+                        <input
 
-                        value={plannedDate}
+                            type="date"
 
-                        onChange={(e)=>setPlannedDate(e.target.value)}
+                            value={plannedDate}
 
-                        className="
-                            w-full
-                            max-w-xs
-                            border
-                            rounded-xl
-                            p-3
-                            mt-1
-                        "
+                            onChange={(e)=>setPlannedDate(e.target.value)}
 
-                    />
+                            className="
+                                border
+                                rounded-xl
+                                p-3
+                                mt-1
+                            "
 
-                </label>
+                        />
+
+                    </label>
+
+
+                    <label className="block">
+
+                        <span className="text-sm text-gray-600">
+
+                            Van
+
+                        </span>
+
+                        <input
+
+                            type="time"
+
+                            value={startTime}
+
+                            onChange={(e)=>setStartTime(e.target.value)}
+
+                            className="
+                                border
+                                rounded-xl
+                                p-3
+                                mt-1
+                            "
+
+                        />
+
+                    </label>
+
+
+                    <label className="block">
+
+                        <span className="text-sm text-gray-600">
+
+                            Tot
+
+                        </span>
+
+                        <input
+
+                            type="time"
+
+                            value={endTime}
+
+                            onChange={(e)=>setEndTime(e.target.value)}
+
+                            className="
+                                border
+                                rounded-xl
+                                p-3
+                                mt-1
+                            "
+
+                        />
+
+                    </label>
+
+                </div>
 
 
                 <label className="block">

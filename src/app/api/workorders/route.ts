@@ -378,6 +378,20 @@ export async function POST(
 
 
 
+                    plannedEndDate:
+
+                        body.plannedEndDate
+
+                        ?
+
+                        new Date(body.plannedEndDate)
+
+                        :
+
+                        null,
+
+
+
                     status:
                         body.status || "ontvangen"
 

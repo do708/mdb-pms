@@ -410,6 +410,26 @@ export async function PUT(
 
 
 
+                    plannedEndDate:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.plannedEndDate
+                        :
+                        body.plannedEndDate !== undefined
+                        ?
+                        (
+                            body.plannedEndDate
+                            ?
+                            new Date(body.plannedEndDate)
+                            :
+                            null
+                        )
+                        :
+                        existingWorkorder.plannedEndDate,
+
+
+
                     assignedUserId:
 
                         session.user.role === "engineer"

@@ -352,6 +352,32 @@ export default function WeekView({
 
                                                 >
 
+                                                    {
+                                                        (()=>{
+                                                            const d = new Date(item.plannedDate!);
+                                                            const hasTime =
+                                                                d.getHours() !== 0 ||
+                                                                d.getMinutes() !== 0;
+                                                            if(!hasTime){
+                                                                return null;
+                                                            }
+                                                            const hh = String(d.getHours()).padStart(2,"0");
+                                                            const mm = String(d.getMinutes()).padStart(2,"0");
+                                                            let label = `${hh}:${mm}`;
+                                                            if(item.plannedEndDate){
+                                                                const e = new Date(item.plannedEndDate);
+                                                                const eh = String(e.getHours()).padStart(2,"0");
+                                                                const em = String(e.getMinutes()).padStart(2,"0");
+                                                                label += `–${eh}:${em}`;
+                                                            }
+                                                            return (
+                                                                <span className="text-xs font-bold block">
+                                                                    🕐 {label}
+                                                                </span>
+                                                            );
+                                                        })()
+                                                    }
+
                                                     <strong>
 
                                                         {item.title}

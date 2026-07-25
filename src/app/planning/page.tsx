@@ -22,6 +22,8 @@ interface PlanningItem {
 
     plannedDate:string | null;
 
+    plannedEndDate:string | null;
+
 
     location:string | null;
 

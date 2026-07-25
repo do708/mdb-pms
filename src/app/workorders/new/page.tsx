@@ -92,6 +92,14 @@ export default function NewWorkorderPage(){
         useState("");
 
 
+    const [startTime,setStartTime] =
+        useState("");
+
+
+    const [endTime,setEndTime] =
+        useState("");
+
+
     const [formData,setFormData] =
         useState<OpleverData>(
             emptyOpleverData()
@@ -225,7 +233,19 @@ export default function NewWorkorderPage(){
 
                             assignedUserId,
 
-                            plannedDate,
+                            plannedDate:
+                                plannedDate && startTime
+                                ?
+                                `${plannedDate}T${startTime}`
+                                :
+                                plannedDate,
+
+                            plannedEndDate:
+                                plannedDate && endTime
+                                ?
+                                `${plannedDate}T${endTime}`
+                                :
+                                null,
 
                             // Kantoor zet klaar zonder het opleverformulier;
                             // de monteur vult dat later in. Een monteur die
@@ -528,36 +548,102 @@ export default function NewWorkorderPage(){
 
                         <>
 
-                            <label className="block">
+                            <div className="
+                                flex
+                                flex-wrap
+                                gap-3
+                            ">
 
-                                <span className="text-sm text-gray-600">
+                                <label className="block">
 
-                                    Wanneer? (geplande datum)
+                                    <span className="text-sm text-gray-600">
 
-                                </span>
+                                        Wanneer? (datum)
 
-                                <input
+                                    </span>
 
-                                    type="date"
+                                    <input
 
-                                    value={plannedDate}
+                                        type="date"
 
-                                    onChange={(e)=>
-                                        setPlannedDate(e.target.value)
-                                    }
+                                        value={plannedDate}
 
-                                    className="
-                                        w-full
-                                        max-w-xs
-                                        border
-                                        rounded-xl
-                                        p-3
-                                        mt-1
-                                    "
+                                        onChange={(e)=>
+                                            setPlannedDate(e.target.value)
+                                        }
 
-                                />
+                                        className="
+                                            border
+                                            rounded-xl
+                                            p-3
+                                            mt-1
+                                        "
 
-                            </label>
+                                    />
+
+                                </label>
+
+
+                                <label className="block">
+
+                                    <span className="text-sm text-gray-600">
+
+                                        Van
+
+                                    </span>
+
+                                    <input
+
+                                        type="time"
+
+                                        value={startTime}
+
+                                        onChange={(e)=>
+                                            setStartTime(e.target.value)
+                                        }
+
+                                        className="
+                                            border
+                                            rounded-xl
+                                            p-3
+                                            mt-1
+                                        "
+
+                                    />
+
+                                </label>
+
+
+                                <label className="block">
+
+                                    <span className="text-sm text-gray-600">
+
+                                        Tot
+
+                                    </span>
+
+                                    <input
+
+                                        type="time"
+
+                                        value={endTime}
+
+                                        onChange={(e)=>
+                                            setEndTime(e.target.value)
+                                        }
+
+                                        className="
+                                            border
+                                            rounded-xl
+                                            p-3
+                                            mt-1
+                                        "
+
+                                    />
+
+                                </label>
+
+                            </div>
 
 
                             <label className="block">
