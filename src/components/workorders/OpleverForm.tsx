@@ -2367,6 +2367,154 @@ export default function OpleverForm({
             </div>
 
 
+            {/* ================= Afronding / oplevering ================= */}
+
+            <div>
+
+                <Kop>Afronding</Kop>
+
+                <div className="space-y-4">
+
+                    <label className="block">
+
+                        <span className="text-sm font-medium text-gray-700 mb-1 block">
+                            Nog af te ronden / vervolgafspraken / advies aan klant
+                        </span>
+
+                        <textarea
+                            rows={3}
+                            value={data.afronding.vervolgafspraken}
+                            onChange={(e)=>update(draft=>{
+                                draft.afronding.vervolgafspraken = e.target.value;
+                            })}
+                            className="w-full border rounded-xl p-3"
+                        />
+
+                    </label>
+
+
+                    <label className="block">
+
+                        <span className="text-sm font-medium text-gray-700 mb-1 block">
+                            Meerwerk- en materiaal geleverd
+                        </span>
+
+                        <textarea
+                            rows={3}
+                            value={data.afronding.meerwerkMateriaal}
+                            onChange={(e)=>update(draft=>{
+                                draft.afronding.meerwerkMateriaal = e.target.value;
+                            })}
+                            className="w-full border rounded-xl p-3"
+                        />
+
+                    </label>
+
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                        <label className="block">
+
+                            <span className="text-sm font-medium text-gray-700 mb-1 block">
+                                Meerarbeid en -materialen geleverd in opdracht van
+                            </span>
+
+                            <input
+                                value={data.afronding.meerwerkInOpdrachtVan}
+                                placeholder="Naam contactpersoon"
+                                onChange={(e)=>update(draft=>{
+                                    draft.afronding.meerwerkInOpdrachtVan = e.target.value;
+                                })}
+                                className="w-full border rounded-xl p-3"
+                            />
+
+                        </label>
+
+
+                        <label className="block">
+
+                            <span className="text-sm font-medium text-gray-700 mb-1 block">
+                                Netwerkverbinding mediaspelers gecontroleerd door
+                            </span>
+
+                            <input
+                                value={data.afronding.netwerkGecontroleerdDoor}
+                                placeholder="Naam"
+                                onChange={(e)=>update(draft=>{
+                                    draft.afronding.netwerkGecontroleerdDoor = e.target.value;
+                                })}
+                                className="w-full border rounded-xl p-3"
+                            />
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            {/* ================= Handtekening voor akkoord ================= */}
+
+            <div>
+
+                <Kop>Handtekening voor akkoord</Kop>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+
+                    <label className="block">
+
+                        <span className="text-sm font-medium text-gray-700 mb-1 block">
+                            Naam contactpersoon
+                        </span>
+
+                        <input
+                            value={data.afronding.contactpersoon}
+                            placeholder="Naam contactpersoon"
+                            onChange={(e)=>update(draft=>{
+                                draft.afronding.contactpersoon = e.target.value;
+                            })}
+                            className="w-full border rounded-xl p-3"
+                        />
+
+                    </label>
+
+
+                    <div className="block">
+
+                        <span className="text-sm font-medium text-gray-700 mb-1 block">
+                            Handtekening voor akkoord
+                        </span>
+
+                        <div className="
+                            border
+                            border-dashed
+                            rounded-xl
+                            h-28
+                            flex
+                            items-center
+                            justify-center
+                            text-center
+                            text-gray-400
+                            text-sm
+                            bg-gray-50
+                            px-4
+                        ">
+                            De klant zet de handtekening bij het onderdeel
+                            &quot;Handtekening klant&quot; onderaan de werkbon.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
             {
                 customerSchema && (
 

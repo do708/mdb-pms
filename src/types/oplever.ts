@@ -171,6 +171,15 @@ export interface OpleverData {
     // Hardware geïnstalleerd / ontmanteld (tabel)
     hardware:HardwareRegel[];
 
+    // Afronding / oplevering
+    afronding:{
+        vervolgafspraken:string;
+        meerwerkMateriaal:string;
+        meerwerkInOpdrachtVan:string;
+        netwerkGecontroleerdDoor:string;
+        contactpersoon:string;
+    };
+
     // Per-opdrachtgever extra velden (dynamisch, afhankelijk van klant)
     custom:Record<string,unknown>;
 
@@ -301,6 +310,14 @@ export function emptyOpleverData():OpleverData {
 
         hardware:[],
 
+        afronding:{
+            vervolgafspraken:"",
+            meerwerkMateriaal:"",
+            meerwerkInOpdrachtVan:"",
+            netwerkGecontroleerdDoor:"",
+            contactpersoon:""
+        },
+
         custom:{}
 
     };
@@ -406,6 +423,18 @@ export function mergeOpleverData(
         checklist:{
             ...empty.checklist,
             ...data.checklist
+        },
+
+        afronding:{
+            ...empty.afronding,
+            ...(
+                data.afronding &&
+                typeof data.afronding === "object"
+                ?
+                data.afronding
+                :
+                {}
+            )
         },
 
         hardware:

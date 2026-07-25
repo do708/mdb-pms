@@ -764,6 +764,25 @@ function generateHtml(
   <!-- KLANT-SPECIFIEKE VELDEN -->
   ${customFieldsSection(data.customerSchema, oplever.custom)}
 
+  <!-- AFRONDING -->
+  ${
+    (
+      oplever.afronding.vervolgafspraken ||
+      oplever.afronding.meerwerkMateriaal ||
+      oplever.afronding.meerwerkInOpdrachtVan ||
+      oplever.afronding.netwerkGecontroleerdDoor
+    ) ? `
+  <div class="section">
+    <div class="section-title">Afronding</div>
+    <table class="qa">
+      ${oplever.afronding.vervolgafspraken ? row("Nog af te ronden / vervolgafspraken / advies aan klant", textAnswer(oplever.afronding.vervolgafspraken)) : ""}
+      ${oplever.afronding.meerwerkMateriaal ? row("Meerwerk- en materiaal geleverd", textAnswer(oplever.afronding.meerwerkMateriaal)) : ""}
+      ${oplever.afronding.meerwerkInOpdrachtVan ? row("Meerarbeid en -materialen geleverd in opdracht van", textAnswer(oplever.afronding.meerwerkInOpdrachtVan)) : ""}
+      ${oplever.afronding.netwerkGecontroleerdDoor ? row("Netwerkverbinding mediaspelers gecontroleerd door", textAnswer(oplever.afronding.netwerkGecontroleerdDoor)) : ""}
+    </table>
+  </div>` : ""
+  }
+
   <!-- FOTO'S -->
   ${data.photoUrls.length > 0 ? `
   <div class="section">
@@ -781,7 +800,7 @@ function generateHtml(
         <div class="info-label" style="margin-bottom:4px">Handtekening klant</div>
         <div class="sig-box">
           ${data.signatureUrl ? `<img src="${esc(data.signatureUrl)}" class="sig-img" alt="Handtekening klant" />` : ""}
-          <div class="sig-line">Naam: ${esc(data.signedBy) || "_________________________________"}</div>
+          <div class="sig-line">Naam: ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "_________________________________"}</div>
         </div>
       </div>
       <div>
