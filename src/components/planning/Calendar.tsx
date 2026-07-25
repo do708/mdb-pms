@@ -43,6 +43,8 @@ interface CalendarProps {
 
     items:any[];
 
+    leave?:any[];
+
     onDropDate?:(id:string,date:string)=>void;
 
 }
@@ -53,6 +55,8 @@ interface CalendarProps {
 export default function Calendar({
 
     items,
+
+    leave = [],
 
     onDropDate
 
@@ -71,6 +75,24 @@ export default function Calendar({
 
     const month =
         currentDate.getMonth();
+
+
+    function isoDateOf(d:number):string {
+        const mm = String(month + 1).padStart(2,"0");
+        const dd = String(d).padStart(2,"0");
+        return `${year}-${mm}-${dd}`;
+    }
+
+
+    // Geaccepteerd verlof dat op een bepaalde dag valt
+    function leaveOnDay(d:number){
+        const iso = isoDateOf(d);
+        return leave.filter(l=>{
+            const from = l.from;
+            const to = l.to || l.from;
+            return from && from <= iso && iso <= to;
+        });
+    }
 
 
 
@@ -518,7 +540,35 @@ export default function Calendar({
                                         </div>
 
 
+                                        {
+                                            leaveOnDay(day).map(l=>(
 
+                                                <div
+
+                                                    key={l.id}
+
+                                                    className="
+                                                        bg-orange-100
+                                                        text-orange-800
+                                                        text-[10px]
+                                                        rounded-md
+                                                        px-1.5
+                                                        py-1
+                                                        mb-1
+                                                        truncate
+                                                        leading-tight
+                                                    "
+
+                                                    title={`Verlof: ${l.userName ?? ""}`}
+
+                                                >
+
+                                                    🌴 {l.userName ?? "Verlof"}
+
+                                                </div>
+
+                                            ))
+                                        }
 
 
                                         {

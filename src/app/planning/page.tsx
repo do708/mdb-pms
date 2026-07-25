@@ -342,6 +342,15 @@ export default function PlanningPage(){
                 </h1>
 
 
+                <p className="
+                    text-gray-500
+                ">
+
+                    Wie is waar ingepland
+
+                </p>
+
+
             </header>
 
 
@@ -506,6 +515,8 @@ export default function PlanningPage(){
                 <Calendar
 
                     items={items}
+
+                    leave={leave}
 
                     onDropDate={
                         canEdit
