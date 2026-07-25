@@ -199,12 +199,22 @@ export default function PlanningPage(){
         const engineersData =
             await engineersResponse.json();
 
-        setEngineers(
+        const allEngineers =
             Array.isArray(engineersData)
             ?
             engineersData
             :
-            []
+            [];
+
+        // Een monteur ziet in de weekweergave alleen zijn eigen rij
+        setEngineers(
+            session?.user?.role === "engineer"
+            ?
+            allEngineers.filter(
+                (e:any)=>e.id === session?.user?.id
+            )
+            :
+            allEngineers
         );
 
 

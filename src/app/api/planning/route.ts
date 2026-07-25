@@ -31,8 +31,21 @@ export async function GET(){
             guard.user.role === "engineer"
             ?
             {
-                assignedUserId:
-                    guard.user.id
+                // Eigen klussen: als hoofdmonteur OF als extra monteur
+                OR:[
+                    {
+                        assignedUserId:
+                            guard.user.id
+                    },
+                    {
+                        extraEngineers:{
+                            some:{
+                                userId:
+                                    guard.user.id
+                            }
+                        }
+                    }
+                ]
             }
             :
             {};
