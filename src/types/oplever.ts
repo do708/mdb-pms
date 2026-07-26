@@ -52,6 +52,8 @@ export const SCHERM_FORMATEN = [
 
 export interface SchermBlok {
 
+    status:"" | "Nieuw gemonteerd" | "Hergebruikt gemonteerd" | "Gedemonteerd";
+
     formaat:string;
 
     formaatAnders:string;
@@ -222,6 +224,7 @@ export interface HardwareRegel {
 export function emptySchermBlok():SchermBlok {
 
     return {
+        status:"",
         formaat:"",
         formaatAnders:"",
         tilhulp:null,
@@ -566,6 +569,8 @@ export function mergeOpleverData(
     ){
 
         const blok:SchermBlok = {
+
+            status:"",
 
             formaat:
                 installatieOud.schermFormaat ?? "",

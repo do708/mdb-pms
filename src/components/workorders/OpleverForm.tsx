@@ -154,6 +154,16 @@ function JaNee({
 
 
 
+// Pastelkleuren voor de keuzeknoppen (per optie een andere tint).
+const PASTEL_KEUZE = [
+    "bg-sky-100 border-sky-300 text-sky-800",
+    "bg-rose-100 border-rose-300 text-rose-800",
+    "bg-amber-100 border-amber-300 text-amber-800",
+    "bg-emerald-100 border-emerald-300 text-emerald-800",
+    "bg-violet-100 border-violet-300 text-violet-800",
+    "bg-teal-100 border-teal-300 text-teal-800"
+];
+
 function Keuze({
 
     value,
@@ -177,7 +187,7 @@ function Keuze({
         <div className="flex flex-wrap gap-2">
 
             {
-                options.map(option=>(
+                options.map((option,index)=>(
 
                     <button
 
@@ -193,12 +203,13 @@ function Keuze({
                             rounded-full
                             border
                             text-sm
+                            transition
                             ${
                                 value === option
                                 ?
-                                "bg-green-500 border-green-500 text-white"
+                                PASTEL_KEUZE[index % PASTEL_KEUZE.length]
                                 :
-                                "text-gray-400"
+                                "border-slate-200 text-gray-400 hover:border-slate-300"
                             }
                         `}
 
@@ -673,7 +684,7 @@ function SchermBlokken({
                                 text-sm
                             ">
 
-                                Formaat {index + 1}
+                                Scherm {index + 1}
 
                             </p>
 
@@ -701,6 +712,24 @@ function SchermBlokken({
 
                             </button>
 
+                        </div>
+
+
+                        <div className="space-y-2">
+                            <p className="text-sm text-gray-600">Wat is er met dit scherm gedaan?</p>
+                            <Keuze
+                                value={blok.status}
+                                options={[
+                                    "Nieuw gemonteerd",
+                                    "Hergebruikt gemonteerd",
+                                    "Gedemonteerd"
+                                ]}
+                                onChange={(v)=>
+                                    update(index,{
+                                        status:v as SchermBlok["status"]
+                                    })
+                                }
+                            />
                         </div>
 
 
@@ -858,7 +887,7 @@ function SchermBlokken({
 
             >
 
-                ＋ Voeg nog een formaat toe
+                ＋ Nog een scherm toevoegen
 
             </button>
 
@@ -1687,7 +1716,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="Nieuwe schermen geïnstalleerd"
+                    label="2. Schermen"
                     actief={i.nieuweSchermen === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -1711,40 +1740,6 @@ export default function OpleverForm({
                         onChange={(blokken)=>
                             update(draft=>{
                                 draft.installatie.nieuweFormaten =
-                                    blokken;
-                            })
-                        }
-
-                    />
-
-                </UitklapVraag>
-
-
-                <UitklapVraag
-                    label="Hergebruikte schermen geïnstalleerd"
-                    actief={i.hergebruikteSchermen === true}
-                    onToggle={(v)=>
-                        update(draft=>{
-                            draft.installatie.hergebruikteSchermen = v;
-                            if(
-                                v &&
-                                draft.installatie.hergebruikteFormaten.length === 0
-                            ){
-                                draft.installatie.hergebruikteFormaten = [
-                                    emptySchermBlok()
-                                ];
-                            }
-                        })
-                    }
-                >
-
-                    <SchermBlokken
-
-                        blokken={i.hergebruikteFormaten}
-
-                        onChange={(blokken)=>
-                            update(draft=>{
-                                draft.installatie.hergebruikteFormaten =
                                     blokken;
                             })
                         }

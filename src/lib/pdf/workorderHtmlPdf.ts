@@ -285,6 +285,7 @@ function opleverSections(
 
         return blokken
         .filter(blok=>
+            blok.status ||
             blok.formaat ||
             blok.aantal
         )
@@ -305,6 +306,8 @@ function opleverSections(
                 (blok.beugelAnders || "Anders")
                 :
                 blok.typeBeugel;
+
+            if(blok.status) parts.push(`Status: ${blok.status}`);
 
             if(formaatWaarde) parts.push(`Formaat: ${formaatWaarde}`);
 
@@ -385,10 +388,9 @@ function opleverSections(
   <div class="section">
     <div class="section-title">2. Installatie werkzaamheden</div>
     <table class="qa">
-      ${row("Heb je nieuwe schermen geïnstalleerd?",pill(i.nieuweSchermen))}
-      ${i.nieuweSchermen === true ? schermBlokken("Nieuw formaat",i.nieuweFormaten) : ""}
-      ${row("Heb je hergebruikte schermen geïnstalleerd?",pill(i.hergebruikteSchermen))}
-      ${i.hergebruikteSchermen === true ? schermBlokken("Hergebruikt formaat",i.hergebruikteFormaten) : ""}
+      ${row("2. Schermen",pill(i.nieuweSchermen))}
+      ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
+      ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
       ${row("3. Videowall geïnstalleerd?",pill(i.videowall))}
       ${i.videowall === true && i.videowallStatus ? row("Videowall status",textAnswer(i.videowallStatus)) : ""}
       ${i.videowall === true && (i.videowallHorizontaal || i.videowallVerticaal) ? row("Videowall configuratie",textAnswer(`${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"} schermen`)) : ""}
