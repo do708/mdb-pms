@@ -157,11 +157,11 @@ function JaNee({
 // Pastelkleuren voor de keuzeknoppen (per optie een andere tint).
 const PASTEL_KEUZE = [
     "bg-sky-100 border-sky-300 text-sky-800",
-    "bg-rose-100 border-rose-300 text-rose-800",
-    "bg-amber-100 border-amber-300 text-amber-800",
     "bg-emerald-100 border-emerald-300 text-emerald-800",
+    "bg-amber-100 border-amber-300 text-amber-800",
     "bg-violet-100 border-violet-300 text-violet-800",
-    "bg-teal-100 border-teal-300 text-teal-800"
+    "bg-teal-100 border-teal-300 text-teal-800",
+    "bg-indigo-100 border-indigo-300 text-indigo-800"
 ];
 
 function Keuze({
@@ -224,6 +224,43 @@ function Keuze({
 
     );
 
+}
+
+
+
+// Eén regel in de audio-lijst: label links, aantal-veld rechts.
+function AudioRegel({
+    label,
+    value,
+    onChange
+}:{
+    label:string;
+    value:string;
+    onChange:(value:string)=>void;
+}){
+    return (
+        <div className="
+            flex
+            items-center
+            gap-3
+            py-1.5
+        ">
+            <span className="
+                text-sm
+                text-slate-700
+                flex-1
+            ">
+                {label}
+            </span>
+            <input
+                inputMode="numeric"
+                value={value}
+                placeholder="Aantal"
+                onChange={(e)=>onChange(e.target.value)}
+                className="w-20 border rounded-lg p-1.5 text-sm"
+            />
+        </div>
+    );
 }
 
 
@@ -1716,7 +1753,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="2. Schermen"
+                    label="1. Schermen"
                     actief={i.nieuweSchermen === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -1750,7 +1787,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="3. Videowall geïnstalleerd"
+                    label="2. Videowall"
                     actief={i.videowall === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -1867,7 +1904,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="4. Kiosk geïnstalleerd"
+                    label="3. Kiosk"
                     actief={i.kiosk === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -1875,6 +1912,20 @@ export default function OpleverForm({
                         })
                     }
                 >
+
+                    <div className="space-y-2">
+                        <p className="text-sm text-gray-600">Status</p>
+                        <Keuze
+                            value={i.kioskStatus}
+                            options={["Geïnstalleerd","Gedemonteerd"]}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.kioskStatus =
+                                        v as OpleverData["installatie"]["kioskStatus"];
+                                })
+                            }
+                        />
+                    </div>
 
                     <div className="
                         grid
@@ -1911,7 +1962,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="5. Mediaplayers"
+                    label="4. Mediaplayers"
                     actief={!!i.mediaplayers}
                     onToggle={(v)=>
                         update(draft=>{
@@ -1959,7 +2010,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="6. Audio geïnstalleerd"
+                    label="5. Audio"
                     actief={i.audio === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -1968,41 +2019,94 @@ export default function OpleverForm({
                     }
                 >
 
-                    <div className="
-                        grid
-                        grid-cols-1
-                        sm:grid-cols-3
-                        gap-3
-                    ">
+                    <div className="space-y-4">
 
-                        <div className="sm:col-span-2">
-                            <Veld
-                                label="Omschrijving"
-                                value={i.audioOmschrijving}
+                        <div className="space-y-2">
+                            <p className="text-sm text-gray-600">Status</p>
+                            <Keuze
+                                value={i.audioStatus}
+                                options={["Geïnstalleerd","Gedemonteerd"]}
                                 onChange={(v)=>
                                     update(draft=>{
-                                        draft.installatie.audioOmschrijving = v;
+                                        draft.installatie.audioStatus =
+                                            v as OpleverData["installatie"]["audioStatus"];
                                     })
                                 }
                             />
                         </div>
 
-                        <Veld
-                            label="Aantal"
-                            value={i.audioAantal}
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.installatie.audioAantal = v;
-                                })
-                            }
-                        />
+                        <div className="space-y-2">
+
+                            <p className="text-sm text-gray-600">
+                                Wat is er geïnstalleerd? (vul het aantal in)
+                            </p>
+
+                            <AudioRegel
+                                label="Audiospeler"
+                                value={i.audioSpeler}
+                                onChange={(v)=>update(draft=>{
+                                    draft.installatie.audioSpeler = v;
+                                })}
+                            />
+
+                            <AudioRegel
+                                label="Versterker"
+                                value={i.audioVersterker}
+                                onChange={(v)=>update(draft=>{
+                                    draft.installatie.audioVersterker = v;
+                                })}
+                            />
+
+                            <AudioRegel
+                                label="Volumeregelaar"
+                                value={i.audioVolumeregelaar}
+                                onChange={(v)=>update(draft=>{
+                                    draft.installatie.audioVolumeregelaar = v;
+                                })}
+                            />
+
+                            <AudioRegel
+                                label="Speakers"
+                                value={i.audioSpeakers}
+                                onChange={(v)=>update(draft=>{
+                                    draft.installatie.audioSpeakers = v;
+                                })}
+                            />
+
+                            {/* Anders: eigen tekst + aantal */}
+                            <div className="
+                                flex
+                                items-center
+                                gap-3
+                                py-1.5
+                            ">
+                                <input
+                                    value={i.audioAndersTekst}
+                                    placeholder="Anders, namelijk..."
+                                    onChange={(e)=>update(draft=>{
+                                        draft.installatie.audioAndersTekst = e.target.value;
+                                    })}
+                                    className="flex-1 border rounded-lg p-1.5 text-sm"
+                                />
+                                <input
+                                    inputMode="numeric"
+                                    value={i.audioAndersAantal}
+                                    placeholder="Aantal"
+                                    onChange={(e)=>update(draft=>{
+                                        draft.installatie.audioAndersAantal = e.target.value;
+                                    })}
+                                    className="w-20 border rounded-lg p-1.5 text-sm"
+                                />
+                            </div>
+
+                        </div>
 
                     </div>
 
                 </UitklapVraag>
 
 
-                <Vraag label="7. Project (offerte basis) — is het een project?">
+                <Vraag label="6. Project (offerte basis) — is het een project?">
 
                     <JaNee
 

@@ -388,23 +388,28 @@ function opleverSections(
   <div class="section">
     <div class="section-title">2. Installatie werkzaamheden</div>
     <table class="qa">
-      ${row("2. Schermen",pill(i.nieuweSchermen))}
+      ${row("1. Schermen",pill(i.nieuweSchermen))}
       ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
       ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
-      ${row("3. Videowall geïnstalleerd?",pill(i.videowall))}
+      ${row("2. Videowall",pill(i.videowall))}
       ${i.videowall === true && i.videowallStatus ? row("Videowall status",textAnswer(i.videowallStatus)) : ""}
       ${i.videowall === true && (i.videowallHorizontaal || i.videowallVerticaal) ? row("Videowall configuratie",textAnswer(`${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"} schermen`)) : ""}
       ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat === "Anders" ? (i.videowallFormaatAnders || "Anders") : i.videowallFormaat)) : ""}
       ${i.videowall === true && i.videowallOrientatie ? row("Videowall oriëntatie",textAnswer(i.videowallOrientatie)) : ""}
-      ${row("4. Kiosk geïnstalleerd?",pill(i.kiosk))}
+      ${row("3. Kiosk",pill(i.kiosk))}
+      ${i.kiosk === true && i.kioskStatus ? row("Kiosk status",textAnswer(i.kioskStatus)) : ""}
       ${i.kiosk === true && i.kioskOmschrijving ? row("Kiosk omschrijving",textAnswer(i.kioskOmschrijving)) : ""}
       ${i.kiosk === true && i.kioskAantal ? row("Kiosk aantal",textAnswer(i.kioskAantal)) : ""}
-      ${i.mediaplayers ? row("5. Mediaplayers",choicePill(i.mediaplayers)) : row("5. Mediaplayers",`<span class="pill pill-empty">—</span>`)}
+      ${i.mediaplayers ? row("4. Mediaplayers",choicePill(i.mediaplayers)) : row("4. Mediaplayers",`<span class="pill pill-empty">—</span>`)}
       ${i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
-      ${row("6. Audio geïnstalleerd?",pill(i.audio))}
-      ${i.audio === true && i.audioOmschrijving ? row("Audio omschrijving",textAnswer(i.audioOmschrijving)) : ""}
-      ${i.audio === true && i.audioAantal ? row("Audio aantal",textAnswer(i.audioAantal)) : ""}
-      ${row("7. Project (offertebasis)?",pill(i.isProject))}
+      ${row("5. Audio",pill(i.audio))}
+      ${i.audio === true && i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : ""}
+      ${i.audio === true && i.audioSpeler ? row("Audiospeler (aantal)",textAnswer(i.audioSpeler)) : ""}
+      ${i.audio === true && i.audioVersterker ? row("Versterker (aantal)",textAnswer(i.audioVersterker)) : ""}
+      ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar (aantal)",textAnswer(i.audioVolumeregelaar)) : ""}
+      ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
+      ${i.audio === true && i.audioAndersTekst ? row(esc(i.audioAndersTekst) + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
+      ${row("6. Project (offertebasis)?",pill(i.isProject))}
     </table>
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
   </div>

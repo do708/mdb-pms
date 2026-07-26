@@ -131,6 +131,7 @@ export interface OpleverData {
         videowallOrientatie:"" | "Landscape" | "Portrait";
 
         kiosk:boolean | null;
+        kioskStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
         kioskOmschrijving:string;
         kioskAantal:string;
 
@@ -138,6 +139,13 @@ export interface OpleverData {
         aantalMediaplayers:string;
 
         audio:boolean | null;
+        audioStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
+        audioSpeler:string;
+        audioVersterker:string;
+        audioVolumeregelaar:string;
+        audioSpeakers:string;
+        audioAndersTekst:string;
+        audioAndersAantal:string;
         audioOmschrijving:string;
         audioAantal:string;
 
@@ -289,11 +297,19 @@ export function emptyOpleverData():OpleverData {
             videowallAantal:"",
             videowallOrientatie:"",
             kiosk:null,
+            kioskStatus:"",
             kioskOmschrijving:"",
             kioskAantal:"",
             mediaplayers:"",
             aantalMediaplayers:"",
             audio:null,
+            audioStatus:"",
+            audioSpeler:"",
+            audioVersterker:"",
+            audioVolumeregelaar:"",
+            audioSpeakers:"",
+            audioAndersTekst:"",
+            audioAndersAantal:"",
             audioOmschrijving:"",
             audioAantal:"",
             isProject:null,
