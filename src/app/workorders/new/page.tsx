@@ -494,7 +494,7 @@ function NewWorkorderInner(){
                             setTitle(e.target.value)
                         }
 
-                        placeholder="Bijv. Installatie 3 schermen etalage"
+                        placeholder="Bijv. Bedrijfsnaam"
 
                         className="
                             w-full

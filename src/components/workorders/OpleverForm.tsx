@@ -520,14 +520,11 @@ function ExtraKostenBlok({
                         border
                         rounded-lg
                         px-3
-                        py-2.5
+                        py-2
                         mt-2
                         bg-gray-50
-                        flex
-                        flex-wrap
-                        items-center
-                        gap-x-4
-                        gap-y-2
+                        w-56
+                        space-y-2
                     ">
 
                         <div className="
@@ -578,13 +575,13 @@ function ExtraKostenBlok({
 
                         {
                             value.voorgeschoten === true && (
-                                <span className="
-                                    text-xs
+                                <p className="
+                                    text-[11px]
+                                    leading-snug
                                     text-orange-600
-                                    w-full
                                 ">
                                     * Vergeet het formulier &apos;Bon declareren&apos; niet.
-                                </span>
+                                </p>
                             )
                         }
 
@@ -1582,6 +1579,7 @@ export default function OpleverForm({
                     <div className="
                         flex
                         flex-wrap
+                        items-start
                         gap-3
                     ">
 
