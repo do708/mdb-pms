@@ -1,5 +1,8 @@
 import puppeteer from "puppeteer";
 
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import QRCode from "qrcode";
 
 import {
@@ -523,7 +526,8 @@ function customFieldsSection(
 
 function generateHtml(
     data:WorkorderHtmlPdfInput,
-    qrDataUrl:string
+    qrDataUrl:string,
+    logoDataUrl:string = ""
 ):string {
 
 
@@ -579,19 +583,21 @@ function generateHtml(
   }
   .page { width: 210mm; padding: 16mm 14mm; }
   /* Header */
-  .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 12px; border-bottom: 2.5px solid #1a4fff; margin-bottom: 16px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 12px; border-bottom: 3px solid #0066ff; margin-bottom: 16px; }
   .logo-block { display: flex; align-items: center; gap: 10px; }
-  .logo-box { width: 36px; height: 36px; background: #1a4fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .mdb-logo { height: 42px; width: auto; object-fit: contain; }
+  .logo-box { width: 36px; height: 36px; background: #0066ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
   .logo-text { color: #fff; font-weight: 800; font-size: 16px; }
   .company-name { font-weight: 700; font-size: 14px; color: #0f172a; }
   .company-sub { font-size: 9px; color: #64748b; }
+  .order-doc-title { font-size: 10px; font-weight: 700; color: #d6007e; text-transform: uppercase; letter-spacing: 1px; }
   .order-number { text-align: right; }
-  .order-number-value { font-size: 18px; font-weight: 800; color: #1a4fff; letter-spacing: -0.5px; }
+  .order-number-value { font-size: 18px; font-weight: 800; color: #0066ff; letter-spacing: -0.5px; }
   .order-meta { font-size: 9px; color: #64748b; margin-top: 2px; }
-  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 600; background: #dce6ff; color: #1a4fff; }
+  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 600; background: #e0eaff; color: #0066ff; }
   /* Sections */
   .section { margin-bottom: 14px; page-break-inside: avoid; }
-  .section-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
+  .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #0f172a; margin-bottom: 8px; padding: 5px 0 5px 10px; border-left: 3px solid #d6007e; background: #f8fafc; border-radius: 0 3px 3px 0; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   .info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; }
@@ -599,11 +605,11 @@ function generateHtml(
   .info-value { font-size: 10px; color: #1e293b; margin-top: 2px; font-weight: 500; }
   /* Tables */
   table { width: 100%; border-collapse: collapse; font-size: 9px; }
-  thead tr { background: #1e2a5e; color: #fff; }
+  thead tr { background: #0066ff; color: #fff; }
   thead th { padding: 6px 8px; text-align: left; font-weight: 600; letter-spacing: 0.3px; }
   tbody tr:nth-child(even) { background: #f8fafc; }
   tbody td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; color: #334155; }
-  tfoot tr { background: #1e2a5e; color: #fff; }
+  tfoot tr { background: #0f172a; color: #fff; }
   tfoot td { padding: 6px 8px; font-weight: 700; }
   /* Vraag/antwoord */
   .qa td { padding: 4px 8px; border-bottom: 1px solid #eef2f7; }
@@ -619,7 +625,7 @@ function generateHtml(
   .pill-no { background: #ddf1fd; color: #0369a1; }
   .pill-empty { background: #f1f5f9; color: #94a3b8; }
   /* Beschrijving / meerwerk */
-  .description-box { background: #f8fafc; border-left: 3px solid #1a4fff; padding: 8px 10px; border-radius: 0 4px 4px 0; font-size: 9px; color: #334155; line-height: 1.5; }
+  .description-box { background: #f8fafc; border-left: 3px solid #0066ff; padding: 8px 10px; border-radius: 0 4px 4px 0; font-size: 9px; color: #334155; line-height: 1.5; }
   /* Foto's */
   .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .photo-grid img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
@@ -628,7 +634,7 @@ function generateHtml(
   .sig-img { max-height: 60px; max-width: 100%; }
   .sig-line { border-top: 1px dashed #cbd5e1; margin-top: 40px; padding-top: 4px; font-size: 8px; color: #94a3b8; }
   /* Footer */
-  .footer { margin-top: 18px; padding-top: 12px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: flex-end; }
+  .footer { margin-top: 18px; padding-top: 12px; border-top: 2px solid #ffd400; display: flex; justify-content: space-between; align-items: flex-end; }
   .footer-meta { font-size: 8px; color: #94a3b8; line-height: 1.8; }
   .qr-img { width: 56px; height: 56px; }
 </style>
@@ -639,15 +645,19 @@ function generateHtml(
   <!-- HEADER -->
   <div class="header">
     <div class="logo-block">
-      <div class="logo-box"><span class="logo-text">M</span></div>
-      <div>
-        <div class="company-name">MDB Networks B.V.</div>
-        <div class="company-sub">Data- Telecom- en Narrowcasting Installaties</div>
-      </div>
+      ${logoDataUrl
+        ? `<img src="${logoDataUrl}" alt="MDB Networks" class="mdb-logo" />`
+        : `<div class="logo-box"><span class="logo-text">M</span></div>
+           <div>
+             <div class="company-name">MDB Networks</div>
+             <div class="company-sub">Data- Telecom- en Narrowcasting Installaties</div>
+           </div>`
+      }
     </div>
     <div class="order-number">
+      <div class="order-doc-title">Opleverdocument</div>
       <div class="order-number-value">${esc(data.number)}</div>
-      <div class="order-meta">${esc(opdrachtgever || data.customer.name)} Opleverdocument · ${formatDate(data.createdAt)}</div>
+      <div class="order-meta">${esc(data.customer.name)} · ${formatDate(data.createdAt)}</div>
       <div style="margin-top:4px"><span class="status-badge">${esc(statusLabels[data.status] ?? data.status)}</span></div>
     </div>
   </div>
@@ -852,10 +862,24 @@ export async function generateWorkorderHtmlPdf(
         );
 
 
+    // MDB-logo als data-URL inlezen (voor in de PDF-header)
+    let logoDataUrl = "";
+    try {
+        const logoPath =
+            join(process.cwd(), "public", "images", "MDB-Logo.png");
+        const logoBuffer = readFileSync(logoPath);
+        logoDataUrl =
+            `data:image/png;base64,${logoBuffer.toString("base64")}`;
+    } catch {
+        logoDataUrl = "";
+    }
+
+
     const html =
         generateHtml(
             data,
-            qrDataUrl
+            qrDataUrl,
+            logoDataUrl
         );
 
 

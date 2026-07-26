@@ -337,7 +337,7 @@ function Kop({
                 w-1
                 h-5
                 rounded-full
-                bg-blue-600
+                bg-[#d6007e]
             "></span>
 
             {children}
@@ -416,102 +416,74 @@ function ExtraKostenBlok({
 
                     <div className="
                         border
-                        rounded-xl
-                        p-3
+                        rounded-lg
+                        px-3
+                        py-2.5
                         mt-2
-                        space-y-3
                         bg-gray-50
+                        flex
+                        flex-wrap
+                        items-center
+                        gap-x-4
+                        gap-y-2
                     ">
 
+                        <div className="
+                            flex
+                            items-center
+                            gap-1.5
+                        ">
+                            <span className="text-sm text-gray-500">€</span>
+                            <input
+                                inputMode="decimal"
+                                value={value.kosten}
+                                placeholder="0,00"
+                                onChange={(e)=>
+                                    onChange({
+                                        ...value,
+                                        kosten:e.target.value
+                                    })
+                                }
+                                className="
+                                    w-24
+                                    border
+                                    rounded-lg
+                                    p-1.5
+                                    text-sm
+                                "
+                            />
+                        </div>
 
-                        <label className="block w-40">
-
-                            <span className="
-                                text-sm
-                                text-gray-600
-                            ">
-
-                                Kosten
-
+                        <div className="
+                            flex
+                            items-center
+                            gap-2
+                        ">
+                            <span className="text-sm text-gray-500">
+                                Voorgeschoten?
                             </span>
-
-                            <div className="
-                                flex
-                                items-center
-                                gap-2
-                            ">
-
-                                <span>€</span>
-
-                                <input
-
-                                    inputMode="decimal"
-
-                                    value={value.kosten}
-
-                                    onChange={(e)=>
-                                        onChange({
-                                            ...value,
-                                            kosten:e.target.value
-                                        })
-                                    }
-
-                                    className="
-                                        w-full
-                                        border
-                                        rounded-xl
-                                        p-2
-                                        mt-1
-                                    "
-
-                                />
-
-                            </div>
-
-                        </label>
-
-
-                        <div className="space-y-2">
-
-                            <p className="text-sm">
-
-                                Heb je dit voorgeschoten?
-
-                            </p>
-
                             <JaNee
-
                                 value={value.voorgeschoten}
-
                                 onChange={(v)=>
                                     onChange({
                                         ...value,
                                         voorgeschoten:v
                                     })
                                 }
-
                             />
-
                         </div>
-
 
                         {
                             value.voorgeschoten === true && (
-
-                                <p className="
-                                    text-sm
+                                <span className="
+                                    text-xs
                                     text-orange-600
-                                    underline
+                                    w-full
                                 ">
-
-                                    * Vergeet het formulier
-                                    &apos;Bon declareren&apos; niet.
-
-                                </p>
-
+                                    * Vergeet het formulier &apos;Bon declareren&apos; niet.
+                                </span>
                             )
                         }
-
 
                     </div>
 
@@ -983,7 +955,9 @@ export default function OpleverForm({
 
         naamVeld,
 
-        urenVeld
+        urenVeld,
+
+        onRemove
 
     }:{
 
@@ -995,16 +969,40 @@ export default function OpleverForm({
 
         urenVeld:"urenMonteur1" | "urenMonteur2" | "urenMonteur3" | "urenMonteur4";
 
+        onRemove?:()=>void;
+
     }){
 
         return (
 
             <div className="
+                relative
                 border
                 rounded-xl
                 p-3
                 space-y-2
             ">
+
+                {
+                    onRemove && (
+                        <button
+                            type="button"
+                            onClick={onRemove}
+                            title="Monteur verwijderen"
+                            className="
+                                absolute
+                                top-1.5
+                                right-2
+                                text-slate-400
+                                hover:text-red-500
+                                text-lg
+                                leading-none
+                            "
+                        >
+                            ×
+                        </button>
+                    )
+                }
 
 
                 <p className="
@@ -1259,7 +1257,18 @@ export default function OpleverForm({
                 <Kop>Installatiegegevens</Kop>
 
 
-                <p className="font-bold text-sm mb-2">
+                <p className="
+                    text-[13px]
+                    font-semibold
+                    text-slate-700
+                    bg-slate-50
+                    border-l-2
+                    border-blue-500
+                    px-3
+                    py-1.5
+                    rounded-r
+                    mb-3
+                ">
 
                     1. Tarief &amp; Uren
 
@@ -1372,6 +1381,19 @@ export default function OpleverForm({
                                 nummer={2}
                                 naamVeld="monteur2"
                                 urenVeld="urenMonteur2"
+                                onRemove={
+                                    zichtbareMonteurs === 2
+                                    ?
+                                    ()=>{
+                                        update(draft=>{
+                                            draft.tarief.monteur2 = "";
+                                            draft.tarief.urenMonteur2 = "";
+                                        });
+                                        setZichtbareMonteurs(1);
+                                    }
+                                    :
+                                    undefined
+                                }
                             />
                         )
                     }
@@ -1382,6 +1404,19 @@ export default function OpleverForm({
                                 nummer={3}
                                 naamVeld="monteur3"
                                 urenVeld="urenMonteur3"
+                                onRemove={
+                                    zichtbareMonteurs === 3
+                                    ?
+                                    ()=>{
+                                        update(draft=>{
+                                            draft.tarief.monteur3 = "";
+                                            draft.tarief.urenMonteur3 = "";
+                                        });
+                                        setZichtbareMonteurs(2);
+                                    }
+                                    :
+                                    undefined
+                                }
                             />
                         )
                     }
@@ -1392,6 +1427,13 @@ export default function OpleverForm({
                                 nummer={4}
                                 naamVeld="monteur4"
                                 urenVeld="urenMonteur4"
+                                onRemove={()=>{
+                                    update(draft=>{
+                                        draft.tarief.monteur4 = "";
+                                        draft.tarief.urenMonteur4 = "";
+                                    });
+                                    setZichtbareMonteurs(3);
+                                }}
                             />
                         )
                     }
@@ -1484,7 +1526,18 @@ export default function OpleverForm({
                 </div>
 
 
-                <p className="font-bold text-sm mb-2">
+                <p className="
+                    text-[13px]
+                    font-semibold
+                    text-slate-700
+                    bg-slate-50
+                    border-l-2
+                    border-blue-500
+                    px-3
+                    py-1.5
+                    rounded-r
+                    mb-3
+                ">
 
                     2. Installatie werkzaamheden
 
