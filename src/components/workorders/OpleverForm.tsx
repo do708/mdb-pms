@@ -57,7 +57,13 @@ function JaNee({
 
     onChange,
 
-    labels = ["Ja","Nee"]
+    labels = ["Ja","Nee"],
+
+    compact = false,
+
+    jaKleur = "green",
+
+    neeKleur = "sky"
 
 }:{
 
@@ -67,7 +73,27 @@ function JaNee({
 
     labels?:[string,string] | string[];
 
+    compact?:boolean;
+
+    jaKleur?:"green" | "red" | "orange" | "sky";
+
+    neeKleur?:"green" | "red" | "orange" | "sky";
+
 }){
+
+    const size =
+        compact
+        ?
+        "px-2.5 py-0.5 text-xs"
+        :
+        "px-4 py-1.5 text-sm";
+
+    const kleurKlasse = (kleur:string)=>{
+        if(kleur === "red") return "bg-red-500 border-red-500 text-white";
+        if(kleur === "orange") return "bg-orange-400 border-orange-400 text-white";
+        if(kleur === "sky") return "bg-sky-400 border-sky-400 text-white";
+        return "bg-green-500 border-green-500 text-white";
+    };
 
     return (
 
@@ -80,15 +106,13 @@ function JaNee({
                 onClick={()=>onChange(true)}
 
                 className={`
-                    px-4
-                    py-1.5
+                    ${size}
                     rounded-full
                     border
-                    text-sm
                     ${
                         value === true
                         ?
-                        "bg-green-500 border-green-500 text-white"
+                        kleurKlasse(jaKleur)
                         :
                         "text-gray-400"
                     }
@@ -105,15 +129,13 @@ function JaNee({
                 onClick={()=>onChange(false)}
 
                 className={`
-                    px-4
-                    py-1.5
+                    ${size}
                     rounded-full
                     border
-                    text-sm
                     ${
                         value === false
                         ?
-                        "bg-sky-400 border-sky-400 text-white"
+                        kleurKlasse(neeKleur)
                         :
                         "text-gray-400"
                     }
@@ -307,6 +329,86 @@ function Vraag({
 
 
 
+// Uitklapbare subsectie: onder de vraag een klein +/- knopje.
+// Klik + om de detailvelden te tonen, - om ze weer te verbergen.
+function UitklapVraag({
+    label,
+    actief,
+    onToggle,
+    children
+}:{
+    label:string;
+    actief:boolean;
+    onToggle:(actief:boolean)=>void;
+    children:React.ReactNode;
+}){
+
+    return (
+
+        <div className="
+            border-b
+            border-slate-100
+            py-2.5
+        ">
+
+            <div className="
+                flex
+                items-center
+                gap-3
+            ">
+
+                <p className="
+                    text-sm
+                    text-slate-700
+                    flex-1
+                ">
+                    {label}
+                </p>
+
+                <button
+                    type="button"
+                    onClick={()=>onToggle(!actief)}
+                    title={actief ? "Inklappen" : "Toevoegen"}
+                    className={`
+                        w-7
+                        h-7
+                        rounded-lg
+                        flex
+                        items-center
+                        justify-center
+                        text-lg
+                        leading-none
+                        transition
+                        ${
+                            actief
+                            ?
+                            "bg-blue-600 text-white"
+                            :
+                            "border border-slate-300 text-slate-500 hover:border-blue-400 hover:text-blue-600"
+                        }
+                    `}
+                >
+                    {actief ? "–" : "+"}
+                </button>
+
+            </div>
+
+            {
+                actief && (
+                    <div className="mt-3 space-y-3">
+                        {children}
+                    </div>
+                )
+            }
+
+        </div>
+
+    );
+
+}
+
+
+
 function Kop({
 
     children
@@ -457,12 +559,13 @@ function ExtraKostenBlok({
                         <div className="
                             flex
                             items-center
-                            gap-2
+                            gap-1.5
                         ">
-                            <span className="text-sm text-gray-500">
+                            <span className="text-xs text-gray-500">
                                 Voorgeschoten?
                             </span>
                             <JaNee
+                                compact
                                 value={value.voorgeschoten}
                                 onChange={(v)=>
                                     onChange({
@@ -1286,13 +1389,16 @@ export default function OpleverForm({
                     mb-3
                 ">
 
-                    <div className="space-y-2">
+                    <div>
 
-                        <p className="text-sm">
-
+                        <span className="
+                            block
+                            text-sm
+                            text-gray-600
+                            min-h-[2.5rem]
+                        ">
                             Voorrijtarief?
-
-                        </p>
+                        </span>
 
                         <JaNee
 
@@ -1312,7 +1418,7 @@ export default function OpleverForm({
                         text-sm
                         font-bold
                         underline
-                        pb-2
+                        pb-2.5
                     ">
 
                         of
@@ -1544,113 +1650,83 @@ export default function OpleverForm({
                 </p>
 
 
-                <Vraag label="Heb je nieuwe schermen geïnstalleerd?">
-
-                    <JaNee
-
-                        value={i.nieuweSchermen}
-
-                        onChange={(v)=>
-                            update(draft=>{
-
-                                draft.installatie.nieuweSchermen = v;
-
-                                if(
-                                    v &&
-                                    draft.installatie.nieuweFormaten.length === 0
-                                ){
-                                    draft.installatie.nieuweFormaten = [
-                                        emptySchermBlok()
-                                    ];
-                                }
-
-                            })
-                        }
-
-                    />
-
-                    {
-                        i.nieuweSchermen === true && (
-
-                            <SchermBlokken
-
-                                blokken={i.nieuweFormaten}
-
-                                onChange={(blokken)=>
-                                    update(draft=>{
-                                        draft.installatie.nieuweFormaten =
-                                            blokken;
-                                    })
-                                }
-
-                            />
-
-                        )
+                <UitklapVraag
+                    label="Nieuwe schermen geïnstalleerd"
+                    actief={i.nieuweSchermen === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.installatie.nieuweSchermen = v;
+                            if(
+                                v &&
+                                draft.installatie.nieuweFormaten.length === 0
+                            ){
+                                draft.installatie.nieuweFormaten = [
+                                    emptySchermBlok()
+                                ];
+                            }
+                        })
                     }
+                >
 
-                </Vraag>
+                    <SchermBlokken
 
+                        blokken={i.nieuweFormaten}
 
-                <Vraag label="Heb je hergebruikte schermen geïnstalleerd?">
-
-                    <JaNee
-
-                        value={i.hergebruikteSchermen}
-
-                        onChange={(v)=>
+                        onChange={(blokken)=>
                             update(draft=>{
-
-                                draft.installatie.hergebruikteSchermen = v;
-
-                                if(
-                                    v &&
-                                    draft.installatie.hergebruikteFormaten.length === 0
-                                ){
-                                    draft.installatie.hergebruikteFormaten = [
-                                        emptySchermBlok()
-                                    ];
-                                }
-
+                                draft.installatie.nieuweFormaten =
+                                    blokken;
                             })
                         }
 
                     />
 
-                    {
-                        i.hergebruikteSchermen === true && (
+                </UitklapVraag>
 
-                            <SchermBlokken
 
-                                blokken={i.hergebruikteFormaten}
-
-                                onChange={(blokken)=>
-                                    update(draft=>{
-                                        draft.installatie.hergebruikteFormaten =
-                                            blokken;
-                                    })
-                                }
-
-                            />
-
-                        )
+                <UitklapVraag
+                    label="Hergebruikte schermen geïnstalleerd"
+                    actief={i.hergebruikteSchermen === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.installatie.hergebruikteSchermen = v;
+                            if(
+                                v &&
+                                draft.installatie.hergebruikteFormaten.length === 0
+                            ){
+                                draft.installatie.hergebruikteFormaten = [
+                                    emptySchermBlok()
+                                ];
+                            }
+                        })
                     }
+                >
 
-                </Vraag>
+                    <SchermBlokken
 
+                        blokken={i.hergebruikteFormaten}
 
-                <Vraag label="3. Videowall — heb je een videowall geïnstalleerd?">
-
-                    <JaNee
-
-                        value={i.videowall}
-
-                        onChange={(v)=>
+                        onChange={(blokken)=>
                             update(draft=>{
-                                draft.installatie.videowall = v;
+                                draft.installatie.hergebruikteFormaten =
+                                    blokken;
                             })
                         }
 
                     />
+
+                </UitklapVraag>
+
+
+                <UitklapVraag
+                    label="3. Videowall geïnstalleerd"
+                    actief={i.videowall === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.installatie.videowall = v;
+                        })
+                    }
+                >
 
                     {
                         i.videowall === true && (
@@ -1709,71 +1785,66 @@ export default function OpleverForm({
                         )
                     }
 
-                </Vraag>
+                </UitklapVraag>
 
 
-                <Vraag label="4. Kiosk — heb je een kiosk geïnstalleerd?">
-
-                    <JaNee
-
-                        value={i.kiosk}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.installatie.kiosk = v;
-                            })
-                        }
-
-                    />
-
-                    {
-                        i.kiosk === true && (
-
-                            <div className="
-                                flex
-                                flex-wrap
-                                gap-3
-                            ">
-
-                                <Veld
-
-                                    label="Omschrijving"
-
-                                    value={i.kioskOmschrijving}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.kioskOmschrijving = v;
-                                        })
-                                    }
-
-                                />
-
-                                <Veld
-
-                                    small
-
-                                    label="Aantal"
-
-                                    value={i.kioskAantal}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.kioskAantal = v;
-                                        })
-                                    }
-
-                                />
-
-                            </div>
-
-                        )
+                <UitklapVraag
+                    label="4. Kiosk geïnstalleerd"
+                    actief={i.kiosk === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.installatie.kiosk = v;
+                        })
                     }
+                >
 
-                </Vraag>
+                    <div className="
+                        grid
+                        grid-cols-1
+                        sm:grid-cols-3
+                        gap-3
+                    ">
+
+                        <div className="sm:col-span-2">
+                            <Veld
+                                label="Omschrijving"
+                                value={i.kioskOmschrijving}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.installatie.kioskOmschrijving = v;
+                                    })
+                                }
+                            />
+                        </div>
+
+                        <Veld
+                            label="Aantal"
+                            value={i.kioskAantal}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.kioskAantal = v;
+                                })
+                            }
+                        />
+
+                    </div>
+
+                </UitklapVraag>
 
 
-                <Vraag label="5. Mediaplayers — heb je mediaplayers;">
+                <UitklapVraag
+                    label="5. Mediaplayers"
+                    actief={!!i.mediaplayers}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.installatie.mediaplayers =
+                                (v ? "Geïnstalleerd" : "") as OpleverData["installatie"]["mediaplayers"];
+                            if(!v){
+                                draft.installatie.aantalMediaplayers = "";
+                            }
+                        })
+                    }
+                >
 
                     <Keuze
 
@@ -1790,90 +1861,67 @@ export default function OpleverForm({
 
                     />
 
-                    {
-                        i.mediaplayers && (
+                    <Veld
 
-                            <Veld
+                        small
 
-                                small
+                        label="Aantal:"
 
-                                label="Aantal:"
-
-                                value={i.aantalMediaplayers}
-
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.installatie.aantalMediaplayers = v;
-                                    })
-                                }
-
-                            />
-
-                        )
-                    }
-
-                </Vraag>
-
-
-                <Vraag label="6. Audio — heb je audio geïnstalleerd?">
-
-                    <JaNee
-
-                        value={i.audio}
+                        value={i.aantalMediaplayers}
 
                         onChange={(v)=>
                             update(draft=>{
-                                draft.installatie.audio = v;
+                                draft.installatie.aantalMediaplayers = v;
                             })
                         }
 
                     />
 
-                    {
-                        i.audio === true && (
+                </UitklapVraag>
 
-                            <div className="
-                                flex
-                                flex-wrap
-                                gap-3
-                            ">
 
-                                <Veld
-
-                                    label="Omschrijving"
-
-                                    value={i.audioOmschrijving}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.audioOmschrijving = v;
-                                        })
-                                    }
-
-                                />
-
-                                <Veld
-
-                                    small
-
-                                    label="Aantal"
-
-                                    value={i.audioAantal}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.audioAantal = v;
-                                        })
-                                    }
-
-                                />
-
-                            </div>
-
-                        )
+                <UitklapVraag
+                    label="6. Audio geïnstalleerd"
+                    actief={i.audio === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.installatie.audio = v;
+                        })
                     }
+                >
 
-                </Vraag>
+                    <div className="
+                        grid
+                        grid-cols-1
+                        sm:grid-cols-3
+                        gap-3
+                    ">
+
+                        <div className="sm:col-span-2">
+                            <Veld
+                                label="Omschrijving"
+                                value={i.audioOmschrijving}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.installatie.audioOmschrijving = v;
+                                    })
+                                }
+                            />
+                        </div>
+
+                        <Veld
+                            label="Aantal"
+                            value={i.audioAantal}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.audioAantal = v;
+                                })
+                            }
+                        />
+
+                    </div>
+
+                </UitklapVraag>
 
 
                 <Vraag label="7. Project (offerte basis) — is het een project?">
@@ -1893,7 +1941,17 @@ export default function OpleverForm({
                 </Vraag>
 
 
-                <Vraag label="Opmerkingen:">
+                <div className="pt-3">
+
+                    <span className="
+                        block
+                        text-sm
+                        font-medium
+                        text-slate-700
+                        mb-2
+                    ">
+                        Opmerkingen:
+                    </span>
 
                     <textarea
 
@@ -1906,11 +1964,11 @@ export default function OpleverForm({
                             })
                         }
 
-                        className="w-full border rounded-xl p-2 min-h-20"
+                        className="w-full border rounded-xl p-3 min-h-24"
 
                     />
 
-                </Vraag>
+                </div>
 
             </div>
 
@@ -2342,7 +2400,17 @@ export default function OpleverForm({
                 </Vraag>
 
 
-                <Vraag label="Opmerkingen:">
+                <div className="pt-3">
+
+                    <span className="
+                        block
+                        text-sm
+                        font-medium
+                        text-slate-700
+                        mb-2
+                    ">
+                        Opmerkingen:
+                    </span>
 
                     <textarea
 
@@ -2355,11 +2423,11 @@ export default function OpleverForm({
                             })
                         }
 
-                        className="w-full border rounded-xl p-2 min-h-20"
+                        className="w-full border rounded-xl p-3 min-h-24"
 
                     />
 
-                </Vraag>
+                </div>
 
             </div>
 
@@ -2379,6 +2447,10 @@ export default function OpleverForm({
 
                         value={c.werkendOpgeleverd}
 
+                        jaKleur="green"
+
+                        neeKleur="red"
+
                         onChange={(v)=>
                             update(draft=>{
                                 draft.checklist.werkendOpgeleverd = v;
@@ -2396,6 +2468,10 @@ export default function OpleverForm({
 
                         value={c.lichtnetSchakelbaar}
 
+                        jaKleur="red"
+
+                        neeKleur="green"
+
                         onChange={(v)=>
                             update(draft=>{
                                 draft.checklist.lichtnetSchakelbaar = v;
@@ -2412,6 +2488,10 @@ export default function OpleverForm({
                     <JaNee
 
                         value={c.wifiVanToepassing}
+
+                        jaKleur="orange"
+
+                        neeKleur="sky"
 
                         onChange={(v)=>
                             update(draft=>{

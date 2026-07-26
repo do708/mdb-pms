@@ -482,7 +482,7 @@ function NewWorkorderInner(){
 
                     <span className="text-sm text-gray-600">
 
-                        Wat moet er gebeuren? (titel)
+                        Projectnaam:
 
                     </span>
 
