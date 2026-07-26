@@ -137,7 +137,7 @@ body {
 }
 
 .mdb-logo-animate {
-  animation: mdb-logo-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: mdb-logo-in 2.2s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
