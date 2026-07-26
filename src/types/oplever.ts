@@ -31,8 +31,21 @@ export const BEUGEL_TYPES = [
     "Plafondbeugel < 150cm",
     "Plafondbeugel > 150cm",
     "Vloerstandaard",
-    "Statief",
-    "Overig"
+    "Etalagescherm",
+    "Anders"
+] as const;
+
+
+export const SCHERM_FORMATEN = [
+    "32\"",
+    "42\"",
+    "50\"",
+    "55\"",
+    "65\"",
+    "75\"",
+    "86\"",
+    "98\"",
+    "Anders"
 ] as const;
 
 
@@ -41,6 +54,8 @@ export interface SchermBlok {
 
     formaat:string;
 
+    formaatAnders:string;
+
     tilhulp:boolean | null;
 
     aantal:string;
@@ -48,6 +63,8 @@ export interface SchermBlok {
     orientatie:"" | "Landscape" | "Portrait";
 
     typeBeugel:string;
+
+    beugelAnders:string;
 
     bekabeling:string;
 
@@ -102,9 +119,14 @@ export interface OpleverData {
         hergebruikteFormaten:SchermBlok[];
 
         videowall:boolean | null;
+        videowallStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
+        videowallHorizontaal:string;
+        videowallVerticaal:string;
         videowallConfiguratie:string;
         videowallFormaat:string;
+        videowallFormaatAnders:string;
         videowallAantal:string;
+        videowallOrientatie:"" | "Landscape" | "Portrait";
 
         kiosk:boolean | null;
         kioskOmschrijving:string;
@@ -201,10 +223,12 @@ export function emptySchermBlok():SchermBlok {
 
     return {
         formaat:"",
+        formaatAnders:"",
         tilhulp:null,
         aantal:"",
         orientatie:"",
         typeBeugel:"",
+        beugelAnders:"",
         bekabeling:"",
         aantalIngesteld:""
     };
@@ -253,9 +277,14 @@ export function emptyOpleverData():OpleverData {
             hergebruikteSchermen:null,
             hergebruikteFormaten:[],
             videowall:null,
+            videowallStatus:"",
+            videowallHorizontaal:"",
+            videowallVerticaal:"",
             videowallConfiguratie:"",
             videowallFormaat:"",
+            videowallFormaatAnders:"",
             videowallAantal:"",
+            videowallOrientatie:"",
             kiosk:null,
             kioskOmschrijving:"",
             kioskAantal:"",
@@ -541,6 +570,8 @@ export function mergeOpleverData(
             formaat:
                 installatieOud.schermFormaat ?? "",
 
+            formaatAnders:"",
+
             tilhulp:
                 installatieOud.tilhulp ?? null,
 
@@ -552,6 +583,8 @@ export function mergeOpleverData(
 
             typeBeugel:
                 installatieOud.typeBeugel ?? "",
+
+            beugelAnders:"",
 
             bekabeling:"",
 

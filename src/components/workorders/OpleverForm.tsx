@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import {
     BEUGEL_TYPES,
+    SCHERM_FORMATEN,
     ExtraKosten,
     HardwareRegel,
     OpleverData,
@@ -704,28 +705,52 @@ function SchermBlokken({
 
 
                         <div className="
-                            flex
-                            flex-wrap
+                            grid
+                            grid-cols-1
+                            sm:grid-cols-2
                             gap-3
                         ">
 
-                            <Veld
+                            <div>
+                                <span className="
+                                    block
+                                    text-sm
+                                    text-gray-600
+                                    min-h-[2.5rem]
+                                ">
+                                    Welk formaat scherm?
+                                </span>
 
-                                small
+                                <select
+                                    value={blok.formaat}
+                                    onChange={(e)=>
+                                        update(index,{ formaat:e.target.value })
+                                    }
+                                    className="w-full border rounded-xl p-2 bg-white"
+                                >
+                                    <option value="">— Kies —</option>
+                                    {
+                                        SCHERM_FORMATEN.map(f=>(
+                                            <option key={f} value={f}>{f}</option>
+                                        ))
+                                    }
+                                </select>
 
-                                label={'Welk formaat scherm? (bijv. 55")'}
-
-                                value={blok.formaat}
-
-                                onChange={(v)=>
-                                    update(index,{ formaat:v })
+                                {
+                                    blok.formaat === "Anders" && (
+                                        <input
+                                            value={blok.formaatAnders}
+                                            placeholder="Eigen formaat"
+                                            onChange={(e)=>
+                                                update(index,{ formaatAnders:e.target.value })
+                                            }
+                                            className="w-full border rounded-xl p-2 mt-2"
+                                        />
+                                    )
                                 }
-
-                            />
+                            </div>
 
                             <Veld
-
-                                small
 
                                 label="Hoeveel schermen van dit formaat?"
 
@@ -785,6 +810,19 @@ function SchermBlokken({
                                 }
 
                             />
+
+                            {
+                                blok.typeBeugel === "Anders" && (
+                                    <input
+                                        value={blok.beugelAnders}
+                                        placeholder="Welke beugel?"
+                                        onChange={(e)=>
+                                            update(index,{ beugelAnders:e.target.value })
+                                        }
+                                        className="w-full sm:w-72 border rounded-xl p-2"
+                                    />
+                                )
+                            }
 
                         </div>
 
@@ -1729,54 +1767,101 @@ export default function OpleverForm({
                     {
                         i.videowall === true && (
 
-                            <div className="
-                                grid
-                                grid-cols-1
-                                sm:grid-cols-3
-                                gap-3
-                            ">
+                            <div className="space-y-4">
 
-                                <Veld
+                                {/* Geïnstalleerd / gedemonteerd */}
+                                <div className="space-y-2">
+                                    <p className="text-sm text-gray-600">Status</p>
+                                    <Keuze
+                                        value={i.videowallStatus}
+                                        options={["Geïnstalleerd","Gedemonteerd"]}
+                                        onChange={(v)=>
+                                            update(draft=>{
+                                                draft.installatie.videowallStatus =
+                                                    v as OpleverData["installatie"]["videowallStatus"];
+                                            })
+                                        }
+                                    />
+                                </div>
 
-                                    label="Configuratie (bijv. 2x2)"
+                                {/* Configuratie: aantal schermen horizontaal x verticaal */}
+                                <div>
+                                    <p className="text-sm text-gray-600 mb-2">
+                                        Configuratie (aantal schermen)
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <Veld
+                                            label="Horizontaal"
+                                            value={i.videowallHorizontaal}
+                                            onChange={(v)=>
+                                                update(draft=>{
+                                                    draft.installatie.videowallHorizontaal = v;
+                                                })
+                                            }
+                                        />
+                                        <Veld
+                                            label="Verticaal"
+                                            value={i.videowallVerticaal}
+                                            onChange={(v)=>
+                                                update(draft=>{
+                                                    draft.installatie.videowallVerticaal = v;
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                </div>
 
-                                    value={i.videowallConfiguratie}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.videowallConfiguratie = v;
-                                        })
+                                {/* Formaat schermen (dropdown) */}
+                                <div>
+                                    <span className="block text-sm text-gray-600 mb-1">
+                                        Formaat schermen
+                                    </span>
+                                    <select
+                                        value={i.videowallFormaat}
+                                        onChange={(e)=>
+                                            update(draft=>{
+                                                draft.installatie.videowallFormaat = e.target.value;
+                                            })
+                                        }
+                                        className="w-full sm:w-64 border rounded-xl p-2 bg-white"
+                                    >
+                                        <option value="">— Kies —</option>
+                                        {
+                                            SCHERM_FORMATEN.map(f=>(
+                                                <option key={f} value={f}>{f}</option>
+                                            ))
+                                        }
+                                    </select>
+                                    {
+                                        i.videowallFormaat === "Anders" && (
+                                            <input
+                                                value={i.videowallFormaatAnders}
+                                                placeholder="Eigen formaat"
+                                                onChange={(e)=>
+                                                    update(draft=>{
+                                                        draft.installatie.videowallFormaatAnders = e.target.value;
+                                                    })
+                                                }
+                                                className="w-full sm:w-64 border rounded-xl p-2 mt-2 block"
+                                            />
+                                        )
                                     }
+                                </div>
 
-                                />
-
-                                <Veld
-
-                                    label="Formaat schermen"
-
-                                    value={i.videowallFormaat}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.videowallFormaat = v;
-                                        })
-                                    }
-
-                                />
-
-                                <Veld
-
-                                    label="Aantal schermen"
-
-                                    value={i.videowallAantal}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.videowallAantal = v;
-                                        })
-                                    }
-
-                                />
+                                {/* Oriëntatie */}
+                                <div className="space-y-2">
+                                    <p className="text-sm text-gray-600">Oriëntatie</p>
+                                    <Keuze
+                                        value={i.videowallOrientatie}
+                                        options={["Landscape","Portrait"]}
+                                        onChange={(v)=>
+                                            update(draft=>{
+                                                draft.installatie.videowallOrientatie =
+                                                    v as OpleverData["installatie"]["videowallOrientatie"];
+                                            })
+                                        }
+                                    />
+                                </div>
 
                             </div>
 

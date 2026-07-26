@@ -292,13 +292,27 @@ function opleverSections(
 
             const parts:string[] = [];
 
-            if(blok.formaat) parts.push(`Formaat: ${blok.formaat}`);
+            const formaatWaarde =
+                blok.formaat === "Anders"
+                ?
+                (blok.formaatAnders || "Anders")
+                :
+                blok.formaat;
+
+            const beugelWaarde =
+                blok.typeBeugel === "Anders"
+                ?
+                (blok.beugelAnders || "Anders")
+                :
+                blok.typeBeugel;
+
+            if(formaatWaarde) parts.push(`Formaat: ${formaatWaarde}`);
 
             if(blok.aantal) parts.push(`Aantal: ${blok.aantal}`);
 
             if(blok.orientatie) parts.push(`Oriëntatie: ${blok.orientatie}`);
 
-            if(blok.typeBeugel) parts.push(`Beugel: ${blok.typeBeugel}`);
+            if(beugelWaarde) parts.push(`Beugel: ${beugelWaarde}`);
 
             if(blok.tilhulp !== null) parts.push(`Tilhulp: ${blok.tilhulp ? "Ja" : "Nee"}`);
 
@@ -376,9 +390,10 @@ function opleverSections(
       ${row("Heb je hergebruikte schermen geïnstalleerd?",pill(i.hergebruikteSchermen))}
       ${i.hergebruikteSchermen === true ? schermBlokken("Hergebruikt formaat",i.hergebruikteFormaten) : ""}
       ${row("3. Videowall geïnstalleerd?",pill(i.videowall))}
-      ${i.videowall === true && i.videowallConfiguratie ? row("Videowall configuratie",textAnswer(i.videowallConfiguratie)) : ""}
-      ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat)) : ""}
-      ${i.videowall === true && i.videowallAantal ? row("Videowall aantal schermen",textAnswer(i.videowallAantal)) : ""}
+      ${i.videowall === true && i.videowallStatus ? row("Videowall status",textAnswer(i.videowallStatus)) : ""}
+      ${i.videowall === true && (i.videowallHorizontaal || i.videowallVerticaal) ? row("Videowall configuratie",textAnswer(`${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"} schermen`)) : ""}
+      ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat === "Anders" ? (i.videowallFormaatAnders || "Anders") : i.videowallFormaat)) : ""}
+      ${i.videowall === true && i.videowallOrientatie ? row("Videowall oriëntatie",textAnswer(i.videowallOrientatie)) : ""}
       ${row("4. Kiosk geïnstalleerd?",pill(i.kiosk))}
       ${i.kiosk === true && i.kioskOmschrijving ? row("Kiosk omschrijving",textAnswer(i.kioskOmschrijving)) : ""}
       ${i.kiosk === true && i.kioskAantal ? row("Kiosk aantal",textAnswer(i.kioskAantal)) : ""}
