@@ -134,6 +134,7 @@ export interface OpleverData {
         kioskStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
         kioskOmschrijving:string;
         kioskAantal:string;
+        kioskBlokken:KioskBlok[];
 
         mediaplayers:"" | "Geïnstalleerd" | "Gedemonteerd";
         aantalMediaplayers:string;
@@ -150,6 +151,7 @@ export interface OpleverData {
         audioAantal:string;
 
         isProject:boolean | null;
+        projectNummer:string;
 
         opmerkingen:string;
     };
@@ -174,12 +176,32 @@ export interface OpleverData {
         patch10:string;
         hdmiKabelsAantal:string;
         hdmiSplittersAantal:string;
+        hdmi1m:string;
+        hdmi2m:string;
+        hdmi3m:string;
+        hdmi5m:string;
+        hdmi75m:string;
+        hdmi10m:string;
+        hdmiSplitter1x2:string;
+        hdmiSplitter1x4:string;
         extraSwitches:boolean | null;
         switchesAantal:string;
+        switch5port:string;
+        switch8port:string;
+        switch5portPoe:string;
         utpGetrokken:boolean | null;
         utpAantal:string;
+        utpType2:string;
+        utpType3:string;
+        utpType4:string;
+        utpType5:string;
+        utpType6:string;
+        utpType7:string;
         stroomkabelGetrokken:boolean | null;
         stroomAantal:string;
+        stroomType1:string;
+        stroomType2:string;
+        stroomType3:string;
         verlengsnoeren:boolean | null;
         verleng15:string;
         verleng3:string;
@@ -206,7 +228,7 @@ export interface OpleverData {
         afvalverwijdering:boolean | null;
     };
 
-    // Hardware geïnstalleerd / ontmanteld (tabel)
+    // Hardware geïnstalleerd / gedemonteerd (tabel)
     hardware:HardwareRegel[];
 
     // Afronding / oplevering
@@ -225,7 +247,7 @@ export interface OpleverData {
 
 
 export interface HardwareRegel {
-    actie:"" | "Geïnstalleerd" | "Ontmanteld";
+    actie:"" | "Geïnstalleerd" | "Gedemonteerd";
     merk:string;
     type:string;
     serienummer:string;
@@ -233,6 +255,22 @@ export interface HardwareRegel {
 }
 
 
+
+
+export interface KioskBlok {
+    status:"" | "Geïnstalleerd" | "Gedemonteerd";
+    omschrijving:string;
+    aantal:string;
+}
+
+
+export function emptyKioskBlok():KioskBlok {
+    return {
+        status:"",
+        omschrijving:"",
+        aantal:""
+    };
+}
 
 
 export function emptySchermBlok():SchermBlok {
@@ -306,6 +344,7 @@ export function emptyOpleverData():OpleverData {
             kioskStatus:"",
             kioskOmschrijving:"",
             kioskAantal:"",
+            kioskBlokken:[],
             mediaplayers:"",
             aantalMediaplayers:"",
             audio:null,
@@ -319,6 +358,7 @@ export function emptyOpleverData():OpleverData {
             audioOmschrijving:"",
             audioAantal:"",
             isProject:null,
+            projectNummer:"",
             opmerkingen:""
         },
 
@@ -342,12 +382,32 @@ export function emptyOpleverData():OpleverData {
             patch10:"",
             hdmiKabelsAantal:"",
             hdmiSplittersAantal:"",
+            hdmi1m:"",
+            hdmi2m:"",
+            hdmi3m:"",
+            hdmi5m:"",
+            hdmi75m:"",
+            hdmi10m:"",
+            hdmiSplitter1x2:"",
+            hdmiSplitter1x4:"",
             extraSwitches:null,
             switchesAantal:"",
+            switch5port:"",
+            switch8port:"",
+            switch5portPoe:"",
             utpGetrokken:null,
             utpAantal:"",
+            utpType2:"",
+            utpType3:"",
+            utpType4:"",
+            utpType5:"",
+            utpType6:"",
+            utpType7:"",
             stroomkabelGetrokken:null,
             stroomAantal:"",
+            stroomType1:"",
+            stroomType2:"",
+            stroomType3:"",
             verlengsnoeren:null,
             verleng15:"",
             verleng3:"",
@@ -468,6 +528,18 @@ export function mergeOpleverData(
                 data.installatie.hergebruikteFormaten.map(
                     (blok:Partial<SchermBlok>)=>({
                         ...emptySchermBlok(),
+                        ...blok
+                    })
+                )
+                :
+                [],
+
+            kioskBlokken:
+                Array.isArray(data.installatie?.kioskBlokken)
+                ?
+                data.installatie.kioskBlokken.map(
+                    (blok:Partial<KioskBlok>)=>({
+                        ...emptyKioskBlok(),
                         ...blok
                     })
                 )

@@ -11,6 +11,8 @@ import {
     SchermBlok,
     emptyExtraKosten,
     emptySchermBlok,
+    emptyKioskBlok,
+    KioskBlok,
     mergeOpleverData
 } from "@/types/oplever";
 
@@ -1932,52 +1934,104 @@ export default function OpleverForm({
                     onToggle={(v)=>
                         update(draft=>{
                             draft.installatie.kiosk = v;
+                            if(
+                                v &&
+                                draft.installatie.kioskBlokken.length === 0
+                            ){
+                                draft.installatie.kioskBlokken = [
+                                    emptyKioskBlok()
+                                ];
+                            }
                         })
                     }
                 >
 
-                    <div className="space-y-2">
-                        <p className="text-sm text-gray-600">Status</p>
-                        <Keuze
-                            value={i.kioskStatus}
-                            options={["Geïnstalleerd","Gedemonteerd"]}
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.installatie.kioskStatus =
-                                        v as OpleverData["installatie"]["kioskStatus"];
-                                })
-                            }
-                        />
-                    </div>
+                    <div className="space-y-4">
 
-                    <div className="
-                        grid
-                        grid-cols-1
-                        sm:grid-cols-3
-                        gap-3
-                    ">
+                        {
+                            i.kioskBlokken.map((kb,ki)=>(
 
-                        <div className="sm:col-span-2">
-                            <Veld
-                                label="Omschrijving"
-                                value={i.kioskOmschrijving}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.installatie.kioskOmschrijving = v;
-                                    })
-                                }
-                            />
-                        </div>
+                                <div
+                                    key={ki}
+                                    className="
+                                        relative
+                                        border
+                                        rounded-xl
+                                        p-3
+                                        space-y-3
+                                    "
+                                >
 
-                        <Veld
-                            label="Aantal"
-                            value={i.kioskAantal}
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.installatie.kioskAantal = v;
-                                })
-                            }
-                        />
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm font-semibold text-slate-700">
+                                            Kiosk {ki + 1}
+                                        </p>
+                                        <button
+                                            type="button"
+                                            onClick={()=>update(draft=>{
+                                                draft.installatie.kioskBlokken.splice(ki,1);
+                                            })}
+                                            className="text-slate-400 hover:text-red-500 text-lg leading-none"
+                                            title="Kiosk verwijderen"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <p className="text-sm text-gray-600">Status</p>
+                                        <Keuze
+                                            value={kb.status}
+                                            options={["Geïnstalleerd","Gedemonteerd"]}
+                                            onChange={(v)=>update(draft=>{
+                                                draft.installatie.kioskBlokken[ki].status =
+                                                    v as KioskBlok["status"];
+                                            })}
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <div className="sm:col-span-2">
+                                            <Veld
+                                                label="Omschrijving"
+                                                value={kb.omschrijving}
+                                                onChange={(v)=>update(draft=>{
+                                                    draft.installatie.kioskBlokken[ki].omschrijving = v;
+                                                })}
+                                            />
+                                        </div>
+                                        <Veld
+                                            label="Aantal"
+                                            value={kb.aantal}
+                                            onChange={(v)=>update(draft=>{
+                                                draft.installatie.kioskBlokken[ki].aantal = v;
+                                            })}
+                                        />
+                                    </div>
+
+                                </div>
+
+                            ))
+                        }
+
+                        <button
+                            type="button"
+                            onClick={()=>update(draft=>{
+                                draft.installatie.kioskBlokken.push(emptyKioskBlok());
+                            })}
+                            className="
+                                text-sm
+                                border
+                                border-dashed
+                                rounded-xl
+                                px-4
+                                py-2
+                                text-gray-600
+                                hover:bg-gray-50
+                            "
+                        >
+                            ＋ Nog een kiosk toevoegen
+                        </button>
 
                     </div>
 
@@ -2135,21 +2189,53 @@ export default function OpleverForm({
                 </UitklapVraag>
 
 
-                <Vraag label="6. Project (offerte basis) — is het een project?">
+                <div className="border-b border-slate-100 py-2.5 space-y-3">
 
-                    <JaNee
+                    <div className="
+                        flex
+                        flex-col
+                        sm:flex-row
+                        sm:items-center
+                        sm:justify-between
+                        gap-2
+                        sm:gap-4
+                    ">
+                        <p className="text-sm text-slate-700 sm:flex-1">
+                            6. Project (offerte basis) — is het een project?
+                        </p>
+                        <div className="sm:flex-shrink-0">
+                            <JaNee
+                                value={i.isProject}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.installatie.isProject = v;
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
 
-                        value={i.isProject}
+                    {
+                        i.isProject === true && (
+                            <div className="sm:w-72">
+                                <span className="block text-sm text-gray-600 mb-1">
+                                    Projectnummer
+                                </span>
+                                <input
+                                    value={i.projectNummer}
+                                    placeholder="Projectnummer"
+                                    onChange={(e)=>
+                                        update(draft=>{
+                                            draft.installatie.projectNummer = e.target.value;
+                                        })
+                                    }
+                                    className="w-full border rounded-xl p-2"
+                                />
+                            </div>
+                        )
+                    }
 
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.installatie.isProject = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
+                </div>
 
 
                 <div className="pt-3">
@@ -2186,11 +2272,11 @@ export default function OpleverForm({
 
 
 
-            {/* ================= Hardware geïnstalleerd/ontmanteld ================= */}
+            {/* ================= Hardware geïnstalleerd/gedemonteerd ================= */}
 
             <div>
 
-                <Kop>Hardware geïnstalleerd / ontmanteld</Kop>
+                <Kop>Hardware geïnstalleerd / gedemonteerd</Kop>
 
                 <div className="overflow-x-auto">
 
@@ -2201,7 +2287,7 @@ export default function OpleverForm({
                             <tr className="bg-gray-50">
 
                                 <th className="border p-2 text-left font-medium text-gray-600 w-48">
-                                    Geïnstalleerd / ontmanteld
+                                    Geïnstalleerd / gedemonteerd
                                 </th>
 
                                 <th className="border p-2 text-left font-medium text-gray-600">
@@ -2244,7 +2330,7 @@ export default function OpleverForm({
                                             >
                                                 <option value="">—</option>
                                                 <option value="Geïnstalleerd">Geïnstalleerd</option>
-                                                <option value="Ontmanteld">Ontmanteld</option>
+                                                <option value="Gedemonteerd">Gedemonteerd</option>
                                             </select>
                                         </td>
 
@@ -2411,8 +2497,17 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <AudioRegel label="HDMI kabels" value={m.hdmiKabelsAantal} onChange={(v)=>update(d=>{d.materialen.hdmiKabelsAantal=v;})} />
-                    <AudioRegel label="HDMI splitters" value={m.hdmiSplittersAantal} onChange={(v)=>update(d=>{d.materialen.hdmiSplittersAantal=v;})} />
+                    <p className="text-sm text-gray-600">HDMI kabels (aantal per lengte)</p>
+                    <AudioRegel label="1 meter" value={m.hdmi1m} onChange={(v)=>update(d=>{d.materialen.hdmi1m=v;})} />
+                    <AudioRegel label="2 meter" value={m.hdmi2m} onChange={(v)=>update(d=>{d.materialen.hdmi2m=v;})} />
+                    <AudioRegel label="3 meter" value={m.hdmi3m} onChange={(v)=>update(d=>{d.materialen.hdmi3m=v;})} />
+                    <AudioRegel label="5 meter" value={m.hdmi5m} onChange={(v)=>update(d=>{d.materialen.hdmi5m=v;})} />
+                    <AudioRegel label="7,5 meter" value={m.hdmi75m} onChange={(v)=>update(d=>{d.materialen.hdmi75m=v;})} />
+                    <AudioRegel label="10 meter" value={m.hdmi10m} onChange={(v)=>update(d=>{d.materialen.hdmi10m=v;})} />
+
+                    <p className="text-sm text-gray-600 pt-2">HDMI splitters (aantal)</p>
+                    <AudioRegel label="1x2 (1 ingang, 2 uitgangen)" value={m.hdmiSplitter1x2} onChange={(v)=>update(d=>{d.materialen.hdmiSplitter1x2=v;})} />
+                    <AudioRegel label="1x4 (1 ingang, 4 uitgangen)" value={m.hdmiSplitter1x4} onChange={(v)=>update(d=>{d.materialen.hdmiSplitter1x4=v;})} />
                 </UitklapVraag>
 
 
@@ -2444,7 +2539,10 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <AudioRegel label="Switches" value={m.switchesAantal} onChange={(v)=>update(d=>{d.materialen.switchesAantal=v;})} />
+                    <p className="text-sm text-gray-600">Switches (aantal per type)</p>
+                    <AudioRegel label="5 poorten, gigabit" value={m.switch5port} onChange={(v)=>update(d=>{d.materialen.switch5port=v;})} />
+                    <AudioRegel label="8 poorten, gigabit" value={m.switch8port} onChange={(v)=>update(d=>{d.materialen.switch8port=v;})} />
+                    <AudioRegel label="5 poorten, PoE gigabit" value={m.switch5portPoe} onChange={(v)=>update(d=>{d.materialen.switch5portPoe=v;})} />
                 </UitklapVraag>
 
 
@@ -2457,7 +2555,13 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <AudioRegel label="Aantal UTP-kabels" value={m.utpAantal} onChange={(v)=>update(d=>{d.materialen.utpAantal=v;})} />
+                    <p className="text-sm text-gray-600">UTP-kabels (aantal per type)</p>
+                    <AudioRegel label="Type 2 (tot 20 meter)" value={m.utpType2} onChange={(v)=>update(d=>{d.materialen.utpType2=v;})} />
+                    <AudioRegel label="Type 3 (tot 30 meter)" value={m.utpType3} onChange={(v)=>update(d=>{d.materialen.utpType3=v;})} />
+                    <AudioRegel label="Type 4 (tot 40 meter)" value={m.utpType4} onChange={(v)=>update(d=>{d.materialen.utpType4=v;})} />
+                    <AudioRegel label="Type 5 (tot 50 meter)" value={m.utpType5} onChange={(v)=>update(d=>{d.materialen.utpType5=v;})} />
+                    <AudioRegel label="Type 6 (tot 60 meter)" value={m.utpType6} onChange={(v)=>update(d=>{d.materialen.utpType6=v;})} />
+                    <AudioRegel label="Type 7 (tot 70 meter)" value={m.utpType7} onChange={(v)=>update(d=>{d.materialen.utpType7=v;})} />
                 </UitklapVraag>
 
 
@@ -2470,7 +2574,10 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <AudioRegel label="Aantal stroomkabels" value={m.stroomAantal} onChange={(v)=>update(d=>{d.materialen.stroomAantal=v;})} />
+                    <p className="text-sm text-gray-600">Stroomkabels (aantal per type)</p>
+                    <AudioRegel label="Type 1 (tot 10 meter)" value={m.stroomType1} onChange={(v)=>update(d=>{d.materialen.stroomType1=v;})} />
+                    <AudioRegel label="Type 2 (tot 20 meter)" value={m.stroomType2} onChange={(v)=>update(d=>{d.materialen.stroomType2=v;})} />
+                    <AudioRegel label="Type 3 (tot 30 meter)" value={m.stroomType3} onChange={(v)=>update(d=>{d.materialen.stroomType3=v;})} />
                 </UitklapVraag>
 
 

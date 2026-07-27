@@ -373,6 +373,66 @@ function opleverSections(
         .join(" · ");
 
 
+    const hdmiKabels =
+        [
+            ["1 m",m.hdmi1m],
+            ["2 m",m.hdmi2m],
+            ["3 m",m.hdmi3m],
+            ["5 m",m.hdmi5m],
+            ["7,5 m",m.hdmi75m],
+            ["10 m",m.hdmi10m]
+        ]
+        .filter(([,amount])=>amount)
+        .map(([name,amount])=>`${name}: ${amount}`)
+        .join(" · ");
+
+
+    const hdmiSplitters =
+        [
+            ["1x2",m.hdmiSplitter1x2],
+            ["1x4",m.hdmiSplitter1x4]
+        ]
+        .filter(([,amount])=>amount)
+        .map(([name,amount])=>`${name}: ${amount}`)
+        .join(" · ");
+
+
+    const switches =
+        [
+            ["5 poorten gigabit",m.switch5port],
+            ["8 poorten gigabit",m.switch8port],
+            ["5 poorten PoE gigabit",m.switch5portPoe]
+        ]
+        .filter(([,amount])=>amount)
+        .map(([name,amount])=>`${name}: ${amount}`)
+        .join(" · ");
+
+
+    const utp =
+        [
+            ["Type 2 (20 m)",m.utpType2],
+            ["Type 3 (30 m)",m.utpType3],
+            ["Type 4 (40 m)",m.utpType4],
+            ["Type 5 (50 m)",m.utpType5],
+            ["Type 6 (60 m)",m.utpType6],
+            ["Type 7 (70 m)",m.utpType7]
+        ]
+        .filter(([,amount])=>amount)
+        .map(([name,amount])=>`${name}: ${amount}`)
+        .join(" · ");
+
+
+    const stroom =
+        [
+            ["Type 1 (10 m)",m.stroomType1],
+            ["Type 2 (20 m)",m.stroomType2],
+            ["Type 3 (30 m)",m.stroomType3]
+        ]
+        .filter(([,amount])=>amount)
+        .map(([name,amount])=>`${name}: ${amount}`)
+        .join(" · ");
+
+
     return `
   <div class="section">
     <div class="section-title">Installatiegegevens — 1. Tarief &amp; Uren</div>
@@ -397,9 +457,9 @@ function opleverSections(
       ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat === "Anders" ? (i.videowallFormaatAnders || "Anders") : i.videowallFormaat)) : ""}
       ${i.videowall === true && i.videowallOrientatie ? row("Videowall oriëntatie",textAnswer(i.videowallOrientatie)) : ""}
       ${row("3. Kiosk",pill(i.kiosk))}
-      ${i.kiosk === true && i.kioskStatus ? row("Kiosk status",textAnswer(i.kioskStatus)) : ""}
-      ${i.kiosk === true && i.kioskOmschrijving ? row("Kiosk omschrijving",textAnswer(i.kioskOmschrijving)) : ""}
-      ${i.kiosk === true && i.kioskAantal ? row("Kiosk aantal",textAnswer(i.kioskAantal)) : ""}
+      ${i.kiosk === true ? i.kioskBlokken.filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
+          row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
+        ).join("") : ""}
       ${i.mediaplayers ? row("4. Mediaplayers",choicePill(i.mediaplayers)) : row("4. Mediaplayers",`<span class="pill pill-empty">—</span>`)}
       ${i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
       ${row("5. Audio",pill(i.audio))}
@@ -410,17 +470,18 @@ function opleverSections(
       ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
       ${i.audio === true && i.audioAndersTekst ? row(esc(i.audioAndersTekst) + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
       ${row("6. Project (offertebasis)?",pill(i.isProject))}
+      ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
     </table>
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
   </div>
 
   ${data.hardware.length > 0 ? `
   <div class="section">
-    <div class="section-title">Hardware geïnstalleerd / ontmanteld</div>
+    <div class="section-title">Hardware geïnstalleerd / gedemonteerd</div>
     <table class="hardware-table">
       <thead>
         <tr>
-          <th>Geïnstalleerd / ontmanteld</th>
+          <th>Geïnstalleerd / gedemonteerd</th>
           <th>Merk</th>
           <th>Type</th>
           <th>Serienummer</th>
@@ -446,16 +507,16 @@ function opleverSections(
       ${m.nieuweBeugels === true ? row("Nieuw of bestaand",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
       ${m.nieuweBeugels === true && beugels ? row("Beugels",textAnswer(beugels)) : ""}
       ${row("2. Extra HDMI kabels gebruikt",pill(m.extraHdmiKabels))}
-      ${m.extraHdmiKabels === true && m.hdmiKabelsAantal ? row("HDMI kabels (aantal)",textAnswer(m.hdmiKabelsAantal)) : ""}
-      ${m.extraHdmiKabels === true && m.hdmiSplittersAantal ? row("HDMI splitters (aantal)",textAnswer(m.hdmiSplittersAantal)) : ""}
+      ${m.extraHdmiKabels === true && hdmiKabels ? row("HDMI kabels",textAnswer(hdmiKabels)) : ""}
+      ${m.extraHdmiKabels === true && hdmiSplitters ? row("HDMI splitters",textAnswer(hdmiSplitters)) : ""}
       ${row("3. Extra patchkabels gebruikt",pill(m.extraPatchkabels))}
       ${m.extraPatchkabels === true && patch ? row("Patchkabels",textAnswer(patch)) : ""}
       ${row("Extra switches gebruikt",pill(m.extraSwitches))}
-      ${m.extraSwitches === true && m.switchesAantal ? row("Switches (aantal)",textAnswer(m.switchesAantal)) : ""}
+      ${m.extraSwitches === true && switches ? row("Switches",textAnswer(switches)) : ""}
       ${row("4. Extra UTP kabel getrokken",pill(m.utpGetrokken))}
-      ${m.utpGetrokken === true && m.utpAantal ? row("UTP-kabels (aantal)",textAnswer(m.utpAantal)) : ""}
+      ${m.utpGetrokken === true && utp ? row("UTP-kabels",textAnswer(utp)) : ""}
       ${row("5. Extra stroomkabel getrokken",pill(m.stroomkabelGetrokken))}
-      ${m.stroomkabelGetrokken === true && m.stroomAantal ? row("Stroomkabels (aantal)",textAnswer(m.stroomAantal)) : ""}
+      ${m.stroomkabelGetrokken === true && stroom ? row("Stroomkabels",textAnswer(stroom)) : ""}
       ${row("6. Verlengsnoeren (stekkerdozen) gebruikt",pill(m.verlengsnoeren))}
       ${m.verlengsnoeren === true && verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
       ${row("7. Extra seriële en/of USB speakers gebruikt",pill(m.extraSpeakers))}
