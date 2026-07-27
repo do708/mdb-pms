@@ -339,7 +339,19 @@ export default function Sidebar(){
 
                                 <span className="text-sm">
 
-                                    {item.name}
+                                    {
+                                        item.href === "/workorders/new"
+                                        ?
+                                        (
+                                            role === "engineer"
+                                            ?
+                                            "Werkbon invullen"
+                                            :
+                                            "Werkbon klaarzetten"
+                                        )
+                                        :
+                                        item.name
+                                    }
 
                                 </span>
 

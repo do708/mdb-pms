@@ -125,7 +125,7 @@ export interface WorkorderHtmlPdfInput {
         status:string;
     }[];
 
-    photoUrls:string[];
+    photos:{ url:string; caption:string | null }[];
 
     signatureUrl:string | null;
 
@@ -486,6 +486,81 @@ function opleverSections(
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
   </div>
 
+  ${(()=>{
+      const ev = data.evalue8 && typeof data.evalue8 === "object" ? data.evalue8 : {};
+      const secties:{ titel:string; regels:{ key:string; naam:string }[] }[] = [
+          { titel:"2. Werkplek (WKS)", regels:[
+              { key:"wks_easy", naam:"WKS Easy" },
+              { key:"wks_full", naam:"WKS Full" },
+              { key:"wks_vervolg_kort", naam:"Vervolginstallatie (Kort)" },
+              { key:"wks_vervolg_lang", naam:"Vervolginstallatie (Lang)" }
+          ]},
+          { titel:"3. Kiosk", regels:[
+              { key:"kiosk_easy", naam:"Kiosk Easy" },
+              { key:"kiosk_full", naam:"Kiosk Full" },
+              { key:"kiosk_extended", naam:"Kiosk Extended" },
+              { key:"kiosk_demontage", naam:"Demontage Kiosk" }
+          ]},
+          { titel:"4. Digital Signage (DS)", regels:[
+              { key:"ds_extra_scherm", naam:"Extra scherm op locatie" },
+              { key:"ds_player", naam:"Installatie DS Player" },
+              { key:"ds_swap", naam:"Installatie DS Swap" }
+          ]},
+          { titel:"5. Service, Software & Storingen", regels:[
+              { key:"balie_software", naam:"Installatie Balie software" },
+              { key:"storing_type1", naam:"Storing Type 1" },
+              { key:"storing_type2", naam:"Storing Type 2" }
+          ]}
+      ];
+
+      const gekozenRegels = secties
+          .map(sectie=>{
+              const rijen = sectie.regels
+                  .map(r=>{
+                      const item = ev[r.key];
+                      if(item && item.aan){
+                          return row(r.naam, textAnswer(`Aantal: ${item.aantal || "1"}`));
+                      }
+                      return "";
+                  })
+                  .filter(Boolean)
+                  .join("");
+              if(!rijen){ return ""; }
+              return `<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:#0f172a">${esc(sectie.titel)}</td></tr>${rijen}`;
+          })
+          .filter(Boolean)
+          .join("");
+
+      const spare = data.evalue8SparePlayer;
+      const spareRegels = [
+          ["BTR 5", data.evalue8SpareBtr5],
+          ["GD", data.evalue8SpareGd],
+          ['Kiosk Tablet 15,6"', data.evalue8SpareKiosk156],
+          ['Kiosk Tablet 21"', data.evalue8SpareKiosk21]
+      ]
+      .filter(([,a])=>a)
+      .map(([naam,a])=>row(String(naam), textAnswer(`Aantal: ${a}`)))
+      .join("");
+
+      const spareBlok = spare === null ? "" : `
+          <tr><td colspan="2" style="padding-top:6px;font-weight:700;color:#0f172a">6. Spare player</td></tr>
+          ${row("Spare player geïnstalleerd?", pill(spare))}
+          ${spare === true ? spareRegels : ""}
+          ${spare === true ? row("Melding gemaakt bij eValue8?", pill(data.evalue8SpareMelding)) : ""}
+      `;
+
+      if(!gekozenRegels && !spareBlok){ return ""; }
+
+      return `
+        <div class="section">
+          <div class="section-title">eValue8 — installatie</div>
+          <table class="qa">
+            ${gekozenRegels}
+            ${spareBlok}
+          </table>
+        </div>`;
+  })()}
+
   ${data.hardware.length > 0 ? `
   <div class="section">
     <div class="section-title">Hardware geïnstalleerd / gedemonteerd</div>
@@ -525,6 +600,9 @@ function opleverSections(
       ${m.verlengsnoeren === true && verleng ? row("6. Verlengsnoeren",textAnswer(verleng)) : ""}
       ${m.extraSpeakers === true && m.usbSpeakers ? row("7. USB Speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
       ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
+      ${m.multicast !== null ? row("8. Multicast set gebruikt?",pill(m.multicast)) : ""}
+      ${m.multicast === true && m.multicastZenders ? row("Zenders (aantal)",textAnswer(m.multicastZenders)) : ""}
+      ${m.multicast === true && m.multicastOntvangers ? row("Ontvangers (aantal)",textAnswer(m.multicastOntvangers)) : ""}
       ${
         (
             m.nieuweBeugels !== true &&
@@ -748,7 +826,9 @@ function generateHtml(
   .description-box { background: #f8fafc; border-left: 3px solid #0066ff; padding: 8px 10px; border-radius: 0 4px 4px 0; font-size: 9px; color: #334155; line-height: 1.5; }
   /* Foto's */
   .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .photo-grid img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
+  .photo-item { page-break-inside: avoid; }
+  .photo-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
+  .photo-caption { font-size: 9px; color: #475569; margin-top: 3px; padding: 2px 4px; background: #f8fafc; border-radius: 3px; }
   /* Handtekeningen */
   .sig-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; min-height: 70px; }
   .sig-img { max-height: 60px; max-width: 100%; }
@@ -914,11 +994,16 @@ function generateHtml(
   }
 
   <!-- FOTO'S -->
-  ${data.photoUrls.length > 0 ? `
+  ${data.photos.length > 0 ? `
   <div class="section">
     <div class="section-title">Foto's</div>
     <div class="photo-grid">
-      ${data.photoUrls.map(url=>`<img src="${esc(url)}" alt="Foto" />`).join("")}
+      ${data.photos.map(foto=>`
+        <div class="photo-item">
+          <img src="${esc(foto.url)}" alt="Foto" />
+          ${foto.caption ? `<div class="photo-caption">${esc(foto.caption)}</div>` : ""}
+        </div>
+      `).join("")}
     </div>
   </div>` : ""}
 

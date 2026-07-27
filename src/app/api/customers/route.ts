@@ -20,28 +20,9 @@ export async function GET() {
 
 
 
-        // Monteur ziet alleen klanten waar hij een werkbon voor heeft
-        const engineerFilter =
-            guard.user.role === "engineer"
-            ?
-            {
-                projects:{
-                    some:{
-                        workorders:{
-                            some:{
-                                assignedUserId:guard.user.id
-                            }
-                        }
-                    }
-                }
-            }
-            :
-            {};
-
-
+        // Iedereen (ook de monteur) mag de volledige klantenlijst zien,
+        // zodat een monteur bij "werkbon invullen" elke opdrachtgever kan kiezen.
         const customers = await prisma.customer.findMany({
-
-            where:engineerFilter,
 
 
             include:{

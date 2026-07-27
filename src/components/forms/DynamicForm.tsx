@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 
 import {
     FormDefinition,
@@ -11,6 +12,18 @@ import {
 
 export type FormValues =
     Record<string,string>;
+
+
+// Zachte pastelkleuren voor keuze-opties. Elke optie krijgt op volgorde een
+// eigen kleur; geselecteerd wat voller, niet-geselecteerd heel licht.
+const KEUZE_PASTELS:{ actief:string; rust:string }[] = [
+    { actief:"bg-sky-100 border-sky-300 text-sky-800",         rust:"bg-sky-50 border-sky-200 text-sky-700" },
+    { actief:"bg-emerald-100 border-emerald-300 text-emerald-800", rust:"bg-emerald-50 border-emerald-200 text-emerald-700" },
+    { actief:"bg-amber-100 border-amber-300 text-amber-800",   rust:"bg-amber-50 border-amber-200 text-amber-700" },
+    { actief:"bg-violet-100 border-violet-300 text-violet-800", rust:"bg-violet-50 border-violet-200 text-violet-700" },
+    { actief:"bg-rose-100 border-rose-300 text-rose-800",      rust:"bg-rose-50 border-rose-200 text-rose-700" },
+    { actief:"bg-teal-100 border-teal-300 text-teal-800",      rust:"bg-teal-50 border-teal-200 text-teal-700" }
+];
 
 
 
@@ -303,10 +316,23 @@ function PhotoField({
 
             } else {
 
-                setError("Upload mislukt");
+                setError(
+                    data?.error
+                    ?
+                    `Upload mislukt: ${data.error}`
+                    :
+                    "Upload mislukt"
+                );
 
             }
 
+
+        } catch(err){
+
+            setError(
+                "Upload mislukt (netwerk of server)."
+            );
+            console.error("Foto-upload fout:", err);
 
         } finally {
 
@@ -352,8 +378,6 @@ function PhotoField({
                 type="file"
 
                 accept="image/*"
-
-                capture="environment"
 
                 onChange={(e)=>{
 
@@ -448,8 +472,45 @@ export default function DynamicForm({
 }:Props){
 
 
+    const { data:session } =
+        useSession();
+
+    const monteurNaam =
+        session?.user?.name ?? "";
+
+
     const [values,setValues] =
-        useState<FormValues>({});
+        useState<FormValues>(()=>{
+
+            const start:FormValues = {};
+
+            // Datum/tijd-velden standaard vullen met nu (lokale tijd),
+            // in het formaat dat datetime-local verwacht: YYYY-MM-DDTHH:mm
+            const now = new Date();
+            const pad = (n:number)=> String(n).padStart(2,"0");
+            const lokaleDatum =
+                `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+
+            const lokaalNu =
+                `${lokaleDatum}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+            for(const field of definition.fields){
+
+                // Datum/tijd-velden standaard op nu.
+                if(field.type === "datetime"){
+                    start[field.id] = lokaalNu;
+                }
+
+                // Datumvelden met defaultToday standaard op vandaag.
+                if(field.type === "date" && field.defaultToday){
+                    start[field.id] = lokaleDatum;
+                }
+
+            }
+
+            return start;
+
+        });
 
 
     const [error,setError] =
@@ -503,7 +564,17 @@ export default function DynamicForm({
         }
 
 
-        await onSubmit(values);
+        // Monteur-velden vullen met de naam van de ingelogde gebruiker,
+        // zodat die wordt meegestuurd bij het opslaan.
+        const teVersturen = { ...values };
+        for(const field of definition.fields){
+            if(field.type === "monteur"){
+                teVersturen[field.id] = monteurNaam;
+            }
+        }
+
+
+        await onSubmit(teVersturen);
 
 
     }
@@ -521,6 +592,82 @@ export default function DynamicForm({
 
 
         switch(field.type){
+
+
+            case "monteur":
+
+                return (
+
+                    <div className="block">
+
+                        <span className="
+                            block
+                            text-sm
+                            font-medium
+                            text-slate-700
+                            mb-1.5
+                        ">
+                            {field.label}
+                        </span>
+
+                        <p className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-3
+                            mt-1
+                            bg-gray-50
+                            text-gray-800
+                        ">
+                            {monteurNaam || "—"}
+                        </p>
+
+                    </div>
+
+                );
+
+
+            case "datetime":
+
+                return (
+
+                    <label className="block">
+
+                        <span className="
+                            block
+                            text-sm
+                            font-medium
+                            text-slate-700
+                            mb-1.5
+                        ">
+                            {field.label}
+                            {field.required ? " *" : ""}
+                        </span>
+
+                        <input
+
+                            type="datetime-local"
+
+                            value={value}
+
+                            onChange={(e)=>
+                                set(field.id,e.target.value)
+                            }
+
+                            className="
+                                w-full
+                                max-w-xs
+                                border
+                                rounded-xl
+                                p-3
+                                mt-1
+                            "
+
+                        />
+
+                    </label>
+
+                );
 
 
             case "kop":
@@ -551,8 +698,11 @@ export default function DynamicForm({
                     <label className="block">
 
                         <span className="
+                            block
                             text-sm
-                            text-gray-600
+                            font-medium
+                            text-slate-700
+                            mb-1.5
                         ">
 
                             {field.label}
@@ -590,8 +740,11 @@ export default function DynamicForm({
                     <label className="block">
 
                         <span className="
+                            block
                             text-sm
-                            text-gray-600
+                            font-medium
+                            text-slate-700
+                            mb-1.5
                         ">
 
                             {field.label}
@@ -629,8 +782,11 @@ export default function DynamicForm({
                     <label className="block">
 
                         <span className="
+                            block
                             text-sm
-                            text-gray-600
+                            font-medium
+                            text-slate-700
+                            mb-1.5
                         ">
 
                             {field.label}
@@ -671,8 +827,11 @@ export default function DynamicForm({
                     <label className="block">
 
                         <span className="
+                            block
                             text-sm
-                            text-gray-600
+                            font-medium
+                            text-slate-700
+                            mb-1.5
                         ">
 
                             {field.label}
@@ -733,7 +892,13 @@ export default function DynamicForm({
                         space-y-2
                     ">
 
-                        <p className="text-sm">
+                        <p className="
+                            block
+                            text-sm
+                            font-medium
+                            text-slate-700
+                            mb-1.5
+                        ">
 
                             {field.label}
 
@@ -804,7 +969,13 @@ export default function DynamicForm({
 
                     <div className="space-y-2">
 
-                        <p className="text-sm">
+                        <p className="
+                            block
+                            text-sm
+                            font-medium
+                            text-slate-700
+                            mb-1.5
+                        ">
 
                             {field.label}
                             {field.required ? " *" : ""}
@@ -818,7 +989,15 @@ export default function DynamicForm({
                         ">
 
                             {
-                                (field.options ?? []).map(option=>(
+                                (field.options ?? []).map((option,optieIndex)=>{
+
+                                    const pastel =
+                                        KEUZE_PASTELS[optieIndex % KEUZE_PASTELS.length];
+
+                                    const gekozen =
+                                        value === option;
+
+                                    return (
 
                                     <button
 
@@ -836,12 +1015,13 @@ export default function DynamicForm({
                                             rounded-full
                                             border
                                             text-sm
+                                            transition
                                             ${
-                                                value === option
+                                                gekozen
                                                 ?
-                                                "bg-green-500 border-green-500 text-white"
+                                                `${pastel.actief} ring-2 ring-offset-1 ring-slate-300 font-medium`
                                                 :
-                                                "text-gray-400"
+                                                `${pastel.rust} opacity-70`
                                             }
                                         `}
 
@@ -851,7 +1031,9 @@ export default function DynamicForm({
 
                                     </button>
 
-                                ))
+                                    );
+
+                                })
                             }
 
                         </div>
@@ -868,9 +1050,11 @@ export default function DynamicForm({
                     <div>
 
                         <p className="
+                            block
                             text-sm
-                            text-gray-600
-                            mb-1
+                            font-medium
+                            text-slate-700
+                            mb-1.5
                         ">
 
                             📷 {field.label}
@@ -900,9 +1084,11 @@ export default function DynamicForm({
                     <div>
 
                         <p className="
+                            block
                             text-sm
-                            text-gray-600
-                            mb-1
+                            font-medium
+                            text-slate-700
+                            mb-1.5
                         ">
 
                             ✍️ {field.label}
@@ -958,9 +1144,18 @@ export default function DynamicForm({
 
 
             {
-                definition.fields.map(field=>(
+                definition.fields.map((field,index)=>(
 
-                    <div key={field.id}>
+                    <div
+                        key={field.id}
+                        className={
+                            index === 0
+                            ?
+                            ""
+                            :
+                            "pt-5 border-t border-slate-100"
+                        }
+                    >
 
                         {renderField(field)}
 

@@ -48,6 +48,11 @@ interface Props {
 
     onChange?:(data:OpleverData)=>void;
 
+    // "volledig" (Digital Signage) toont alles; "uren" toont alleen
+    // het Tarief & Uren-blok met een opmerkingenveld; "evalue8" toont het
+    // Tarief-blok plus de eValue8-installatiesecties.
+    variant?:"volledig" | "uren" | "evalue8";
+
 }
 
 
@@ -256,6 +261,158 @@ function Keuze({
 
 
 // Eén regel in de audio-lijst: label links, aantal-veld rechts.
+// ---------- eValue8 ----------
+
+// De vaste eValue8-installatieregels, gegroepeerd per sectie. Elke regel heeft
+// een sleutel (voor opslag), een naam en een vaste toelichting ter info.
+const EVALUE8_SECTIES:{
+    titel:string;
+    regels:{ key:string; naam:string; toelichting:string }[];
+}[] = [
+    {
+        titel:"2. Werkplek (WKS)",
+        regels:[
+            { key:"wks_easy", naam:"Installatie WKS Easy", toelichting:"Aansluiting 220v / netwerk max. 1 meter" },
+            { key:"wks_full", naam:"Installatie WKS Full", toelichting:"Aansluiting 220v / netwerk max. 3 meter" },
+            { key:"wks_vervolg_kort", naam:"Vervolginstallatie (Kort)", toelichting:"Tijdsduur < 15 minuten" },
+            { key:"wks_vervolg_lang", naam:"Vervolginstallatie (Lang)", toelichting:"Tijdsduur > 15 minuten" }
+        ]
+    },
+    {
+        titel:"3. Kiosk",
+        regels:[
+            { key:"kiosk_easy", naam:"Installatie Kiosk Easy", toelichting:"Bekabeling max. 1 meter" },
+            { key:"kiosk_full", naam:"Installatie Kiosk Full", toelichting:"Bekabeling max. 3 meter" },
+            { key:"kiosk_extended", naam:"Installatie Kiosk Extended", toelichting:"Bekabeling max. 10 meter" },
+            { key:"kiosk_demontage", naam:"Demontage Kiosk", toelichting:"Verwijderen van bestaande kiosk" }
+        ]
+    },
+    {
+        titel:"4. Digital Signage (DS)",
+        regels:[
+            { key:"ds_extra_scherm", naam:"Extra scherm op locatie", toelichting:"Alleen i.c.m. volledige installatie" },
+            { key:"ds_player", naam:"Installatie DS Player", toelichting:"Aansluiten op een bestaand scherm" },
+            { key:"ds_swap", naam:"Installatie DS Swap", toelichting:"Wisselen van scherm of player op bestaande installatie" }
+        ]
+    },
+    {
+        titel:"5. Service, Software & Storingen",
+        regels:[
+            { key:"balie_software", naam:"Installatie Balie software", toelichting:"Softwarematige installatie" },
+            { key:"storing_type1", naam:"Storing Type 1", toelichting:"Inclusief voorrijkosten + 1 uur installatie" },
+            { key:"storing_type2", naam:"Storing Type 2", toelichting:"Max. 1 uur installatie (excl. voorrijkosten)" }
+        ]
+    }
+];
+
+
+
+// Eén aanvinkbare eValue8-regel met toelichting en aantal.
+function EValue8Regel({
+    naam,
+    toelichting,
+    item,
+    onChange
+}:{
+    naam:string;
+    toelichting:string;
+    item:{ aan:boolean; aantal:string };
+    onChange:(item:{ aan:boolean; aantal:string })=>void;
+}){
+
+    return (
+        <div className={`
+            rounded-xl
+            border
+            p-3
+            transition
+            ${
+                item.aan
+                ?
+                "bg-sky-50 border-sky-300"
+                :
+                "bg-white border-slate-200"
+            }
+        `}>
+
+            <div className="
+                flex
+                items-start
+                justify-between
+                gap-3
+            ">
+
+                <label className="
+                    flex
+                    items-start
+                    gap-3
+                    cursor-pointer
+                    flex-1
+                ">
+                    <input
+                        type="checkbox"
+                        checked={item.aan}
+                        onChange={(e)=>
+                            onChange({
+                                aan:e.target.checked,
+                                aantal:e.target.checked ? (item.aantal || "1") : ""
+                            })
+                        }
+                        className="w-4 h-4 mt-0.5"
+                    />
+
+                    <span>
+                        <span className="
+                            block
+                            text-sm
+                            font-medium
+                            text-slate-800
+                        ">
+                            {naam}
+                        </span>
+                        <span className="
+                            block
+                            text-xs
+                            text-slate-500
+                        ">
+                            {toelichting}
+                        </span>
+                    </span>
+                </label>
+
+
+                {
+                    item.aan && (
+                        <div className="
+                            flex
+                            items-center
+                            gap-2
+                            shrink-0
+                        ">
+                            <span className="text-xs text-slate-500">Aantal:</span>
+                            <input
+                                inputMode="numeric"
+                                value={item.aantal}
+                                onChange={(e)=>
+                                    onChange({
+                                        aan:item.aan,
+                                        aantal:e.target.value
+                                    })
+                                }
+                                className="w-16 border rounded-lg p-1.5 text-sm"
+                            />
+                        </div>
+                    )
+                }
+
+            </div>
+
+        </div>
+    );
+}
+
+
+
 // Inline handtekening-vak: tekenen met vinger/pen/muis, opslaan als data-URL.
 function HandtekeningVak({
     value,
@@ -1585,7 +1742,17 @@ export default function OpleverForm({
                     text-slate-900
                 ">
 
-                    Opleverformulier
+                    {
+                        variant === "uren"
+                        ?
+                        "Uren Opleverformulier"
+                        :
+                        variant === "evalue8"
+                        ?
+                        "eValue8 Opleverformulier"
+                        :
+                        "Digital Signage Opleverformulier"
+                    }
 
                 </h2>
 
@@ -1953,7 +2120,7 @@ export default function OpleverForm({
 
 
 {
-                  variant !== "uren" && (
+                  variant === "volledig" && (
                     <>
 
                 <p className="
@@ -2311,7 +2478,7 @@ export default function OpleverForm({
 
                         <div className="space-y-2">
 
-                            <p className="text-sm text-gray-600">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">
                                 {
                                     i.audioStatus === "Gedemonteerd"
                                     ?
@@ -2439,6 +2606,119 @@ export default function OpleverForm({
                 }
 
 
+                {/* ================= eValue8-installatieregels ================= */}
+                {
+                  variant === "evalue8" && (
+                    <>
+                        {
+                            EVALUE8_SECTIES.map(sectie=>(
+                                <div key={sectie.titel} className="pt-2">
+
+                                    <p className="
+                                        text-[13px]
+                                        font-semibold
+                                        text-slate-700
+                                        bg-slate-50
+                                        border-l-2
+                                        border-blue-500
+                                        px-3
+                                        py-1.5
+                                        rounded-r
+                                        mb-3
+                                    ">
+                                        {sectie.titel}
+                                    </p>
+
+                                    <div className="space-y-2">
+                                        {
+                                            sectie.regels.map(regel=>(
+                                                <EValue8Regel
+                                                    key={regel.key}
+                                                    naam={regel.naam}
+                                                    toelichting={regel.toelichting}
+                                                    item={
+                                                        data.evalue8[regel.key]
+                                                        ??
+                                                        { aan:false, aantal:"" }
+                                                    }
+                                                    onChange={(item)=>update(draft=>{
+                                                        draft.evalue8 = {
+                                                            ...draft.evalue8,
+                                                            [regel.key]:item
+                                                        };
+                                                    })}
+                                                />
+                                            ))
+                                        }
+                                    </div>
+
+                                </div>
+                            ))
+                        }
+
+
+                        {/* 6. Spare player */}
+                        <div className="pt-2">
+
+                            <p className="
+                                text-[13px]
+                                font-semibold
+                                text-slate-700
+                                bg-slate-50
+                                border-l-2
+                                border-blue-500
+                                px-3
+                                py-1.5
+                                rounded-r
+                                mb-3
+                            ">
+                                6. Spare player
+                            </p>
+
+                            <Vraag label="Spare player geïnstalleerd?">
+                                <JaNee
+                                    value={data.evalue8SparePlayer}
+                                    onChange={(v)=>update(draft=>{
+                                        draft.evalue8SparePlayer = v;
+                                    })}
+                                />
+                            </Vraag>
+
+                            {
+                                data.evalue8SparePlayer === true && (
+                                    <div className="mt-3 space-y-3">
+
+                                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                            Welk type / formaat (aantal per type)
+                                        </p>
+
+                                        <AudioRegel label="BTR 5" value={data.evalue8SpareBtr5} onChange={(v)=>update(draft=>{draft.evalue8SpareBtr5=v;})} />
+                                        <AudioRegel label="GD" value={data.evalue8SpareGd} onChange={(v)=>update(draft=>{draft.evalue8SpareGd=v;})} />
+                                        <AudioRegel label={'Kiosk Tablet 15,6"'} value={data.evalue8SpareKiosk156} onChange={(v)=>update(draft=>{draft.evalue8SpareKiosk156=v;})} />
+                                        <AudioRegel label={'Kiosk Tablet 21"'} value={data.evalue8SpareKiosk21} onChange={(v)=>update(draft=>{draft.evalue8SpareKiosk21=v;})} />
+
+                                        <div className="pt-1">
+                                            <Vraag label="Melding gemaakt bij eValue8?">
+                                                <JaNee
+                                                    value={data.evalue8SpareMelding}
+                                                    onChange={(v)=>update(draft=>{
+                                                        draft.evalue8SpareMelding = v;
+                                                    })}
+                                                />
+                                            </Vraag>
+                                        </div>
+
+                                    </div>
+                                )
+                            }
+
+                        </div>
+
+                    </>
+                  )
+                }
+
+
                 <div className="pt-3">
 
                     <span className="
@@ -2474,7 +2754,7 @@ export default function OpleverForm({
 
 
             {
-              variant !== "uren" && (
+              variant === "volledig" && (
                 <>
 
             {/* ================= Hardware geïnstalleerd/gedemonteerd ================= */}
@@ -2642,7 +2922,14 @@ export default function OpleverForm({
 
             </div>
 
+                </>
+              )
+            }
 
+
+            {
+              (variant === "volledig" || variant === "evalue8") && (
+                <>
 
 
             {/* ================= Gebruikte materialen ================= */}
@@ -2702,7 +2989,7 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <p className="text-sm text-gray-600">HDMI kabels (aantal per lengte)</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">HDMI kabels (aantal per lengte)</p>
                     <AudioRegel label="1 meter" value={m.hdmi1m} onChange={(v)=>update(d=>{d.materialen.hdmi1m=v;})} />
                     <AudioRegel label="2 meter" value={m.hdmi2m} onChange={(v)=>update(d=>{d.materialen.hdmi2m=v;})} />
                     <AudioRegel label="3 meter" value={m.hdmi3m} onChange={(v)=>update(d=>{d.materialen.hdmi3m=v;})} />
@@ -2710,7 +2997,7 @@ export default function OpleverForm({
                     <AudioRegel label="7,5 meter" value={m.hdmi75m} onChange={(v)=>update(d=>{d.materialen.hdmi75m=v;})} />
                     <AudioRegel label="10 meter" value={m.hdmi10m} onChange={(v)=>update(d=>{d.materialen.hdmi10m=v;})} />
 
-                    <p className="text-sm text-gray-600 pt-2">HDMI splitters (aantal)</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">HDMI splitters (aantal)</p>
                     <AudioRegel label="1x2 (1 ingang, 2 uitgangen)" value={m.hdmiSplitter1x2} onChange={(v)=>update(d=>{d.materialen.hdmiSplitter1x2=v;})} />
                     <AudioRegel label="1x4 (1 ingang, 4 uitgangen)" value={m.hdmiSplitter1x4} onChange={(v)=>update(d=>{d.materialen.hdmiSplitter1x4=v;})} />
                 </UitklapVraag>
@@ -2725,7 +3012,7 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <p className="text-sm text-gray-600">Aantal per lengte</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">Aantal per lengte</p>
                     <AudioRegel label="Patchkabel 1 meter" value={m.patch1} onChange={(v)=>update(d=>{d.materialen.patch1=v;})} />
                     <AudioRegel label="Patchkabel 2 meter" value={m.patch2} onChange={(v)=>update(d=>{d.materialen.patch2=v;})} />
                     <AudioRegel label="Patchkabel 3 meter" value={m.patch3} onChange={(v)=>update(d=>{d.materialen.patch3=v;})} />
@@ -2744,7 +3031,7 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <p className="text-sm text-gray-600">Switches (aantal per type)</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">Switches (aantal per type)</p>
                     <AudioRegel label="5 poorten, gigabit" value={m.switch5port} onChange={(v)=>update(d=>{d.materialen.switch5port=v;})} />
                     <AudioRegel label="8 poorten, gigabit" value={m.switch8port} onChange={(v)=>update(d=>{d.materialen.switch8port=v;})} />
                     <AudioRegel label="5 poorten, PoE gigabit" value={m.switch5portPoe} onChange={(v)=>update(d=>{d.materialen.switch5portPoe=v;})} />
@@ -2760,7 +3047,7 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <p className="text-sm text-gray-600">UTP-kabels (aantal per type)</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">UTP-kabels (aantal per type)</p>
                     <AudioRegel label="Type 2 (tot 20 meter)" value={m.utpType2} onChange={(v)=>update(d=>{d.materialen.utpType2=v;})} />
                     <AudioRegel label="Type 3 (tot 30 meter)" value={m.utpType3} onChange={(v)=>update(d=>{d.materialen.utpType3=v;})} />
                     <AudioRegel label="Type 4 (tot 40 meter)" value={m.utpType4} onChange={(v)=>update(d=>{d.materialen.utpType4=v;})} />
@@ -2779,7 +3066,7 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <p className="text-sm text-gray-600">Stroomkabels (aantal per type)</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">Stroomkabels (aantal per type)</p>
                     <AudioRegel label="Type 1 (tot 10 meter)" value={m.stroomType1} onChange={(v)=>update(d=>{d.materialen.stroomType1=v;})} />
                     <AudioRegel label="Type 2 (tot 20 meter)" value={m.stroomType2} onChange={(v)=>update(d=>{d.materialen.stroomType2=v;})} />
                     <AudioRegel label="Type 3 (tot 30 meter)" value={m.stroomType3} onChange={(v)=>update(d=>{d.materialen.stroomType3=v;})} />
@@ -2795,7 +3082,7 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <p className="text-sm text-gray-600">Aantal per soort</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">Aantal per soort</p>
                     <AudioRegel label="3-voudig, 1,5 meter" value={m.verleng15} onChange={(v)=>update(d=>{d.materialen.verleng15=v;})} />
                     <AudioRegel label="3-voudig, 3 meter" value={m.verleng3} onChange={(v)=>update(d=>{d.materialen.verleng3=v;})} />
                     <AudioRegel label="3-voudig, 5 meter" value={m.verleng5} onChange={(v)=>update(d=>{d.materialen.verleng5=v;})} />
@@ -2813,11 +3100,30 @@ export default function OpleverForm({
                 >
                     <AudioRegel label="USB Speakers" value={m.usbSpeakers} onChange={(v)=>update(d=>{d.materialen.usbSpeakers=v;})} />
 
-                    <p className="text-sm text-gray-600 pt-2">RS232 kabel (aantal per lengte)</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">RS232 kabel (aantal per lengte)</p>
                     <AudioRegel label="1 meter" value={m.rs232_1m} onChange={(v)=>update(d=>{d.materialen.rs232_1m=v;})} />
                     <AudioRegel label="5 meter" value={m.rs232_5m} onChange={(v)=>update(d=>{d.materialen.rs232_5m=v;})} />
                     <AudioRegel label="10 meter" value={m.rs232_10m} onChange={(v)=>update(d=>{d.materialen.rs232_10m=v;})} />
                 </UitklapVraag>
+
+
+                <Vraag label="8. Gebruik gemaakt van een multicast set?">
+                    <JaNee
+                        value={m.multicast}
+                        onChange={(v)=>update(draft=>{
+                            draft.materialen.multicast = v;
+                        })}
+                    />
+                </Vraag>
+
+                {
+                    m.multicast === true && (
+                        <div className="mt-2 space-y-2">
+                            <AudioRegel label="Zenders" value={m.multicastZenders} onChange={(v)=>update(draft=>{draft.materialen.multicastZenders=v;})} />
+                            <AudioRegel label="Ontvangers" value={m.multicastOntvangers} onChange={(v)=>update(draft=>{draft.materialen.multicastOntvangers=v;})} />
+                        </div>
+                    )
+                }
 
 
                 <div className="pt-3">
@@ -3085,6 +3391,14 @@ export default function OpleverForm({
 
             </div>
 
+                </>
+              )
+            }
+
+
+            {
+              (variant === "volledig" || variant === "evalue8") && (
+                <>
 
             {/* ================= Afronding / oplevering ================= */}
 

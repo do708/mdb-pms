@@ -217,6 +217,7 @@ exports.Prisma.WorkorderPhotoScalarFieldEnum = {
   workorderId: 'workorderId',
   url: 'url',
   filename: 'filename',
+  caption: 'caption',
   createdAt: 'createdAt'
 };
 

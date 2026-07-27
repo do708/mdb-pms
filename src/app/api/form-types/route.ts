@@ -10,23 +10,28 @@ import { requireApiUser } from "@/lib/auth/guard";
 const STANDAARD_TYPES = [
     {
         key:"uren",
-        name:"Opleverformulier Uren",
+        name:"Uren",
         sortOrder:1
     },
     {
         key:"digital_signage",
-        name:"Opleverformulier Digital Signage",
+        name:"Digital Signage",
         sortOrder:2
     },
     {
         key:"evalue8",
-        name:"Opleverdocument eValue8",
+        name:"eValue8",
         sortOrder:3
     },
     {
         key:"plus_intake",
-        name:"PLUS intake",
+        name:"PLUS - Intake",
         sortOrder:4
+    },
+    {
+        key:"plus_oplevering",
+        name:"PLUS - Oplevering",
+        sortOrder:5
     }
 ];
 
@@ -35,18 +40,31 @@ const STANDAARD_TYPES = [
 
 async function ensureStandaardTypes(){
 
-    const aantal =
-        await prisma.formType.count();
-
-    if(aantal > 0){
-        return;
-    }
-
+    // Voegt ontbrekende standaardtypes toe en houdt naam/volgorde gelijk aan
+    // de standaardlijst (ook als de tabel al bestaat).
     for(const t of STANDAARD_TYPES){
 
-        await prisma.formType.create({
-            data:t
-        });
+        const bestaat =
+            await prisma.formType.findUnique({
+                where:{ key:t.key }
+            });
+
+        if(!bestaat){
+            await prisma.formType.create({
+                data:t
+            });
+        } else if(
+            bestaat.name !== t.name ||
+            bestaat.sortOrder !== t.sortOrder
+        ){
+            await prisma.formType.update({
+                where:{ key:t.key },
+                data:{
+                    name:t.name,
+                    sortOrder:t.sortOrder
+                }
+            });
+        }
 
     }
 

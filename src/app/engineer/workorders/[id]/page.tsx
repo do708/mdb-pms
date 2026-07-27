@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import PhotosForm from "@/components/workorders/PhotosForm";
-import SignatureForm from "@/components/workorders/SignatureForm";
 import OpleverForm from "@/components/workorders/OpleverForm";
 
 import { parseCustomerSchema } from "@/types/customerForms";
-import { getStatus } from "@/constants/workorderStatus";
+
+import type { OpleverData } from "@/types/oplever";
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 
 interface Workorder {
@@ -99,6 +101,15 @@ export default function EngineerWorkorderPage(){
 
     const params = useParams();
 
+    const { data:session } =
+        useSession();
+
+    const role =
+        session?.user?.role ?? "";
+
+    const isOffice =
+        role === "admin" || role === "office";
+
 
     const id =
         params.id as string;
@@ -118,6 +129,12 @@ export default function EngineerWorkorderPage(){
 
     const [status,setStatus] =
         useState("ontvangen");
+
+
+    // Ingevulde opleverdata; wordt via onChange bijgehouden en bij opslaan
+    // meegestuurd naar de server.
+    const [opleverData,setOpleverData] =
+        useState<OpleverData | null>(null);
 
 
 
@@ -212,7 +229,9 @@ export default function EngineerWorkorderPage(){
 
                         body:JSON.stringify({
 
-                            description:notes
+                            description:notes,
+
+                            formData:opleverData ?? undefined
 
                         })
 
@@ -307,6 +326,23 @@ async function completeWorkorder(){
 
 
     try {
+
+
+        // Eerst de laatst ingevulde opleverdata opslaan, zodat de PDF de
+        // actuele gegevens bevat.
+        await fetch(
+            `/api/workorders/${id}`,
+            {
+                method:"PUT",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    description:notes,
+                    formData:opleverData ?? undefined
+                })
+            }
+        );
 
 
         const completeResponse =
@@ -465,21 +501,40 @@ async function completeWorkorder(){
             <header>
 
 
-                <h1 className="
-                    text-2xl
-                    font-bold
+                <div className="
+                    flex
+                    items-center
+                    justify-between
+                    gap-3
                 ">
 
-                    📝 {workorder.number}
+                    <h1 className="
+                        text-2xl
+                        font-bold
+                    ">
 
-                </h1>
+                        📝 {workorder.number}
+
+                    </h1>
 
 
-                <p className="text-gray-500">
+                    {
+                        isOffice && (
+                            <Link
+                                href={`/workorders/${id}/edit`}
+                                className="
+                                    text-sm
+                                    text-blue-600
+                                    underline
+                                    shrink-0
+                                "
+                            >
+                                Wijzigen
+                            </Link>
+                        )
+                    }
 
-                    {workorder.title}
-
-                </p>
+                </div>
 
 
             </header>
@@ -509,6 +564,11 @@ async function completeWorkorder(){
                         ??
                         "—"
                     }
+                </p>
+
+
+                <p className="text-gray-500">
+                    {workorder.title}
                 </p>
 
 
@@ -779,12 +839,18 @@ async function completeWorkorder(){
 
     customerName={workorder.customer?.name ?? null}
 
+    embedded
+
+    onChange={setOpleverData}
+
     variant={
-        (workorder.forms ?? []).some(f=>f.formType?.key === "uren")
-        &&
-        !(workorder.forms ?? []).some(f=>f.formType?.key === "digital_signage")
+        (workorder.forms ?? [])[0]?.formType?.key === "uren"
         ?
         "uren"
+        :
+        (workorder.forms ?? [])[0]?.formType?.key === "evalue8"
+        ?
+        "evalue8"
         :
         "volledig"
     }
@@ -799,47 +865,11 @@ async function completeWorkorder(){
 />
 
 
-<SignatureForm
-
-    workorderId={id}
-
-/>
 
 
 
 
 
-
-            <section className="
-                bg-white
-                rounded-2xl
-                border
-                p-5
-            ">
-
-
-                <h2 className="font-bold mb-3">
-
-                    Status
-
-                </h2>
-
-
-                <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatus(status).badge}`}>
-
-                    {getStatus(status).label}
-
-                </span>
-
-
-                <p className="text-sm text-gray-500 mt-2">
-
-                    De status wordt door kantoor beheerd.
-
-                </p>
-
-
-            </section>
 
 
 
@@ -851,52 +881,25 @@ async function completeWorkorder(){
 
             <button
 
-                onClick={saveWorkorder}
+                onClick={completeWorkorder}
 
                 disabled={saving}
 
-
                 className="
                     w-full
-                    bg-black
+                    bg-green-600
                     text-white
                     rounded-xl
                     py-4
                     font-bold
+                    disabled:opacity-50
                 "
 
             >
 
-                {
-                    saving
-                    ?
-                    "Opslaan..."
-                    :
-                    "💾 Tussentijds opslaan"
-                }
-
+                📤 Werkbon versturen
 
             </button>
-
-<button
-
-    onClick={completeWorkorder}
-
-
-    className="
-        w-full
-        bg-green-600
-        text-white
-        rounded-xl
-        py-4
-        font-bold
-    "
-
->
-
-    📤 Werkbon versturen
-
-</button>
 
 
 

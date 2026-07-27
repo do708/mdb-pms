@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiRole } from "@/lib/auth/guard";
 
+import { mergeOpleverData } from "@/types/oplever";
+
 
 
 
@@ -394,6 +396,16 @@ export async function PUT(
                         body.description
                         ??
                         existingWorkorder.description,
+
+
+
+                    formData:
+
+                        body.formData !== undefined
+                        ?
+                        mergeOpleverData(body.formData) as object
+                        :
+                        (existingWorkorder.formData ?? undefined),
 
 
 

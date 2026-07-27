@@ -7,11 +7,13 @@ export type FormFieldType =
     | "text"
     | "textarea"
     | "date"
+    | "datetime"
     | "money"
     | "janee"
     | "keuze"
     | "foto"
-    | "handtekening";
+    | "handtekening"
+    | "monteur";
 
 
 
@@ -30,6 +32,9 @@ export interface FormField {
 
     // keuze
     options?:string[];
+
+    // date: standaard op de datum van vandaag zetten
+    defaultToday?:boolean;
 
 }
 
@@ -83,9 +88,15 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
         fields:[
 
             {
-                id:"datum",
-                type:"date",
-                label:"Datum",
+                id:"monteur",
+                type:"monteur",
+                label:"Monteur"
+            },
+
+            {
+                id:"datumTijd",
+                type:"datetime",
+                label:"Datum / tijd",
                 required:true
             },
 
@@ -141,10 +152,17 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
         fields:[
 
             {
+                id:"werknemer",
+                type:"monteur",
+                label:"Werknemer"
+            },
+
+            {
                 id:"datumAanvraag",
                 type:"date",
                 label:"Datum van aanvraag",
-                required:true
+                required:true,
+                defaultToday:true
             },
 
             {
@@ -154,9 +172,10 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
                 required:true,
                 options:[
                     "Vakantiedagen",
+                    "Bijzonder verlof (huwelijk, verhuizing, overlijden, doktersbezoek)",
                     "Onbetaald verlof",
-                    "Bijzonder verlof",
-                    "Tijd voor tijd"
+                    "Ouderschapsverlof",
+                    "Anders..."
                 ]
             },
 

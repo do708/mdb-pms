@@ -212,6 +212,9 @@ export interface OpleverData {
         rs232_1m:string;
         rs232_5m:string;
         rs232_10m:string;
+        multicast:boolean | null;
+        multicastZenders:string;
+        multicastOntvangers:string;
         opmerkingen:string;
     };
 
@@ -249,9 +252,28 @@ export interface OpleverData {
         handtekening:string;
     };
 
+    // eValue8-installatieregels (aanvinken + aantal per item).
+    evalue8:Record<string,EValue8Item>;
+
+    // eValue8: spare player geïnstalleerd? Zo ja: aantallen per type +
+    // of er een melding bij eValue8 is gemaakt.
+    evalue8SparePlayer:boolean | null;
+    evalue8SpareBtr5:string;
+    evalue8SpareGd:string;
+    evalue8SpareKiosk156:string;
+    evalue8SpareKiosk21:string;
+    evalue8SpareMelding:boolean | null;
+
     // Per-opdrachtgever extra velden (dynamisch, afhankelijk van klant)
     custom:Record<string,unknown>;
 
+}
+
+
+// Eén aanvinkbare eValue8-regel met een aantal.
+export interface EValue8Item {
+    aan:boolean;
+    aantal:string;
 }
 
 
@@ -427,6 +449,9 @@ export function emptyOpleverData():OpleverData {
             rs232_1m:"",
             rs232_5m:"",
             rs232_10m:"",
+            multicast:null,
+            multicastZenders:"",
+            multicastOntvangers:"",
             opmerkingen:""
         },
 
@@ -455,6 +480,15 @@ export function emptyOpleverData():OpleverData {
             contactpersoon:"",
             handtekening:""
         },
+
+        evalue8:{},
+
+        evalue8SparePlayer:null,
+        evalue8SpareBtr5:"",
+        evalue8SpareGd:"",
+        evalue8SpareKiosk156:"",
+        evalue8SpareKiosk21:"",
+        evalue8SpareMelding:null,
 
         custom:{}
 
@@ -604,6 +638,39 @@ export function mergeOpleverData(
             }))
             :
             [],
+
+        evalue8:(
+            data.evalue8 &&
+            typeof data.evalue8 === "object"
+            ?
+            data.evalue8 as Record<string,EValue8Item>
+            :
+            {}
+        ),
+
+        evalue8SparePlayer:(
+            typeof data.evalue8SparePlayer === "boolean"
+            ?
+            data.evalue8SparePlayer
+            :
+            null
+        ),
+
+        evalue8SpareBtr5:(
+            typeof data.evalue8SpareBtr5 === "string" ? data.evalue8SpareBtr5 : ""
+        ),
+        evalue8SpareGd:(
+            typeof data.evalue8SpareGd === "string" ? data.evalue8SpareGd : ""
+        ),
+        evalue8SpareKiosk156:(
+            typeof data.evalue8SpareKiosk156 === "string" ? data.evalue8SpareKiosk156 : ""
+        ),
+        evalue8SpareKiosk21:(
+            typeof data.evalue8SpareKiosk21 === "string" ? data.evalue8SpareKiosk21 : ""
+        ),
+        evalue8SpareMelding:(
+            typeof data.evalue8SpareMelding === "boolean" ? data.evalue8SpareMelding : null
+        ),
 
         custom:{
             ...empty.custom,

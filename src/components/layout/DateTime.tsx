@@ -7,11 +7,14 @@ import { Clock3 } from "lucide-react";
 export default function DateTime() {
 
 
-    const [date, setDate] = useState(new Date());
+    // Start als null zodat server en client hetzelfde renderen (geen tijd).
+    // De klok wordt pas na het mounten (client-side) gevuld.
+    const [date, setDate] = useState<Date | null>(null);
 
 
     useEffect(() => {
 
+        setDate(new Date());
 
         const timer = setInterval(() => {
 
@@ -62,13 +65,19 @@ export default function DateTime() {
                     text-gray-900
                 ">
 
-                    {date.toLocaleTimeString(
-                        "nl-NL",
-                        {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        }
-                    )}
+                    {
+                        date
+                        ?
+                        date.toLocaleTimeString(
+                            "nl-NL",
+                            {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            }
+                        )
+                        :
+                        "--:--"
+                    }
 
                 </p>
 
@@ -79,14 +88,20 @@ export default function DateTime() {
                     text-gray-500
                 ">
 
-                    {date.toLocaleDateString(
-                        "nl-NL",
-                        {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                        }
-                    )}
+                    {
+                        date
+                        ?
+                        date.toLocaleDateString(
+                            "nl-NL",
+                            {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                            }
+                        )
+                        :
+                        ""
+                    }
 
                 </p>
 

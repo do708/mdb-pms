@@ -128,6 +128,7 @@ model WorkorderPhoto {
   workorderId String
   url         String
   filename    String?
+  caption     String?
   createdAt   DateTime  @default(now())
   workorder   Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
 }

@@ -11284,6 +11284,7 @@ export namespace Prisma {
     workorderId: string | null
     url: string | null
     filename: string | null
+    caption: string | null
     createdAt: Date | null
   }
 
@@ -11292,6 +11293,7 @@ export namespace Prisma {
     workorderId: string | null
     url: string | null
     filename: string | null
+    caption: string | null
     createdAt: Date | null
   }
 
@@ -11300,6 +11302,7 @@ export namespace Prisma {
     workorderId: number
     url: number
     filename: number
+    caption: number
     createdAt: number
     _all: number
   }
@@ -11310,6 +11313,7 @@ export namespace Prisma {
     workorderId?: true
     url?: true
     filename?: true
+    caption?: true
     createdAt?: true
   }
 
@@ -11318,6 +11322,7 @@ export namespace Prisma {
     workorderId?: true
     url?: true
     filename?: true
+    caption?: true
     createdAt?: true
   }
 
@@ -11326,6 +11331,7 @@ export namespace Prisma {
     workorderId?: true
     url?: true
     filename?: true
+    caption?: true
     createdAt?: true
     _all?: true
   }
@@ -11407,6 +11413,7 @@ export namespace Prisma {
     workorderId: string
     url: string
     filename: string | null
+    caption: string | null
     createdAt: Date
     _count: WorkorderPhotoCountAggregateOutputType | null
     _min: WorkorderPhotoMinAggregateOutputType | null
@@ -11432,6 +11439,7 @@ export namespace Prisma {
     workorderId?: boolean
     url?: boolean
     filename?: boolean
+    caption?: boolean
     createdAt?: boolean
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorderPhoto"]>
@@ -11441,6 +11449,7 @@ export namespace Prisma {
     workorderId?: boolean
     url?: boolean
     filename?: boolean
+    caption?: boolean
     createdAt?: boolean
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorderPhoto"]>
@@ -11450,6 +11459,7 @@ export namespace Prisma {
     workorderId?: boolean
     url?: boolean
     filename?: boolean
+    caption?: boolean
     createdAt?: boolean
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorderPhoto"]>
@@ -11459,10 +11469,11 @@ export namespace Prisma {
     workorderId?: boolean
     url?: boolean
     filename?: boolean
+    caption?: boolean
     createdAt?: boolean
   }
 
-  export type WorkorderPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workorderId" | "url" | "filename" | "createdAt", ExtArgs["result"]["workorderPhoto"]>
+  export type WorkorderPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workorderId" | "url" | "filename" | "caption" | "createdAt", ExtArgs["result"]["workorderPhoto"]>
   export type WorkorderPhotoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
   }
@@ -11483,6 +11494,7 @@ export namespace Prisma {
       workorderId: string
       url: string
       filename: string | null
+      caption: string | null
       createdAt: Date
     }, ExtArgs["result"]["workorderPhoto"]>
     composites: {}
@@ -11912,6 +11924,7 @@ export namespace Prisma {
     readonly workorderId: FieldRef<"WorkorderPhoto", 'String'>
     readonly url: FieldRef<"WorkorderPhoto", 'String'>
     readonly filename: FieldRef<"WorkorderPhoto", 'String'>
+    readonly caption: FieldRef<"WorkorderPhoto", 'String'>
     readonly createdAt: FieldRef<"WorkorderPhoto", 'DateTime'>
   }
     
@@ -23454,6 +23467,7 @@ export namespace Prisma {
     workorderId: 'workorderId',
     url: 'url',
     filename: 'filename',
+    caption: 'caption',
     createdAt: 'createdAt'
   };
 
@@ -24360,6 +24374,7 @@ export namespace Prisma {
     workorderId?: StringFilter<"WorkorderPhoto"> | string
     url?: StringFilter<"WorkorderPhoto"> | string
     filename?: StringNullableFilter<"WorkorderPhoto"> | string | null
+    caption?: StringNullableFilter<"WorkorderPhoto"> | string | null
     createdAt?: DateTimeFilter<"WorkorderPhoto"> | Date | string
     workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
   }
@@ -24369,6 +24384,7 @@ export namespace Prisma {
     workorderId?: SortOrder
     url?: SortOrder
     filename?: SortOrderInput | SortOrder
+    caption?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     workorder?: WorkorderOrderByWithRelationInput
   }
@@ -24381,6 +24397,7 @@ export namespace Prisma {
     workorderId?: StringFilter<"WorkorderPhoto"> | string
     url?: StringFilter<"WorkorderPhoto"> | string
     filename?: StringNullableFilter<"WorkorderPhoto"> | string | null
+    caption?: StringNullableFilter<"WorkorderPhoto"> | string | null
     createdAt?: DateTimeFilter<"WorkorderPhoto"> | Date | string
     workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
   }, "id">
@@ -24390,6 +24407,7 @@ export namespace Prisma {
     workorderId?: SortOrder
     url?: SortOrder
     filename?: SortOrderInput | SortOrder
+    caption?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: WorkorderPhotoCountOrderByAggregateInput
     _max?: WorkorderPhotoMaxOrderByAggregateInput
@@ -24404,6 +24422,7 @@ export namespace Prisma {
     workorderId?: StringWithAggregatesFilter<"WorkorderPhoto"> | string
     url?: StringWithAggregatesFilter<"WorkorderPhoto"> | string
     filename?: StringNullableWithAggregatesFilter<"WorkorderPhoto"> | string | null
+    caption?: StringNullableWithAggregatesFilter<"WorkorderPhoto"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"WorkorderPhoto"> | Date | string
   }
 
@@ -25749,6 +25768,7 @@ export namespace Prisma {
     id?: string
     url: string
     filename?: string | null
+    caption?: string | null
     createdAt?: Date | string
     workorder: WorkorderCreateNestedOneWithoutPhotosInput
   }
@@ -25758,6 +25778,7 @@ export namespace Prisma {
     workorderId: string
     url: string
     filename?: string | null
+    caption?: string | null
     createdAt?: Date | string
   }
 
@@ -25765,6 +25786,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorder?: WorkorderUpdateOneRequiredWithoutPhotosNestedInput
   }
@@ -25774,6 +25796,7 @@ export namespace Prisma {
     workorderId?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25782,6 +25805,7 @@ export namespace Prisma {
     workorderId: string
     url: string
     filename?: string | null
+    caption?: string | null
     createdAt?: Date | string
   }
 
@@ -25789,6 +25813,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25797,6 +25822,7 @@ export namespace Prisma {
     workorderId?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27197,6 +27223,7 @@ export namespace Prisma {
     workorderId?: SortOrder
     url?: SortOrder
     filename?: SortOrder
+    caption?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -27205,6 +27232,7 @@ export namespace Prisma {
     workorderId?: SortOrder
     url?: SortOrder
     filename?: SortOrder
+    caption?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -27213,6 +27241,7 @@ export namespace Prisma {
     workorderId?: SortOrder
     url?: SortOrder
     filename?: SortOrder
+    caption?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -29961,6 +29990,7 @@ export namespace Prisma {
     id?: string
     url: string
     filename?: string | null
+    caption?: string | null
     createdAt?: Date | string
   }
 
@@ -29968,6 +29998,7 @@ export namespace Prisma {
     id?: string
     url: string
     filename?: string | null
+    caption?: string | null
     createdAt?: Date | string
   }
 
@@ -30344,6 +30375,7 @@ export namespace Prisma {
     workorderId?: StringFilter<"WorkorderPhoto"> | string
     url?: StringFilter<"WorkorderPhoto"> | string
     filename?: StringNullableFilter<"WorkorderPhoto"> | string | null
+    caption?: StringNullableFilter<"WorkorderPhoto"> | string | null
     createdAt?: DateTimeFilter<"WorkorderPhoto"> | Date | string
   }
 
@@ -32818,6 +32850,7 @@ export namespace Prisma {
     id?: string
     url: string
     filename?: string | null
+    caption?: string | null
     createdAt?: Date | string
   }
 
@@ -32958,6 +32991,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -32965,6 +32999,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -32972,6 +33007,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
+    caption?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

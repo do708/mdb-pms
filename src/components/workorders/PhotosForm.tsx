@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 
@@ -12,6 +12,13 @@ interface PhotosFormProps {
 
 
 
+interface Photo {
+    id:string;
+    url:string;
+    filename?:string | null;
+    caption?:string | null;
+}
+
 
 
 
@@ -22,181 +29,140 @@ export default function PhotosForm({
 }:PhotosFormProps){
 
 
-
     const fileRef =
-
-
-
         useRef<HTMLInputElement | null>(null);
 
 
-
-
     const [photos,setPhotos] =
-        useState<File[]>([]);
+        useState<Photo[]>([]);
 
 
-
-    const [saving,setSaving] =
+    const [uploading,setUploading] =
         useState(false);
 
 
 
 
+    // Bestaande foto's laden.
+    useEffect(()=>{
+
+        async function laad(){
+            try {
+                const res =
+                    await fetch(`/api/workorders/${workorderId}/photos`);
+                const data =
+                    await res.json();
+                if(Array.isArray(data.photos)){
+                    setPhotos(data.photos);
+                }
+            } catch {
+                // stil falen
+            }
+        }
+
+        laad();
+
+    },[workorderId]);
 
 
 
-    function selectPhotos(
 
+    // Direct uploaden zodra foto's gekozen zijn.
+    async function selectPhotos(
         event:React.ChangeEvent<HTMLInputElement>
-
     ){
 
-
-        if(event.target.files){
-
-
-            setPhotos(
-
-                Array.from(
-                    event.target.files
-                )
-
-            );
-
-
-        }
-
-
-    }
-
-
-
-
-
-
-
-
-
-    async function uploadPhotos(){
-
-
-        if(photos.length === 0){
-
-
-            alert(
-                "Selecteer eerst foto's"
-            );
-
-
+        if(!event.target.files || event.target.files.length === 0){
             return;
-
         }
 
+        const gekozen =
+            Array.from(event.target.files);
 
-
-
-
-        setSaving(true);
-
-
-
+        setUploading(true);
 
         try {
-
 
             const formData =
                 new FormData();
 
-
-
-            photos.forEach(photo=>{
-
-
-                formData.append(
-
-                    "photos",
-
-                    photo
-
-                );
-
-
+            gekozen.forEach(photo=>{
+                formData.append("photos", photo);
             });
-
-
-
-
 
             const response =
                 await fetch(
-
                     `/api/workorders/${workorderId}/photos`,
-
                     {
-
                         method:"POST",
-
                         body:formData
-
                     }
-
                 );
 
+            const data =
+                await response.json();
 
-
-
-
-
-            if(response.ok){
-
-
-                alert(
-                    "Foto's opgeslagen"
-                );
-
-
-                setPhotos([]);
-
-
+            if(response.ok && Array.isArray(data.photos)){
+                setPhotos(prev=>[...prev, ...data.photos]);
             } else {
-
-
-                alert(
-                    "Foto upload mislukt"
-                );
-
-
+                alert("Foto upload mislukt");
             }
-
-
-
 
         } catch(error){
 
-
             console.error(error);
-
-
-            alert(
-                "Fout bij upload foto's"
-            );
-
+            alert("Fout bij upload foto's");
 
         } finally {
 
-
-            setSaving(false);
-
+            setUploading(false);
+            if(fileRef.current){
+                fileRef.current.value = "";
+            }
 
         }
-
 
     }
 
 
 
 
+    // Bijschrift lokaal bijwerken.
+    function setCaption(id:string, caption:string){
+        setPhotos(prev=>
+            prev.map(p=>
+                p.id === id
+                ?
+                { ...p, caption }
+                :
+                p
+            )
+        );
+    }
+
+
+
+
+    // Bijschrift opslaan (bij verlaten van het veld).
+    async function saveCaption(id:string, caption:string){
+        try {
+            await fetch(
+                `/api/workorders/${workorderId}/photos`,
+                {
+                    method:"PATCH",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify({
+                        photoId:id,
+                        caption
+                    })
+                }
+            );
+        } catch {
+            // stil falen; blijft lokaal bewaard
+        }
+    }
 
 
 
@@ -216,39 +182,24 @@ export default function PhotosForm({
                 font-bold
                 text-lg
             ">
-
-                📷 Foto's
-
+                📷 Foto&apos;s
             </h2>
 
 
-
-
-
-
             <input
-
                 ref={fileRef}
-
                 type="file"
-
                 accept="image/*"
-
                 multiple
-
                 onChange={selectPhotos}
-
                 className="hidden"
-
             />
 
 
             <button
-
                 type="button"
-
                 onClick={()=>fileRef.current?.click()}
-
+                disabled={uploading}
                 className="
                     w-full
                     border-2
@@ -258,89 +209,85 @@ export default function PhotosForm({
                     p-4
                     text-gray-600
                     hover:bg-gray-50
+                    disabled:opacity-50
                 "
-
             >
-
-                📷 Foto&apos;s toevoegen
-
+                {
+                    uploading
+                    ?
+                    "Bezig met uploaden..."
+                    :
+                    "📷 Foto's toevoegen"
+                }
             </button>
-
-
-
-
-
-
 
 
             {
-                photos.map((photo,index)=>(
+                photos.length > 0 && (
 
+                    <div className="
+                        grid
+                        grid-cols-2
+                        sm:grid-cols-3
+                        gap-3
+                    ">
 
-                    <div
+                        {
+                            photos.map((photo,index)=>(
 
-                        key={index}
+                                <div
+                                    key={photo.id}
+                                    className="
+                                        border
+                                        rounded-xl
+                                        overflow-hidden
+                                        bg-gray-50
+                                    "
+                                >
 
-                        className="
-                            bg-gray-50
-                            rounded-xl
-                            p-3
-                        "
+                                    <img
+                                        src={photo.url}
+                                        alt={`Foto ${index + 1}`}
+                                        className="
+                                            w-full
+                                            h-28
+                                            object-cover
+                                        "
+                                    />
 
-                    >
+                                    <div className="p-2">
+                                        <input
+                                            value={photo.caption ?? ""}
+                                            placeholder="Wat is dit?"
+                                            onChange={(e)=>
+                                                setCaption(photo.id, e.target.value)
+                                            }
+                                            onBlur={(e)=>
+                                                saveCaption(photo.id, e.target.value)
+                                            }
+                                            className="
+                                                w-full
+                                                border
+                                                rounded-lg
+                                                p-1.5
+                                                text-sm
+                                            "
+                                        />
+                                    </div>
 
-                        📷 {photo.name}
+                                </div>
 
+                            ))
+                        }
 
                     </div>
 
-
-                ))
-
+                )
             }
-
-
-
-
-
-
-
-
-            <button
-
-                onClick={uploadPhotos}
-
-                disabled={saving}
-
-
-                className="
-                    w-full
-                    bg-blue-600
-                    text-white
-                    rounded-xl
-                    py-3
-                    font-bold
-                "
-
-            >
-
-                {
-                    saving
-                    ?
-                    "Uploaden..."
-                    :
-                    "📷 Foto's opslaan"
-                }
-
-
-            </button>
-
-
 
 
         </section>
 
     );
-
 
 }

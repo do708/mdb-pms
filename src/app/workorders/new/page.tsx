@@ -8,10 +8,9 @@ import { useSession } from "next-auth/react";
 
 import OpleverForm from "@/components/workorders/OpleverForm";
 
-import {
-    OpleverData,
-    emptyOpleverData
-} from "@/types/oplever";
+import type { OpleverData } from "@/types/oplever";
+
+
 
 
 
@@ -45,13 +44,12 @@ function NewWorkorderInner(){
     const { data:session } =
         useSession();
 
-
-    const role =
-        session?.user?.role;
-
-
     const isEngineer =
-        role === "engineer";
+        session?.user?.role === "engineer";
+
+
+
+
 
 
 
@@ -99,6 +97,22 @@ function NewWorkorderInner(){
 
     const [selectedFormTypeId,setSelectedFormTypeId] =
         useState<string>("");
+
+
+    // De sleutel van het gekozen formuliertype (bijv. "digital_signage").
+    const selectedFormKey =
+        formTypes.find(ft=>ft.id === selectedFormTypeId)?.key ?? "";
+
+
+    // Ingevulde opleverdata (voor de monteur, inline bij Digital Signage).
+    const [opleverData,setOpleverData] =
+        useState<OpleverData | null>(null);
+
+
+    // Foto's die de monteur kiest vóór het eerste opslaan; ze worden pas
+    // geüpload zodra de werkbon bestaat.
+    const [opleverFotos,setOpleverFotos] =
+        useState<File[]>([]);
 
 
     const searchParams =
@@ -156,10 +170,6 @@ function NewWorkorderInner(){
         useState("");
 
 
-    const [formData,setFormData] =
-        useState<OpleverData>(
-            emptyOpleverData()
-        );
 
 
     const [saving,setSaving] =
@@ -263,7 +273,7 @@ function NewWorkorderInner(){
         }
 
 
-        if(!isEngineer && !customerId){
+        if(!customerId){
 
             setError("Kies een opdrachtgever");
 
@@ -338,13 +348,22 @@ function NewWorkorderInner(){
                                 :
                                 null,
 
-                            // Kantoor zet klaar zonder het opleverformulier;
-                            // de monteur vult dat later in. Een monteur die
-                            // zelf een werkbon maakt vult het meteen in.
+                            // Voor de monteur bij Digital Signage sturen we de
+                            // inline ingevulde opleverdata direct mee.
                             formData:
-                                isEngineer
+                                (
+                                    isEngineer
+                                    &&
+                                    (
+                                        selectedFormKey === "digital_signage"
+                                        ||
+                                        selectedFormKey === "uren"
+                                        ||
+                                        selectedFormKey === "evalue8"
+                                    )
+                                )
                                 ?
-                                formData
+                                (opleverData ?? undefined)
                                 :
                                 undefined,
 
@@ -392,15 +411,47 @@ function NewWorkorderInner(){
                 }
 
 
-                // Een monteur die zelf een werkbon aanmaakt gaat meteen naar
-                // de uitvoerpagina, zodat hij daar foto's en handtekening kan
-                // toevoegen (die kunnen pas nadat de werkbon is opgeslagen).
+                // Inline gekozen foto's nu uploaden en koppelen aan de werkbon.
+                if(opleverFotos.length > 0){
+
+                    const fotoBody =
+                        new FormData();
+
+                    opleverFotos.forEach(foto=>{
+                        fotoBody.append("photos", foto);
+                    });
+
+                    await fetch(
+                        `/api/workorders/${created.id}/photos`,
+                        {
+                            method:"POST",
+                            body:fotoBody
+                        }
+                    );
+
+                }
+
+
+                // Een monteur verstuurt de werkbon meteen: PDF genereren,
+                // melding naar projects en status op "uitgevoerd". Voor
+                // office/admin blijft het bij klaarzetten.
+                if(isEngineer){
+                    try {
+                        await fetch(
+                            `/api/workorders/${created.id}/complete`,
+                            {
+                                method:"POST"
+                            }
+                        );
+                    } catch {
+                        // versturen mag het aanmaken niet blokkeren
+                    }
+                }
+
+
+                // Iedereen komt na het aanmaken op de uitvoerpagina.
                 router.push(
-                    isEngineer
-                    ?
                     `/engineer/workorders/${created.id}`
-                    :
-                    `/workorders/${created.id}`
                 );
 
 
@@ -449,9 +500,9 @@ function NewWorkorderInner(){
                     {
                         isEngineer
                         ?
-                        "Nieuwe werkbon"
+                        "Werkbon invullen"
                         :
-                        "Werkbon klaarzetten"
+                        "Nieuwe werkbon"
                     }
 
                 </h1>
@@ -461,13 +512,7 @@ function NewWorkorderInner(){
                     text-gray-500
                 ">
 
-                    {
-                        isEngineer
-                        ?
-                        "Vul de werkbon in en sla onderaan op"
-                        :
-                        "Zet een klus klaar voor een monteur"
-                    }
+                    Vul de gegevens in en sla onderaan op
 
                 </p>
 
@@ -515,39 +560,8 @@ function NewWorkorderInner(){
                 </h2>
 
 
-                <label className="block">
-
-                    <span className="text-sm text-gray-600">
-
-                        Projectnaam:
-
-                    </span>
-
-                    <input
-
-                        value={title}
-
-                        onChange={(e)=>
-                            setTitle(e.target.value)
-                        }
-
-                        placeholder="Bijv. Bedrijfsnaam"
-
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-2
-                        "
-
-                    />
-
-                </label>
-
-
                 {
-                    !isEngineer && (
+                    true && (
 
                         <label className="block">
 
@@ -608,6 +622,37 @@ function NewWorkorderInner(){
                 }
 
 
+                <label className="block">
+
+                    <span className="text-sm text-gray-600">
+
+                        Projectnaam:
+
+                    </span>
+
+                    <input
+
+                        value={title}
+
+                        onChange={(e)=>
+                            setTitle(e.target.value)
+                        }
+
+                        placeholder="Bijv. Bedrijfsnaam"
+
+                        className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-3
+                            mt-2
+                        "
+
+                    />
+
+                </label>
+
+
                 <div>
 
                     <span className="text-sm text-gray-600">
@@ -654,7 +699,8 @@ function NewWorkorderInner(){
                             placeholder="Plaats"
 
                             className="
-                                w-48
+                                flex-1
+                                min-w-[140px]
                                 border
                                 rounded-xl
                                 p-3
@@ -697,79 +743,8 @@ function NewWorkorderInner(){
                 </label>
 
 
-                {/* Welke opleverformulieren zijn van toepassing op deze werkbon? */}
                 {
-                    formTypes.length > 0 && (
-
-                        <div className="
-                            border
-                            rounded-2xl
-                            p-5
-                            bg-gray-50
-                            space-y-3
-                        ">
-
-                            <span className="
-                                block
-                                text-sm
-                                font-medium
-                                text-gray-700
-                            ">
-                                Welke formulier moet er ingevuld worden?
-                            </span>
-
-                            <div className="space-y-2">
-                                {
-                                    formTypes.map(ft=>{
-
-                                        const gekozen =
-                                            selectedFormTypeId === ft.id;
-
-                                        return (
-                                            <label
-                                                key={ft.id}
-                                                className="
-                                                    flex
-                                                    items-center
-                                                    gap-3
-                                                    cursor-pointer
-                                                "
-                                            >
-                                                <input
-                                                    type="radio"
-                                                    name="formType"
-                                                    checked={gekozen}
-                                                    onChange={()=>{
-                                                        setSelectedFormTypeId(
-                                                            gekozen ? "" : ft.id
-                                                        );
-                                                    }}
-                                                    onClick={()=>{
-                                                        // Nogmaals klikken op de gekozen optie zet hem uit.
-                                                        if(gekozen){
-                                                            setSelectedFormTypeId("");
-                                                        }
-                                                    }}
-                                                    className="w-4 h-4"
-                                                />
-                                                <span className="text-sm text-gray-700">
-                                                    {ft.name}
-                                                </span>
-                                            </label>
-                                        );
-
-                                    })
-                                }
-                            </div>
-
-                        </div>
-
-                    )
-                }
-
-
-                {
-                    !isEngineer && (
+                    true && (
 
                         <>
 
@@ -910,6 +885,32 @@ function NewWorkorderInner(){
 
                                     </span>
 
+                                    <label className="
+                                        flex
+                                        items-center
+                                        gap-2
+                                        mt-2
+                                        cursor-pointer
+                                    ">
+                                        <input
+                                            type="checkbox"
+                                            checked={startTime === "08:00" && endTime === "16:00"}
+                                            onChange={(e)=>{
+                                                if(e.target.checked){
+                                                    setStartTime("08:00");
+                                                    setEndTime("16:00");
+                                                } else {
+                                                    setStartTime("");
+                                                    setEndTime("");
+                                                }
+                                            }}
+                                            className="w-4 h-4"
+                                        />
+                                        <span className="text-sm text-gray-700">
+                                            Hele dag (08:00 – 16:00)
+                                        </span>
+                                    </label>
+
                                     <div className="
                                         flex
                                         items-end
@@ -1009,6 +1010,10 @@ function NewWorkorderInner(){
 
                             </div>
 
+
+{
+                          !isEngineer && (
+                            <>
 
                             <label className="block">
 
@@ -1283,34 +1288,261 @@ function NewWorkorderInner(){
 
                             </div>
 
+                            </>
+                          )
+                        }
+
                         </>
 
                     )
                 }
 
 
+                {/* Welke opleverformulieren zijn van toepassing op deze werkbon? */}
+                {
+                    formTypes.length > 0 && (
+
+                        <div className="
+                            border
+                            rounded-2xl
+                            p-5
+                            bg-gray-50
+                            space-y-3
+                        ">
+
+                            <span className="
+                                block
+                                text-sm
+                                font-medium
+                                text-gray-700
+                            ">
+                                Welke formulier moet er ingevuld worden?
+                            </span>
+
+                            <div className="
+                                flex
+                                flex-wrap
+                                gap-3
+                            ">
+                                {
+                                    formTypes.map(ft=>{
+
+                                        const gekozen =
+                                            selectedFormTypeId === ft.id;
+
+                                        return (
+                                            <button
+                                                key={ft.id}
+                                                type="button"
+                                                onClick={()=>{
+                                                    setSelectedFormTypeId(
+                                                        gekozen ? "" : ft.id
+                                                    );
+                                                }}
+                                                className={`
+                                                    px-4
+                                                    py-2
+                                                    rounded-xl
+                                                    border
+                                                    text-sm
+                                                    transition
+                                                    ${
+                                                        gekozen
+                                                        ?
+                                                        "bg-blue-50 border-blue-400 text-blue-800 font-medium"
+                                                        :
+                                                        "bg-white border-slate-200 text-gray-600 hover:border-slate-300"
+                                                    }
+                                                `}
+                                            >
+                                                {ft.name}
+                                            </button>
+                                        );
+
+                                    })
+                                }
+                            </div>
+
+                        </div>
+
+                    )
+                }
+
+
+                {/* Inline invulformulier voor de monteur, direct onder de keuze */}
+                {
+                    isEngineer
+                    &&
+                    (
+                        selectedFormKey === "digital_signage"
+                        ||
+                        selectedFormKey === "uren"
+                        ||
+                        selectedFormKey === "evalue8"
+                    )
+                    && (
+
+                        <div className="pt-2">
+
+                            <OpleverForm
+                                initial={opleverData}
+                                embedded
+                                onChange={setOpleverData}
+                                monteur1Name={session?.user?.name ?? null}
+                                variant={
+                                    selectedFormKey === "uren"
+                                    ?
+                                    "uren"
+                                    :
+                                    selectedFormKey === "evalue8"
+                                    ?
+                                    "evalue8"
+                                    :
+                                    "volledig"
+                                }
+                            />
+
+
+                            {/* Foto's; worden pas bij het eerste opslaan geüpload */}
+                            <div className="
+                                bg-white
+                                border
+                                rounded-2xl
+                                p-5
+                                mt-4
+                                space-y-3
+                            ">
+
+                                <h2 className="font-bold text-lg">
+                                    📷 Foto&apos;s
+                                </h2>
+
+                                <label className="
+                                    block
+                                    w-full
+                                    border-2
+                                    border-dashed
+                                    border-gray-300
+                                    rounded-xl
+                                    p-4
+                                    text-center
+                                    text-gray-600
+                                    cursor-pointer
+                                    hover:bg-gray-50
+                                ">
+                                    📷 Foto's toevoegen
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={(e)=>{
+                                            if(e.target.files){
+                                                setOpleverFotos(prev=>[
+                                                    ...prev,
+                                                    ...Array.from(e.target.files!)
+                                                ]);
+                                            }
+                                        }}
+                                        className="hidden"
+                                    />
+                                </label>
+
+                                {
+                                    opleverFotos.length > 0 && (
+                                        <div className="
+                                            grid
+                                            grid-cols-2
+                                            sm:grid-cols-3
+                                            gap-3
+                                        ">
+                                            {
+                                                opleverFotos.map((foto,index)=>(
+                                                    <div
+                                                        key={index}
+                                                        className="
+                                                            border
+                                                            rounded-xl
+                                                            overflow-hidden
+                                                            bg-gray-50
+                                                            relative
+                                                        "
+                                                    >
+                                                        <img
+                                                            src={URL.createObjectURL(foto)}
+                                                            alt={`Foto ${index + 1}`}
+                                                            className="w-full h-28 object-cover"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={()=>
+                                                                setOpleverFotos(prev=>
+                                                                    prev.filter((_,i)=>i !== index)
+                                                                )
+                                                            }
+                                                            className="
+                                                                absolute
+                                                                top-1
+                                                                right-1
+                                                                bg-white/80
+                                                                rounded-full
+                                                                w-6
+                                                                h-6
+                                                                text-red-500
+                                                            "
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    )
+                                }
+
+                                <p className="text-xs text-gray-400">
+                                    De foto's worden opgeslagen zodra je de werkbon opslaat.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    )
+                }
+
+
+                {/* Nog niet gebouwde formulieren */}
+                {
+                    isEngineer
+                    &&
+                    selectedFormKey
+                    &&
+                    selectedFormKey !== "digital_signage"
+                    &&
+                    selectedFormKey !== "uren"
+                    &&
+                    selectedFormKey !== "evalue8"
+                    && (
+
+                        <div className="
+                            bg-amber-50
+                            border
+                            border-amber-200
+                            rounded-2xl
+                            p-5
+                            text-amber-800
+                            text-sm
+                        ">
+                            Dit formulier wordt binnenkort toegevoegd.
+                        </div>
+
+                    )
+                }
+
+
+
+
             </section>
-
-
-
-
-            {
-                isEngineer && (
-
-                    <OpleverForm
-
-                        initial={formData}
-
-                        embedded
-
-                        onChange={setFormData}
-
-                        monteur1Name={session?.user?.name ?? null}
-
-                    />
-
-                )
-            }
 
 
 
@@ -1321,7 +1553,21 @@ function NewWorkorderInner(){
 
                 disabled={saving}
 
-                className="
+                className={
+                    isEngineer
+                    ?
+                    `
+                    w-full
+                    bg-green-600
+                    text-white
+                    rounded-xl
+                    px-5
+                    py-4
+                    font-bold
+                    disabled:opacity-50
+                    `
+                    :
+                    `
                     w-full
                     bg-black
                     text-white
@@ -1330,7 +1576,8 @@ function NewWorkorderInner(){
                     py-4
                     font-bold
                     disabled:opacity-50
-                "
+                    `
+                }
 
             >
 
@@ -1341,7 +1588,7 @@ function NewWorkorderInner(){
                     :
                     isEngineer
                     ?
-                    "✓ Werkbon opslaan"
+                    "📤 Werkbon versturen"
                     :
                     "✓ Werkbon klaarzetten"
                 }

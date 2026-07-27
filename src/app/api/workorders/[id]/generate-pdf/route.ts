@@ -202,9 +202,14 @@ customer:true,
 
                         })),
 
-                    photoUrls:
+                    photos:
                         workorder.photos.map(
-                            photo=>photo.url
+                            photo=>({
+                                url:
+                                    photo.url,
+                                caption:
+                                    photo.caption ?? null
+                            })
                         ),
 
                     signatureUrl:
