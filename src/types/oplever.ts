@@ -246,6 +246,7 @@ export interface OpleverData {
         meerwerkInOpdrachtVan:string;
         netwerkGecontroleerdDoor:string;
         contactpersoon:string;
+        handtekening:string;
     };
 
     // Per-opdrachtgever extra velden (dynamisch, afhankelijk van klant)
@@ -451,7 +452,8 @@ export function emptyOpleverData():OpleverData {
             meerwerkMateriaal:"",
             meerwerkInOpdrachtVan:"",
             netwerkGecontroleerdDoor:"",
-            contactpersoon:""
+            contactpersoon:"",
+            handtekening:""
         },
 
         custom:{}

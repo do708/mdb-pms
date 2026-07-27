@@ -929,7 +929,7 @@ function generateHtml(
       <div>
         <div class="info-label" style="margin-bottom:4px">Handtekening klant</div>
         <div class="sig-box">
-          ${data.signatureUrl ? `<img src="${esc(data.signatureUrl)}" class="sig-img" alt="Handtekening klant" />` : ""}
+          ${data.signatureUrl ? `<img src="${esc(data.signatureUrl)}" class="sig-img" alt="Handtekening klant" />` : (oplever.afronding.handtekening ? `<img src="${oplever.afronding.handtekening}" class="sig-img" alt="Handtekening klant" />` : "")}
           <div class="sig-line">Naam: ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "_________________________________"}</div>
         </div>
       </div>

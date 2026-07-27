@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
     BEUGEL_TYPES,
@@ -256,6 +256,147 @@ function Keuze({
 
 
 // Eén regel in de audio-lijst: label links, aantal-veld rechts.
+// Inline handtekening-vak: tekenen met vinger/pen/muis, opslaan als data-URL.
+function HandtekeningVak({
+    value,
+    onChange
+}:{
+    value:string;
+    onChange:(dataUrl:string)=>void;
+}){
+
+    const canvasRef =
+        useRef<HTMLCanvasElement | null>(null);
+
+    const tekenen =
+        useRef(false);
+
+
+    // Bestaande handtekening terugtekenen bij laden.
+    useEffect(()=>{
+        const canvas = canvasRef.current;
+        if(!canvas || !value){
+            return;
+        }
+        const ctx = canvas.getContext("2d");
+        if(!ctx){
+            return;
+        }
+        const img = new Image();
+        img.onload = ()=>{
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        };
+        img.src = value;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+
+
+    function pos(event:React.PointerEvent<HTMLCanvasElement>){
+        const canvas = canvasRef.current;
+        if(!canvas){
+            return { x:0, y:0 };
+        }
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x:(event.clientX - rect.left) * (canvas.width / rect.width),
+            y:(event.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+
+    function start(event:React.PointerEvent<HTMLCanvasElement>){
+        event.preventDefault();
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        if(!canvas || !ctx){
+            return;
+        }
+        canvas.setPointerCapture(event.pointerId);
+        const { x, y } = pos(event);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        tekenen.current = true;
+    }
+
+
+    function beweeg(event:React.PointerEvent<HTMLCanvasElement>){
+        if(!tekenen.current){
+            return;
+        }
+        event.preventDefault();
+        const ctx = canvasRef.current?.getContext("2d");
+        if(!ctx){
+            return;
+        }
+        const { x, y } = pos(event);
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#0f172a";
+        ctx.lineTo(x, y);
+        ctx.stroke();
+    }
+
+
+    function stop(){
+        if(!tekenen.current){
+            return;
+        }
+        tekenen.current = false;
+        const canvas = canvasRef.current;
+        if(canvas){
+            onChange(canvas.toDataURL("image/png"));
+        }
+    }
+
+
+    function wissen(){
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        if(canvas && ctx){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            onChange("");
+        }
+    }
+
+
+    return (
+        <div>
+            <canvas
+                ref={canvasRef}
+                width={600}
+                height={200}
+                onPointerDown={start}
+                onPointerMove={beweeg}
+                onPointerUp={stop}
+                onPointerCancel={stop}
+                style={{ touchAction:"none" }}
+                className="
+                    border
+                    rounded-xl
+                    w-full
+                    h-40
+                    bg-gray-50
+                "
+            />
+            <button
+                type="button"
+                onClick={wissen}
+                className="
+                    mt-2
+                    text-sm
+                    text-slate-500
+                    hover:text-slate-700
+                "
+            >
+                Wissen
+            </button>
+        </div>
+    );
+}
+
+
+
 function AudioRegel({
     label,
     value,
@@ -458,9 +599,9 @@ function UitklapVraag({
                         ${
                             actief
                             ?
-                            "bg-blue-600 text-white"
+                            "bg-sky-100 border border-sky-300 text-sky-700"
                             :
-                            "border border-slate-300 text-slate-500 hover:border-blue-400 hover:text-blue-600"
+                            "border border-slate-300 text-slate-500 hover:border-sky-400 hover:text-sky-600"
                         }
                     `}
                 >
@@ -624,7 +765,7 @@ function ExtraKostenBlok({
                     ${
                         value.actief
                         ?
-                        "bg-orange-400 border-orange-400 text-white"
+                        "bg-amber-100 border-amber-300 text-amber-800"
                         :
                         "text-gray-400"
                     }
@@ -2845,10 +2986,10 @@ export default function OpleverForm({
                                     <div
                                         key={locatie}
                                         className="
-                                            flex
+                                            grid
+                                            grid-cols-[13rem_auto]
                                             items-center
                                             gap-3
-                                            flex-wrap
                                         "
                                     >
                                         <button
@@ -2863,13 +3004,16 @@ export default function OpleverForm({
                                                 draft.checklist.mediaplayerLocaties = huidig;
                                             })}
                                             className={`
+                                                flex
+                                                items-center
+                                                gap-2
                                                 px-4
                                                 py-1.5
                                                 rounded-full
                                                 border
                                                 text-sm
                                                 text-left
-                                                min-w-[10rem]
+                                                w-full
                                                 transition
                                                 ${
                                                     actief
@@ -2880,28 +3024,30 @@ export default function OpleverForm({
                                                 }
                                             `}
                                         >
-                                            {actief ? "✓ " : ""}{locatie}
+                                            <span className="w-3 shrink-0">{actief ? "✓" : ""}</span>
+                                            <span>{locatie}</span>
                                         </button>
 
-                                        {
-                                            actief && (
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-sm text-slate-500">Aantal:</span>
-                                                    <input
-                                                        inputMode="numeric"
-                                                        value={c.mediaplayerLocaties[locatie]}
-                                                        placeholder="Aantal"
-                                                        onChange={(e)=>update(draft=>{
-                                                            draft.checklist.mediaplayerLocaties = {
-                                                                ...draft.checklist.mediaplayerLocaties,
-                                                                [locatie]:e.target.value
-                                                            };
-                                                        })}
-                                                        className="w-20 border rounded-lg p-1.5 text-sm"
-                                                    />
-                                                </div>
-                                            )
-                                        }
+                                        <div className={`
+                                            flex
+                                            items-center
+                                            gap-2
+                                            ${actief ? "" : "invisible"}
+                                        `}>
+                                            <span className="text-sm text-slate-500">Aantal:</span>
+                                            <input
+                                                inputMode="numeric"
+                                                value={c.mediaplayerLocaties[locatie] ?? ""}
+                                                placeholder="Aantal"
+                                                onChange={(e)=>update(draft=>{
+                                                    draft.checklist.mediaplayerLocaties = {
+                                                        ...draft.checklist.mediaplayerLocaties,
+                                                        [locatie]:e.target.value
+                                                    };
+                                                })}
+                                                className="w-20 border rounded-lg p-1.5 text-sm"
+                                            />
+                                        </div>
                                     </div>
                                 );
 
@@ -3048,23 +3194,12 @@ export default function OpleverForm({
                             Handtekening voor akkoord
                         </span>
 
-                        <div className="
-                            border
-                            border-dashed
-                            rounded-xl
-                            h-28
-                            flex
-                            items-center
-                            justify-center
-                            text-center
-                            text-gray-400
-                            text-sm
-                            bg-gray-50
-                            px-4
-                        ">
-                            De klant zet de handtekening bij het onderdeel
-                            &quot;Handtekening klant&quot; onderaan de werkbon.
-                        </div>
+                        <HandtekeningVak
+                            value={data.afronding.handtekening}
+                            onChange={(dataUrl)=>update(draft=>{
+                                draft.afronding.handtekening = dataUrl;
+                            })}
+                        />
 
                     </div>
 
