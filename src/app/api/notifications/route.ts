@@ -78,11 +78,56 @@ export async function GET(){
 
 
 
+        // Recent verstuurde werkbonnen (door de monteur uitgevoerd/verstuurd).
+        // Kantoor/projects ziet deze als melding om af te handelen.
+        const zevenDagenGeleden =
+            new Date();
+        zevenDagenGeleden.setDate(zevenDagenGeleden.getDate() - 7);
+
+
+        const verstuurd =
+            await prisma.workorder.findMany({
+
+                where:{
+                    status:"uitgevoerd",
+                    sentAt:{
+                        gte:zevenDagenGeleden
+                    }
+                },
+
+                orderBy:{
+                    sentAt:"desc"
+                },
+
+                include:{
+                    customer:true,
+                    project:{
+                        include:{
+                            customer:true
+                        }
+                    },
+                    assignedUser:true
+                }
+
+            });
+
+
+
+
+        const items =
+            [
+                ...verstuurd.map(w=>({ ...w, soort:"verstuurd" })),
+                ...teLaat.map(w=>({ ...w, soort:"telaat" }))
+            ];
+
+
+
+
         return NextResponse.json({
 
-            count:teLaat.length,
+            count:items.length,
 
-            items:teLaat
+            items
 
         });
 

@@ -171,7 +171,10 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   plannedDate: 'plannedDate',
   plannedEndDate: 'plannedEndDate',
   assignmentId: 'assignmentId',
-  formData: 'formData'
+  formData: 'formData',
+  pdfData: 'pdfData',
+  pdfGeneratedAt: 'pdfGeneratedAt',
+  sentAt: 'sentAt'
 };
 
 exports.Prisma.WorkorderHourScalarFieldEnum = {
@@ -231,6 +234,16 @@ exports.Prisma.DocumentScalarFieldEnum = {
   type: 'type',
   url: 'url',
   workorderId: 'workorderId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  title: 'title',
+  message: 'message',
+  workorderId: 'workorderId',
+  read: 'read',
   createdAt: 'createdAt'
 };
 
@@ -324,6 +337,7 @@ exports.Prisma.ModelName = {
   WorkorderPhoto: 'WorkorderPhoto',
   WorkorderSignature: 'WorkorderSignature',
   Document: 'Document',
+  Notification: 'Notification',
   Assignment: 'Assignment',
   AssignmentUser: 'AssignmentUser',
   Invoice: 'Invoice',

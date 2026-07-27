@@ -41,11 +41,29 @@ export default function SignatureForm({
 
 
 
+    function pointerPos(
+        event:React.PointerEvent<HTMLCanvasElement>
+    ){
+        const canvas = canvasRef.current;
+        if(!canvas){
+            return { x:0, y:0 };
+        }
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x:(event.clientX - rect.left) * (canvas.width / rect.width),
+            y:(event.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+
+
     function startDrawing(
 
-        event:React.MouseEvent<HTMLCanvasElement>
+        event:React.PointerEvent<HTMLCanvasElement>
 
     ){
+
+        event.preventDefault();
 
 
         const canvas =
@@ -57,6 +75,10 @@ export default function SignatureForm({
             return;
 
         }
+
+
+        // De aanraking/pen vasthouden zodat tekenen doorloopt buiten het canvas.
+        canvas.setPointerCapture(event.pointerId);
 
 
 
@@ -72,21 +94,14 @@ export default function SignatureForm({
 
 
 
-        const rect =
-            canvas.getBoundingClientRect();
+        const { x, y } = pointerPos(event);
 
 
 
         ctx.beginPath();
 
 
-        ctx.moveTo(
-
-            event.clientX - rect.left,
-
-            event.clientY - rect.top
-
-        );
+        ctx.moveTo(x, y);
 
 
         setDrawing(true);
@@ -102,7 +117,7 @@ export default function SignatureForm({
 
     function draw(
 
-        event:React.MouseEvent<HTMLCanvasElement>
+        event:React.PointerEvent<HTMLCanvasElement>
 
     ){
 
@@ -112,6 +127,8 @@ export default function SignatureForm({
             return;
 
         }
+
+        event.preventDefault();
 
 
 
@@ -139,18 +156,11 @@ export default function SignatureForm({
 
 
 
-        const rect =
-            canvas.getBoundingClientRect();
+        const { x, y } = pointerPos(event);
 
 
 
-        ctx.lineTo(
-
-            event.clientX - rect.left,
-
-            event.clientY - rect.top
-
-        );
+        ctx.lineTo(x, y);
 
 
         ctx.stroke();
@@ -360,13 +370,13 @@ export default function SignatureForm({
                 height={250}
 
 
-                onMouseDown={startDrawing}
+                onPointerDown={startDrawing}
 
-                onMouseMove={draw}
+                onPointerMove={draw}
 
-                onMouseUp={stopDrawing}
+                onPointerUp={stopDrawing}
 
-                onMouseLeave={stopDrawing}
+                onPointerCancel={stopDrawing}
 
 
                 className="
@@ -374,7 +384,10 @@ export default function SignatureForm({
                     rounded-xl
                     w-full
                     bg-gray-50
+                    touch-none
                 "
+
+                style={{ touchAction:"none" }}
 
             />
 

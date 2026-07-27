@@ -68,6 +68,9 @@ model Workorder {
   plannedEndDate DateTime?
   assignmentId   String?
   formData       Json?
+  pdfData        Bytes?
+  pdfGeneratedAt DateTime?
+  sentAt         DateTime?
   documents      Document[]
   assignedUser   User?               @relation(fields: [assignedUserId], references: [id])
   assignment     Assignment?         @relation(fields: [assignmentId], references: [id])
@@ -145,6 +148,16 @@ model Document {
   workorderId String?
   createdAt   DateTime   @default(now())
   workorder   Workorder? @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  type        String   @default("workorder_sent")
+  title       String
+  message     String?
+  workorderId String?
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model Assignment {

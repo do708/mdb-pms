@@ -287,7 +287,7 @@ async function completeWorkorder(){
 
     const confirmComplete =
         confirm(
-            "Werkbon afronden?"
+            "Werkbon versturen? De werkbon wordt afgerond, als PDF opgeslagen en kantoor krijgt een melding."
         );
 
 
@@ -323,7 +323,7 @@ async function completeWorkorder(){
 
 
             alert(
-                "Werkbon afronden mislukt"
+                "Werkbon versturen mislukt"
             );
 
 
@@ -384,7 +384,7 @@ async function completeWorkorder(){
 
         alert(
 
-            "Werkbon afgerond en PDF opgeslagen"
+            "Werkbon verstuurd. Kantoor heeft een melding gekregen."
 
         );
 
@@ -409,7 +409,7 @@ async function completeWorkorder(){
 
         alert(
 
-            "Fout bij afronden werkbon"
+            "Fout bij versturen werkbon"
 
         );
 
@@ -855,7 +855,7 @@ async function completeWorkorder(){
                     ?
                     "Opslaan..."
                     :
-                    "💾 Werkbon opslaan"
+                    "💾 Tussentijds opslaan"
                 }
 
 
@@ -877,7 +877,7 @@ async function completeWorkorder(){
 
 >
 
-    ✅ Werkbon afronden
+    📤 Werkbon versturen
 
 </button>
 

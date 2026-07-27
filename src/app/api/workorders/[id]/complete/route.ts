@@ -135,7 +135,10 @@ customer:true,
                 data:{
 
                     status:
-                    "uitgevoerd"
+                    "uitgevoerd",
+
+                    sentAt:
+                    new Date()
 
                 }
 
@@ -204,24 +207,31 @@ customer:true,
 
 
 
-            await sendWorkorderMail({
-
-                workorderNumber:
-                    workorder.number,
-
-
-                customer:
-                    customerName(workorder),
-
-
-                project:
-                    (workorder.project?.name ?? customerName(workorder)),
-
-
-                pdfBuffer:
-                    Buffer.from(pdf)
-
+            // PDF-bytes in de database bewaren.
+            await prisma.workorder.update({
+                where:{ id },
+                data:{
+                    pdfData:Buffer.from(pdf),
+                    pdfGeneratedAt:new Date()
+                }
             });
+
+
+            // Mailen mag falen zonder het afronden te blokkeren.
+            try {
+                await sendWorkorderMail({
+                    workorderNumber:
+                        workorder.number,
+                    customer:
+                        customerName(workorder),
+                    project:
+                        (workorder.project?.name ?? customerName(workorder)),
+                    pdfBuffer:
+                        Buffer.from(pdf)
+                });
+            } catch(mailOnlyError){
+                console.error("WERKBON MAIL MISLUKT (afronden gaat door)", mailOnlyError);
+            }
 
 
         } catch(mailError){
@@ -239,6 +249,21 @@ customer:true,
 
 
 
+
+
+        // Melding voor kantoor/projects dat de werkbon is verstuurd.
+        try {
+            await prisma.notification.create({
+                data:{
+                    type:"workorder_sent",
+                    title:`Werkbon ${workorder.number} verstuurd`,
+                    message:`${customerName(workorder)} — werkbon is uitgevoerd en verstuurd door de monteur.`,
+                    workorderId:workorder.id
+                }
+            });
+        } catch(notifyError){
+            console.error("MELDING AANMAKEN MISLUKT (afronden gaat door)", notifyError);
+        }
 
 
         return NextResponse.json({
