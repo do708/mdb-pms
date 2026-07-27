@@ -136,7 +136,12 @@ export async function POST(
                     "uitgevoerd",
 
                     sentAt:
-                    new Date()
+                    new Date(),
+
+                    // Uitvoerdatum vastleggen als die nog niet gezet is,
+                    // zodat "Uitgevoerd op" in de PDF klopt.
+                    workDate:
+                    workorder.workDate ?? new Date()
 
                 }
 

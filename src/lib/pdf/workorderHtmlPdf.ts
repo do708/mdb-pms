@@ -3,7 +3,6 @@ import puppeteer from "puppeteer";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import QRCode from "qrcode";
 
 import {
     ExtraKosten,
@@ -459,28 +458,28 @@ function opleverSections(
   <div class="section">
     <div class="section-title">2. Installatie werkzaamheden</div>
     <table class="qa">
-      ${row("1. Schermen",pill(i.nieuweSchermen))}
+      ${i.nieuweSchermen === true ? row("1. Schermen",pill(i.nieuweSchermen)) : ""}
       ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
       ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
-      ${row("2. Videowall",pill(i.videowall))}
+      ${i.videowall === true ? row("2. Videowall",pill(i.videowall)) : ""}
       ${i.videowall === true && i.videowallStatus ? row("Videowall status",textAnswer(i.videowallStatus)) : ""}
       ${i.videowall === true && (i.videowallHorizontaal || i.videowallVerticaal) ? row("Videowall configuratie",textAnswer(`${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"} schermen`)) : ""}
       ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat === "Anders" ? (i.videowallFormaatAnders || "Anders") : i.videowallFormaat)) : ""}
       ${i.videowall === true && i.videowallOrientatie ? row("Videowall oriëntatie",textAnswer(i.videowallOrientatie)) : ""}
-      ${row("3. Kiosk",pill(i.kiosk))}
+      ${i.kiosk === true ? row("3. Kiosk",pill(i.kiosk)) : ""}
       ${i.kiosk === true ? i.kioskBlokken.filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
           row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
         ).join("") : ""}
-      ${i.mediaplayers ? row("4. Mediaplayers",choicePill(i.mediaplayers)) : row("4. Mediaplayers",`<span class="pill pill-empty">—</span>`)}
-      ${i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
-      ${row("5. Audio",pill(i.audio))}
+      ${i.mediaplayers ? row("4. Mediaplayers",choicePill(i.mediaplayers)) : ""}
+      ${i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
+      ${i.audio === true ? row("5. Audio",pill(i.audio)) : ""}
       ${i.audio === true && i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : ""}
       ${i.audio === true && i.audioSpeler ? row("Audiospeler (aantal)",textAnswer(i.audioSpeler)) : ""}
       ${i.audio === true && i.audioVersterker ? row("Versterker (aantal)",textAnswer(i.audioVersterker)) : ""}
       ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar (aantal)",textAnswer(i.audioVolumeregelaar)) : ""}
       ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
       ${i.audio === true && i.audioAndersTekst ? row(esc(i.audioAndersTekst) + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
-      ${row("6. Project (offertebasis)?",pill(i.isProject))}
+      ${i.isProject === true ? row("6. Project (offertebasis)?",pill(i.isProject)) : ""}
       ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
     </table>
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
@@ -724,7 +723,6 @@ function customFieldsSection(
 
 function generateHtml(
     data:WorkorderHtmlPdfInput,
-    qrDataUrl:string,
     logoDataUrl:string = ""
 ):string {
 
@@ -757,13 +755,6 @@ function generateHtml(
             (sum,item)=>sum + Number(item.kilometers),
             0
         );
-
-
-    const statusLabels:Record<string,string> = {
-        open:"Open",
-        in_uitvoering:"In uitvoering",
-        afgerond:"Afgerond"
-    };
 
 
     return `<!DOCTYPE html>
@@ -830,8 +821,8 @@ function generateHtml(
   .photo-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
   .photo-caption { font-size: 9px; color: #475569; margin-top: 3px; padding: 2px 4px; background: #f8fafc; border-radius: 3px; }
   /* Handtekeningen */
-  .sig-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; min-height: 70px; }
-  .sig-img { max-height: 60px; max-width: 100%; }
+  .sig-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; min-height: 90px; width: 100%; }
+  .sig-img { width: 100%; max-height: 120px; object-fit: contain; }
   .sig-line { border-top: 1px dashed #cbd5e1; margin-top: 40px; padding-top: 4px; font-size: 8px; color: #94a3b8; }
   /* Footer */
   .footer { margin-top: 18px; padding-top: 12px; border-top: 2px solid #ffd400; display: flex; justify-content: space-between; align-items: flex-end; }
@@ -858,7 +849,6 @@ function generateHtml(
       <div class="order-doc-title">Opleverdocument</div>
       <div class="order-number-value">${esc(data.number)}</div>
       <div class="order-meta">${esc(data.customer.name)} · ${formatDate(data.createdAt)}</div>
-      <div style="margin-top:4px"><span class="status-badge">${esc(statusLabels[data.status] ?? data.status)}</span></div>
     </div>
   </div>
 
@@ -869,7 +859,6 @@ function generateHtml(
       <div class="info-box">
         <div class="info-label">Werkbon</div>
         <div class="info-value" style="font-size:12px;font-weight:700">${esc(data.title)}</div>
-        <div class="info-value" style="font-size:9px;color:#64748b;margin-top:2px">${esc(data.projectName)}</div>
       </div>
       <div class="info-box">
         <div class="info-label">${opdrachtgever ? "Opdrachtgever · Klant" : "Klant"}</div>
@@ -883,32 +872,29 @@ function generateHtml(
 
   <!-- META -->
   <div class="section">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px">
-      <div class="info-box">
-        <div class="info-label">Monteur 1</div>
-        <div class="info-value">${esc(data.engineerName ?? "—")}</div>
-      </div>
-      <div class="info-box">
-        <div class="info-label">Monteur 2</div>
-        <div class="info-value">${esc(oplever.tarief.monteur2) || "—"}</div>
-      </div>
-      <div class="info-box">
-        <div class="info-label">Monteur 3</div>
-        <div class="info-value">${esc(oplever.tarief.monteur3) || "—"}</div>
-      </div>
-      <div class="info-box">
-        <div class="info-label">Monteur 4</div>
-        <div class="info-value">${esc(oplever.tarief.monteur4) || "—"}</div>
-      </div>
-    </div>
+    ${(()=>{
+        const alleMonteurs = [
+            data.engineerName,
+            oplever.tarief.monteur2,
+            oplever.tarief.monteur3,
+            oplever.tarief.monteur4
+        ].filter(m=>m && String(m).trim());
+
+        if(alleMonteurs.length === 0){ return ""; }
+
+        return `<div style="display:grid;grid-template-columns:repeat(${alleMonteurs.length},1fr);gap:8px;margin-bottom:8px">
+            ${alleMonteurs.map(m=>`
+              <div class="info-box">
+                <div class="info-label">Monteur</div>
+                <div class="info-value">${esc(String(m))}</div>
+              </div>
+            `).join("")}
+        </div>`;
+    })()}
     <div class="grid-2" style="gap:8px">
       <div class="info-box">
-        <div class="info-label">Geplande datum</div>
-        <div class="info-value">${formatDate(data.plannedDate)}</div>
-      </div>
-      <div class="info-box">
         <div class="info-label">Uitgevoerd op</div>
-        <div class="info-value">${formatDate(data.workDate)}</div>
+        <div class="info-value">${formatDate(data.workDate ?? data.plannedDate)}</div>
       </div>
     </div>
   </div>
@@ -1007,22 +993,14 @@ function generateHtml(
     </div>
   </div>` : ""}
 
-  <!-- HANDTEKENINGEN -->
+  <!-- HANDTEKENING -->
   <div class="section">
-    <div class="section-title">Handtekeningen</div>
-    <div class="grid-2">
-      <div>
-        <div class="info-label" style="margin-bottom:4px">Handtekening klant</div>
-        <div class="sig-box">
-          ${data.signatureUrl ? `<img src="${esc(data.signatureUrl)}" class="sig-img" alt="Handtekening klant" />` : (oplever.afronding.handtekening ? `<img src="${oplever.afronding.handtekening}" class="sig-img" alt="Handtekening klant" />` : "")}
-          <div class="sig-line">Naam: ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "_________________________________"}</div>
-        </div>
-      </div>
-      <div>
-        <div class="info-label" style="margin-bottom:4px">Handtekening monteur</div>
-        <div class="sig-box">
-          <div class="sig-line">${esc(data.engineerName) || ""}</div>
-        </div>
+    <div class="section-title">Handtekening</div>
+    <div>
+      <div class="info-label" style="margin-bottom:4px">Handtekening klant</div>
+      <div class="sig-box">
+        ${data.signatureUrl ? `<img src="${esc(data.signatureUrl)}" class="sig-img" alt="Handtekening klant" />` : (oplever.afronding.handtekening ? `<img src="${oplever.afronding.handtekening}" class="sig-img" alt="Handtekening klant" />` : "")}
+        <div class="sig-line">Naam: ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "_________________________________"}</div>
       </div>
     </div>
   </div>
@@ -1035,7 +1013,6 @@ function generateHtml(
       <div>Gegenereerd: ${formatDateTime(new Date())}</div>
       <div style="margin-top:4px;color:#cbd5e1">Dit is een automatisch gegenereerd document</div>
     </div>
-    <img src="${qrDataUrl}" class="qr-img" alt="QR Code" />
   </div>
 
 </div>
@@ -1051,20 +1028,6 @@ export async function generateWorkorderHtmlPdf(
     data:WorkorderHtmlPdfInput,
     appUrl:string
 ):Promise<Buffer> {
-
-
-    const qrDataUrl =
-        await QRCode.toDataURL(
-            `${appUrl}/workorders/${data.number}`,
-            {
-                width:120,
-                margin:1,
-                color:{
-                    dark:"#1e2a5e",
-                    light:"#ffffff"
-                }
-            }
-        );
 
 
     // MDB-logo als data-URL inlezen (voor in de PDF-header)
@@ -1083,7 +1046,6 @@ export async function generateWorkorderHtmlPdf(
     const html =
         generateHtml(
             data,
-            qrDataUrl,
             logoDataUrl
         );
 

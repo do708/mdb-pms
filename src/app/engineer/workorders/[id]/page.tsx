@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import StatusFlow from "@/components/workorders/StatusFlow";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import OpleverForm from "@/components/workorders/OpleverForm";
 
@@ -57,6 +58,8 @@ interface Workorder {
     }[];
 
     status:string;
+
+    sentAt:string | null;
 
     location:string | null;
 
@@ -311,6 +314,31 @@ export default function EngineerWorkorderPage(){
 async function completeWorkorder(){
 
 
+    // Checklist is verplicht bij Digital Signage en eValue8 (niet bij Uren).
+    const formKey =
+        (workorder?.forms ?? [])[0]?.formType?.key ?? "";
+
+    if(formKey !== "uren" && opleverData){
+
+        const cl = opleverData.checklist;
+
+        const ontbreekt =
+            cl.werkendOpgeleverd === null
+            || cl.lichtnetSchakelbaar === null
+            || cl.wifiVanToepassing === null
+            || !cl.remoteServices
+            || cl.afvalverwijdering === null;
+
+        if(ontbreekt){
+            alert(
+                "Vul eerst de volledige checklist in voordat je de werkbon verstuurt."
+            );
+            return;
+        }
+
+    }
+
+
     const confirmComplete =
         confirm(
             "Werkbon versturen? De werkbon wordt afgerond, als PDF opgeslagen en kantoor krijgt een melding."
@@ -538,6 +566,23 @@ async function completeWorkorder(){
 
 
             </header>
+
+
+            {
+                isOffice && (
+                    <section className="
+                        bg-white
+                        rounded-2xl
+                        p-4
+                    ">
+                        <StatusFlow
+                            workorderId={id}
+                            current={status || workorder.status}
+                            onChanged={(nieuw)=>setStatus(nieuw)}
+                        />
+                    </section>
+                )
+            }
 
 
 
@@ -862,44 +907,40 @@ async function completeWorkorder(){
 
     workorderId={id}
 
+    readOnly={!!workorder.sentAt}
+
 />
 
 
+            {
+                /* Versturen-knop alleen tonen als de werkbon nog niet
+                   verstuurd is. Daarna is dit een read-only weergave. */
+                !workorder.sentAt && (
 
+                    <button
 
+                        onClick={completeWorkorder}
 
+                        disabled={saving}
 
+                        className="
+                            w-full
+                            bg-green-600
+                            text-white
+                            rounded-xl
+                            py-4
+                            font-bold
+                            disabled:opacity-50
+                        "
 
+                    >
 
+                        📤 Werkbon versturen
 
+                    </button>
 
-
-
-
-
-
-
-            <button
-
-                onClick={completeWorkorder}
-
-                disabled={saving}
-
-                className="
-                    w-full
-                    bg-green-600
-                    text-white
-                    rounded-xl
-                    py-4
-                    font-bold
-                    disabled:opacity-50
-                "
-
-            >
-
-                📤 Werkbon versturen
-
-            </button>
+                )
+            }
 
 
 

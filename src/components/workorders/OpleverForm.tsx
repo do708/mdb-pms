@@ -3164,7 +3164,11 @@ export default function OpleverForm({
 
             <div>
 
-                <Kop>Checklist</Kop>
+                <Kop>Checklist *</Kop>
+
+                <p className="text-xs text-slate-500 -mt-1 mb-2">
+                    Alle checklistvragen zijn verplicht.
+                </p>
 
 
                 {/* 1. Werkend opgeleverd */}

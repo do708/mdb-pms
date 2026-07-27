@@ -8,6 +8,9 @@ interface PhotosFormProps {
 
     workorderId:string;
 
+    // Als de werkbon al verstuurd is: alleen tonen, geen knop om toe te voegen.
+    readOnly?:boolean;
+
 }
 
 
@@ -24,7 +27,9 @@ interface Photo {
 
 export default function PhotosForm({
 
-    workorderId
+    workorderId,
+
+    readOnly = false
 
 }:PhotosFormProps){
 
@@ -186,40 +191,46 @@ export default function PhotosForm({
             </h2>
 
 
-            <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={selectPhotos}
-                className="hidden"
-            />
+            {
+                !readOnly && (
+                    <>
+                        <input
+                            ref={fileRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={selectPhotos}
+                            className="hidden"
+                        />
 
 
-            <button
-                type="button"
-                onClick={()=>fileRef.current?.click()}
-                disabled={uploading}
-                className="
-                    w-full
-                    border-2
-                    border-dashed
-                    border-gray-300
-                    rounded-xl
-                    p-4
-                    text-gray-600
-                    hover:bg-gray-50
-                    disabled:opacity-50
-                "
-            >
-                {
-                    uploading
-                    ?
-                    "Bezig met uploaden..."
-                    :
-                    "📷 Foto's toevoegen"
-                }
-            </button>
+                        <button
+                            type="button"
+                            onClick={()=>fileRef.current?.click()}
+                            disabled={uploading}
+                            className="
+                                w-full
+                                border-2
+                                border-dashed
+                                border-gray-300
+                                rounded-xl
+                                p-4
+                                text-gray-600
+                                hover:bg-gray-50
+                                disabled:opacity-50
+                            "
+                        >
+                            {
+                                uploading
+                                ?
+                                "Bezig met uploaden..."
+                                :
+                                "📷 Foto's toevoegen"
+                            }
+                        </button>
+                    </>
+                )
+            }
 
 
             {
@@ -258,20 +269,22 @@ export default function PhotosForm({
                                     <div className="p-2">
                                         <input
                                             value={photo.caption ?? ""}
-                                            placeholder="Wat is dit?"
+                                            placeholder={readOnly ? "" : "Wat is dit?"}
+                                            readOnly={readOnly}
                                             onChange={(e)=>
                                                 setCaption(photo.id, e.target.value)
                                             }
                                             onBlur={(e)=>
                                                 saveCaption(photo.id, e.target.value)
                                             }
-                                            className="
+                                            className={`
                                                 w-full
                                                 border
                                                 rounded-lg
                                                 p-1.5
                                                 text-sm
-                                            "
+                                                ${readOnly ? "bg-gray-50 border-transparent" : ""}
+                                            `}
                                         />
                                     </div>
 
