@@ -2606,7 +2606,12 @@ export default function OpleverForm({
                         })
                     }
                 >
-                    <AudioRegel label="Speakers" value={m.speakersAantal} onChange={(v)=>update(d=>{d.materialen.speakersAantal=v;})} />
+                    <AudioRegel label="USB Speakers" value={m.usbSpeakers} onChange={(v)=>update(d=>{d.materialen.usbSpeakers=v;})} />
+
+                    <p className="text-sm text-gray-600 pt-2">RS232 kabel (aantal per lengte)</p>
+                    <AudioRegel label="1 meter" value={m.rs232_1m} onChange={(v)=>update(d=>{d.materialen.rs232_1m=v;})} />
+                    <AudioRegel label="5 meter" value={m.rs232_5m} onChange={(v)=>update(d=>{d.materialen.rs232_5m=v;})} />
+                    <AudioRegel label="10 meter" value={m.rs232_10m} onChange={(v)=>update(d=>{d.materialen.rs232_10m=v;})} />
                 </UitklapVraag>
 
 

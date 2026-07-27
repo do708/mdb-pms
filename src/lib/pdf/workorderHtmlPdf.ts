@@ -433,6 +433,17 @@ function opleverSections(
         .join(" · ");
 
 
+    const rs232 =
+        [
+            ["1 m",m.rs232_1m],
+            ["5 m",m.rs232_5m],
+            ["10 m",m.rs232_10m]
+        ]
+        .filter(([,amount])=>amount)
+        .map(([name,amount])=>`${name}: ${amount}`)
+        .join(" · ");
+
+
     return `
   <div class="section">
     <div class="section-title">Installatiegegevens — 1. Tarief &amp; Uren</div>
@@ -520,7 +531,8 @@ function opleverSections(
       ${row("6. Verlengsnoeren (stekkerdozen) gebruikt",pill(m.verlengsnoeren))}
       ${m.verlengsnoeren === true && verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
       ${row("7. Extra seriële en/of USB speakers gebruikt",pill(m.extraSpeakers))}
-      ${m.extraSpeakers === true && m.speakersAantal ? row("Speakers (aantal)",textAnswer(m.speakersAantal)) : ""}
+      ${m.extraSpeakers === true && m.usbSpeakers ? row("USB Speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
+      ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
     </table>
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>

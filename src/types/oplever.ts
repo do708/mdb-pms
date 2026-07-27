@@ -208,6 +208,10 @@ export interface OpleverData {
         verleng5:string;
         extraSpeakers:boolean | null;
         speakersAantal:string;
+        usbSpeakers:string;
+        rs232_1m:string;
+        rs232_5m:string;
+        rs232_10m:string;
         opmerkingen:string;
     };
 
@@ -414,6 +418,10 @@ export function emptyOpleverData():OpleverData {
             verleng5:"",
             extraSpeakers:null,
             speakersAantal:"",
+            usbSpeakers:"",
+            rs232_1m:"",
+            rs232_5m:"",
+            rs232_10m:"",
             opmerkingen:""
         },
 
