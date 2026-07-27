@@ -514,25 +514,31 @@ function opleverSections(
   <div class="section">
     <div class="section-title">Gebruikte materialen</div>
     <table class="qa">
-      ${row("1. TV beugels gemonteerd",pill(m.nieuweBeugels))}
-      ${m.nieuweBeugels === true ? row("Nieuw of bestaand",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
+      ${m.nieuweBeugels === true ? row("1. TV beugels gemonteerd",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
       ${m.nieuweBeugels === true && beugels ? row("Beugels",textAnswer(beugels)) : ""}
-      ${row("2. Extra HDMI kabels gebruikt",pill(m.extraHdmiKabels))}
-      ${m.extraHdmiKabels === true && hdmiKabels ? row("HDMI kabels",textAnswer(hdmiKabels)) : ""}
+      ${m.extraHdmiKabels === true && hdmiKabels ? row("2. HDMI kabels",textAnswer(hdmiKabels)) : ""}
       ${m.extraHdmiKabels === true && hdmiSplitters ? row("HDMI splitters",textAnswer(hdmiSplitters)) : ""}
-      ${row("3. Extra patchkabels gebruikt",pill(m.extraPatchkabels))}
-      ${m.extraPatchkabels === true && patch ? row("Patchkabels",textAnswer(patch)) : ""}
-      ${row("Extra switches gebruikt",pill(m.extraSwitches))}
+      ${m.extraPatchkabels === true && patch ? row("3. Patchkabels",textAnswer(patch)) : ""}
       ${m.extraSwitches === true && switches ? row("Switches",textAnswer(switches)) : ""}
-      ${row("4. Extra UTP kabel getrokken",pill(m.utpGetrokken))}
-      ${m.utpGetrokken === true && utp ? row("UTP-kabels",textAnswer(utp)) : ""}
-      ${row("5. Extra stroomkabel getrokken",pill(m.stroomkabelGetrokken))}
-      ${m.stroomkabelGetrokken === true && stroom ? row("Stroomkabels",textAnswer(stroom)) : ""}
-      ${row("6. Verlengsnoeren (stekkerdozen) gebruikt",pill(m.verlengsnoeren))}
-      ${m.verlengsnoeren === true && verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
-      ${row("7. Extra seriële en/of USB speakers gebruikt",pill(m.extraSpeakers))}
-      ${m.extraSpeakers === true && m.usbSpeakers ? row("USB Speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
+      ${m.utpGetrokken === true && utp ? row("4. UTP-kabels",textAnswer(utp)) : ""}
+      ${m.stroomkabelGetrokken === true && stroom ? row("5. Stroomkabels",textAnswer(stroom)) : ""}
+      ${m.verlengsnoeren === true && verleng ? row("6. Verlengsnoeren",textAnswer(verleng)) : ""}
+      ${m.extraSpeakers === true && m.usbSpeakers ? row("7. USB Speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
       ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
+      ${
+        (
+            m.nieuweBeugels !== true &&
+            m.extraHdmiKabels !== true &&
+            m.extraPatchkabels !== true &&
+            m.extraSwitches !== true &&
+            m.utpGetrokken !== true &&
+            m.stroomkabelGetrokken !== true &&
+            m.verlengsnoeren !== true &&
+            m.extraSpeakers !== true
+        )
+        ? row("Materialen","<span class=\"txt\" style=\"color:#94a3b8\">Geen materialen gebruikt</span>")
+        : ""
+      }
     </table>
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>
@@ -548,8 +554,19 @@ function opleverSections(
       ${c.wifiVanToepassing === true ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
       ${row("4. Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices))}
       ${c.remoteServices === "Nee" && c.redenRemote ? row("Reden",textAnswer(c.redenRemote)) : ""}
-      ${row("5. Locatie mediaplayer(s)",c.locatieMediaplayer ? choicePill(c.locatieMediaplayer) : `<span class="pill pill-empty">—</span>`)}
-      ${c.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(c.aantalMediaplayers)) : ""}
+      ${(()=>{
+        const loc = c.mediaplayerLocaties && typeof c.mediaplayerLocaties === "object" ? c.mediaplayerLocaties : {};
+        const regels = Object.keys(loc)
+            .map(k=>`${k}${loc[k] ? `: ${loc[k]}` : ""}`)
+            .join(" · ");
+        if(regels){
+            return row("5. Locatie mediaplayer(s)",textAnswer(regels));
+        }
+        if(c.locatieMediaplayer){
+            return row("5. Locatie mediaplayer(s)",textAnswer(c.locatieMediaplayer + (c.aantalMediaplayers ? `: ${c.aantalMediaplayers}` : "")));
+        }
+        return "";
+      })()}
       ${row("6. Afvalverwijdering?",pill(c.afvalverwijdering))}
     </table>
   </div>`;

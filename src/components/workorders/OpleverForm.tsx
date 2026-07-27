@@ -2825,46 +2825,89 @@ export default function OpleverForm({
 
                 {/* 5. Locatie mediaplayer */}
                 <ChecklistVraag label="5. Wat is de locatie van de mediaplayer(s)?">
-                    <Keuze
-                        value={c.locatieMediaplayer}
-                        options={[
-                            "Achter het scherm",
-                            "In de patchkast",
-                            "Boven het plafond",
-                            "Kiosk",
-                            "Anders"
-                        ]}
-                        onChange={(v)=>update(draft=>{
-                            draft.checklist.locatieMediaplayer =
-                                v as OpleverData["checklist"]["locatieMediaplayer"];
-                        })}
-                    />
-                    {
-                        c.locatieMediaplayer && (
-                            <div className="
-                                mt-3
-                                rounded-xl
-                                bg-slate-50
-                                border
-                                border-slate-100
-                                p-3
-                                flex
-                                items-center
-                                gap-3
-                            ">
-                                <span className="text-sm text-slate-600">Aantal:</span>
-                                <input
-                                    inputMode="numeric"
-                                    value={c.aantalMediaplayers}
-                                    placeholder="Aantal"
-                                    onChange={(e)=>update(draft=>{
-                                        draft.checklist.aantalMediaplayers = e.target.value;
-                                    })}
-                                    className="w-24 border rounded-lg p-1.5 text-sm"
-                                />
-                            </div>
-                        )
-                    }
+                    <p className="text-sm text-slate-500 -mt-1">
+                        Meerdere locaties mogelijk — vink aan en vul het aantal in.
+                    </p>
+                    <div className="space-y-2">
+                        {
+                            [
+                                "Achter het scherm",
+                                "In de patchkast",
+                                "Boven het plafond",
+                                "Kiosk",
+                                "Anders"
+                            ].map((locatie)=>{
+
+                                const actief =
+                                    c.mediaplayerLocaties[locatie] !== undefined;
+
+                                return (
+                                    <div
+                                        key={locatie}
+                                        className="
+                                            flex
+                                            items-center
+                                            gap-3
+                                            flex-wrap
+                                        "
+                                    >
+                                        <button
+                                            type="button"
+                                            onClick={()=>update(draft=>{
+                                                const huidig = { ...draft.checklist.mediaplayerLocaties };
+                                                if(huidig[locatie] !== undefined){
+                                                    delete huidig[locatie];
+                                                } else {
+                                                    huidig[locatie] = "";
+                                                }
+                                                draft.checklist.mediaplayerLocaties = huidig;
+                                            })}
+                                            className={`
+                                                px-4
+                                                py-1.5
+                                                rounded-full
+                                                border
+                                                text-sm
+                                                text-left
+                                                min-w-[10rem]
+                                                transition
+                                                ${
+                                                    actief
+                                                    ?
+                                                    "bg-sky-100 border-sky-300 text-sky-800"
+                                                    :
+                                                    "border-slate-200 text-gray-400 hover:border-slate-300"
+                                                }
+                                            `}
+                                        >
+                                            {actief ? "✓ " : ""}{locatie}
+                                        </button>
+
+                                        {
+                                            actief && (
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm text-slate-500">Aantal:</span>
+                                                    <input
+                                                        inputMode="numeric"
+                                                        value={c.mediaplayerLocaties[locatie]}
+                                                        placeholder="Aantal"
+                                                        onChange={(e)=>update(draft=>{
+                                                            draft.checklist.mediaplayerLocaties = {
+                                                                ...draft.checklist.mediaplayerLocaties,
+                                                                [locatie]:e.target.value
+                                                            };
+                                                        })}
+                                                        className="w-20 border rounded-lg p-1.5 text-sm"
+                                                    />
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                );
+
+                            })
+                        }
+                    </div>
                 </ChecklistVraag>
 
 

@@ -232,6 +232,7 @@ export interface OpleverData {
             "Kiosk" |
             "Anders";
         aantalMediaplayers:string;
+        mediaplayerLocaties:Record<string,string>;
         afvalverwijdering:boolean | null;
     };
 
@@ -439,6 +440,7 @@ export function emptyOpleverData():OpleverData {
             redenRemote:"",
             locatieMediaplayer:"",
             aantalMediaplayers:"",
+            mediaplayerLocaties:{},
             afvalverwijdering:null
         },
 
