@@ -442,19 +442,24 @@ function opleverSections(
   <div class="section">
     <div class="section-title">Gebruikte materialen</div>
     <table class="qa">
-      ${row("1. Heb je nieuwe TV beugels gemonteerd?",pill(m.nieuweBeugels))}
-      ${row("Heb je bestaande TV beugels gemonteerd?",pill(m.bestaandeBeugels))}
-      ${beugels ? row("Beugels",textAnswer(beugels)) : ""}
-      ${row("2. Heb je extra HDMI kabels gebruikt?",pill(m.extraHdmiKabels))}
-      ${row("Heb je extra HDMI splitters gebruikt?",pill(m.extraHdmiSplitters))}
-      ${row("3. Heb je extra patchkabels gebruikt?",pill(m.extraPatchkabels))}
-      ${patch ? row("Patchkabels",textAnswer(patch)) : ""}
-      ${row("Heb je extra switches gebruikt?",pill(m.extraSwitches))}
-      ${row("4. Heb je extra UTP kabel getrokken?",pill(m.utpGetrokken))}
-      ${row("5. Heb je extra stroomkabel getrokken?",pill(m.stroomkabelGetrokken))}
-      ${row("6. Heb je verlengsnoeren (stekkerdozen) gebruikt?",pill(m.verlengsnoeren))}
-      ${verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
-      ${row("7. Heb je extra seriële en/of USB speakers gebruikt?",pill(m.extraSpeakers))}
+      ${row("1. TV beugels gemonteerd",pill(m.nieuweBeugels))}
+      ${m.nieuweBeugels === true ? row("Nieuw of bestaand",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
+      ${m.nieuweBeugels === true && beugels ? row("Beugels",textAnswer(beugels)) : ""}
+      ${row("2. Extra HDMI kabels gebruikt",pill(m.extraHdmiKabels))}
+      ${m.extraHdmiKabels === true && m.hdmiKabelsAantal ? row("HDMI kabels (aantal)",textAnswer(m.hdmiKabelsAantal)) : ""}
+      ${m.extraHdmiKabels === true && m.hdmiSplittersAantal ? row("HDMI splitters (aantal)",textAnswer(m.hdmiSplittersAantal)) : ""}
+      ${row("3. Extra patchkabels gebruikt",pill(m.extraPatchkabels))}
+      ${m.extraPatchkabels === true && patch ? row("Patchkabels",textAnswer(patch)) : ""}
+      ${row("Extra switches gebruikt",pill(m.extraSwitches))}
+      ${m.extraSwitches === true && m.switchesAantal ? row("Switches (aantal)",textAnswer(m.switchesAantal)) : ""}
+      ${row("4. Extra UTP kabel getrokken",pill(m.utpGetrokken))}
+      ${m.utpGetrokken === true && m.utpAantal ? row("UTP-kabels (aantal)",textAnswer(m.utpAantal)) : ""}
+      ${row("5. Extra stroomkabel getrokken",pill(m.stroomkabelGetrokken))}
+      ${m.stroomkabelGetrokken === true && m.stroomAantal ? row("Stroomkabels (aantal)",textAnswer(m.stroomAantal)) : ""}
+      ${row("6. Verlengsnoeren (stekkerdozen) gebruikt",pill(m.verlengsnoeren))}
+      ${m.verlengsnoeren === true && verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
+      ${row("7. Extra seriële en/of USB speakers gebruikt",pill(m.extraSpeakers))}
+      ${m.extraSpeakers === true && m.speakersAantal ? row("Speakers (aantal)",textAnswer(m.speakersAantal)) : ""}
     </table>
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>

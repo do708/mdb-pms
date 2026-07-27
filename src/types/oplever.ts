@@ -172,14 +172,20 @@ export interface OpleverData {
         patch5:string;
         patch75:string;
         patch10:string;
+        hdmiKabelsAantal:string;
+        hdmiSplittersAantal:string;
         extraSwitches:boolean | null;
+        switchesAantal:string;
         utpGetrokken:boolean | null;
+        utpAantal:string;
         stroomkabelGetrokken:boolean | null;
+        stroomAantal:string;
         verlengsnoeren:boolean | null;
         verleng15:string;
         verleng3:string;
         verleng5:string;
         extraSpeakers:boolean | null;
+        speakersAantal:string;
         opmerkingen:string;
     };
 
@@ -334,14 +340,20 @@ export function emptyOpleverData():OpleverData {
             patch5:"",
             patch75:"",
             patch10:"",
+            hdmiKabelsAantal:"",
+            hdmiSplittersAantal:"",
             extraSwitches:null,
+            switchesAantal:"",
             utpGetrokken:null,
+            utpAantal:"",
             stroomkabelGetrokken:null,
+            stroomAantal:"",
             verlengsnoeren:null,
             verleng15:"",
             verleng3:"",
             verleng5:"",
             extraSpeakers:null,
+            speakersAantal:"",
             opmerkingen:""
         },
 

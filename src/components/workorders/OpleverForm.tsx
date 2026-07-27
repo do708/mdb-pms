@@ -164,13 +164,23 @@ const PASTEL_KEUZE = [
     "bg-indigo-100 border-indigo-300 text-indigo-800"
 ];
 
+// Vaste kleurklassen voor als een optie een specifieke kleur moet krijgen.
+const KEUZE_KLEUREN:Record<string,string> = {
+    green:"bg-green-500 border-green-500 text-white",
+    orange:"bg-orange-400 border-orange-400 text-white",
+    red:"bg-red-500 border-red-500 text-white",
+    sky:"bg-sky-400 border-sky-400 text-white"
+};
+
 function Keuze({
 
     value,
 
     options,
 
-    onChange
+    onChange,
+
+    kleuren
 
 }:{
 
@@ -180,6 +190,8 @@ function Keuze({
 
     onChange:(value:string)=>void;
 
+    kleuren?:Record<string,string>;
+
 }){
 
     return (
@@ -187,37 +199,48 @@ function Keuze({
         <div className="flex flex-wrap gap-2">
 
             {
-                options.map((option,index)=>(
+                options.map((option,index)=>{
 
-                    <button
+                    const actiefKlasse =
+                        kleuren && kleuren[option]
+                        ?
+                        KEUZE_KLEUREN[kleuren[option]]
+                        :
+                        PASTEL_KEUZE[index % PASTEL_KEUZE.length];
 
-                        key={option}
+                    return (
 
-                        type="button"
+                        <button
 
-                        onClick={()=>onChange(option)}
+                            key={option}
 
-                        className={`
-                            px-4
-                            py-1.5
-                            rounded-full
-                            border
-                            text-sm
-                            transition
-                            ${
-                                value === option
-                                ?
-                                PASTEL_KEUZE[index % PASTEL_KEUZE.length]
-                                :
-                                "border-slate-200 text-gray-400 hover:border-slate-300"
-                            }
-                        `}
+                            type="button"
 
-                    >
-                        {option}
-                    </button>
+                            onClick={()=>onChange(option)}
 
-                ))
+                            className={`
+                                px-4
+                                py-1.5
+                                rounded-full
+                                border
+                                text-sm
+                                transition
+                                ${
+                                    value === option
+                                    ?
+                                    actiefKlasse
+                                    :
+                                    "border-slate-200 text-gray-400 hover:border-slate-300"
+                                }
+                            `}
+
+                        >
+                            {option}
+                        </button>
+
+                    );
+
+                })
             }
 
         </div>
@@ -2038,7 +2061,13 @@ export default function OpleverForm({
                         <div className="space-y-2">
 
                             <p className="text-sm text-gray-600">
-                                Wat is er geïnstalleerd? (vul het aantal in)
+                                {
+                                    i.audioStatus === "Gedemonteerd"
+                                    ?
+                                    "Wat is er gedemonteerd? (vul het aantal in)"
+                                    :
+                                    "Wat is er geïnstalleerd? (vul het aantal in)"
+                                }
                             </p>
 
                             <AudioRegel
@@ -2332,254 +2361,146 @@ export default function OpleverForm({
                 <Kop>Gebruikte materialen</Kop>
 
 
-                <Vraag label="1. Heb je nieuwe TV beugels gemonteerd?">
+                <UitklapVraag
+                    label="1. TV beugels gemonteerd"
+                    actief={m.nieuweBeugels === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.nieuweBeugels = v;
+                        })
+                    }
+                >
 
-                    <JaNee
+                    <div className="space-y-2">
 
-                        value={m.nieuweBeugels}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.nieuweBeugels = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
-
-
-                <Vraag label="Heb je bestaande TV beugels gemonteerd?">
-
-                    <JaNee
-
-                        value={m.bestaandeBeugels}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.bestaandeBeugels = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
-
-
-                {
-                    (
-                        m.nieuweBeugels === true ||
-                        m.bestaandeBeugels === true
-                    ) && (
-
-                        <div className="
-                            flex
-                            flex-wrap
-                            gap-3
-                            border-b
-                            border-dashed
-                            pb-3
-                            mb-3
-                        ">
-
-                            <Veld small label="Muurbeugel" value={m.muurbeugel} onChange={(v)=>update(d=>{d.materialen.muurbeugel=v;})} />
-
-                            <Veld small label="Zwenkbeugel" value={m.zwenkbeugel} onChange={(v)=>update(d=>{d.materialen.zwenkbeugel=v;})} />
-
-                            <Veld small label="Plafondbeugel 150cm" value={m.plafond150} onChange={(v)=>update(d=>{d.materialen.plafond150=v;})} />
-
-                            <Veld small label="Plafondbeugel 300cm" value={m.plafond300} onChange={(v)=>update(d=>{d.materialen.plafond300=v;})} />
-
-                            <Veld small label="Vloerstandaard" value={m.vloerstandaard} onChange={(v)=>update(d=>{d.materialen.vloerstandaard=v;})} />
-
-                            <Veld small label="Overig" value={m.overigBeugel} onChange={(v)=>update(d=>{d.materialen.overigBeugel=v;})} />
-
+                        <div className="space-y-2">
+                            <p className="text-sm text-gray-600">Nieuw of bestaand?</p>
+                            <Keuze
+                                value={m.bestaandeBeugels === true ? "Bestaand" : "Nieuw"}
+                                options={["Nieuw","Bestaand"]}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.materialen.bestaandeBeugels = v === "Bestaand";
+                                    })
+                                }
+                            />
                         </div>
 
-                    )
-                }
+                        <p className="text-sm text-gray-600 pt-1">
+                            Welke beugels? (vul het aantal in)
+                        </p>
+
+                        <AudioRegel label="Muurbeugel" value={m.muurbeugel} onChange={(v)=>update(d=>{d.materialen.muurbeugel=v;})} />
+                        <AudioRegel label="Zwenkbeugel" value={m.zwenkbeugel} onChange={(v)=>update(d=>{d.materialen.zwenkbeugel=v;})} />
+                        <AudioRegel label="Plafondbeugel 150cm" value={m.plafond150} onChange={(v)=>update(d=>{d.materialen.plafond150=v;})} />
+                        <AudioRegel label="Plafondbeugel 300cm" value={m.plafond300} onChange={(v)=>update(d=>{d.materialen.plafond300=v;})} />
+                        <AudioRegel label="Vloerstandaard" value={m.vloerstandaard} onChange={(v)=>update(d=>{d.materialen.vloerstandaard=v;})} />
+                        <AudioRegel label="Overig" value={m.overigBeugel} onChange={(v)=>update(d=>{d.materialen.overigBeugel=v;})} />
+
+                    </div>
+
+                </UitklapVraag>
 
 
-                <Vraag label="2. Heb je extra HDMI kabels gebruikt?">
-
-                    <JaNee
-
-                        value={m.extraHdmiKabels}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.extraHdmiKabels = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
-
-
-                <Vraag label="Heb je extra HDMI splitters gebruikt?">
-
-                    <JaNee
-
-                        value={m.extraHdmiSplitters}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.extraHdmiSplitters = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
-
-
-                <Vraag label="3. Heb je extra patchkabels gebruikt?">
-
-                    <JaNee
-
-                        value={m.extraPatchkabels}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.extraPatchkabels = v;
-                            })
-                        }
-
-                    />
-
-                    {
-                        m.extraPatchkabels === true && (
-
-                            <div className="
-                                flex
-                                flex-wrap
-                                gap-3
-                            ">
-
-                                <Veld small label="Patch kabel, 1 meter" value={m.patch1} onChange={(v)=>update(d=>{d.materialen.patch1=v;})} />
-
-                                <Veld small label="Patch kabel, 2 meter" value={m.patch2} onChange={(v)=>update(d=>{d.materialen.patch2=v;})} />
-
-                                <Veld small label="Patch kabel, 3 meter" value={m.patch3} onChange={(v)=>update(d=>{d.materialen.patch3=v;})} />
-
-                                <Veld small label="Patch kabel, 5 meter" value={m.patch5} onChange={(v)=>update(d=>{d.materialen.patch5=v;})} />
-
-                                <Veld small label="Patch kabel, 7,5 meter" value={m.patch75} onChange={(v)=>update(d=>{d.materialen.patch75=v;})} />
-
-                                <Veld small label="Patch kabel, 10 meter" value={m.patch10} onChange={(v)=>update(d=>{d.materialen.patch10=v;})} />
-
-                            </div>
-
-                        )
+                <UitklapVraag
+                    label="2. Extra HDMI kabels gebruikt"
+                    actief={m.extraHdmiKabels === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.extraHdmiKabels = v;
+                        })
                     }
-
-                </Vraag>
-
-
-                <Vraag label="Heb je extra switches gebruikt?">
-
-                    <JaNee
-
-                        value={m.extraSwitches}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.extraSwitches = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
+                >
+                    <AudioRegel label="HDMI kabels" value={m.hdmiKabelsAantal} onChange={(v)=>update(d=>{d.materialen.hdmiKabelsAantal=v;})} />
+                    <AudioRegel label="HDMI splitters" value={m.hdmiSplittersAantal} onChange={(v)=>update(d=>{d.materialen.hdmiSplittersAantal=v;})} />
+                </UitklapVraag>
 
 
-                <Vraag label="4. Heb je extra UTP kabel getrokken?">
-
-                    <JaNee
-
-                        value={m.utpGetrokken}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.utpGetrokken = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
-
-
-                <Vraag label="5. Heb je extra stroomkabel getrokken?">
-
-                    <JaNee
-
-                        value={m.stroomkabelGetrokken}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.stroomkabelGetrokken = v;
-                            })
-                        }
-
-                    />
-
-                </Vraag>
-
-
-                <Vraag label="6. Heb je verlengsnoeren (stekkerdozen) gebruikt?">
-
-                    <JaNee
-
-                        value={m.verlengsnoeren}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.verlengsnoeren = v;
-                            })
-                        }
-
-                    />
-
-                    {
-                        m.verlengsnoeren === true && (
-
-                            <div className="
-                                flex
-                                flex-wrap
-                                gap-3
-                            ">
-
-                                <Veld small label="3-voudig, 1,5 meter" value={m.verleng15} onChange={(v)=>update(d=>{d.materialen.verleng15=v;})} />
-
-                                <Veld small label="3-voudig, 3 meter" value={m.verleng3} onChange={(v)=>update(d=>{d.materialen.verleng3=v;})} />
-
-                                <Veld small label="3-voudig, 5 meter" value={m.verleng5} onChange={(v)=>update(d=>{d.materialen.verleng5=v;})} />
-
-                            </div>
-
-                        )
+                <UitklapVraag
+                    label="3. Extra patchkabels gebruikt"
+                    actief={m.extraPatchkabels === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.extraPatchkabels = v;
+                        })
                     }
+                >
+                    <p className="text-sm text-gray-600">Aantal per lengte</p>
+                    <AudioRegel label="Patchkabel 1 meter" value={m.patch1} onChange={(v)=>update(d=>{d.materialen.patch1=v;})} />
+                    <AudioRegel label="Patchkabel 2 meter" value={m.patch2} onChange={(v)=>update(d=>{d.materialen.patch2=v;})} />
+                    <AudioRegel label="Patchkabel 3 meter" value={m.patch3} onChange={(v)=>update(d=>{d.materialen.patch3=v;})} />
+                    <AudioRegel label="Patchkabel 5 meter" value={m.patch5} onChange={(v)=>update(d=>{d.materialen.patch5=v;})} />
+                    <AudioRegel label="Patchkabel 7,5 meter" value={m.patch75} onChange={(v)=>update(d=>{d.materialen.patch75=v;})} />
+                    <AudioRegel label="Patchkabel 10 meter" value={m.patch10} onChange={(v)=>update(d=>{d.materialen.patch10=v;})} />
+                </UitklapVraag>
 
-                </Vraag>
+
+                <UitklapVraag
+                    label="Extra switches gebruikt"
+                    actief={m.extraSwitches === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.extraSwitches = v;
+                        })
+                    }
+                >
+                    <AudioRegel label="Switches" value={m.switchesAantal} onChange={(v)=>update(d=>{d.materialen.switchesAantal=v;})} />
+                </UitklapVraag>
 
 
-                <Vraag label="7. Besturing & Audio — heb je extra seriële en/of USB speakers gebruikt?">
+                <UitklapVraag
+                    label="4. Extra UTP kabel getrokken"
+                    actief={m.utpGetrokken === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.utpGetrokken = v;
+                        })
+                    }
+                >
+                    <AudioRegel label="Aantal UTP-kabels" value={m.utpAantal} onChange={(v)=>update(d=>{d.materialen.utpAantal=v;})} />
+                </UitklapVraag>
 
-                    <JaNee
 
-                        value={m.extraSpeakers}
+                <UitklapVraag
+                    label="5. Extra stroomkabel getrokken"
+                    actief={m.stroomkabelGetrokken === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.stroomkabelGetrokken = v;
+                        })
+                    }
+                >
+                    <AudioRegel label="Aantal stroomkabels" value={m.stroomAantal} onChange={(v)=>update(d=>{d.materialen.stroomAantal=v;})} />
+                </UitklapVraag>
 
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.materialen.extraSpeakers = v;
-                            })
-                        }
 
-                    />
+                <UitklapVraag
+                    label="6. Verlengsnoeren (stekkerdozen) gebruikt"
+                    actief={m.verlengsnoeren === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.verlengsnoeren = v;
+                        })
+                    }
+                >
+                    <p className="text-sm text-gray-600">Aantal per soort</p>
+                    <AudioRegel label="3-voudig, 1,5 meter" value={m.verleng15} onChange={(v)=>update(d=>{d.materialen.verleng15=v;})} />
+                    <AudioRegel label="3-voudig, 3 meter" value={m.verleng3} onChange={(v)=>update(d=>{d.materialen.verleng3=v;})} />
+                    <AudioRegel label="3-voudig, 5 meter" value={m.verleng5} onChange={(v)=>update(d=>{d.materialen.verleng5=v;})} />
+                </UitklapVraag>
 
-                </Vraag>
+
+                <UitklapVraag
+                    label="7. Extra seriële en/of USB speakers gebruikt"
+                    actief={m.extraSpeakers === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.extraSpeakers = v;
+                        })
+                    }
+                >
+                    <AudioRegel label="Speakers" value={m.speakersAantal} onChange={(v)=>update(d=>{d.materialen.speakersAantal=v;})} />
+                </UitklapVraag>
 
 
                 <div className="pt-3">
@@ -2673,7 +2594,7 @@ export default function OpleverForm({
 
                         jaKleur="orange"
 
-                        neeKleur="sky"
+                        neeKleur="green"
 
                         onChange={(v)=>
                             update(draft=>{
@@ -2700,6 +2621,12 @@ export default function OpleverForm({
                                     value={c.wifiSterkte}
 
                                     options={["Ja","Matig","Slecht"]}
+
+                                    kleuren={{
+                                        "Ja":"green",
+                                        "Matig":"orange",
+                                        "Slecht":"red"
+                                    }}
 
                                     onChange={(v)=>
                                         update(draft=>{
@@ -2791,6 +2718,10 @@ export default function OpleverForm({
                     <JaNee
 
                         value={c.afvalverwijdering}
+
+                        jaKleur="red"
+
+                        neeKleur="green"
 
                         onChange={(v)=>
                             update(draft=>{
