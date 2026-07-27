@@ -92,10 +92,11 @@ function JaNee({
         "px-4 py-1.5 text-sm";
 
     const kleurKlasse = (kleur:string)=>{
-        if(kleur === "red") return "bg-red-500 border-red-500 text-white";
-        if(kleur === "orange") return "bg-orange-400 border-orange-400 text-white";
-        if(kleur === "sky") return "bg-sky-400 border-sky-400 text-white";
-        return "bg-green-500 border-green-500 text-white";
+        if(kleur === "red") return "bg-red-100 border-red-300 text-red-800";
+        if(kleur === "orange") return "bg-amber-100 border-amber-300 text-amber-800";
+        if(kleur === "sky") return "bg-sky-100 border-sky-300 text-sky-800";
+        if(kleur === "yellow") return "bg-yellow-100 border-yellow-300 text-yellow-800";
+        return "bg-emerald-100 border-emerald-300 text-emerald-800";
     };
 
     return (
@@ -168,10 +169,11 @@ const PASTEL_KEUZE = [
 
 // Vaste kleurklassen voor als een optie een specifieke kleur moet krijgen.
 const KEUZE_KLEUREN:Record<string,string> = {
-    green:"bg-green-500 border-green-500 text-white",
-    orange:"bg-orange-400 border-orange-400 text-white",
-    red:"bg-red-500 border-red-500 text-white",
-    sky:"bg-sky-400 border-sky-400 text-white"
+    green:"bg-emerald-100 border-emerald-300 text-emerald-800",
+    orange:"bg-amber-100 border-amber-300 text-amber-800",
+    red:"bg-red-100 border-red-300 text-red-800",
+    sky:"bg-sky-100 border-sky-300 text-sky-800",
+    yellow:"bg-yellow-100 border-yellow-300 text-yellow-800"
 };
 
 function Keuze({
@@ -479,6 +481,54 @@ function UitklapVraag({
 
     );
 
+}
+
+
+
+// Checklist-vraag: label boven, antwoord (en eventuele reden/sub-vraag) eronder.
+function ChecklistVraag({
+    label,
+    children
+}:{
+    label:string;
+    children:React.ReactNode;
+}){
+    return (
+        <div className="
+            border-b
+            border-slate-100
+            py-3
+            space-y-3
+        ">
+            <p className="text-sm text-slate-700">
+                {label}
+            </p>
+            {children}
+        </div>
+    );
+}
+
+
+
+// Reden-tekstvak dat onder een antwoord verschijnt.
+function RedenVeld({
+    value,
+    onChange
+}:{
+    value:string;
+    onChange:(value:string)=>void;
+}){
+    return (
+        <div className="mt-1">
+            <span className="block text-sm text-slate-600 mb-1">Reden:</span>
+            <textarea
+                rows={2}
+                value={value}
+                onChange={(e)=>onChange(e.target.value)}
+                className="w-full border rounded-xl p-2.5 text-sm"
+            />
+        </div>
+    );
 }
 
 
@@ -2656,133 +2706,127 @@ export default function OpleverForm({
                 <Kop>Checklist</Kop>
 
 
-                <Vraag label="1. Is de installatie werkend opgeleverd?">
-
+                {/* 1. Werkend opgeleverd */}
+                <ChecklistVraag label="1. Is de installatie werkend opgeleverd?">
                     <JaNee
-
                         value={c.werkendOpgeleverd}
-
                         jaKleur="green"
-
                         neeKleur="red"
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.checklist.werkendOpgeleverd = v;
-                            })
-                        }
-
+                        onChange={(v)=>update(draft=>{
+                            draft.checklist.werkendOpgeleverd = v;
+                        })}
                     />
+                    {
+                        c.werkendOpgeleverd === false && (
+                            <RedenVeld
+                                value={c.redenWerkend}
+                                onChange={(v)=>update(draft=>{
+                                    draft.checklist.redenWerkend = v;
+                                })}
+                            />
+                        )
+                    }
+                </ChecklistVraag>
 
-                </Vraag>
 
-
-                <Vraag label="2. Is de hardware aangesloten op het lichtnet of een ander schakelstroompunt dat handmatig uit te zetten is?">
-
+                {/* 2. Lichtnet schakelbaar */}
+                <ChecklistVraag label="2. Is de hardware aangesloten op het lichtnet of een ander schakelstroompunt dat handmatig uit te zetten is?">
                     <JaNee
-
                         value={c.lichtnetSchakelbaar}
-
                         jaKleur="red"
-
                         neeKleur="green"
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.checklist.lichtnetSchakelbaar = v;
-                            })
-                        }
-
+                        onChange={(v)=>update(draft=>{
+                            draft.checklist.lichtnetSchakelbaar = v;
+                        })}
                     />
+                    {
+                        c.lichtnetSchakelbaar === true && (
+                            <RedenVeld
+                                value={c.redenLichtnet}
+                                onChange={(v)=>update(draft=>{
+                                    draft.checklist.redenLichtnet = v;
+                                })}
+                            />
+                        )
+                    }
+                </ChecklistVraag>
 
-                </Vraag>
 
-
-                <Vraag label="3. WiFi verbinding van toepassing?">
-
+                {/* 3. WiFi */}
+                <ChecklistVraag label="3. WiFi verbinding van toepassing?">
                     <JaNee
-
                         value={c.wifiVanToepassing}
-
                         jaKleur="orange"
-
                         neeKleur="green"
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.checklist.wifiVanToepassing = v;
-                            })
-                        }
-
+                        onChange={(v)=>update(draft=>{
+                            draft.checklist.wifiVanToepassing = v;
+                        })}
                     />
-
                     {
                         c.wifiVanToepassing === true && (
-
-                            <div className="space-y-2">
-
-                                <p className="text-sm">
-
-                                    Is de WiFi verbinding op moment van
-                                    installatie sterk genoeg?
-
+                            <div className="
+                                mt-3
+                                rounded-xl
+                                bg-slate-50
+                                border
+                                border-slate-100
+                                p-3
+                                space-y-2
+                            ">
+                                <p className="text-sm text-slate-600">
+                                    Is de WiFi verbinding op moment van installatie sterk genoeg?
                                 </p>
-
                                 <Keuze
-
                                     value={c.wifiSterkte}
-
                                     options={["Ja","Matig","Slecht"]}
-
                                     kleuren={{
                                         "Ja":"green",
                                         "Matig":"orange",
                                         "Slecht":"red"
                                     }}
-
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.checklist.wifiSterkte =
-                                                v as OpleverData["checklist"]["wifiSterkte"];
-                                        })
-                                    }
-
+                                    onChange={(v)=>update(draft=>{
+                                        draft.checklist.wifiSterkte =
+                                            v as OpleverData["checklist"]["wifiSterkte"];
+                                    })}
                                 />
-
                             </div>
-
                         )
                     }
+                </ChecklistVraag>
 
-                </Vraag>
 
-
-                <Vraag label="4. Zijn de schermen gekoppeld aan Remote Services?">
-
+                {/* 4. Remote Services */}
+                <ChecklistVraag label="4. Zijn de schermen gekoppeld aan Remote Services?">
                     <Keuze
-
                         value={c.remoteServices}
-
                         options={["Ja","Nee","n.v.t."]}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.checklist.remoteServices =
-                                    v as OpleverData["checklist"]["remoteServices"];
-                            })
-                        }
-
+                        kleuren={{
+                            "Ja":"green",
+                            "Nee":"red",
+                            "n.v.t.":"yellow"
+                        }}
+                        onChange={(v)=>update(draft=>{
+                            draft.checklist.remoteServices =
+                                v as OpleverData["checklist"]["remoteServices"];
+                        })}
                     />
+                    {
+                        c.remoteServices === "Nee" && (
+                            <RedenVeld
+                                value={c.redenRemote}
+                                onChange={(v)=>update(draft=>{
+                                    draft.checklist.redenRemote = v;
+                                })}
+                            />
+                        )
+                    }
+                </ChecklistVraag>
 
-                </Vraag>
 
-
-                <Vraag label="5. Wat is de locatie van de mediaplayer(s)?">
-
+                {/* 5. Locatie mediaplayer */}
+                <ChecklistVraag label="5. Wat is de locatie van de mediaplayer(s)?">
                     <Keuze
-
                         value={c.locatieMediaplayer}
-
                         options={[
                             "Achter het scherm",
                             "In de patchkast",
@@ -2790,60 +2834,51 @@ export default function OpleverForm({
                             "Kiosk",
                             "Anders"
                         ]}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.checklist.locatieMediaplayer =
-                                    v as OpleverData["checklist"]["locatieMediaplayer"];
-                            })
-                        }
-
+                        onChange={(v)=>update(draft=>{
+                            draft.checklist.locatieMediaplayer =
+                                v as OpleverData["checklist"]["locatieMediaplayer"];
+                        })}
                     />
-
                     {
                         c.locatieMediaplayer && (
-
-                            <Veld
-
-                                small
-
-                                label="Aantal:"
-
-                                value={c.aantalMediaplayers}
-
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.checklist.aantalMediaplayers = v;
-                                    })
-                                }
-
-                            />
-
+                            <div className="
+                                mt-3
+                                rounded-xl
+                                bg-slate-50
+                                border
+                                border-slate-100
+                                p-3
+                                flex
+                                items-center
+                                gap-3
+                            ">
+                                <span className="text-sm text-slate-600">Aantal:</span>
+                                <input
+                                    inputMode="numeric"
+                                    value={c.aantalMediaplayers}
+                                    placeholder="Aantal"
+                                    onChange={(e)=>update(draft=>{
+                                        draft.checklist.aantalMediaplayers = e.target.value;
+                                    })}
+                                    className="w-24 border rounded-lg p-1.5 text-sm"
+                                />
+                            </div>
                         )
                     }
+                </ChecklistVraag>
 
-                </Vraag>
 
-
-                <Vraag label="6. Afvalverwijdering?">
-
+                {/* 6. Afvalverwijdering */}
+                <ChecklistVraag label="6. Afvalverwijdering?">
                     <JaNee
-
                         value={c.afvalverwijdering}
-
                         jaKleur="red"
-
                         neeKleur="green"
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.checklist.afvalverwijdering = v;
-                            })
-                        }
-
+                        onChange={(v)=>update(draft=>{
+                            draft.checklist.afvalverwijdering = v;
+                        })}
                     />
-
-                </Vraag>
+                </ChecklistVraag>
 
             </div>
 

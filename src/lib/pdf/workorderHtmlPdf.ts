@@ -541,10 +541,13 @@ function opleverSections(
     <div class="section-title">Checklist</div>
     <table class="qa">
       ${row("1. Is de installatie werkend opgeleverd?",pill(c.werkendOpgeleverd))}
+      ${c.werkendOpgeleverd === false && c.redenWerkend ? row("Reden",textAnswer(c.redenWerkend)) : ""}
       ${row("2. Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar))}
+      ${c.lichtnetSchakelbaar === true && c.redenLichtnet ? row("Reden",textAnswer(c.redenLichtnet)) : ""}
       ${row("3. WiFi verbinding van toepassing?",pill(c.wifiVanToepassing))}
       ${c.wifiVanToepassing === true ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
       ${row("4. Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices))}
+      ${c.remoteServices === "Nee" && c.redenRemote ? row("Reden",textAnswer(c.redenRemote)) : ""}
       ${row("5. Locatie mediaplayer(s)",c.locatieMediaplayer ? choicePill(c.locatieMediaplayer) : `<span class="pill pill-empty">—</span>`)}
       ${c.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(c.aantalMediaplayers)) : ""}
       ${row("6. Afvalverwijdering?",pill(c.afvalverwijdering))}

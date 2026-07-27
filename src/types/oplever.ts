@@ -217,10 +217,13 @@ export interface OpleverData {
 
     checklist:{
         werkendOpgeleverd:boolean | null;
+        redenWerkend:string;
         lichtnetSchakelbaar:boolean | null;
+        redenLichtnet:string;
         wifiVanToepassing:boolean | null;
         wifiSterkte:"" | "Ja" | "Matig" | "Slecht";
         remoteServices:"" | "Ja" | "Nee" | "n.v.t.";
+        redenRemote:string;
         locatieMediaplayer:
             "" |
             "Achter het scherm" |
@@ -427,10 +430,13 @@ export function emptyOpleverData():OpleverData {
 
         checklist:{
             werkendOpgeleverd:null,
+            redenWerkend:"",
             lichtnetSchakelbaar:null,
+            redenLichtnet:"",
             wifiVanToepassing:null,
             wifiSterkte:"",
             remoteServices:"",
+            redenRemote:"",
             locatieMediaplayer:"",
             aantalMediaplayers:"",
             afvalverwijdering:null
