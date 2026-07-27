@@ -92,6 +92,15 @@ function NewWorkorderInner(){
         useState("");
 
 
+    // Beschikbare formuliertypes + welke zijn aangevinkt voor deze werkbon.
+    const [formTypes,setFormTypes] =
+        useState<{ id:string; key:string; name:string }[]>([]);
+
+
+    const [selectedFormTypeIds,setSelectedFormTypeIds] =
+        useState<string[]>([]);
+
+
     const searchParams =
         useSearchParams();
 
@@ -184,6 +193,27 @@ function NewWorkorderInner(){
                 :
                 []
             );
+
+
+
+
+            try {
+                const formTypesResponse =
+                    await fetch("/api/form-types");
+
+                const formTypesData =
+                    await formTypesResponse.json();
+
+                setFormTypes(
+                    Array.isArray(formTypesData)
+                    ?
+                    formTypesData
+                    :
+                    []
+                );
+            } catch {
+                // stil falen; dan toont het scherm geen formuliertypes
+            }
 
 
 
@@ -317,6 +347,9 @@ function NewWorkorderInner(){
                                 formData
                                 :
                                 undefined,
+
+                            formTypeIds:
+                                selectedFormTypeIds,
 
                             status:"ontvangen"
 
@@ -658,6 +691,74 @@ function NewWorkorderInner(){
                     />
 
                 </label>
+
+
+                {/* Welke opleverformulieren zijn van toepassing op deze werkbon? */}
+                {
+                    formTypes.length > 0 && (
+
+                        <div className="
+                            border
+                            rounded-2xl
+                            p-5
+                            bg-gray-50
+                            space-y-3
+                        ">
+
+                            <span className="
+                                block
+                                text-sm
+                                font-medium
+                                text-gray-700
+                            ">
+                                Welke formulieren moeten er ingevuld worden?
+                            </span>
+
+                            <div className="space-y-2">
+                                {
+                                    formTypes.map(ft=>{
+
+                                        const aangevinkt =
+                                            selectedFormTypeIds.includes(ft.id);
+
+                                        return (
+                                            <label
+                                                key={ft.id}
+                                                className="
+                                                    flex
+                                                    items-center
+                                                    gap-3
+                                                    cursor-pointer
+                                                "
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={aangevinkt}
+                                                    onChange={()=>{
+                                                        setSelectedFormTypeIds(prev=>
+                                                            prev.includes(ft.id)
+                                                            ?
+                                                            prev.filter(x=>x !== ft.id)
+                                                            :
+                                                            [...prev, ft.id]
+                                                        );
+                                                    }}
+                                                    className="w-4 h-4"
+                                                />
+                                                <span className="text-sm text-gray-700">
+                                                    {ft.name}
+                                                </span>
+                                            </label>
+                                        );
+
+                                    })
+                                }
+                            </div>
+
+                        </div>
+
+                    )
+                }
 
 
                 {

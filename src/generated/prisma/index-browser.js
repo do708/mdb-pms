@@ -247,6 +247,24 @@ exports.Prisma.NotificationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.FormTypeScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  name: 'name',
+  sortOrder: 'sortOrder',
+  active: 'active',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkorderFormScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  formTypeId: 'formTypeId',
+  formData: 'formData',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AssignmentScalarFieldEnum = {
   id: 'id',
   number: 'number',
@@ -338,6 +356,8 @@ exports.Prisma.ModelName = {
   WorkorderSignature: 'WorkorderSignature',
   Document: 'Document',
   Notification: 'Notification',
+  FormType: 'FormType',
+  WorkorderForm: 'WorkorderForm',
   Assignment: 'Assignment',
   AssignmentUser: 'AssignmentUser',
   Invoice: 'Invoice',

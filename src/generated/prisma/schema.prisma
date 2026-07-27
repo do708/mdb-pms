@@ -82,6 +82,7 @@ model Workorder {
   photos         WorkorderPhoto[]
   signature      WorkorderSignature?
   extraEngineers WorkorderEngineer[]
+  forms          WorkorderForm[]
 }
 
 model WorkorderHour {
@@ -158,6 +159,29 @@ model Notification {
   workorderId String?
   read        Boolean  @default(false)
   createdAt   DateTime @default(now())
+}
+
+model FormType {
+  id             String          @id @default(cuid())
+  key            String          @unique
+  name           String
+  sortOrder      Int             @default(0)
+  active         Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  workorderForms WorkorderForm[]
+}
+
+model WorkorderForm {
+  id          String    @id @default(cuid())
+  workorderId String
+  formTypeId  String
+  formData    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  workorder   Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+  formType    FormType  @relation(fields: [formTypeId], references: [id])
+
+  @@unique([workorderId, formTypeId])
 }
 
 model Assignment {

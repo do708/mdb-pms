@@ -69,6 +69,16 @@ export type Document = $Result.DefaultSelection<Prisma.$DocumentPayload>
  */
 export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 /**
+ * Model FormType
+ * 
+ */
+export type FormType = $Result.DefaultSelection<Prisma.$FormTypePayload>
+/**
+ * Model WorkorderForm
+ * 
+ */
+export type WorkorderForm = $Result.DefaultSelection<Prisma.$WorkorderFormPayload>
+/**
  * Model Assignment
  * 
  */
@@ -324,6 +334,26 @@ export class PrismaClient<
     * ```
     */
   get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.formType`: Exposes CRUD operations for the **FormType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FormTypes
+    * const formTypes = await prisma.formType.findMany()
+    * ```
+    */
+  get formType(): Prisma.FormTypeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workorderForm`: Exposes CRUD operations for the **WorkorderForm** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkorderForms
+    * const workorderForms = await prisma.workorderForm.findMany()
+    * ```
+    */
+  get workorderForm(): Prisma.WorkorderFormDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.assignment`: Exposes CRUD operations for the **Assignment** model.
@@ -832,6 +862,8 @@ export namespace Prisma {
     WorkorderSignature: 'WorkorderSignature',
     Document: 'Document',
     Notification: 'Notification',
+    FormType: 'FormType',
+    WorkorderForm: 'WorkorderForm',
     Assignment: 'Assignment',
     AssignmentUser: 'AssignmentUser',
     Invoice: 'Invoice',
@@ -852,7 +884,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "project" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderSignature" | "document" | "notification" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
+      modelProps: "user" | "customer" | "project" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1670,6 +1702,154 @@ export namespace Prisma {
           }
         }
       }
+      FormType: {
+        payload: Prisma.$FormTypePayload<ExtArgs>
+        fields: Prisma.FormTypeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FormTypeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FormTypeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>
+          }
+          findFirst: {
+            args: Prisma.FormTypeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FormTypeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>
+          }
+          findMany: {
+            args: Prisma.FormTypeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>[]
+          }
+          create: {
+            args: Prisma.FormTypeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>
+          }
+          createMany: {
+            args: Prisma.FormTypeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FormTypeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>[]
+          }
+          delete: {
+            args: Prisma.FormTypeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>
+          }
+          update: {
+            args: Prisma.FormTypeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>
+          }
+          deleteMany: {
+            args: Prisma.FormTypeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FormTypeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FormTypeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>[]
+          }
+          upsert: {
+            args: Prisma.FormTypeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormTypePayload>
+          }
+          aggregate: {
+            args: Prisma.FormTypeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFormType>
+          }
+          groupBy: {
+            args: Prisma.FormTypeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FormTypeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FormTypeCountArgs<ExtArgs>
+            result: $Utils.Optional<FormTypeCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkorderForm: {
+        payload: Prisma.$WorkorderFormPayload<ExtArgs>
+        fields: Prisma.WorkorderFormFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkorderFormFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkorderFormFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkorderFormFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkorderFormFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>
+          }
+          findMany: {
+            args: Prisma.WorkorderFormFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>[]
+          }
+          create: {
+            args: Prisma.WorkorderFormCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>
+          }
+          createMany: {
+            args: Prisma.WorkorderFormCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkorderFormCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkorderFormDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>
+          }
+          update: {
+            args: Prisma.WorkorderFormUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkorderFormDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkorderFormUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkorderFormUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkorderFormUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderFormPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkorderFormAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkorderForm>
+          }
+          groupBy: {
+            args: Prisma.WorkorderFormGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkorderFormGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkorderFormCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkorderFormCountAggregateOutputType> | number
+          }
+        }
+      }
       Assignment: {
         payload: Prisma.$AssignmentPayload<ExtArgs>
         fields: Prisma.AssignmentFieldRefs
@@ -2174,6 +2354,8 @@ export namespace Prisma {
     workorderSignature?: WorkorderSignatureOmit
     document?: DocumentOmit
     notification?: NotificationOmit
+    formType?: FormTypeOmit
+    workorderForm?: WorkorderFormOmit
     assignment?: AssignmentOmit
     assignmentUser?: AssignmentUserOmit
     invoice?: InvoiceOmit
@@ -2403,6 +2585,7 @@ export namespace Prisma {
     materials: number
     photos: number
     extraEngineers: number
+    forms: number
   }
 
   export type WorkorderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2412,6 +2595,7 @@ export namespace Prisma {
     materials?: boolean | WorkorderCountOutputTypeCountMaterialsArgs
     photos?: boolean | WorkorderCountOutputTypeCountPhotosArgs
     extraEngineers?: boolean | WorkorderCountOutputTypeCountExtraEngineersArgs
+    forms?: boolean | WorkorderCountOutputTypeCountFormsArgs
   }
 
   // Custom InputTypes
@@ -2465,6 +2649,44 @@ export namespace Prisma {
    */
   export type WorkorderCountOutputTypeCountExtraEngineersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkorderEngineerWhereInput
+  }
+
+  /**
+   * WorkorderCountOutputType without action
+   */
+  export type WorkorderCountOutputTypeCountFormsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderFormWhereInput
+  }
+
+
+  /**
+   * Count Type FormTypeCountOutputType
+   */
+
+  export type FormTypeCountOutputType = {
+    workorderForms: number
+  }
+
+  export type FormTypeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorderForms?: boolean | FormTypeCountOutputTypeCountWorkorderFormsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FormTypeCountOutputType without action
+   */
+  export type FormTypeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormTypeCountOutputType
+     */
+    select?: FormTypeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FormTypeCountOutputType without action
+   */
+  export type FormTypeCountOutputTypeCountWorkorderFormsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderFormWhereInput
   }
 
 
@@ -6316,6 +6538,7 @@ export namespace Prisma {
     photos?: boolean | Workorder$photosArgs<ExtArgs>
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
     extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
+    forms?: boolean | Workorder$formsArgs<ExtArgs>
     _count?: boolean | WorkorderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorder"]>
 
@@ -6412,6 +6635,7 @@ export namespace Prisma {
     photos?: boolean | Workorder$photosArgs<ExtArgs>
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
     extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
+    forms?: boolean | Workorder$formsArgs<ExtArgs>
     _count?: boolean | WorkorderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type WorkorderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6441,6 +6665,7 @@ export namespace Prisma {
       photos: Prisma.$WorkorderPhotoPayload<ExtArgs>[]
       signature: Prisma.$WorkorderSignaturePayload<ExtArgs> | null
       extraEngineers: Prisma.$WorkorderEngineerPayload<ExtArgs>[]
+      forms: Prisma.$WorkorderFormPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6869,6 +7094,7 @@ export namespace Prisma {
     photos<T extends Workorder$photosArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$photosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     signature<T extends Workorder$signatureArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$signatureArgs<ExtArgs>>): Prisma__WorkorderSignatureClient<$Result.GetResult<Prisma.$WorkorderSignaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     extraEngineers<T extends Workorder$extraEngineersArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$extraEngineersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    forms<T extends Workorder$formsArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$formsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7556,6 +7782,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WorkorderEngineerScalarFieldEnum | WorkorderEngineerScalarFieldEnum[]
+  }
+
+  /**
+   * Workorder.forms
+   */
+  export type Workorder$formsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    where?: WorkorderFormWhereInput
+    orderBy?: WorkorderFormOrderByWithRelationInput | WorkorderFormOrderByWithRelationInput[]
+    cursor?: WorkorderFormWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkorderFormScalarFieldEnum | WorkorderFormScalarFieldEnum[]
   }
 
   /**
@@ -15267,6 +15517,2208 @@ export namespace Prisma {
 
 
   /**
+   * Model FormType
+   */
+
+  export type AggregateFormType = {
+    _count: FormTypeCountAggregateOutputType | null
+    _avg: FormTypeAvgAggregateOutputType | null
+    _sum: FormTypeSumAggregateOutputType | null
+    _min: FormTypeMinAggregateOutputType | null
+    _max: FormTypeMaxAggregateOutputType | null
+  }
+
+  export type FormTypeAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type FormTypeSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type FormTypeMinAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    sortOrder: number | null
+    active: boolean | null
+    createdAt: Date | null
+  }
+
+  export type FormTypeMaxAggregateOutputType = {
+    id: string | null
+    key: string | null
+    name: string | null
+    sortOrder: number | null
+    active: boolean | null
+    createdAt: Date | null
+  }
+
+  export type FormTypeCountAggregateOutputType = {
+    id: number
+    key: number
+    name: number
+    sortOrder: number
+    active: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FormTypeAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type FormTypeSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type FormTypeMinAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    sortOrder?: true
+    active?: true
+    createdAt?: true
+  }
+
+  export type FormTypeMaxAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    sortOrder?: true
+    active?: true
+    createdAt?: true
+  }
+
+  export type FormTypeCountAggregateInputType = {
+    id?: true
+    key?: true
+    name?: true
+    sortOrder?: true
+    active?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FormTypeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormType to aggregate.
+     */
+    where?: FormTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormTypes to fetch.
+     */
+    orderBy?: FormTypeOrderByWithRelationInput | FormTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FormTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FormTypes
+    **/
+    _count?: true | FormTypeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FormTypeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FormTypeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FormTypeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FormTypeMaxAggregateInputType
+  }
+
+  export type GetFormTypeAggregateType<T extends FormTypeAggregateArgs> = {
+        [P in keyof T & keyof AggregateFormType]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFormType[P]>
+      : GetScalarType<T[P], AggregateFormType[P]>
+  }
+
+
+
+
+  export type FormTypeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormTypeWhereInput
+    orderBy?: FormTypeOrderByWithAggregationInput | FormTypeOrderByWithAggregationInput[]
+    by: FormTypeScalarFieldEnum[] | FormTypeScalarFieldEnum
+    having?: FormTypeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FormTypeCountAggregateInputType | true
+    _avg?: FormTypeAvgAggregateInputType
+    _sum?: FormTypeSumAggregateInputType
+    _min?: FormTypeMinAggregateInputType
+    _max?: FormTypeMaxAggregateInputType
+  }
+
+  export type FormTypeGroupByOutputType = {
+    id: string
+    key: string
+    name: string
+    sortOrder: number
+    active: boolean
+    createdAt: Date
+    _count: FormTypeCountAggregateOutputType | null
+    _avg: FormTypeAvgAggregateOutputType | null
+    _sum: FormTypeSumAggregateOutputType | null
+    _min: FormTypeMinAggregateOutputType | null
+    _max: FormTypeMaxAggregateOutputType | null
+  }
+
+  type GetFormTypeGroupByPayload<T extends FormTypeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FormTypeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FormTypeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FormTypeGroupByOutputType[P]>
+            : GetScalarType<T[P], FormTypeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FormTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    sortOrder?: boolean
+    active?: boolean
+    createdAt?: boolean
+    workorderForms?: boolean | FormType$workorderFormsArgs<ExtArgs>
+    _count?: boolean | FormTypeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["formType"]>
+
+  export type FormTypeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    sortOrder?: boolean
+    active?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["formType"]>
+
+  export type FormTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    sortOrder?: boolean
+    active?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["formType"]>
+
+  export type FormTypeSelectScalar = {
+    id?: boolean
+    key?: boolean
+    name?: boolean
+    sortOrder?: boolean
+    active?: boolean
+    createdAt?: boolean
+  }
+
+  export type FormTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "name" | "sortOrder" | "active" | "createdAt", ExtArgs["result"]["formType"]>
+  export type FormTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorderForms?: boolean | FormType$workorderFormsArgs<ExtArgs>
+    _count?: boolean | FormTypeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FormTypeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type FormTypeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $FormTypePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FormType"
+    objects: {
+      workorderForms: Prisma.$WorkorderFormPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      key: string
+      name: string
+      sortOrder: number
+      active: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["formType"]>
+    composites: {}
+  }
+
+  type FormTypeGetPayload<S extends boolean | null | undefined | FormTypeDefaultArgs> = $Result.GetResult<Prisma.$FormTypePayload, S>
+
+  type FormTypeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FormTypeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FormTypeCountAggregateInputType | true
+    }
+
+  export interface FormTypeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FormType'], meta: { name: 'FormType' } }
+    /**
+     * Find zero or one FormType that matches the filter.
+     * @param {FormTypeFindUniqueArgs} args - Arguments to find a FormType
+     * @example
+     * // Get one FormType
+     * const formType = await prisma.formType.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FormTypeFindUniqueArgs>(args: SelectSubset<T, FormTypeFindUniqueArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FormType that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FormTypeFindUniqueOrThrowArgs} args - Arguments to find a FormType
+     * @example
+     * // Get one FormType
+     * const formType = await prisma.formType.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FormTypeFindUniqueOrThrowArgs>(args: SelectSubset<T, FormTypeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormType that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormTypeFindFirstArgs} args - Arguments to find a FormType
+     * @example
+     * // Get one FormType
+     * const formType = await prisma.formType.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FormTypeFindFirstArgs>(args?: SelectSubset<T, FormTypeFindFirstArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormType that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormTypeFindFirstOrThrowArgs} args - Arguments to find a FormType
+     * @example
+     * // Get one FormType
+     * const formType = await prisma.formType.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FormTypeFindFirstOrThrowArgs>(args?: SelectSubset<T, FormTypeFindFirstOrThrowArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FormTypes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormTypeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FormTypes
+     * const formTypes = await prisma.formType.findMany()
+     * 
+     * // Get first 10 FormTypes
+     * const formTypes = await prisma.formType.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const formTypeWithIdOnly = await prisma.formType.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FormTypeFindManyArgs>(args?: SelectSubset<T, FormTypeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FormType.
+     * @param {FormTypeCreateArgs} args - Arguments to create a FormType.
+     * @example
+     * // Create one FormType
+     * const FormType = await prisma.formType.create({
+     *   data: {
+     *     // ... data to create a FormType
+     *   }
+     * })
+     * 
+     */
+    create<T extends FormTypeCreateArgs>(args: SelectSubset<T, FormTypeCreateArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FormTypes.
+     * @param {FormTypeCreateManyArgs} args - Arguments to create many FormTypes.
+     * @example
+     * // Create many FormTypes
+     * const formType = await prisma.formType.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FormTypeCreateManyArgs>(args?: SelectSubset<T, FormTypeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FormTypes and returns the data saved in the database.
+     * @param {FormTypeCreateManyAndReturnArgs} args - Arguments to create many FormTypes.
+     * @example
+     * // Create many FormTypes
+     * const formType = await prisma.formType.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FormTypes and only return the `id`
+     * const formTypeWithIdOnly = await prisma.formType.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FormTypeCreateManyAndReturnArgs>(args?: SelectSubset<T, FormTypeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FormType.
+     * @param {FormTypeDeleteArgs} args - Arguments to delete one FormType.
+     * @example
+     * // Delete one FormType
+     * const FormType = await prisma.formType.delete({
+     *   where: {
+     *     // ... filter to delete one FormType
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FormTypeDeleteArgs>(args: SelectSubset<T, FormTypeDeleteArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FormType.
+     * @param {FormTypeUpdateArgs} args - Arguments to update one FormType.
+     * @example
+     * // Update one FormType
+     * const formType = await prisma.formType.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FormTypeUpdateArgs>(args: SelectSubset<T, FormTypeUpdateArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FormTypes.
+     * @param {FormTypeDeleteManyArgs} args - Arguments to filter FormTypes to delete.
+     * @example
+     * // Delete a few FormTypes
+     * const { count } = await prisma.formType.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FormTypeDeleteManyArgs>(args?: SelectSubset<T, FormTypeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormTypeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FormTypes
+     * const formType = await prisma.formType.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FormTypeUpdateManyArgs>(args: SelectSubset<T, FormTypeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormTypes and returns the data updated in the database.
+     * @param {FormTypeUpdateManyAndReturnArgs} args - Arguments to update many FormTypes.
+     * @example
+     * // Update many FormTypes
+     * const formType = await prisma.formType.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FormTypes and only return the `id`
+     * const formTypeWithIdOnly = await prisma.formType.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FormTypeUpdateManyAndReturnArgs>(args: SelectSubset<T, FormTypeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FormType.
+     * @param {FormTypeUpsertArgs} args - Arguments to update or create a FormType.
+     * @example
+     * // Update or create a FormType
+     * const formType = await prisma.formType.upsert({
+     *   create: {
+     *     // ... data to create a FormType
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FormType we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FormTypeUpsertArgs>(args: SelectSubset<T, FormTypeUpsertArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FormTypes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormTypeCountArgs} args - Arguments to filter FormTypes to count.
+     * @example
+     * // Count the number of FormTypes
+     * const count = await prisma.formType.count({
+     *   where: {
+     *     // ... the filter for the FormTypes we want to count
+     *   }
+     * })
+    **/
+    count<T extends FormTypeCountArgs>(
+      args?: Subset<T, FormTypeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FormTypeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FormType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormTypeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FormTypeAggregateArgs>(args: Subset<T, FormTypeAggregateArgs>): Prisma.PrismaPromise<GetFormTypeAggregateType<T>>
+
+    /**
+     * Group by FormType.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormTypeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FormTypeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FormTypeGroupByArgs['orderBy'] }
+        : { orderBy?: FormTypeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FormTypeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFormTypeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FormType model
+   */
+  readonly fields: FormTypeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FormType.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FormTypeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    workorderForms<T extends FormType$workorderFormsArgs<ExtArgs> = {}>(args?: Subset<T, FormType$workorderFormsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FormType model
+   */
+  interface FormTypeFieldRefs {
+    readonly id: FieldRef<"FormType", 'String'>
+    readonly key: FieldRef<"FormType", 'String'>
+    readonly name: FieldRef<"FormType", 'String'>
+    readonly sortOrder: FieldRef<"FormType", 'Int'>
+    readonly active: FieldRef<"FormType", 'Boolean'>
+    readonly createdAt: FieldRef<"FormType", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FormType findUnique
+   */
+  export type FormTypeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which FormType to fetch.
+     */
+    where: FormTypeWhereUniqueInput
+  }
+
+  /**
+   * FormType findUniqueOrThrow
+   */
+  export type FormTypeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which FormType to fetch.
+     */
+    where: FormTypeWhereUniqueInput
+  }
+
+  /**
+   * FormType findFirst
+   */
+  export type FormTypeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which FormType to fetch.
+     */
+    where?: FormTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormTypes to fetch.
+     */
+    orderBy?: FormTypeOrderByWithRelationInput | FormTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormTypes.
+     */
+    cursor?: FormTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormTypes.
+     */
+    distinct?: FormTypeScalarFieldEnum | FormTypeScalarFieldEnum[]
+  }
+
+  /**
+   * FormType findFirstOrThrow
+   */
+  export type FormTypeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which FormType to fetch.
+     */
+    where?: FormTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormTypes to fetch.
+     */
+    orderBy?: FormTypeOrderByWithRelationInput | FormTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormTypes.
+     */
+    cursor?: FormTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormTypes.
+     */
+    distinct?: FormTypeScalarFieldEnum | FormTypeScalarFieldEnum[]
+  }
+
+  /**
+   * FormType findMany
+   */
+  export type FormTypeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * Filter, which FormTypes to fetch.
+     */
+    where?: FormTypeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormTypes to fetch.
+     */
+    orderBy?: FormTypeOrderByWithRelationInput | FormTypeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FormTypes.
+     */
+    cursor?: FormTypeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormTypes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormTypes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormTypes.
+     */
+    distinct?: FormTypeScalarFieldEnum | FormTypeScalarFieldEnum[]
+  }
+
+  /**
+   * FormType create
+   */
+  export type FormTypeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FormType.
+     */
+    data: XOR<FormTypeCreateInput, FormTypeUncheckedCreateInput>
+  }
+
+  /**
+   * FormType createMany
+   */
+  export type FormTypeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FormTypes.
+     */
+    data: FormTypeCreateManyInput | FormTypeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FormType createManyAndReturn
+   */
+  export type FormTypeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * The data used to create many FormTypes.
+     */
+    data: FormTypeCreateManyInput | FormTypeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FormType update
+   */
+  export type FormTypeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FormType.
+     */
+    data: XOR<FormTypeUpdateInput, FormTypeUncheckedUpdateInput>
+    /**
+     * Choose, which FormType to update.
+     */
+    where: FormTypeWhereUniqueInput
+  }
+
+  /**
+   * FormType updateMany
+   */
+  export type FormTypeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FormTypes.
+     */
+    data: XOR<FormTypeUpdateManyMutationInput, FormTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which FormTypes to update
+     */
+    where?: FormTypeWhereInput
+    /**
+     * Limit how many FormTypes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormType updateManyAndReturn
+   */
+  export type FormTypeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * The data used to update FormTypes.
+     */
+    data: XOR<FormTypeUpdateManyMutationInput, FormTypeUncheckedUpdateManyInput>
+    /**
+     * Filter which FormTypes to update
+     */
+    where?: FormTypeWhereInput
+    /**
+     * Limit how many FormTypes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormType upsert
+   */
+  export type FormTypeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FormType to update in case it exists.
+     */
+    where: FormTypeWhereUniqueInput
+    /**
+     * In case the FormType found by the `where` argument doesn't exist, create a new FormType with this data.
+     */
+    create: XOR<FormTypeCreateInput, FormTypeUncheckedCreateInput>
+    /**
+     * In case the FormType was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FormTypeUpdateInput, FormTypeUncheckedUpdateInput>
+  }
+
+  /**
+   * FormType delete
+   */
+  export type FormTypeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+    /**
+     * Filter which FormType to delete.
+     */
+    where: FormTypeWhereUniqueInput
+  }
+
+  /**
+   * FormType deleteMany
+   */
+  export type FormTypeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormTypes to delete
+     */
+    where?: FormTypeWhereInput
+    /**
+     * Limit how many FormTypes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormType.workorderForms
+   */
+  export type FormType$workorderFormsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    where?: WorkorderFormWhereInput
+    orderBy?: WorkorderFormOrderByWithRelationInput | WorkorderFormOrderByWithRelationInput[]
+    cursor?: WorkorderFormWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkorderFormScalarFieldEnum | WorkorderFormScalarFieldEnum[]
+  }
+
+  /**
+   * FormType without action
+   */
+  export type FormTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormType
+     */
+    select?: FormTypeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormType
+     */
+    omit?: FormTypeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormTypeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkorderForm
+   */
+
+  export type AggregateWorkorderForm = {
+    _count: WorkorderFormCountAggregateOutputType | null
+    _min: WorkorderFormMinAggregateOutputType | null
+    _max: WorkorderFormMaxAggregateOutputType | null
+  }
+
+  export type WorkorderFormMinAggregateOutputType = {
+    id: string | null
+    workorderId: string | null
+    formTypeId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkorderFormMaxAggregateOutputType = {
+    id: string | null
+    workorderId: string | null
+    formTypeId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkorderFormCountAggregateOutputType = {
+    id: number
+    workorderId: number
+    formTypeId: number
+    formData: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkorderFormMinAggregateInputType = {
+    id?: true
+    workorderId?: true
+    formTypeId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkorderFormMaxAggregateInputType = {
+    id?: true
+    workorderId?: true
+    formTypeId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkorderFormCountAggregateInputType = {
+    id?: true
+    workorderId?: true
+    formTypeId?: true
+    formData?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkorderFormAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkorderForm to aggregate.
+     */
+    where?: WorkorderFormWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderForms to fetch.
+     */
+    orderBy?: WorkorderFormOrderByWithRelationInput | WorkorderFormOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkorderFormWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderForms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderForms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkorderForms
+    **/
+    _count?: true | WorkorderFormCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkorderFormMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkorderFormMaxAggregateInputType
+  }
+
+  export type GetWorkorderFormAggregateType<T extends WorkorderFormAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkorderForm]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkorderForm[P]>
+      : GetScalarType<T[P], AggregateWorkorderForm[P]>
+  }
+
+
+
+
+  export type WorkorderFormGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderFormWhereInput
+    orderBy?: WorkorderFormOrderByWithAggregationInput | WorkorderFormOrderByWithAggregationInput[]
+    by: WorkorderFormScalarFieldEnum[] | WorkorderFormScalarFieldEnum
+    having?: WorkorderFormScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkorderFormCountAggregateInputType | true
+    _min?: WorkorderFormMinAggregateInputType
+    _max?: WorkorderFormMaxAggregateInputType
+  }
+
+  export type WorkorderFormGroupByOutputType = {
+    id: string
+    workorderId: string
+    formTypeId: string
+    formData: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkorderFormCountAggregateOutputType | null
+    _min: WorkorderFormMinAggregateOutputType | null
+    _max: WorkorderFormMaxAggregateOutputType | null
+  }
+
+  type GetWorkorderFormGroupByPayload<T extends WorkorderFormGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkorderFormGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkorderFormGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkorderFormGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkorderFormGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkorderFormSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    formTypeId?: boolean
+    formData?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    formType?: boolean | FormTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderForm"]>
+
+  export type WorkorderFormSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    formTypeId?: boolean
+    formData?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    formType?: boolean | FormTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderForm"]>
+
+  export type WorkorderFormSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    formTypeId?: boolean
+    formData?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    formType?: boolean | FormTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderForm"]>
+
+  export type WorkorderFormSelectScalar = {
+    id?: boolean
+    workorderId?: boolean
+    formTypeId?: boolean
+    formData?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkorderFormOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workorderId" | "formTypeId" | "formData" | "createdAt" | "updatedAt", ExtArgs["result"]["workorderForm"]>
+  export type WorkorderFormInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    formType?: boolean | FormTypeDefaultArgs<ExtArgs>
+  }
+  export type WorkorderFormIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    formType?: boolean | FormTypeDefaultArgs<ExtArgs>
+  }
+  export type WorkorderFormIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+    formType?: boolean | FormTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkorderFormPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkorderForm"
+    objects: {
+      workorder: Prisma.$WorkorderPayload<ExtArgs>
+      formType: Prisma.$FormTypePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      workorderId: string
+      formTypeId: string
+      formData: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workorderForm"]>
+    composites: {}
+  }
+
+  type WorkorderFormGetPayload<S extends boolean | null | undefined | WorkorderFormDefaultArgs> = $Result.GetResult<Prisma.$WorkorderFormPayload, S>
+
+  type WorkorderFormCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkorderFormFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkorderFormCountAggregateInputType | true
+    }
+
+  export interface WorkorderFormDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkorderForm'], meta: { name: 'WorkorderForm' } }
+    /**
+     * Find zero or one WorkorderForm that matches the filter.
+     * @param {WorkorderFormFindUniqueArgs} args - Arguments to find a WorkorderForm
+     * @example
+     * // Get one WorkorderForm
+     * const workorderForm = await prisma.workorderForm.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkorderFormFindUniqueArgs>(args: SelectSubset<T, WorkorderFormFindUniqueArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkorderForm that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkorderFormFindUniqueOrThrowArgs} args - Arguments to find a WorkorderForm
+     * @example
+     * // Get one WorkorderForm
+     * const workorderForm = await prisma.workorderForm.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkorderFormFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkorderFormFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkorderForm that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderFormFindFirstArgs} args - Arguments to find a WorkorderForm
+     * @example
+     * // Get one WorkorderForm
+     * const workorderForm = await prisma.workorderForm.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkorderFormFindFirstArgs>(args?: SelectSubset<T, WorkorderFormFindFirstArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkorderForm that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderFormFindFirstOrThrowArgs} args - Arguments to find a WorkorderForm
+     * @example
+     * // Get one WorkorderForm
+     * const workorderForm = await prisma.workorderForm.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkorderFormFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkorderFormFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkorderForms that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderFormFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkorderForms
+     * const workorderForms = await prisma.workorderForm.findMany()
+     * 
+     * // Get first 10 WorkorderForms
+     * const workorderForms = await prisma.workorderForm.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workorderFormWithIdOnly = await prisma.workorderForm.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkorderFormFindManyArgs>(args?: SelectSubset<T, WorkorderFormFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkorderForm.
+     * @param {WorkorderFormCreateArgs} args - Arguments to create a WorkorderForm.
+     * @example
+     * // Create one WorkorderForm
+     * const WorkorderForm = await prisma.workorderForm.create({
+     *   data: {
+     *     // ... data to create a WorkorderForm
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkorderFormCreateArgs>(args: SelectSubset<T, WorkorderFormCreateArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkorderForms.
+     * @param {WorkorderFormCreateManyArgs} args - Arguments to create many WorkorderForms.
+     * @example
+     * // Create many WorkorderForms
+     * const workorderForm = await prisma.workorderForm.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkorderFormCreateManyArgs>(args?: SelectSubset<T, WorkorderFormCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkorderForms and returns the data saved in the database.
+     * @param {WorkorderFormCreateManyAndReturnArgs} args - Arguments to create many WorkorderForms.
+     * @example
+     * // Create many WorkorderForms
+     * const workorderForm = await prisma.workorderForm.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkorderForms and only return the `id`
+     * const workorderFormWithIdOnly = await prisma.workorderForm.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkorderFormCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkorderFormCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkorderForm.
+     * @param {WorkorderFormDeleteArgs} args - Arguments to delete one WorkorderForm.
+     * @example
+     * // Delete one WorkorderForm
+     * const WorkorderForm = await prisma.workorderForm.delete({
+     *   where: {
+     *     // ... filter to delete one WorkorderForm
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkorderFormDeleteArgs>(args: SelectSubset<T, WorkorderFormDeleteArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkorderForm.
+     * @param {WorkorderFormUpdateArgs} args - Arguments to update one WorkorderForm.
+     * @example
+     * // Update one WorkorderForm
+     * const workorderForm = await prisma.workorderForm.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkorderFormUpdateArgs>(args: SelectSubset<T, WorkorderFormUpdateArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkorderForms.
+     * @param {WorkorderFormDeleteManyArgs} args - Arguments to filter WorkorderForms to delete.
+     * @example
+     * // Delete a few WorkorderForms
+     * const { count } = await prisma.workorderForm.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkorderFormDeleteManyArgs>(args?: SelectSubset<T, WorkorderFormDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkorderForms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderFormUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkorderForms
+     * const workorderForm = await prisma.workorderForm.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkorderFormUpdateManyArgs>(args: SelectSubset<T, WorkorderFormUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkorderForms and returns the data updated in the database.
+     * @param {WorkorderFormUpdateManyAndReturnArgs} args - Arguments to update many WorkorderForms.
+     * @example
+     * // Update many WorkorderForms
+     * const workorderForm = await prisma.workorderForm.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkorderForms and only return the `id`
+     * const workorderFormWithIdOnly = await prisma.workorderForm.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkorderFormUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkorderFormUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkorderForm.
+     * @param {WorkorderFormUpsertArgs} args - Arguments to update or create a WorkorderForm.
+     * @example
+     * // Update or create a WorkorderForm
+     * const workorderForm = await prisma.workorderForm.upsert({
+     *   create: {
+     *     // ... data to create a WorkorderForm
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkorderForm we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkorderFormUpsertArgs>(args: SelectSubset<T, WorkorderFormUpsertArgs<ExtArgs>>): Prisma__WorkorderFormClient<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkorderForms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderFormCountArgs} args - Arguments to filter WorkorderForms to count.
+     * @example
+     * // Count the number of WorkorderForms
+     * const count = await prisma.workorderForm.count({
+     *   where: {
+     *     // ... the filter for the WorkorderForms we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkorderFormCountArgs>(
+      args?: Subset<T, WorkorderFormCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkorderFormCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkorderForm.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderFormAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkorderFormAggregateArgs>(args: Subset<T, WorkorderFormAggregateArgs>): Prisma.PrismaPromise<GetWorkorderFormAggregateType<T>>
+
+    /**
+     * Group by WorkorderForm.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderFormGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkorderFormGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkorderFormGroupByArgs['orderBy'] }
+        : { orderBy?: WorkorderFormGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkorderFormGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkorderFormGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkorderForm model
+   */
+  readonly fields: WorkorderFormFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkorderForm.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkorderFormClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    workorder<T extends WorkorderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkorderDefaultArgs<ExtArgs>>): Prisma__WorkorderClient<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    formType<T extends FormTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormTypeDefaultArgs<ExtArgs>>): Prisma__FormTypeClient<$Result.GetResult<Prisma.$FormTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkorderForm model
+   */
+  interface WorkorderFormFieldRefs {
+    readonly id: FieldRef<"WorkorderForm", 'String'>
+    readonly workorderId: FieldRef<"WorkorderForm", 'String'>
+    readonly formTypeId: FieldRef<"WorkorderForm", 'String'>
+    readonly formData: FieldRef<"WorkorderForm", 'Json'>
+    readonly createdAt: FieldRef<"WorkorderForm", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkorderForm", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkorderForm findUnique
+   */
+  export type WorkorderFormFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderForm to fetch.
+     */
+    where: WorkorderFormWhereUniqueInput
+  }
+
+  /**
+   * WorkorderForm findUniqueOrThrow
+   */
+  export type WorkorderFormFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderForm to fetch.
+     */
+    where: WorkorderFormWhereUniqueInput
+  }
+
+  /**
+   * WorkorderForm findFirst
+   */
+  export type WorkorderFormFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderForm to fetch.
+     */
+    where?: WorkorderFormWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderForms to fetch.
+     */
+    orderBy?: WorkorderFormOrderByWithRelationInput | WorkorderFormOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkorderForms.
+     */
+    cursor?: WorkorderFormWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderForms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderForms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderForms.
+     */
+    distinct?: WorkorderFormScalarFieldEnum | WorkorderFormScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderForm findFirstOrThrow
+   */
+  export type WorkorderFormFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderForm to fetch.
+     */
+    where?: WorkorderFormWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderForms to fetch.
+     */
+    orderBy?: WorkorderFormOrderByWithRelationInput | WorkorderFormOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkorderForms.
+     */
+    cursor?: WorkorderFormWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderForms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderForms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderForms.
+     */
+    distinct?: WorkorderFormScalarFieldEnum | WorkorderFormScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderForm findMany
+   */
+  export type WorkorderFormFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderForms to fetch.
+     */
+    where?: WorkorderFormWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderForms to fetch.
+     */
+    orderBy?: WorkorderFormOrderByWithRelationInput | WorkorderFormOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkorderForms.
+     */
+    cursor?: WorkorderFormWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderForms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderForms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderForms.
+     */
+    distinct?: WorkorderFormScalarFieldEnum | WorkorderFormScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderForm create
+   */
+  export type WorkorderFormCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkorderForm.
+     */
+    data: XOR<WorkorderFormCreateInput, WorkorderFormUncheckedCreateInput>
+  }
+
+  /**
+   * WorkorderForm createMany
+   */
+  export type WorkorderFormCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkorderForms.
+     */
+    data: WorkorderFormCreateManyInput | WorkorderFormCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkorderForm createManyAndReturn
+   */
+  export type WorkorderFormCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkorderForms.
+     */
+    data: WorkorderFormCreateManyInput | WorkorderFormCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkorderForm update
+   */
+  export type WorkorderFormUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkorderForm.
+     */
+    data: XOR<WorkorderFormUpdateInput, WorkorderFormUncheckedUpdateInput>
+    /**
+     * Choose, which WorkorderForm to update.
+     */
+    where: WorkorderFormWhereUniqueInput
+  }
+
+  /**
+   * WorkorderForm updateMany
+   */
+  export type WorkorderFormUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkorderForms.
+     */
+    data: XOR<WorkorderFormUpdateManyMutationInput, WorkorderFormUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkorderForms to update
+     */
+    where?: WorkorderFormWhereInput
+    /**
+     * Limit how many WorkorderForms to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkorderForm updateManyAndReturn
+   */
+  export type WorkorderFormUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkorderForms.
+     */
+    data: XOR<WorkorderFormUpdateManyMutationInput, WorkorderFormUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkorderForms to update
+     */
+    where?: WorkorderFormWhereInput
+    /**
+     * Limit how many WorkorderForms to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkorderForm upsert
+   */
+  export type WorkorderFormUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkorderForm to update in case it exists.
+     */
+    where: WorkorderFormWhereUniqueInput
+    /**
+     * In case the WorkorderForm found by the `where` argument doesn't exist, create a new WorkorderForm with this data.
+     */
+    create: XOR<WorkorderFormCreateInput, WorkorderFormUncheckedCreateInput>
+    /**
+     * In case the WorkorderForm was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkorderFormUpdateInput, WorkorderFormUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkorderForm delete
+   */
+  export type WorkorderFormDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+    /**
+     * Filter which WorkorderForm to delete.
+     */
+    where: WorkorderFormWhereUniqueInput
+  }
+
+  /**
+   * WorkorderForm deleteMany
+   */
+  export type WorkorderFormDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkorderForms to delete
+     */
+    where?: WorkorderFormWhereInput
+    /**
+     * Limit how many WorkorderForms to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkorderForm without action
+   */
+  export type WorkorderFormDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderForm
+     */
+    select?: WorkorderFormSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderForm
+     */
+    omit?: WorkorderFormOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderFormInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Assignment
    */
 
@@ -21044,6 +23496,30 @@ export namespace Prisma {
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
+  export const FormTypeScalarFieldEnum: {
+    id: 'id',
+    key: 'key',
+    name: 'name',
+    sortOrder: 'sortOrder',
+    active: 'active',
+    createdAt: 'createdAt'
+  };
+
+  export type FormTypeScalarFieldEnum = (typeof FormTypeScalarFieldEnum)[keyof typeof FormTypeScalarFieldEnum]
+
+
+  export const WorkorderFormScalarFieldEnum: {
+    id: 'id',
+    workorderId: 'workorderId',
+    formTypeId: 'formTypeId',
+    formData: 'formData',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkorderFormScalarFieldEnum = (typeof WorkorderFormScalarFieldEnum)[keyof typeof WorkorderFormScalarFieldEnum]
+
+
   export const AssignmentScalarFieldEnum: {
     id: 'id',
     number: 'number',
@@ -21518,6 +23994,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoListRelationFilter
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
     extraEngineers?: WorkorderEngineerListRelationFilter
+    forms?: WorkorderFormListRelationFilter
   }
 
   export type WorkorderOrderByWithRelationInput = {
@@ -21553,6 +24030,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoOrderByRelationAggregateInput
     signature?: WorkorderSignatureOrderByWithRelationInput
     extraEngineers?: WorkorderEngineerOrderByRelationAggregateInput
+    forms?: WorkorderFormOrderByRelationAggregateInput
   }
 
   export type WorkorderWhereUniqueInput = Prisma.AtLeast<{
@@ -21591,6 +24069,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoListRelationFilter
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
     extraEngineers?: WorkorderEngineerListRelationFilter
+    forms?: WorkorderFormListRelationFilter
   }, "id" | "number">
 
   export type WorkorderOrderByWithAggregationInput = {
@@ -22103,6 +24582,132 @@ export namespace Prisma {
     workorderId?: StringNullableWithAggregatesFilter<"Notification"> | string | null
     read?: BoolWithAggregatesFilter<"Notification"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
+  }
+
+  export type FormTypeWhereInput = {
+    AND?: FormTypeWhereInput | FormTypeWhereInput[]
+    OR?: FormTypeWhereInput[]
+    NOT?: FormTypeWhereInput | FormTypeWhereInput[]
+    id?: StringFilter<"FormType"> | string
+    key?: StringFilter<"FormType"> | string
+    name?: StringFilter<"FormType"> | string
+    sortOrder?: IntFilter<"FormType"> | number
+    active?: BoolFilter<"FormType"> | boolean
+    createdAt?: DateTimeFilter<"FormType"> | Date | string
+    workorderForms?: WorkorderFormListRelationFilter
+  }
+
+  export type FormTypeOrderByWithRelationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    sortOrder?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+    workorderForms?: WorkorderFormOrderByRelationAggregateInput
+  }
+
+  export type FormTypeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: FormTypeWhereInput | FormTypeWhereInput[]
+    OR?: FormTypeWhereInput[]
+    NOT?: FormTypeWhereInput | FormTypeWhereInput[]
+    name?: StringFilter<"FormType"> | string
+    sortOrder?: IntFilter<"FormType"> | number
+    active?: BoolFilter<"FormType"> | boolean
+    createdAt?: DateTimeFilter<"FormType"> | Date | string
+    workorderForms?: WorkorderFormListRelationFilter
+  }, "id" | "key">
+
+  export type FormTypeOrderByWithAggregationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    sortOrder?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+    _count?: FormTypeCountOrderByAggregateInput
+    _avg?: FormTypeAvgOrderByAggregateInput
+    _max?: FormTypeMaxOrderByAggregateInput
+    _min?: FormTypeMinOrderByAggregateInput
+    _sum?: FormTypeSumOrderByAggregateInput
+  }
+
+  export type FormTypeScalarWhereWithAggregatesInput = {
+    AND?: FormTypeScalarWhereWithAggregatesInput | FormTypeScalarWhereWithAggregatesInput[]
+    OR?: FormTypeScalarWhereWithAggregatesInput[]
+    NOT?: FormTypeScalarWhereWithAggregatesInput | FormTypeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FormType"> | string
+    key?: StringWithAggregatesFilter<"FormType"> | string
+    name?: StringWithAggregatesFilter<"FormType"> | string
+    sortOrder?: IntWithAggregatesFilter<"FormType"> | number
+    active?: BoolWithAggregatesFilter<"FormType"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"FormType"> | Date | string
+  }
+
+  export type WorkorderFormWhereInput = {
+    AND?: WorkorderFormWhereInput | WorkorderFormWhereInput[]
+    OR?: WorkorderFormWhereInput[]
+    NOT?: WorkorderFormWhereInput | WorkorderFormWhereInput[]
+    id?: StringFilter<"WorkorderForm"> | string
+    workorderId?: StringFilter<"WorkorderForm"> | string
+    formTypeId?: StringFilter<"WorkorderForm"> | string
+    formData?: JsonNullableFilter<"WorkorderForm">
+    createdAt?: DateTimeFilter<"WorkorderForm"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkorderForm"> | Date | string
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+    formType?: XOR<FormTypeScalarRelationFilter, FormTypeWhereInput>
+  }
+
+  export type WorkorderFormOrderByWithRelationInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    formTypeId?: SortOrder
+    formData?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    workorder?: WorkorderOrderByWithRelationInput
+    formType?: FormTypeOrderByWithRelationInput
+  }
+
+  export type WorkorderFormWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    workorderId_formTypeId?: WorkorderFormWorkorderIdFormTypeIdCompoundUniqueInput
+    AND?: WorkorderFormWhereInput | WorkorderFormWhereInput[]
+    OR?: WorkorderFormWhereInput[]
+    NOT?: WorkorderFormWhereInput | WorkorderFormWhereInput[]
+    workorderId?: StringFilter<"WorkorderForm"> | string
+    formTypeId?: StringFilter<"WorkorderForm"> | string
+    formData?: JsonNullableFilter<"WorkorderForm">
+    createdAt?: DateTimeFilter<"WorkorderForm"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkorderForm"> | Date | string
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+    formType?: XOR<FormTypeScalarRelationFilter, FormTypeWhereInput>
+  }, "id" | "workorderId_formTypeId">
+
+  export type WorkorderFormOrderByWithAggregationInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    formTypeId?: SortOrder
+    formData?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkorderFormCountOrderByAggregateInput
+    _max?: WorkorderFormMaxOrderByAggregateInput
+    _min?: WorkorderFormMinOrderByAggregateInput
+  }
+
+  export type WorkorderFormScalarWhereWithAggregatesInput = {
+    AND?: WorkorderFormScalarWhereWithAggregatesInput | WorkorderFormScalarWhereWithAggregatesInput[]
+    OR?: WorkorderFormScalarWhereWithAggregatesInput[]
+    NOT?: WorkorderFormScalarWhereWithAggregatesInput | WorkorderFormScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkorderForm"> | string
+    workorderId?: StringWithAggregatesFilter<"WorkorderForm"> | string
+    formTypeId?: StringWithAggregatesFilter<"WorkorderForm"> | string
+    formData?: JsonNullableWithAggregatesFilter<"WorkorderForm">
+    createdAt?: DateTimeWithAggregatesFilter<"WorkorderForm"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkorderForm"> | Date | string
   }
 
   export type AssignmentWhereInput = {
@@ -22731,6 +25336,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateInput = {
@@ -22762,6 +25368,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUpdateInput = {
@@ -22793,6 +25400,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateInput = {
@@ -22824,6 +25432,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateManyInput = {
@@ -23376,6 +25985,134 @@ export namespace Prisma {
     workorderId?: NullableStringFieldUpdateOperationsInput | string | null
     read?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormTypeCreateInput = {
+    id?: string
+    key: string
+    name: string
+    sortOrder?: number
+    active?: boolean
+    createdAt?: Date | string
+    workorderForms?: WorkorderFormCreateNestedManyWithoutFormTypeInput
+  }
+
+  export type FormTypeUncheckedCreateInput = {
+    id?: string
+    key: string
+    name: string
+    sortOrder?: number
+    active?: boolean
+    createdAt?: Date | string
+    workorderForms?: WorkorderFormUncheckedCreateNestedManyWithoutFormTypeInput
+  }
+
+  export type FormTypeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorderForms?: WorkorderFormUpdateManyWithoutFormTypeNestedInput
+  }
+
+  export type FormTypeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorderForms?: WorkorderFormUncheckedUpdateManyWithoutFormTypeNestedInput
+  }
+
+  export type FormTypeCreateManyInput = {
+    id?: string
+    key: string
+    name: string
+    sortOrder?: number
+    active?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FormTypeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormTypeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderFormCreateInput = {
+    id?: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workorder: WorkorderCreateNestedOneWithoutFormsInput
+    formType: FormTypeCreateNestedOneWithoutWorkorderFormsInput
+  }
+
+  export type WorkorderFormUncheckedCreateInput = {
+    id?: string
+    workorderId: string
+    formTypeId: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkorderFormUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorder?: WorkorderUpdateOneRequiredWithoutFormsNestedInput
+    formType?: FormTypeUpdateOneRequiredWithoutWorkorderFormsNestedInput
+  }
+
+  export type WorkorderFormUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    formTypeId?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderFormCreateManyInput = {
+    id?: string
+    workorderId: string
+    formTypeId: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkorderFormUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderFormUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    formTypeId?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AssignmentCreateInput = {
@@ -24112,6 +26849,12 @@ export namespace Prisma {
     isNot?: WorkorderSignatureWhereInput | null
   }
 
+  export type WorkorderFormListRelationFilter = {
+    every?: WorkorderFormWhereInput
+    some?: WorkorderFormWhereInput
+    none?: WorkorderFormWhereInput
+  }
+
   export type DocumentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -24129,6 +26872,10 @@ export namespace Prisma {
   }
 
   export type WorkorderPhotoOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkorderFormOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -24553,6 +27300,76 @@ export namespace Prisma {
     workorderId?: SortOrder
     read?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type FormTypeCountOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    sortOrder?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FormTypeAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type FormTypeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    sortOrder?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FormTypeMinOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    sortOrder?: SortOrder
+    active?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FormTypeSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type FormTypeScalarRelationFilter = {
+    is?: FormTypeWhereInput
+    isNot?: FormTypeWhereInput
+  }
+
+  export type WorkorderFormWorkorderIdFormTypeIdCompoundUniqueInput = {
+    workorderId: string
+    formTypeId: string
+  }
+
+  export type WorkorderFormCountOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    formTypeId?: SortOrder
+    formData?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkorderFormMaxOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    formTypeId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkorderFormMinOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    formTypeId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type InvoiceListRelationFilter = {
@@ -25225,6 +28042,13 @@ export namespace Prisma {
     connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
   }
 
+  export type WorkorderFormCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<WorkorderFormCreateWithoutWorkorderInput, WorkorderFormUncheckedCreateWithoutWorkorderInput> | WorkorderFormCreateWithoutWorkorderInput[] | WorkorderFormUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutWorkorderInput | WorkorderFormCreateOrConnectWithoutWorkorderInput[]
+    createMany?: WorkorderFormCreateManyWorkorderInputEnvelope
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+  }
+
   export type DocumentUncheckedCreateNestedManyWithoutWorkorderInput = {
     create?: XOR<DocumentCreateWithoutWorkorderInput, DocumentUncheckedCreateWithoutWorkorderInput> | DocumentCreateWithoutWorkorderInput[] | DocumentUncheckedCreateWithoutWorkorderInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutWorkorderInput | DocumentCreateOrConnectWithoutWorkorderInput[]
@@ -25271,6 +28095,13 @@ export namespace Prisma {
     connectOrCreate?: WorkorderEngineerCreateOrConnectWithoutWorkorderInput | WorkorderEngineerCreateOrConnectWithoutWorkorderInput[]
     createMany?: WorkorderEngineerCreateManyWorkorderInputEnvelope
     connect?: WorkorderEngineerWhereUniqueInput | WorkorderEngineerWhereUniqueInput[]
+  }
+
+  export type WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<WorkorderFormCreateWithoutWorkorderInput, WorkorderFormUncheckedCreateWithoutWorkorderInput> | WorkorderFormCreateWithoutWorkorderInput[] | WorkorderFormUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutWorkorderInput | WorkorderFormCreateOrConnectWithoutWorkorderInput[]
+    createMany?: WorkorderFormCreateManyWorkorderInputEnvelope
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -25415,6 +28246,20 @@ export namespace Prisma {
     deleteMany?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
   }
 
+  export type WorkorderFormUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<WorkorderFormCreateWithoutWorkorderInput, WorkorderFormUncheckedCreateWithoutWorkorderInput> | WorkorderFormCreateWithoutWorkorderInput[] | WorkorderFormUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutWorkorderInput | WorkorderFormCreateOrConnectWithoutWorkorderInput[]
+    upsert?: WorkorderFormUpsertWithWhereUniqueWithoutWorkorderInput | WorkorderFormUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: WorkorderFormCreateManyWorkorderInputEnvelope
+    set?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    disconnect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    delete?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    update?: WorkorderFormUpdateWithWhereUniqueWithoutWorkorderInput | WorkorderFormUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: WorkorderFormUpdateManyWithWhereWithoutWorkorderInput | WorkorderFormUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
+  }
+
   export type DocumentUncheckedUpdateManyWithoutWorkorderNestedInput = {
     create?: XOR<DocumentCreateWithoutWorkorderInput, DocumentUncheckedCreateWithoutWorkorderInput> | DocumentCreateWithoutWorkorderInput[] | DocumentUncheckedCreateWithoutWorkorderInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutWorkorderInput | DocumentCreateOrConnectWithoutWorkorderInput[]
@@ -25507,6 +28352,20 @@ export namespace Prisma {
     update?: WorkorderEngineerUpdateWithWhereUniqueWithoutWorkorderInput | WorkorderEngineerUpdateWithWhereUniqueWithoutWorkorderInput[]
     updateMany?: WorkorderEngineerUpdateManyWithWhereWithoutWorkorderInput | WorkorderEngineerUpdateManyWithWhereWithoutWorkorderInput[]
     deleteMany?: WorkorderEngineerScalarWhereInput | WorkorderEngineerScalarWhereInput[]
+  }
+
+  export type WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<WorkorderFormCreateWithoutWorkorderInput, WorkorderFormUncheckedCreateWithoutWorkorderInput> | WorkorderFormCreateWithoutWorkorderInput[] | WorkorderFormUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutWorkorderInput | WorkorderFormCreateOrConnectWithoutWorkorderInput[]
+    upsert?: WorkorderFormUpsertWithWhereUniqueWithoutWorkorderInput | WorkorderFormUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: WorkorderFormCreateManyWorkorderInputEnvelope
+    set?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    disconnect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    delete?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    update?: WorkorderFormUpdateWithWhereUniqueWithoutWorkorderInput | WorkorderFormUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: WorkorderFormUpdateManyWithWhereWithoutWorkorderInput | WorkorderFormUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
   }
 
   export type WorkorderCreateNestedOneWithoutHoursInput = {
@@ -25617,6 +28476,76 @@ export namespace Prisma {
     delete?: WorkorderWhereInput | boolean
     connect?: WorkorderWhereUniqueInput
     update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutDocumentsInput, WorkorderUpdateWithoutDocumentsInput>, WorkorderUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type WorkorderFormCreateNestedManyWithoutFormTypeInput = {
+    create?: XOR<WorkorderFormCreateWithoutFormTypeInput, WorkorderFormUncheckedCreateWithoutFormTypeInput> | WorkorderFormCreateWithoutFormTypeInput[] | WorkorderFormUncheckedCreateWithoutFormTypeInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutFormTypeInput | WorkorderFormCreateOrConnectWithoutFormTypeInput[]
+    createMany?: WorkorderFormCreateManyFormTypeInputEnvelope
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+  }
+
+  export type WorkorderFormUncheckedCreateNestedManyWithoutFormTypeInput = {
+    create?: XOR<WorkorderFormCreateWithoutFormTypeInput, WorkorderFormUncheckedCreateWithoutFormTypeInput> | WorkorderFormCreateWithoutFormTypeInput[] | WorkorderFormUncheckedCreateWithoutFormTypeInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutFormTypeInput | WorkorderFormCreateOrConnectWithoutFormTypeInput[]
+    createMany?: WorkorderFormCreateManyFormTypeInputEnvelope
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+  }
+
+  export type WorkorderFormUpdateManyWithoutFormTypeNestedInput = {
+    create?: XOR<WorkorderFormCreateWithoutFormTypeInput, WorkorderFormUncheckedCreateWithoutFormTypeInput> | WorkorderFormCreateWithoutFormTypeInput[] | WorkorderFormUncheckedCreateWithoutFormTypeInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutFormTypeInput | WorkorderFormCreateOrConnectWithoutFormTypeInput[]
+    upsert?: WorkorderFormUpsertWithWhereUniqueWithoutFormTypeInput | WorkorderFormUpsertWithWhereUniqueWithoutFormTypeInput[]
+    createMany?: WorkorderFormCreateManyFormTypeInputEnvelope
+    set?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    disconnect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    delete?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    update?: WorkorderFormUpdateWithWhereUniqueWithoutFormTypeInput | WorkorderFormUpdateWithWhereUniqueWithoutFormTypeInput[]
+    updateMany?: WorkorderFormUpdateManyWithWhereWithoutFormTypeInput | WorkorderFormUpdateManyWithWhereWithoutFormTypeInput[]
+    deleteMany?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
+  }
+
+  export type WorkorderFormUncheckedUpdateManyWithoutFormTypeNestedInput = {
+    create?: XOR<WorkorderFormCreateWithoutFormTypeInput, WorkorderFormUncheckedCreateWithoutFormTypeInput> | WorkorderFormCreateWithoutFormTypeInput[] | WorkorderFormUncheckedCreateWithoutFormTypeInput[]
+    connectOrCreate?: WorkorderFormCreateOrConnectWithoutFormTypeInput | WorkorderFormCreateOrConnectWithoutFormTypeInput[]
+    upsert?: WorkorderFormUpsertWithWhereUniqueWithoutFormTypeInput | WorkorderFormUpsertWithWhereUniqueWithoutFormTypeInput[]
+    createMany?: WorkorderFormCreateManyFormTypeInputEnvelope
+    set?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    disconnect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    delete?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+    update?: WorkorderFormUpdateWithWhereUniqueWithoutFormTypeInput | WorkorderFormUpdateWithWhereUniqueWithoutFormTypeInput[]
+    updateMany?: WorkorderFormUpdateManyWithWhereWithoutFormTypeInput | WorkorderFormUpdateManyWithWhereWithoutFormTypeInput[]
+    deleteMany?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
+  }
+
+  export type WorkorderCreateNestedOneWithoutFormsInput = {
+    create?: XOR<WorkorderCreateWithoutFormsInput, WorkorderUncheckedCreateWithoutFormsInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutFormsInput
+    connect?: WorkorderWhereUniqueInput
+  }
+
+  export type FormTypeCreateNestedOneWithoutWorkorderFormsInput = {
+    create?: XOR<FormTypeCreateWithoutWorkorderFormsInput, FormTypeUncheckedCreateWithoutWorkorderFormsInput>
+    connectOrCreate?: FormTypeCreateOrConnectWithoutWorkorderFormsInput
+    connect?: FormTypeWhereUniqueInput
+  }
+
+  export type WorkorderUpdateOneRequiredWithoutFormsNestedInput = {
+    create?: XOR<WorkorderCreateWithoutFormsInput, WorkorderUncheckedCreateWithoutFormsInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutFormsInput
+    upsert?: WorkorderUpsertWithoutFormsInput
+    connect?: WorkorderWhereUniqueInput
+    update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutFormsInput, WorkorderUpdateWithoutFormsInput>, WorkorderUncheckedUpdateWithoutFormsInput>
+  }
+
+  export type FormTypeUpdateOneRequiredWithoutWorkorderFormsNestedInput = {
+    create?: XOR<FormTypeCreateWithoutWorkorderFormsInput, FormTypeUncheckedCreateWithoutWorkorderFormsInput>
+    connectOrCreate?: FormTypeCreateOrConnectWithoutWorkorderFormsInput
+    upsert?: FormTypeUpsertWithoutWorkorderFormsInput
+    connect?: FormTypeWhereUniqueInput
+    update?: XOR<XOR<FormTypeUpdateToOneWithWhereWithoutWorkorderFormsInput, FormTypeUpdateWithoutWorkorderFormsInput>, FormTypeUncheckedUpdateWithoutWorkorderFormsInput>
   }
 
   export type CustomerCreateNestedOneWithoutAssignmentsInput = {
@@ -26175,6 +29104,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutAssignedUserInput = {
@@ -26205,6 +29135,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutAssignedUserInput = {
@@ -26493,6 +29424,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutCustomerInput = {
@@ -26523,6 +29455,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutCustomerInput = {
@@ -26675,6 +29608,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutProjectInput = {
@@ -26705,6 +29639,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutProjectInput = {
@@ -27085,6 +30020,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type WorkorderFormCreateWithoutWorkorderInput = {
+    id?: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    formType: FormTypeCreateNestedOneWithoutWorkorderFormsInput
+  }
+
+  export type WorkorderFormUncheckedCreateWithoutWorkorderInput = {
+    id?: string
+    formTypeId: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkorderFormCreateOrConnectWithoutWorkorderInput = {
+    where: WorkorderFormWhereUniqueInput
+    create: XOR<WorkorderFormCreateWithoutWorkorderInput, WorkorderFormUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type WorkorderFormCreateManyWorkorderInputEnvelope = {
+    data: WorkorderFormCreateManyWorkorderInput | WorkorderFormCreateManyWorkorderInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DocumentUpsertWithWhereUniqueWithoutWorkorderInput = {
     where: DocumentWhereUniqueInput
     update: XOR<DocumentUpdateWithoutWorkorderInput, DocumentUncheckedUpdateWithoutWorkorderInput>
@@ -27427,6 +30388,34 @@ export namespace Prisma {
     data: XOR<WorkorderEngineerUpdateManyMutationInput, WorkorderEngineerUncheckedUpdateManyWithoutWorkorderInput>
   }
 
+  export type WorkorderFormUpsertWithWhereUniqueWithoutWorkorderInput = {
+    where: WorkorderFormWhereUniqueInput
+    update: XOR<WorkorderFormUpdateWithoutWorkorderInput, WorkorderFormUncheckedUpdateWithoutWorkorderInput>
+    create: XOR<WorkorderFormCreateWithoutWorkorderInput, WorkorderFormUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type WorkorderFormUpdateWithWhereUniqueWithoutWorkorderInput = {
+    where: WorkorderFormWhereUniqueInput
+    data: XOR<WorkorderFormUpdateWithoutWorkorderInput, WorkorderFormUncheckedUpdateWithoutWorkorderInput>
+  }
+
+  export type WorkorderFormUpdateManyWithWhereWithoutWorkorderInput = {
+    where: WorkorderFormScalarWhereInput
+    data: XOR<WorkorderFormUpdateManyMutationInput, WorkorderFormUncheckedUpdateManyWithoutWorkorderInput>
+  }
+
+  export type WorkorderFormScalarWhereInput = {
+    AND?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
+    OR?: WorkorderFormScalarWhereInput[]
+    NOT?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
+    id?: StringFilter<"WorkorderForm"> | string
+    workorderId?: StringFilter<"WorkorderForm"> | string
+    formTypeId?: StringFilter<"WorkorderForm"> | string
+    formData?: JsonNullableFilter<"WorkorderForm">
+    createdAt?: DateTimeFilter<"WorkorderForm"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkorderForm"> | Date | string
+  }
+
   export type WorkorderCreateWithoutHoursInput = {
     id?: string
     title: string
@@ -27455,6 +30444,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutHoursInput = {
@@ -27485,6 +30475,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutHoursInput = {
@@ -27531,6 +30522,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutHoursInput = {
@@ -27561,6 +30553,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutMaterialsInput = {
@@ -27591,6 +30584,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutMaterialsInput = {
@@ -27621,6 +30615,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutMaterialsInput = {
@@ -27667,6 +30662,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutMaterialsInput = {
@@ -27697,6 +30693,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutHardwareInput = {
@@ -27727,6 +30724,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutHardwareInput = {
@@ -27757,6 +30755,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutHardwareInput = {
@@ -27803,6 +30802,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutHardwareInput = {
@@ -27833,6 +30833,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutPhotosInput = {
@@ -27863,6 +30864,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutPhotosInput = {
@@ -27893,6 +30895,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutPhotosInput = {
@@ -27939,6 +30942,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutPhotosInput = {
@@ -27969,6 +30973,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutSignatureInput = {
@@ -27999,6 +31004,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutSignatureInput = {
@@ -28029,6 +31035,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutSignatureInput = {
@@ -28075,6 +31082,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutSignatureInput = {
@@ -28105,6 +31113,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutDocumentsInput = {
@@ -28135,6 +31144,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutDocumentsInput = {
@@ -28165,6 +31175,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutDocumentsInput = {
@@ -28211,6 +31222,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutDocumentsInput = {
@@ -28241,6 +31253,241 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+  }
+
+  export type WorkorderFormCreateWithoutFormTypeInput = {
+    id?: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workorder: WorkorderCreateNestedOneWithoutFormsInput
+  }
+
+  export type WorkorderFormUncheckedCreateWithoutFormTypeInput = {
+    id?: string
+    workorderId: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkorderFormCreateOrConnectWithoutFormTypeInput = {
+    where: WorkorderFormWhereUniqueInput
+    create: XOR<WorkorderFormCreateWithoutFormTypeInput, WorkorderFormUncheckedCreateWithoutFormTypeInput>
+  }
+
+  export type WorkorderFormCreateManyFormTypeInputEnvelope = {
+    data: WorkorderFormCreateManyFormTypeInput | WorkorderFormCreateManyFormTypeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkorderFormUpsertWithWhereUniqueWithoutFormTypeInput = {
+    where: WorkorderFormWhereUniqueInput
+    update: XOR<WorkorderFormUpdateWithoutFormTypeInput, WorkorderFormUncheckedUpdateWithoutFormTypeInput>
+    create: XOR<WorkorderFormCreateWithoutFormTypeInput, WorkorderFormUncheckedCreateWithoutFormTypeInput>
+  }
+
+  export type WorkorderFormUpdateWithWhereUniqueWithoutFormTypeInput = {
+    where: WorkorderFormWhereUniqueInput
+    data: XOR<WorkorderFormUpdateWithoutFormTypeInput, WorkorderFormUncheckedUpdateWithoutFormTypeInput>
+  }
+
+  export type WorkorderFormUpdateManyWithWhereWithoutFormTypeInput = {
+    where: WorkorderFormScalarWhereInput
+    data: XOR<WorkorderFormUpdateManyMutationInput, WorkorderFormUncheckedUpdateManyWithoutFormTypeInput>
+  }
+
+  export type WorkorderCreateWithoutFormsInput = {
+    id?: string
+    title: string
+    status?: string
+    location?: string | null
+    city?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    number: string
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    documents?: DocumentCreateNestedManyWithoutWorkorderInput
+    assignedUser?: UserCreateNestedOneWithoutWorkordersInput
+    assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
+    project?: ProjectCreateNestedOneWithoutWorkordersInput
+    customer?: CustomerCreateNestedOneWithoutWorkordersInput
+    hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+  }
+
+  export type WorkorderUncheckedCreateWithoutFormsInput = {
+    id?: string
+    title: string
+    status?: string
+    projectId?: string | null
+    customerId?: string | null
+    location?: string | null
+    city?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    number: string
+    assignedUserId?: string | null
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    assignmentId?: string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
+    hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+  }
+
+  export type WorkorderCreateOrConnectWithoutFormsInput = {
+    where: WorkorderWhereUniqueInput
+    create: XOR<WorkorderCreateWithoutFormsInput, WorkorderUncheckedCreateWithoutFormsInput>
+  }
+
+  export type FormTypeCreateWithoutWorkorderFormsInput = {
+    id?: string
+    key: string
+    name: string
+    sortOrder?: number
+    active?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FormTypeUncheckedCreateWithoutWorkorderFormsInput = {
+    id?: string
+    key: string
+    name: string
+    sortOrder?: number
+    active?: boolean
+    createdAt?: Date | string
+  }
+
+  export type FormTypeCreateOrConnectWithoutWorkorderFormsInput = {
+    where: FormTypeWhereUniqueInput
+    create: XOR<FormTypeCreateWithoutWorkorderFormsInput, FormTypeUncheckedCreateWithoutWorkorderFormsInput>
+  }
+
+  export type WorkorderUpsertWithoutFormsInput = {
+    update: XOR<WorkorderUpdateWithoutFormsInput, WorkorderUncheckedUpdateWithoutFormsInput>
+    create: XOR<WorkorderCreateWithoutFormsInput, WorkorderUncheckedCreateWithoutFormsInput>
+    where?: WorkorderWhereInput
+  }
+
+  export type WorkorderUpdateToOneWithWhereWithoutFormsInput = {
+    where?: WorkorderWhereInput
+    data: XOR<WorkorderUpdateWithoutFormsInput, WorkorderUncheckedUpdateWithoutFormsInput>
+  }
+
+  export type WorkorderUpdateWithoutFormsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documents?: DocumentUpdateManyWithoutWorkorderNestedInput
+    assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
+    assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
+    project?: ProjectUpdateOneWithoutWorkordersNestedInput
+    customer?: CustomerUpdateOneWithoutWorkordersNestedInput
+    hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+  }
+
+  export type WorkorderUncheckedUpdateWithoutFormsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
+    hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+  }
+
+  export type FormTypeUpsertWithoutWorkorderFormsInput = {
+    update: XOR<FormTypeUpdateWithoutWorkorderFormsInput, FormTypeUncheckedUpdateWithoutWorkorderFormsInput>
+    create: XOR<FormTypeCreateWithoutWorkorderFormsInput, FormTypeUncheckedCreateWithoutWorkorderFormsInput>
+    where?: FormTypeWhereInput
+  }
+
+  export type FormTypeUpdateToOneWithWhereWithoutWorkorderFormsInput = {
+    where?: FormTypeWhereInput
+    data: XOR<FormTypeUpdateWithoutWorkorderFormsInput, FormTypeUncheckedUpdateWithoutWorkorderFormsInput>
+  }
+
+  export type FormTypeUpdateWithoutWorkorderFormsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormTypeUncheckedUpdateWithoutWorkorderFormsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CustomerCreateWithoutAssignmentsInput = {
@@ -28352,6 +31599,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutAssignmentInput = {
@@ -28382,6 +31630,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutAssignmentInput = {
@@ -28833,6 +32082,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutExtraEngineersInput = {
@@ -28863,6 +32113,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutExtraEngineersInput = {
@@ -28942,6 +32193,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutExtraEngineersInput = {
@@ -28972,6 +32224,7 @@ export namespace Prisma {
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type UserUpsertWithoutExtraWorkordersInput = {
@@ -29103,6 +32356,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutAssignedUserInput = {
@@ -29133,6 +32387,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutAssignedUserInput = {
@@ -29354,6 +32609,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutCustomerInput = {
@@ -29384,6 +32640,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutCustomerInput = {
@@ -29460,6 +32717,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutProjectInput = {
@@ -29490,6 +32748,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutProjectInput = {
@@ -29565,6 +32824,14 @@ export namespace Prisma {
   export type WorkorderEngineerCreateManyWorkorderInput = {
     id?: string
     userId: string
+  }
+
+  export type WorkorderFormCreateManyWorkorderInput = {
+    id?: string
+    formTypeId: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type DocumentUpdateWithoutWorkorderInput = {
@@ -29723,6 +32990,62 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type WorkorderFormUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    formType?: FormTypeUpdateOneRequiredWithoutWorkorderFormsNestedInput
+  }
+
+  export type WorkorderFormUncheckedUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formTypeId?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderFormUncheckedUpdateManyWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formTypeId?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderFormCreateManyFormTypeInput = {
+    id?: string
+    workorderId: string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkorderFormUpdateWithoutFormTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorder?: WorkorderUpdateOneRequiredWithoutFormsNestedInput
+  }
+
+  export type WorkorderFormUncheckedUpdateWithoutFormTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderFormUncheckedUpdateManyWithoutFormTypeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AssignmentUserCreateManyAssignmentInput = {
     id?: string
     userId: string
@@ -29830,6 +33153,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutAssignmentInput = {
@@ -29860,6 +33184,7 @@ export namespace Prisma {
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutAssignmentInput = {
