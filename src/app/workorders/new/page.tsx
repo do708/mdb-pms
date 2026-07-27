@@ -97,8 +97,8 @@ function NewWorkorderInner(){
         useState<{ id:string; key:string; name:string }[]>([]);
 
 
-    const [selectedFormTypeIds,setSelectedFormTypeIds] =
-        useState<string[]>([]);
+    const [selectedFormTypeId,setSelectedFormTypeId] =
+        useState<string>("");
 
 
     const searchParams =
@@ -349,7 +349,11 @@ function NewWorkorderInner(){
                                 undefined,
 
                             formTypeIds:
-                                selectedFormTypeIds,
+                                selectedFormTypeId
+                                ?
+                                [selectedFormTypeId]
+                                :
+                                [],
 
                             status:"ontvangen"
 
@@ -711,15 +715,15 @@ function NewWorkorderInner(){
                                 font-medium
                                 text-gray-700
                             ">
-                                Welke formulieren moeten er ingevuld worden?
+                                Welke formulier moet er ingevuld worden?
                             </span>
 
                             <div className="space-y-2">
                                 {
                                     formTypes.map(ft=>{
 
-                                        const aangevinkt =
-                                            selectedFormTypeIds.includes(ft.id);
+                                        const gekozen =
+                                            selectedFormTypeId === ft.id;
 
                                         return (
                                             <label
@@ -732,16 +736,19 @@ function NewWorkorderInner(){
                                                 "
                                             >
                                                 <input
-                                                    type="checkbox"
-                                                    checked={aangevinkt}
+                                                    type="radio"
+                                                    name="formType"
+                                                    checked={gekozen}
                                                     onChange={()=>{
-                                                        setSelectedFormTypeIds(prev=>
-                                                            prev.includes(ft.id)
-                                                            ?
-                                                            prev.filter(x=>x !== ft.id)
-                                                            :
-                                                            [...prev, ft.id]
+                                                        setSelectedFormTypeId(
+                                                            gekozen ? "" : ft.id
                                                         );
+                                                    }}
+                                                    onClick={()=>{
+                                                        // Nogmaals klikken op de gekozen optie zet hem uit.
+                                                        if(gekozen){
+                                                            setSelectedFormTypeId("");
+                                                        }
                                                     }}
                                                     className="w-4 h-4"
                                                 />

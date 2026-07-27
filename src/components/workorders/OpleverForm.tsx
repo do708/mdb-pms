@@ -1171,7 +1171,9 @@ export default function OpleverForm({
 
     embedded = false,
 
-    onChange
+    onChange,
+
+    variant = "volledig"
 
 }:Props){
 
@@ -1950,6 +1952,10 @@ export default function OpleverForm({
                 </div>
 
 
+{
+                  variant !== "uren" && (
+                    <>
+
                 <p className="
                     text-[13px]
                     font-semibold
@@ -2428,6 +2434,10 @@ export default function OpleverForm({
 
                 </div>
 
+                    </>
+                  )
+                }
+
 
                 <div className="pt-3">
 
@@ -2462,6 +2472,10 @@ export default function OpleverForm({
 
 
 
+
+            {
+              variant !== "uren" && (
+                <>
 
             {/* ================= Hardware geïnstalleerd/gedemonteerd ================= */}
 
@@ -3206,6 +3220,10 @@ export default function OpleverForm({
                 </div>
 
             </div>
+
+                </>
+              )
+            }
 
 
 

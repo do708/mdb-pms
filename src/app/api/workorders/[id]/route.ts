@@ -103,6 +103,13 @@ customer:true,
                                 }
                             }
                         }
+                    },
+
+
+                    forms:{
+                        include:{
+                            formType:true
+                        }
                     }
 
 

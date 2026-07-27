@@ -47,6 +47,13 @@ interface Workorder {
         };
     }[];
 
+    forms?:{
+        formType:{
+            key:string;
+            name:string;
+        };
+    }[];
+
     status:string;
 
     location:string | null;
@@ -771,6 +778,16 @@ async function completeWorkorder(){
     }
 
     customerName={workorder.customer?.name ?? null}
+
+    variant={
+        (workorder.forms ?? []).some(f=>f.formType?.key === "uren")
+        &&
+        !(workorder.forms ?? []).some(f=>f.formType?.key === "digital_signage")
+        ?
+        "uren"
+        :
+        "volledig"
+    }
 
 />
 
