@@ -270,7 +270,7 @@ export default function AssignmentDetailPage({
                         mb-3
                     ">
 
-                        Klant
+                        Opdrachtgever
 
                     </h2>
 

@@ -89,7 +89,7 @@ export async function DELETE(
         return NextResponse.json(
 
             {
-                error:"Klant verwijderen mislukt"
+                error:"Opdrachtgever verwijderen mislukt"
             },
 
             {
@@ -135,7 +135,7 @@ export async function GET(
 
         if(!customer){
             return NextResponse.json(
-                { error:"Klant niet gevonden" },
+                { error:"Opdrachtgever niet gevonden" },
                 { status:404 }
             );
         }

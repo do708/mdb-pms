@@ -150,7 +150,7 @@ export default function EditCustomerPage(){
                     font-bold
                 ">
 
-                    Klant wijzigen
+                    Opdrachtgever wijzigen
 
                 </h1>
 

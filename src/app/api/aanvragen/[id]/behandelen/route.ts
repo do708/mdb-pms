@@ -78,12 +78,86 @@ export async function POST(
 
 
         // Omschrijving/opmerkingen bundelen zodat niets verloren gaat.
+        const specs =
+            (aanvraag.specificaties && typeof aanvraag.specificaties === "object")
+            ? aanvraag.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string> }>
+            : {};
+
+        const specRegels:string[] = [];
+
+        for(const [key, blok] of Object.entries(specs)){
+            if(
+                key === "project" ||
+                key === "contact" ||
+                key === "typeAanvraag" ||
+                key === "storing" ||
+                key === "geschatUren" ||
+                key === "aantalMonteurs"
+            ){
+                continue;
+            }
+            if(blok && typeof blok === "object" && blok.aan){
+                const velden =
+                    blok.velden
+                    ? Object.entries(blok.velden)
+                        .filter(([,v])=>v && String(v).trim())
+                        .map(([k,v])=>`${k}: ${v}`)
+                        .join(", ")
+                    : "";
+                specRegels.push(`${key}${velden ? ` (${velden})` : ""}`);
+            }
+        }
+
+        // Contactgegevens uit de aanvraag (indien ingevuld).
+        const contact =
+            (specs.contact && typeof specs.contact === "object")
+            ? specs.contact as unknown as { persoon?:string; email?:string; telefoon?:string }
+            : {};
+
+        const typeAanvraag =
+            (specs.typeAanvraag as unknown as string) || "";
+
+        const geschatUren =
+            (specs.geschatUren as unknown as string) || "";
+
+        const aantalMonteurs =
+            (specs.aantalMonteurs as unknown as string) || "";
+
+        const storing =
+            (specs.storing && typeof specs.storing === "object")
+            ? specs.storing as unknown as {
+                omschrijving?:string;
+                hardwareVervangen?:string;
+                hardwareBesteld?:string;
+                hardwareLevering?:string;
+              }
+            : {};
+
+        const isProject =
+            (specs.project as unknown as string) === "Ja";
+
+
+        const storingRegels =
+            typeAanvraag === "storing"
+            ? [
+                storing.omschrijving ? `Storing: ${storing.omschrijving}` : "",
+                storing.hardwareVervangen ? `Hardware vervangen: ${storing.hardwareVervangen}` : "",
+                storing.hardwareBesteld ? `Al besteld: ${storing.hardwareBesteld}` : "",
+                storing.hardwareLevering ? `Levering: ${storing.hardwareLevering}` : ""
+              ]
+            : [];
+
         const omschrijvingsdelen =
             [
-                aanvraag.schermen ? `Schermen: ${aanvraag.schermen}` : "",
-                aanvraag.beugel ? `Beugel: ${aanvraag.beugel}` : "",
+                typeAanvraag ? `Type aanvraag: ${typeAanvraag}` : "",
+                specRegels.length ? `Onderdelen: ${specRegels.join("; ")}` : "",
+                isProject ? "Project (offerte-basis): Ja" : "",
+                geschatUren ? `Geschat aantal dagen: ${geschatUren}` : "",
+                aantalMonteurs ? `Aantal monteurs: ${aantalMonteurs}` : "",
+                ...storingRegels,
                 aanvraag.stroom ? `Stroom binnen 3m: ${aanvraag.stroom}` : "",
                 aanvraag.internet ? `Internet binnen 3m: ${aanvraag.internet}` : "",
+                aanvraag.aanvragerNaam ? `Aanvrager: ${aanvraag.aanvragerNaam}` : "",
                 aanvraag.opmerkingen ? `Opmerkingen klant: ${aanvraag.opmerkingen}` : ""
             ]
             .filter(Boolean);
@@ -104,9 +178,17 @@ export async function POST(
                     title:
                         (aanvraag.locatie || aanvraag.customer.name),
                     description:
-                        (aanvraag.schermen
-                            ? `Installatie ${aanvraag.schermen}`
-                            : "Nieuwe installatie"),
+                        (typeAanvraag === "storing"
+                            ? (storing.omschrijving
+                                ? `Storing: ${storing.omschrijving}`
+                                : "Storing")
+                            : typeAanvraag === "uren"
+                            ? (geschatUren
+                                ? `Uren (geschat: ${geschatUren} dag(en)${aantalMonteurs ? `, ${aantalMonteurs} monteur(s)` : ""})`
+                                : "Uren")
+                            : (specRegels.length
+                                ? `Installatie: ${specRegels.join("; ")}`
+                                : "Nieuwe installatie")),
                     internalNotes:
                         omschrijvingsdelen.join("\n"),
                     customerId:
@@ -115,6 +197,12 @@ export async function POST(
                         adres || null,
                     city:
                         (aanvraag.plaats || null),
+                    contactPersoon:
+                        (contact.persoon || null),
+                    contactEmail:
+                        (contact.email || null),
+                    contactPhone:
+                        (contact.telefoon || null),
                     status:
                         "ontvangen"
                 }

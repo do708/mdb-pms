@@ -57,6 +57,8 @@ model Aanvraag {
   stroom        String?
   internet      String?
   opmerkingen   String?
+  aanvragerNaam String?
+  specificaties Json?
   bijlagen      Json?
   status        String    @default("open")
   createdAt     DateTime  @default(now())

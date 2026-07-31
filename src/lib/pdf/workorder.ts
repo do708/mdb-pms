@@ -115,7 +115,7 @@ export async function generateWorkorderPdf(workorder:any) {
 
 
     text(
-        `Klant: ${
+        `Opdrachtgever: ${
             workorder.project?.customer?.name ?? ""
         }`
     );
@@ -210,7 +210,7 @@ export async function generateWorkorderPdf(workorder:any) {
 
 
     text(
-        "Klant handtekening",
+        "Opdrachtgever handtekening",
         14,
         true
     );

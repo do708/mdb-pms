@@ -50,7 +50,7 @@ Monteur ${data.monteur} heeft een werkbon afgerond, maar de werkzaamheden zijn N
 
 Werkbon: ${data.workorderNumber}
 Opdrachtgever: ${data.opdrachtgever}
-Klant: ${data.klant}
+Opdrachtgever: ${data.klant}
 Adres: ${data.adres}
 Werkzaamheden: ${data.werkzaamheden}
 
@@ -79,7 +79,7 @@ Team MDB Networks
   <p>
     <strong>Werkbon:</strong> ${data.workorderNumber}<br>
     <strong>Opdrachtgever:</strong> ${data.opdrachtgever}<br>
-    <strong>Klant:</strong> ${data.klant}<br>
+    <strong>Opdrachtgever:</strong> ${data.klant}<br>
     <strong>Adres:</strong> ${data.adres}<br>
     <strong>Werkzaamheden:</strong> ${data.werkzaamheden}
   </p>

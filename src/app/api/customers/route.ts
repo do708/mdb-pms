@@ -72,7 +72,7 @@ export async function GET() {
 
             {
                 error:
-                "Klanten ophalen mislukt"
+                "Opdrachtgevers ophalen mislukt"
             },
 
             {
@@ -180,7 +180,7 @@ export async function POST(
             {
 
                 error:
-                "Klant aanmaken mislukt"
+                "Opdrachtgever aanmaken mislukt"
 
             },
 

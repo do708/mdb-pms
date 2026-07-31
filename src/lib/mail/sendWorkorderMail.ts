@@ -106,7 +106,7 @@ export async function sendWorkorderMail({
 
 
         <p>
-            Klant:
+            Opdrachtgever:
             ${customer ?? ""}
         </p>
 

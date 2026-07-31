@@ -20,6 +20,8 @@ interface OpenAanvraag {
     stroom:string | null;
     internet:string | null;
     opmerkingen:string | null;
+    aanvragerNaam:string | null;
+    specificaties:unknown;
     bijlagen:unknown;
     createdAt:string;
     customer:{ name:string };
@@ -171,8 +173,50 @@ function AanvragenSectie(){
                             {
                                 isOpen && (
                                     <div className="mt-3 pt-3 border-t text-sm text-gray-600 space-y-1">
-                                        {a.schermen ? <p><strong>Schermen:</strong> {a.schermen}</p> : null}
-                                        {a.beugel ? <p><strong>Beugel:</strong> {a.beugel}</p> : null}
+                                        {
+                                            a.specificaties && typeof a.specificaties === "object" && (a.specificaties as Record<string,unknown>).typeAanvraag
+                                            ? <p><strong>Type:</strong> {String((a.specificaties as Record<string,unknown>).typeAanvraag)}</p>
+                                            : null
+                                        }
+                                        {a.aanvragerNaam ? <p><strong>Aanvrager:</strong> {a.aanvragerNaam}</p> : null}
+                                        {
+                                            a.specificaties
+                                            && typeof a.specificaties === "object"
+                                            && (a.specificaties as Record<string, { persoon?:string; email?:string; telefoon?:string }>).contact
+                                            ? (()=>{
+                                                const c = (a.specificaties as Record<string, { persoon?:string; email?:string; telefoon?:string }>).contact;
+                                                const delen = [c.persoon, c.email, c.telefoon].filter(Boolean).join(" · ");
+                                                return delen ? <p><strong>Contact:</strong> {delen}</p> : null;
+                                            })()
+                                            : null
+                                        }
+                                        {
+                                            a.specificaties && typeof a.specificaties === "object"
+                                            ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string> }>)
+                                                .filter(([k,v])=>k !== "project" && k !== "contact" && v && typeof v === "object" && v.aan)
+                                                .map(([k,v])=>{
+                                                    const velden =
+                                                        v.velden
+                                                        ? Object.entries(v.velden)
+                                                            .filter(([,val])=>val && String(val).trim())
+                                                            .map(([vk,val])=>`${vk}: ${val}`)
+                                                            .join(", ")
+                                                        : "";
+                                                    return (
+                                                        <p key={k}>
+                                                            <strong className="capitalize">{k}:</strong> {velden || "aangevinkt"}
+                                                        </p>
+                                                    );
+                                                })
+                                            : null
+                                        }
+                                        {
+                                            a.specificaties
+                                            && typeof a.specificaties === "object"
+                                            && (a.specificaties as Record<string,unknown>).project === "Ja"
+                                            ? <p><strong>Project (offerte-basis):</strong> Ja</p>
+                                            : null
+                                        }
                                         {a.stroom ? <p><strong>Stroom binnen 3m:</strong> {a.stroom}</p> : null}
                                         {a.internet ? <p><strong>Internet binnen 3m:</strong> {a.internet}</p> : null}
                                         {a.opmerkingen ? <p><strong>Opmerkingen:</strong> {a.opmerkingen}</p> : null}

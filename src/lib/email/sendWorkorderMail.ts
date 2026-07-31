@@ -43,7 +43,7 @@ export async function sendWorkorderMail(
 
 ${data.monteur} heeft een nieuwe werkbon/formulier ingevuld.
 
-Klant: ${data.customer}
+Opdrachtgever: ${data.customer}
 Opdracht: ${data.project} - ${data.datum}
 
 Project Management System:
@@ -63,7 +63,7 @@ Team MDB Networks
   <p><strong>${data.monteur}</strong> heeft een nieuwe werkbon/formulier ingevuld.</p>
 
   <p>
-    <strong>Klant:</strong> ${data.customer}<br>
+    <strong>Opdrachtgever:</strong> ${data.customer}<br>
     <strong>Opdracht:</strong> ${data.project} &mdash; ${data.datum}
   </p>
 

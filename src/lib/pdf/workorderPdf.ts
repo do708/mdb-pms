@@ -143,7 +143,7 @@ export async function generateWorkorderPdf(
 
     write(
 
-        `Klant: ${data.customer}`
+        `Opdrachtgever: ${data.customer}`
 
     );
 

@@ -109,7 +109,7 @@ export default function NewCustomerPage(){
 
 
                 alert(
-                    "Klant aanmaken mislukt"
+                    "Opdrachtgever aanmaken mislukt"
                 );
 
 
@@ -173,7 +173,7 @@ export default function NewCustomerPage(){
                     text-gray-500
                 ">
 
-                    Klant toevoegen aan MDB Project Management Systeem
+                    Opdrachtgever toevoegen aan MDB Project Management Systeem
 
                 </p>
 
@@ -368,7 +368,7 @@ export default function NewCustomerPage(){
                         ?
                         "Opslaan..."
                         :
-                        "➕ Klant opslaan"
+                        "➕ Opdrachtgever opslaan"
                     }
 
 

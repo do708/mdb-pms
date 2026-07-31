@@ -157,6 +157,8 @@ exports.Prisma.AanvraagScalarFieldEnum = {
   stroom: 'stroom',
   internet: 'internet',
   opmerkingen: 'opmerkingen',
+  aanvragerNaam: 'aanvragerNaam',
+  specificaties: 'specificaties',
   bijlagen: 'bijlagen',
   status: 'status',
   createdAt: 'createdAt',

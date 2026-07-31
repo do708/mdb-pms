@@ -1805,7 +1805,7 @@ export default function OpleverForm({
                                 bg-blue-600
                             "></span>
 
-                            Klantspecifiek{customerName ? ` — ${customerName}` : ""}
+                            Opdrachtgever-specifiek{customerName ? ` — ${customerName}` : ""}
 
                             <span className="
                                 text-xs

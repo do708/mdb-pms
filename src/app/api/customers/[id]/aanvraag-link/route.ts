@@ -37,7 +37,7 @@ export async function POST(
 
         if(!customer){
             return NextResponse.json(
-                { error:"Klant niet gevonden" },
+                { error:"Opdrachtgever niet gevonden" },
                 { status:404 }
             );
         }

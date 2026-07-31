@@ -289,7 +289,7 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
             { id:"foto3", type:"foto", label:"Foto" },
 
 
-            { id:"kop4", type:"kop", label:"Klant & Omgeving" },
+            { id:"kop4", type:"kop", label:"Opdrachtgever & Omgeving" },
 
             janee("ingelicht","Is de opdrachtgever/bewoner ingelicht over de werkzaamheden?"),
 

@@ -5384,6 +5384,7 @@ export namespace Prisma {
     stroom: string | null
     internet: string | null
     opmerkingen: string | null
+    aanvragerNaam: string | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5402,6 +5403,7 @@ export namespace Prisma {
     stroom: string | null
     internet: string | null
     opmerkingen: string | null
+    aanvragerNaam: string | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -5420,6 +5422,8 @@ export namespace Prisma {
     stroom: number
     internet: number
     opmerkingen: number
+    aanvragerNaam: number
+    specificaties: number
     bijlagen: number
     status: number
     createdAt: number
@@ -5441,6 +5445,7 @@ export namespace Prisma {
     stroom?: true
     internet?: true
     opmerkingen?: true
+    aanvragerNaam?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -5459,6 +5464,7 @@ export namespace Prisma {
     stroom?: true
     internet?: true
     opmerkingen?: true
+    aanvragerNaam?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -5477,6 +5483,8 @@ export namespace Prisma {
     stroom?: true
     internet?: true
     opmerkingen?: true
+    aanvragerNaam?: true
+    specificaties?: true
     bijlagen?: true
     status?: true
     createdAt?: true
@@ -5569,6 +5577,8 @@ export namespace Prisma {
     stroom: string | null
     internet: string | null
     opmerkingen: string | null
+    aanvragerNaam: string | null
+    specificaties: JsonValue | null
     bijlagen: JsonValue | null
     status: string
     createdAt: Date
@@ -5605,6 +5615,8 @@ export namespace Prisma {
     stroom?: boolean
     internet?: boolean
     opmerkingen?: boolean
+    aanvragerNaam?: boolean
+    specificaties?: boolean
     bijlagen?: boolean
     status?: boolean
     createdAt?: boolean
@@ -5625,6 +5637,8 @@ export namespace Prisma {
     stroom?: boolean
     internet?: boolean
     opmerkingen?: boolean
+    aanvragerNaam?: boolean
+    specificaties?: boolean
     bijlagen?: boolean
     status?: boolean
     createdAt?: boolean
@@ -5645,6 +5659,8 @@ export namespace Prisma {
     stroom?: boolean
     internet?: boolean
     opmerkingen?: boolean
+    aanvragerNaam?: boolean
+    specificaties?: boolean
     bijlagen?: boolean
     status?: boolean
     createdAt?: boolean
@@ -5665,13 +5681,15 @@ export namespace Prisma {
     stroom?: boolean
     internet?: boolean
     opmerkingen?: boolean
+    aanvragerNaam?: boolean
+    specificaties?: boolean
     bijlagen?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type AanvraagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "locatie" | "straat" | "huisnummer" | "postcode" | "plaats" | "schermen" | "beugel" | "stroom" | "internet" | "opmerkingen" | "bijlagen" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["aanvraag"]>
+  export type AanvraagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "locatie" | "straat" | "huisnummer" | "postcode" | "plaats" | "schermen" | "beugel" | "stroom" | "internet" | "opmerkingen" | "aanvragerNaam" | "specificaties" | "bijlagen" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["aanvraag"]>
   export type AanvraagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }
@@ -5700,6 +5718,8 @@ export namespace Prisma {
       stroom: string | null
       internet: string | null
       opmerkingen: string | null
+      aanvragerNaam: string | null
+      specificaties: Prisma.JsonValue | null
       bijlagen: Prisma.JsonValue | null
       status: string
       createdAt: Date
@@ -6140,6 +6160,8 @@ export namespace Prisma {
     readonly stroom: FieldRef<"Aanvraag", 'String'>
     readonly internet: FieldRef<"Aanvraag", 'String'>
     readonly opmerkingen: FieldRef<"Aanvraag", 'String'>
+    readonly aanvragerNaam: FieldRef<"Aanvraag", 'String'>
+    readonly specificaties: FieldRef<"Aanvraag", 'Json'>
     readonly bijlagen: FieldRef<"Aanvraag", 'Json'>
     readonly status: FieldRef<"Aanvraag", 'String'>
     readonly createdAt: FieldRef<"Aanvraag", 'DateTime'>
@@ -26051,6 +26073,8 @@ export namespace Prisma {
     stroom: 'stroom',
     internet: 'internet',
     opmerkingen: 'opmerkingen',
+    aanvragerNaam: 'aanvragerNaam',
+    specificaties: 'specificaties',
     bijlagen: 'bijlagen',
     status: 'status',
     createdAt: 'createdAt',
@@ -26628,6 +26652,8 @@ export namespace Prisma {
     stroom?: StringNullableFilter<"Aanvraag"> | string | null
     internet?: StringNullableFilter<"Aanvraag"> | string | null
     opmerkingen?: StringNullableFilter<"Aanvraag"> | string | null
+    aanvragerNaam?: StringNullableFilter<"Aanvraag"> | string | null
+    specificaties?: JsonNullableFilter<"Aanvraag">
     bijlagen?: JsonNullableFilter<"Aanvraag">
     status?: StringFilter<"Aanvraag"> | string
     createdAt?: DateTimeFilter<"Aanvraag"> | Date | string
@@ -26648,6 +26674,8 @@ export namespace Prisma {
     stroom?: SortOrderInput | SortOrder
     internet?: SortOrderInput | SortOrder
     opmerkingen?: SortOrderInput | SortOrder
+    aanvragerNaam?: SortOrderInput | SortOrder
+    specificaties?: SortOrderInput | SortOrder
     bijlagen?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -26671,6 +26699,8 @@ export namespace Prisma {
     stroom?: StringNullableFilter<"Aanvraag"> | string | null
     internet?: StringNullableFilter<"Aanvraag"> | string | null
     opmerkingen?: StringNullableFilter<"Aanvraag"> | string | null
+    aanvragerNaam?: StringNullableFilter<"Aanvraag"> | string | null
+    specificaties?: JsonNullableFilter<"Aanvraag">
     bijlagen?: JsonNullableFilter<"Aanvraag">
     status?: StringFilter<"Aanvraag"> | string
     createdAt?: DateTimeFilter<"Aanvraag"> | Date | string
@@ -26691,6 +26721,8 @@ export namespace Prisma {
     stroom?: SortOrderInput | SortOrder
     internet?: SortOrderInput | SortOrder
     opmerkingen?: SortOrderInput | SortOrder
+    aanvragerNaam?: SortOrderInput | SortOrder
+    specificaties?: SortOrderInput | SortOrder
     bijlagen?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -26716,6 +26748,8 @@ export namespace Prisma {
     stroom?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
     internet?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
     opmerkingen?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    aanvragerNaam?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    specificaties?: JsonNullableWithAggregatesFilter<"Aanvraag">
     bijlagen?: JsonNullableWithAggregatesFilter<"Aanvraag">
     status?: StringWithAggregatesFilter<"Aanvraag"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Aanvraag"> | Date | string
@@ -28189,6 +28223,8 @@ export namespace Prisma {
     stroom?: string | null
     internet?: string | null
     opmerkingen?: string | null
+    aanvragerNaam?: string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: string
     createdAt?: Date | string
@@ -28209,6 +28245,8 @@ export namespace Prisma {
     stroom?: string | null
     internet?: string | null
     opmerkingen?: string | null
+    aanvragerNaam?: string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: string
     createdAt?: Date | string
@@ -28227,6 +28265,8 @@ export namespace Prisma {
     stroom?: NullableStringFieldUpdateOperationsInput | string | null
     internet?: NullableStringFieldUpdateOperationsInput | string | null
     opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    aanvragerNaam?: NullableStringFieldUpdateOperationsInput | string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28247,6 +28287,8 @@ export namespace Prisma {
     stroom?: NullableStringFieldUpdateOperationsInput | string | null
     internet?: NullableStringFieldUpdateOperationsInput | string | null
     opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    aanvragerNaam?: NullableStringFieldUpdateOperationsInput | string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28266,6 +28308,8 @@ export namespace Prisma {
     stroom?: string | null
     internet?: string | null
     opmerkingen?: string | null
+    aanvragerNaam?: string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: string
     createdAt?: Date | string
@@ -28284,6 +28328,8 @@ export namespace Prisma {
     stroom?: NullableStringFieldUpdateOperationsInput | string | null
     internet?: NullableStringFieldUpdateOperationsInput | string | null
     opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    aanvragerNaam?: NullableStringFieldUpdateOperationsInput | string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28303,6 +28349,8 @@ export namespace Prisma {
     stroom?: NullableStringFieldUpdateOperationsInput | string | null
     internet?: NullableStringFieldUpdateOperationsInput | string | null
     opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    aanvragerNaam?: NullableStringFieldUpdateOperationsInput | string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29962,6 +30010,8 @@ export namespace Prisma {
     stroom?: SortOrder
     internet?: SortOrder
     opmerkingen?: SortOrder
+    aanvragerNaam?: SortOrder
+    specificaties?: SortOrder
     bijlagen?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -29981,6 +30031,7 @@ export namespace Prisma {
     stroom?: SortOrder
     internet?: SortOrder
     opmerkingen?: SortOrder
+    aanvragerNaam?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29999,6 +30050,7 @@ export namespace Prisma {
     stroom?: SortOrder
     internet?: SortOrder
     opmerkingen?: SortOrder
+    aanvragerNaam?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -32945,6 +32997,8 @@ export namespace Prisma {
     stroom?: string | null
     internet?: string | null
     opmerkingen?: string | null
+    aanvragerNaam?: string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: string
     createdAt?: Date | string
@@ -32963,6 +33017,8 @@ export namespace Prisma {
     stroom?: string | null
     internet?: string | null
     opmerkingen?: string | null
+    aanvragerNaam?: string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: string
     createdAt?: Date | string
@@ -33090,6 +33146,8 @@ export namespace Prisma {
     stroom?: StringNullableFilter<"Aanvraag"> | string | null
     internet?: StringNullableFilter<"Aanvraag"> | string | null
     opmerkingen?: StringNullableFilter<"Aanvraag"> | string | null
+    aanvragerNaam?: StringNullableFilter<"Aanvraag"> | string | null
+    specificaties?: JsonNullableFilter<"Aanvraag">
     bijlagen?: JsonNullableFilter<"Aanvraag">
     status?: StringFilter<"Aanvraag"> | string
     createdAt?: DateTimeFilter<"Aanvraag"> | Date | string
@@ -36636,6 +36694,8 @@ export namespace Prisma {
     stroom?: string | null
     internet?: string | null
     opmerkingen?: string | null
+    aanvragerNaam?: string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: string
     createdAt?: Date | string
@@ -36833,6 +36893,8 @@ export namespace Prisma {
     stroom?: NullableStringFieldUpdateOperationsInput | string | null
     internet?: NullableStringFieldUpdateOperationsInput | string | null
     opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    aanvragerNaam?: NullableStringFieldUpdateOperationsInput | string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36851,6 +36913,8 @@ export namespace Prisma {
     stroom?: NullableStringFieldUpdateOperationsInput | string | null
     internet?: NullableStringFieldUpdateOperationsInput | string | null
     opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    aanvragerNaam?: NullableStringFieldUpdateOperationsInput | string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36869,6 +36933,8 @@ export namespace Prisma {
     stroom?: NullableStringFieldUpdateOperationsInput | string | null
     internet?: NullableStringFieldUpdateOperationsInput | string | null
     opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    aanvragerNaam?: NullableStringFieldUpdateOperationsInput | string | null
+    specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

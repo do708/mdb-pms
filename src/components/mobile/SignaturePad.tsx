@@ -106,7 +106,7 @@ export default function SignaturePad({
                             signatureUrl,
 
                             customerName:
-                                "Klant"
+                                "Opdrachtgever"
 
                         })
 

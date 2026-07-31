@@ -197,7 +197,7 @@ export default function CustomersPage(){
                         font-bold
                     ">
 
-                        Klanten
+                        Opdrachtgevers
 
                     </h1>
 
@@ -290,7 +290,7 @@ export default function CustomersPage(){
 
                     <p className="p-5">
 
-                        Klanten laden...
+                        Opdrachtgevers laden...
 
                     </p>
 

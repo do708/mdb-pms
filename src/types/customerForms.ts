@@ -223,7 +223,7 @@ export const CUSTOMER_FORM_SCHEMAS:Record<string,CustomerFormSchema> = {
                 id:"marketing",
                 title:"Marketing in Beeld Details",
                 fields:[
-                    { id:"clientName", label:"Klantnaam", type:"text" },
+                    { id:"clientName", label:"Opdrachtgever", type:"text" },
                     { id:"campaignId", label:"Campagne ID", type:"text" }
                 ]
             }

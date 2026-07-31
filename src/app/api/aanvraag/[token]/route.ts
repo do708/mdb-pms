@@ -105,6 +105,11 @@ export async function POST(
                     stroom:body.stroom || null,
                     internet:body.internet || null,
                     opmerkingen:body.opmerkingen || null,
+                    aanvragerNaam:body.aanvragerNaam || null,
+                    specificaties:
+                        (body.specificaties && typeof body.specificaties === "object")
+                        ? body.specificaties
+                        : undefined,
                     bijlagen:
                         Array.isArray(body.bijlagen)
                         ? body.bijlagen
