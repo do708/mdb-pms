@@ -3300,6 +3300,7 @@ export default function OpleverForm({
                                 "In de patchkast",
                                 "Boven het plafond",
                                 "Kiosk",
+                                "Tizen/WebOS/Android",
                                 "Anders"
                             ].map((locatie)=>{
 
@@ -3411,6 +3412,100 @@ export default function OpleverForm({
                 <Kop>Afronding</Kop>
 
                 <div className="space-y-4">
+
+                    <div className="
+                        rounded-xl
+                        border
+                        border-gray-200
+                        p-4
+                        bg-gray-50
+                    ">
+
+                        <span className="text-sm font-medium text-gray-700 mb-2 block">
+                            Werkzaamheden gereed?
+                        </span>
+
+                        <div className="flex gap-3">
+
+                            <button
+                                type="button"
+                                onClick={()=>update(draft=>{
+                                    draft.afronding.werkzaamhedenGereed = "gereed";
+                                })}
+                                className={
+                                    "flex-1 rounded-xl py-3 px-3 font-bold border-2 transition "
+                                    +
+                                    (
+                                        data.afronding.werkzaamhedenGereed === "gereed"
+                                        ?
+                                        "bg-green-600 text-white border-green-600"
+                                        :
+                                        "bg-white text-green-700 border-green-300"
+                                    )
+                                }
+                            >
+                                ✓ Gereed
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={()=>update(draft=>{
+                                    draft.afronding.werkzaamhedenGereed = "niet_gereed";
+                                })}
+                                className={
+                                    "flex-1 rounded-xl py-3 px-3 font-bold border-2 transition "
+                                    +
+                                    (
+                                        data.afronding.werkzaamhedenGereed === "niet_gereed"
+                                        ?
+                                        "bg-red-600 text-white border-red-600"
+                                        :
+                                        "bg-white text-red-700 border-red-300"
+                                    )
+                                }
+                            >
+                                ✕ Niet gereed
+                            </button>
+
+                        </div>
+
+
+                        {
+                            data.afronding.werkzaamhedenGereed === "niet_gereed" && (
+
+                                <label className="block mt-4">
+
+                                    <span className="text-sm font-medium text-gray-700 mb-1 block">
+                                        Omschrijving — wat moet er nog gebeuren en welke materialen zijn nodig?
+                                    </span>
+
+                                    <textarea
+                                        rows={4}
+                                        value={data.afronding.nietGereedOmschrijving}
+                                        onChange={(e)=>update(draft=>{
+                                            draft.afronding.nietGereedOmschrijving = e.target.value;
+                                        })}
+                                        placeholder="Bijv. nog 1 scherm ophangen, ontbrekende muurbeugel bestellen, retour voor nieuwe afspraak"
+                                        className="
+                                            w-full
+                                            border
+                                            rounded-xl
+                                            p-3
+                                        "
+                                    />
+
+                                    <span className="block text-xs text-gray-500 mt-1">
+                                        Bij het afronden gaat er automatisch een melding naar kantoor
+                                        (projects@mdb-networks.nl) om de klus opnieuw in te plannen en materiaal te bestellen.
+                                    </span>
+
+                                </label>
+
+                            )
+                        }
+
+                    </div>
+
 
                     <label className="block">
 

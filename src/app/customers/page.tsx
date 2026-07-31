@@ -30,6 +30,78 @@ interface Customer {
 
 
 
+// Knopje dat de unieke publieke aanvraaglink van een klant naar het klembord
+// kopieert. Bij de eerste keer wordt server-side een token aangemaakt.
+function AanvraagLinkKnop({ customerId }:{ customerId:string }){
+
+    const [bezig,setBezig] =
+        useState(false);
+
+    const [gekopieerd,setGekopieerd] =
+        useState(false);
+
+
+    async function kopieer(){
+
+        setBezig(true);
+
+        try {
+
+            const res =
+                await fetch(`/api/customers/${customerId}/aanvraag-link`,{
+                    method:"POST"
+                });
+
+            const data =
+                await res.json();
+
+            if(res.ok && data.url){
+
+                try {
+                    await navigator.clipboard.writeText(data.url);
+                } catch {
+                    // Klembord kan geblokkeerd zijn; toon de link dan.
+                    window.prompt("Kopieer de aanvraaglink:", data.url);
+                }
+
+                setGekopieerd(true);
+                setTimeout(()=>setGekopieerd(false), 2000);
+
+            }
+
+        } catch {
+            // stil falen
+        }
+
+        setBezig(false);
+
+    }
+
+
+    return (
+        <button
+            type="button"
+            onClick={kopieer}
+            disabled={bezig}
+            title="Kopieer aanvraaglink voor deze opdrachtgever"
+            className="
+                border
+                rounded-lg
+                px-3
+                py-1.5
+                text-sm
+                hover:bg-gray-50
+                disabled:opacity-50
+            "
+        >
+            {gekopieerd ? "✓ Gekopieerd" : "🔗 Link"}
+        </button>
+    );
+
+}
+
+
+
 export default function CustomersPage(){
 
 
@@ -346,6 +418,10 @@ export default function CustomersPage(){
                                                 Wijzigen
 
                                             </Link>
+
+                                            <AanvraagLinkKnop
+                                                customerId={customer.id}
+                                            />
 
                                             <DeleteButton
 

@@ -140,7 +140,27 @@ exports.Prisma.CustomerScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   color: 'color',
-  formSchema: 'formSchema'
+  formSchema: 'formSchema',
+  publicToken: 'publicToken'
+};
+
+exports.Prisma.AanvraagScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  locatie: 'locatie',
+  straat: 'straat',
+  huisnummer: 'huisnummer',
+  postcode: 'postcode',
+  plaats: 'plaats',
+  schermen: 'schermen',
+  beugel: 'beugel',
+  stroom: 'stroom',
+  internet: 'internet',
+  opmerkingen: 'opmerkingen',
+  bijlagen: 'bijlagen',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ProjectScalarFieldEnum = {
@@ -161,15 +181,20 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   customerId: 'customerId',
   location: 'location',
   city: 'city',
+  contactPersoon: 'contactPersoon',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   description: 'description',
+  werkInstructie: 'werkInstructie',
   workDate: 'workDate',
   internalNotes: 'internalNotes',
   number: 'number',
   assignedUserId: 'assignedUserId',
   plannedDate: 'plannedDate',
   plannedEndDate: 'plannedEndDate',
+  plannedHours: 'plannedHours',
   assignmentId: 'assignmentId',
   formData: 'formData',
   pdfData: 'pdfData',
@@ -218,6 +243,16 @@ exports.Prisma.WorkorderPhotoScalarFieldEnum = {
   url: 'url',
   filename: 'filename',
   caption: 'caption',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkorderAttachmentScalarFieldEnum = {
+  id: 'id',
+  workorderId: 'workorderId',
+  url: 'url',
+  filename: 'filename',
+  originalName: 'originalName',
+  contentType: 'contentType',
   createdAt: 'createdAt'
 };
 
@@ -348,12 +383,14 @@ exports.Prisma.JsonNullValueFilter = {
 exports.Prisma.ModelName = {
   User: 'User',
   Customer: 'Customer',
+  Aanvraag: 'Aanvraag',
   Project: 'Project',
   Workorder: 'Workorder',
   WorkorderHour: 'WorkorderHour',
   WorkorderMaterial: 'WorkorderMaterial',
   WorkorderHardware: 'WorkorderHardware',
   WorkorderPhoto: 'WorkorderPhoto',
+  WorkorderAttachment: 'WorkorderAttachment',
   WorkorderSignature: 'WorkorderSignature',
   Document: 'Document',
   Notification: 'Notification',

@@ -24,10 +24,13 @@ export default function AppShell({
 
 
 
-    // Alleen login heeft geen applicatielayout
+    // Login en de publieke aanvraagpagina hebben geen applicatielayout
+    // (geen navigatie/sidebar).
 
     const bare =
-        pathname === "/login";
+        pathname === "/login"
+        ||
+        pathname === "/aanvraag";
 
 
 

@@ -70,7 +70,21 @@ export default function EditWorkorderPage(){
         useState("");
 
 
+    const [contactPersoon,setContactPersoon] =
+        useState("");
+
+    const [contactEmail,setContactEmail] =
+        useState("");
+
+    const [contactPhone,setContactPhone] =
+        useState("");
+
+
     const [description,setDescription] =
+        useState("");
+
+
+    const [werkInstructie,setWerkInstructie] =
         useState("");
 
 
@@ -204,7 +218,15 @@ export default function EditWorkorderPage(){
 
                 setCity(wo.city ?? "");
 
+                setContactPersoon(wo.contactPersoon ?? "");
+
+                setContactEmail(wo.contactEmail ?? "");
+
+                setContactPhone(wo.contactPhone ?? "");
+
                 setDescription(wo.description ?? "");
+
+                setWerkInstructie(wo.werkInstructie ?? "");
 
                 setInternalNotes(wo.internalNotes ?? "");
 
@@ -374,7 +396,15 @@ export default function EditWorkorderPage(){
 
                             city,
 
+                            contactPersoon,
+
+                            contactEmail,
+
+                            contactPhone,
+
                             description,
+
+                            werkInstructie,
 
                             internalNotes,
 
@@ -530,7 +560,7 @@ export default function EditWorkorderPage(){
 
                     <span className="text-sm text-gray-600">
 
-                        Titel
+                        Projectnaam:
 
                     </span>
 
@@ -539,6 +569,8 @@ export default function EditWorkorderPage(){
                         value={title}
 
                         onChange={(e)=>setTitle(e.target.value)}
+
+                        placeholder="Bijv. Bedrijfsnaam"
 
                         className="
                             w-full
@@ -659,6 +691,50 @@ export default function EditWorkorderPage(){
 
                     </div>
 
+
+                    <div className="mt-4">
+
+                        <span className="text-sm text-gray-600">
+                            Contactpersoon voor de afspraak (optioneel)
+                        </span>
+
+                        <div className="
+                            flex
+                            flex-wrap
+                            gap-3
+                            mt-1
+                        ">
+
+                            <input
+                                value={contactPersoon}
+                                onChange={(e)=>setContactPersoon(e.target.value)}
+                                placeholder="Naam contactpersoon"
+                                className="flex-1 min-w-[200px] border rounded-xl p-3"
+                            />
+
+                            <input
+                                type="email"
+                                value={contactEmail}
+                                onChange={(e)=>setContactEmail(e.target.value)}
+                                placeholder="E-mailadres"
+                                className="flex-1 min-w-[200px] border rounded-xl p-3"
+                            />
+
+                            <input
+                                value={contactPhone}
+                                onChange={(e)=>setContactPhone(e.target.value)}
+                                placeholder="Telefoonnummer"
+                                className="flex-1 min-w-[140px] border rounded-xl p-3"
+                            />
+
+                        </div>
+
+                        <span className="block text-xs text-gray-500 mt-1">
+                            Wordt gebruikt voor de afspraakbevestiging. Mag leeg blijven.
+                        </span>
+
+                    </div>
+
                 </div>
 
 
@@ -666,8 +742,12 @@ export default function EditWorkorderPage(){
 
                     <span className="text-sm text-gray-600">
 
-                        Omschrijving werkzaamheden
+                        Werkzaamheden (voor de klant)
 
+                    </span>
+
+                    <span className="block text-xs text-gray-400 mb-1">
+                        Deze tekst komt in de afspraakmail naar de klant.
                     </span>
 
                     <textarea
@@ -675,6 +755,42 @@ export default function EditWorkorderPage(){
                         value={description}
 
                         onChange={(e)=>setDescription(e.target.value)}
+
+                        placeholder="Bijv. 2x scherm installeren"
+
+                        className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-3
+                            mt-1
+                            min-h-24
+                        "
+
+                    />
+
+                </label>
+
+
+                <label className="block mt-4">
+
+                    <span className="text-sm text-gray-600">
+
+                        Werkinstructie monteur
+
+                    </span>
+
+                    <span className="block text-xs text-gray-400 mb-1">
+                        Interne instructie voor de monteur. Komt niet in de klant-mail.
+                    </span>
+
+                    <textarea
+
+                        value={werkInstructie}
+
+                        onChange={(e)=>setWerkInstructie(e.target.value)}
+
+                        placeholder="Bijv. sleutel ophalen bij receptie, ladder meenemen"
 
                         className="
                             w-full

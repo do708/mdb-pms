@@ -7,6 +7,215 @@ import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 
 
+
+interface OpenAanvraag {
+    id:string;
+    locatie:string | null;
+    straat:string | null;
+    huisnummer:string | null;
+    postcode:string | null;
+    plaats:string | null;
+    schermen:string | null;
+    beugel:string | null;
+    stroom:string | null;
+    internet:string | null;
+    opmerkingen:string | null;
+    bijlagen:unknown;
+    createdAt:string;
+    customer:{ name:string };
+}
+
+
+
+// Sectie op het dashboard met binnengekomen aanvragen van opdrachtgevers.
+function AanvragenSectie(){
+
+    const [aanvragen,setAanvragen] =
+        useState<OpenAanvraag[]>([]);
+
+    const [laden,setLaden] =
+        useState(true);
+
+    const [bezigId,setBezigId] =
+        useState("");
+
+    const [open,setOpen] =
+        useState<string>("");
+
+
+    async function laad(){
+        try {
+            const res = await fetch("/api/aanvragen");
+            if(res.ok){
+                const data = await res.json();
+                setAanvragen(data.aanvragen || []);
+            }
+        } catch {
+            // stil
+        }
+        setLaden(false);
+    }
+
+
+    useEffect(()=>{
+        laad();
+    },[]);
+
+
+    async function behandel(id:string){
+
+        setBezigId(id);
+
+        try {
+            const res =
+                await fetch(`/api/aanvragen/${id}/behandelen`,{
+                    method:"POST"
+                });
+
+            const data = await res.json();
+
+            if(res.ok && data.workorderId){
+                // Naar de nieuwe werkbon om te controleren en in te plannen.
+                window.location.href = `/engineer/workorders/${data.workorderId}`;
+            } else {
+                setBezigId("");
+                laad();
+            }
+
+        } catch {
+            setBezigId("");
+        }
+
+    }
+
+
+    if(laden || aanvragen.length === 0){
+        return null;
+    }
+
+
+    return (
+
+        <section className="bg-white border rounded-2xl p-5">
+
+            <div className="flex items-center justify-between mb-3">
+                <h2 className="font-bold text-gray-900">
+                    Openstaande aanvragen
+                </h2>
+                <span className="text-xs font-bold bg-amber-100 text-amber-700 rounded-full px-2 py-0.5">
+                    {aanvragen.length}
+                </span>
+            </div>
+
+            <div className="space-y-2">
+
+                {aanvragen.map((a)=>{
+
+                    const adres =
+                        [
+                            [a.straat, a.huisnummer].filter(Boolean).join(" "),
+                            [a.postcode, a.plaats].filter(Boolean).join(" ")
+                        ].filter(Boolean).join(", ");
+
+                    const isOpen = open === a.id;
+
+                    const aantalBijlagen =
+                        Array.isArray(a.bijlagen) ? a.bijlagen.length : 0;
+
+                    return (
+
+                        <div
+                            key={a.id}
+                            className="border rounded-xl p-3"
+                        >
+
+                            <div className="flex items-start justify-between gap-3">
+
+                                <button
+                                    type="button"
+                                    onClick={()=>setOpen(isOpen ? "" : a.id)}
+                                    className="text-left flex-1"
+                                >
+                                    <p className="font-semibold text-gray-900">
+                                        {a.customer.name}
+                                        {a.locatie ? ` · ${a.locatie}` : ""}
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        {adres || "Geen adres opgegeven"}
+                                        {aantalBijlagen > 0 ? ` · 📎 ${aantalBijlagen}` : ""}
+                                    </p>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={()=>behandel(a.id)}
+                                    disabled={bezigId === a.id}
+                                    className="
+                                        bg-blue-600
+                                        text-white
+                                        rounded-lg
+                                        px-3
+                                        py-2
+                                        text-sm
+                                        font-bold
+                                        whitespace-nowrap
+                                        disabled:opacity-50
+                                    "
+                                >
+                                    {bezigId === a.id ? "Bezig..." : "In behandeling nemen"}
+                                </button>
+
+                            </div>
+
+
+                            {
+                                isOpen && (
+                                    <div className="mt-3 pt-3 border-t text-sm text-gray-600 space-y-1">
+                                        {a.schermen ? <p><strong>Schermen:</strong> {a.schermen}</p> : null}
+                                        {a.beugel ? <p><strong>Beugel:</strong> {a.beugel}</p> : null}
+                                        {a.stroom ? <p><strong>Stroom binnen 3m:</strong> {a.stroom}</p> : null}
+                                        {a.internet ? <p><strong>Internet binnen 3m:</strong> {a.internet}</p> : null}
+                                        {a.opmerkingen ? <p><strong>Opmerkingen:</strong> {a.opmerkingen}</p> : null}
+                                        {
+                                            aantalBijlagen > 0 && Array.isArray(a.bijlagen) && (
+                                                <div className="pt-1">
+                                                    <strong>Bijlagen:</strong>
+                                                    <ul className="mt-1 space-y-1">
+                                                        {(a.bijlagen as unknown as { url:string; name:string }[]).map((b,i)=>(
+                                                            <li key={i}>
+                                                                <a
+                                                                    href={b.url}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="text-blue-600 underline"
+                                                                >
+                                                                    📎 {b.name}
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                )
+                            }
+
+                        </div>
+
+                    );
+
+                })}
+
+            </div>
+
+        </section>
+
+    );
+
+}
+
+
 function formIcon(type:string):string {
 
     return (
@@ -104,6 +313,9 @@ interface DashboardData {
 
 
     teLaat:any[];
+
+
+    materiaalWaarschuwing:any[];
 
 
     recent:any[];
@@ -224,6 +436,9 @@ export default function DashboardPage(){
             min-h-screen
         ">
 
+
+
+            <AanvragenSectie />
 
 
 
@@ -456,6 +671,111 @@ export default function DashboardPage(){
                                                 "—"
                                             }
 
+                                        </span>
+
+                                    </a>
+
+                                ))
+                            }
+
+                        </div>
+
+                    </section>
+
+                )
+            }
+
+
+
+
+            {
+                (data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
+
+                    <section className="
+                        bg-red-50
+                        border
+                        border-red-300
+                        rounded-xl
+                        p-4
+                    ">
+
+                        <h2 className="
+                            text-xl
+                            font-bold
+                            mb-1
+                            text-red-700
+                        ">
+
+                            📦 Materiaal nog niet gecontroleerd ({data?.materiaalWaarschuwing?.length})
+
+                        </h2>
+
+                        <p className="
+                            text-sm
+                            text-red-700
+                            mb-4
+                        ">
+                            Deze klussen staan morgen ingepland, maar het klaargezette
+                            materiaal is nog niet volledig geleverd/klaargezet.
+                        </p>
+
+
+                        <div className="space-y-3">
+
+                            {
+                                data?.materiaalWaarschuwing?.map(workorder=>(
+
+                                    <a
+
+                                        key={workorder.id}
+
+                                        href={`/workorders/${workorder.id}`}
+
+                                        className="
+                                            flex
+                                            justify-between
+                                            items-center
+                                            bg-white
+                                            border
+                                            border-red-200
+                                            rounded-xl
+                                            p-3
+                                            hover:bg-red-50
+                                        "
+
+                                    >
+
+                                        <div>
+
+                                            <p className="font-bold">
+
+                                                {workorder.number} — {workorder.title}
+
+                                            </p>
+
+                                            <p className="text-sm text-gray-500">
+
+                                                🏢 {workorder.customer ?? "—"}
+
+                                                {
+                                                    workorder.engineer
+                                                    ?
+                                                    ` · 👷 ${workorder.engineer}`
+                                                    :
+                                                    ""
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+                                        <span className="
+                                            text-xs
+                                            font-semibold
+                                            text-red-700
+                                            whitespace-nowrap
+                                        ">
+                                            Controleer materiaal →
                                         </span>
 
                                     </a>

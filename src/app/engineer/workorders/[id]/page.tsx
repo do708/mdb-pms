@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import StatusFlow from "@/components/workorders/StatusFlow";
 import PhotosForm from "@/components/workorders/PhotosForm";
+import CorrespondentieBlok from "@/components/workorders/CorrespondentieBlok";
 import OpleverForm from "@/components/workorders/OpleverForm";
 
 import { parseCustomerSchema } from "@/types/customerForms";
@@ -65,6 +66,14 @@ interface Workorder {
 
     city:string | null;
 
+    contactPersoon:string | null;
+
+    contactEmail:string | null;
+
+    contactPhone:string | null;
+
+    werkInstructie:string | null;
+
     customer:{
 
         name:string;
@@ -99,6 +108,125 @@ interface Workorder {
 
 
 
+// Eén materiaalregel (Schermen / Players / Beugels): aantal-tekstveld +
+// vinkjes "Geleverd" en "Klaargezet". Is het tekstvak leeg, dan geldt de
+// regel als "n.v.t." en zijn de vinkjes niet nodig. Is het tekstvak ingevuld,
+// dan zijn Geleverd én Klaargezet verplicht (rood kader tot ze aanstaan).
+function MateriaalRij({
+    label,
+    plh,
+    aantal,
+    geleverd,
+    klaargezet,
+    onAantal,
+    onGeleverd,
+    onKlaargezet
+}:{
+    label:string;
+    plh:string;
+    aantal:string;
+    geleverd:boolean;
+    klaargezet:boolean;
+    onAantal:(v:string)=>void;
+    onGeleverd:(v:boolean)=>void;
+    onKlaargezet:(v:boolean)=>void;
+}){
+
+    const ingevuld =
+        aantal.trim() !== "";
+
+    // Niet in orde = tekstvak ingevuld maar nog niet allebei aangevinkt.
+    const nietInOrde =
+        ingevuld && (!geleverd || !klaargezet);
+
+    return (
+        <div className="mb-2">
+
+            <div className="
+                flex
+                items-center
+                justify-between
+                mb-1
+            ">
+                <span className="
+                    text-sm
+                    font-medium
+                    text-slate-700
+                ">
+                    {label}
+                </span>
+
+                {
+                    !ingevuld && (
+                        <span className="
+                            text-[11px]
+                            text-slate-400
+                            font-medium
+                        ">
+                            n.v.t.
+                        </span>
+                    )
+                }
+            </div>
+
+            <div className="
+                grid
+                grid-cols-[1fr_auto_auto]
+                gap-2
+                items-center
+            ">
+
+                <input
+                    type="text"
+                    value={aantal}
+                    onChange={(e)=>onAantal(e.target.value)}
+                    placeholder={plh}
+                    className={`
+                        border
+                        rounded-lg
+                        p-2
+                        text-sm
+                        bg-white
+                        ${nietInOrde ? "border-red-300" : ""}
+                    `}
+                />
+
+                <div className="w-16 flex justify-center">
+                    <input
+                        type="checkbox"
+                        checked={geleverd}
+                        disabled={!ingevuld}
+                        onChange={(e)=>onGeleverd(e.target.checked)}
+                        className={`
+                            w-5 h-5
+                            ${!ingevuld ? "opacity-30" : ""}
+                            ${nietInOrde && !geleverd ? "ring-2 ring-red-300 rounded" : ""}
+                        `}
+                    />
+                </div>
+
+                <div className="w-16 flex justify-center">
+                    <input
+                        type="checkbox"
+                        checked={klaargezet}
+                        disabled={!ingevuld}
+                        onChange={(e)=>onKlaargezet(e.target.checked)}
+                        className={`
+                            w-5 h-5
+                            ${!ingevuld ? "opacity-30" : ""}
+                            ${nietInOrde && !klaargezet ? "ring-2 ring-red-300 rounded" : ""}
+                        `}
+                    />
+                </div>
+
+            </div>
+
+        </div>
+    );
+
+}
+
+
 export default function EngineerWorkorderPage(){
 
 
@@ -127,6 +255,39 @@ export default function EngineerWorkorderPage(){
 
     const [notes,setNotes] =
         useState("");
+
+
+    // Klaargezet materiaal (pakbon + schermen/players/beugels).
+    const [materiaal,setMateriaal] =
+        useState({
+            pakbonUrl:"",
+            schermenAantal:"",
+            schermenGeleverd:false,
+            schermenKlaargezet:false,
+            playersAantal:"",
+            playersGeleverd:false,
+            playersKlaargezet:false,
+            beugelsAantal:"",
+            beugelsGeleverd:false,
+            beugelsKlaargezet:false,
+            versterkersAantal:"",
+            versterkersGeleverd:false,
+            versterkersKlaargezet:false
+        });
+
+    const [pakbonUploaden,setPakbonUploaden] =
+        useState(false);
+
+
+    // Bezig-vlag voor het versturen van de afspraakmail.
+    const [afspraakBezig,setAfspraakBezig] =
+        useState(false);
+
+
+    // Voor het automatisch bewaren van het materiaal-blok: onthoud of de
+    // eerste (geladen) waarde al is gezet, zodat we niet meteen opslaan.
+    const materiaalGeladen = useRef(false);
+    const materiaalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 
 
@@ -180,6 +341,21 @@ export default function EngineerWorkorderPage(){
             );
 
 
+            // Klaargezet materiaal uit de opgeslagen formData halen.
+            const opgeslagenMateriaal =
+                data.formData?.klaarzetMateriaal;
+
+            if(
+                opgeslagenMateriaal &&
+                typeof opgeslagenMateriaal === "object"
+            ){
+                setMateriaal(m=>({
+                    ...m,
+                    ...opgeslagenMateriaal
+                }));
+            }
+
+
             setStatus(
                 data.status
             );
@@ -195,6 +371,51 @@ export default function EngineerWorkorderPage(){
 
 
     },[id]);
+
+
+    // Materiaal automatisch bewaren zodra er iets verandert (met korte
+    // vertraging). Zo wordt ingetypte tekst onthouden zonder dat er iets
+    // aangevinkt of op een knop geklikt hoeft te worden.
+    useEffect(()=>{
+
+        if(!materiaalGeladen.current){
+            materiaalGeladen.current = true;
+            return;
+        }
+
+        if(materiaalTimer.current){
+            clearTimeout(materiaalTimer.current);
+        }
+
+        materiaalTimer.current =
+            setTimeout(()=>{
+
+                fetch(
+                    `/api/workorders/${id}`,
+                    {
+                        method:"PUT",
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
+                        body:JSON.stringify({
+                            formData:{
+                                ...(opleverData ?? {}),
+                                klaarzetMateriaal:materiaal
+                            }
+                        })
+                    }
+                ).catch(()=>{});
+
+            },800);
+
+        return ()=>{
+            if(materiaalTimer.current){
+                clearTimeout(materiaalTimer.current);
+            }
+        };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[materiaal]);
 
 
 
@@ -234,7 +455,10 @@ export default function EngineerWorkorderPage(){
 
                             description:notes,
 
-                            formData:opleverData ?? undefined
+                            formData:{
+                                ...(opleverData ?? {}),
+                                klaarzetMateriaal:materiaal
+                            }
 
                         })
 
@@ -311,6 +535,67 @@ export default function EngineerWorkorderPage(){
     }
 
 
+async function verstuurAfspraak(){
+
+
+    if(
+        !confirm(
+            "Afspraakbevestiging naar de klant versturen? De status wordt op \"Afspraak verstuurd\" gezet."
+        )
+    ){
+        return;
+    }
+
+
+    setAfspraakBezig(true);
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/workorders/${id}/send-afspraak`,
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify({})
+                }
+            );
+
+
+        if(!response.ok){
+
+            const data =
+                await response.json().catch(()=>null);
+
+            alert(
+                data?.error
+                ?
+                data.error
+                :
+                "Afspraak versturen mislukt"
+            );
+
+            return;
+
+        }
+
+
+        setStatus("afspraak");
+
+        alert("Afspraakbevestiging verstuurd.");
+
+    } finally {
+
+        setAfspraakBezig(false);
+
+    }
+
+}
+
+
 async function completeWorkorder(){
 
 
@@ -367,7 +652,10 @@ async function completeWorkorder(){
                 },
                 body:JSON.stringify({
                     description:notes,
-                    formData:opleverData ?? undefined
+                    formData:{
+                                ...(opleverData ?? {}),
+                                klaarzetMateriaal:materiaal
+                            }
                 })
             }
         );
@@ -580,6 +868,65 @@ async function completeWorkorder(){
                             current={status || workorder.status}
                             onChanged={(nieuw)=>setStatus(nieuw)}
                         />
+
+                        {
+                            (()=>{
+
+                                const huidig =
+                                    status || workorder.status;
+
+                                // Alles vanaf "afspraak" betekent dat de
+                                // afspraak al verstuurd is (status 2 of hoger).
+                                // Alleen bij "ontvangen" (status 1) mag het nog.
+                                const alVerstuurd =
+                                    huidig !== "ontvangen";
+
+                                return (
+                                    <>
+                                        <button
+                                            type="button"
+                                            onClick={verstuurAfspraak}
+                                            disabled={afspraakBezig || alVerstuurd}
+                                            className="
+                                                mt-3
+                                                w-full
+                                                bg-teal-600
+                                                text-white
+                                                rounded-xl
+                                                py-3
+                                                font-bold
+                                                disabled:opacity-50
+                                                disabled:cursor-not-allowed
+                                            "
+                                        >
+                                            {
+                                                afspraakBezig
+                                                ?
+                                                "Bezig met versturen..."
+                                                :
+                                                alVerstuurd
+                                                ?
+                                                "✓ Afspraak al verstuurd"
+                                                :
+                                                "✉️ Verstuur afspraak"
+                                            }
+                                        </button>
+
+                                        <p className="text-xs text-slate-500 mt-2 text-center">
+                                            {
+                                                alVerstuurd
+                                                ?
+                                                "De afspraak is al verstuurd. Zet de status terug op \"Opdracht ontvangen\" om opnieuw te versturen."
+                                                :
+                                                "Stuurt een afspraakbevestiging naar de klant (bcc naar projects@mdb-networks.nl) en zet de status op \"Afspraak verstuurd\"."
+                                            }
+                                        </p>
+                                    </>
+                                );
+
+                            })()
+                        }
+
                     </section>
                 )
             }
@@ -615,6 +962,35 @@ async function completeWorkorder(){
                 <p className="text-gray-500">
                     {workorder.title}
                 </p>
+
+
+                {
+                    workorder.contactPersoon && (
+                        <p className="text-gray-700">
+                            👤 {workorder.contactPersoon}
+                            {
+                                workorder.contactPhone
+                                ?
+                                ` · 📞 ${workorder.contactPhone}`
+                                :
+                                ""
+                            }
+                        </p>
+                    )
+                }
+
+                {
+                    workorder.contactEmail && (
+                        <p>
+                            <a
+                                href={`mailto:${workorder.contactEmail}`}
+                                className="text-blue-600 underline"
+                            >
+                                ✉️ {workorder.contactEmail}
+                            </a>
+                        </p>
+                    )
+                }
 
 
                 {
@@ -834,31 +1210,226 @@ async function completeWorkorder(){
                 </h2>
 
 
-
-                <textarea
-
-                    value={notes}
-
-                    onChange={(e)=>
-                        setNotes(
-                            e.target.value
-                        )
-                    }
+                <div className="
+                    grid
+                    grid-cols-1
+                    md:grid-cols-2
+                    gap-5
+                ">
 
 
-                    className="
-                        w-full
+                    {/* Links: wat er moet gebeuren */}
+                    <textarea
+
+                        value={notes}
+
+                        onChange={(e)=>
+                            setNotes(
+                                e.target.value
+                            )
+                        }
+
+
+                        className="
+                            w-full
+                            border
+                            rounded-xl
+                            p-3
+                            min-h-40
+                        "
+
+                        placeholder="Beschrijf uitgevoerde werkzaamheden"
+
+                    />
+
+
+                    {/* Rechts: klaargezet materiaal */}
+                    <div className="
                         border
                         rounded-xl
-                        p-3
-                        min-h-40
-                    "
+                        p-4
+                        bg-slate-50
+                    ">
 
-                    placeholder="
-                    Beschrijf uitgevoerde werkzaamheden
-                    "
 
-                />
+                        <div className="
+                            flex
+                            items-center
+                            justify-between
+                            mb-3
+                        ">
+
+                            <span className="font-semibold text-slate-700">
+                                Materiaal
+                            </span>
+
+
+                            <label className="
+                                text-sm
+                                text-sky-700
+                                font-medium
+                                cursor-pointer
+                                hover:underline
+                            ">
+
+                                {
+                                    pakbonUploaden
+                                    ?
+                                    "Bezig..."
+                                    :
+                                    (
+                                        materiaal.pakbonUrl
+                                        ?
+                                        "Pakbon vervangen"
+                                        :
+                                        "Pakbon uploaden"
+                                    )
+                                }
+
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    onChange={async (e)=>{
+
+                                        const file =
+                                            e.target.files?.[0];
+
+                                        if(!file){ return; }
+
+                                        setPakbonUploaden(true);
+
+                                        try {
+
+                                            const body =
+                                                new FormData();
+
+                                            body.append("file",file);
+
+                                            const res =
+                                                await fetch(
+                                                    "/api/upload",
+                                                    {
+                                                        method:"POST",
+                                                        body
+                                                    }
+                                                );
+
+                                            const data =
+                                                await res.json();
+
+                                            if(res.ok && data.url){
+                                                setMateriaal(m=>({
+                                                    ...m,
+                                                    pakbonUrl:data.url
+                                                }));
+                                            } else {
+                                                alert(
+                                                    data?.error
+                                                    ?
+                                                    `Upload mislukt: ${data.error}`
+                                                    :
+                                                    "Upload mislukt"
+                                                );
+                                            }
+
+                                        } finally {
+                                            setPakbonUploaden(false);
+                                        }
+
+                                    }}
+                                />
+
+                            </label>
+
+                        </div>
+
+
+                        {
+                            materiaal.pakbonUrl && (
+                                <a
+                                    href={materiaal.pakbonUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="
+                                        block
+                                        text-xs
+                                        text-sky-600
+                                        underline
+                                        mb-3
+                                    "
+                                >
+                                    Geüploade pakbon bekijken
+                                </a>
+                            )
+                        }
+
+
+                        {/* Kolomkoppen */}
+                        <div className="
+                            grid
+                            grid-cols-[1fr_auto_auto]
+                            gap-2
+                            items-center
+                            text-xs
+                            font-medium
+                            text-slate-500
+                            mb-1
+                        ">
+                            <span></span>
+                            <span className="w-16 text-center">Geleverd</span>
+                            <span className="w-16 text-center">Klaargezet</span>
+                        </div>
+
+
+                        <MateriaalRij
+                            label="Schermen"
+                            plh={"bijv. 2x 55\" en 1x 32\""}
+                            aantal={materiaal.schermenAantal}
+                            geleverd={materiaal.schermenGeleverd}
+                            klaargezet={materiaal.schermenKlaargezet}
+                            onAantal={(v)=>setMateriaal(m=>({...m,schermenAantal:v}))}
+                            onGeleverd={(v)=>setMateriaal(m=>({...m,schermenGeleverd:v}))}
+                            onKlaargezet={(v)=>setMateriaal(m=>({...m,schermenKlaargezet:v}))}
+                        />
+
+                        <MateriaalRij
+                            label="Players"
+                            plh="aantal"
+                            aantal={materiaal.playersAantal}
+                            geleverd={materiaal.playersGeleverd}
+                            klaargezet={materiaal.playersKlaargezet}
+                            onAantal={(v)=>setMateriaal(m=>({...m,playersAantal:v}))}
+                            onGeleverd={(v)=>setMateriaal(m=>({...m,playersGeleverd:v}))}
+                            onKlaargezet={(v)=>setMateriaal(m=>({...m,playersKlaargezet:v}))}
+                        />
+
+                        <MateriaalRij
+                            label="Beugels"
+                            plh="bijv. muurbeugels"
+                            aantal={materiaal.beugelsAantal}
+                            geleverd={materiaal.beugelsGeleverd}
+                            klaargezet={materiaal.beugelsKlaargezet}
+                            onAantal={(v)=>setMateriaal(m=>({...m,beugelsAantal:v}))}
+                            onGeleverd={(v)=>setMateriaal(m=>({...m,beugelsGeleverd:v}))}
+                            onKlaargezet={(v)=>setMateriaal(m=>({...m,beugelsKlaargezet:v}))}
+                        />
+
+                        <MateriaalRij
+                            label="Versterker/speakers"
+                            plh="bijv. versterker + 4 speakers"
+                            aantal={materiaal.versterkersAantal}
+                            geleverd={materiaal.versterkersGeleverd}
+                            klaargezet={materiaal.versterkersKlaargezet}
+                            onAantal={(v)=>setMateriaal(m=>({...m,versterkersAantal:v}))}
+                            onGeleverd={(v)=>setMateriaal(m=>({...m,versterkersGeleverd:v}))}
+                            onKlaargezet={(v)=>setMateriaal(m=>({...m,versterkersKlaargezet:v}))}
+                        />
+
+
+                    </div>
+
+
+                </div>
 
 
            </section>
@@ -910,6 +1481,13 @@ async function completeWorkorder(){
     readOnly={!!workorder.sentAt}
 
 />
+
+
+            <div className="mt-6">
+                <CorrespondentieBlok
+                    workorderId={id}
+                />
+            </div>
 
 
             {

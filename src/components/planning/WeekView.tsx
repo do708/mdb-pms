@@ -114,6 +114,83 @@ export default function WeekView({
     }
 
 
+    // --- Dag-as voor de agenda-weergave ---
+    // De dag loopt van 08:00 tot 17:00 (9 uur). Elk uur is PX_PER_UUR hoog,
+    // zodat een klok van bijvoorbeeld 14:00-16:00 onderaan de dag staat en je
+    // ziet dat de ochtend nog vrij is. De schaal is ruim genoeg gekozen zodat
+    // ook een blok van 1 uur genoeg ruimte heeft voor tijd, titel en klant.
+    const DAG_START_UUR = 8;
+    const DAG_EIND_UUR = 17;
+    const PX_PER_UUR = 22;
+    // Klein stukje wit boven de eerste klus.
+    const DAG_PADDING_TOP = 8;
+    const DAG_HOOGTE = (DAG_EIND_UUR - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
+
+
+    // Bereken de verticale positie (top) en hoogte van een klus binnen één dag,
+    // op basis van de van-/tot-tijd. Geen tijd? Dan vult het blok de hele dag.
+    function blokPositie(
+        item:any,
+        day:Date
+    ):{ top:number; height:number } {
+
+        const cellIso = isoDate(day);
+
+        const start = item.plannedDate ? new Date(item.plannedDate) : null;
+        const eind = item.plannedEndDate ? new Date(item.plannedEndDate) : null;
+
+        const startIsDezeDag =
+            start !== null && isoDate(start) === cellIso;
+        const eindIsDezeDag =
+            eind !== null && isoDate(eind) === cellIso;
+
+        // Uur (als kommagetal) van een tijd, begrensd op de dag-as.
+        const uurVan = (d:Date):number => {
+            const u = d.getHours() + d.getMinutes() / 60;
+            return Math.min(
+                DAG_EIND_UUR,
+                Math.max(DAG_START_UUR, u)
+            );
+        };
+
+        // Beginuur: op de startdag de echte starttijd (als die er is),
+        // anders (doorlopende dag) bovenaan de dag beginnen.
+        let beginUur = DAG_START_UUR;
+
+        if(startIsDezeDag && start){
+            const heeftTijd =
+                start.getHours() !== 0 || start.getMinutes() !== 0;
+            beginUur = heeftTijd ? uurVan(start) : DAG_START_UUR;
+        }
+
+        // Einduur: op de einddag de echte eindtijd, anders onderaan de dag.
+        let eindUur = DAG_EIND_UUR;
+
+        if(eindIsDezeDag && eind){
+            const heeftTijd =
+                eind.getHours() !== 0 || eind.getMinutes() !== 0;
+            eindUur = heeftTijd ? uurVan(eind) : DAG_EIND_UUR;
+        } else if(startIsDezeDag && !eind && start){
+            // Alleen een starttijd, geen eind: standaard 2 uur blok.
+            const heeftTijd =
+                start.getHours() !== 0 || start.getMinutes() !== 0;
+            eindUur = heeftTijd
+                ? Math.min(DAG_EIND_UUR, uurVan(start) + 2)
+                : DAG_EIND_UUR;
+        }
+
+        const top = (beginUur - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
+
+        const height = Math.max(
+            30,
+            (eindUur - beginUur) * PX_PER_UUR
+        );
+
+        return { top, height };
+
+    }
+
+
     // Geaccepteerd verlof van een monteur op een bepaalde dag
     function leaveOn(
         userId:string,
@@ -336,13 +413,26 @@ export default function WeekView({
                                         key={day.toISOString()}
 
                                         className="
-                                            border
-                                            rounded-xl
-                                            min-h-32
-                                            p-2
+                                            flex
+                                            flex-col
+                                            gap-1
                                         "
 
                                     >
+
+                                      <div
+                                        className="
+                                            border
+                                            rounded-xl
+                                            p-1
+                                            relative
+                                        "
+
+                                        style={{
+                                            minHeight:`${DAG_HOOGTE}px`
+                                        }}
+
+                                      >
 
 
                                         {
@@ -353,14 +443,19 @@ export default function WeekView({
                                                 }
                                                 return (
                                                     <div className="
+                                                        absolute
+                                                        inset-1
                                                         bg-orange-100
                                                         text-orange-800
                                                         text-xs
                                                         rounded-lg
                                                         p-2
-                                                        mb-2
                                                         text-center
                                                         font-medium
+                                                        flex
+                                                        items-center
+                                                        justify-center
+                                                        z-10
                                                     ">
                                                         🌴 {verlof.type || "Verlof"}
                                                     </div>
@@ -425,8 +520,12 @@ export default function WeekView({
                                             })
 
 
-                                            .map(item=>(
+                                            .map(item=>{
 
+                                                const pos =
+                                                    blokPositie(item, day);
+
+                                                return (
 
                                                 <Link
 
@@ -439,9 +538,10 @@ export default function WeekView({
                                                         text-white
                                                         rounded-md
                                                         px-1.5
-                                                        py-1
-                                                        mb-1
+                                                        py-0.5
                                                         leading-tight
+                                                        overflow-hidden
+                                                        absolute
                                                     "
 
 
@@ -449,7 +549,15 @@ export default function WeekView({
 
                                                         backgroundColor:
                                                             (item.customer?.color ?? item.project?.customer?.color)
-                                                            ?? "#2563eb"
+                                                            ?? "#2563eb",
+
+                                                        // Agenda-positie: bovenkant en hoogte volgen de
+                                                        // van-/tot-tijd. Een klus van 14:00-16:00 staat
+                                                        // zo onderaan de dag; de ochtend blijft vrij.
+                                                        top:`${pos.top}px`,
+                                                        height:`${pos.height}px`,
+                                                        left:"2px",
+                                                        right:"2px"
 
                                                     }}
 
@@ -474,21 +582,14 @@ export default function WeekView({
                                                                 label += `–${eh}:${em}`;
                                                             }
                                                             return (
-                                                                <span className="text-xs font-bold block">
+                                                                <span className="text-[10px] font-bold block">
                                                                     🕐 {label}
                                                                 </span>
                                                             );
                                                         })()
                                                     }
 
-                                                    <strong className="text-[11px] block truncate">
-
-                                                        {item.title}
-
-                                                    </strong>
-
-
-                                                    <span className="text-[10px] block truncate opacity-90">
+                                                    <span className="text-[10px] block truncate font-semibold">
 
                                                         {
                                                             (item.customer?.name ?? item.project?.customer?.name)
@@ -498,12 +599,23 @@ export default function WeekView({
                                                     </span>
 
 
+                                                    <strong className="text-[10px] block truncate font-normal opacity-90">
+
+                                                        {item.title}
+
+                                                    </strong>
+
+
                                                 </Link>
 
+                                                );
 
-                                            ))
+                                            })
 
                                         }
+
+
+                                      </div>
 
 
                                         <Link

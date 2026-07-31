@@ -24,6 +24,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Customer = $Result.DefaultSelection<Prisma.$CustomerPayload>
 /**
+ * Model Aanvraag
+ * 
+ */
+export type Aanvraag = $Result.DefaultSelection<Prisma.$AanvraagPayload>
+/**
  * Model Project
  * 
  */
@@ -53,6 +58,11 @@ export type WorkorderHardware = $Result.DefaultSelection<Prisma.$WorkorderHardwa
  * 
  */
 export type WorkorderPhoto = $Result.DefaultSelection<Prisma.$WorkorderPhotoPayload>
+/**
+ * Model WorkorderAttachment
+ * 
+ */
+export type WorkorderAttachment = $Result.DefaultSelection<Prisma.$WorkorderAttachmentPayload>
 /**
  * Model WorkorderSignature
  * 
@@ -246,6 +256,16 @@ export class PrismaClient<
   get customer(): Prisma.CustomerDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.aanvraag`: Exposes CRUD operations for the **Aanvraag** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Aanvraags
+    * const aanvraags = await prisma.aanvraag.findMany()
+    * ```
+    */
+  get aanvraag(): Prisma.AanvraagDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.project`: Exposes CRUD operations for the **Project** model.
     * Example usage:
     * ```ts
@@ -304,6 +324,16 @@ export class PrismaClient<
     * ```
     */
   get workorderPhoto(): Prisma.WorkorderPhotoDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workorderAttachment`: Exposes CRUD operations for the **WorkorderAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkorderAttachments
+    * const workorderAttachments = await prisma.workorderAttachment.findMany()
+    * ```
+    */
+  get workorderAttachment(): Prisma.WorkorderAttachmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.workorderSignature`: Exposes CRUD operations for the **WorkorderSignature** model.
@@ -853,12 +883,14 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Customer: 'Customer',
+    Aanvraag: 'Aanvraag',
     Project: 'Project',
     Workorder: 'Workorder',
     WorkorderHour: 'WorkorderHour',
     WorkorderMaterial: 'WorkorderMaterial',
     WorkorderHardware: 'WorkorderHardware',
     WorkorderPhoto: 'WorkorderPhoto',
+    WorkorderAttachment: 'WorkorderAttachment',
     WorkorderSignature: 'WorkorderSignature',
     Document: 'Document',
     Notification: 'Notification',
@@ -884,7 +916,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "project" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
+      modelProps: "user" | "customer" | "aanvraag" | "project" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1033,6 +1065,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CustomerCountArgs<ExtArgs>
             result: $Utils.Optional<CustomerCountAggregateOutputType> | number
+          }
+        }
+      }
+      Aanvraag: {
+        payload: Prisma.$AanvraagPayload<ExtArgs>
+        fields: Prisma.AanvraagFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AanvraagFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AanvraagFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>
+          }
+          findFirst: {
+            args: Prisma.AanvraagFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AanvraagFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>
+          }
+          findMany: {
+            args: Prisma.AanvraagFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>[]
+          }
+          create: {
+            args: Prisma.AanvraagCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>
+          }
+          createMany: {
+            args: Prisma.AanvraagCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AanvraagCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>[]
+          }
+          delete: {
+            args: Prisma.AanvraagDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>
+          }
+          update: {
+            args: Prisma.AanvraagUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>
+          }
+          deleteMany: {
+            args: Prisma.AanvraagDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AanvraagUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AanvraagUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>[]
+          }
+          upsert: {
+            args: Prisma.AanvraagUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AanvraagPayload>
+          }
+          aggregate: {
+            args: Prisma.AanvraagAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAanvraag>
+          }
+          groupBy: {
+            args: Prisma.AanvraagGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AanvraagGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AanvraagCountArgs<ExtArgs>
+            result: $Utils.Optional<AanvraagCountAggregateOutputType> | number
           }
         }
       }
@@ -1477,6 +1583,80 @@ export namespace Prisma {
           count: {
             args: Prisma.WorkorderPhotoCountArgs<ExtArgs>
             result: $Utils.Optional<WorkorderPhotoCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkorderAttachment: {
+        payload: Prisma.$WorkorderAttachmentPayload<ExtArgs>
+        fields: Prisma.WorkorderAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkorderAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkorderAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkorderAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkorderAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.WorkorderAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.WorkorderAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.WorkorderAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkorderAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkorderAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>
+          }
+          update: {
+            args: Prisma.WorkorderAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkorderAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkorderAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkorderAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkorderAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkorderAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkorderAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkorderAttachment>
+          }
+          groupBy: {
+            args: Prisma.WorkorderAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkorderAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkorderAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkorderAttachmentCountAggregateOutputType> | number
           }
         }
       }
@@ -2345,12 +2525,14 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     customer?: CustomerOmit
+    aanvraag?: AanvraagOmit
     project?: ProjectOmit
     workorder?: WorkorderOmit
     workorderHour?: WorkorderHourOmit
     workorderMaterial?: WorkorderMaterialOmit
     workorderHardware?: WorkorderHardwareOmit
     workorderPhoto?: WorkorderPhotoOmit
+    workorderAttachment?: WorkorderAttachmentOmit
     workorderSignature?: WorkorderSignatureOmit
     document?: DocumentOmit
     notification?: NotificationOmit
@@ -2502,12 +2684,14 @@ export namespace Prisma {
     assignments: number
     projects: number
     workorders: number
+    aanvragen: number
   }
 
   export type CustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | CustomerCountOutputTypeCountAssignmentsArgs
     projects?: boolean | CustomerCountOutputTypeCountProjectsArgs
     workorders?: boolean | CustomerCountOutputTypeCountWorkordersArgs
+    aanvragen?: boolean | CustomerCountOutputTypeCountAanvragenArgs
   }
 
   // Custom InputTypes
@@ -2540,6 +2724,13 @@ export namespace Prisma {
    */
   export type CustomerCountOutputTypeCountWorkordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkorderWhereInput
+  }
+
+  /**
+   * CustomerCountOutputType without action
+   */
+  export type CustomerCountOutputTypeCountAanvragenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AanvraagWhereInput
   }
 
 
@@ -2584,6 +2775,7 @@ export namespace Prisma {
     hours: number
     materials: number
     photos: number
+    attachments: number
     extraEngineers: number
     forms: number
   }
@@ -2594,6 +2786,7 @@ export namespace Prisma {
     hours?: boolean | WorkorderCountOutputTypeCountHoursArgs
     materials?: boolean | WorkorderCountOutputTypeCountMaterialsArgs
     photos?: boolean | WorkorderCountOutputTypeCountPhotosArgs
+    attachments?: boolean | WorkorderCountOutputTypeCountAttachmentsArgs
     extraEngineers?: boolean | WorkorderCountOutputTypeCountExtraEngineersArgs
     forms?: boolean | WorkorderCountOutputTypeCountFormsArgs
   }
@@ -2642,6 +2835,13 @@ export namespace Prisma {
    */
   export type WorkorderCountOutputTypeCountPhotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkorderPhotoWhereInput
+  }
+
+  /**
+   * WorkorderCountOutputType without action
+   */
+  export type WorkorderCountOutputTypeCountAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderAttachmentWhereInput
   }
 
   /**
@@ -3960,6 +4160,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     color: string | null
+    publicToken: string | null
   }
 
   export type CustomerMaxAggregateOutputType = {
@@ -3971,6 +4172,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     color: string | null
+    publicToken: string | null
   }
 
   export type CustomerCountAggregateOutputType = {
@@ -3983,6 +4185,7 @@ export namespace Prisma {
     updatedAt: number
     color: number
     formSchema: number
+    publicToken: number
     _all: number
   }
 
@@ -3996,6 +4199,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     color?: true
+    publicToken?: true
   }
 
   export type CustomerMaxAggregateInputType = {
@@ -4007,6 +4211,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     color?: true
+    publicToken?: true
   }
 
   export type CustomerCountAggregateInputType = {
@@ -4019,6 +4224,7 @@ export namespace Prisma {
     updatedAt?: true
     color?: true
     formSchema?: true
+    publicToken?: true
     _all?: true
   }
 
@@ -4104,6 +4310,7 @@ export namespace Prisma {
     updatedAt: Date
     color: string
     formSchema: JsonValue | null
+    publicToken: string | null
     _count: CustomerCountAggregateOutputType | null
     _min: CustomerMinAggregateOutputType | null
     _max: CustomerMaxAggregateOutputType | null
@@ -4133,9 +4340,11 @@ export namespace Prisma {
     updatedAt?: boolean
     color?: boolean
     formSchema?: boolean
+    publicToken?: boolean
     assignments?: boolean | Customer$assignmentsArgs<ExtArgs>
     projects?: boolean | Customer$projectsArgs<ExtArgs>
     workorders?: boolean | Customer$workordersArgs<ExtArgs>
+    aanvragen?: boolean | Customer$aanvragenArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
@@ -4149,6 +4358,7 @@ export namespace Prisma {
     updatedAt?: boolean
     color?: boolean
     formSchema?: boolean
+    publicToken?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4161,6 +4371,7 @@ export namespace Prisma {
     updatedAt?: boolean
     color?: boolean
     formSchema?: boolean
+    publicToken?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectScalar = {
@@ -4173,13 +4384,15 @@ export namespace Prisma {
     updatedAt?: boolean
     color?: boolean
     formSchema?: boolean
+    publicToken?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "createdAt" | "updatedAt" | "color" | "formSchema", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "createdAt" | "updatedAt" | "color" | "formSchema" | "publicToken", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | Customer$assignmentsArgs<ExtArgs>
     projects?: boolean | Customer$projectsArgs<ExtArgs>
     workorders?: boolean | Customer$workordersArgs<ExtArgs>
+    aanvragen?: boolean | Customer$aanvragenArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4191,6 +4404,7 @@ export namespace Prisma {
       assignments: Prisma.$AssignmentPayload<ExtArgs>[]
       projects: Prisma.$ProjectPayload<ExtArgs>[]
       workorders: Prisma.$WorkorderPayload<ExtArgs>[]
+      aanvragen: Prisma.$AanvraagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4202,6 +4416,7 @@ export namespace Prisma {
       updatedAt: Date
       color: string
       formSchema: Prisma.JsonValue | null
+      publicToken: string | null
     }, ExtArgs["result"]["customer"]>
     composites: {}
   }
@@ -4599,6 +4814,7 @@ export namespace Prisma {
     assignments<T extends Customer$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Customer$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projects<T extends Customer$projectsArgs<ExtArgs> = {}>(args?: Subset<T, Customer$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     workorders<T extends Customer$workordersArgs<ExtArgs> = {}>(args?: Subset<T, Customer$workordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    aanvragen<T extends Customer$aanvragenArgs<ExtArgs> = {}>(args?: Subset<T, Customer$aanvragenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4637,6 +4853,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Customer", 'DateTime'>
     readonly color: FieldRef<"Customer", 'String'>
     readonly formSchema: FieldRef<"Customer", 'Json'>
+    readonly publicToken: FieldRef<"Customer", 'String'>
   }
     
 
@@ -5102,6 +5319,30 @@ export namespace Prisma {
   }
 
   /**
+   * Customer.aanvragen
+   */
+  export type Customer$aanvragenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    where?: AanvraagWhereInput
+    orderBy?: AanvraagOrderByWithRelationInput | AanvraagOrderByWithRelationInput[]
+    cursor?: AanvraagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AanvraagScalarFieldEnum | AanvraagScalarFieldEnum[]
+  }
+
+  /**
    * Customer without action
    */
   export type CustomerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5117,6 +5358,1208 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CustomerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Aanvraag
+   */
+
+  export type AggregateAanvraag = {
+    _count: AanvraagCountAggregateOutputType | null
+    _min: AanvraagMinAggregateOutputType | null
+    _max: AanvraagMaxAggregateOutputType | null
+  }
+
+  export type AanvraagMinAggregateOutputType = {
+    id: string | null
+    customerId: string | null
+    locatie: string | null
+    straat: string | null
+    huisnummer: string | null
+    postcode: string | null
+    plaats: string | null
+    schermen: string | null
+    beugel: string | null
+    stroom: string | null
+    internet: string | null
+    opmerkingen: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AanvraagMaxAggregateOutputType = {
+    id: string | null
+    customerId: string | null
+    locatie: string | null
+    straat: string | null
+    huisnummer: string | null
+    postcode: string | null
+    plaats: string | null
+    schermen: string | null
+    beugel: string | null
+    stroom: string | null
+    internet: string | null
+    opmerkingen: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AanvraagCountAggregateOutputType = {
+    id: number
+    customerId: number
+    locatie: number
+    straat: number
+    huisnummer: number
+    postcode: number
+    plaats: number
+    schermen: number
+    beugel: number
+    stroom: number
+    internet: number
+    opmerkingen: number
+    bijlagen: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AanvraagMinAggregateInputType = {
+    id?: true
+    customerId?: true
+    locatie?: true
+    straat?: true
+    huisnummer?: true
+    postcode?: true
+    plaats?: true
+    schermen?: true
+    beugel?: true
+    stroom?: true
+    internet?: true
+    opmerkingen?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AanvraagMaxAggregateInputType = {
+    id?: true
+    customerId?: true
+    locatie?: true
+    straat?: true
+    huisnummer?: true
+    postcode?: true
+    plaats?: true
+    schermen?: true
+    beugel?: true
+    stroom?: true
+    internet?: true
+    opmerkingen?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AanvraagCountAggregateInputType = {
+    id?: true
+    customerId?: true
+    locatie?: true
+    straat?: true
+    huisnummer?: true
+    postcode?: true
+    plaats?: true
+    schermen?: true
+    beugel?: true
+    stroom?: true
+    internet?: true
+    opmerkingen?: true
+    bijlagen?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AanvraagAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Aanvraag to aggregate.
+     */
+    where?: AanvraagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Aanvraags to fetch.
+     */
+    orderBy?: AanvraagOrderByWithRelationInput | AanvraagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AanvraagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Aanvraags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Aanvraags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Aanvraags
+    **/
+    _count?: true | AanvraagCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AanvraagMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AanvraagMaxAggregateInputType
+  }
+
+  export type GetAanvraagAggregateType<T extends AanvraagAggregateArgs> = {
+        [P in keyof T & keyof AggregateAanvraag]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAanvraag[P]>
+      : GetScalarType<T[P], AggregateAanvraag[P]>
+  }
+
+
+
+
+  export type AanvraagGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AanvraagWhereInput
+    orderBy?: AanvraagOrderByWithAggregationInput | AanvraagOrderByWithAggregationInput[]
+    by: AanvraagScalarFieldEnum[] | AanvraagScalarFieldEnum
+    having?: AanvraagScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AanvraagCountAggregateInputType | true
+    _min?: AanvraagMinAggregateInputType
+    _max?: AanvraagMaxAggregateInputType
+  }
+
+  export type AanvraagGroupByOutputType = {
+    id: string
+    customerId: string
+    locatie: string | null
+    straat: string | null
+    huisnummer: string | null
+    postcode: string | null
+    plaats: string | null
+    schermen: string | null
+    beugel: string | null
+    stroom: string | null
+    internet: string | null
+    opmerkingen: string | null
+    bijlagen: JsonValue | null
+    status: string
+    createdAt: Date
+    updatedAt: Date
+    _count: AanvraagCountAggregateOutputType | null
+    _min: AanvraagMinAggregateOutputType | null
+    _max: AanvraagMaxAggregateOutputType | null
+  }
+
+  type GetAanvraagGroupByPayload<T extends AanvraagGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AanvraagGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AanvraagGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AanvraagGroupByOutputType[P]>
+            : GetScalarType<T[P], AanvraagGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AanvraagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    customerId?: boolean
+    locatie?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
+    plaats?: boolean
+    schermen?: boolean
+    beugel?: boolean
+    stroom?: boolean
+    internet?: boolean
+    opmerkingen?: boolean
+    bijlagen?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aanvraag"]>
+
+  export type AanvraagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    customerId?: boolean
+    locatie?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
+    plaats?: boolean
+    schermen?: boolean
+    beugel?: boolean
+    stroom?: boolean
+    internet?: boolean
+    opmerkingen?: boolean
+    bijlagen?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aanvraag"]>
+
+  export type AanvraagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    customerId?: boolean
+    locatie?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
+    plaats?: boolean
+    schermen?: boolean
+    beugel?: boolean
+    stroom?: boolean
+    internet?: boolean
+    opmerkingen?: boolean
+    bijlagen?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aanvraag"]>
+
+  export type AanvraagSelectScalar = {
+    id?: boolean
+    customerId?: boolean
+    locatie?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
+    plaats?: boolean
+    schermen?: boolean
+    beugel?: boolean
+    stroom?: boolean
+    internet?: boolean
+    opmerkingen?: boolean
+    bijlagen?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AanvraagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "customerId" | "locatie" | "straat" | "huisnummer" | "postcode" | "plaats" | "schermen" | "beugel" | "stroom" | "internet" | "opmerkingen" | "bijlagen" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["aanvraag"]>
+  export type AanvraagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }
+  export type AanvraagIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }
+  export type AanvraagIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+  }
+
+  export type $AanvraagPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Aanvraag"
+    objects: {
+      customer: Prisma.$CustomerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      customerId: string
+      locatie: string | null
+      straat: string | null
+      huisnummer: string | null
+      postcode: string | null
+      plaats: string | null
+      schermen: string | null
+      beugel: string | null
+      stroom: string | null
+      internet: string | null
+      opmerkingen: string | null
+      bijlagen: Prisma.JsonValue | null
+      status: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["aanvraag"]>
+    composites: {}
+  }
+
+  type AanvraagGetPayload<S extends boolean | null | undefined | AanvraagDefaultArgs> = $Result.GetResult<Prisma.$AanvraagPayload, S>
+
+  type AanvraagCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AanvraagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AanvraagCountAggregateInputType | true
+    }
+
+  export interface AanvraagDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Aanvraag'], meta: { name: 'Aanvraag' } }
+    /**
+     * Find zero or one Aanvraag that matches the filter.
+     * @param {AanvraagFindUniqueArgs} args - Arguments to find a Aanvraag
+     * @example
+     * // Get one Aanvraag
+     * const aanvraag = await prisma.aanvraag.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AanvraagFindUniqueArgs>(args: SelectSubset<T, AanvraagFindUniqueArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Aanvraag that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AanvraagFindUniqueOrThrowArgs} args - Arguments to find a Aanvraag
+     * @example
+     * // Get one Aanvraag
+     * const aanvraag = await prisma.aanvraag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AanvraagFindUniqueOrThrowArgs>(args: SelectSubset<T, AanvraagFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Aanvraag that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AanvraagFindFirstArgs} args - Arguments to find a Aanvraag
+     * @example
+     * // Get one Aanvraag
+     * const aanvraag = await prisma.aanvraag.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AanvraagFindFirstArgs>(args?: SelectSubset<T, AanvraagFindFirstArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Aanvraag that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AanvraagFindFirstOrThrowArgs} args - Arguments to find a Aanvraag
+     * @example
+     * // Get one Aanvraag
+     * const aanvraag = await prisma.aanvraag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AanvraagFindFirstOrThrowArgs>(args?: SelectSubset<T, AanvraagFindFirstOrThrowArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Aanvraags that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AanvraagFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Aanvraags
+     * const aanvraags = await prisma.aanvraag.findMany()
+     * 
+     * // Get first 10 Aanvraags
+     * const aanvraags = await prisma.aanvraag.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aanvraagWithIdOnly = await prisma.aanvraag.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AanvraagFindManyArgs>(args?: SelectSubset<T, AanvraagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Aanvraag.
+     * @param {AanvraagCreateArgs} args - Arguments to create a Aanvraag.
+     * @example
+     * // Create one Aanvraag
+     * const Aanvraag = await prisma.aanvraag.create({
+     *   data: {
+     *     // ... data to create a Aanvraag
+     *   }
+     * })
+     * 
+     */
+    create<T extends AanvraagCreateArgs>(args: SelectSubset<T, AanvraagCreateArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Aanvraags.
+     * @param {AanvraagCreateManyArgs} args - Arguments to create many Aanvraags.
+     * @example
+     * // Create many Aanvraags
+     * const aanvraag = await prisma.aanvraag.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AanvraagCreateManyArgs>(args?: SelectSubset<T, AanvraagCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Aanvraags and returns the data saved in the database.
+     * @param {AanvraagCreateManyAndReturnArgs} args - Arguments to create many Aanvraags.
+     * @example
+     * // Create many Aanvraags
+     * const aanvraag = await prisma.aanvraag.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Aanvraags and only return the `id`
+     * const aanvraagWithIdOnly = await prisma.aanvraag.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AanvraagCreateManyAndReturnArgs>(args?: SelectSubset<T, AanvraagCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Aanvraag.
+     * @param {AanvraagDeleteArgs} args - Arguments to delete one Aanvraag.
+     * @example
+     * // Delete one Aanvraag
+     * const Aanvraag = await prisma.aanvraag.delete({
+     *   where: {
+     *     // ... filter to delete one Aanvraag
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AanvraagDeleteArgs>(args: SelectSubset<T, AanvraagDeleteArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Aanvraag.
+     * @param {AanvraagUpdateArgs} args - Arguments to update one Aanvraag.
+     * @example
+     * // Update one Aanvraag
+     * const aanvraag = await prisma.aanvraag.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AanvraagUpdateArgs>(args: SelectSubset<T, AanvraagUpdateArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Aanvraags.
+     * @param {AanvraagDeleteManyArgs} args - Arguments to filter Aanvraags to delete.
+     * @example
+     * // Delete a few Aanvraags
+     * const { count } = await prisma.aanvraag.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AanvraagDeleteManyArgs>(args?: SelectSubset<T, AanvraagDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Aanvraags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AanvraagUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Aanvraags
+     * const aanvraag = await prisma.aanvraag.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AanvraagUpdateManyArgs>(args: SelectSubset<T, AanvraagUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Aanvraags and returns the data updated in the database.
+     * @param {AanvraagUpdateManyAndReturnArgs} args - Arguments to update many Aanvraags.
+     * @example
+     * // Update many Aanvraags
+     * const aanvraag = await prisma.aanvraag.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Aanvraags and only return the `id`
+     * const aanvraagWithIdOnly = await prisma.aanvraag.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AanvraagUpdateManyAndReturnArgs>(args: SelectSubset<T, AanvraagUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Aanvraag.
+     * @param {AanvraagUpsertArgs} args - Arguments to update or create a Aanvraag.
+     * @example
+     * // Update or create a Aanvraag
+     * const aanvraag = await prisma.aanvraag.upsert({
+     *   create: {
+     *     // ... data to create a Aanvraag
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Aanvraag we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AanvraagUpsertArgs>(args: SelectSubset<T, AanvraagUpsertArgs<ExtArgs>>): Prisma__AanvraagClient<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Aanvraags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AanvraagCountArgs} args - Arguments to filter Aanvraags to count.
+     * @example
+     * // Count the number of Aanvraags
+     * const count = await prisma.aanvraag.count({
+     *   where: {
+     *     // ... the filter for the Aanvraags we want to count
+     *   }
+     * })
+    **/
+    count<T extends AanvraagCountArgs>(
+      args?: Subset<T, AanvraagCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AanvraagCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Aanvraag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AanvraagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AanvraagAggregateArgs>(args: Subset<T, AanvraagAggregateArgs>): Prisma.PrismaPromise<GetAanvraagAggregateType<T>>
+
+    /**
+     * Group by Aanvraag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AanvraagGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AanvraagGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AanvraagGroupByArgs['orderBy'] }
+        : { orderBy?: AanvraagGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AanvraagGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAanvraagGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Aanvraag model
+   */
+  readonly fields: AanvraagFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Aanvraag.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AanvraagClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Aanvraag model
+   */
+  interface AanvraagFieldRefs {
+    readonly id: FieldRef<"Aanvraag", 'String'>
+    readonly customerId: FieldRef<"Aanvraag", 'String'>
+    readonly locatie: FieldRef<"Aanvraag", 'String'>
+    readonly straat: FieldRef<"Aanvraag", 'String'>
+    readonly huisnummer: FieldRef<"Aanvraag", 'String'>
+    readonly postcode: FieldRef<"Aanvraag", 'String'>
+    readonly plaats: FieldRef<"Aanvraag", 'String'>
+    readonly schermen: FieldRef<"Aanvraag", 'String'>
+    readonly beugel: FieldRef<"Aanvraag", 'String'>
+    readonly stroom: FieldRef<"Aanvraag", 'String'>
+    readonly internet: FieldRef<"Aanvraag", 'String'>
+    readonly opmerkingen: FieldRef<"Aanvraag", 'String'>
+    readonly bijlagen: FieldRef<"Aanvraag", 'Json'>
+    readonly status: FieldRef<"Aanvraag", 'String'>
+    readonly createdAt: FieldRef<"Aanvraag", 'DateTime'>
+    readonly updatedAt: FieldRef<"Aanvraag", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Aanvraag findUnique
+   */
+  export type AanvraagFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * Filter, which Aanvraag to fetch.
+     */
+    where: AanvraagWhereUniqueInput
+  }
+
+  /**
+   * Aanvraag findUniqueOrThrow
+   */
+  export type AanvraagFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * Filter, which Aanvraag to fetch.
+     */
+    where: AanvraagWhereUniqueInput
+  }
+
+  /**
+   * Aanvraag findFirst
+   */
+  export type AanvraagFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * Filter, which Aanvraag to fetch.
+     */
+    where?: AanvraagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Aanvraags to fetch.
+     */
+    orderBy?: AanvraagOrderByWithRelationInput | AanvraagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Aanvraags.
+     */
+    cursor?: AanvraagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Aanvraags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Aanvraags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Aanvraags.
+     */
+    distinct?: AanvraagScalarFieldEnum | AanvraagScalarFieldEnum[]
+  }
+
+  /**
+   * Aanvraag findFirstOrThrow
+   */
+  export type AanvraagFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * Filter, which Aanvraag to fetch.
+     */
+    where?: AanvraagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Aanvraags to fetch.
+     */
+    orderBy?: AanvraagOrderByWithRelationInput | AanvraagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Aanvraags.
+     */
+    cursor?: AanvraagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Aanvraags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Aanvraags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Aanvraags.
+     */
+    distinct?: AanvraagScalarFieldEnum | AanvraagScalarFieldEnum[]
+  }
+
+  /**
+   * Aanvraag findMany
+   */
+  export type AanvraagFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * Filter, which Aanvraags to fetch.
+     */
+    where?: AanvraagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Aanvraags to fetch.
+     */
+    orderBy?: AanvraagOrderByWithRelationInput | AanvraagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Aanvraags.
+     */
+    cursor?: AanvraagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Aanvraags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Aanvraags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Aanvraags.
+     */
+    distinct?: AanvraagScalarFieldEnum | AanvraagScalarFieldEnum[]
+  }
+
+  /**
+   * Aanvraag create
+   */
+  export type AanvraagCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Aanvraag.
+     */
+    data: XOR<AanvraagCreateInput, AanvraagUncheckedCreateInput>
+  }
+
+  /**
+   * Aanvraag createMany
+   */
+  export type AanvraagCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Aanvraags.
+     */
+    data: AanvraagCreateManyInput | AanvraagCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Aanvraag createManyAndReturn
+   */
+  export type AanvraagCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * The data used to create many Aanvraags.
+     */
+    data: AanvraagCreateManyInput | AanvraagCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Aanvraag update
+   */
+  export type AanvraagUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Aanvraag.
+     */
+    data: XOR<AanvraagUpdateInput, AanvraagUncheckedUpdateInput>
+    /**
+     * Choose, which Aanvraag to update.
+     */
+    where: AanvraagWhereUniqueInput
+  }
+
+  /**
+   * Aanvraag updateMany
+   */
+  export type AanvraagUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Aanvraags.
+     */
+    data: XOR<AanvraagUpdateManyMutationInput, AanvraagUncheckedUpdateManyInput>
+    /**
+     * Filter which Aanvraags to update
+     */
+    where?: AanvraagWhereInput
+    /**
+     * Limit how many Aanvraags to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Aanvraag updateManyAndReturn
+   */
+  export type AanvraagUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * The data used to update Aanvraags.
+     */
+    data: XOR<AanvraagUpdateManyMutationInput, AanvraagUncheckedUpdateManyInput>
+    /**
+     * Filter which Aanvraags to update
+     */
+    where?: AanvraagWhereInput
+    /**
+     * Limit how many Aanvraags to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Aanvraag upsert
+   */
+  export type AanvraagUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Aanvraag to update in case it exists.
+     */
+    where: AanvraagWhereUniqueInput
+    /**
+     * In case the Aanvraag found by the `where` argument doesn't exist, create a new Aanvraag with this data.
+     */
+    create: XOR<AanvraagCreateInput, AanvraagUncheckedCreateInput>
+    /**
+     * In case the Aanvraag was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AanvraagUpdateInput, AanvraagUncheckedUpdateInput>
+  }
+
+  /**
+   * Aanvraag delete
+   */
+  export type AanvraagDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
+    /**
+     * Filter which Aanvraag to delete.
+     */
+    where: AanvraagWhereUniqueInput
+  }
+
+  /**
+   * Aanvraag deleteMany
+   */
+  export type AanvraagDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Aanvraags to delete
+     */
+    where?: AanvraagWhereInput
+    /**
+     * Limit how many Aanvraags to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Aanvraag without action
+   */
+  export type AanvraagDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Aanvraag
+     */
+    select?: AanvraagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Aanvraag
+     */
+    omit?: AanvraagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AanvraagInclude<ExtArgs> | null
   }
 
 
@@ -6245,8 +7688,18 @@ export namespace Prisma {
 
   export type AggregateWorkorder = {
     _count: WorkorderCountAggregateOutputType | null
+    _avg: WorkorderAvgAggregateOutputType | null
+    _sum: WorkorderSumAggregateOutputType | null
     _min: WorkorderMinAggregateOutputType | null
     _max: WorkorderMaxAggregateOutputType | null
+  }
+
+  export type WorkorderAvgAggregateOutputType = {
+    plannedHours: number | null
+  }
+
+  export type WorkorderSumAggregateOutputType = {
+    plannedHours: number | null
   }
 
   export type WorkorderMinAggregateOutputType = {
@@ -6257,15 +7710,20 @@ export namespace Prisma {
     customerId: string | null
     location: string | null
     city: string | null
+    contactPersoon: string | null
+    contactEmail: string | null
+    contactPhone: string | null
     createdAt: Date | null
     updatedAt: Date | null
     description: string | null
+    werkInstructie: string | null
     workDate: Date | null
     internalNotes: string | null
     number: string | null
     assignedUserId: string | null
     plannedDate: Date | null
     plannedEndDate: Date | null
+    plannedHours: number | null
     assignmentId: string | null
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
@@ -6280,15 +7738,20 @@ export namespace Prisma {
     customerId: string | null
     location: string | null
     city: string | null
+    contactPersoon: string | null
+    contactEmail: string | null
+    contactPhone: string | null
     createdAt: Date | null
     updatedAt: Date | null
     description: string | null
+    werkInstructie: string | null
     workDate: Date | null
     internalNotes: string | null
     number: string | null
     assignedUserId: string | null
     plannedDate: Date | null
     plannedEndDate: Date | null
+    plannedHours: number | null
     assignmentId: string | null
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
@@ -6303,15 +7766,20 @@ export namespace Prisma {
     customerId: number
     location: number
     city: number
+    contactPersoon: number
+    contactEmail: number
+    contactPhone: number
     createdAt: number
     updatedAt: number
     description: number
+    werkInstructie: number
     workDate: number
     internalNotes: number
     number: number
     assignedUserId: number
     plannedDate: number
     plannedEndDate: number
+    plannedHours: number
     assignmentId: number
     formData: number
     pdfData: number
@@ -6321,6 +7789,14 @@ export namespace Prisma {
   }
 
 
+  export type WorkorderAvgAggregateInputType = {
+    plannedHours?: true
+  }
+
+  export type WorkorderSumAggregateInputType = {
+    plannedHours?: true
+  }
+
   export type WorkorderMinAggregateInputType = {
     id?: true
     title?: true
@@ -6329,15 +7805,20 @@ export namespace Prisma {
     customerId?: true
     location?: true
     city?: true
+    contactPersoon?: true
+    contactEmail?: true
+    contactPhone?: true
     createdAt?: true
     updatedAt?: true
     description?: true
+    werkInstructie?: true
     workDate?: true
     internalNotes?: true
     number?: true
     assignedUserId?: true
     plannedDate?: true
     plannedEndDate?: true
+    plannedHours?: true
     assignmentId?: true
     pdfData?: true
     pdfGeneratedAt?: true
@@ -6352,15 +7833,20 @@ export namespace Prisma {
     customerId?: true
     location?: true
     city?: true
+    contactPersoon?: true
+    contactEmail?: true
+    contactPhone?: true
     createdAt?: true
     updatedAt?: true
     description?: true
+    werkInstructie?: true
     workDate?: true
     internalNotes?: true
     number?: true
     assignedUserId?: true
     plannedDate?: true
     plannedEndDate?: true
+    plannedHours?: true
     assignmentId?: true
     pdfData?: true
     pdfGeneratedAt?: true
@@ -6375,15 +7861,20 @@ export namespace Prisma {
     customerId?: true
     location?: true
     city?: true
+    contactPersoon?: true
+    contactEmail?: true
+    contactPhone?: true
     createdAt?: true
     updatedAt?: true
     description?: true
+    werkInstructie?: true
     workDate?: true
     internalNotes?: true
     number?: true
     assignedUserId?: true
     plannedDate?: true
     plannedEndDate?: true
+    plannedHours?: true
     assignmentId?: true
     formData?: true
     pdfData?: true
@@ -6430,6 +7921,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: WorkorderAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkorderSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: WorkorderMinAggregateInputType
@@ -6460,6 +7963,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: WorkorderCountAggregateInputType | true
+    _avg?: WorkorderAvgAggregateInputType
+    _sum?: WorkorderSumAggregateInputType
     _min?: WorkorderMinAggregateInputType
     _max?: WorkorderMaxAggregateInputType
   }
@@ -6472,21 +7977,28 @@ export namespace Prisma {
     customerId: string | null
     location: string | null
     city: string | null
+    contactPersoon: string | null
+    contactEmail: string | null
+    contactPhone: string | null
     createdAt: Date
     updatedAt: Date
     description: string | null
+    werkInstructie: string | null
     workDate: Date | null
     internalNotes: string | null
     number: string
     assignedUserId: string | null
     plannedDate: Date | null
     plannedEndDate: Date | null
+    plannedHours: number | null
     assignmentId: string | null
     formData: JsonValue | null
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
     sentAt: Date | null
     _count: WorkorderCountAggregateOutputType | null
+    _avg: WorkorderAvgAggregateOutputType | null
+    _sum: WorkorderSumAggregateOutputType | null
     _min: WorkorderMinAggregateOutputType | null
     _max: WorkorderMaxAggregateOutputType | null
   }
@@ -6513,15 +8025,20 @@ export namespace Prisma {
     customerId?: boolean
     location?: boolean
     city?: boolean
+    contactPersoon?: boolean
+    contactEmail?: boolean
+    contactPhone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     description?: boolean
+    werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
+    plannedHours?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -6536,6 +8053,7 @@ export namespace Prisma {
     hours?: boolean | Workorder$hoursArgs<ExtArgs>
     materials?: boolean | Workorder$materialsArgs<ExtArgs>
     photos?: boolean | Workorder$photosArgs<ExtArgs>
+    attachments?: boolean | Workorder$attachmentsArgs<ExtArgs>
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
     extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
     forms?: boolean | Workorder$formsArgs<ExtArgs>
@@ -6550,15 +8068,20 @@ export namespace Prisma {
     customerId?: boolean
     location?: boolean
     city?: boolean
+    contactPersoon?: boolean
+    contactEmail?: boolean
+    contactPhone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     description?: boolean
+    werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
+    plannedHours?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -6578,15 +8101,20 @@ export namespace Prisma {
     customerId?: boolean
     location?: boolean
     city?: boolean
+    contactPersoon?: boolean
+    contactEmail?: boolean
+    contactPhone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     description?: boolean
+    werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
+    plannedHours?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -6606,15 +8134,20 @@ export namespace Prisma {
     customerId?: boolean
     location?: boolean
     city?: boolean
+    contactPersoon?: boolean
+    contactEmail?: boolean
+    contactPhone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     description?: boolean
+    werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
+    plannedHours?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -6622,7 +8155,7 @@ export namespace Prisma {
     sentAt?: boolean
   }
 
-  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "city" | "createdAt" | "updatedAt" | "description" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "assignmentId" | "formData" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
+  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "assignmentId" | "formData" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
   export type WorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -6633,6 +8166,7 @@ export namespace Prisma {
     hours?: boolean | Workorder$hoursArgs<ExtArgs>
     materials?: boolean | Workorder$materialsArgs<ExtArgs>
     photos?: boolean | Workorder$photosArgs<ExtArgs>
+    attachments?: boolean | Workorder$attachmentsArgs<ExtArgs>
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
     extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
     forms?: boolean | Workorder$formsArgs<ExtArgs>
@@ -6663,6 +8197,7 @@ export namespace Prisma {
       hours: Prisma.$WorkorderHourPayload<ExtArgs>[]
       materials: Prisma.$WorkorderMaterialPayload<ExtArgs>[]
       photos: Prisma.$WorkorderPhotoPayload<ExtArgs>[]
+      attachments: Prisma.$WorkorderAttachmentPayload<ExtArgs>[]
       signature: Prisma.$WorkorderSignaturePayload<ExtArgs> | null
       extraEngineers: Prisma.$WorkorderEngineerPayload<ExtArgs>[]
       forms: Prisma.$WorkorderFormPayload<ExtArgs>[]
@@ -6675,15 +8210,20 @@ export namespace Prisma {
       customerId: string | null
       location: string | null
       city: string | null
+      contactPersoon: string | null
+      contactEmail: string | null
+      contactPhone: string | null
       createdAt: Date
       updatedAt: Date
       description: string | null
+      werkInstructie: string | null
       workDate: Date | null
       internalNotes: string | null
       number: string
       assignedUserId: string | null
       plannedDate: Date | null
       plannedEndDate: Date | null
+      plannedHours: number | null
       assignmentId: string | null
       formData: Prisma.JsonValue | null
       pdfData: Prisma.Bytes | null
@@ -7092,6 +8632,7 @@ export namespace Prisma {
     hours<T extends Workorder$hoursArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$hoursArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderHourPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     materials<T extends Workorder$materialsArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     photos<T extends Workorder$photosArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$photosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    attachments<T extends Workorder$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     signature<T extends Workorder$signatureArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$signatureArgs<ExtArgs>>): Prisma__WorkorderSignatureClient<$Result.GetResult<Prisma.$WorkorderSignaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     extraEngineers<T extends Workorder$extraEngineersArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$extraEngineersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     forms<T extends Workorder$formsArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$formsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7131,15 +8672,20 @@ export namespace Prisma {
     readonly customerId: FieldRef<"Workorder", 'String'>
     readonly location: FieldRef<"Workorder", 'String'>
     readonly city: FieldRef<"Workorder", 'String'>
+    readonly contactPersoon: FieldRef<"Workorder", 'String'>
+    readonly contactEmail: FieldRef<"Workorder", 'String'>
+    readonly contactPhone: FieldRef<"Workorder", 'String'>
     readonly createdAt: FieldRef<"Workorder", 'DateTime'>
     readonly updatedAt: FieldRef<"Workorder", 'DateTime'>
     readonly description: FieldRef<"Workorder", 'String'>
+    readonly werkInstructie: FieldRef<"Workorder", 'String'>
     readonly workDate: FieldRef<"Workorder", 'DateTime'>
     readonly internalNotes: FieldRef<"Workorder", 'String'>
     readonly number: FieldRef<"Workorder", 'String'>
     readonly assignedUserId: FieldRef<"Workorder", 'String'>
     readonly plannedDate: FieldRef<"Workorder", 'DateTime'>
     readonly plannedEndDate: FieldRef<"Workorder", 'DateTime'>
+    readonly plannedHours: FieldRef<"Workorder", 'Float'>
     readonly assignmentId: FieldRef<"Workorder", 'String'>
     readonly formData: FieldRef<"Workorder", 'Json'>
     readonly pdfData: FieldRef<"Workorder", 'Bytes'>
@@ -7739,6 +9285,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WorkorderPhotoScalarFieldEnum | WorkorderPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * Workorder.attachments
+   */
+  export type Workorder$attachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    where?: WorkorderAttachmentWhereInput
+    orderBy?: WorkorderAttachmentOrderByWithRelationInput | WorkorderAttachmentOrderByWithRelationInput[]
+    cursor?: WorkorderAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkorderAttachmentScalarFieldEnum | WorkorderAttachmentScalarFieldEnum[]
   }
 
   /**
@@ -12342,6 +13912,1095 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: WorkorderPhotoInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkorderAttachment
+   */
+
+  export type AggregateWorkorderAttachment = {
+    _count: WorkorderAttachmentCountAggregateOutputType | null
+    _min: WorkorderAttachmentMinAggregateOutputType | null
+    _max: WorkorderAttachmentMaxAggregateOutputType | null
+  }
+
+  export type WorkorderAttachmentMinAggregateOutputType = {
+    id: string | null
+    workorderId: string | null
+    url: string | null
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    createdAt: Date | null
+  }
+
+  export type WorkorderAttachmentMaxAggregateOutputType = {
+    id: string | null
+    workorderId: string | null
+    url: string | null
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    createdAt: Date | null
+  }
+
+  export type WorkorderAttachmentCountAggregateOutputType = {
+    id: number
+    workorderId: number
+    url: number
+    filename: number
+    originalName: number
+    contentType: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WorkorderAttachmentMinAggregateInputType = {
+    id?: true
+    workorderId?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    createdAt?: true
+  }
+
+  export type WorkorderAttachmentMaxAggregateInputType = {
+    id?: true
+    workorderId?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    createdAt?: true
+  }
+
+  export type WorkorderAttachmentCountAggregateInputType = {
+    id?: true
+    workorderId?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WorkorderAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkorderAttachment to aggregate.
+     */
+    where?: WorkorderAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderAttachments to fetch.
+     */
+    orderBy?: WorkorderAttachmentOrderByWithRelationInput | WorkorderAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkorderAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkorderAttachments
+    **/
+    _count?: true | WorkorderAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkorderAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkorderAttachmentMaxAggregateInputType
+  }
+
+  export type GetWorkorderAttachmentAggregateType<T extends WorkorderAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkorderAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkorderAttachment[P]>
+      : GetScalarType<T[P], AggregateWorkorderAttachment[P]>
+  }
+
+
+
+
+  export type WorkorderAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkorderAttachmentWhereInput
+    orderBy?: WorkorderAttachmentOrderByWithAggregationInput | WorkorderAttachmentOrderByWithAggregationInput[]
+    by: WorkorderAttachmentScalarFieldEnum[] | WorkorderAttachmentScalarFieldEnum
+    having?: WorkorderAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkorderAttachmentCountAggregateInputType | true
+    _min?: WorkorderAttachmentMinAggregateInputType
+    _max?: WorkorderAttachmentMaxAggregateInputType
+  }
+
+  export type WorkorderAttachmentGroupByOutputType = {
+    id: string
+    workorderId: string
+    url: string
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    createdAt: Date
+    _count: WorkorderAttachmentCountAggregateOutputType | null
+    _min: WorkorderAttachmentMinAggregateOutputType | null
+    _max: WorkorderAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetWorkorderAttachmentGroupByPayload<T extends WorkorderAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkorderAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkorderAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkorderAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkorderAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkorderAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderAttachment"]>
+
+  export type WorkorderAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderAttachment"]>
+
+  export type WorkorderAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workorderId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workorderAttachment"]>
+
+  export type WorkorderAttachmentSelectScalar = {
+    id?: boolean
+    workorderId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+  }
+
+  export type WorkorderAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workorderId" | "url" | "filename" | "originalName" | "contentType" | "createdAt", ExtArgs["result"]["workorderAttachment"]>
+  export type WorkorderAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }
+  export type WorkorderAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }
+  export type WorkorderAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkorderAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkorderAttachment"
+    objects: {
+      workorder: Prisma.$WorkorderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      workorderId: string
+      url: string
+      filename: string | null
+      originalName: string | null
+      contentType: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["workorderAttachment"]>
+    composites: {}
+  }
+
+  type WorkorderAttachmentGetPayload<S extends boolean | null | undefined | WorkorderAttachmentDefaultArgs> = $Result.GetResult<Prisma.$WorkorderAttachmentPayload, S>
+
+  type WorkorderAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkorderAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkorderAttachmentCountAggregateInputType | true
+    }
+
+  export interface WorkorderAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkorderAttachment'], meta: { name: 'WorkorderAttachment' } }
+    /**
+     * Find zero or one WorkorderAttachment that matches the filter.
+     * @param {WorkorderAttachmentFindUniqueArgs} args - Arguments to find a WorkorderAttachment
+     * @example
+     * // Get one WorkorderAttachment
+     * const workorderAttachment = await prisma.workorderAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkorderAttachmentFindUniqueArgs>(args: SelectSubset<T, WorkorderAttachmentFindUniqueArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkorderAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkorderAttachmentFindUniqueOrThrowArgs} args - Arguments to find a WorkorderAttachment
+     * @example
+     * // Get one WorkorderAttachment
+     * const workorderAttachment = await prisma.workorderAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkorderAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkorderAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkorderAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderAttachmentFindFirstArgs} args - Arguments to find a WorkorderAttachment
+     * @example
+     * // Get one WorkorderAttachment
+     * const workorderAttachment = await prisma.workorderAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkorderAttachmentFindFirstArgs>(args?: SelectSubset<T, WorkorderAttachmentFindFirstArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkorderAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderAttachmentFindFirstOrThrowArgs} args - Arguments to find a WorkorderAttachment
+     * @example
+     * // Get one WorkorderAttachment
+     * const workorderAttachment = await prisma.workorderAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkorderAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkorderAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkorderAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkorderAttachments
+     * const workorderAttachments = await prisma.workorderAttachment.findMany()
+     * 
+     * // Get first 10 WorkorderAttachments
+     * const workorderAttachments = await prisma.workorderAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workorderAttachmentWithIdOnly = await prisma.workorderAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkorderAttachmentFindManyArgs>(args?: SelectSubset<T, WorkorderAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkorderAttachment.
+     * @param {WorkorderAttachmentCreateArgs} args - Arguments to create a WorkorderAttachment.
+     * @example
+     * // Create one WorkorderAttachment
+     * const WorkorderAttachment = await prisma.workorderAttachment.create({
+     *   data: {
+     *     // ... data to create a WorkorderAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkorderAttachmentCreateArgs>(args: SelectSubset<T, WorkorderAttachmentCreateArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkorderAttachments.
+     * @param {WorkorderAttachmentCreateManyArgs} args - Arguments to create many WorkorderAttachments.
+     * @example
+     * // Create many WorkorderAttachments
+     * const workorderAttachment = await prisma.workorderAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkorderAttachmentCreateManyArgs>(args?: SelectSubset<T, WorkorderAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkorderAttachments and returns the data saved in the database.
+     * @param {WorkorderAttachmentCreateManyAndReturnArgs} args - Arguments to create many WorkorderAttachments.
+     * @example
+     * // Create many WorkorderAttachments
+     * const workorderAttachment = await prisma.workorderAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkorderAttachments and only return the `id`
+     * const workorderAttachmentWithIdOnly = await prisma.workorderAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkorderAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkorderAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkorderAttachment.
+     * @param {WorkorderAttachmentDeleteArgs} args - Arguments to delete one WorkorderAttachment.
+     * @example
+     * // Delete one WorkorderAttachment
+     * const WorkorderAttachment = await prisma.workorderAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one WorkorderAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkorderAttachmentDeleteArgs>(args: SelectSubset<T, WorkorderAttachmentDeleteArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkorderAttachment.
+     * @param {WorkorderAttachmentUpdateArgs} args - Arguments to update one WorkorderAttachment.
+     * @example
+     * // Update one WorkorderAttachment
+     * const workorderAttachment = await prisma.workorderAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkorderAttachmentUpdateArgs>(args: SelectSubset<T, WorkorderAttachmentUpdateArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkorderAttachments.
+     * @param {WorkorderAttachmentDeleteManyArgs} args - Arguments to filter WorkorderAttachments to delete.
+     * @example
+     * // Delete a few WorkorderAttachments
+     * const { count } = await prisma.workorderAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkorderAttachmentDeleteManyArgs>(args?: SelectSubset<T, WorkorderAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkorderAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkorderAttachments
+     * const workorderAttachment = await prisma.workorderAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkorderAttachmentUpdateManyArgs>(args: SelectSubset<T, WorkorderAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkorderAttachments and returns the data updated in the database.
+     * @param {WorkorderAttachmentUpdateManyAndReturnArgs} args - Arguments to update many WorkorderAttachments.
+     * @example
+     * // Update many WorkorderAttachments
+     * const workorderAttachment = await prisma.workorderAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkorderAttachments and only return the `id`
+     * const workorderAttachmentWithIdOnly = await prisma.workorderAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkorderAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkorderAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkorderAttachment.
+     * @param {WorkorderAttachmentUpsertArgs} args - Arguments to update or create a WorkorderAttachment.
+     * @example
+     * // Update or create a WorkorderAttachment
+     * const workorderAttachment = await prisma.workorderAttachment.upsert({
+     *   create: {
+     *     // ... data to create a WorkorderAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkorderAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkorderAttachmentUpsertArgs>(args: SelectSubset<T, WorkorderAttachmentUpsertArgs<ExtArgs>>): Prisma__WorkorderAttachmentClient<$Result.GetResult<Prisma.$WorkorderAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkorderAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderAttachmentCountArgs} args - Arguments to filter WorkorderAttachments to count.
+     * @example
+     * // Count the number of WorkorderAttachments
+     * const count = await prisma.workorderAttachment.count({
+     *   where: {
+     *     // ... the filter for the WorkorderAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkorderAttachmentCountArgs>(
+      args?: Subset<T, WorkorderAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkorderAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkorderAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkorderAttachmentAggregateArgs>(args: Subset<T, WorkorderAttachmentAggregateArgs>): Prisma.PrismaPromise<GetWorkorderAttachmentAggregateType<T>>
+
+    /**
+     * Group by WorkorderAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkorderAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkorderAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkorderAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: WorkorderAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkorderAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkorderAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkorderAttachment model
+   */
+  readonly fields: WorkorderAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkorderAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkorderAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    workorder<T extends WorkorderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkorderDefaultArgs<ExtArgs>>): Prisma__WorkorderClient<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkorderAttachment model
+   */
+  interface WorkorderAttachmentFieldRefs {
+    readonly id: FieldRef<"WorkorderAttachment", 'String'>
+    readonly workorderId: FieldRef<"WorkorderAttachment", 'String'>
+    readonly url: FieldRef<"WorkorderAttachment", 'String'>
+    readonly filename: FieldRef<"WorkorderAttachment", 'String'>
+    readonly originalName: FieldRef<"WorkorderAttachment", 'String'>
+    readonly contentType: FieldRef<"WorkorderAttachment", 'String'>
+    readonly createdAt: FieldRef<"WorkorderAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkorderAttachment findUnique
+   */
+  export type WorkorderAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderAttachment to fetch.
+     */
+    where: WorkorderAttachmentWhereUniqueInput
+  }
+
+  /**
+   * WorkorderAttachment findUniqueOrThrow
+   */
+  export type WorkorderAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderAttachment to fetch.
+     */
+    where: WorkorderAttachmentWhereUniqueInput
+  }
+
+  /**
+   * WorkorderAttachment findFirst
+   */
+  export type WorkorderAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderAttachment to fetch.
+     */
+    where?: WorkorderAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderAttachments to fetch.
+     */
+    orderBy?: WorkorderAttachmentOrderByWithRelationInput | WorkorderAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkorderAttachments.
+     */
+    cursor?: WorkorderAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderAttachments.
+     */
+    distinct?: WorkorderAttachmentScalarFieldEnum | WorkorderAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderAttachment findFirstOrThrow
+   */
+  export type WorkorderAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderAttachment to fetch.
+     */
+    where?: WorkorderAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderAttachments to fetch.
+     */
+    orderBy?: WorkorderAttachmentOrderByWithRelationInput | WorkorderAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkorderAttachments.
+     */
+    cursor?: WorkorderAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderAttachments.
+     */
+    distinct?: WorkorderAttachmentScalarFieldEnum | WorkorderAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderAttachment findMany
+   */
+  export type WorkorderAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkorderAttachments to fetch.
+     */
+    where?: WorkorderAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkorderAttachments to fetch.
+     */
+    orderBy?: WorkorderAttachmentOrderByWithRelationInput | WorkorderAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkorderAttachments.
+     */
+    cursor?: WorkorderAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkorderAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkorderAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkorderAttachments.
+     */
+    distinct?: WorkorderAttachmentScalarFieldEnum | WorkorderAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * WorkorderAttachment create
+   */
+  export type WorkorderAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkorderAttachment.
+     */
+    data: XOR<WorkorderAttachmentCreateInput, WorkorderAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * WorkorderAttachment createMany
+   */
+  export type WorkorderAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkorderAttachments.
+     */
+    data: WorkorderAttachmentCreateManyInput | WorkorderAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkorderAttachment createManyAndReturn
+   */
+  export type WorkorderAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkorderAttachments.
+     */
+    data: WorkorderAttachmentCreateManyInput | WorkorderAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkorderAttachment update
+   */
+  export type WorkorderAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkorderAttachment.
+     */
+    data: XOR<WorkorderAttachmentUpdateInput, WorkorderAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which WorkorderAttachment to update.
+     */
+    where: WorkorderAttachmentWhereUniqueInput
+  }
+
+  /**
+   * WorkorderAttachment updateMany
+   */
+  export type WorkorderAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkorderAttachments.
+     */
+    data: XOR<WorkorderAttachmentUpdateManyMutationInput, WorkorderAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkorderAttachments to update
+     */
+    where?: WorkorderAttachmentWhereInput
+    /**
+     * Limit how many WorkorderAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkorderAttachment updateManyAndReturn
+   */
+  export type WorkorderAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkorderAttachments.
+     */
+    data: XOR<WorkorderAttachmentUpdateManyMutationInput, WorkorderAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkorderAttachments to update
+     */
+    where?: WorkorderAttachmentWhereInput
+    /**
+     * Limit how many WorkorderAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkorderAttachment upsert
+   */
+  export type WorkorderAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkorderAttachment to update in case it exists.
+     */
+    where: WorkorderAttachmentWhereUniqueInput
+    /**
+     * In case the WorkorderAttachment found by the `where` argument doesn't exist, create a new WorkorderAttachment with this data.
+     */
+    create: XOR<WorkorderAttachmentCreateInput, WorkorderAttachmentUncheckedCreateInput>
+    /**
+     * In case the WorkorderAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkorderAttachmentUpdateInput, WorkorderAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkorderAttachment delete
+   */
+  export type WorkorderAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which WorkorderAttachment to delete.
+     */
+    where: WorkorderAttachmentWhereUniqueInput
+  }
+
+  /**
+   * WorkorderAttachment deleteMany
+   */
+  export type WorkorderAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkorderAttachments to delete
+     */
+    where?: WorkorderAttachmentWhereInput
+    /**
+     * Limit how many WorkorderAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkorderAttachment without action
+   */
+  export type WorkorderAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkorderAttachment
+     */
+    select?: WorkorderAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkorderAttachment
+     */
+    omit?: WorkorderAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderAttachmentInclude<ExtArgs> | null
   }
 
 
@@ -23372,10 +26031,33 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     color: 'color',
-    formSchema: 'formSchema'
+    formSchema: 'formSchema',
+    publicToken: 'publicToken'
   };
 
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+  export const AanvraagScalarFieldEnum: {
+    id: 'id',
+    customerId: 'customerId',
+    locatie: 'locatie',
+    straat: 'straat',
+    huisnummer: 'huisnummer',
+    postcode: 'postcode',
+    plaats: 'plaats',
+    schermen: 'schermen',
+    beugel: 'beugel',
+    stroom: 'stroom',
+    internet: 'internet',
+    opmerkingen: 'opmerkingen',
+    bijlagen: 'bijlagen',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AanvraagScalarFieldEnum = (typeof AanvraagScalarFieldEnum)[keyof typeof AanvraagScalarFieldEnum]
 
 
   export const ProjectScalarFieldEnum: {
@@ -23399,15 +26081,20 @@ export namespace Prisma {
     customerId: 'customerId',
     location: 'location',
     city: 'city',
+    contactPersoon: 'contactPersoon',
+    contactEmail: 'contactEmail',
+    contactPhone: 'contactPhone',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     description: 'description',
+    werkInstructie: 'werkInstructie',
     workDate: 'workDate',
     internalNotes: 'internalNotes',
     number: 'number',
     assignedUserId: 'assignedUserId',
     plannedDate: 'plannedDate',
     plannedEndDate: 'plannedEndDate',
+    plannedHours: 'plannedHours',
     assignmentId: 'assignmentId',
     formData: 'formData',
     pdfData: 'pdfData',
@@ -23472,6 +26159,19 @@ export namespace Prisma {
   };
 
   export type WorkorderPhotoScalarFieldEnum = (typeof WorkorderPhotoScalarFieldEnum)[keyof typeof WorkorderPhotoScalarFieldEnum]
+
+
+  export const WorkorderAttachmentScalarFieldEnum: {
+    id: 'id',
+    workorderId: 'workorderId',
+    url: 'url',
+    filename: 'filename',
+    originalName: 'originalName',
+    contentType: 'contentType',
+    createdAt: 'createdAt'
+  };
+
+  export type WorkorderAttachmentScalarFieldEnum = (typeof WorkorderAttachmentScalarFieldEnum)[keyof typeof WorkorderAttachmentScalarFieldEnum]
 
 
   export const WorkorderSignatureScalarFieldEnum: {
@@ -23700,20 +26400,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Bytes'
-   */
-  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
-    
-
-
-  /**
-   * Reference to a field of type 'Bytes[]'
-   */
-  export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -23724,6 +26410,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes'
+   */
+  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes[]'
+   */
+  export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
 
 
@@ -23836,9 +26536,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     color?: StringFilter<"Customer"> | string
     formSchema?: JsonNullableFilter<"Customer">
+    publicToken?: StringNullableFilter<"Customer"> | string | null
     assignments?: AssignmentListRelationFilter
     projects?: ProjectListRelationFilter
     workorders?: WorkorderListRelationFilter
+    aanvragen?: AanvraagListRelationFilter
   }
 
   export type CustomerOrderByWithRelationInput = {
@@ -23851,13 +26553,16 @@ export namespace Prisma {
     updatedAt?: SortOrder
     color?: SortOrder
     formSchema?: SortOrderInput | SortOrder
+    publicToken?: SortOrderInput | SortOrder
     assignments?: AssignmentOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
     workorders?: WorkorderOrderByRelationAggregateInput
+    aanvragen?: AanvraagOrderByRelationAggregateInput
   }
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    publicToken?: string
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
@@ -23872,7 +26577,8 @@ export namespace Prisma {
     assignments?: AssignmentListRelationFilter
     projects?: ProjectListRelationFilter
     workorders?: WorkorderListRelationFilter
-  }, "id">
+    aanvragen?: AanvraagListRelationFilter
+  }, "id" | "publicToken">
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
@@ -23884,6 +26590,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     color?: SortOrder
     formSchema?: SortOrderInput | SortOrder
+    publicToken?: SortOrderInput | SortOrder
     _count?: CustomerCountOrderByAggregateInput
     _max?: CustomerMaxOrderByAggregateInput
     _min?: CustomerMinOrderByAggregateInput
@@ -23902,6 +26609,117 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
     color?: StringWithAggregatesFilter<"Customer"> | string
     formSchema?: JsonNullableWithAggregatesFilter<"Customer">
+    publicToken?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+  }
+
+  export type AanvraagWhereInput = {
+    AND?: AanvraagWhereInput | AanvraagWhereInput[]
+    OR?: AanvraagWhereInput[]
+    NOT?: AanvraagWhereInput | AanvraagWhereInput[]
+    id?: StringFilter<"Aanvraag"> | string
+    customerId?: StringFilter<"Aanvraag"> | string
+    locatie?: StringNullableFilter<"Aanvraag"> | string | null
+    straat?: StringNullableFilter<"Aanvraag"> | string | null
+    huisnummer?: StringNullableFilter<"Aanvraag"> | string | null
+    postcode?: StringNullableFilter<"Aanvraag"> | string | null
+    plaats?: StringNullableFilter<"Aanvraag"> | string | null
+    schermen?: StringNullableFilter<"Aanvraag"> | string | null
+    beugel?: StringNullableFilter<"Aanvraag"> | string | null
+    stroom?: StringNullableFilter<"Aanvraag"> | string | null
+    internet?: StringNullableFilter<"Aanvraag"> | string | null
+    opmerkingen?: StringNullableFilter<"Aanvraag"> | string | null
+    bijlagen?: JsonNullableFilter<"Aanvraag">
+    status?: StringFilter<"Aanvraag"> | string
+    createdAt?: DateTimeFilter<"Aanvraag"> | Date | string
+    updatedAt?: DateTimeFilter<"Aanvraag"> | Date | string
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+  }
+
+  export type AanvraagOrderByWithRelationInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    locatie?: SortOrderInput | SortOrder
+    straat?: SortOrderInput | SortOrder
+    huisnummer?: SortOrderInput | SortOrder
+    postcode?: SortOrderInput | SortOrder
+    plaats?: SortOrderInput | SortOrder
+    schermen?: SortOrderInput | SortOrder
+    beugel?: SortOrderInput | SortOrder
+    stroom?: SortOrderInput | SortOrder
+    internet?: SortOrderInput | SortOrder
+    opmerkingen?: SortOrderInput | SortOrder
+    bijlagen?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    customer?: CustomerOrderByWithRelationInput
+  }
+
+  export type AanvraagWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AanvraagWhereInput | AanvraagWhereInput[]
+    OR?: AanvraagWhereInput[]
+    NOT?: AanvraagWhereInput | AanvraagWhereInput[]
+    customerId?: StringFilter<"Aanvraag"> | string
+    locatie?: StringNullableFilter<"Aanvraag"> | string | null
+    straat?: StringNullableFilter<"Aanvraag"> | string | null
+    huisnummer?: StringNullableFilter<"Aanvraag"> | string | null
+    postcode?: StringNullableFilter<"Aanvraag"> | string | null
+    plaats?: StringNullableFilter<"Aanvraag"> | string | null
+    schermen?: StringNullableFilter<"Aanvraag"> | string | null
+    beugel?: StringNullableFilter<"Aanvraag"> | string | null
+    stroom?: StringNullableFilter<"Aanvraag"> | string | null
+    internet?: StringNullableFilter<"Aanvraag"> | string | null
+    opmerkingen?: StringNullableFilter<"Aanvraag"> | string | null
+    bijlagen?: JsonNullableFilter<"Aanvraag">
+    status?: StringFilter<"Aanvraag"> | string
+    createdAt?: DateTimeFilter<"Aanvraag"> | Date | string
+    updatedAt?: DateTimeFilter<"Aanvraag"> | Date | string
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+  }, "id">
+
+  export type AanvraagOrderByWithAggregationInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    locatie?: SortOrderInput | SortOrder
+    straat?: SortOrderInput | SortOrder
+    huisnummer?: SortOrderInput | SortOrder
+    postcode?: SortOrderInput | SortOrder
+    plaats?: SortOrderInput | SortOrder
+    schermen?: SortOrderInput | SortOrder
+    beugel?: SortOrderInput | SortOrder
+    stroom?: SortOrderInput | SortOrder
+    internet?: SortOrderInput | SortOrder
+    opmerkingen?: SortOrderInput | SortOrder
+    bijlagen?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AanvraagCountOrderByAggregateInput
+    _max?: AanvraagMaxOrderByAggregateInput
+    _min?: AanvraagMinOrderByAggregateInput
+  }
+
+  export type AanvraagScalarWhereWithAggregatesInput = {
+    AND?: AanvraagScalarWhereWithAggregatesInput | AanvraagScalarWhereWithAggregatesInput[]
+    OR?: AanvraagScalarWhereWithAggregatesInput[]
+    NOT?: AanvraagScalarWhereWithAggregatesInput | AanvraagScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Aanvraag"> | string
+    customerId?: StringWithAggregatesFilter<"Aanvraag"> | string
+    locatie?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    straat?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    huisnummer?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    postcode?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    plaats?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    schermen?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    beugel?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    stroom?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    internet?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    opmerkingen?: StringNullableWithAggregatesFilter<"Aanvraag"> | string | null
+    bijlagen?: JsonNullableWithAggregatesFilter<"Aanvraag">
+    status?: StringWithAggregatesFilter<"Aanvraag"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Aanvraag"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Aanvraag"> | Date | string
   }
 
   export type ProjectWhereInput = {
@@ -23983,15 +26801,20 @@ export namespace Prisma {
     customerId?: StringNullableFilter<"Workorder"> | string | null
     location?: StringNullableFilter<"Workorder"> | string | null
     city?: StringNullableFilter<"Workorder"> | string | null
+    contactPersoon?: StringNullableFilter<"Workorder"> | string | null
+    contactEmail?: StringNullableFilter<"Workorder"> | string | null
+    contactPhone?: StringNullableFilter<"Workorder"> | string | null
     createdAt?: DateTimeFilter<"Workorder"> | Date | string
     updatedAt?: DateTimeFilter<"Workorder"> | Date | string
     description?: StringNullableFilter<"Workorder"> | string | null
+    werkInstructie?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
     number?: StringFilter<"Workorder"> | string
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    plannedHours?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
@@ -24006,6 +26829,7 @@ export namespace Prisma {
     hours?: WorkorderHourListRelationFilter
     materials?: WorkorderMaterialListRelationFilter
     photos?: WorkorderPhotoListRelationFilter
+    attachments?: WorkorderAttachmentListRelationFilter
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
     extraEngineers?: WorkorderEngineerListRelationFilter
     forms?: WorkorderFormListRelationFilter
@@ -24019,15 +26843,20 @@ export namespace Prisma {
     customerId?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
+    contactPersoon?: SortOrderInput | SortOrder
+    contactEmail?: SortOrderInput | SortOrder
+    contactPhone?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     description?: SortOrderInput | SortOrder
+    werkInstructie?: SortOrderInput | SortOrder
     workDate?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
     number?: SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
     plannedEndDate?: SortOrderInput | SortOrder
+    plannedHours?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
@@ -24042,6 +26871,7 @@ export namespace Prisma {
     hours?: WorkorderHourOrderByRelationAggregateInput
     materials?: WorkorderMaterialOrderByRelationAggregateInput
     photos?: WorkorderPhotoOrderByRelationAggregateInput
+    attachments?: WorkorderAttachmentOrderByRelationAggregateInput
     signature?: WorkorderSignatureOrderByWithRelationInput
     extraEngineers?: WorkorderEngineerOrderByRelationAggregateInput
     forms?: WorkorderFormOrderByRelationAggregateInput
@@ -24059,14 +26889,19 @@ export namespace Prisma {
     customerId?: StringNullableFilter<"Workorder"> | string | null
     location?: StringNullableFilter<"Workorder"> | string | null
     city?: StringNullableFilter<"Workorder"> | string | null
+    contactPersoon?: StringNullableFilter<"Workorder"> | string | null
+    contactEmail?: StringNullableFilter<"Workorder"> | string | null
+    contactPhone?: StringNullableFilter<"Workorder"> | string | null
     createdAt?: DateTimeFilter<"Workorder"> | Date | string
     updatedAt?: DateTimeFilter<"Workorder"> | Date | string
     description?: StringNullableFilter<"Workorder"> | string | null
+    werkInstructie?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    plannedHours?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
@@ -24081,6 +26916,7 @@ export namespace Prisma {
     hours?: WorkorderHourListRelationFilter
     materials?: WorkorderMaterialListRelationFilter
     photos?: WorkorderPhotoListRelationFilter
+    attachments?: WorkorderAttachmentListRelationFilter
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
     extraEngineers?: WorkorderEngineerListRelationFilter
     forms?: WorkorderFormListRelationFilter
@@ -24094,23 +26930,30 @@ export namespace Prisma {
     customerId?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
+    contactPersoon?: SortOrderInput | SortOrder
+    contactEmail?: SortOrderInput | SortOrder
+    contactPhone?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     description?: SortOrderInput | SortOrder
+    werkInstructie?: SortOrderInput | SortOrder
     workDate?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
     number?: SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
     plannedEndDate?: SortOrderInput | SortOrder
+    plannedHours?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
     pdfGeneratedAt?: SortOrderInput | SortOrder
     sentAt?: SortOrderInput | SortOrder
     _count?: WorkorderCountOrderByAggregateInput
+    _avg?: WorkorderAvgOrderByAggregateInput
     _max?: WorkorderMaxOrderByAggregateInput
     _min?: WorkorderMinOrderByAggregateInput
+    _sum?: WorkorderSumOrderByAggregateInput
   }
 
   export type WorkorderScalarWhereWithAggregatesInput = {
@@ -24124,15 +26967,20 @@ export namespace Prisma {
     customerId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     location?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     city?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    contactPersoon?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    contactEmail?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    contactPhone?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Workorder"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Workorder"> | Date | string
     description?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    werkInstructie?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     number?: StringWithAggregatesFilter<"Workorder"> | string
     assignedUserId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
+    plannedHours?: FloatNullableWithAggregatesFilter<"Workorder"> | number | null
     assignmentId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     formData?: JsonNullableWithAggregatesFilter<"Workorder">
     pdfData?: BytesNullableWithAggregatesFilter<"Workorder"> | Bytes | null
@@ -24424,6 +27272,71 @@ export namespace Prisma {
     filename?: StringNullableWithAggregatesFilter<"WorkorderPhoto"> | string | null
     caption?: StringNullableWithAggregatesFilter<"WorkorderPhoto"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"WorkorderPhoto"> | Date | string
+  }
+
+  export type WorkorderAttachmentWhereInput = {
+    AND?: WorkorderAttachmentWhereInput | WorkorderAttachmentWhereInput[]
+    OR?: WorkorderAttachmentWhereInput[]
+    NOT?: WorkorderAttachmentWhereInput | WorkorderAttachmentWhereInput[]
+    id?: StringFilter<"WorkorderAttachment"> | string
+    workorderId?: StringFilter<"WorkorderAttachment"> | string
+    url?: StringFilter<"WorkorderAttachment"> | string
+    filename?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    originalName?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    contentType?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    createdAt?: DateTimeFilter<"WorkorderAttachment"> | Date | string
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+  }
+
+  export type WorkorderAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    workorder?: WorkorderOrderByWithRelationInput
+  }
+
+  export type WorkorderAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkorderAttachmentWhereInput | WorkorderAttachmentWhereInput[]
+    OR?: WorkorderAttachmentWhereInput[]
+    NOT?: WorkorderAttachmentWhereInput | WorkorderAttachmentWhereInput[]
+    workorderId?: StringFilter<"WorkorderAttachment"> | string
+    url?: StringFilter<"WorkorderAttachment"> | string
+    filename?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    originalName?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    contentType?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    createdAt?: DateTimeFilter<"WorkorderAttachment"> | Date | string
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+  }, "id">
+
+  export type WorkorderAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: WorkorderAttachmentCountOrderByAggregateInput
+    _max?: WorkorderAttachmentMaxOrderByAggregateInput
+    _min?: WorkorderAttachmentMinOrderByAggregateInput
+  }
+
+  export type WorkorderAttachmentScalarWhereWithAggregatesInput = {
+    AND?: WorkorderAttachmentScalarWhereWithAggregatesInput | WorkorderAttachmentScalarWhereWithAggregatesInput[]
+    OR?: WorkorderAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: WorkorderAttachmentScalarWhereWithAggregatesInput | WorkorderAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkorderAttachment"> | string
+    workorderId?: StringWithAggregatesFilter<"WorkorderAttachment"> | string
+    url?: StringWithAggregatesFilter<"WorkorderAttachment"> | string
+    filename?: StringNullableWithAggregatesFilter<"WorkorderAttachment"> | string | null
+    originalName?: StringNullableWithAggregatesFilter<"WorkorderAttachment"> | string | null
+    contentType?: StringNullableWithAggregatesFilter<"WorkorderAttachment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkorderAttachment"> | Date | string
   }
 
   export type WorkorderSignatureWhereInput = {
@@ -25167,9 +28080,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateInput = {
@@ -25182,9 +28097,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUpdateInput = {
@@ -25197,9 +28114,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateInput = {
@@ -25212,9 +28131,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerCreateManyInput = {
@@ -25227,6 +28148,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
   }
 
   export type CustomerUpdateManyMutationInput = {
@@ -25239,6 +28161,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CustomerUncheckedUpdateManyInput = {
@@ -25251,6 +28174,139 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AanvraagCreateInput = {
+    id?: string
+    locatie?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    plaats?: string | null
+    schermen?: string | null
+    beugel?: string | null
+    stroom?: string | null
+    internet?: string | null
+    opmerkingen?: string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutAanvragenInput
+  }
+
+  export type AanvraagUncheckedCreateInput = {
+    id?: string
+    customerId: string
+    locatie?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    plaats?: string | null
+    schermen?: string | null
+    beugel?: string | null
+    stroom?: string | null
+    internet?: string | null
+    opmerkingen?: string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AanvraagUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locatie?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    schermen?: NullableStringFieldUpdateOperationsInput | string | null
+    beugel?: NullableStringFieldUpdateOperationsInput | string | null
+    stroom?: NullableStringFieldUpdateOperationsInput | string | null
+    internet?: NullableStringFieldUpdateOperationsInput | string | null
+    opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutAanvragenNestedInput
+  }
+
+  export type AanvraagUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    locatie?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    schermen?: NullableStringFieldUpdateOperationsInput | string | null
+    beugel?: NullableStringFieldUpdateOperationsInput | string | null
+    stroom?: NullableStringFieldUpdateOperationsInput | string | null
+    internet?: NullableStringFieldUpdateOperationsInput | string | null
+    opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AanvraagCreateManyInput = {
+    id?: string
+    customerId: string
+    locatie?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    plaats?: string | null
+    schermen?: string | null
+    beugel?: string | null
+    stroom?: string | null
+    internet?: string | null
+    opmerkingen?: string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AanvraagUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locatie?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    schermen?: NullableStringFieldUpdateOperationsInput | string | null
+    beugel?: NullableStringFieldUpdateOperationsInput | string | null
+    stroom?: NullableStringFieldUpdateOperationsInput | string | null
+    internet?: NullableStringFieldUpdateOperationsInput | string | null
+    opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AanvraagUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    locatie?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    schermen?: NullableStringFieldUpdateOperationsInput | string | null
+    beugel?: NullableStringFieldUpdateOperationsInput | string | null
+    stroom?: NullableStringFieldUpdateOperationsInput | string | null
+    internet?: NullableStringFieldUpdateOperationsInput | string | null
+    opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProjectCreateInput = {
@@ -25332,14 +28388,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -25353,6 +28414,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -25366,15 +28428,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -25385,6 +28452,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -25396,14 +28464,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25417,6 +28490,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -25430,15 +28504,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -25449,6 +28528,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -25462,15 +28542,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -25484,14 +28569,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25506,15 +28596,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -25823,6 +28918,75 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     filename?: NullableStringFieldUpdateOperationsInput | string | null
     caption?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderAttachmentCreateInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+    workorder: WorkorderCreateNestedOneWithoutAttachmentsInput
+  }
+
+  export type WorkorderAttachmentUncheckedCreateInput = {
+    id?: string
+    workorderId: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkorderAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorder?: WorkorderUpdateOneRequiredWithoutAttachmentsNestedInput
+  }
+
+  export type WorkorderAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderAttachmentCreateManyInput = {
+    id?: string
+    workorderId: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkorderAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -26699,11 +29863,21 @@ export namespace Prisma {
     none?: ProjectWhereInput
   }
 
+  export type AanvraagListRelationFilter = {
+    every?: AanvraagWhereInput
+    some?: AanvraagWhereInput
+    none?: AanvraagWhereInput
+  }
+
   export type AssignmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ProjectOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AanvraagOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -26717,6 +29891,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     color?: SortOrder
     formSchema?: SortOrder
+    publicToken?: SortOrder
   }
 
   export type CustomerMaxOrderByAggregateInput = {
@@ -26728,6 +29903,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     color?: SortOrder
+    publicToken?: SortOrder
   }
 
   export type CustomerMinOrderByAggregateInput = {
@@ -26739,6 +29915,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     color?: SortOrder
+    publicToken?: SortOrder
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -26770,6 +29947,61 @@ export namespace Prisma {
   export type CustomerScalarRelationFilter = {
     is?: CustomerWhereInput
     isNot?: CustomerWhereInput
+  }
+
+  export type AanvraagCountOrderByAggregateInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    locatie?: SortOrder
+    straat?: SortOrder
+    huisnummer?: SortOrder
+    postcode?: SortOrder
+    plaats?: SortOrder
+    schermen?: SortOrder
+    beugel?: SortOrder
+    stroom?: SortOrder
+    internet?: SortOrder
+    opmerkingen?: SortOrder
+    bijlagen?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AanvraagMaxOrderByAggregateInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    locatie?: SortOrder
+    straat?: SortOrder
+    huisnummer?: SortOrder
+    postcode?: SortOrder
+    plaats?: SortOrder
+    schermen?: SortOrder
+    beugel?: SortOrder
+    stroom?: SortOrder
+    internet?: SortOrder
+    opmerkingen?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AanvraagMinOrderByAggregateInput = {
+    id?: SortOrder
+    customerId?: SortOrder
+    locatie?: SortOrder
+    straat?: SortOrder
+    huisnummer?: SortOrder
+    postcode?: SortOrder
+    plaats?: SortOrder
+    schermen?: SortOrder
+    beugel?: SortOrder
+    stroom?: SortOrder
+    internet?: SortOrder
+    opmerkingen?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectCountOrderByAggregateInput = {
@@ -26811,6 +30043,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type BytesNullableFilter<$PrismaModel = never> = {
@@ -26870,6 +30113,12 @@ export namespace Prisma {
     none?: WorkorderPhotoWhereInput
   }
 
+  export type WorkorderAttachmentListRelationFilter = {
+    every?: WorkorderAttachmentWhereInput
+    some?: WorkorderAttachmentWhereInput
+    none?: WorkorderAttachmentWhereInput
+  }
+
   export type WorkorderSignatureNullableScalarRelationFilter = {
     is?: WorkorderSignatureWhereInput | null
     isNot?: WorkorderSignatureWhereInput | null
@@ -26901,6 +30150,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type WorkorderAttachmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type WorkorderFormOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -26913,20 +30166,29 @@ export namespace Prisma {
     customerId?: SortOrder
     location?: SortOrder
     city?: SortOrder
+    contactPersoon?: SortOrder
+    contactEmail?: SortOrder
+    contactPhone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     description?: SortOrder
+    werkInstructie?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
+    plannedHours?: SortOrder
     assignmentId?: SortOrder
     formData?: SortOrder
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
     sentAt?: SortOrder
+  }
+
+  export type WorkorderAvgOrderByAggregateInput = {
+    plannedHours?: SortOrder
   }
 
   export type WorkorderMaxOrderByAggregateInput = {
@@ -26937,15 +30199,20 @@ export namespace Prisma {
     customerId?: SortOrder
     location?: SortOrder
     city?: SortOrder
+    contactPersoon?: SortOrder
+    contactEmail?: SortOrder
+    contactPhone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     description?: SortOrder
+    werkInstructie?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
+    plannedHours?: SortOrder
     assignmentId?: SortOrder
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
@@ -26960,19 +30227,28 @@ export namespace Prisma {
     customerId?: SortOrder
     location?: SortOrder
     city?: SortOrder
+    contactPersoon?: SortOrder
+    contactEmail?: SortOrder
+    contactPhone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     description?: SortOrder
+    werkInstructie?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
+    plannedHours?: SortOrder
     assignmentId?: SortOrder
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
     sentAt?: SortOrder
+  }
+
+  export type WorkorderSumOrderByAggregateInput = {
+    plannedHours?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -26989,6 +30265,22 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type BytesNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
     in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
@@ -26997,17 +30289,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBytesNullableFilter<$PrismaModel>
     _max?: NestedBytesNullableFilter<$PrismaModel>
-  }
-
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type WorkorderScalarRelationFilter = {
@@ -27058,22 +30339,6 @@ export namespace Prisma {
     hours?: SortOrder
     travelTime?: SortOrder
     kilometers?: SortOrder
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -27242,6 +30507,36 @@ export namespace Prisma {
     url?: SortOrder
     filename?: SortOrder
     caption?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkorderAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkorderAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkorderAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    workorderId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -27838,6 +31133,13 @@ export namespace Prisma {
     connect?: WorkorderWhereUniqueInput | WorkorderWhereUniqueInput[]
   }
 
+  export type AanvraagCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<AanvraagCreateWithoutCustomerInput, AanvraagUncheckedCreateWithoutCustomerInput> | AanvraagCreateWithoutCustomerInput[] | AanvraagUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: AanvraagCreateOrConnectWithoutCustomerInput | AanvraagCreateOrConnectWithoutCustomerInput[]
+    createMany?: AanvraagCreateManyCustomerInputEnvelope
+    connect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+  }
+
   export type AssignmentUncheckedCreateNestedManyWithoutCustomerInput = {
     create?: XOR<AssignmentCreateWithoutCustomerInput, AssignmentUncheckedCreateWithoutCustomerInput> | AssignmentCreateWithoutCustomerInput[] | AssignmentUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: AssignmentCreateOrConnectWithoutCustomerInput | AssignmentCreateOrConnectWithoutCustomerInput[]
@@ -27857,6 +31159,13 @@ export namespace Prisma {
     connectOrCreate?: WorkorderCreateOrConnectWithoutCustomerInput | WorkorderCreateOrConnectWithoutCustomerInput[]
     createMany?: WorkorderCreateManyCustomerInputEnvelope
     connect?: WorkorderWhereUniqueInput | WorkorderWhereUniqueInput[]
+  }
+
+  export type AanvraagUncheckedCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<AanvraagCreateWithoutCustomerInput, AanvraagUncheckedCreateWithoutCustomerInput> | AanvraagCreateWithoutCustomerInput[] | AanvraagUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: AanvraagCreateOrConnectWithoutCustomerInput | AanvraagCreateOrConnectWithoutCustomerInput[]
+    createMany?: AanvraagCreateManyCustomerInputEnvelope
+    connect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
   }
 
   export type AssignmentUpdateManyWithoutCustomerNestedInput = {
@@ -27901,6 +31210,20 @@ export namespace Prisma {
     deleteMany?: WorkorderScalarWhereInput | WorkorderScalarWhereInput[]
   }
 
+  export type AanvraagUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<AanvraagCreateWithoutCustomerInput, AanvraagUncheckedCreateWithoutCustomerInput> | AanvraagCreateWithoutCustomerInput[] | AanvraagUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: AanvraagCreateOrConnectWithoutCustomerInput | AanvraagCreateOrConnectWithoutCustomerInput[]
+    upsert?: AanvraagUpsertWithWhereUniqueWithoutCustomerInput | AanvraagUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: AanvraagCreateManyCustomerInputEnvelope
+    set?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    disconnect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    delete?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    connect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    update?: AanvraagUpdateWithWhereUniqueWithoutCustomerInput | AanvraagUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: AanvraagUpdateManyWithWhereWithoutCustomerInput | AanvraagUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: AanvraagScalarWhereInput | AanvraagScalarWhereInput[]
+  }
+
   export type AssignmentUncheckedUpdateManyWithoutCustomerNestedInput = {
     create?: XOR<AssignmentCreateWithoutCustomerInput, AssignmentUncheckedCreateWithoutCustomerInput> | AssignmentCreateWithoutCustomerInput[] | AssignmentUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: AssignmentCreateOrConnectWithoutCustomerInput | AssignmentCreateOrConnectWithoutCustomerInput[]
@@ -27941,6 +31264,34 @@ export namespace Prisma {
     update?: WorkorderUpdateWithWhereUniqueWithoutCustomerInput | WorkorderUpdateWithWhereUniqueWithoutCustomerInput[]
     updateMany?: WorkorderUpdateManyWithWhereWithoutCustomerInput | WorkorderUpdateManyWithWhereWithoutCustomerInput[]
     deleteMany?: WorkorderScalarWhereInput | WorkorderScalarWhereInput[]
+  }
+
+  export type AanvraagUncheckedUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<AanvraagCreateWithoutCustomerInput, AanvraagUncheckedCreateWithoutCustomerInput> | AanvraagCreateWithoutCustomerInput[] | AanvraagUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: AanvraagCreateOrConnectWithoutCustomerInput | AanvraagCreateOrConnectWithoutCustomerInput[]
+    upsert?: AanvraagUpsertWithWhereUniqueWithoutCustomerInput | AanvraagUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: AanvraagCreateManyCustomerInputEnvelope
+    set?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    disconnect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    delete?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    connect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+    update?: AanvraagUpdateWithWhereUniqueWithoutCustomerInput | AanvraagUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: AanvraagUpdateManyWithWhereWithoutCustomerInput | AanvraagUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: AanvraagScalarWhereInput | AanvraagScalarWhereInput[]
+  }
+
+  export type CustomerCreateNestedOneWithoutAanvragenInput = {
+    create?: XOR<CustomerCreateWithoutAanvragenInput, CustomerUncheckedCreateWithoutAanvragenInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutAanvragenInput
+    connect?: CustomerWhereUniqueInput
+  }
+
+  export type CustomerUpdateOneRequiredWithoutAanvragenNestedInput = {
+    create?: XOR<CustomerCreateWithoutAanvragenInput, CustomerUncheckedCreateWithoutAanvragenInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutAanvragenInput
+    upsert?: CustomerUpsertWithoutAanvragenInput
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutAanvragenInput, CustomerUpdateWithoutAanvragenInput>, CustomerUncheckedUpdateWithoutAanvragenInput>
   }
 
   export type CustomerCreateNestedOneWithoutProjectsInput = {
@@ -28058,6 +31409,13 @@ export namespace Prisma {
     connect?: WorkorderPhotoWhereUniqueInput | WorkorderPhotoWhereUniqueInput[]
   }
 
+  export type WorkorderAttachmentCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<WorkorderAttachmentCreateWithoutWorkorderInput, WorkorderAttachmentUncheckedCreateWithoutWorkorderInput> | WorkorderAttachmentCreateWithoutWorkorderInput[] | WorkorderAttachmentUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderAttachmentCreateOrConnectWithoutWorkorderInput | WorkorderAttachmentCreateOrConnectWithoutWorkorderInput[]
+    createMany?: WorkorderAttachmentCreateManyWorkorderInputEnvelope
+    connect?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+  }
+
   export type WorkorderSignatureCreateNestedOneWithoutWorkorderInput = {
     create?: XOR<WorkorderSignatureCreateWithoutWorkorderInput, WorkorderSignatureUncheckedCreateWithoutWorkorderInput>
     connectOrCreate?: WorkorderSignatureCreateOrConnectWithoutWorkorderInput
@@ -28113,6 +31471,13 @@ export namespace Prisma {
     connect?: WorkorderPhotoWhereUniqueInput | WorkorderPhotoWhereUniqueInput[]
   }
 
+  export type WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<WorkorderAttachmentCreateWithoutWorkorderInput, WorkorderAttachmentUncheckedCreateWithoutWorkorderInput> | WorkorderAttachmentCreateWithoutWorkorderInput[] | WorkorderAttachmentUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderAttachmentCreateOrConnectWithoutWorkorderInput | WorkorderAttachmentCreateOrConnectWithoutWorkorderInput[]
+    createMany?: WorkorderAttachmentCreateManyWorkorderInputEnvelope
+    connect?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+  }
+
   export type WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput = {
     create?: XOR<WorkorderSignatureCreateWithoutWorkorderInput, WorkorderSignatureUncheckedCreateWithoutWorkorderInput>
     connectOrCreate?: WorkorderSignatureCreateOrConnectWithoutWorkorderInput
@@ -28135,6 +31500,14 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NullableBytesFieldUpdateOperationsInput = {
@@ -28251,6 +31624,20 @@ export namespace Prisma {
     deleteMany?: WorkorderPhotoScalarWhereInput | WorkorderPhotoScalarWhereInput[]
   }
 
+  export type WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<WorkorderAttachmentCreateWithoutWorkorderInput, WorkorderAttachmentUncheckedCreateWithoutWorkorderInput> | WorkorderAttachmentCreateWithoutWorkorderInput[] | WorkorderAttachmentUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderAttachmentCreateOrConnectWithoutWorkorderInput | WorkorderAttachmentCreateOrConnectWithoutWorkorderInput[]
+    upsert?: WorkorderAttachmentUpsertWithWhereUniqueWithoutWorkorderInput | WorkorderAttachmentUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: WorkorderAttachmentCreateManyWorkorderInputEnvelope
+    set?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    disconnect?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    delete?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    connect?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    update?: WorkorderAttachmentUpdateWithWhereUniqueWithoutWorkorderInput | WorkorderAttachmentUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: WorkorderAttachmentUpdateManyWithWhereWithoutWorkorderInput | WorkorderAttachmentUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: WorkorderAttachmentScalarWhereInput | WorkorderAttachmentScalarWhereInput[]
+  }
+
   export type WorkorderSignatureUpdateOneWithoutWorkorderNestedInput = {
     create?: XOR<WorkorderSignatureCreateWithoutWorkorderInput, WorkorderSignatureUncheckedCreateWithoutWorkorderInput>
     connectOrCreate?: WorkorderSignatureCreateOrConnectWithoutWorkorderInput
@@ -28359,6 +31746,20 @@ export namespace Prisma {
     deleteMany?: WorkorderPhotoScalarWhereInput | WorkorderPhotoScalarWhereInput[]
   }
 
+  export type WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<WorkorderAttachmentCreateWithoutWorkorderInput, WorkorderAttachmentUncheckedCreateWithoutWorkorderInput> | WorkorderAttachmentCreateWithoutWorkorderInput[] | WorkorderAttachmentUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: WorkorderAttachmentCreateOrConnectWithoutWorkorderInput | WorkorderAttachmentCreateOrConnectWithoutWorkorderInput[]
+    upsert?: WorkorderAttachmentUpsertWithWhereUniqueWithoutWorkorderInput | WorkorderAttachmentUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: WorkorderAttachmentCreateManyWorkorderInputEnvelope
+    set?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    disconnect?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    delete?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    connect?: WorkorderAttachmentWhereUniqueInput | WorkorderAttachmentWhereUniqueInput[]
+    update?: WorkorderAttachmentUpdateWithWhereUniqueWithoutWorkorderInput | WorkorderAttachmentUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: WorkorderAttachmentUpdateManyWithWhereWithoutWorkorderInput | WorkorderAttachmentUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: WorkorderAttachmentScalarWhereInput | WorkorderAttachmentScalarWhereInput[]
+  }
+
   export type WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput = {
     create?: XOR<WorkorderSignatureCreateWithoutWorkorderInput, WorkorderSignatureUncheckedCreateWithoutWorkorderInput>
     connectOrCreate?: WorkorderSignatureCreateOrConnectWithoutWorkorderInput
@@ -28401,14 +31802,6 @@ export namespace Prisma {
     create?: XOR<WorkorderCreateWithoutHoursInput, WorkorderUncheckedCreateWithoutHoursInput>
     connectOrCreate?: WorkorderCreateOrConnectWithoutHoursInput
     connect?: WorkorderWhereUniqueInput
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type WorkorderUpdateOneRequiredWithoutHoursNestedInput = {
@@ -28475,6 +31868,20 @@ export namespace Prisma {
     upsert?: WorkorderUpsertWithoutPhotosInput
     connect?: WorkorderWhereUniqueInput
     update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutPhotosInput, WorkorderUpdateWithoutPhotosInput>, WorkorderUncheckedUpdateWithoutPhotosInput>
+  }
+
+  export type WorkorderCreateNestedOneWithoutAttachmentsInput = {
+    create?: XOR<WorkorderCreateWithoutAttachmentsInput, WorkorderUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutAttachmentsInput
+    connect?: WorkorderWhereUniqueInput
+  }
+
+  export type WorkorderUpdateOneRequiredWithoutAttachmentsNestedInput = {
+    create?: XOR<WorkorderCreateWithoutAttachmentsInput, WorkorderUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutAttachmentsInput
+    upsert?: WorkorderUpsertWithoutAttachmentsInput
+    connect?: WorkorderWhereUniqueInput
+    update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutAttachmentsInput, WorkorderUpdateWithoutAttachmentsInput>, WorkorderUncheckedUpdateWithoutAttachmentsInput>
   }
 
   export type WorkorderCreateNestedOneWithoutSignatureInput = {
@@ -28959,6 +32366,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedBytesNullableFilter<$PrismaModel = never> = {
     equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
     in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
@@ -28980,27 +32398,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type NestedBytesNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Bytes | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBytesNullableFilter<$PrismaModel>
-    _max?: NestedBytesNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -29015,6 +32412,16 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBytesNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableWithAggregatesFilter<$PrismaModel> | Bytes | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBytesNullableFilter<$PrismaModel>
+    _max?: NestedBytesNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -29111,14 +32518,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -29131,6 +32543,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -29144,14 +32557,19 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -29162,6 +32580,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -29280,15 +32699,20 @@ export namespace Prisma {
     customerId?: StringNullableFilter<"Workorder"> | string | null
     location?: StringNullableFilter<"Workorder"> | string | null
     city?: StringNullableFilter<"Workorder"> | string | null
+    contactPersoon?: StringNullableFilter<"Workorder"> | string | null
+    contactEmail?: StringNullableFilter<"Workorder"> | string | null
+    contactPhone?: StringNullableFilter<"Workorder"> | string | null
     createdAt?: DateTimeFilter<"Workorder"> | Date | string
     updatedAt?: DateTimeFilter<"Workorder"> | Date | string
     description?: StringNullableFilter<"Workorder"> | string | null
+    werkInstructie?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
     number?: StringFilter<"Workorder"> | string
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    plannedHours?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
@@ -29431,14 +32855,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -29451,6 +32880,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -29463,15 +32893,20 @@ export namespace Prisma {
     projectId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -29482,6 +32917,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -29494,6 +32930,52 @@ export namespace Prisma {
 
   export type WorkorderCreateManyCustomerInputEnvelope = {
     data: WorkorderCreateManyCustomerInput | WorkorderCreateManyCustomerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AanvraagCreateWithoutCustomerInput = {
+    id?: string
+    locatie?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    plaats?: string | null
+    schermen?: string | null
+    beugel?: string | null
+    stroom?: string | null
+    internet?: string | null
+    opmerkingen?: string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AanvraagUncheckedCreateWithoutCustomerInput = {
+    id?: string
+    locatie?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    plaats?: string | null
+    schermen?: string | null
+    beugel?: string | null
+    stroom?: string | null
+    internet?: string | null
+    opmerkingen?: string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AanvraagCreateOrConnectWithoutCustomerInput = {
+    where: AanvraagWhereUniqueInput
+    create: XOR<AanvraagCreateWithoutCustomerInput, AanvraagUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type AanvraagCreateManyCustomerInputEnvelope = {
+    data: AanvraagCreateManyCustomerInput | AanvraagCreateManyCustomerInput[]
     skipDuplicates?: boolean
   }
 
@@ -29576,6 +33058,124 @@ export namespace Prisma {
     data: XOR<WorkorderUpdateManyMutationInput, WorkorderUncheckedUpdateManyWithoutCustomerInput>
   }
 
+  export type AanvraagUpsertWithWhereUniqueWithoutCustomerInput = {
+    where: AanvraagWhereUniqueInput
+    update: XOR<AanvraagUpdateWithoutCustomerInput, AanvraagUncheckedUpdateWithoutCustomerInput>
+    create: XOR<AanvraagCreateWithoutCustomerInput, AanvraagUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type AanvraagUpdateWithWhereUniqueWithoutCustomerInput = {
+    where: AanvraagWhereUniqueInput
+    data: XOR<AanvraagUpdateWithoutCustomerInput, AanvraagUncheckedUpdateWithoutCustomerInput>
+  }
+
+  export type AanvraagUpdateManyWithWhereWithoutCustomerInput = {
+    where: AanvraagScalarWhereInput
+    data: XOR<AanvraagUpdateManyMutationInput, AanvraagUncheckedUpdateManyWithoutCustomerInput>
+  }
+
+  export type AanvraagScalarWhereInput = {
+    AND?: AanvraagScalarWhereInput | AanvraagScalarWhereInput[]
+    OR?: AanvraagScalarWhereInput[]
+    NOT?: AanvraagScalarWhereInput | AanvraagScalarWhereInput[]
+    id?: StringFilter<"Aanvraag"> | string
+    customerId?: StringFilter<"Aanvraag"> | string
+    locatie?: StringNullableFilter<"Aanvraag"> | string | null
+    straat?: StringNullableFilter<"Aanvraag"> | string | null
+    huisnummer?: StringNullableFilter<"Aanvraag"> | string | null
+    postcode?: StringNullableFilter<"Aanvraag"> | string | null
+    plaats?: StringNullableFilter<"Aanvraag"> | string | null
+    schermen?: StringNullableFilter<"Aanvraag"> | string | null
+    beugel?: StringNullableFilter<"Aanvraag"> | string | null
+    stroom?: StringNullableFilter<"Aanvraag"> | string | null
+    internet?: StringNullableFilter<"Aanvraag"> | string | null
+    opmerkingen?: StringNullableFilter<"Aanvraag"> | string | null
+    bijlagen?: JsonNullableFilter<"Aanvraag">
+    status?: StringFilter<"Aanvraag"> | string
+    createdAt?: DateTimeFilter<"Aanvraag"> | Date | string
+    updatedAt?: DateTimeFilter<"Aanvraag"> | Date | string
+  }
+
+  export type CustomerCreateWithoutAanvragenInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
+    assignments?: AssignmentCreateNestedManyWithoutCustomerInput
+    projects?: ProjectCreateNestedManyWithoutCustomerInput
+    workorders?: WorkorderCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutAanvragenInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
+    assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutAanvragenInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutAanvragenInput, CustomerUncheckedCreateWithoutAanvragenInput>
+  }
+
+  export type CustomerUpsertWithoutAanvragenInput = {
+    update: XOR<CustomerUpdateWithoutAanvragenInput, CustomerUncheckedUpdateWithoutAanvragenInput>
+    create: XOR<CustomerCreateWithoutAanvragenInput, CustomerUncheckedCreateWithoutAanvragenInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutAanvragenInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutAanvragenInput, CustomerUncheckedUpdateWithoutAanvragenInput>
+  }
+
+  export type CustomerUpdateWithoutAanvragenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
+    projects?: ProjectUpdateManyWithoutCustomerNestedInput
+    workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutAanvragenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
   export type CustomerCreateWithoutProjectsInput = {
     id?: string
     name: string
@@ -29586,8 +33186,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutProjectsInput = {
@@ -29600,8 +33202,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutProjectsInput = {
@@ -29615,14 +33219,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -29635,6 +33244,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -29647,15 +33257,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -29666,6 +33281,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -29702,8 +33318,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutProjectsInput = {
@@ -29716,8 +33334,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type WorkorderUpsertWithWhereUniqueWithoutProjectInput = {
@@ -29869,8 +33489,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     projects?: ProjectCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutWorkordersInput = {
@@ -29883,8 +33505,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutWorkordersInput = {
@@ -30009,6 +33633,34 @@ export namespace Prisma {
 
   export type WorkorderPhotoCreateManyWorkorderInputEnvelope = {
     data: WorkorderPhotoCreateManyWorkorderInput | WorkorderPhotoCreateManyWorkorderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkorderAttachmentCreateWithoutWorkorderInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkorderAttachmentUncheckedCreateWithoutWorkorderInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkorderAttachmentCreateOrConnectWithoutWorkorderInput = {
+    where: WorkorderAttachmentWhereUniqueInput
+    create: XOR<WorkorderAttachmentCreateWithoutWorkorderInput, WorkorderAttachmentUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type WorkorderAttachmentCreateManyWorkorderInputEnvelope = {
+    data: WorkorderAttachmentCreateManyWorkorderInput | WorkorderAttachmentCreateManyWorkorderInput[]
     skipDuplicates?: boolean
   }
 
@@ -30241,8 +33893,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutWorkordersInput = {
@@ -30255,8 +33909,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type WorkorderHardwareUpsertWithWhereUniqueWithoutWorkorderInput = {
@@ -30379,6 +34035,35 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"WorkorderPhoto"> | Date | string
   }
 
+  export type WorkorderAttachmentUpsertWithWhereUniqueWithoutWorkorderInput = {
+    where: WorkorderAttachmentWhereUniqueInput
+    update: XOR<WorkorderAttachmentUpdateWithoutWorkorderInput, WorkorderAttachmentUncheckedUpdateWithoutWorkorderInput>
+    create: XOR<WorkorderAttachmentCreateWithoutWorkorderInput, WorkorderAttachmentUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type WorkorderAttachmentUpdateWithWhereUniqueWithoutWorkorderInput = {
+    where: WorkorderAttachmentWhereUniqueInput
+    data: XOR<WorkorderAttachmentUpdateWithoutWorkorderInput, WorkorderAttachmentUncheckedUpdateWithoutWorkorderInput>
+  }
+
+  export type WorkorderAttachmentUpdateManyWithWhereWithoutWorkorderInput = {
+    where: WorkorderAttachmentScalarWhereInput
+    data: XOR<WorkorderAttachmentUpdateManyMutationInput, WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderInput>
+  }
+
+  export type WorkorderAttachmentScalarWhereInput = {
+    AND?: WorkorderAttachmentScalarWhereInput | WorkorderAttachmentScalarWhereInput[]
+    OR?: WorkorderAttachmentScalarWhereInput[]
+    NOT?: WorkorderAttachmentScalarWhereInput | WorkorderAttachmentScalarWhereInput[]
+    id?: StringFilter<"WorkorderAttachment"> | string
+    workorderId?: StringFilter<"WorkorderAttachment"> | string
+    url?: StringFilter<"WorkorderAttachment"> | string
+    filename?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    originalName?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    contentType?: StringNullableFilter<"WorkorderAttachment"> | string | null
+    createdAt?: DateTimeFilter<"WorkorderAttachment"> | Date | string
+  }
+
   export type WorkorderSignatureUpsertWithoutWorkorderInput = {
     update: XOR<WorkorderSignatureUpdateWithoutWorkorderInput, WorkorderSignatureUncheckedUpdateWithoutWorkorderInput>
     create: XOR<WorkorderSignatureCreateWithoutWorkorderInput, WorkorderSignatureUncheckedCreateWithoutWorkorderInput>
@@ -30454,14 +34139,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -30474,6 +34164,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -30487,15 +34178,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -30505,6 +34201,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -30532,14 +34229,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30552,6 +34254,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -30565,15 +34268,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -30583,6 +34291,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -30594,14 +34303,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -30614,6 +34328,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -30627,15 +34342,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -30645,6 +34365,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -30672,14 +34393,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30692,6 +34418,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -30705,15 +34432,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -30723,6 +34455,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -30734,14 +34467,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -30754,6 +34492,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -30767,15 +34506,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -30785,6 +34529,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -30812,14 +34557,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30832,6 +34582,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -30845,15 +34596,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -30863,6 +34619,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -30874,14 +34631,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -30894,6 +34656,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -30907,15 +34670,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -30925,6 +34693,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -30952,14 +34721,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -30972,6 +34746,7 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -30985,15 +34760,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -31003,25 +34783,31 @@ export namespace Prisma {
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
 
-  export type WorkorderCreateWithoutSignatureInput = {
+  export type WorkorderCreateWithoutAttachmentsInput = {
     id?: string
     title: string
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -31035,6 +34821,171 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+  }
+
+  export type WorkorderUncheckedCreateWithoutAttachmentsInput = {
+    id?: string
+    title: string
+    status?: string
+    projectId?: string | null
+    customerId?: string | null
+    location?: string | null
+    city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    werkInstructie?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    number: string
+    assignedUserId?: string | null
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    plannedHours?: number | null
+    assignmentId?: string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
+    hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+  }
+
+  export type WorkorderCreateOrConnectWithoutAttachmentsInput = {
+    where: WorkorderWhereUniqueInput
+    create: XOR<WorkorderCreateWithoutAttachmentsInput, WorkorderUncheckedCreateWithoutAttachmentsInput>
+  }
+
+  export type WorkorderUpsertWithoutAttachmentsInput = {
+    update: XOR<WorkorderUpdateWithoutAttachmentsInput, WorkorderUncheckedUpdateWithoutAttachmentsInput>
+    create: XOR<WorkorderCreateWithoutAttachmentsInput, WorkorderUncheckedCreateWithoutAttachmentsInput>
+    where?: WorkorderWhereInput
+  }
+
+  export type WorkorderUpdateToOneWithWhereWithoutAttachmentsInput = {
+    where?: WorkorderWhereInput
+    data: XOR<WorkorderUpdateWithoutAttachmentsInput, WorkorderUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type WorkorderUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documents?: DocumentUpdateManyWithoutWorkorderNestedInput
+    assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
+    assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
+    project?: ProjectUpdateOneWithoutWorkordersNestedInput
+    customer?: CustomerUpdateOneWithoutWorkordersNestedInput
+    hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+  }
+
+  export type WorkorderUncheckedUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
+    hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+  }
+
+  export type WorkorderCreateWithoutSignatureInput = {
+    id?: string
+    title: string
+    status?: string
+    location?: string | null
+    city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    werkInstructie?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    number: string
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    plannedHours?: number | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    documents?: DocumentCreateNestedManyWithoutWorkorderInput
+    assignedUser?: UserCreateNestedOneWithoutWorkordersInput
+    assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
+    project?: ProjectCreateNestedOneWithoutWorkordersInput
+    customer?: CustomerCreateNestedOneWithoutWorkordersInput
+    hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
@@ -31047,15 +34998,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -31066,6 +35022,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
@@ -31092,14 +35049,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31113,6 +35075,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
@@ -31125,15 +35088,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -31144,6 +35112,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
@@ -31154,14 +35123,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -31174,6 +35148,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -31187,15 +35162,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -31205,6 +35185,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -31232,14 +35213,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31252,6 +35238,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -31265,15 +35252,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -31283,6 +35275,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -31336,14 +35329,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -31357,6 +35355,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
   }
@@ -31369,15 +35368,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -31388,6 +35392,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
   }
@@ -31437,14 +35442,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31458,6 +35468,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
   }
@@ -31470,15 +35481,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -31489,6 +35505,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
   }
@@ -31532,8 +35549,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutAssignmentsInput = {
@@ -31546,8 +35565,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     color?: string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutAssignmentsInput = {
@@ -31609,14 +35630,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -31629,6 +35655,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
@@ -31642,15 +35669,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -31660,6 +35692,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
@@ -31696,8 +35729,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutAssignmentsInput = {
@@ -31710,8 +35745,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type AssignmentUserUpsertWithWhereUniqueWithoutAssignmentInput = {
@@ -32092,14 +36129,19 @@ export namespace Prisma {
     status?: string
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -32113,6 +36155,7 @@ export namespace Prisma {
     hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
   }
@@ -32125,15 +36168,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -32144,6 +36192,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
     photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
   }
@@ -32203,14 +36252,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32224,6 +36278,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
   }
@@ -32236,15 +36291,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -32255,6 +36315,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
   }
@@ -32312,14 +36373,19 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -32366,14 +36432,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32386,6 +36457,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -32399,14 +36471,19 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -32417,6 +36494,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -32430,14 +36508,19 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -32520,20 +36603,43 @@ export namespace Prisma {
     projectId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+  }
+
+  export type AanvraagCreateManyCustomerInput = {
+    id?: string
+    locatie?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    plaats?: string | null
+    schermen?: string | null
+    beugel?: string | null
+    stroom?: string | null
+    internet?: string | null
+    opmerkingen?: string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AssignmentUpdateWithoutCustomerInput = {
@@ -32619,14 +36725,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32639,6 +36750,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -32651,15 +36763,20 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -32670,6 +36787,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -32682,20 +36800,79 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AanvraagUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locatie?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    schermen?: NullableStringFieldUpdateOperationsInput | string | null
+    beugel?: NullableStringFieldUpdateOperationsInput | string | null
+    stroom?: NullableStringFieldUpdateOperationsInput | string | null
+    internet?: NullableStringFieldUpdateOperationsInput | string | null
+    opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AanvraagUncheckedUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locatie?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    schermen?: NullableStringFieldUpdateOperationsInput | string | null
+    beugel?: NullableStringFieldUpdateOperationsInput | string | null
+    stroom?: NullableStringFieldUpdateOperationsInput | string | null
+    internet?: NullableStringFieldUpdateOperationsInput | string | null
+    opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AanvraagUncheckedUpdateManyWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    locatie?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    schermen?: NullableStringFieldUpdateOperationsInput | string | null
+    beugel?: NullableStringFieldUpdateOperationsInput | string | null
+    stroom?: NullableStringFieldUpdateOperationsInput | string | null
+    internet?: NullableStringFieldUpdateOperationsInput | string | null
+    opmerkingen?: NullableStringFieldUpdateOperationsInput | string | null
+    bijlagen?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WorkorderCreateManyProjectInput = {
@@ -32705,15 +36882,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -32727,14 +36909,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32747,6 +36934,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -32759,15 +36947,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -32778,6 +36971,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -32790,15 +36984,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -32851,6 +37050,15 @@ export namespace Prisma {
     url: string
     filename?: string | null
     caption?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkorderAttachmentCreateManyWorkorderInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
     createdAt?: Date | string
   }
 
@@ -33011,6 +37219,33 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WorkorderAttachmentUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderAttachmentUncheckedUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WorkorderEngineerUpdateWithoutWorkorderInput = {
     id?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutExtraWorkordersNestedInput
@@ -33104,15 +37339,20 @@ export namespace Prisma {
     customerId?: string | null
     location?: string | null
     city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     description?: string | null
+    werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
+    plannedHours?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -33167,14 +37407,19 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33187,6 +37432,7 @@ export namespace Prisma {
     hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
@@ -33200,15 +37446,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -33218,6 +37469,7 @@ export namespace Prisma {
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
     photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -33231,15 +37483,20 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

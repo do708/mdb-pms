@@ -398,6 +398,15 @@ export async function PUT(
                         existingWorkorder.description,
 
 
+                    werkInstructie:
+
+                        body.werkInstructie !== undefined
+                        ?
+                        (body.werkInstructie || null)
+                        :
+                        existingWorkorder.werkInstructie,
+
+
 
                     formData:
 
@@ -458,6 +467,27 @@ export async function PUT(
                         )
                         :
                         existingWorkorder.plannedEndDate,
+
+
+
+                    plannedHours:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.plannedHours
+                        :
+                        body.plannedHours !== undefined
+                        ?
+                        (
+                            body.plannedHours === null ||
+                            body.plannedHours === ""
+                            ?
+                            null
+                            :
+                            Number(body.plannedHours)
+                        )
+                        :
+                        existingWorkorder.plannedHours,
 
 
 
@@ -526,7 +556,34 @@ export async function PUT(
                         ?
                         (body.city || null)
                         :
-                        existingWorkorder.city
+                        existingWorkorder.city,
+
+
+                    contactPersoon:
+
+                        body.contactPersoon !== undefined
+                        ?
+                        (body.contactPersoon || null)
+                        :
+                        existingWorkorder.contactPersoon,
+
+
+                    contactEmail:
+
+                        body.contactEmail !== undefined
+                        ?
+                        (body.contactEmail || null)
+                        :
+                        existingWorkorder.contactEmail,
+
+
+                    contactPhone:
+
+                        body.contactPhone !== undefined
+                        ?
+                        (body.contactPhone || null)
+                        :
+                        existingWorkorder.contactPhone
 
 
                 }

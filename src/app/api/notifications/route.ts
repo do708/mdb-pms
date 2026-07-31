@@ -48,7 +48,6 @@ export async function GET(){
                         in:[
                             "ontvangen",
                             "afspraak",
-                            "materiaal",
                             "ingepland"
                         ]
                     }

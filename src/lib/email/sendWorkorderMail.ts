@@ -1,4 +1,11 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+
+
+const resend =
+    process.env.RESEND_API_KEY
+    ? new Resend(process.env.RESEND_API_KEY)
+    : null;
 
 
 
@@ -20,76 +27,18 @@ interface WorkorderMailData {
 
 
 
-
-
-
-
 export async function sendWorkorderMail(
-
     data:WorkorderMailData
-
 ){
 
 
-
-    const transporter =
-
-        nodemailer.createTransport({
-
-            host:
-                process.env.SMTP_HOST,
-
-
-            port:
-                Number(process.env.SMTP_PORT || 587),
-
-
-            secure:
-                false,
-
-
-            auth:{
-
-                user:
-                    process.env.SMTP_USER,
-
-
-                pass:
-                    process.env.SMTP_PASSWORD
-
-            }
-
-        });
+    if(!resend){
+        throw new Error("RESEND_API_KEY ontbreekt");
+    }
 
 
 
-
-
-
-
-
-    await transporter.sendMail({
-
-        from:
-
-            process.env.SMTP_FROM,
-
-
-
-        to:
-
-            "projects@mdb-networks.nl",
-
-
-
-        subject:
-
-            `Nieuwe werkbon ingevuld — ${data.project} (${data.workorderNumber})`,
-
-
-
-        text:
-
+    const tekst =
 `Beste Projects,
 
 ${data.monteur} heeft een nieuwe werkbon/formulier ingevuld.
@@ -103,12 +52,10 @@ https://pms.mdb-networks.nl
 De werkbon PDF is als bijlage toegevoegd.
 
 Team MDB Networks
-`,
+`;
 
 
-
-        html:
-
+    const html =
 `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#0f172a;line-height:1.6">
 
   <p>Beste Projects,</p>
@@ -131,35 +78,37 @@ Team MDB Networks
 
   <p>Team MDB Networks</p>
 
-</div>`,
+</div>`;
 
 
 
+    await resend.emails.send({
+
+        from:
+            "MDB Networks <noreply@mdb-networks.nl>",
+
+        to:[
+            "projects@mdb-networks.nl"
+        ],
+
+        subject:
+            `Nieuwe werkbon ingevuld — ${data.project} (${data.workorderNumber})`,
+
+        text:
+            tekst,
+
+        html:
+            html,
 
         attachments:[
-
             {
-
                 filename:
-
                     `${data.workorderNumber}.pdf`,
-
-
                 content:
-
-                    data.pdfBuffer,
-
-
-                contentType:
-
-                    "application/pdf"
-
+                    data.pdfBuffer.toString("base64")
             }
-
         ]
 
-
     });
-
 
 }

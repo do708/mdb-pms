@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
-import { customerName, workorderLocation, resolveCustomer } from "@/lib/workorderCustomer";
+import { customerName, resolveCustomer } from "@/lib/workorderCustomer";
 
-import { generateWorkorderPdf } from "@/lib/pdf/workorderPdf";
+import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
@@ -72,6 +72,14 @@ customer:true,
 
                     hours:true,
 
+                    hardware:true,
+
+                    photos:true,
+
+                    signature:true,
+
+                    assignedUser:true,
+
 
                 }
 
@@ -116,46 +124,103 @@ customer:true,
 
         const pdf =
 
-            await generateWorkorderPdf({
+            await generateWorkorderHtmlPdf({
 
                 number:
                     workorder.number,
 
-
                 title:
                     workorder.title,
 
+                status:
+                    workorder.status,
 
                 description:
                     workorder.description,
 
+                plannedDate:
+                    workorder.plannedDate,
 
-                customer:
-                    customerName(workorder),
+                workDate:
+                    workorder.workDate,
 
+                createdAt:
+                    workorder.createdAt,
 
-                address:
-                    (resolveCustomer(workorder)?.address ?? null),
-
-
-                project:
+                projectName:
                     (workorder.project?.name ?? customerName(workorder)),
 
+                customer:{
+                    name:
+                        customerName(workorder),
+                    address:
+                        (resolveCustomer(workorder)?.address ?? null),
+                    phone:
+                        (resolveCustomer(workorder)?.phone ?? null),
+                    email:
+                        (resolveCustomer(workorder)?.email ?? null)
+                },
+
+                engineerName:
+                    workorder.assignedUser?.name ?? null,
 
                 hours:
+                    workorder.hours.map(item=>({
+                        date:
+                            item.date,
+                        hours:
+                            Number(item.hours ?? 0),
+                        travelTime:
+                            Number(item.travelTime ?? 0),
+                        kilometers:
+                            Number(item.kilometers ?? 0),
+                        hotel:
+                            item.hotel
+                    })),
 
-                    workorder.hours.reduce(
+                hardware:
+                    (workorder.hardware ?? []).map(item=>({
+                        name:
+                            item.name,
+                        brand:
+                            item.brand,
+                        model:
+                            item.model,
+                        serialNumber:
+                            item.serialNumber,
+                        quantity:
+                            item.quantity,
+                        location:
+                            item.location,
+                        status:
+                            item.status
+                    })),
 
-                        (total,item)=>
+                photos:
+                    (workorder.photos ?? []).map(photo=>({
+                        url:
+                            photo.url,
+                        caption:
+                            photo.caption ?? null
+                    })),
 
-                            total + Number(item.hours),
+                signatureUrl:
+                    workorder.signature?.signatureUrl ?? null,
 
-                        0
+                signedBy:
+                    workorder.signature?.customerName ?? null,
 
-                    )
+                formData:
+                    workorder.formData,
 
+                customerSchema:
+                    workorder.customer?.formSchema ?? null
 
-            });
+            },
+            (
+                process.env.NEXT_PUBLIC_APP_URL
+                ?? "http://localhost:3000"
+            ));
 
 
 

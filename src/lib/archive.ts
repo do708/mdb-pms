@@ -21,19 +21,17 @@ export function archiveCutoff():Date {
 
 
 
-// Prisma-where die AFGERONDE, oude items UITSLUIT (voor de gewone lijsten).
-// Niet-afgeronde items blijven altijd zichtbaar, ongeacht ouderdom.
+// Prisma-where die AFGERONDE items UITSLUIT (voor de gewone lijsten).
+// Zodra een werkbon op "afgerond" (Betaald/Afgerond) staat, verdwijnt hij
+// direct uit de gewone overzichten en is hij alleen nog via het Archief te
+// vinden. Niet-afgeronde items blijven altijd zichtbaar.
 export function excludeArchivedWorkorders(){
 
     return {
 
         NOT:{
 
-            status:"afgerond",
-
-            updatedAt:{
-                lt:archiveCutoff()
-            }
+            status:"afgerond"
 
         }
 
@@ -48,11 +46,7 @@ export function onlyArchivedWorkorders(){
 
     return {
 
-        status:"afgerond",
-
-        updatedAt:{
-            lt:archiveCutoff()
-        }
+        status:"afgerond"
 
     };
 

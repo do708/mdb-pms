@@ -32,9 +32,35 @@ model Customer {
   updatedAt   DateTime     @updatedAt
   color       String       @default("#2563eb")
   formSchema  Json?
+  publicToken String?      @unique
   assignments Assignment[]
   projects    Project[]
   workorders  Workorder[]
+  aanvragen   Aanvraag[]
+}
+
+
+// Publieke opdrachtaanvraag, ingediend door een opdrachtgever via de unieke
+// link (/aanvraag?client_id=TOKEN). Wordt op het dashboard getoond en kan
+// met "In behandeling nemen" omgezet worden naar een werkbon.
+model Aanvraag {
+  id            String    @id @default(cuid())
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId    String
+  locatie       String?
+  straat        String?
+  huisnummer    String?
+  postcode      String?
+  plaats        String?
+  schermen      String?
+  beugel        String?
+  stroom        String?
+  internet      String?
+  opmerkingen   String?
+  bijlagen      Json?
+  status        String    @default("open")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Project {
@@ -57,15 +83,20 @@ model Workorder {
   customerId     String?
   location       String?
   city           String?
+  contactPersoon String?
+  contactEmail   String?
+  contactPhone   String?
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
   description    String?
+  werkInstructie String?
   workDate       DateTime?
   internalNotes  String?
   number         String              @unique
   assignedUserId String?
   plannedDate    DateTime?
   plannedEndDate DateTime?
+  plannedHours   Float?
   assignmentId   String?
   formData       Json?
   pdfData        Bytes?
@@ -80,6 +111,7 @@ model Workorder {
   hours          WorkorderHour[]
   materials      WorkorderMaterial[]
   photos         WorkorderPhoto[]
+  attachments    WorkorderAttachment[]
   signature      WorkorderSignature?
   extraEngineers WorkorderEngineer[]
   forms          WorkorderForm[]
@@ -131,6 +163,17 @@ model WorkorderPhoto {
   caption     String?
   createdAt   DateTime  @default(now())
   workorder   Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+}
+
+model WorkorderAttachment {
+  id           String    @id @default(cuid())
+  workorderId  String
+  url          String
+  filename     String?
+  originalName String?
+  contentType  String?
+  createdAt    DateTime  @default(now())
+  workorder    Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
 }
 
 model WorkorderSignature {

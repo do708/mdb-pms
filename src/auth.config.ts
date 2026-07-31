@@ -47,7 +47,12 @@ export const authConfig = {
             // Publiek
             if (
                 pathname === "/login" ||
-                pathname.startsWith("/api/auth")
+                pathname.startsWith("/api/auth") ||
+                // Publiek aanvraagportaal: beveiligd via de unieke token in de
+                // URL, dus geen login vereist. Let op: alleen de publieke
+                // token- en upload-endpoints, niet /api/aanvragen (dashboard).
+                pathname === "/aanvraag" ||
+                pathname.startsWith("/api/aanvraag/")
             ) {
                 // Al ingelogd? Niet nog een keer het loginscherm tonen.
                 if (user && pathname === "/login") {

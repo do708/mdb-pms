@@ -20,6 +20,15 @@ interface EngineerWorkorder {
     plannedDate:string | null;
 
 
+    customer?:{
+
+        name:string;
+
+        color?:string | null;
+
+    } | null;
+
+
     project?:{
 
         name:string;
@@ -265,6 +274,8 @@ export default function EngineerPage(){
                                 🏢{" "}
 
                                 {
+                                    item.customer?.name
+                                    ||
                                     item.project?.customer?.name
                                     ||
                                     "Geen klant"
@@ -283,6 +294,8 @@ export default function EngineerPage(){
 
                                 {
                                     item.project?.name
+                                    ||
+                                    item.title
                                     ||
                                     "Geen project"
                                 }

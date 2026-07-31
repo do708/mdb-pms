@@ -5,6 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 
 import { excludeArchivedWorkorders, excludeArchivedForms } from "@/lib/archive";
+import {
+    leesKlaarzetMateriaal,
+    heeftMateriaal,
+    materiaalCompleet
+} from "@/lib/klaarzetMateriaal";
 
 
 
@@ -30,7 +35,7 @@ export async function GET(){
 
         // Statussen waarin de werkbon nog door de monteur ingevuld moet worden
         const NOG_IN_TE_VULLEN =
-            ["ontvangen","afspraak","materiaal","ingepland"];
+            ["ontvangen","afspraak","ingepland"];
 
 
 
@@ -214,6 +219,73 @@ export async function GET(){
 
 
 
+        // --- Materiaal-waarschuwing: klussen van MORGEN waarvan het
+        //     klaargezet materiaal nog niet volledig gecontroleerd is. ---
+        const startMorgen =
+            new Date(startVandaag);
+        startMorgen.setDate(startMorgen.getDate() + 1);
+
+        const eindMorgen =
+            new Date(startMorgen);
+        eindMorgen.setDate(eindMorgen.getDate() + 1);
+
+
+        const morgenKlussen =
+            await prisma.workorder.findMany({
+
+                where:{
+
+                    plannedDate:{
+                        gte:startMorgen,
+                        lt:eindMorgen
+                    },
+
+                    status:{
+                        in:NOG_IN_TE_VULLEN
+                    }
+
+                },
+
+                orderBy:{
+                    plannedDate:"asc"
+                },
+
+                include:{
+                    customer:true,
+                    project:{
+                        include:{
+                            customer:true
+                        }
+                    },
+                    assignedUser:true
+                }
+
+            });
+
+
+        const materiaalWaarschuwing =
+            morgenKlussen
+            .filter(w=>{
+                const km = leesKlaarzetMateriaal(w.formData);
+                // Waarschuwen zodra er materiaal is dat nog niet compleet is.
+                return heeftMateriaal(km) && !materiaalCompleet(km);
+            })
+            .map(w=>({
+                id:w.id,
+                number:w.number,
+                title:w.title,
+                plannedDate:w.plannedDate,
+                customer:
+                    w.customer?.name
+                    ?? w.project?.customer?.name
+                    ?? null,
+                engineer:
+                    w.assignedUser?.name ?? null
+            }));
+
+
+
+
         return NextResponse.json({
 
             counters:{
@@ -232,6 +304,9 @@ export async function GET(){
 
 
             },
+
+
+            materiaalWaarschuwing,
 
 
             teLaat,

@@ -334,6 +334,9 @@ export async function POST(
                     description:
                         body.description || null,
 
+                    werkInstructie:
+                        body.werkInstructie || null,
+
 
 
                     internalNotes:
@@ -368,6 +371,15 @@ export async function POST(
                     city:
                         body.city || null,
 
+                    contactPersoon:
+                        body.contactPersoon || null,
+
+                    contactEmail:
+                        body.contactEmail || null,
+
+                    contactPhone:
+                        body.contactPhone || null,
+
 
 
                     assignedUserId,
@@ -399,6 +411,22 @@ export async function POST(
                         :
 
                         null,
+
+
+
+                    plannedHours:
+
+                        body.plannedHours === null ||
+                        body.plannedHours === undefined ||
+                        body.plannedHours === ""
+
+                        ?
+
+                        null
+
+                        :
+
+                        Number(body.plannedHours),
 
 
 

@@ -8,6 +8,7 @@ import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 
 
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
+import { sendNietGereedMail } from "@/lib/email/sendNietGereedMail";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
@@ -301,6 +302,44 @@ export async function POST(
                 });
             } catch(mailOnlyError){
                 console.error("WERKBON MAIL MISLUKT (afronden gaat door)", mailOnlyError);
+            }
+
+
+            // Extra melding naar kantoor als de werkzaamheden NIET gereed zijn.
+            try {
+
+                const afronding =
+                    (workorder.formData as { afronding?: {
+                        werkzaamhedenGereed?:string;
+                        nietGereedOmschrijving?:string;
+                    } } | null)?.afronding;
+
+                if(afronding?.werkzaamhedenGereed === "niet_gereed"){
+
+                    await sendNietGereedMail({
+                        workorderNumber:
+                            workorder.number,
+                        opdrachtgever:
+                            (workorder.project?.customer?.name
+                             ?? customerName(workorder)),
+                        klant:
+                            customerName(workorder),
+                        adres:
+                            (workorderLocation(workorder)
+                             || [workorder.location, workorder.city].filter(Boolean).join(", ")
+                             || "—"),
+                        werkzaamheden:
+                            (workorder.description ?? workorder.title ?? "—"),
+                        omschrijving:
+                            (afronding.nietGereedOmschrijving || "(geen omschrijving ingevuld)"),
+                        monteur:
+                            (workorder.assignedUser?.name ?? "Een monteur")
+                    });
+
+                }
+
+            } catch(nietGereedError){
+                console.error("NIET-GEREED MAIL MISLUKT (afronden gaat door)", nietGereedError);
             }
 
 

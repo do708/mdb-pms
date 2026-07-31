@@ -1,11 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
 
+const connectionString =
+    process.env.DATABASE_URL
+    ?? "postgresql://postgres:postgres@localhost:5432/mdb_pms";
+
 const adapter = new PrismaPg({
-    connectionString:
-        "postgresql://postgres:postgres@localhost:5432/mdb_pms",
+    connectionString,
 });
 
 

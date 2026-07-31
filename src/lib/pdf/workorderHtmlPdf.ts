@@ -445,9 +445,9 @@ function opleverSections(
 
     return `
   <div class="section">
-    <div class="section-title">Installatiegegevens — 1. Tarief &amp; Uren</div>
+    <div class="section-title">1. Tarief &amp; Uren</div>
     <table class="qa">
-      ${row("Voorrijtarief?",pill(t.voorrijtarief))}
+      ${t.voorrijtarief ? row("Voorrijtarief?",pill(t.voorrijtarief)) : ""}
       ${t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
       ${t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
       ${urenRows}
@@ -585,6 +585,20 @@ function opleverSections(
     </table>
   </div>` : ""}
 
+  ${
+    (
+        m.nieuweBeugels === true ||
+        m.extraHdmiKabels === true ||
+        m.extraPatchkabels === true ||
+        m.extraSwitches === true ||
+        m.utpGetrokken === true ||
+        m.stroomkabelGetrokken === true ||
+        m.verlengsnoeren === true ||
+        m.extraSpeakers === true ||
+        m.multicast !== null ||
+        (m.opmerkingen && String(m.opmerkingen).trim())
+    )
+    ? `
   <div class="section">
     <div class="section-title">Gebruikte materialen</div>
     <table class="qa">
@@ -602,23 +616,9 @@ function opleverSections(
       ${m.multicast !== null ? row("8. Multicast set gebruikt?",pill(m.multicast)) : ""}
       ${m.multicast === true && m.multicastZenders ? row("Zenders (aantal)",textAnswer(m.multicastZenders)) : ""}
       ${m.multicast === true && m.multicastOntvangers ? row("Ontvangers (aantal)",textAnswer(m.multicastOntvangers)) : ""}
-      ${
-        (
-            m.nieuweBeugels !== true &&
-            m.extraHdmiKabels !== true &&
-            m.extraPatchkabels !== true &&
-            m.extraSwitches !== true &&
-            m.utpGetrokken !== true &&
-            m.stroomkabelGetrokken !== true &&
-            m.verlengsnoeren !== true &&
-            m.extraSpeakers !== true
-        )
-        ? row("Materialen","<span class=\"txt\" style=\"color:#94a3b8\">Geen materialen gebruikt</span>")
-        : ""
-      }
     </table>
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
-  </div>
+  </div>` : ""}
 
   <div class="section">
     <div class="section-title">Checklist</div>
@@ -712,7 +712,7 @@ function customFieldsSection(
 
     return `
   <div class="section">
-    <div class="section-title">Klant-specifieke gegevens</div>
+    <div class="section-title">Opdrachtgever-specifieke gegevens</div>
     ${blocks}
   </div>`;
 
@@ -766,66 +766,77 @@ function generateHtml(
   body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     font-size: 10px;
-    color: #1e293b;
-    line-height: 1.4;
+    color: #1f2937;
+    line-height: 1.45;
     background: #fff;
   }
-  .page { width: 210mm; padding: 16mm 14mm; }
+  .page { width: 210mm; padding: 15mm 14mm; }
   /* Header */
-  .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 12px; border-bottom: 3px solid #0066ff; margin-bottom: 16px; }
-  .logo-block { display: flex; align-items: center; gap: 10px; }
-  .mdb-logo { height: 42px; width: auto; object-fit: contain; }
-  .logo-box { width: 36px; height: 36px; background: #0066ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-  .logo-text { color: #fff; font-weight: 800; font-size: 16px; }
-  .company-name { font-weight: 700; font-size: 14px; color: #0f172a; }
-  .company-sub { font-size: 9px; color: #64748b; }
-  .order-doc-title { font-size: 10px; font-weight: 700; color: #d6007e; text-transform: uppercase; letter-spacing: 1px; }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+    border-bottom: 4px solid #0066ff;
+  }
+  .logo-block { display: flex; align-items: center; gap: 12px; }
+  .mdb-logo { height: 46px; width: auto; object-fit: contain; }
+  .logo-box { width: 40px; height: 40px; background: #0066ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-text { color: #fff; font-weight: 800; font-size: 18px; }
+  .company-name { font-weight: 700; font-size: 15px; color: #0a2540; }
+  .company-sub { font-size: 8.5px; color: #64748b; }
+  .order-doc-title { font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; }
   .order-number { text-align: right; }
-  .order-number-value { font-size: 18px; font-weight: 800; color: #0066ff; letter-spacing: -0.5px; }
-  .order-meta { font-size: 9px; color: #64748b; margin-top: 2px; }
-  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 600; background: #e0eaff; color: #0066ff; }
+  .order-number-value { font-size: 22px; font-weight: 800; color: #d6007e; letter-spacing: -0.5px; }
+  .order-meta { font-size: 8.5px; color: #64748b; margin-top: 2px; }
+  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 600; background: rgba(255,255,255,0.2); color: #fff; }
   /* Sections */
-  .section { margin-bottom: 14px; page-break-inside: avoid; }
-  .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #0f172a; margin-bottom: 8px; padding: 5px 0 5px 10px; border-left: 3px solid #d6007e; background: #f8fafc; border-radius: 0 3px 3px 0; }
+  .section { margin-bottom: 15px; page-break-inside: avoid; }
+  .section-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px;
+    color: #0a2540; margin-bottom: 9px; padding: 6px 0 6px 11px;
+    border-left: 4px solid #d6007e; background: #f4f7fb; border-radius: 0 4px 4px 0;
+  }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; }
-  .info-label { font-size: 8px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-  .info-value { font-size: 10px; color: #1e293b; margin-top: 2px; font-weight: 500; }
+  .info-box { background: #f8fafc; border: 1px solid #e6ebf2; border-radius: 8px; padding: 11px; }
+  .info-label { font-size: 8px; font-weight: 700; color: #8a97a8; text-transform: uppercase; letter-spacing: 0.6px; }
+  .info-value { font-size: 10px; color: #1f2937; margin-top: 3px; font-weight: 500; }
   /* Tables */
-  table { width: 100%; border-collapse: collapse; font-size: 9px; }
-  thead tr { background: #0066ff; color: #fff; }
-  thead th { padding: 6px 8px; text-align: left; font-weight: 600; letter-spacing: 0.3px; }
-  tbody tr:nth-child(even) { background: #f8fafc; }
-  tbody td { padding: 5px 8px; border-bottom: 1px solid #e2e8f0; color: #334155; }
-  tfoot tr { background: #0f172a; color: #fff; }
-  tfoot td { padding: 6px 8px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 9px; border-radius: 8px; overflow: hidden; }
+  thead tr { background: #0a2540; color: #fff; }
+  thead th { padding: 7px 9px; text-align: left; font-weight: 600; letter-spacing: 0.3px; }
+  tbody tr:nth-child(even) { background: #f4f7fb; }
+  tbody td { padding: 6px 9px; border-bottom: 1px solid #e6ebf2; color: #334155; }
+  tfoot tr { background: #0066ff; color: #fff; }
+  tfoot td { padding: 7px 9px; font-weight: 700; }
   /* Vraag/antwoord */
-  .qa td { padding: 4px 8px; border-bottom: 1px solid #eef2f7; }
-  .qa .q { color: #334155; width: 62%; }
-  .qa .a { text-align: right; }
+  .qa td { padding: 5px 9px; border-bottom: 1px solid #eef2f7; }
+  .qa .q { color: #475569; width: 62%; }
+  .qa .a { text-align: right; font-weight: 600; color:#0a2540; }
   /* Hardware-tabel */
   .hardware-table { width: 100%; border-collapse: collapse; font-size: 9px; }
-  .hardware-table th { background: #f1f5f9; text-align: left; padding: 5px 8px; font-weight: 700; color: #334155; border: 1px solid #e2e8f0; }
-  .hardware-table td { padding: 5px 8px; border: 1px solid #e2e8f0; color: #1e293b; }
-  .txt { font-weight: 600; color: #1e293b; }
-  .pill { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 8.5px; font-weight: 600; }
+  .hardware-table th { background: #eef3f9; text-align: left; padding: 6px 9px; font-weight: 700; color: #334155; border: 1px solid #e6ebf2; }
+  .hardware-table td { padding: 6px 9px; border: 1px solid #e6ebf2; color: #1f2937; }
+  .txt { font-weight: 600; color: #1f2937; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 8.5px; font-weight: 600; }
   .pill-yes { background: #dcf5e4; color: #15803d; }
   .pill-no { background: #ddf1fd; color: #0369a1; }
   .pill-empty { background: #f1f5f9; color: #94a3b8; }
   /* Beschrijving / meerwerk */
-  .description-box { background: #f8fafc; border-left: 3px solid #0066ff; padding: 8px 10px; border-radius: 0 4px 4px 0; font-size: 9px; color: #334155; line-height: 1.5; }
+  .description-box { background: #f8fafc; border-left: 4px solid #0066ff; padding: 9px 11px; border-radius: 0 6px 6px 0; font-size: 9.5px; color: #334155; line-height: 1.55; }
   /* Foto's */
-  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
   .photo-item { page-break-inside: avoid; }
-  .photo-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
-  .photo-caption { font-size: 9px; color: #475569; margin-top: 3px; padding: 2px 4px; background: #f8fafc; border-radius: 3px; }
+  .photo-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e6ebf2; border-radius: 8px; background: #f8fafc; }
+  .photo-caption { font-size: 9px; color: #475569; margin-top: 4px; padding: 3px 6px; background: #f4f7fb; border-radius: 4px; }
   /* Handtekeningen */
-  .sig-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; min-height: 90px; width: 100%; }
+  .sig-box { border: 1px solid #e6ebf2; border-radius: 8px; padding: 9px; min-height: 90px; width: 100%; background:#fff; }
   .sig-img { width: 100%; max-height: 120px; object-fit: contain; }
   .sig-line { border-top: 1px dashed #cbd5e1; margin-top: 40px; padding-top: 4px; font-size: 8px; color: #94a3b8; }
   /* Footer */
-  .footer { margin-top: 18px; padding-top: 12px; border-top: 2px solid #ffd400; display: flex; justify-content: space-between; align-items: flex-end; }
+  .footer { margin-top: 20px; padding-top: 12px; border-top: 3px solid #ffd400; display: flex; justify-content: space-between; align-items: flex-end; }
   .footer-meta { font-size: 8px; color: #94a3b8; line-height: 1.8; }
   .qr-img { width: 56px; height: 56px; }
 </style>
@@ -861,7 +872,7 @@ function generateHtml(
         <div class="info-value" style="font-size:12px;font-weight:700">${esc(data.title)}</div>
       </div>
       <div class="info-box">
-        <div class="info-label">${opdrachtgever ? "Opdrachtgever · Klant" : "Klant"}</div>
+        <div class="info-label">Opdrachtgever</div>
         ${opdrachtgever ? `<div class="info-value" style="font-size:11px;font-weight:700">${esc(opdrachtgever)}</div>` : ""}
         <div class="info-value" style="font-size:11px;font-weight:700">${esc(data.customer.name)}</div>
         ${data.customer.address ? `<div class="info-value" style="font-size:9px;color:#64748b">${esc(data.customer.address)}</div>` : ""}
@@ -1011,7 +1022,6 @@ function generateHtml(
       <div style="font-weight:700;color:#1e293b;margin-bottom:2px">MDB Networks B.V.</div>
       <div>Werkbon: ${esc(data.number)}</div>
       <div>Gegenereerd: ${formatDateTime(new Date())}</div>
-      <div style="margin-top:4px;color:#cbd5e1">Dit is een automatisch gegenereerd document</div>
     </div>
   </div>
 

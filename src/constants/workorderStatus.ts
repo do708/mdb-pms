@@ -27,14 +27,8 @@ export const WORKORDER_STATUSES:WorkorderStatus[] = [
 
     {
         key:"afspraak",
-        label:"Afspraak gemaakt",
+        label:"Afspraak verstuurd",
         badge:"bg-teal-100 text-teal-700"
-    },
-
-    {
-        key:"materiaal",
-        label:"Materiaal besteld/ontvangen",
-        badge:"bg-amber-100 text-amber-700"
     },
 
     {
@@ -58,14 +52,8 @@ export const WORKORDER_STATUSES:WorkorderStatus[] = [
     },
 
     {
-        key:"betaald",
-        label:"Betaald",
-        badge:"bg-fuchsia-100 text-fuchsia-700"
-    },
-
-    {
         key:"afgerond",
-        label:"Afgerond",
+        label:"Betaald / Afgerond",
         badge:"bg-gray-200 text-gray-700"
     }
 
@@ -122,7 +110,8 @@ export function migrateStatus(
     const map:Record<string,string> = {
         open:"ontvangen",
         in_uitvoering:"ingepland",
-        afgerond:"afgerond"
+        materiaal:"ingepland",
+        betaald:"afgerond"
     };
 
     if(!key){

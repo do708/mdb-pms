@@ -28,8 +28,8 @@ export const OPDRACHTGEVERS = [
 export const BEUGEL_TYPES = [
     "Muurbeugel",
     "Zwenkbeugel",
-    "Plafondbeugel < 150cm",
-    "Plafondbeugel > 150cm",
+    "Plafondbeugel 150 cm",
+    "Plafondbeugel 300 cm",
     "Vloerstandaard",
     "Etalagescherm",
     "Anders"
@@ -249,6 +249,8 @@ export interface OpleverData {
         meerwerkInOpdrachtVan:string;
         netwerkGecontroleerdDoor:string;
         contactpersoon:string;
+        werkzaamhedenGereed:"" | "gereed" | "niet_gereed";
+        nietGereedOmschrijving:string;
         handtekening:string;
     };
 
@@ -263,6 +265,25 @@ export interface OpleverData {
     evalue8SpareKiosk156:string;
     evalue8SpareKiosk21:string;
     evalue8SpareMelding:boolean | null;
+
+    // Klaargezet materiaal (bij het klaarzetten van de werkbon ingevuld).
+    // Pakbon-upload + per soort een aantal/omschrijving en of het geleverd
+    // en klaargezet is.
+    klaarzetMateriaal:{
+        pakbonUrl:string;
+        schermenAantal:string;
+        schermenGeleverd:boolean;
+        schermenKlaargezet:boolean;
+        playersAantal:string;
+        playersGeleverd:boolean;
+        playersKlaargezet:boolean;
+        beugelsAantal:string;
+        beugelsGeleverd:boolean;
+        beugelsKlaargezet:boolean;
+        versterkersAantal:string;
+        versterkersGeleverd:boolean;
+        versterkersKlaargezet:boolean;
+    };
 
     // Per-opdrachtgever extra velden (dynamisch, afhankelijk van klant)
     custom:Record<string,unknown>;
@@ -478,6 +499,8 @@ export function emptyOpleverData():OpleverData {
             meerwerkInOpdrachtVan:"",
             netwerkGecontroleerdDoor:"",
             contactpersoon:"",
+            werkzaamhedenGereed:"",
+            nietGereedOmschrijving:"",
             handtekening:""
         },
 
@@ -489,6 +512,22 @@ export function emptyOpleverData():OpleverData {
         evalue8SpareKiosk156:"",
         evalue8SpareKiosk21:"",
         evalue8SpareMelding:null,
+
+        klaarzetMateriaal:{
+            pakbonUrl:"",
+            schermenAantal:"",
+            schermenGeleverd:false,
+            schermenKlaargezet:false,
+            playersAantal:"",
+            playersGeleverd:false,
+            playersKlaargezet:false,
+            beugelsAantal:"",
+            beugelsGeleverd:false,
+            beugelsKlaargezet:false,
+            versterkersAantal:"",
+            versterkersGeleverd:false,
+            versterkersKlaargezet:false
+        },
 
         custom:{}
 
@@ -671,6 +710,18 @@ export function mergeOpleverData(
         evalue8SpareMelding:(
             typeof data.evalue8SpareMelding === "boolean" ? data.evalue8SpareMelding : null
         ),
+
+        klaarzetMateriaal:{
+            ...empty.klaarzetMateriaal,
+            ...(
+                data.klaarzetMateriaal &&
+                typeof data.klaarzetMateriaal === "object"
+                ?
+                data.klaarzetMateriaal
+                :
+                {}
+            )
+        },
 
         custom:{
             ...empty.custom,
