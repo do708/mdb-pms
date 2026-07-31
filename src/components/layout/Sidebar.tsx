@@ -142,7 +142,7 @@ const menu:MenuItem[] = [
         ]
     },
     {
-        name:"Klanten",
+        name:"Opdrachtgevers",
         href:"/customers",
         icon:Users,
         roles:[

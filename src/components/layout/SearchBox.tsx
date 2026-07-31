@@ -400,7 +400,7 @@ export default function SearchBox(){
                                         pt-2
                                         pb-1
                                     ">
-                                        Klanten
+                                        Opdrachtgevers
                                     </p>
 
                                     {

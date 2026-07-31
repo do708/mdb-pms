@@ -162,7 +162,7 @@ export async function generateOpleverPdf(
 
 
 
-    let page:PDFPage;
+    let page!:PDFPage;
 
     let y = 0;
 
@@ -651,17 +651,17 @@ export async function generateOpleverPdf(
 
     labelValue(
         "Parkeerkosten:",
-        data.tarief.parkeerkosten
+        data.tarief.parkeerkosten.kosten
     );
 
     labelValue(
         "Materiaalkosten:",
-        data.tarief.materiaalkosten
+        data.tarief.materiaalkosten.kosten
     );
 
     labelValue(
         "Hotel / sejour:",
-        data.tarief.hotelSejour
+        data.tarief.sejour.kosten
     );
 
 
@@ -680,44 +680,83 @@ export async function generateOpleverPdf(
 
     labelValue(
         "Welk formaat scherm?",
-        data.installatie.schermFormaat
+        [
+            ...data.installatie.nieuweFormaten,
+            ...data.installatie.hergebruikteFormaten
+        ]
+            .filter((b) => b.formaat || b.aantal)
+            .map((b) =>
+                [b.aantal ? `${b.aantal}x` : "", b.formaat]
+                    .filter(Boolean)
+                    .join(" ")
+            )
+            .join(", ")
     );
 
     jaNee(
         "Heb je tilhulp gehad?",
-        data.installatie.tilhulp
+        [
+            ...data.installatie.nieuweFormaten,
+            ...data.installatie.hergebruikteFormaten
+        ].some((b) => b.tilhulp)
     );
 
     labelValue(
         "Hoeveel schermen van dit formaat?",
-        data.installatie.aantalSchermen
+        String(
+            [
+            ...data.installatie.nieuweFormaten,
+            ...data.installatie.hergebruikteFormaten
+        ]
+                .reduce((som, b) => som + (parseInt(b.aantal, 10) || 0), 0)
+        )
     );
 
-    if(data.installatie.orientatie){
+    {
+        const orientaties =
+            [
+            ...data.installatie.nieuweFormaten,
+            ...data.installatie.hergebruikteFormaten
+        ]
+                .map((b) => b.orientatie)
+                .filter(Boolean)
+                .join(", ");
 
-        keuze(
-            "Oriëntatie:",
-            data.installatie.orientatie,
-            ["Landscape","Portrait"]
-        );
-
+        if(orientaties){
+            labelValue(
+                "Oriëntatie:",
+                orientaties
+            );
+        }
     }
 
     labelValue(
         "Type beugel:",
-        data.installatie.typeBeugel
+        [
+            ...data.installatie.nieuweFormaten,
+            ...data.installatie.hergebruikteFormaten
+        ]
+            .map((b) => b.typeBeugel)
+            .filter(Boolean)
+            .join(", ")
     );
 
     labelValue(
         "Aantal schermen ingesteld:",
-        data.installatie.aantalIngesteld
+        [
+            ...data.installatie.nieuweFormaten,
+            ...data.installatie.hergebruikteFormaten
+        ]
+            .map((b) => b.aantalIngesteld)
+            .filter(Boolean)
+            .join(", ")
     );
 
 
     text("3. Videowall",{ useBold:true, gap:2 });
 
     if(data.installatie.videowall){
-        text(data.installatie.videowall,{ gap:2 });
+        text(data.installatie.videowall ? "Ja" : "Nee",{ gap:2 });
     }
 
     dashedLine();
@@ -726,7 +765,7 @@ export async function generateOpleverPdf(
     text("4. Kiosk",{ useBold:true, gap:2 });
 
     if(data.installatie.kiosk){
-        text(data.installatie.kiosk,{ gap:2 });
+        text(data.installatie.kiosk ? "Ja" : "Nee",{ gap:2 });
     }
 
     dashedLine();
@@ -757,7 +796,7 @@ export async function generateOpleverPdf(
     text("6. Audio",{ useBold:true, gap:2 });
 
     if(data.installatie.audio){
-        text(data.installatie.audio,{ gap:2 });
+        text(data.installatie.audio ? "Ja" : "Nee",{ gap:2 });
     }
 
     dashedLine();

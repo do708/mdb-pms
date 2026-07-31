@@ -362,7 +362,7 @@ export default function EditWorkorderPage(){
 
 
 
-    async function save(){
+    async function save(redirectNaAfloop = true){
 
 
         setError("");
@@ -444,7 +444,11 @@ export default function EditWorkorderPage(){
             if(response.ok){
 
 
-                router.push(`/workorders/${id}`);
+                if(redirectNaAfloop){
+                    router.push(`/workorders/${id}`);
+                }
+
+                return true;
 
 
             } else {
@@ -461,6 +465,8 @@ export default function EditWorkorderPage(){
                     "Opslaan mislukt"
                 );
 
+                return false;
+
 
             }
 
@@ -476,6 +482,54 @@ export default function EditWorkorderPage(){
 
 
 
+
+    // De afspraak kan pas verstuurd worden als datum, starttijd én een
+    // hoofdmonteur zijn ingevuld.
+    const afspraakKanVerstuurd =
+        Boolean(plannedDate) &&
+        Boolean(startTime) &&
+        Boolean(assignedUserId);
+
+
+
+    async function verstuurAfspraak(){
+
+        setError("");
+
+        // Eerst alles opslaan (zonder door te sturen), dan de afspraak versturen.
+        const opgeslagen =
+            await save(false);
+
+        if(!opgeslagen){
+            return;
+        }
+
+        setSaving(true);
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/workorders/${id}/send-afspraak`,
+                    { method:"POST" }
+                );
+
+            if(response.ok){
+                router.push(`/workorders/${id}`);
+            } else {
+                const data =
+                    await response.json().catch(()=>({}));
+                setError(
+                    data.error ??
+                    "Afspraak versturen mislukt"
+                );
+            }
+
+        } finally {
+            setSaving(false);
+        }
+
+    }
 
     if(loading){
 
@@ -1277,6 +1331,14 @@ export default function EditWorkorderPage(){
 
 
 
+            {
+                !afspraakKanVerstuurd && (
+                    <p className="text-sm text-gray-500 mb-2">
+                        Vul datum, starttijd en een hoofdmonteur in om de afspraak te kunnen versturen.
+                    </p>
+                )
+            }
+
             <div className="
                 flex
                 gap-3
@@ -1284,7 +1346,7 @@ export default function EditWorkorderPage(){
 
                 <button
 
-                    onClick={save}
+                    onClick={()=>save(true)}
 
                     disabled={saving}
 
@@ -1300,7 +1362,37 @@ export default function EditWorkorderPage(){
 
                 >
 
-                    {saving ? "Bezig..." : "Opslaan"}
+                    {saving ? "Bezig..." : "Opslaan als concept"}
+
+                </button>
+
+
+                <button
+
+                    onClick={verstuurAfspraak}
+
+                    disabled={saving || !afspraakKanVerstuurd}
+
+                    title={
+                        afspraakKanVerstuurd
+                        ? "Verstuur de afspraakbevestiging"
+                        : "Vul eerst datum, starttijd en hoofdmonteur in"
+                    }
+
+                    className="
+                        bg-sky-600
+                        text-white
+                        rounded-xl
+                        px-5
+                        py-3
+                        font-bold
+                        disabled:opacity-40
+                        disabled:cursor-not-allowed
+                    "
+
+                >
+
+                    Afspraak versturen
 
                 </button>
 

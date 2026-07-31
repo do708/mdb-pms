@@ -77,8 +77,9 @@ function AanvragenSectie(){
             const data = await res.json();
 
             if(res.ok && data.workorderId){
-                // Naar de nieuwe werkbon om te controleren en in te plannen.
-                window.location.href = `/engineer/workorders/${data.workorderId}`;
+                // Naar de klaarzet/bewerk-pagina om te controleren, plannen en
+                // de afspraak te versturen.
+                window.location.href = `/workorders/${data.workorderId}/edit`;
             } else {
                 setBezigId("");
                 laad();
