@@ -18,6 +18,12 @@ interface KlaarzetMateriaal {
     beugelsAantal?:string;
     beugelsGeleverd?:boolean;
     beugelsKlaargezet?:boolean;
+    kioskAantal?:string;
+    kioskGeleverd?:boolean;
+    kioskKlaargezet?:boolean;
+    versterkersAantal?:string;
+    versterkersGeleverd?:boolean;
+    versterkersKlaargezet?:boolean;
 }
 
 
@@ -99,7 +105,9 @@ export function materiaalCompleet(
     return (
         regelInOrde(km.schermenAantal, km.schermenGeleverd, km.schermenKlaargezet) &&
         regelInOrde(km.playersAantal, km.playersGeleverd, km.playersKlaargezet) &&
-        regelInOrde(km.beugelsAantal, km.beugelsGeleverd, km.beugelsKlaargezet)
+        regelInOrde(km.beugelsAantal, km.beugelsGeleverd, km.beugelsKlaargezet) &&
+        regelInOrde(km.kioskAantal, km.kioskGeleverd, km.kioskKlaargezet) &&
+        regelInOrde(km.versterkersAantal, km.versterkersGeleverd, km.versterkersKlaargezet)
     );
 
 }

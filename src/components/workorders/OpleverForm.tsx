@@ -2765,33 +2765,37 @@ export default function OpleverForm({
 
                 <div className="overflow-x-auto">
 
-                    <table className="w-full text-sm border-collapse">
+                    <table className="w-full text-sm border-collapse table-fixed">
 
                         <thead>
 
                             <tr className="bg-gray-50">
 
-                                <th className="border p-2 text-left font-medium text-gray-600 w-48">
+                                <th style={{width:"14%"}} className="border p-2 text-left font-medium text-gray-600">
                                     Geïnstalleerd / gedemonteerd
                                 </th>
 
-                                <th className="border p-2 text-left font-medium text-gray-600">
+                                <th style={{width:"12%"}} className="border p-2 text-left font-medium text-gray-600">
+                                    Benaming
+                                </th>
+
+                                <th style={{width:"12%"}} className="border p-2 text-left font-medium text-gray-600">
                                     Merk
                                 </th>
 
-                                <th className="border p-2 text-left font-medium text-gray-600">
+                                <th style={{width:"14%"}} className="border p-2 text-left font-medium text-gray-600">
                                     Type
                                 </th>
 
-                                <th className="border p-2 text-left font-medium text-gray-600">
+                                <th style={{width:"22%"}} className="border p-2 text-left font-medium text-gray-600">
                                     Serienummer
                                 </th>
 
-                                <th className="border p-2 text-left font-medium text-gray-600">
+                                <th style={{width:"22%"}} className="border p-2 text-left font-medium text-gray-600">
                                     MAC Address
                                 </th>
 
-                                <th className="border p-2 w-10"></th>
+                                <th style={{width:"4%"}} className="border p-2"></th>
 
                             </tr>
 
@@ -2817,6 +2821,17 @@ export default function OpleverForm({
                                                 <option value="Geïnstalleerd">Geïnstalleerd</option>
                                                 <option value="Gedemonteerd">Gedemonteerd</option>
                                             </select>
+                                        </td>
+
+                                        <td className="border p-1">
+                                            <input
+                                                value={regel.benaming}
+                                                onChange={(e)=>update(draft=>{
+                                                    draft.hardware[index].benaming = e.target.value;
+                                                })}
+                                                className="w-full p-1.5 rounded-lg bg-white"
+                                                placeholder="bijv. Scherm 1"
+                                            />
                                         </td>
 
                                         <td className="border p-1">
@@ -2880,7 +2895,7 @@ export default function OpleverForm({
                             {
                                 data.hardware.length === 0 && (
                                     <tr>
-                                        <td colSpan={6} className="border p-3 text-center text-gray-400">
+                                        <td colSpan={7} className="border p-3 text-center text-gray-400">
                                             Nog geen hardware toegevoegd
                                         </td>
                                     </tr>
@@ -2899,6 +2914,7 @@ export default function OpleverForm({
                     onClick={()=>update(draft=>{
                         draft.hardware.push({
                             actie:"",
+                            benaming:"",
                             merk:"",
                             type:"",
                             serienummer:"",

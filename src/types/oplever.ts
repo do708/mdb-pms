@@ -280,6 +280,9 @@ export interface OpleverData {
         beugelsAantal:string;
         beugelsGeleverd:boolean;
         beugelsKlaargezet:boolean;
+        kioskAantal:string;
+        kioskGeleverd:boolean;
+        kioskKlaargezet:boolean;
         versterkersAantal:string;
         versterkersGeleverd:boolean;
         versterkersKlaargezet:boolean;
@@ -300,6 +303,7 @@ export interface EValue8Item {
 
 export interface HardwareRegel {
     actie:"" | "Geïnstalleerd" | "Gedemonteerd";
+    benaming:string;
     merk:string;
     type:string;
     serienummer:string;
@@ -524,6 +528,9 @@ export function emptyOpleverData():OpleverData {
             beugelsAantal:"",
             beugelsGeleverd:false,
             beugelsKlaargezet:false,
+            kioskAantal:"",
+            kioskGeleverd:false,
+            kioskKlaargezet:false,
             versterkersAantal:"",
             versterkersGeleverd:false,
             versterkersKlaargezet:false
@@ -666,6 +673,8 @@ export function mergeOpleverData(
             data.hardware.map((h:Record<string,unknown>)=>({
                 actie:
                     typeof h.actie === "string" ? h.actie as HardwareRegel["actie"] : "",
+                benaming:
+                    typeof h.benaming === "string" ? h.benaming : "",
                 merk:
                     typeof h.merk === "string" ? h.merk : "",
                 type:

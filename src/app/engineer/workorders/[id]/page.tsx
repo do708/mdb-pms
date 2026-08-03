@@ -270,6 +270,9 @@ export default function EngineerWorkorderPage(){
             beugelsAantal:"",
             beugelsGeleverd:false,
             beugelsKlaargezet:false,
+            kioskAantal:"",
+            kioskGeleverd:false,
+            kioskKlaargezet:false,
             versterkersAantal:"",
             versterkersGeleverd:false,
             versterkersKlaargezet:false
@@ -309,6 +312,11 @@ export default function EngineerWorkorderPage(){
 
     const [loading,setLoading] =
         useState(true);
+
+
+    // Toont het bedankscherm nadat de monteur de werkbon heeft verstuurd.
+    const [verstuurd,setVerstuurd] =
+        useState(false);
 
 
 
@@ -696,56 +704,23 @@ async function completeWorkorder(){
 
 
 
-        const pdfResponse =
+        // De PDF is "mooi meegenomen": kantoor heeft de melding al via de
+        // complete-stap hierboven. Lukt de PDF niet, dan negeren we dat stil -
+        // de monteur krijgt daar geen foutmelding over.
+        try {
+
             await fetch(
-
                 `/api/workorders/${id}/generate-pdf`,
-
                 {
-
                     method:"POST"
-
                 }
-
             );
 
+        } catch(pdfError){
 
-
-
-
-
-        if(!pdfResponse.ok){
-
-
-            alert(
-                "PDF genereren mislukt"
-            );
-
-
-            return;
+            console.error("PDF genereren mislukt (genegeerd):", pdfError);
 
         }
-
-
-
-
-
-
-
-
-        const pdfData =
-            await pdfResponse.json();
-
-
-
-
-
-
-        alert(
-
-            "Werkbon verstuurd. Kantoor heeft een melding gekregen."
-
-        );
 
 
 
@@ -754,6 +729,15 @@ async function completeWorkorder(){
             "uitgevoerd"
 
         );
+
+
+        // Bedankscherm tonen; na 5 seconden automatisch terug naar het
+        // monteur-dashboard.
+        setVerstuurd(true);
+
+        setTimeout(()=>{
+            window.location.href = "/engineer";
+        }, 5000);
 
 
 
@@ -802,6 +786,41 @@ async function completeWorkorder(){
 
 
 
+
+
+    if(verstuurd){
+
+        return (
+
+            <main className="
+                min-h-screen
+                flex
+                items-center
+                justify-center
+                p-6
+                bg-gray-50
+            ">
+
+                <div className="text-center max-w-md">
+
+                    <div className="text-6xl mb-4">✓</div>
+
+                    <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                        Bedankt voor het invullen van je werkbon!
+                    </h1>
+
+                    <p className="text-gray-600">
+                        De werkbon is verstuurd en kantoor heeft een melding gekregen.
+                        Je gaat zo automatisch terug naar je dashboard.
+                    </p>
+
+                </div>
+
+            </main>
+
+        );
+
+    }
 
 
     return (
@@ -1412,6 +1431,17 @@ async function completeWorkorder(){
                             onAantal={(v)=>setMateriaal(m=>({...m,beugelsAantal:v}))}
                             onGeleverd={(v)=>setMateriaal(m=>({...m,beugelsGeleverd:v}))}
                             onKlaargezet={(v)=>setMateriaal(m=>({...m,beugelsKlaargezet:v}))}
+                        />
+
+                        <MateriaalRij
+                            label="Kiosk"
+                            plh="bijv. 1x kiosk"
+                            aantal={materiaal.kioskAantal}
+                            geleverd={materiaal.kioskGeleverd}
+                            klaargezet={materiaal.kioskKlaargezet}
+                            onAantal={(v)=>setMateriaal(m=>({...m,kioskAantal:v}))}
+                            onGeleverd={(v)=>setMateriaal(m=>({...m,kioskGeleverd:v}))}
+                            onKlaargezet={(v)=>setMateriaal(m=>({...m,kioskKlaargezet:v}))}
                         />
 
                         <MateriaalRij

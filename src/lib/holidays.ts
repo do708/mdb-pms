@@ -137,3 +137,48 @@ export function holidayMap(years:number[]):Record<string,string> {
     return map;
 
 }
+
+
+// Is de gegeven datum een werkdag? (Niet zaterdag/zondag en geen nationale
+// feestdag.)
+export function isWerkdag(d:Date):boolean {
+
+    const dag = d.getDay();
+
+    // 0 = zondag, 6 = zaterdag
+    if(dag === 0 || dag === 6){
+        return false;
+    }
+
+    const map =
+        holidayMap([d.getFullYear()]);
+
+    const key =
+        iso(d.getFullYear(), d.getMonth() + 1, d.getDate());
+
+    return !map[key];
+
+}
+
+
+
+// De eerstvolgende werkdag ná de gegeven datum (weekend + feestdagen
+// overslaand). Bijvoorbeeld: vanaf vrijdag levert dit maandag op (of dinsdag
+// als maandag een feestdag is).
+export function volgendeWerkdag(vanaf:Date):Date {
+
+    const d = new Date(vanaf);
+    d.setHours(0,0,0,0);
+
+    // Maximaal 14 stappen vooruit (ruim genoeg om elk weekend + feestdagen te
+    // overbruggen), als veiligheidsgrens tegen een oneindige lus.
+    for(let i = 0; i < 14; i++){
+        d.setDate(d.getDate() + 1);
+        if(isWerkdag(d)){
+            return d;
+        }
+    }
+
+    return d;
+
+}

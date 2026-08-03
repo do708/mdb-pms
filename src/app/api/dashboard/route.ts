@@ -11,6 +11,8 @@ import {
     materiaalCompleet
 } from "@/lib/klaarzetMateriaal";
 
+import { volgendeWerkdag } from "@/lib/holidays";
+
 
 
 
@@ -219,14 +221,23 @@ export async function GET(){
 
 
 
-        // --- Materiaal-waarschuwing: klussen van MORGEN waarvan het
-        //     klaargezet materiaal nog niet volledig gecontroleerd is. ---
+        // --- Materiaal-waarschuwing: klussen waarvoor NU (op de laatste
+        //     werkdag vóór de klus) het klaargezet materiaal nog niet volledig
+        //     is. De controle vindt 1 WERKDAG van tevoren plaats: op vrijdag
+        //     waarschuwen we dus ook voor maandag-klussen (weekend + nationale
+        //     feestdagen worden overgeslagen). ---
         const startMorgen =
             new Date(startVandaag);
         startMorgen.setDate(startMorgen.getDate() + 1);
 
+        // De eerstvolgende werkdag ná vandaag. Voor een klus op die dag is
+        // vandaag de laatste werkdag ervoor, dus nu moet de controle gebeuren.
+        const volgWerkdag =
+            volgendeWerkdag(startVandaag);
+
+        // Venster loopt van morgen t/m (en inclusief) die volgende werkdag.
         const eindMorgen =
-            new Date(startMorgen);
+            new Date(volgWerkdag);
         eindMorgen.setDate(eindMorgen.getDate() + 1);
 
 

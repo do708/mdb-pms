@@ -33,7 +33,7 @@ const ONDERDELEN:{
         kleur:"bg-sky-50 border-sky-200",
         velden:[
             { key:"aantal", label:"Aantal schermen", plh:"Bijv. 2" },
-            { key:"formaat", label:"Formaat / inch", plh:"Bijv. 55 inch" },
+            { key:"formaat", label:"Formaat / inch", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"] },
             {
                 key:"beugels",
                 label:"Welke beugels? (vul het aantal in)",
@@ -47,7 +47,7 @@ const ONDERDELEN:{
                 ]
             },
             { key:"orientatie", label:"Oriëntatie", opties:["Landscape","Portrait","Landscape en Portrait"] },
-            { key:"opmerking", label:"Opmerking", plh:"Aanvullende details" }
+            { key:"opmerking", label:"Locatie scherm", plh:"Waar komt het scherm?" }
         ]
     },
     {
@@ -56,9 +56,9 @@ const ONDERDELEN:{
         kleur:"bg-emerald-50 border-emerald-200",
         velden:[
             { key:"configuratie", label:"Configuratie", plh:"Bijv. 2x2, 3x3" },
-            { key:"formaat", label:"Formaat / inch", plh:"Bijv. 46 inch" },
+            { key:"formaat", label:"Formaat / inch", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"] },
             { key:"orientatie", label:"Oriëntatie", opties:["Landscape","Portrait"] },
-            { key:"opmerking", label:"Opmerking", plh:"Aanvullende details" }
+            { key:"opmerking", label:"Locatie scherm", plh:"Waar komt het scherm?" }
         ]
     },
     {
