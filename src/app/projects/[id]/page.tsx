@@ -984,6 +984,14 @@ export default function ProjectDetailPage() {
                                     Alles selecteren
                                 </button>
                             </div>
+                            <p className="text-xs text-gray-500 mb-2">
+                                Je mag uren voor collega&apos;s boeken. In het
+                                urenoverzicht blijft zichtbaar{" "}
+                                <span className="font-medium text-gray-600">
+                                    wie de uren heeft ingevoerd
+                                </span>
+                                .
+                            </p>
                             <div className="flex flex-wrap gap-2">
                                 {engineers.length === 0 ? (
                                     <p className="text-sm text-gray-500">
