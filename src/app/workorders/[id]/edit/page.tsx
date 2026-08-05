@@ -891,7 +891,7 @@ export default function EditWorkorderPage(){
                     {
                         multiDay && (
 
-                            <label className="block">
+                            <label className="block min-w-0 w-full overflow-hidden">
 
                                 <span className="
                                     block
@@ -916,6 +916,7 @@ export default function EditWorkorderPage(){
                                     onChange={(e)=>setEndDate(e.target.value)}
 
                                     className="
+                                        block
                                         w-full
                                         max-w-full
                                         min-w-0

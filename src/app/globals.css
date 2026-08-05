@@ -29,8 +29,8 @@ body {
   }
 }
 
-/* iOS Safari: native date/datetime-pickers hebben een vaste min-breedte.
-   Time-inputs NIET op width:100% zetten — die staan vaak naast elkaar (Van/Tot). */
+/* iOS Safari: native date/datetime-pickers hebben een vaste min-breedte
+   en zetten de waarde vaak rechts → loopt buiten het kader. */
 input[type="date"],
 input[type="datetime-local"],
 input[type="month"],
@@ -40,12 +40,37 @@ input[type="week"] {
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="date"]::-webkit-date-and-time-value,
+input[type="datetime-local"]::-webkit-date-and-time-value,
+input[type="month"]::-webkit-date-and-time-value,
+input[type="week"]::-webkit-date-and-time-value {
+  text-align: left;
+  margin: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+input[type="date"]::-webkit-datetime-edit,
+input[type="datetime-local"]::-webkit-datetime-edit {
+  padding: 0;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
 }
 
 input[type="time"] {
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
+}
+
+input[type="time"]::-webkit-date-and-time-value {
+  text-align: left;
+  margin: 0;
 }
 
 

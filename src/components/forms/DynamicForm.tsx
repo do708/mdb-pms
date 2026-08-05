@@ -631,7 +631,7 @@ export default function DynamicForm({
 
                 return (
 
-                    <label className="block">
+                    <label className="block min-w-0 w-full overflow-hidden">
 
                         <span className="
                             block
@@ -663,6 +663,7 @@ export default function DynamicForm({
                                 rounded-xl
                                 p-3
                                 mt-1
+                                box-border
                             "
 
                         />
@@ -781,7 +782,7 @@ export default function DynamicForm({
 
                 return (
 
-                    <label className="block">
+                    <label className="block min-w-0 w-full overflow-hidden">
 
                         <span className="
                             block
@@ -815,6 +816,7 @@ export default function DynamicForm({
                                 rounded-xl
                                 p-3
                                 mt-1
+                                box-border
                             "
 
                         />

@@ -25,11 +25,8 @@ export default function EngineerMobileNav() {
         <nav
             className="
                 lg:hidden
-                fixed
-                bottom-0
-                left-0
-                right-0
-                z-30
+                shrink-0
+                w-full
                 bg-white
                 border-t
                 border-gray-200

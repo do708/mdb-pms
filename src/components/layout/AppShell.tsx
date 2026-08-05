@@ -43,7 +43,13 @@ export default function AppShell({
     }
 
     return (
-        <div className="min-h-dvh bg-[#f8fafc] flex">
+        <div
+            className="
+                bg-[#f8fafc] flex
+                max-lg:h-dvh max-lg:overflow-hidden
+                lg:min-h-dvh
+            "
+        >
             {menuOpen ? (
                 <button
                     type="button"
@@ -58,15 +64,16 @@ export default function AppShell({
                 onNavigate={() => setMenuOpen(false)}
             />
 
-            <div className="flex-1 flex flex-col min-w-0 w-full">
+            <div className="flex-1 flex flex-col min-w-0 min-h-0 w-full">
                 <Header onMenuOpen={() => setMenuOpen(true)} />
 
                 <main
-                    className={`flex-1 p-4 sm:p-6 lg:p-8 max-w-full overflow-x-hidden min-w-0 ${
-                        isEngineer
-                            ? "max-lg:pb-[4.25rem] lg:pb-8"
-                            : "pb-4 sm:pb-6 lg:pb-8"
-                    }`}
+                    className="
+                        flex-1 min-h-0
+                        max-lg:overflow-y-auto overflow-x-hidden
+                        p-4 sm:p-6 lg:p-8
+                        max-w-full
+                    "
                 >
                     {children}
                 </main>

@@ -930,7 +930,7 @@ function NewWorkorderInner(){
                                 {
                                     multiDay && (
 
-                                        <label className="block">
+                                        <label className="block min-w-0 w-full overflow-hidden">
 
                                             <span className="
                                                 block
@@ -957,6 +957,7 @@ function NewWorkorderInner(){
                                                 }
 
                                                 className="
+                                                    block
                                                     w-full
                                                     max-w-full
                                                     min-w-0

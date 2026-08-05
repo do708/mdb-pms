@@ -126,10 +126,11 @@ export default function NewFormPage(){
 
     return (
 
-        <main className="
-            p-6
-            space-y-6
+        <div className="
+            space-y-5
+            w-full
             max-w-3xl
+            min-w-0
         ">
 
 
@@ -164,7 +165,10 @@ export default function NewFormPage(){
                 bg-white
                 border
                 rounded-2xl
-                p-5
+                p-4
+                sm:p-5
+                min-w-0
+                overflow-hidden
             ">
 
                 <DynamicForm
@@ -180,7 +184,7 @@ export default function NewFormPage(){
             </section>
 
 
-        </main>
+        </div>
 
     );
 
