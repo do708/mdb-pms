@@ -90,13 +90,16 @@ function formatNlDate(
 export default function PlanningPage(){
 
 
-    const { data:session } =
+    const { data:session, status:sessionStatus } =
         useSession();
 
 
     // Monteur mag de planning inzien maar niet wijzigen
     const canEdit =
         session?.user?.role !== "engineer";
+
+    const isEngineer =
+        session?.user?.role === "engineer";
 
 
     const [items,setItems] =
@@ -216,12 +219,13 @@ export default function PlanningPage(){
             :
             [];
 
-        // Een monteur ziet in de weekweergave alleen zijn eigen rij
+        // API filtert al voor monteurs; client-side extra zekerheid
+        // (ook als sessie net geladen is).
         setEngineers(
-            session?.user?.role === "engineer"
+            isEngineer && session?.user?.id
             ?
             allEngineers.filter(
-                (e:any)=>e.id === session?.user?.id
+                (e: { id: string }) => e.id === session.user.id
             )
             :
             allEngineers
@@ -248,12 +252,14 @@ export default function PlanningPage(){
 
 
     useEffect(()=>{
-
+        // Wacht tot de sessie bekend is, anders toont de weekview
+        // kort (of blijvend) alle monteurs vóór de rol-filter.
+        if (sessionStatus === "loading") {
+            return;
+        }
 
         loadPlanning();
-
-
-    },[]);
+    }, [sessionStatus, session?.user?.id, session?.user?.role]);
 
 
 

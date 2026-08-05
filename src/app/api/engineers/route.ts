@@ -28,6 +28,7 @@ export async function GET(){
 
 
 
+        // Monteur mag alleen zichzelf zien (eigen planning-rij).
         const engineers =
             await prisma.user.findMany({
 
@@ -35,7 +36,15 @@ export async function GET(){
 
                     role:"engineer",
 
-                    active:true
+                    active:true,
+
+                    ...(
+                        guard.user.role === "engineer"
+                        ?
+                        { id: guard.user.id }
+                        :
+                        {}
+                    )
 
                 },
 
