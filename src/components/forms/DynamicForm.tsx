@@ -655,8 +655,10 @@ export default function DynamicForm({
                             }
 
                             className="
+                                block
                                 w-full
-                                max-w-xs
+                                max-w-full
+                                min-w-0
                                 border
                                 rounded-xl
                                 p-3
@@ -805,8 +807,10 @@ export default function DynamicForm({
                             }
 
                             className="
+                                block
                                 w-full
-                                max-w-xs
+                                max-w-full
+                                min-w-0
                                 border
                                 rounded-xl
                                 p-3

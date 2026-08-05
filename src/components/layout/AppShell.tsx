@@ -43,7 +43,7 @@ export default function AppShell({
     }
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] flex">
+        <div className="min-h-dvh bg-[#f8fafc] flex">
             {menuOpen ? (
                 <button
                     type="button"
@@ -62,10 +62,10 @@ export default function AppShell({
                 <Header onMenuOpen={() => setMenuOpen(true)} />
 
                 <main
-                    className={`flex-1 p-4 sm:p-6 lg:p-8 max-w-full overflow-x-hidden pb-[max(1rem,env(safe-area-inset-bottom))] ${
+                    className={`flex-1 p-4 sm:p-6 lg:p-8 max-w-full overflow-x-hidden min-w-0 ${
                         isEngineer
-                            ? "max-lg:pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
-                            : ""
+                            ? "max-lg:pb-20 lg:pb-8"
+                            : "pb-4 sm:pb-6 lg:pb-8"
                     }`}
                 >
                     {children}

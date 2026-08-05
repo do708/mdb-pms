@@ -881,11 +881,13 @@ function NewWorkorderInner(){
 
                                         className="
                                             w-full
-                                            max-w-xs
+                                            max-w-full
+                                            min-w-0
                                             border
                                             rounded-xl
                                             p-3
                                             bg-white
+                                            box-border
                                         "
 
                                     />
@@ -953,11 +955,13 @@ function NewWorkorderInner(){
 
                                                 className="
                                                     w-full
-                                                    max-w-xs
+                                                    max-w-full
+                                                    min-w-0
                                                     border
                                                     rounded-xl
                                                     p-3
                                                     bg-white
+                                                    box-border
                                                 "
 
                                             />

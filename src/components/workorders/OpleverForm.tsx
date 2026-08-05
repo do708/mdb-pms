@@ -2788,7 +2788,151 @@ export default function OpleverForm({
 
                 <Kop>Hardware geïnstalleerd / gedemonteerd</Kop>
 
-                <div className="overflow-x-auto">
+                {/* Mobiel: gestapelde kaarten */}
+                <div className="md:hidden space-y-3">
+                    {data.hardware.length === 0 ? (
+                        <p className="border rounded-xl p-3 text-center text-gray-400 text-sm">
+                            Nog geen hardware toegevoegd
+                        </p>
+                    ) : (
+                        data.hardware.map((regel, index) => (
+                            <div
+                                key={index}
+                                className="border rounded-xl p-3 space-y-2 bg-white min-w-0"
+                            >
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs font-semibold text-gray-500">
+                                        Regel {index + 1}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            update((draft) => {
+                                                draft.hardware.splice(index, 1);
+                                            })
+                                        }
+                                        className="text-red-500 text-lg leading-none px-2 py-1"
+                                        title="Regel verwijderen"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+
+                                <label className="block min-w-0">
+                                    <span className="text-xs text-gray-500">
+                                        Geïnstalleerd / gedemonteerd
+                                    </span>
+                                    <select
+                                        value={regel.actie}
+                                        onChange={(e) =>
+                                            update((draft) => {
+                                                draft.hardware[index].actie =
+                                                    e.target
+                                                        .value as HardwareRegel["actie"];
+                                            })
+                                        }
+                                        className="w-full max-w-full min-w-0 p-2 mt-0.5 rounded-lg bg-white border"
+                                    >
+                                        <option value="">—</option>
+                                        <option value="Geïnstalleerd">
+                                            Geïnstalleerd
+                                        </option>
+                                        <option value="Gedemonteerd">
+                                            Gedemonteerd
+                                        </option>
+                                    </select>
+                                </label>
+
+                                <label className="block min-w-0">
+                                    <span className="text-xs text-gray-500">
+                                        Benaming
+                                    </span>
+                                    <input
+                                        value={regel.benaming}
+                                        onChange={(e) =>
+                                            update((draft) => {
+                                                draft.hardware[index].benaming =
+                                                    e.target.value;
+                                            })
+                                        }
+                                        className="w-full max-w-full min-w-0 p-2 mt-0.5 rounded-lg bg-white border"
+                                        placeholder="bijv. Scherm 1"
+                                    />
+                                </label>
+
+                                <div className="grid grid-cols-2 gap-2 min-w-0">
+                                    <label className="block min-w-0">
+                                        <span className="text-xs text-gray-500">
+                                            Merk
+                                        </span>
+                                        <input
+                                            value={regel.merk}
+                                            onChange={(e) =>
+                                                update((draft) => {
+                                                    draft.hardware[index].merk =
+                                                        e.target.value;
+                                                })
+                                            }
+                                            className="w-full max-w-full min-w-0 p-2 mt-0.5 rounded-lg bg-white border"
+                                        />
+                                    </label>
+                                    <label className="block min-w-0">
+                                        <span className="text-xs text-gray-500">
+                                            Type
+                                        </span>
+                                        <input
+                                            value={regel.type}
+                                            onChange={(e) =>
+                                                update((draft) => {
+                                                    draft.hardware[index].type =
+                                                        e.target.value;
+                                                })
+                                            }
+                                            className="w-full max-w-full min-w-0 p-2 mt-0.5 rounded-lg bg-white border"
+                                        />
+                                    </label>
+                                </div>
+
+                                <label className="block min-w-0">
+                                    <span className="text-xs text-gray-500">
+                                        Serienummer
+                                    </span>
+                                    <input
+                                        value={regel.serienummer}
+                                        onChange={(e) =>
+                                            update((draft) => {
+                                                draft.hardware[
+                                                    index
+                                                ].serienummer = e.target.value;
+                                            })
+                                        }
+                                        className="w-full max-w-full min-w-0 p-2 mt-0.5 rounded-lg bg-white border"
+                                    />
+                                </label>
+
+                                <label className="block min-w-0">
+                                    <span className="text-xs text-gray-500">
+                                        MAC Address
+                                    </span>
+                                    <input
+                                        value={regel.macAddress}
+                                        onChange={(e) =>
+                                            update((draft) => {
+                                                draft.hardware[
+                                                    index
+                                                ].macAddress = e.target.value;
+                                            })
+                                        }
+                                        className="w-full max-w-full min-w-0 p-2 mt-0.5 rounded-lg bg-white border"
+                                    />
+                                </label>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {/* Desktop: tabel */}
+                <div className="hidden md:block overflow-x-auto">
 
                     <table className="w-full text-sm border-collapse table-fixed">
 
@@ -3352,10 +3496,14 @@ export default function OpleverForm({
                                     <div
                                         key={locatie}
                                         className="
-                                            grid
-                                            grid-cols-[13rem_auto]
-                                            items-center
-                                            gap-3
+                                            flex
+                                            flex-col
+                                            gap-2
+                                            min-w-0
+                                            sm:grid
+                                            sm:grid-cols-[minmax(0,13rem)_auto]
+                                            sm:items-center
+                                            sm:gap-3
                                         "
                                     >
                                         <button
@@ -3380,6 +3528,7 @@ export default function OpleverForm({
                                                 text-sm
                                                 text-left
                                                 w-full
+                                                min-w-0
                                                 transition
                                                 ${
                                                     actief
@@ -3391,16 +3540,17 @@ export default function OpleverForm({
                                             `}
                                         >
                                             <span className="w-3 shrink-0">{actief ? "✓" : ""}</span>
-                                            <span>{locatie}</span>
+                                            <span className="truncate">{locatie}</span>
                                         </button>
 
                                         <div className={`
                                             flex
                                             items-center
                                             gap-2
-                                            ${actief ? "" : "invisible"}
+                                            min-w-0
+                                            ${actief ? "flex" : "hidden sm:flex sm:invisible"}
                                         `}>
-                                            <span className="text-sm text-slate-500">Aantal:</span>
+                                            <span className="text-sm text-slate-500 shrink-0">Aantal:</span>
                                             <input
                                                 inputMode="numeric"
                                                 value={c.mediaplayerLocaties[locatie] ?? ""}
@@ -3411,7 +3561,7 @@ export default function OpleverForm({
                                                         [locatie]:e.target.value
                                                     };
                                                 })}
-                                                className="w-20 border rounded-lg p-1.5 text-sm"
+                                                className="w-20 max-w-full min-w-0 border rounded-lg p-1.5 text-sm"
                                             />
                                         </div>
                                     </div>

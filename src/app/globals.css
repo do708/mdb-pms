@@ -29,6 +29,18 @@ body {
   }
 }
 
+/* iOS Safari: native date/datetime-pickers hebben een vaste min-breedte */
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="month"],
+input[type="week"] {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 
 /* Sidebar */
 

@@ -228,7 +228,7 @@ export default function Sidebar({
 
                 <Image
 
-                    src="/images/mdb-logo.png"
+                    src="/images/MDB-Logo.png"
 
                     alt="MDB Networks"
 

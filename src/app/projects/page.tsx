@@ -407,7 +407,7 @@ export default function ProjectsPage() {
                                 type="date"
                                 value={urenDatum}
                                 onChange={(e) => setUrenDatum(e.target.value)}
-                                className="border rounded-xl p-3 w-full min-h-[48px] bg-white"
+                                className="border rounded-xl p-3 w-full max-w-full min-w-0 min-h-[48px] bg-white box-border"
                             />
                         </label>
 

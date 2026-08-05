@@ -33,7 +33,7 @@ export default function EngineerMobileNav() {
                 bg-white
                 border-t
                 border-gray-200
-                pb-[env(safe-area-inset-bottom)]
+                pb-[max(0.25rem,env(safe-area-inset-bottom))]
             "
             aria-label="Hoofdnavigatie"
         >
@@ -52,8 +52,10 @@ export default function EngineerMobileNav() {
                                 items-center
                                 justify-center
                                 gap-0.5
-                                min-h-[56px]
+                                min-h-[52px]
                                 px-2
+                                pt-1.5
+                                pb-1
                                 text-xs
                                 font-semibold
                                 ${

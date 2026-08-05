@@ -52,7 +52,7 @@ export default function MobileLayout({
 
                 <Image
 
-                    src="/images/mdb-logo.png"
+                    src="/images/MDB-Logo.png"
 
                     alt="MDB Networks"
 
