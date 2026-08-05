@@ -6,7 +6,9 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiRole } from "@/lib/auth/guard";
 
-import { mergeOpleverData } from "@/types/oplever";
+import { mergeOpleverData, applyPlannedTravelToFormData } from "@/types/oplever";
+
+import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 
 
 
@@ -184,9 +186,57 @@ customer:true,
 
 
 
+        if(
+            workorder.plannedDate
+            && workorder.assignedUserId
+            && (
+                workorder.plannedRoundTripKm
+                == null
+                || workorder.plannedReisuren
+                == null
+            )
+        ){
+
+            await syncEngineerDayKilometers(
+                workorder.assignedUserId,
+                workorder.plannedDate
+            );
+
+            const travel =
+                await prisma.workorder.findUnique({
+                    where:{
+                        id
+                    },
+                    select:{
+                        plannedRoundTripKm:true,
+                        plannedReisuren:true
+                    }
+                });
+
+            if(travel){
+                workorder.plannedRoundTripKm =
+                    travel.plannedRoundTripKm;
+                workorder.plannedReisuren =
+                    travel.plannedReisuren;
+            }
+
+        }
+
+
+        const formDataForClient =
+            applyPlannedTravelToFormData(
+                workorder.formData,
+                workorder.plannedRoundTripKm,
+                workorder.plannedReisuren
+            );
+
+
         return NextResponse.json(
 
-            workorder
+            {
+                ...workorder,
+                formData:formDataForClient
+            }
 
         );
 
@@ -373,7 +423,21 @@ export async function PUT(
 
 
 
+        const planningFieldsChanged =
+            session.user.role !== "engineer"
+            && (
+                body.plannedDate !== undefined
+                || body.location !== undefined
+                || body.city !== undefined
+                || body.customerId !== undefined
+                || body.assignedUserId !== undefined
+            );
 
+        const previousEngineerId =
+            existingWorkorder.assignedUserId;
+
+        const previousPlannedDate =
+            existingWorkorder.plannedDate;
 
 
 
@@ -586,10 +650,28 @@ export async function PUT(
                         existingWorkorder.contactPhone
 
 
+
                 }
 
 
             });
+
+
+
+
+        if(planningFieldsChanged){
+
+            await syncEngineerDayKilometers(
+                previousEngineerId,
+                previousPlannedDate
+            );
+
+            await syncEngineerDayKilometers(
+                workorder.assignedUserId,
+                workorder.plannedDate
+            );
+
+        }
 
 
 

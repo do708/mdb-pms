@@ -131,16 +131,10 @@ export default function EngineerPage(){
 
 
         return (
-
-            <main className="p-6">
-
-                Werkbonnen laden...
-
-            </main>
-
+            <p className="text-gray-500">Werkbonnen laden…</p>
         );
 
-    }
+}
 
 
 
@@ -151,12 +145,7 @@ export default function EngineerPage(){
 
     return (
 
-        <main className="
-            p-6
-            space-y-6
-            bg-gray-50
-            min-h-screen
-        ">
+        <div className="space-y-6 -m-2 sm:-m-0">
 
 
 
@@ -342,13 +331,19 @@ export default function EngineerPage(){
                                 href={`/engineer/workorders/${item.id}`}
 
                                 className="
-                                    inline-block
+                                    flex
+                                    items-center
+                                    justify-center
+                                    w-full
                                     mt-4
-                                    bg-black
+                                    bg-[#d6007e]
                                     text-white
                                     px-4
-                                    py-3
+                                    py-4
+                                    min-h-[48px]
                                     rounded-xl
+                                    font-bold
+                                    text-base
                                 "
 
                             >
@@ -374,7 +369,7 @@ export default function EngineerPage(){
 
 
 
-        </main>
+        </div>
 
     );
 

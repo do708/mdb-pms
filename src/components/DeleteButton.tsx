@@ -18,6 +18,9 @@ interface Props {
     // Compacte variant (icoon) voor in lijstrijen
     compact?:boolean;
 
+    // Zelfde hoogte als andere toolbar-knoppen (export, wijzigen)
+    toolbar?:boolean;
+
 }
 
 
@@ -30,7 +33,9 @@ export default function DeleteButton({
 
     onDeleted,
 
-    compact = false
+    compact = false,
+
+    toolbar = false
 
 }:Props){
 
@@ -193,6 +198,10 @@ export default function DeleteButton({
                 compact
                 ?
                 "text-red-500 hover:text-red-700 text-lg px-2"
+                :
+                toolbar
+                ?
+                "text-sm font-bold text-red-700 border border-red-300 rounded-xl px-4 py-3 min-h-[48px] hover:bg-red-50 flex items-center justify-center"
                 :
                 "text-sm text-red-600 border border-red-200 rounded-lg px-3 py-1.5 hover:bg-red-50"
             }

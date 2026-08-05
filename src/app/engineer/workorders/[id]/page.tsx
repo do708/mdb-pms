@@ -74,6 +74,10 @@ interface Workorder {
 
     werkInstructie:string | null;
 
+    plannedRoundTripKm:number | null;
+
+    plannedReisuren:number | null;
+
     customer:{
 
         name:string;
@@ -531,13 +535,7 @@ export default function EngineerWorkorderPage(){
 
 
         return (
-
-            <main className="p-5">
-
-                Werkbon laden...
-
-            </main>
-
+            <p className="text-gray-500">Werkbon laden…</p>
         );
 
     }
@@ -769,13 +767,7 @@ async function completeWorkorder(){
 
 
         return (
-
-            <main className="p-5">
-
-                Werkbon niet gevonden
-
-            </main>
-
+            <p className="text-gray-500">Werkbon niet gevonden</p>
         );
 
     }
@@ -791,17 +783,8 @@ async function completeWorkorder(){
     if(verstuurd){
 
         return (
-
-            <main className="
-                min-h-screen
-                flex
-                items-center
-                justify-center
-                p-6
-                bg-gray-50
-            ">
-
-                <div className="text-center max-w-md">
+            <div className="flex min-h-[50vh] items-center justify-center py-8">
+                <div className="text-center max-w-md px-2">
 
                     <div className="text-6xl mb-4">✓</div>
 
@@ -815,22 +798,14 @@ async function completeWorkorder(){
                     </p>
 
                 </div>
-
-            </main>
-
+            </div>
         );
 
     }
 
 
     return (
-
-        <main className="
-            p-5
-            space-y-5
-            bg-gray-50
-            min-h-screen
-        ">
+        <div className="space-y-5 -m-2 sm:-m-0">
 
 
             <header>
@@ -1501,6 +1476,14 @@ async function completeWorkorder(){
         "volledig"
     }
 
+    plannedRoundTripKm={
+        workorder.plannedRoundTripKm
+    }
+
+    plannedReisuren={
+        workorder.plannedReisuren
+    }
+
 />
 
 
@@ -1552,9 +1535,6 @@ async function completeWorkorder(){
 
 
 
-        </main>
-
+        </div>
     );
-
-
 }

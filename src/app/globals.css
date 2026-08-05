@@ -15,7 +15,18 @@ body {
 
   background:#f5f7fb;
   color:#111827;
+  -webkit-tap-highlight-color: transparent;
 
+}
+
+/* Grotere invoervelden op mobiel (monteurs) */
+@media (max-width: 1023px) {
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px;
+  }
 }
 
 

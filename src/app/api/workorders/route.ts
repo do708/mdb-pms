@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { mergeOpleverData } from "@/types/oplever";
 import { excludeArchivedWorkorders } from "@/lib/archive";
 
+import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
+
 
 
 
@@ -314,6 +316,14 @@ export async function POST(
 
 
 
+        const plannedDateValue =
+            body.plannedDate
+            ?
+            new Date(body.plannedDate)
+            :
+            null;
+
+
         const workorder =
 
             await prisma.workorder.create({
@@ -388,15 +398,7 @@ export async function POST(
 
                     plannedDate:
 
-                        body.plannedDate
-
-                        ?
-
-                        new Date(body.plannedDate)
-
-                        :
-
-                        null,
+                        plannedDateValue,
 
 
 
@@ -498,6 +500,13 @@ export async function POST(
 
 
 
+
+
+
+        await syncEngineerDayKilometers(
+            workorder.assignedUserId,
+            workorder.plannedDate
+        );
 
 
         return NextResponse.json(

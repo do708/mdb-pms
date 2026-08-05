@@ -6,9 +6,9 @@ import { requireApiUser } from "@/lib/auth/guard";
 
 
 
-// Globale zoekfunctie: doorzoekt werkbonnen, formulieren, gebruikers en
-// klanten. Kantoor/admin zien alles; een monteur ziet alleen zijn eigen
-// werkbonnen en formulieren (en geen gebruikers/klanten).
+// Globale zoekfunctie: werkbonnen, projecten, formulieren, opdrachtgevers,
+// gebruikers, opdrachten, documenten en aanvragen. Monteurs zien geen
+// kantoor-only gegevens (gebruikers, klanten, opdrachten, documenten, aanvragen).
 
 export async function GET(
     request:NextRequest
@@ -38,9 +38,13 @@ export async function GET(
         if(q.length < 2){
             return NextResponse.json({
                 workorders:[],
+                projects:[],
                 forms:[],
                 users:[],
-                customers:[]
+                customers:[],
+                assignments:[],
+                documents:[],
+                aanvragen:[]
             });
         }
 
@@ -71,6 +75,8 @@ export async function GET(
                                 { number:like },
                                 { title:like },
                                 { location:like },
+                                { city:like },
+                                { project:{ name:like } },
                                 { customer:{ name:like } }
                             ]
                         }
@@ -81,6 +87,39 @@ export async function GET(
                     id:true,
                     number:true,
                     title:true,
+                    status:true,
+                    customer:{
+                        select:{ name:true }
+                    }
+                },
+
+                take:8,
+
+                orderBy:{ createdAt:"desc" }
+
+            });
+
+
+
+
+        // ---- Projecten (iedereen met toegang tot /projects) ----
+        const projects =
+            await prisma.project.findMany({
+
+                where:{
+                    OR:[
+                        { number:like },
+                        { name:like },
+                        { location:like },
+                        { customer:{ name:like } }
+                    ]
+                },
+
+                select:{
+                    id:true,
+                    number:true,
+                    name:true,
+                    location:true,
                     status:true,
                     customer:{
                         select:{ name:true }
@@ -189,11 +228,118 @@ export async function GET(
 
 
 
+        const assignments =
+            isEngineer
+            ?
+            []
+            :
+            await prisma.assignment.findMany({
+
+                where:{
+                    OR:[
+                        { number:like },
+                        { title:like },
+                        { description:like },
+                        { customer:{ name:like } }
+                    ]
+                },
+
+                select:{
+                    id:true,
+                    number:true,
+                    title:true,
+                    status:true,
+                    customer:{
+                        select:{ name:true }
+                    }
+                },
+
+                take:6,
+
+                orderBy:{ createdAt:"desc" }
+
+            });
+
+
+        const documents =
+            isEngineer
+            ?
+            []
+            :
+            await prisma.document.findMany({
+
+                where:{
+                    OR:[
+                        { name:like },
+                        { type:like }
+                    ]
+                },
+
+                select:{
+                    id:true,
+                    name:true,
+                    type:true,
+                    workorder:{
+                        select:{
+                            id:true,
+                            number:true
+                        }
+                    }
+                },
+
+                take:6,
+
+                orderBy:{ createdAt:"desc" }
+
+            });
+
+
+        const aanvragen =
+            isEngineer
+            ?
+            []
+            :
+            await prisma.aanvraag.findMany({
+
+                where:{
+                    OR:[
+                        { locatie:like },
+                        { straat:like },
+                        { plaats:like },
+                        { postcode:like },
+                        { aanvragerNaam:like },
+                        { customer:{ name:like } }
+                    ]
+                },
+
+                select:{
+                    id:true,
+                    locatie:true,
+                    plaats:true,
+                    status:true,
+                    customer:{
+                        select:{ name:true }
+                    }
+                },
+
+                take:6,
+
+                orderBy:{ createdAt:"desc" }
+
+            });
+
+
+
+
         return NextResponse.json({
             workorders,
+            projects,
             forms,
             users,
-            customers
+            customers,
+            assignments,
+            documents,
+            aanvragen
         });
 
 

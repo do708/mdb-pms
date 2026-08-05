@@ -445,19 +445,20 @@ export async function generateOpleverPdf(
 
     function jaNee(
         label:string,
-        value:boolean | null
+        value:boolean | null,
+        labels:[string,string] = ["Ja","Nee"]
     ){
 
         text(label);
 
         badges([
             {
-                label:"Ja",
+                label:labels[0],
                 active:value === true,
                 color:GREEN
             },
             {
-                label:"Nee",
+                label:labels[1],
                 active:value === false,
                 color:BLUE
             }
@@ -626,19 +627,24 @@ export async function generateOpleverPdf(
 
     jaNee(
         "Voorrijtarief?",
-        data.tarief.voorrijtarief
+        data.tarief.voorrijtarief,
+        ["Vast","KM's + Uren"]
     );
 
 
-    labelValue(
-        "Aantal gereden kilometers:",
-        data.tarief.kilometers
-    );
+    if(data.tarief.voorrijtarief === false){
 
-    labelValue(
-        "Reisuren:",
-        data.tarief.reisuren
-    );
+        labelValue(
+            "Aantal gereden kilometers:",
+            data.tarief.kilometers
+        );
+
+        labelValue(
+            "Reisuren:",
+            data.tarief.reisuren
+        );
+
+    }
 
     labelValue(
         `Uren (regiebasis, totaal geregistreerd):`,

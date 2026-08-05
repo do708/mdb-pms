@@ -169,10 +169,37 @@ exports.Prisma.ProjectScalarFieldEnum = {
   id: 'id',
   number: 'number',
   name: 'name',
+  location: 'location',
   customerId: 'customerId',
+  geoffreerdeUren: 'geoffreerdeUren',
+  geoffreerdBedrag: 'geoffreerdBedrag',
+  offerteUrl: 'offerteUrl',
+  offerteFilename: 'offerteFilename',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProjectUurScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  userId: 'userId',
+  datum: 'datum',
+  uren: 'uren',
+  omschrijving: 'omschrijving',
+  kilometers: 'kilometers',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProjectMateriaalScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  omschrijving: 'omschrijving',
+  factuurnummer: 'factuurnummer',
+  leverancier: 'leverancier',
+  kosten: 'kosten',
+  ingekochtOp: 'ingekochtOp',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.WorkorderScalarFieldEnum = {
@@ -197,6 +224,8 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   plannedDate: 'plannedDate',
   plannedEndDate: 'plannedEndDate',
   plannedHours: 'plannedHours',
+  plannedRoundTripKm: 'plannedRoundTripKm',
+  plannedReisuren: 'plannedReisuren',
   assignmentId: 'assignmentId',
   formData: 'formData',
   pdfData: 'pdfData',
@@ -387,6 +416,8 @@ exports.Prisma.ModelName = {
   Customer: 'Customer',
   Aanvraag: 'Aanvraag',
   Project: 'Project',
+  ProjectUur: 'ProjectUur',
+  ProjectMateriaal: 'ProjectMateriaal',
   Workorder: 'Workorder',
   WorkorderHour: 'WorkorderHour',
   WorkorderMaterial: 'WorkorderMaterial',

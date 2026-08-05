@@ -15,8 +15,8 @@ import {
     BarChart3,
     UserCog,
     PlusCircle,
-    StickyNote,
-    Archive
+    Archive,
+    Folder
 } from "lucide-react";
 
 
@@ -31,6 +31,8 @@ type MenuItem = {
 
     roles:string[];
 
+    title?:string;
+
 };
 
 
@@ -39,152 +41,109 @@ type MenuItem = {
 
 const menu:MenuItem[] = [
 
-
     {
         name:"Dashboard",
         href:"/dashboard",
         icon:LayoutDashboard,
-        roles:[
-            "admin",
-            "office"
-        ]
+        title:"Centraal overzicht, notificaties en snelle inzicht",
+        roles:["admin","office"]
     },
-
 
     {
         name:"Mijn dashboard",
         href:"/engineer",
         icon:LayoutDashboard,
-        roles:[
-            "engineer"
-        ]
+        title:"Centraal overzicht en geplande werkzaamheden",
+        roles:["engineer"]
     },
-
-
-    {
-        name:"Werkbonnen",
-        href:"/workorders",
-        icon:ClipboardList,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
-    },
-
-
-    {
-        name:"Nieuwe werkbon",
-        href:"/workorders/new",
-        icon:PlusCircle,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
-    },
-
-
-    {
-        name:"Formulieren",
-        href:"/forms",
-        icon:ClipboardList,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
-    },
-
 
     {
         name:"Planning",
         href:"/planning",
         icon:CalendarDays,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
+        title:"Het inplannen van monteurs en werkzaamheden",
+        roles:["admin","office","engineer"]
     },
 
+    {
+        name:"Werkbonnen",
+        href:"/workorders",
+        icon:ClipboardList,
+        title:"Overzicht van actieve en afgeronde werkbonnen",
+        roles:["admin","office","engineer"]
+    },
+
+    {
+        name:"Werkbon klaarzetten",
+        href:"/workorders/new",
+        icon:PlusCircle,
+        title:"Werkbon voorbereiden en klaarzetten voor de monteur",
+        roles:["admin","office","engineer"]
+    },
+
+    {
+        name:"Projecten",
+        href:"/projects",
+        icon:Folder,
+        title:"Grotere, langlopende opdrachten met gebundelde werkbonnen",
+        roles:["admin","office","engineer"]
+    },
+
+    {
+        name:"Formulieren",
+        href:"/forms",
+        icon:ClipboardList,
+        title:"Intake- en inspectieformulieren gekoppeld aan opdrachten",
+        roles:["admin","office","engineer"]
+    },
 
     {
         name:"Documenten",
         href:"/documents",
         icon:FileText,
-        roles:[
-            "admin",
-            "office"
-        ]
+        title:"Centrale opslag voor handleidingen, certificaten, enz.",
+        roles:["admin","office"]
     },
-
 
     {
         name:"Rapportages",
         href:"/reports",
         icon:BarChart3,
-        roles:[
-            "admin",
-            "office"
-        ]
+        title:"Analyses, urenoverzichten en financiële inzichten",
+        roles:["admin","office"]
     },
-
-
-    {
-        name:"Interne notities",
-        href:"/notes",
-        icon:StickyNote,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
-    },
-    {
-        name:"Opdrachtgevers",
-        href:"/customers",
-        icon:Users,
-        roles:[
-            "admin",
-            "office"
-        ]
-    },
-
 
     {
         name:"Archief",
         href:"/archive",
         icon:Archive,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
+        title:"Historie van afgeronde projecten en oude dossiers",
+        roles:["admin","office","engineer"]
     },
 
+    {
+        name:"Opdrachtgevers",
+        href:"/customers",
+        icon:Users,
+        title:"Klantendatabase en contactpersonen",
+        roles:["admin","office"]
+    },
 
-        {
+    {
         name:"Gebruikers",
         href:"/users",
         icon:UserCog,
-        roles:[
-            "admin"
-        ]
+        title:"Rechten, accounts en rollen toewijzen",
+        roles:["admin"]
     },
-
 
     {
         name:"Instellingen",
         href:"/settings",
         icon:Settings,
-        roles:[
-            "admin",
-            "office",
-            "engineer"
-        ]
+        title:"Systeemconfiguratie, notificaties en stamgegevens",
+        roles:["admin","office","engineer"]
     },
-
 
 ];
 
@@ -194,12 +153,15 @@ const menu:MenuItem[] = [
 
 
 
-export default function Sidebar(){
+export default function Sidebar({
+    mobileOpen = false,
+    onNavigate,
+}: {
+    mobileOpen?: boolean;
+    onNavigate?: () => void;
+}) {
 
-
-    const pathname =
-        usePathname();
-
+    const pathname = usePathname();
 
     const { data:session } =
         useSession();
@@ -225,15 +187,34 @@ export default function Sidebar(){
 
     return (
 
-        <aside className="
-            w-72
+        <aside
+            className={`
+            w-[min(100vw-3rem,18rem)]
+            max-w-[18rem]
             min-h-screen
             bg-white
             border-r
             border-gray-200
             flex
             flex-col
-        ">
+            shrink-0
+            max-lg:fixed
+            max-lg:inset-y-0
+            max-lg:left-0
+            max-lg:z-50
+            max-lg:shadow-xl
+            max-lg:transition-transform
+            max-lg:duration-200
+            max-lg:ease-out
+            ${
+                mobileOpen
+                    ? "max-lg:translate-x-0"
+                    : "max-lg:-translate-x-full"
+            }
+            lg:relative
+            lg:translate-x-0
+        `}
+        >
 
 
             <div className="
@@ -289,7 +270,20 @@ export default function Sidebar(){
 
 
                         const active =
-                            pathname === item.href;
+                            item.href === "/engineer"
+                                ? pathname === "/engineer" ||
+                                  pathname.startsWith("/engineer/")
+                                : item.href === "/workorders"
+                                ? pathname === "/workorders" ||
+                                  (pathname.startsWith("/workorders/") &&
+                                      !pathname.startsWith(
+                                          "/workorders/new"
+                                      ))
+                                : item.href === "/workorders/new"
+                                ? pathname === "/workorders/new" ||
+                                  pathname.startsWith("/workorders/new/")
+                                : pathname === item.href ||
+                                  pathname.startsWith(`${item.href}/`);
 
 
 
@@ -300,6 +294,10 @@ export default function Sidebar(){
                                 key={item.href}
 
                                 href={item.href}
+
+                                title={item.title}
+
+                                onClick={() => onNavigate?.()}
 
                                 className={
 
@@ -312,7 +310,8 @@ export default function Sidebar(){
                                     items-center
                                     gap-3
                                     px-4
-                                    py-3
+                                    py-3.5
+                                    min-h-[48px]
                                     rounded-xl
                                     bg-[#fce7f3]
                                     text-[#d6007e]
@@ -326,10 +325,12 @@ export default function Sidebar(){
                                     items-center
                                     gap-3
                                     px-4
-                                    py-3
+                                    py-3.5
+                                    min-h-[48px]
                                     rounded-xl
                                     text-gray-600
                                     hover:bg-gray-100
+                                    active:bg-gray-200
                                     `
                                 }
 
@@ -337,20 +338,13 @@ export default function Sidebar(){
 
                                 <Icon size={20}/>
 
-                                <span className="text-sm">
+                                <span className="text-base sm:text-sm">
 
                                     {
-                                        item.href === "/workorders/new"
-                                        ?
-                                        (
-                                            role === "engineer"
-                                            ?
-                                            "Werkbon invullen"
-                                            :
-                                            "Werkbon klaarzetten"
-                                        )
-                                        :
-                                        item.name
+                                        item.href === "/workorders/new" &&
+                                        role === "engineer"
+                                            ? "Werkbon invullen"
+                                            : item.name
                                     }
 
                                 </span>

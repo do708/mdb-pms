@@ -34,6 +34,16 @@ export type Aanvraag = $Result.DefaultSelection<Prisma.$AanvraagPayload>
  */
 export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
 /**
+ * Model ProjectUur
+ * 
+ */
+export type ProjectUur = $Result.DefaultSelection<Prisma.$ProjectUurPayload>
+/**
+ * Model ProjectMateriaal
+ * 
+ */
+export type ProjectMateriaal = $Result.DefaultSelection<Prisma.$ProjectMateriaalPayload>
+/**
  * Model Workorder
  * 
  */
@@ -274,6 +284,26 @@ export class PrismaClient<
     * ```
     */
   get project(): Prisma.ProjectDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.projectUur`: Exposes CRUD operations for the **ProjectUur** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProjectUurs
+    * const projectUurs = await prisma.projectUur.findMany()
+    * ```
+    */
+  get projectUur(): Prisma.ProjectUurDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.projectMateriaal`: Exposes CRUD operations for the **ProjectMateriaal** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProjectMateriaals
+    * const projectMateriaals = await prisma.projectMateriaal.findMany()
+    * ```
+    */
+  get projectMateriaal(): Prisma.ProjectMateriaalDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.workorder`: Exposes CRUD operations for the **Workorder** model.
@@ -885,6 +915,8 @@ export namespace Prisma {
     Customer: 'Customer',
     Aanvraag: 'Aanvraag',
     Project: 'Project',
+    ProjectUur: 'ProjectUur',
+    ProjectMateriaal: 'ProjectMateriaal',
     Workorder: 'Workorder',
     WorkorderHour: 'WorkorderHour',
     WorkorderMaterial: 'WorkorderMaterial',
@@ -916,7 +948,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "aanvraag" | "project" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
+      modelProps: "user" | "customer" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1213,6 +1245,154 @@ export namespace Prisma {
           count: {
             args: Prisma.ProjectCountArgs<ExtArgs>
             result: $Utils.Optional<ProjectCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProjectUur: {
+        payload: Prisma.$ProjectUurPayload<ExtArgs>
+        fields: Prisma.ProjectUurFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProjectUurFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProjectUurFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>
+          }
+          findFirst: {
+            args: Prisma.ProjectUurFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProjectUurFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>
+          }
+          findMany: {
+            args: Prisma.ProjectUurFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>[]
+          }
+          create: {
+            args: Prisma.ProjectUurCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>
+          }
+          createMany: {
+            args: Prisma.ProjectUurCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProjectUurCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>[]
+          }
+          delete: {
+            args: Prisma.ProjectUurDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>
+          }
+          update: {
+            args: Prisma.ProjectUurUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProjectUurDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProjectUurUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProjectUurUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProjectUurUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectUurPayload>
+          }
+          aggregate: {
+            args: Prisma.ProjectUurAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProjectUur>
+          }
+          groupBy: {
+            args: Prisma.ProjectUurGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProjectUurGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProjectUurCountArgs<ExtArgs>
+            result: $Utils.Optional<ProjectUurCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProjectMateriaal: {
+        payload: Prisma.$ProjectMateriaalPayload<ExtArgs>
+        fields: Prisma.ProjectMateriaalFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProjectMateriaalFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProjectMateriaalFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>
+          }
+          findFirst: {
+            args: Prisma.ProjectMateriaalFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProjectMateriaalFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>
+          }
+          findMany: {
+            args: Prisma.ProjectMateriaalFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>[]
+          }
+          create: {
+            args: Prisma.ProjectMateriaalCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>
+          }
+          createMany: {
+            args: Prisma.ProjectMateriaalCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProjectMateriaalCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>[]
+          }
+          delete: {
+            args: Prisma.ProjectMateriaalDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>
+          }
+          update: {
+            args: Prisma.ProjectMateriaalUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProjectMateriaalDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProjectMateriaalUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProjectMateriaalUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProjectMateriaalUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectMateriaalPayload>
+          }
+          aggregate: {
+            args: Prisma.ProjectMateriaalAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProjectMateriaal>
+          }
+          groupBy: {
+            args: Prisma.ProjectMateriaalGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProjectMateriaalGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProjectMateriaalCountArgs<ExtArgs>
+            result: $Utils.Optional<ProjectMateriaalCountAggregateOutputType> | number
           }
         }
       }
@@ -2527,6 +2707,8 @@ export namespace Prisma {
     customer?: CustomerOmit
     aanvraag?: AanvraagOmit
     project?: ProjectOmit
+    projectUur?: ProjectUurOmit
+    projectMateriaal?: ProjectMateriaalOmit
     workorder?: WorkorderOmit
     workorderHour?: WorkorderHourOmit
     workorderMaterial?: WorkorderMaterialOmit
@@ -2627,6 +2809,7 @@ export namespace Prisma {
     workorders: number
     extraWorkorders: number
     forms: number
+    projectUren: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2634,6 +2817,7 @@ export namespace Prisma {
     workorders?: boolean | UserCountOutputTypeCountWorkordersArgs
     extraWorkorders?: boolean | UserCountOutputTypeCountExtraWorkordersArgs
     forms?: boolean | UserCountOutputTypeCountFormsArgs
+    projectUren?: boolean | UserCountOutputTypeCountProjectUrenArgs
   }
 
   // Custom InputTypes
@@ -2673,6 +2857,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountFormsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FormSubmissionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountProjectUrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectUurWhereInput
   }
 
 
@@ -2740,10 +2931,14 @@ export namespace Prisma {
 
   export type ProjectCountOutputType = {
     workorders: number
+    uren: number
+    materialen: number
   }
 
   export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workorders?: boolean | ProjectCountOutputTypeCountWorkordersArgs
+    uren?: boolean | ProjectCountOutputTypeCountUrenArgs
+    materialen?: boolean | ProjectCountOutputTypeCountMaterialenArgs
   }
 
   // Custom InputTypes
@@ -2762,6 +2957,20 @@ export namespace Prisma {
    */
   export type ProjectCountOutputTypeCountWorkordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkorderWhereInput
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountUrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectUurWhereInput
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountMaterialenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectMateriaalWhereInput
   }
 
 
@@ -3135,6 +3344,7 @@ export namespace Prisma {
     workorders?: boolean | User$workordersArgs<ExtArgs>
     extraWorkorders?: boolean | User$extraWorkordersArgs<ExtArgs>
     forms?: boolean | User$formsArgs<ExtArgs>
+    projectUren?: boolean | User$projectUrenArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3177,6 +3387,7 @@ export namespace Prisma {
     workorders?: boolean | User$workordersArgs<ExtArgs>
     extraWorkorders?: boolean | User$extraWorkordersArgs<ExtArgs>
     forms?: boolean | User$formsArgs<ExtArgs>
+    projectUren?: boolean | User$projectUrenArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3189,6 +3400,7 @@ export namespace Prisma {
       workorders: Prisma.$WorkorderPayload<ExtArgs>[]
       extraWorkorders: Prisma.$WorkorderEngineerPayload<ExtArgs>[]
       forms: Prisma.$FormSubmissionPayload<ExtArgs>[]
+      projectUren: Prisma.$ProjectUurPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3597,6 +3809,7 @@ export namespace Prisma {
     workorders<T extends User$workordersArgs<ExtArgs> = {}>(args?: Subset<T, User$workordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     extraWorkorders<T extends User$extraWorkordersArgs<ExtArgs> = {}>(args?: Subset<T, User$extraWorkordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     forms<T extends User$formsArgs<ExtArgs> = {}>(args?: Subset<T, User$formsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    projectUren<T extends User$projectUrenArgs<ExtArgs> = {}>(args?: Subset<T, User$projectUrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4120,6 +4333,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FormSubmissionScalarFieldEnum | FormSubmissionScalarFieldEnum[]
+  }
+
+  /**
+   * User.projectUren
+   */
+  export type User$projectUrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    where?: ProjectUurWhereInput
+    orderBy?: ProjectUurOrderByWithRelationInput | ProjectUurOrderByWithRelationInput[]
+    cursor?: ProjectUurWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectUurScalarFieldEnum | ProjectUurScalarFieldEnum[]
   }
 
   /**
@@ -6591,15 +6828,32 @@ export namespace Prisma {
 
   export type AggregateProject = {
     _count: ProjectCountAggregateOutputType | null
+    _avg: ProjectAvgAggregateOutputType | null
+    _sum: ProjectSumAggregateOutputType | null
     _min: ProjectMinAggregateOutputType | null
     _max: ProjectMaxAggregateOutputType | null
+  }
+
+  export type ProjectAvgAggregateOutputType = {
+    geoffreerdeUren: Decimal | null
+    geoffreerdBedrag: Decimal | null
+  }
+
+  export type ProjectSumAggregateOutputType = {
+    geoffreerdeUren: Decimal | null
+    geoffreerdBedrag: Decimal | null
   }
 
   export type ProjectMinAggregateOutputType = {
     id: string | null
     number: string | null
     name: string | null
+    location: string | null
     customerId: string | null
+    geoffreerdeUren: Decimal | null
+    geoffreerdBedrag: Decimal | null
+    offerteUrl: string | null
+    offerteFilename: string | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6609,7 +6863,12 @@ export namespace Prisma {
     id: string | null
     number: string | null
     name: string | null
+    location: string | null
     customerId: string | null
+    geoffreerdeUren: Decimal | null
+    geoffreerdBedrag: Decimal | null
+    offerteUrl: string | null
+    offerteFilename: string | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6619,7 +6878,12 @@ export namespace Prisma {
     id: number
     number: number
     name: number
+    location: number
     customerId: number
+    geoffreerdeUren: number
+    geoffreerdBedrag: number
+    offerteUrl: number
+    offerteFilename: number
     status: number
     createdAt: number
     updatedAt: number
@@ -6627,11 +6891,26 @@ export namespace Prisma {
   }
 
 
+  export type ProjectAvgAggregateInputType = {
+    geoffreerdeUren?: true
+    geoffreerdBedrag?: true
+  }
+
+  export type ProjectSumAggregateInputType = {
+    geoffreerdeUren?: true
+    geoffreerdBedrag?: true
+  }
+
   export type ProjectMinAggregateInputType = {
     id?: true
     number?: true
     name?: true
+    location?: true
     customerId?: true
+    geoffreerdeUren?: true
+    geoffreerdBedrag?: true
+    offerteUrl?: true
+    offerteFilename?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -6641,7 +6920,12 @@ export namespace Prisma {
     id?: true
     number?: true
     name?: true
+    location?: true
     customerId?: true
+    geoffreerdeUren?: true
+    geoffreerdBedrag?: true
+    offerteUrl?: true
+    offerteFilename?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -6651,7 +6935,12 @@ export namespace Prisma {
     id?: true
     number?: true
     name?: true
+    location?: true
     customerId?: true
+    geoffreerdeUren?: true
+    geoffreerdBedrag?: true
+    offerteUrl?: true
+    offerteFilename?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -6696,6 +6985,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ProjectAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProjectSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ProjectMinAggregateInputType
@@ -6726,6 +7027,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ProjectCountAggregateInputType | true
+    _avg?: ProjectAvgAggregateInputType
+    _sum?: ProjectSumAggregateInputType
     _min?: ProjectMinAggregateInputType
     _max?: ProjectMaxAggregateInputType
   }
@@ -6734,11 +7037,18 @@ export namespace Prisma {
     id: string
     number: string
     name: string
+    location: string | null
     customerId: string
+    geoffreerdeUren: Decimal | null
+    geoffreerdBedrag: Decimal | null
+    offerteUrl: string | null
+    offerteFilename: string | null
     status: string
     createdAt: Date
     updatedAt: Date
     _count: ProjectCountAggregateOutputType | null
+    _avg: ProjectAvgAggregateOutputType | null
+    _sum: ProjectSumAggregateOutputType | null
     _min: ProjectMinAggregateOutputType | null
     _max: ProjectMaxAggregateOutputType | null
   }
@@ -6761,12 +7071,19 @@ export namespace Prisma {
     id?: boolean
     number?: boolean
     name?: boolean
+    location?: boolean
     customerId?: boolean
+    geoffreerdeUren?: boolean
+    geoffreerdBedrag?: boolean
+    offerteUrl?: boolean
+    offerteFilename?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     workorders?: boolean | Project$workordersArgs<ExtArgs>
+    uren?: boolean | Project$urenArgs<ExtArgs>
+    materialen?: boolean | Project$materialenArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
@@ -6774,7 +7091,12 @@ export namespace Prisma {
     id?: boolean
     number?: boolean
     name?: boolean
+    location?: boolean
     customerId?: boolean
+    geoffreerdeUren?: boolean
+    geoffreerdBedrag?: boolean
+    offerteUrl?: boolean
+    offerteFilename?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6785,7 +7107,12 @@ export namespace Prisma {
     id?: boolean
     number?: boolean
     name?: boolean
+    location?: boolean
     customerId?: boolean
+    geoffreerdeUren?: boolean
+    geoffreerdBedrag?: boolean
+    offerteUrl?: boolean
+    offerteFilename?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6796,16 +7123,23 @@ export namespace Prisma {
     id?: boolean
     number?: boolean
     name?: boolean
+    location?: boolean
     customerId?: boolean
+    geoffreerdeUren?: boolean
+    geoffreerdBedrag?: boolean
+    offerteUrl?: boolean
+    offerteFilename?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "customerId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "location" | "customerId" | "geoffreerdeUren" | "geoffreerdBedrag" | "offerteUrl" | "offerteFilename" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     workorders?: boolean | Project$workordersArgs<ExtArgs>
+    uren?: boolean | Project$urenArgs<ExtArgs>
+    materialen?: boolean | Project$materialenArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6820,12 +7154,19 @@ export namespace Prisma {
     objects: {
       customer: Prisma.$CustomerPayload<ExtArgs>
       workorders: Prisma.$WorkorderPayload<ExtArgs>[]
+      uren: Prisma.$ProjectUurPayload<ExtArgs>[]
+      materialen: Prisma.$ProjectMateriaalPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       number: string
       name: string
+      location: string | null
       customerId: string
+      geoffreerdeUren: Prisma.Decimal | null
+      geoffreerdBedrag: Prisma.Decimal | null
+      offerteUrl: string | null
+      offerteFilename: string | null
       status: string
       createdAt: Date
       updatedAt: Date
@@ -7225,6 +7566,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     workorders<T extends Project$workordersArgs<ExtArgs> = {}>(args?: Subset<T, Project$workordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    uren<T extends Project$urenArgs<ExtArgs> = {}>(args?: Subset<T, Project$urenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    materialen<T extends Project$materialenArgs<ExtArgs> = {}>(args?: Subset<T, Project$materialenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7257,7 +7600,12 @@ export namespace Prisma {
     readonly id: FieldRef<"Project", 'String'>
     readonly number: FieldRef<"Project", 'String'>
     readonly name: FieldRef<"Project", 'String'>
+    readonly location: FieldRef<"Project", 'String'>
     readonly customerId: FieldRef<"Project", 'String'>
+    readonly geoffreerdeUren: FieldRef<"Project", 'Decimal'>
+    readonly geoffreerdBedrag: FieldRef<"Project", 'Decimal'>
+    readonly offerteUrl: FieldRef<"Project", 'String'>
+    readonly offerteFilename: FieldRef<"Project", 'String'>
     readonly status: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
@@ -7686,6 +8034,54 @@ export namespace Prisma {
   }
 
   /**
+   * Project.uren
+   */
+  export type Project$urenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    where?: ProjectUurWhereInput
+    orderBy?: ProjectUurOrderByWithRelationInput | ProjectUurOrderByWithRelationInput[]
+    cursor?: ProjectUurWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectUurScalarFieldEnum | ProjectUurScalarFieldEnum[]
+  }
+
+  /**
+   * Project.materialen
+   */
+  export type Project$materialenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    where?: ProjectMateriaalWhereInput
+    orderBy?: ProjectMateriaalOrderByWithRelationInput | ProjectMateriaalOrderByWithRelationInput[]
+    cursor?: ProjectMateriaalWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectMateriaalScalarFieldEnum | ProjectMateriaalScalarFieldEnum[]
+  }
+
+  /**
    * Project without action
    */
   export type ProjectDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7705,6 +8101,2290 @@ export namespace Prisma {
 
 
   /**
+   * Model ProjectUur
+   */
+
+  export type AggregateProjectUur = {
+    _count: ProjectUurCountAggregateOutputType | null
+    _avg: ProjectUurAvgAggregateOutputType | null
+    _sum: ProjectUurSumAggregateOutputType | null
+    _min: ProjectUurMinAggregateOutputType | null
+    _max: ProjectUurMaxAggregateOutputType | null
+  }
+
+  export type ProjectUurAvgAggregateOutputType = {
+    uren: Decimal | null
+    kilometers: number | null
+  }
+
+  export type ProjectUurSumAggregateOutputType = {
+    uren: Decimal | null
+    kilometers: number | null
+  }
+
+  export type ProjectUurMinAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    userId: string | null
+    datum: Date | null
+    uren: Decimal | null
+    omschrijving: string | null
+    kilometers: number | null
+    createdAt: Date | null
+  }
+
+  export type ProjectUurMaxAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    userId: string | null
+    datum: Date | null
+    uren: Decimal | null
+    omschrijving: string | null
+    kilometers: number | null
+    createdAt: Date | null
+  }
+
+  export type ProjectUurCountAggregateOutputType = {
+    id: number
+    projectId: number
+    userId: number
+    datum: number
+    uren: number
+    omschrijving: number
+    kilometers: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ProjectUurAvgAggregateInputType = {
+    uren?: true
+    kilometers?: true
+  }
+
+  export type ProjectUurSumAggregateInputType = {
+    uren?: true
+    kilometers?: true
+  }
+
+  export type ProjectUurMinAggregateInputType = {
+    id?: true
+    projectId?: true
+    userId?: true
+    datum?: true
+    uren?: true
+    omschrijving?: true
+    kilometers?: true
+    createdAt?: true
+  }
+
+  export type ProjectUurMaxAggregateInputType = {
+    id?: true
+    projectId?: true
+    userId?: true
+    datum?: true
+    uren?: true
+    omschrijving?: true
+    kilometers?: true
+    createdAt?: true
+  }
+
+  export type ProjectUurCountAggregateInputType = {
+    id?: true
+    projectId?: true
+    userId?: true
+    datum?: true
+    uren?: true
+    omschrijving?: true
+    kilometers?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ProjectUurAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProjectUur to aggregate.
+     */
+    where?: ProjectUurWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectUurs to fetch.
+     */
+    orderBy?: ProjectUurOrderByWithRelationInput | ProjectUurOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProjectUurWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectUurs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectUurs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProjectUurs
+    **/
+    _count?: true | ProjectUurCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProjectUurAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProjectUurSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProjectUurMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProjectUurMaxAggregateInputType
+  }
+
+  export type GetProjectUurAggregateType<T extends ProjectUurAggregateArgs> = {
+        [P in keyof T & keyof AggregateProjectUur]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProjectUur[P]>
+      : GetScalarType<T[P], AggregateProjectUur[P]>
+  }
+
+
+
+
+  export type ProjectUurGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectUurWhereInput
+    orderBy?: ProjectUurOrderByWithAggregationInput | ProjectUurOrderByWithAggregationInput[]
+    by: ProjectUurScalarFieldEnum[] | ProjectUurScalarFieldEnum
+    having?: ProjectUurScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProjectUurCountAggregateInputType | true
+    _avg?: ProjectUurAvgAggregateInputType
+    _sum?: ProjectUurSumAggregateInputType
+    _min?: ProjectUurMinAggregateInputType
+    _max?: ProjectUurMaxAggregateInputType
+  }
+
+  export type ProjectUurGroupByOutputType = {
+    id: string
+    projectId: string
+    userId: string
+    datum: Date
+    uren: Decimal
+    omschrijving: string | null
+    kilometers: number | null
+    createdAt: Date
+    _count: ProjectUurCountAggregateOutputType | null
+    _avg: ProjectUurAvgAggregateOutputType | null
+    _sum: ProjectUurSumAggregateOutputType | null
+    _min: ProjectUurMinAggregateOutputType | null
+    _max: ProjectUurMaxAggregateOutputType | null
+  }
+
+  type GetProjectUurGroupByPayload<T extends ProjectUurGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProjectUurGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProjectUurGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProjectUurGroupByOutputType[P]>
+            : GetScalarType<T[P], ProjectUurGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProjectUurSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    datum?: boolean
+    uren?: boolean
+    omschrijving?: boolean
+    kilometers?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectUur"]>
+
+  export type ProjectUurSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    datum?: boolean
+    uren?: boolean
+    omschrijving?: boolean
+    kilometers?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectUur"]>
+
+  export type ProjectUurSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    datum?: boolean
+    uren?: boolean
+    omschrijving?: boolean
+    kilometers?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectUur"]>
+
+  export type ProjectUurSelectScalar = {
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    datum?: boolean
+    uren?: boolean
+    omschrijving?: boolean
+    kilometers?: boolean
+    createdAt?: boolean
+  }
+
+  export type ProjectUurOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "userId" | "datum" | "uren" | "omschrijving" | "kilometers" | "createdAt", ExtArgs["result"]["projectUur"]>
+  export type ProjectUurInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ProjectUurIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ProjectUurIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ProjectUurPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProjectUur"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      projectId: string
+      userId: string
+      datum: Date
+      uren: Prisma.Decimal
+      omschrijving: string | null
+      kilometers: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["projectUur"]>
+    composites: {}
+  }
+
+  type ProjectUurGetPayload<S extends boolean | null | undefined | ProjectUurDefaultArgs> = $Result.GetResult<Prisma.$ProjectUurPayload, S>
+
+  type ProjectUurCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProjectUurFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProjectUurCountAggregateInputType | true
+    }
+
+  export interface ProjectUurDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProjectUur'], meta: { name: 'ProjectUur' } }
+    /**
+     * Find zero or one ProjectUur that matches the filter.
+     * @param {ProjectUurFindUniqueArgs} args - Arguments to find a ProjectUur
+     * @example
+     * // Get one ProjectUur
+     * const projectUur = await prisma.projectUur.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProjectUurFindUniqueArgs>(args: SelectSubset<T, ProjectUurFindUniqueArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProjectUur that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProjectUurFindUniqueOrThrowArgs} args - Arguments to find a ProjectUur
+     * @example
+     * // Get one ProjectUur
+     * const projectUur = await prisma.projectUur.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProjectUurFindUniqueOrThrowArgs>(args: SelectSubset<T, ProjectUurFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProjectUur that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUurFindFirstArgs} args - Arguments to find a ProjectUur
+     * @example
+     * // Get one ProjectUur
+     * const projectUur = await prisma.projectUur.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProjectUurFindFirstArgs>(args?: SelectSubset<T, ProjectUurFindFirstArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProjectUur that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUurFindFirstOrThrowArgs} args - Arguments to find a ProjectUur
+     * @example
+     * // Get one ProjectUur
+     * const projectUur = await prisma.projectUur.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProjectUurFindFirstOrThrowArgs>(args?: SelectSubset<T, ProjectUurFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProjectUurs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUurFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProjectUurs
+     * const projectUurs = await prisma.projectUur.findMany()
+     * 
+     * // Get first 10 ProjectUurs
+     * const projectUurs = await prisma.projectUur.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const projectUurWithIdOnly = await prisma.projectUur.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProjectUurFindManyArgs>(args?: SelectSubset<T, ProjectUurFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProjectUur.
+     * @param {ProjectUurCreateArgs} args - Arguments to create a ProjectUur.
+     * @example
+     * // Create one ProjectUur
+     * const ProjectUur = await prisma.projectUur.create({
+     *   data: {
+     *     // ... data to create a ProjectUur
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProjectUurCreateArgs>(args: SelectSubset<T, ProjectUurCreateArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProjectUurs.
+     * @param {ProjectUurCreateManyArgs} args - Arguments to create many ProjectUurs.
+     * @example
+     * // Create many ProjectUurs
+     * const projectUur = await prisma.projectUur.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProjectUurCreateManyArgs>(args?: SelectSubset<T, ProjectUurCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProjectUurs and returns the data saved in the database.
+     * @param {ProjectUurCreateManyAndReturnArgs} args - Arguments to create many ProjectUurs.
+     * @example
+     * // Create many ProjectUurs
+     * const projectUur = await prisma.projectUur.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProjectUurs and only return the `id`
+     * const projectUurWithIdOnly = await prisma.projectUur.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProjectUurCreateManyAndReturnArgs>(args?: SelectSubset<T, ProjectUurCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProjectUur.
+     * @param {ProjectUurDeleteArgs} args - Arguments to delete one ProjectUur.
+     * @example
+     * // Delete one ProjectUur
+     * const ProjectUur = await prisma.projectUur.delete({
+     *   where: {
+     *     // ... filter to delete one ProjectUur
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProjectUurDeleteArgs>(args: SelectSubset<T, ProjectUurDeleteArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProjectUur.
+     * @param {ProjectUurUpdateArgs} args - Arguments to update one ProjectUur.
+     * @example
+     * // Update one ProjectUur
+     * const projectUur = await prisma.projectUur.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProjectUurUpdateArgs>(args: SelectSubset<T, ProjectUurUpdateArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProjectUurs.
+     * @param {ProjectUurDeleteManyArgs} args - Arguments to filter ProjectUurs to delete.
+     * @example
+     * // Delete a few ProjectUurs
+     * const { count } = await prisma.projectUur.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProjectUurDeleteManyArgs>(args?: SelectSubset<T, ProjectUurDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProjectUurs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUurUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProjectUurs
+     * const projectUur = await prisma.projectUur.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProjectUurUpdateManyArgs>(args: SelectSubset<T, ProjectUurUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProjectUurs and returns the data updated in the database.
+     * @param {ProjectUurUpdateManyAndReturnArgs} args - Arguments to update many ProjectUurs.
+     * @example
+     * // Update many ProjectUurs
+     * const projectUur = await prisma.projectUur.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProjectUurs and only return the `id`
+     * const projectUurWithIdOnly = await prisma.projectUur.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProjectUurUpdateManyAndReturnArgs>(args: SelectSubset<T, ProjectUurUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProjectUur.
+     * @param {ProjectUurUpsertArgs} args - Arguments to update or create a ProjectUur.
+     * @example
+     * // Update or create a ProjectUur
+     * const projectUur = await prisma.projectUur.upsert({
+     *   create: {
+     *     // ... data to create a ProjectUur
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProjectUur we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProjectUurUpsertArgs>(args: SelectSubset<T, ProjectUurUpsertArgs<ExtArgs>>): Prisma__ProjectUurClient<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProjectUurs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUurCountArgs} args - Arguments to filter ProjectUurs to count.
+     * @example
+     * // Count the number of ProjectUurs
+     * const count = await prisma.projectUur.count({
+     *   where: {
+     *     // ... the filter for the ProjectUurs we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProjectUurCountArgs>(
+      args?: Subset<T, ProjectUurCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProjectUurCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProjectUur.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUurAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProjectUurAggregateArgs>(args: Subset<T, ProjectUurAggregateArgs>): Prisma.PrismaPromise<GetProjectUurAggregateType<T>>
+
+    /**
+     * Group by ProjectUur.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUurGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProjectUurGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProjectUurGroupByArgs['orderBy'] }
+        : { orderBy?: ProjectUurGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProjectUurGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectUurGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProjectUur model
+   */
+  readonly fields: ProjectUurFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProjectUur.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProjectUurClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProjectUur model
+   */
+  interface ProjectUurFieldRefs {
+    readonly id: FieldRef<"ProjectUur", 'String'>
+    readonly projectId: FieldRef<"ProjectUur", 'String'>
+    readonly userId: FieldRef<"ProjectUur", 'String'>
+    readonly datum: FieldRef<"ProjectUur", 'DateTime'>
+    readonly uren: FieldRef<"ProjectUur", 'Decimal'>
+    readonly omschrijving: FieldRef<"ProjectUur", 'String'>
+    readonly kilometers: FieldRef<"ProjectUur", 'Float'>
+    readonly createdAt: FieldRef<"ProjectUur", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProjectUur findUnique
+   */
+  export type ProjectUurFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectUur to fetch.
+     */
+    where: ProjectUurWhereUniqueInput
+  }
+
+  /**
+   * ProjectUur findUniqueOrThrow
+   */
+  export type ProjectUurFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectUur to fetch.
+     */
+    where: ProjectUurWhereUniqueInput
+  }
+
+  /**
+   * ProjectUur findFirst
+   */
+  export type ProjectUurFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectUur to fetch.
+     */
+    where?: ProjectUurWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectUurs to fetch.
+     */
+    orderBy?: ProjectUurOrderByWithRelationInput | ProjectUurOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProjectUurs.
+     */
+    cursor?: ProjectUurWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectUurs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectUurs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectUurs.
+     */
+    distinct?: ProjectUurScalarFieldEnum | ProjectUurScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectUur findFirstOrThrow
+   */
+  export type ProjectUurFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectUur to fetch.
+     */
+    where?: ProjectUurWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectUurs to fetch.
+     */
+    orderBy?: ProjectUurOrderByWithRelationInput | ProjectUurOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProjectUurs.
+     */
+    cursor?: ProjectUurWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectUurs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectUurs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectUurs.
+     */
+    distinct?: ProjectUurScalarFieldEnum | ProjectUurScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectUur findMany
+   */
+  export type ProjectUurFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectUurs to fetch.
+     */
+    where?: ProjectUurWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectUurs to fetch.
+     */
+    orderBy?: ProjectUurOrderByWithRelationInput | ProjectUurOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProjectUurs.
+     */
+    cursor?: ProjectUurWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectUurs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectUurs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectUurs.
+     */
+    distinct?: ProjectUurScalarFieldEnum | ProjectUurScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectUur create
+   */
+  export type ProjectUurCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProjectUur.
+     */
+    data: XOR<ProjectUurCreateInput, ProjectUurUncheckedCreateInput>
+  }
+
+  /**
+   * ProjectUur createMany
+   */
+  export type ProjectUurCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProjectUurs.
+     */
+    data: ProjectUurCreateManyInput | ProjectUurCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProjectUur createManyAndReturn
+   */
+  export type ProjectUurCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProjectUurs.
+     */
+    data: ProjectUurCreateManyInput | ProjectUurCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProjectUur update
+   */
+  export type ProjectUurUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProjectUur.
+     */
+    data: XOR<ProjectUurUpdateInput, ProjectUurUncheckedUpdateInput>
+    /**
+     * Choose, which ProjectUur to update.
+     */
+    where: ProjectUurWhereUniqueInput
+  }
+
+  /**
+   * ProjectUur updateMany
+   */
+  export type ProjectUurUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProjectUurs.
+     */
+    data: XOR<ProjectUurUpdateManyMutationInput, ProjectUurUncheckedUpdateManyInput>
+    /**
+     * Filter which ProjectUurs to update
+     */
+    where?: ProjectUurWhereInput
+    /**
+     * Limit how many ProjectUurs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProjectUur updateManyAndReturn
+   */
+  export type ProjectUurUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * The data used to update ProjectUurs.
+     */
+    data: XOR<ProjectUurUpdateManyMutationInput, ProjectUurUncheckedUpdateManyInput>
+    /**
+     * Filter which ProjectUurs to update
+     */
+    where?: ProjectUurWhereInput
+    /**
+     * Limit how many ProjectUurs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProjectUur upsert
+   */
+  export type ProjectUurUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProjectUur to update in case it exists.
+     */
+    where: ProjectUurWhereUniqueInput
+    /**
+     * In case the ProjectUur found by the `where` argument doesn't exist, create a new ProjectUur with this data.
+     */
+    create: XOR<ProjectUurCreateInput, ProjectUurUncheckedCreateInput>
+    /**
+     * In case the ProjectUur was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProjectUurUpdateInput, ProjectUurUncheckedUpdateInput>
+  }
+
+  /**
+   * ProjectUur delete
+   */
+  export type ProjectUurDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    /**
+     * Filter which ProjectUur to delete.
+     */
+    where: ProjectUurWhereUniqueInput
+  }
+
+  /**
+   * ProjectUur deleteMany
+   */
+  export type ProjectUurDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProjectUurs to delete
+     */
+    where?: ProjectUurWhereInput
+    /**
+     * Limit how many ProjectUurs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProjectUur without action
+   */
+  export type ProjectUurDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProjectMateriaal
+   */
+
+  export type AggregateProjectMateriaal = {
+    _count: ProjectMateriaalCountAggregateOutputType | null
+    _avg: ProjectMateriaalAvgAggregateOutputType | null
+    _sum: ProjectMateriaalSumAggregateOutputType | null
+    _min: ProjectMateriaalMinAggregateOutputType | null
+    _max: ProjectMateriaalMaxAggregateOutputType | null
+  }
+
+  export type ProjectMateriaalAvgAggregateOutputType = {
+    kosten: Decimal | null
+  }
+
+  export type ProjectMateriaalSumAggregateOutputType = {
+    kosten: Decimal | null
+  }
+
+  export type ProjectMateriaalMinAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    omschrijving: string | null
+    factuurnummer: string | null
+    leverancier: string | null
+    kosten: Decimal | null
+    ingekochtOp: Date | null
+    createdAt: Date | null
+  }
+
+  export type ProjectMateriaalMaxAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    omschrijving: string | null
+    factuurnummer: string | null
+    leverancier: string | null
+    kosten: Decimal | null
+    ingekochtOp: Date | null
+    createdAt: Date | null
+  }
+
+  export type ProjectMateriaalCountAggregateOutputType = {
+    id: number
+    projectId: number
+    omschrijving: number
+    factuurnummer: number
+    leverancier: number
+    kosten: number
+    ingekochtOp: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ProjectMateriaalAvgAggregateInputType = {
+    kosten?: true
+  }
+
+  export type ProjectMateriaalSumAggregateInputType = {
+    kosten?: true
+  }
+
+  export type ProjectMateriaalMinAggregateInputType = {
+    id?: true
+    projectId?: true
+    omschrijving?: true
+    factuurnummer?: true
+    leverancier?: true
+    kosten?: true
+    ingekochtOp?: true
+    createdAt?: true
+  }
+
+  export type ProjectMateriaalMaxAggregateInputType = {
+    id?: true
+    projectId?: true
+    omschrijving?: true
+    factuurnummer?: true
+    leverancier?: true
+    kosten?: true
+    ingekochtOp?: true
+    createdAt?: true
+  }
+
+  export type ProjectMateriaalCountAggregateInputType = {
+    id?: true
+    projectId?: true
+    omschrijving?: true
+    factuurnummer?: true
+    leverancier?: true
+    kosten?: true
+    ingekochtOp?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ProjectMateriaalAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProjectMateriaal to aggregate.
+     */
+    where?: ProjectMateriaalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectMateriaals to fetch.
+     */
+    orderBy?: ProjectMateriaalOrderByWithRelationInput | ProjectMateriaalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProjectMateriaalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectMateriaals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectMateriaals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProjectMateriaals
+    **/
+    _count?: true | ProjectMateriaalCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProjectMateriaalAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProjectMateriaalSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProjectMateriaalMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProjectMateriaalMaxAggregateInputType
+  }
+
+  export type GetProjectMateriaalAggregateType<T extends ProjectMateriaalAggregateArgs> = {
+        [P in keyof T & keyof AggregateProjectMateriaal]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProjectMateriaal[P]>
+      : GetScalarType<T[P], AggregateProjectMateriaal[P]>
+  }
+
+
+
+
+  export type ProjectMateriaalGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectMateriaalWhereInput
+    orderBy?: ProjectMateriaalOrderByWithAggregationInput | ProjectMateriaalOrderByWithAggregationInput[]
+    by: ProjectMateriaalScalarFieldEnum[] | ProjectMateriaalScalarFieldEnum
+    having?: ProjectMateriaalScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProjectMateriaalCountAggregateInputType | true
+    _avg?: ProjectMateriaalAvgAggregateInputType
+    _sum?: ProjectMateriaalSumAggregateInputType
+    _min?: ProjectMateriaalMinAggregateInputType
+    _max?: ProjectMateriaalMaxAggregateInputType
+  }
+
+  export type ProjectMateriaalGroupByOutputType = {
+    id: string
+    projectId: string
+    omschrijving: string
+    factuurnummer: string | null
+    leverancier: string | null
+    kosten: Decimal
+    ingekochtOp: Date | null
+    createdAt: Date
+    _count: ProjectMateriaalCountAggregateOutputType | null
+    _avg: ProjectMateriaalAvgAggregateOutputType | null
+    _sum: ProjectMateriaalSumAggregateOutputType | null
+    _min: ProjectMateriaalMinAggregateOutputType | null
+    _max: ProjectMateriaalMaxAggregateOutputType | null
+  }
+
+  type GetProjectMateriaalGroupByPayload<T extends ProjectMateriaalGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProjectMateriaalGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProjectMateriaalGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProjectMateriaalGroupByOutputType[P]>
+            : GetScalarType<T[P], ProjectMateriaalGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProjectMateriaalSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    omschrijving?: boolean
+    factuurnummer?: boolean
+    leverancier?: boolean
+    kosten?: boolean
+    ingekochtOp?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectMateriaal"]>
+
+  export type ProjectMateriaalSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    omschrijving?: boolean
+    factuurnummer?: boolean
+    leverancier?: boolean
+    kosten?: boolean
+    ingekochtOp?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectMateriaal"]>
+
+  export type ProjectMateriaalSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    omschrijving?: boolean
+    factuurnummer?: boolean
+    leverancier?: boolean
+    kosten?: boolean
+    ingekochtOp?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectMateriaal"]>
+
+  export type ProjectMateriaalSelectScalar = {
+    id?: boolean
+    projectId?: boolean
+    omschrijving?: boolean
+    factuurnummer?: boolean
+    leverancier?: boolean
+    kosten?: boolean
+    ingekochtOp?: boolean
+    createdAt?: boolean
+  }
+
+  export type ProjectMateriaalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "omschrijving" | "factuurnummer" | "leverancier" | "kosten" | "ingekochtOp" | "createdAt", ExtArgs["result"]["projectMateriaal"]>
+  export type ProjectMateriaalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type ProjectMateriaalIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type ProjectMateriaalIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+
+  export type $ProjectMateriaalPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProjectMateriaal"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      projectId: string
+      omschrijving: string
+      factuurnummer: string | null
+      leverancier: string | null
+      kosten: Prisma.Decimal
+      ingekochtOp: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["projectMateriaal"]>
+    composites: {}
+  }
+
+  type ProjectMateriaalGetPayload<S extends boolean | null | undefined | ProjectMateriaalDefaultArgs> = $Result.GetResult<Prisma.$ProjectMateriaalPayload, S>
+
+  type ProjectMateriaalCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProjectMateriaalFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProjectMateriaalCountAggregateInputType | true
+    }
+
+  export interface ProjectMateriaalDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProjectMateriaal'], meta: { name: 'ProjectMateriaal' } }
+    /**
+     * Find zero or one ProjectMateriaal that matches the filter.
+     * @param {ProjectMateriaalFindUniqueArgs} args - Arguments to find a ProjectMateriaal
+     * @example
+     * // Get one ProjectMateriaal
+     * const projectMateriaal = await prisma.projectMateriaal.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProjectMateriaalFindUniqueArgs>(args: SelectSubset<T, ProjectMateriaalFindUniqueArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProjectMateriaal that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProjectMateriaalFindUniqueOrThrowArgs} args - Arguments to find a ProjectMateriaal
+     * @example
+     * // Get one ProjectMateriaal
+     * const projectMateriaal = await prisma.projectMateriaal.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProjectMateriaalFindUniqueOrThrowArgs>(args: SelectSubset<T, ProjectMateriaalFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProjectMateriaal that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectMateriaalFindFirstArgs} args - Arguments to find a ProjectMateriaal
+     * @example
+     * // Get one ProjectMateriaal
+     * const projectMateriaal = await prisma.projectMateriaal.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProjectMateriaalFindFirstArgs>(args?: SelectSubset<T, ProjectMateriaalFindFirstArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProjectMateriaal that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectMateriaalFindFirstOrThrowArgs} args - Arguments to find a ProjectMateriaal
+     * @example
+     * // Get one ProjectMateriaal
+     * const projectMateriaal = await prisma.projectMateriaal.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProjectMateriaalFindFirstOrThrowArgs>(args?: SelectSubset<T, ProjectMateriaalFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProjectMateriaals that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectMateriaalFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProjectMateriaals
+     * const projectMateriaals = await prisma.projectMateriaal.findMany()
+     * 
+     * // Get first 10 ProjectMateriaals
+     * const projectMateriaals = await prisma.projectMateriaal.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const projectMateriaalWithIdOnly = await prisma.projectMateriaal.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProjectMateriaalFindManyArgs>(args?: SelectSubset<T, ProjectMateriaalFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProjectMateriaal.
+     * @param {ProjectMateriaalCreateArgs} args - Arguments to create a ProjectMateriaal.
+     * @example
+     * // Create one ProjectMateriaal
+     * const ProjectMateriaal = await prisma.projectMateriaal.create({
+     *   data: {
+     *     // ... data to create a ProjectMateriaal
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProjectMateriaalCreateArgs>(args: SelectSubset<T, ProjectMateriaalCreateArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProjectMateriaals.
+     * @param {ProjectMateriaalCreateManyArgs} args - Arguments to create many ProjectMateriaals.
+     * @example
+     * // Create many ProjectMateriaals
+     * const projectMateriaal = await prisma.projectMateriaal.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProjectMateriaalCreateManyArgs>(args?: SelectSubset<T, ProjectMateriaalCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProjectMateriaals and returns the data saved in the database.
+     * @param {ProjectMateriaalCreateManyAndReturnArgs} args - Arguments to create many ProjectMateriaals.
+     * @example
+     * // Create many ProjectMateriaals
+     * const projectMateriaal = await prisma.projectMateriaal.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProjectMateriaals and only return the `id`
+     * const projectMateriaalWithIdOnly = await prisma.projectMateriaal.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProjectMateriaalCreateManyAndReturnArgs>(args?: SelectSubset<T, ProjectMateriaalCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProjectMateriaal.
+     * @param {ProjectMateriaalDeleteArgs} args - Arguments to delete one ProjectMateriaal.
+     * @example
+     * // Delete one ProjectMateriaal
+     * const ProjectMateriaal = await prisma.projectMateriaal.delete({
+     *   where: {
+     *     // ... filter to delete one ProjectMateriaal
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProjectMateriaalDeleteArgs>(args: SelectSubset<T, ProjectMateriaalDeleteArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProjectMateriaal.
+     * @param {ProjectMateriaalUpdateArgs} args - Arguments to update one ProjectMateriaal.
+     * @example
+     * // Update one ProjectMateriaal
+     * const projectMateriaal = await prisma.projectMateriaal.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProjectMateriaalUpdateArgs>(args: SelectSubset<T, ProjectMateriaalUpdateArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProjectMateriaals.
+     * @param {ProjectMateriaalDeleteManyArgs} args - Arguments to filter ProjectMateriaals to delete.
+     * @example
+     * // Delete a few ProjectMateriaals
+     * const { count } = await prisma.projectMateriaal.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProjectMateriaalDeleteManyArgs>(args?: SelectSubset<T, ProjectMateriaalDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProjectMateriaals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectMateriaalUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProjectMateriaals
+     * const projectMateriaal = await prisma.projectMateriaal.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProjectMateriaalUpdateManyArgs>(args: SelectSubset<T, ProjectMateriaalUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProjectMateriaals and returns the data updated in the database.
+     * @param {ProjectMateriaalUpdateManyAndReturnArgs} args - Arguments to update many ProjectMateriaals.
+     * @example
+     * // Update many ProjectMateriaals
+     * const projectMateriaal = await prisma.projectMateriaal.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProjectMateriaals and only return the `id`
+     * const projectMateriaalWithIdOnly = await prisma.projectMateriaal.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProjectMateriaalUpdateManyAndReturnArgs>(args: SelectSubset<T, ProjectMateriaalUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProjectMateriaal.
+     * @param {ProjectMateriaalUpsertArgs} args - Arguments to update or create a ProjectMateriaal.
+     * @example
+     * // Update or create a ProjectMateriaal
+     * const projectMateriaal = await prisma.projectMateriaal.upsert({
+     *   create: {
+     *     // ... data to create a ProjectMateriaal
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProjectMateriaal we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProjectMateriaalUpsertArgs>(args: SelectSubset<T, ProjectMateriaalUpsertArgs<ExtArgs>>): Prisma__ProjectMateriaalClient<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProjectMateriaals.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectMateriaalCountArgs} args - Arguments to filter ProjectMateriaals to count.
+     * @example
+     * // Count the number of ProjectMateriaals
+     * const count = await prisma.projectMateriaal.count({
+     *   where: {
+     *     // ... the filter for the ProjectMateriaals we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProjectMateriaalCountArgs>(
+      args?: Subset<T, ProjectMateriaalCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProjectMateriaalCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProjectMateriaal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectMateriaalAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProjectMateriaalAggregateArgs>(args: Subset<T, ProjectMateriaalAggregateArgs>): Prisma.PrismaPromise<GetProjectMateriaalAggregateType<T>>
+
+    /**
+     * Group by ProjectMateriaal.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectMateriaalGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProjectMateriaalGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProjectMateriaalGroupByArgs['orderBy'] }
+        : { orderBy?: ProjectMateriaalGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProjectMateriaalGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectMateriaalGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProjectMateriaal model
+   */
+  readonly fields: ProjectMateriaalFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProjectMateriaal.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProjectMateriaalClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProjectMateriaal model
+   */
+  interface ProjectMateriaalFieldRefs {
+    readonly id: FieldRef<"ProjectMateriaal", 'String'>
+    readonly projectId: FieldRef<"ProjectMateriaal", 'String'>
+    readonly omschrijving: FieldRef<"ProjectMateriaal", 'String'>
+    readonly factuurnummer: FieldRef<"ProjectMateriaal", 'String'>
+    readonly leverancier: FieldRef<"ProjectMateriaal", 'String'>
+    readonly kosten: FieldRef<"ProjectMateriaal", 'Decimal'>
+    readonly ingekochtOp: FieldRef<"ProjectMateriaal", 'DateTime'>
+    readonly createdAt: FieldRef<"ProjectMateriaal", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProjectMateriaal findUnique
+   */
+  export type ProjectMateriaalFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectMateriaal to fetch.
+     */
+    where: ProjectMateriaalWhereUniqueInput
+  }
+
+  /**
+   * ProjectMateriaal findUniqueOrThrow
+   */
+  export type ProjectMateriaalFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectMateriaal to fetch.
+     */
+    where: ProjectMateriaalWhereUniqueInput
+  }
+
+  /**
+   * ProjectMateriaal findFirst
+   */
+  export type ProjectMateriaalFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectMateriaal to fetch.
+     */
+    where?: ProjectMateriaalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectMateriaals to fetch.
+     */
+    orderBy?: ProjectMateriaalOrderByWithRelationInput | ProjectMateriaalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProjectMateriaals.
+     */
+    cursor?: ProjectMateriaalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectMateriaals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectMateriaals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectMateriaals.
+     */
+    distinct?: ProjectMateriaalScalarFieldEnum | ProjectMateriaalScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectMateriaal findFirstOrThrow
+   */
+  export type ProjectMateriaalFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectMateriaal to fetch.
+     */
+    where?: ProjectMateriaalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectMateriaals to fetch.
+     */
+    orderBy?: ProjectMateriaalOrderByWithRelationInput | ProjectMateriaalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProjectMateriaals.
+     */
+    cursor?: ProjectMateriaalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectMateriaals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectMateriaals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectMateriaals.
+     */
+    distinct?: ProjectMateriaalScalarFieldEnum | ProjectMateriaalScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectMateriaal findMany
+   */
+  export type ProjectMateriaalFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectMateriaals to fetch.
+     */
+    where?: ProjectMateriaalWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectMateriaals to fetch.
+     */
+    orderBy?: ProjectMateriaalOrderByWithRelationInput | ProjectMateriaalOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProjectMateriaals.
+     */
+    cursor?: ProjectMateriaalWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectMateriaals from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectMateriaals.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectMateriaals.
+     */
+    distinct?: ProjectMateriaalScalarFieldEnum | ProjectMateriaalScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectMateriaal create
+   */
+  export type ProjectMateriaalCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProjectMateriaal.
+     */
+    data: XOR<ProjectMateriaalCreateInput, ProjectMateriaalUncheckedCreateInput>
+  }
+
+  /**
+   * ProjectMateriaal createMany
+   */
+  export type ProjectMateriaalCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProjectMateriaals.
+     */
+    data: ProjectMateriaalCreateManyInput | ProjectMateriaalCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProjectMateriaal createManyAndReturn
+   */
+  export type ProjectMateriaalCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProjectMateriaals.
+     */
+    data: ProjectMateriaalCreateManyInput | ProjectMateriaalCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProjectMateriaal update
+   */
+  export type ProjectMateriaalUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProjectMateriaal.
+     */
+    data: XOR<ProjectMateriaalUpdateInput, ProjectMateriaalUncheckedUpdateInput>
+    /**
+     * Choose, which ProjectMateriaal to update.
+     */
+    where: ProjectMateriaalWhereUniqueInput
+  }
+
+  /**
+   * ProjectMateriaal updateMany
+   */
+  export type ProjectMateriaalUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProjectMateriaals.
+     */
+    data: XOR<ProjectMateriaalUpdateManyMutationInput, ProjectMateriaalUncheckedUpdateManyInput>
+    /**
+     * Filter which ProjectMateriaals to update
+     */
+    where?: ProjectMateriaalWhereInput
+    /**
+     * Limit how many ProjectMateriaals to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProjectMateriaal updateManyAndReturn
+   */
+  export type ProjectMateriaalUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * The data used to update ProjectMateriaals.
+     */
+    data: XOR<ProjectMateriaalUpdateManyMutationInput, ProjectMateriaalUncheckedUpdateManyInput>
+    /**
+     * Filter which ProjectMateriaals to update
+     */
+    where?: ProjectMateriaalWhereInput
+    /**
+     * Limit how many ProjectMateriaals to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProjectMateriaal upsert
+   */
+  export type ProjectMateriaalUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProjectMateriaal to update in case it exists.
+     */
+    where: ProjectMateriaalWhereUniqueInput
+    /**
+     * In case the ProjectMateriaal found by the `where` argument doesn't exist, create a new ProjectMateriaal with this data.
+     */
+    create: XOR<ProjectMateriaalCreateInput, ProjectMateriaalUncheckedCreateInput>
+    /**
+     * In case the ProjectMateriaal was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProjectMateriaalUpdateInput, ProjectMateriaalUncheckedUpdateInput>
+  }
+
+  /**
+   * ProjectMateriaal delete
+   */
+  export type ProjectMateriaalDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+    /**
+     * Filter which ProjectMateriaal to delete.
+     */
+    where: ProjectMateriaalWhereUniqueInput
+  }
+
+  /**
+   * ProjectMateriaal deleteMany
+   */
+  export type ProjectMateriaalDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProjectMateriaals to delete
+     */
+    where?: ProjectMateriaalWhereInput
+    /**
+     * Limit how many ProjectMateriaals to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProjectMateriaal without action
+   */
+  export type ProjectMateriaalDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectMateriaal
+     */
+    select?: ProjectMateriaalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectMateriaal
+     */
+    omit?: ProjectMateriaalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectMateriaalInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Workorder
    */
 
@@ -7718,10 +10398,14 @@ export namespace Prisma {
 
   export type WorkorderAvgAggregateOutputType = {
     plannedHours: number | null
+    plannedRoundTripKm: number | null
+    plannedReisuren: number | null
   }
 
   export type WorkorderSumAggregateOutputType = {
     plannedHours: number | null
+    plannedRoundTripKm: number | null
+    plannedReisuren: number | null
   }
 
   export type WorkorderMinAggregateOutputType = {
@@ -7746,6 +10430,8 @@ export namespace Prisma {
     plannedDate: Date | null
     plannedEndDate: Date | null
     plannedHours: number | null
+    plannedRoundTripKm: number | null
+    plannedReisuren: number | null
     assignmentId: string | null
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
@@ -7774,6 +10460,8 @@ export namespace Prisma {
     plannedDate: Date | null
     plannedEndDate: Date | null
     plannedHours: number | null
+    plannedRoundTripKm: number | null
+    plannedReisuren: number | null
     assignmentId: string | null
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
@@ -7802,6 +10490,8 @@ export namespace Prisma {
     plannedDate: number
     plannedEndDate: number
     plannedHours: number
+    plannedRoundTripKm: number
+    plannedReisuren: number
     assignmentId: number
     formData: number
     pdfData: number
@@ -7813,10 +10503,14 @@ export namespace Prisma {
 
   export type WorkorderAvgAggregateInputType = {
     plannedHours?: true
+    plannedRoundTripKm?: true
+    plannedReisuren?: true
   }
 
   export type WorkorderSumAggregateInputType = {
     plannedHours?: true
+    plannedRoundTripKm?: true
+    plannedReisuren?: true
   }
 
   export type WorkorderMinAggregateInputType = {
@@ -7841,6 +10535,8 @@ export namespace Prisma {
     plannedDate?: true
     plannedEndDate?: true
     plannedHours?: true
+    plannedRoundTripKm?: true
+    plannedReisuren?: true
     assignmentId?: true
     pdfData?: true
     pdfGeneratedAt?: true
@@ -7869,6 +10565,8 @@ export namespace Prisma {
     plannedDate?: true
     plannedEndDate?: true
     plannedHours?: true
+    plannedRoundTripKm?: true
+    plannedReisuren?: true
     assignmentId?: true
     pdfData?: true
     pdfGeneratedAt?: true
@@ -7897,6 +10595,8 @@ export namespace Prisma {
     plannedDate?: true
     plannedEndDate?: true
     plannedHours?: true
+    plannedRoundTripKm?: true
+    plannedReisuren?: true
     assignmentId?: true
     formData?: true
     pdfData?: true
@@ -8013,6 +10713,8 @@ export namespace Prisma {
     plannedDate: Date | null
     plannedEndDate: Date | null
     plannedHours: number | null
+    plannedRoundTripKm: number | null
+    plannedReisuren: number | null
     assignmentId: string | null
     formData: JsonValue | null
     pdfData: Bytes | null
@@ -8061,6 +10763,8 @@ export namespace Prisma {
     plannedDate?: boolean
     plannedEndDate?: boolean
     plannedHours?: boolean
+    plannedRoundTripKm?: boolean
+    plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -8104,6 +10808,8 @@ export namespace Prisma {
     plannedDate?: boolean
     plannedEndDate?: boolean
     plannedHours?: boolean
+    plannedRoundTripKm?: boolean
+    plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -8137,6 +10843,8 @@ export namespace Prisma {
     plannedDate?: boolean
     plannedEndDate?: boolean
     plannedHours?: boolean
+    plannedRoundTripKm?: boolean
+    plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -8170,6 +10878,8 @@ export namespace Prisma {
     plannedDate?: boolean
     plannedEndDate?: boolean
     plannedHours?: boolean
+    plannedRoundTripKm?: boolean
+    plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
     pdfData?: boolean
@@ -8177,7 +10887,7 @@ export namespace Prisma {
     sentAt?: boolean
   }
 
-  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "assignmentId" | "formData" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
+  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
   export type WorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -8246,6 +10956,14 @@ export namespace Prisma {
       plannedDate: Date | null
       plannedEndDate: Date | null
       plannedHours: number | null
+      /**
+       * Heen + terug kantoor ↔ klus (berekend bij planning)
+       */
+      plannedRoundTripKm: number | null
+      /**
+       * Rijtijd bij plannedRoundTripKm (zelfde dagroute, verdeeld per stop)
+       */
+      plannedReisuren: number | null
       assignmentId: string | null
       formData: Prisma.JsonValue | null
       pdfData: Prisma.Bytes | null
@@ -8708,6 +11426,8 @@ export namespace Prisma {
     readonly plannedDate: FieldRef<"Workorder", 'DateTime'>
     readonly plannedEndDate: FieldRef<"Workorder", 'DateTime'>
     readonly plannedHours: FieldRef<"Workorder", 'Float'>
+    readonly plannedRoundTripKm: FieldRef<"Workorder", 'Float'>
+    readonly plannedReisuren: FieldRef<"Workorder", 'Float'>
     readonly assignmentId: FieldRef<"Workorder", 'String'>
     readonly formData: FieldRef<"Workorder", 'Json'>
     readonly pdfData: FieldRef<"Workorder", 'Bytes'>
@@ -26088,13 +28808,46 @@ export namespace Prisma {
     id: 'id',
     number: 'number',
     name: 'name',
+    location: 'location',
     customerId: 'customerId',
+    geoffreerdeUren: 'geoffreerdeUren',
+    geoffreerdBedrag: 'geoffreerdBedrag',
+    offerteUrl: 'offerteUrl',
+    offerteFilename: 'offerteFilename',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+  export const ProjectUurScalarFieldEnum: {
+    id: 'id',
+    projectId: 'projectId',
+    userId: 'userId',
+    datum: 'datum',
+    uren: 'uren',
+    omschrijving: 'omschrijving',
+    kilometers: 'kilometers',
+    createdAt: 'createdAt'
+  };
+
+  export type ProjectUurScalarFieldEnum = (typeof ProjectUurScalarFieldEnum)[keyof typeof ProjectUurScalarFieldEnum]
+
+
+  export const ProjectMateriaalScalarFieldEnum: {
+    id: 'id',
+    projectId: 'projectId',
+    omschrijving: 'omschrijving',
+    factuurnummer: 'factuurnummer',
+    leverancier: 'leverancier',
+    kosten: 'kosten',
+    ingekochtOp: 'ingekochtOp',
+    createdAt: 'createdAt'
+  };
+
+  export type ProjectMateriaalScalarFieldEnum = (typeof ProjectMateriaalScalarFieldEnum)[keyof typeof ProjectMateriaalScalarFieldEnum]
 
 
   export const WorkorderScalarFieldEnum: {
@@ -26119,6 +28872,8 @@ export namespace Prisma {
     plannedDate: 'plannedDate',
     plannedEndDate: 'plannedEndDate',
     plannedHours: 'plannedHours',
+    plannedRoundTripKm: 'plannedRoundTripKm',
+    plannedReisuren: 'plannedReisuren',
     assignmentId: 'assignmentId',
     formData: 'formData',
     pdfData: 'pdfData',
@@ -26424,6 +29179,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -26484,6 +29253,7 @@ export namespace Prisma {
     workorders?: WorkorderListRelationFilter
     extraWorkorders?: WorkorderEngineerListRelationFilter
     forms?: FormSubmissionListRelationFilter
+    projectUren?: ProjectUurListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -26499,6 +29269,7 @@ export namespace Prisma {
     workorders?: WorkorderOrderByRelationAggregateInput
     extraWorkorders?: WorkorderEngineerOrderByRelationAggregateInput
     forms?: FormSubmissionOrderByRelationAggregateInput
+    projectUren?: ProjectUurOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -26517,6 +29288,7 @@ export namespace Prisma {
     workorders?: WorkorderListRelationFilter
     extraWorkorders?: WorkorderEngineerListRelationFilter
     forms?: FormSubmissionListRelationFilter
+    projectUren?: ProjectUurListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -26763,24 +29535,38 @@ export namespace Prisma {
     id?: StringFilter<"Project"> | string
     number?: StringFilter<"Project"> | string
     name?: StringFilter<"Project"> | string
+    location?: StringNullableFilter<"Project"> | string | null
     customerId?: StringFilter<"Project"> | string
+    geoffreerdeUren?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: StringNullableFilter<"Project"> | string | null
+    offerteFilename?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     workorders?: WorkorderListRelationFilter
+    uren?: ProjectUurListRelationFilter
+    materialen?: ProjectMateriaalListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
     id?: SortOrder
     number?: SortOrder
     name?: SortOrder
+    location?: SortOrderInput | SortOrder
     customerId?: SortOrder
+    geoffreerdeUren?: SortOrderInput | SortOrder
+    geoffreerdBedrag?: SortOrderInput | SortOrder
+    offerteUrl?: SortOrderInput | SortOrder
+    offerteFilename?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     customer?: CustomerOrderByWithRelationInput
     workorders?: WorkorderOrderByRelationAggregateInput
+    uren?: ProjectUurOrderByRelationAggregateInput
+    materialen?: ProjectMateriaalOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -26790,25 +29576,39 @@ export namespace Prisma {
     OR?: ProjectWhereInput[]
     NOT?: ProjectWhereInput | ProjectWhereInput[]
     name?: StringFilter<"Project"> | string
+    location?: StringNullableFilter<"Project"> | string | null
     customerId?: StringFilter<"Project"> | string
+    geoffreerdeUren?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: StringNullableFilter<"Project"> | string | null
+    offerteFilename?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     workorders?: WorkorderListRelationFilter
+    uren?: ProjectUurListRelationFilter
+    materialen?: ProjectMateriaalListRelationFilter
   }, "id" | "number">
 
   export type ProjectOrderByWithAggregationInput = {
     id?: SortOrder
     number?: SortOrder
     name?: SortOrder
+    location?: SortOrderInput | SortOrder
     customerId?: SortOrder
+    geoffreerdeUren?: SortOrderInput | SortOrder
+    geoffreerdBedrag?: SortOrderInput | SortOrder
+    offerteUrl?: SortOrderInput | SortOrder
+    offerteFilename?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
+    _avg?: ProjectAvgOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
     _min?: ProjectMinOrderByAggregateInput
+    _sum?: ProjectSumOrderByAggregateInput
   }
 
   export type ProjectScalarWhereWithAggregatesInput = {
@@ -26818,10 +29618,162 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Project"> | string
     number?: StringWithAggregatesFilter<"Project"> | string
     name?: StringWithAggregatesFilter<"Project"> | string
+    location?: StringNullableWithAggregatesFilter<"Project"> | string | null
     customerId?: StringWithAggregatesFilter<"Project"> | string
+    geoffreerdeUren?: DecimalNullableWithAggregatesFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: DecimalNullableWithAggregatesFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    offerteFilename?: StringNullableWithAggregatesFilter<"Project"> | string | null
     status?: StringWithAggregatesFilter<"Project"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+  }
+
+  export type ProjectUurWhereInput = {
+    AND?: ProjectUurWhereInput | ProjectUurWhereInput[]
+    OR?: ProjectUurWhereInput[]
+    NOT?: ProjectUurWhereInput | ProjectUurWhereInput[]
+    id?: StringFilter<"ProjectUur"> | string
+    projectId?: StringFilter<"ProjectUur"> | string
+    userId?: StringFilter<"ProjectUur"> | string
+    datum?: DateTimeFilter<"ProjectUur"> | Date | string
+    uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
+    omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
+    kilometers?: FloatNullableFilter<"ProjectUur"> | number | null
+    createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ProjectUurOrderByWithRelationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    datum?: SortOrder
+    uren?: SortOrder
+    omschrijving?: SortOrderInput | SortOrder
+    kilometers?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    project?: ProjectOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ProjectUurWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProjectUurWhereInput | ProjectUurWhereInput[]
+    OR?: ProjectUurWhereInput[]
+    NOT?: ProjectUurWhereInput | ProjectUurWhereInput[]
+    projectId?: StringFilter<"ProjectUur"> | string
+    userId?: StringFilter<"ProjectUur"> | string
+    datum?: DateTimeFilter<"ProjectUur"> | Date | string
+    uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
+    omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
+    kilometers?: FloatNullableFilter<"ProjectUur"> | number | null
+    createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ProjectUurOrderByWithAggregationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    datum?: SortOrder
+    uren?: SortOrder
+    omschrijving?: SortOrderInput | SortOrder
+    kilometers?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ProjectUurCountOrderByAggregateInput
+    _avg?: ProjectUurAvgOrderByAggregateInput
+    _max?: ProjectUurMaxOrderByAggregateInput
+    _min?: ProjectUurMinOrderByAggregateInput
+    _sum?: ProjectUurSumOrderByAggregateInput
+  }
+
+  export type ProjectUurScalarWhereWithAggregatesInput = {
+    AND?: ProjectUurScalarWhereWithAggregatesInput | ProjectUurScalarWhereWithAggregatesInput[]
+    OR?: ProjectUurScalarWhereWithAggregatesInput[]
+    NOT?: ProjectUurScalarWhereWithAggregatesInput | ProjectUurScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProjectUur"> | string
+    projectId?: StringWithAggregatesFilter<"ProjectUur"> | string
+    userId?: StringWithAggregatesFilter<"ProjectUur"> | string
+    datum?: DateTimeWithAggregatesFilter<"ProjectUur"> | Date | string
+    uren?: DecimalWithAggregatesFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
+    omschrijving?: StringNullableWithAggregatesFilter<"ProjectUur"> | string | null
+    kilometers?: FloatNullableWithAggregatesFilter<"ProjectUur"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"ProjectUur"> | Date | string
+  }
+
+  export type ProjectMateriaalWhereInput = {
+    AND?: ProjectMateriaalWhereInput | ProjectMateriaalWhereInput[]
+    OR?: ProjectMateriaalWhereInput[]
+    NOT?: ProjectMateriaalWhereInput | ProjectMateriaalWhereInput[]
+    id?: StringFilter<"ProjectMateriaal"> | string
+    projectId?: StringFilter<"ProjectMateriaal"> | string
+    omschrijving?: StringFilter<"ProjectMateriaal"> | string
+    factuurnummer?: StringNullableFilter<"ProjectMateriaal"> | string | null
+    leverancier?: StringNullableFilter<"ProjectMateriaal"> | string | null
+    kosten?: DecimalFilter<"ProjectMateriaal"> | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: DateTimeNullableFilter<"ProjectMateriaal"> | Date | string | null
+    createdAt?: DateTimeFilter<"ProjectMateriaal"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }
+
+  export type ProjectMateriaalOrderByWithRelationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    omschrijving?: SortOrder
+    factuurnummer?: SortOrderInput | SortOrder
+    leverancier?: SortOrderInput | SortOrder
+    kosten?: SortOrder
+    ingekochtOp?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    project?: ProjectOrderByWithRelationInput
+  }
+
+  export type ProjectMateriaalWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProjectMateriaalWhereInput | ProjectMateriaalWhereInput[]
+    OR?: ProjectMateriaalWhereInput[]
+    NOT?: ProjectMateriaalWhereInput | ProjectMateriaalWhereInput[]
+    projectId?: StringFilter<"ProjectMateriaal"> | string
+    omschrijving?: StringFilter<"ProjectMateriaal"> | string
+    factuurnummer?: StringNullableFilter<"ProjectMateriaal"> | string | null
+    leverancier?: StringNullableFilter<"ProjectMateriaal"> | string | null
+    kosten?: DecimalFilter<"ProjectMateriaal"> | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: DateTimeNullableFilter<"ProjectMateriaal"> | Date | string | null
+    createdAt?: DateTimeFilter<"ProjectMateriaal"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }, "id">
+
+  export type ProjectMateriaalOrderByWithAggregationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    omschrijving?: SortOrder
+    factuurnummer?: SortOrderInput | SortOrder
+    leverancier?: SortOrderInput | SortOrder
+    kosten?: SortOrder
+    ingekochtOp?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ProjectMateriaalCountOrderByAggregateInput
+    _avg?: ProjectMateriaalAvgOrderByAggregateInput
+    _max?: ProjectMateriaalMaxOrderByAggregateInput
+    _min?: ProjectMateriaalMinOrderByAggregateInput
+    _sum?: ProjectMateriaalSumOrderByAggregateInput
+  }
+
+  export type ProjectMateriaalScalarWhereWithAggregatesInput = {
+    AND?: ProjectMateriaalScalarWhereWithAggregatesInput | ProjectMateriaalScalarWhereWithAggregatesInput[]
+    OR?: ProjectMateriaalScalarWhereWithAggregatesInput[]
+    NOT?: ProjectMateriaalScalarWhereWithAggregatesInput | ProjectMateriaalScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProjectMateriaal"> | string
+    projectId?: StringWithAggregatesFilter<"ProjectMateriaal"> | string
+    omschrijving?: StringWithAggregatesFilter<"ProjectMateriaal"> | string
+    factuurnummer?: StringNullableWithAggregatesFilter<"ProjectMateriaal"> | string | null
+    leverancier?: StringNullableWithAggregatesFilter<"ProjectMateriaal"> | string | null
+    kosten?: DecimalWithAggregatesFilter<"ProjectMateriaal"> | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: DateTimeNullableWithAggregatesFilter<"ProjectMateriaal"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ProjectMateriaal"> | Date | string
   }
 
   export type WorkorderWhereInput = {
@@ -26849,6 +29801,8 @@ export namespace Prisma {
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedHours?: FloatNullableFilter<"Workorder"> | number | null
+    plannedRoundTripKm?: FloatNullableFilter<"Workorder"> | number | null
+    plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
@@ -26891,6 +29845,8 @@ export namespace Prisma {
     plannedDate?: SortOrderInput | SortOrder
     plannedEndDate?: SortOrderInput | SortOrder
     plannedHours?: SortOrderInput | SortOrder
+    plannedRoundTripKm?: SortOrderInput | SortOrder
+    plannedReisuren?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
@@ -26936,6 +29892,8 @@ export namespace Prisma {
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedHours?: FloatNullableFilter<"Workorder"> | number | null
+    plannedRoundTripKm?: FloatNullableFilter<"Workorder"> | number | null
+    plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
@@ -26978,6 +29936,8 @@ export namespace Prisma {
     plannedDate?: SortOrderInput | SortOrder
     plannedEndDate?: SortOrderInput | SortOrder
     plannedHours?: SortOrderInput | SortOrder
+    plannedRoundTripKm?: SortOrderInput | SortOrder
+    plannedReisuren?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
@@ -27015,6 +29975,8 @@ export namespace Prisma {
     plannedDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     plannedHours?: FloatNullableWithAggregatesFilter<"Workorder"> | number | null
+    plannedRoundTripKm?: FloatNullableWithAggregatesFilter<"Workorder"> | number | null
+    plannedReisuren?: FloatNullableWithAggregatesFilter<"Workorder"> | number | null
     assignmentId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     formData?: JsonNullableWithAggregatesFilter<"Workorder">
     pdfData?: BytesNullableWithAggregatesFilter<"Workorder"> | Bytes | null
@@ -28024,6 +30986,7 @@ export namespace Prisma {
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -28039,6 +31002,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -28054,6 +31018,7 @@ export namespace Prisma {
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -28069,6 +31034,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -28361,51 +31327,84 @@ export namespace Prisma {
     id?: string
     number: string
     name: string
+    location?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
     workorders?: WorkorderCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
     id?: string
     number: string
     name: string
+    location?: string | null
     customerId: string
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
     workorders?: WorkorderUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
     id?: string
     number: string
     name: string
+    location?: string | null
     customerId: string
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -28415,6 +31414,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28424,10 +31428,166 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUurCreateInput = {
+    id?: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutUrenInput
+    user: UserCreateNestedOneWithoutProjectUrenInput
+  }
+
+  export type ProjectUurUncheckedCreateInput = {
+    id?: string
+    projectId: string
+    userId: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectUurUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
+    user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
+  }
+
+  export type ProjectUurUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUurCreateManyInput = {
+    id?: string
+    projectId: string
+    userId: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectUurUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUurUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectMateriaalCreateInput = {
+    id?: string
+    omschrijving: string
+    factuurnummer?: string | null
+    leverancier?: string | null
+    kosten: Decimal | DecimalJsLike | number | string
+    ingekochtOp?: Date | string | null
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutMaterialenInput
+  }
+
+  export type ProjectMateriaalUncheckedCreateInput = {
+    id?: string
+    projectId: string
+    omschrijving: string
+    factuurnummer?: string | null
+    leverancier?: string | null
+    kosten: Decimal | DecimalJsLike | number | string
+    ingekochtOp?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectMateriaalUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omschrijving?: StringFieldUpdateOperationsInput | string
+    factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    leverancier?: NullableStringFieldUpdateOperationsInput | string | null
+    kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutMaterialenNestedInput
+  }
+
+  export type ProjectMateriaalUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    omschrijving?: StringFieldUpdateOperationsInput | string
+    factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    leverancier?: NullableStringFieldUpdateOperationsInput | string | null
+    kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectMateriaalCreateManyInput = {
+    id?: string
+    projectId: string
+    omschrijving: string
+    factuurnummer?: string | null
+    leverancier?: string | null
+    kosten: Decimal | DecimalJsLike | number | string
+    ingekochtOp?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectMateriaalUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omschrijving?: StringFieldUpdateOperationsInput | string
+    factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    leverancier?: NullableStringFieldUpdateOperationsInput | string | null
+    kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectMateriaalUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    omschrijving?: StringFieldUpdateOperationsInput | string
+    factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    leverancier?: NullableStringFieldUpdateOperationsInput | string | null
+    kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WorkorderCreateInput = {
@@ -28449,6 +31609,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -28490,6 +31652,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -28525,6 +31689,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28566,6 +31732,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -28604,6 +31772,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -28630,6 +31800,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28658,6 +31830,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -29764,6 +32938,12 @@ export namespace Prisma {
     none?: FormSubmissionWhereInput
   }
 
+  export type ProjectUurListRelationFilter = {
+    every?: ProjectUurWhereInput
+    some?: ProjectUurWhereInput
+    none?: ProjectUurWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -29782,6 +32962,10 @@ export namespace Prisma {
   }
 
   export type FormSubmissionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProjectUurOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -30056,21 +33240,57 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type ProjectMateriaalListRelationFilter = {
+    every?: ProjectMateriaalWhereInput
+    some?: ProjectMateriaalWhereInput
+    none?: ProjectMateriaalWhereInput
+  }
+
+  export type ProjectMateriaalOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ProjectCountOrderByAggregateInput = {
     id?: SortOrder
     number?: SortOrder
     name?: SortOrder
+    location?: SortOrder
     customerId?: SortOrder
+    geoffreerdeUren?: SortOrder
+    geoffreerdBedrag?: SortOrder
+    offerteUrl?: SortOrder
+    offerteFilename?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ProjectAvgOrderByAggregateInput = {
+    geoffreerdeUren?: SortOrder
+    geoffreerdBedrag?: SortOrder
   }
 
   export type ProjectMaxOrderByAggregateInput = {
     id?: SortOrder
     number?: SortOrder
     name?: SortOrder
+    location?: SortOrder
     customerId?: SortOrder
+    geoffreerdeUren?: SortOrder
+    geoffreerdBedrag?: SortOrder
+    offerteUrl?: SortOrder
+    offerteFilename?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -30080,10 +33300,143 @@ export namespace Prisma {
     id?: SortOrder
     number?: SortOrder
     name?: SortOrder
+    location?: SortOrder
     customerId?: SortOrder
+    geoffreerdeUren?: SortOrder
+    geoffreerdBedrag?: SortOrder
+    offerteUrl?: SortOrder
+    offerteFilename?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ProjectSumOrderByAggregateInput = {
+    geoffreerdeUren?: SortOrder
+    geoffreerdBedrag?: SortOrder
+  }
+
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type ProjectScalarRelationFilter = {
+    is?: ProjectWhereInput
+    isNot?: ProjectWhereInput
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type ProjectUurCountOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    datum?: SortOrder
+    uren?: SortOrder
+    omschrijving?: SortOrder
+    kilometers?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectUurAvgOrderByAggregateInput = {
+    uren?: SortOrder
+    kilometers?: SortOrder
+  }
+
+  export type ProjectUurMaxOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    datum?: SortOrder
+    uren?: SortOrder
+    omschrijving?: SortOrder
+    kilometers?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectUurMinOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    datum?: SortOrder
+    uren?: SortOrder
+    omschrijving?: SortOrder
+    kilometers?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectUurSumOrderByAggregateInput = {
+    uren?: SortOrder
+    kilometers?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -30097,15 +33450,59 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  export type ProjectMateriaalCountOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    omschrijving?: SortOrder
+    factuurnummer?: SortOrder
+    leverancier?: SortOrder
+    kosten?: SortOrder
+    ingekochtOp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectMateriaalAvgOrderByAggregateInput = {
+    kosten?: SortOrder
+  }
+
+  export type ProjectMateriaalMaxOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    omschrijving?: SortOrder
+    factuurnummer?: SortOrder
+    leverancier?: SortOrder
+    kosten?: SortOrder
+    ingekochtOp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectMateriaalMinOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    omschrijving?: SortOrder
+    factuurnummer?: SortOrder
+    leverancier?: SortOrder
+    kosten?: SortOrder
+    ingekochtOp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectMateriaalSumOrderByAggregateInput = {
+    kosten?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type BytesNullableFilter<$PrismaModel = never> = {
@@ -30232,6 +33629,8 @@ export namespace Prisma {
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
     plannedHours?: SortOrder
+    plannedRoundTripKm?: SortOrder
+    plannedReisuren?: SortOrder
     assignmentId?: SortOrder
     formData?: SortOrder
     pdfData?: SortOrder
@@ -30241,6 +33640,8 @@ export namespace Prisma {
 
   export type WorkorderAvgOrderByAggregateInput = {
     plannedHours?: SortOrder
+    plannedRoundTripKm?: SortOrder
+    plannedReisuren?: SortOrder
   }
 
   export type WorkorderMaxOrderByAggregateInput = {
@@ -30265,6 +33666,8 @@ export namespace Prisma {
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
     plannedHours?: SortOrder
+    plannedRoundTripKm?: SortOrder
+    plannedReisuren?: SortOrder
     assignmentId?: SortOrder
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
@@ -30293,6 +33696,8 @@ export namespace Prisma {
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
     plannedHours?: SortOrder
+    plannedRoundTripKm?: SortOrder
+    plannedReisuren?: SortOrder
     assignmentId?: SortOrder
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
@@ -30301,36 +33706,8 @@ export namespace Prisma {
 
   export type WorkorderSumOrderByAggregateInput = {
     plannedHours?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
+    plannedRoundTripKm?: SortOrder
+    plannedReisuren?: SortOrder
   }
 
   export type BytesNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -30816,11 +34193,6 @@ export namespace Prisma {
     isNot?: AssignmentWhereInput
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
   export type AssignmentUserCountOrderByAggregateInput = {
     id?: SortOrder
     assignmentId?: SortOrder
@@ -31008,6 +34380,13 @@ export namespace Prisma {
     connect?: FormSubmissionWhereUniqueInput | FormSubmissionWhereUniqueInput[]
   }
 
+  export type ProjectUurCreateNestedManyWithoutUserInput = {
+    create?: XOR<ProjectUurCreateWithoutUserInput, ProjectUurUncheckedCreateWithoutUserInput> | ProjectUurCreateWithoutUserInput[] | ProjectUurUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutUserInput | ProjectUurCreateOrConnectWithoutUserInput[]
+    createMany?: ProjectUurCreateManyUserInputEnvelope
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+  }
+
   export type AssignmentUserUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -31034,6 +34413,13 @@ export namespace Prisma {
     connectOrCreate?: FormSubmissionCreateOrConnectWithoutUserInput | FormSubmissionCreateOrConnectWithoutUserInput[]
     createMany?: FormSubmissionCreateManyUserInputEnvelope
     connect?: FormSubmissionWhereUniqueInput | FormSubmissionWhereUniqueInput[]
+  }
+
+  export type ProjectUurUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ProjectUurCreateWithoutUserInput, ProjectUurUncheckedCreateWithoutUserInput> | ProjectUurCreateWithoutUserInput[] | ProjectUurUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutUserInput | ProjectUurCreateOrConnectWithoutUserInput[]
+    createMany?: ProjectUurCreateManyUserInputEnvelope
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -31108,6 +34494,20 @@ export namespace Prisma {
     deleteMany?: FormSubmissionScalarWhereInput | FormSubmissionScalarWhereInput[]
   }
 
+  export type ProjectUurUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ProjectUurCreateWithoutUserInput, ProjectUurUncheckedCreateWithoutUserInput> | ProjectUurCreateWithoutUserInput[] | ProjectUurUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutUserInput | ProjectUurCreateOrConnectWithoutUserInput[]
+    upsert?: ProjectUurUpsertWithWhereUniqueWithoutUserInput | ProjectUurUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ProjectUurCreateManyUserInputEnvelope
+    set?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    disconnect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    delete?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    update?: ProjectUurUpdateWithWhereUniqueWithoutUserInput | ProjectUurUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ProjectUurUpdateManyWithWhereWithoutUserInput | ProjectUurUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+  }
+
   export type AssignmentUserUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -31162,6 +34562,20 @@ export namespace Prisma {
     update?: FormSubmissionUpdateWithWhereUniqueWithoutUserInput | FormSubmissionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: FormSubmissionUpdateManyWithWhereWithoutUserInput | FormSubmissionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: FormSubmissionScalarWhereInput | FormSubmissionScalarWhereInput[]
+  }
+
+  export type ProjectUurUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ProjectUurCreateWithoutUserInput, ProjectUurUncheckedCreateWithoutUserInput> | ProjectUurCreateWithoutUserInput[] | ProjectUurUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutUserInput | ProjectUurCreateOrConnectWithoutUserInput[]
+    upsert?: ProjectUurUpsertWithWhereUniqueWithoutUserInput | ProjectUurUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ProjectUurCreateManyUserInputEnvelope
+    set?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    disconnect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    delete?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    update?: ProjectUurUpdateWithWhereUniqueWithoutUserInput | ProjectUurUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ProjectUurUpdateManyWithWhereWithoutUserInput | ProjectUurUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
   }
 
   export type AssignmentCreateNestedManyWithoutCustomerInput = {
@@ -31359,11 +34773,47 @@ export namespace Prisma {
     connect?: WorkorderWhereUniqueInput | WorkorderWhereUniqueInput[]
   }
 
+  export type ProjectUurCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectUurCreateWithoutProjectInput, ProjectUurUncheckedCreateWithoutProjectInput> | ProjectUurCreateWithoutProjectInput[] | ProjectUurUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutProjectInput | ProjectUurCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectUurCreateManyProjectInputEnvelope
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+  }
+
+  export type ProjectMateriaalCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectMateriaalCreateWithoutProjectInput, ProjectMateriaalUncheckedCreateWithoutProjectInput> | ProjectMateriaalCreateWithoutProjectInput[] | ProjectMateriaalUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectMateriaalCreateOrConnectWithoutProjectInput | ProjectMateriaalCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectMateriaalCreateManyProjectInputEnvelope
+    connect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+  }
+
   export type WorkorderUncheckedCreateNestedManyWithoutProjectInput = {
     create?: XOR<WorkorderCreateWithoutProjectInput, WorkorderUncheckedCreateWithoutProjectInput> | WorkorderCreateWithoutProjectInput[] | WorkorderUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: WorkorderCreateOrConnectWithoutProjectInput | WorkorderCreateOrConnectWithoutProjectInput[]
     createMany?: WorkorderCreateManyProjectInputEnvelope
     connect?: WorkorderWhereUniqueInput | WorkorderWhereUniqueInput[]
+  }
+
+  export type ProjectUurUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectUurCreateWithoutProjectInput, ProjectUurUncheckedCreateWithoutProjectInput> | ProjectUurCreateWithoutProjectInput[] | ProjectUurUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutProjectInput | ProjectUurCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectUurCreateManyProjectInputEnvelope
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+  }
+
+  export type ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectMateriaalCreateWithoutProjectInput, ProjectMateriaalUncheckedCreateWithoutProjectInput> | ProjectMateriaalCreateWithoutProjectInput[] | ProjectMateriaalUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectMateriaalCreateOrConnectWithoutProjectInput | ProjectMateriaalCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectMateriaalCreateManyProjectInputEnvelope
+    connect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+  }
+
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type CustomerUpdateOneRequiredWithoutProjectsNestedInput = {
@@ -31388,6 +34838,34 @@ export namespace Prisma {
     deleteMany?: WorkorderScalarWhereInput | WorkorderScalarWhereInput[]
   }
 
+  export type ProjectUurUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectUurCreateWithoutProjectInput, ProjectUurUncheckedCreateWithoutProjectInput> | ProjectUurCreateWithoutProjectInput[] | ProjectUurUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutProjectInput | ProjectUurCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectUurUpsertWithWhereUniqueWithoutProjectInput | ProjectUurUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectUurCreateManyProjectInputEnvelope
+    set?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    disconnect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    delete?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    update?: ProjectUurUpdateWithWhereUniqueWithoutProjectInput | ProjectUurUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectUurUpdateManyWithWhereWithoutProjectInput | ProjectUurUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+  }
+
+  export type ProjectMateriaalUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectMateriaalCreateWithoutProjectInput, ProjectMateriaalUncheckedCreateWithoutProjectInput> | ProjectMateriaalCreateWithoutProjectInput[] | ProjectMateriaalUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectMateriaalCreateOrConnectWithoutProjectInput | ProjectMateriaalCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectMateriaalUpsertWithWhereUniqueWithoutProjectInput | ProjectMateriaalUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectMateriaalCreateManyProjectInputEnvelope
+    set?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    disconnect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    delete?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    connect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    update?: ProjectMateriaalUpdateWithWhereUniqueWithoutProjectInput | ProjectMateriaalUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectMateriaalUpdateManyWithWhereWithoutProjectInput | ProjectMateriaalUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectMateriaalScalarWhereInput | ProjectMateriaalScalarWhereInput[]
+  }
+
   export type WorkorderUncheckedUpdateManyWithoutProjectNestedInput = {
     create?: XOR<WorkorderCreateWithoutProjectInput, WorkorderUncheckedCreateWithoutProjectInput> | WorkorderCreateWithoutProjectInput[] | WorkorderUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: WorkorderCreateOrConnectWithoutProjectInput | WorkorderCreateOrConnectWithoutProjectInput[]
@@ -31400,6 +34878,96 @@ export namespace Prisma {
     update?: WorkorderUpdateWithWhereUniqueWithoutProjectInput | WorkorderUpdateWithWhereUniqueWithoutProjectInput[]
     updateMany?: WorkorderUpdateManyWithWhereWithoutProjectInput | WorkorderUpdateManyWithWhereWithoutProjectInput[]
     deleteMany?: WorkorderScalarWhereInput | WorkorderScalarWhereInput[]
+  }
+
+  export type ProjectUurUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectUurCreateWithoutProjectInput, ProjectUurUncheckedCreateWithoutProjectInput> | ProjectUurCreateWithoutProjectInput[] | ProjectUurUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutProjectInput | ProjectUurCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectUurUpsertWithWhereUniqueWithoutProjectInput | ProjectUurUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectUurCreateManyProjectInputEnvelope
+    set?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    disconnect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    delete?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    update?: ProjectUurUpdateWithWhereUniqueWithoutProjectInput | ProjectUurUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectUurUpdateManyWithWhereWithoutProjectInput | ProjectUurUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+  }
+
+  export type ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectMateriaalCreateWithoutProjectInput, ProjectMateriaalUncheckedCreateWithoutProjectInput> | ProjectMateriaalCreateWithoutProjectInput[] | ProjectMateriaalUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectMateriaalCreateOrConnectWithoutProjectInput | ProjectMateriaalCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectMateriaalUpsertWithWhereUniqueWithoutProjectInput | ProjectMateriaalUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectMateriaalCreateManyProjectInputEnvelope
+    set?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    disconnect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    delete?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    connect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+    update?: ProjectMateriaalUpdateWithWhereUniqueWithoutProjectInput | ProjectMateriaalUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectMateriaalUpdateManyWithWhereWithoutProjectInput | ProjectMateriaalUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectMateriaalScalarWhereInput | ProjectMateriaalScalarWhereInput[]
+  }
+
+  export type ProjectCreateNestedOneWithoutUrenInput = {
+    create?: XOR<ProjectCreateWithoutUrenInput, ProjectUncheckedCreateWithoutUrenInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutUrenInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutProjectUrenInput = {
+    create?: XOR<UserCreateWithoutProjectUrenInput, UserUncheckedCreateWithoutProjectUrenInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProjectUrenInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ProjectUpdateOneRequiredWithoutUrenNestedInput = {
+    create?: XOR<ProjectCreateWithoutUrenInput, ProjectUncheckedCreateWithoutUrenInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutUrenInput
+    upsert?: ProjectUpsertWithoutUrenInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutUrenInput, ProjectUpdateWithoutUrenInput>, ProjectUncheckedUpdateWithoutUrenInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutProjectUrenNestedInput = {
+    create?: XOR<UserCreateWithoutProjectUrenInput, UserUncheckedCreateWithoutProjectUrenInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProjectUrenInput
+    upsert?: UserUpsertWithoutProjectUrenInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProjectUrenInput, UserUpdateWithoutProjectUrenInput>, UserUncheckedUpdateWithoutProjectUrenInput>
+  }
+
+  export type ProjectCreateNestedOneWithoutMaterialenInput = {
+    create?: XOR<ProjectCreateWithoutMaterialenInput, ProjectUncheckedCreateWithoutMaterialenInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutMaterialenInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type ProjectUpdateOneRequiredWithoutMaterialenNestedInput = {
+    create?: XOR<ProjectCreateWithoutMaterialenInput, ProjectUncheckedCreateWithoutMaterialenInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutMaterialenInput
+    upsert?: ProjectUpsertWithoutMaterialenInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutMaterialenInput, ProjectUpdateWithoutMaterialenInput>, ProjectUncheckedUpdateWithoutMaterialenInput>
   }
 
   export type DocumentCreateNestedManyWithoutWorkorderInput = {
@@ -31548,18 +35116,6 @@ export namespace Prisma {
     connectOrCreate?: WorkorderFormCreateOrConnectWithoutWorkorderInput | WorkorderFormCreateOrConnectWithoutWorkorderInput[]
     createMany?: WorkorderFormCreateManyWorkorderInputEnvelope
     connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type NullableBytesFieldUpdateOperationsInput = {
@@ -32407,15 +35963,42 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -32429,25 +36012,20 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedBytesNullableFilter<$PrismaModel = never> = {
-    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
-    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
-    not?: NestedBytesNullableFilter<$PrismaModel> | Bytes | null
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -32464,6 +36042,38 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBytesNullableFilter<$PrismaModel = never> = {
+    equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
+    in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
+    notIn?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
+    not?: NestedBytesNullableFilter<$PrismaModel> | Bytes | null
   }
 
   export type NestedBytesNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -32583,6 +36193,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -32622,6 +36234,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -32698,6 +36312,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ProjectUurCreateWithoutUserInput = {
+    id?: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutUrenInput
+  }
+
+  export type ProjectUurUncheckedCreateWithoutUserInput = {
+    id?: string
+    projectId: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectUurCreateOrConnectWithoutUserInput = {
+    where: ProjectUurWhereUniqueInput
+    create: XOR<ProjectUurCreateWithoutUserInput, ProjectUurUncheckedCreateWithoutUserInput>
+  }
+
+  export type ProjectUurCreateManyUserInputEnvelope = {
+    data: ProjectUurCreateManyUserInput | ProjectUurCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AssignmentUserUpsertWithWhereUniqueWithoutUserInput = {
     where: AssignmentUserWhereUniqueInput
     update: XOR<AssignmentUserUpdateWithoutUserInput, AssignmentUserUncheckedUpdateWithoutUserInput>
@@ -32765,6 +36409,8 @@ export namespace Prisma {
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedHours?: FloatNullableFilter<"Workorder"> | number | null
+    plannedRoundTripKm?: FloatNullableFilter<"Workorder"> | number | null
+    plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
@@ -32827,6 +36473,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FormSubmission"> | Date | string
   }
 
+  export type ProjectUurUpsertWithWhereUniqueWithoutUserInput = {
+    where: ProjectUurWhereUniqueInput
+    update: XOR<ProjectUurUpdateWithoutUserInput, ProjectUurUncheckedUpdateWithoutUserInput>
+    create: XOR<ProjectUurCreateWithoutUserInput, ProjectUurUncheckedCreateWithoutUserInput>
+  }
+
+  export type ProjectUurUpdateWithWhereUniqueWithoutUserInput = {
+    where: ProjectUurWhereUniqueInput
+    data: XOR<ProjectUurUpdateWithoutUserInput, ProjectUurUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ProjectUurUpdateManyWithWhereWithoutUserInput = {
+    where: ProjectUurScalarWhereInput
+    data: XOR<ProjectUurUpdateManyMutationInput, ProjectUurUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ProjectUurScalarWhereInput = {
+    AND?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+    OR?: ProjectUurScalarWhereInput[]
+    NOT?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+    id?: StringFilter<"ProjectUur"> | string
+    projectId?: StringFilter<"ProjectUur"> | string
+    userId?: StringFilter<"ProjectUur"> | string
+    datum?: DateTimeFilter<"ProjectUur"> | Date | string
+    uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
+    omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
+    kilometers?: FloatNullableFilter<"ProjectUur"> | number | null
+    createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
+  }
+
   export type AssignmentCreateWithoutCustomerInput = {
     id?: string
     number: string
@@ -32875,20 +36551,34 @@ export namespace Prisma {
     id?: string
     number: string
     name: string
+    location?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutCustomerInput = {
     id?: string
     number: string
     name: string
+    location?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutCustomerInput = {
@@ -32920,6 +36610,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -32959,6 +36651,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -33092,7 +36786,12 @@ export namespace Prisma {
     id?: StringFilter<"Project"> | string
     number?: StringFilter<"Project"> | string
     name?: StringFilter<"Project"> | string
+    location?: StringNullableFilter<"Project"> | string | null
     customerId?: StringFilter<"Project"> | string
+    geoffreerdeUren?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: StringNullableFilter<"Project"> | string | null
+    offerteFilename?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
@@ -33290,6 +36989,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -33329,6 +37030,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -33352,6 +37055,66 @@ export namespace Prisma {
 
   export type WorkorderCreateManyProjectInputEnvelope = {
     data: WorkorderCreateManyProjectInput | WorkorderCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProjectUurCreateWithoutProjectInput = {
+    id?: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutProjectUrenInput
+  }
+
+  export type ProjectUurUncheckedCreateWithoutProjectInput = {
+    id?: string
+    userId: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectUurCreateOrConnectWithoutProjectInput = {
+    where: ProjectUurWhereUniqueInput
+    create: XOR<ProjectUurCreateWithoutProjectInput, ProjectUurUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ProjectUurCreateManyProjectInputEnvelope = {
+    data: ProjectUurCreateManyProjectInput | ProjectUurCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProjectMateriaalCreateWithoutProjectInput = {
+    id?: string
+    omschrijving: string
+    factuurnummer?: string | null
+    leverancier?: string | null
+    kosten: Decimal | DecimalJsLike | number | string
+    ingekochtOp?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectMateriaalUncheckedCreateWithoutProjectInput = {
+    id?: string
+    omschrijving: string
+    factuurnummer?: string | null
+    leverancier?: string | null
+    kosten: Decimal | DecimalJsLike | number | string
+    ingekochtOp?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectMateriaalCreateOrConnectWithoutProjectInput = {
+    where: ProjectMateriaalWhereUniqueInput
+    create: XOR<ProjectMateriaalCreateWithoutProjectInput, ProjectMateriaalUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ProjectMateriaalCreateManyProjectInputEnvelope = {
+    data: ProjectMateriaalCreateManyProjectInput | ProjectMateriaalCreateManyProjectInput[]
     skipDuplicates?: boolean
   }
 
@@ -33414,6 +37177,296 @@ export namespace Prisma {
     data: XOR<WorkorderUpdateManyMutationInput, WorkorderUncheckedUpdateManyWithoutProjectInput>
   }
 
+  export type ProjectUurUpsertWithWhereUniqueWithoutProjectInput = {
+    where: ProjectUurWhereUniqueInput
+    update: XOR<ProjectUurUpdateWithoutProjectInput, ProjectUurUncheckedUpdateWithoutProjectInput>
+    create: XOR<ProjectUurCreateWithoutProjectInput, ProjectUurUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ProjectUurUpdateWithWhereUniqueWithoutProjectInput = {
+    where: ProjectUurWhereUniqueInput
+    data: XOR<ProjectUurUpdateWithoutProjectInput, ProjectUurUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type ProjectUurUpdateManyWithWhereWithoutProjectInput = {
+    where: ProjectUurScalarWhereInput
+    data: XOR<ProjectUurUpdateManyMutationInput, ProjectUurUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type ProjectMateriaalUpsertWithWhereUniqueWithoutProjectInput = {
+    where: ProjectMateriaalWhereUniqueInput
+    update: XOR<ProjectMateriaalUpdateWithoutProjectInput, ProjectMateriaalUncheckedUpdateWithoutProjectInput>
+    create: XOR<ProjectMateriaalCreateWithoutProjectInput, ProjectMateriaalUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ProjectMateriaalUpdateWithWhereUniqueWithoutProjectInput = {
+    where: ProjectMateriaalWhereUniqueInput
+    data: XOR<ProjectMateriaalUpdateWithoutProjectInput, ProjectMateriaalUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type ProjectMateriaalUpdateManyWithWhereWithoutProjectInput = {
+    where: ProjectMateriaalScalarWhereInput
+    data: XOR<ProjectMateriaalUpdateManyMutationInput, ProjectMateriaalUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type ProjectMateriaalScalarWhereInput = {
+    AND?: ProjectMateriaalScalarWhereInput | ProjectMateriaalScalarWhereInput[]
+    OR?: ProjectMateriaalScalarWhereInput[]
+    NOT?: ProjectMateriaalScalarWhereInput | ProjectMateriaalScalarWhereInput[]
+    id?: StringFilter<"ProjectMateriaal"> | string
+    projectId?: StringFilter<"ProjectMateriaal"> | string
+    omschrijving?: StringFilter<"ProjectMateriaal"> | string
+    factuurnummer?: StringNullableFilter<"ProjectMateriaal"> | string | null
+    leverancier?: StringNullableFilter<"ProjectMateriaal"> | string | null
+    kosten?: DecimalFilter<"ProjectMateriaal"> | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: DateTimeNullableFilter<"ProjectMateriaal"> | Date | string | null
+    createdAt?: DateTimeFilter<"ProjectMateriaal"> | Date | string
+  }
+
+  export type ProjectCreateWithoutUrenInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutProjectsInput
+    workorders?: WorkorderCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutUrenInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    customerId: string
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutUrenInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutUrenInput, ProjectUncheckedCreateWithoutUrenInput>
+  }
+
+  export type UserCreateWithoutProjectUrenInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutProjectUrenInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutProjectUrenInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutProjectUrenInput, UserUncheckedCreateWithoutProjectUrenInput>
+  }
+
+  export type ProjectUpsertWithoutUrenInput = {
+    update: XOR<ProjectUpdateWithoutUrenInput, ProjectUncheckedUpdateWithoutUrenInput>
+    create: XOR<ProjectCreateWithoutUrenInput, ProjectUncheckedCreateWithoutUrenInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutUrenInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutUrenInput, ProjectUncheckedUpdateWithoutUrenInput>
+  }
+
+  export type ProjectUpdateWithoutUrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
+    workorders?: WorkorderUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutUrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
+  export type UserUpsertWithoutProjectUrenInput = {
+    update: XOR<UserUpdateWithoutProjectUrenInput, UserUncheckedUpdateWithoutProjectUrenInput>
+    create: XOR<UserCreateWithoutProjectUrenInput, UserUncheckedCreateWithoutProjectUrenInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutProjectUrenInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutProjectUrenInput, UserUncheckedUpdateWithoutProjectUrenInput>
+  }
+
+  export type UserUpdateWithoutProjectUrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutProjectUrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ProjectCreateWithoutMaterialenInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutProjectsInput
+    workorders?: WorkorderCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutMaterialenInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    customerId: string
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutMaterialenInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutMaterialenInput, ProjectUncheckedCreateWithoutMaterialenInput>
+  }
+
+  export type ProjectUpsertWithoutMaterialenInput = {
+    update: XOR<ProjectUpdateWithoutMaterialenInput, ProjectUncheckedUpdateWithoutMaterialenInput>
+    create: XOR<ProjectCreateWithoutMaterialenInput, ProjectUncheckedCreateWithoutMaterialenInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutMaterialenInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutMaterialenInput, ProjectUncheckedUpdateWithoutMaterialenInput>
+  }
+
+  export type ProjectUpdateWithoutMaterialenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
+    workorders?: WorkorderUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutMaterialenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
   export type DocumentCreateWithoutWorkorderInput = {
     id?: string
     name: string
@@ -33452,6 +37505,7 @@ export namespace Prisma {
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWorkordersInput = {
@@ -33466,6 +37520,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWorkordersInput = {
@@ -33516,20 +37571,34 @@ export namespace Prisma {
     id?: string
     number: string
     name: string
+    location?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
+    uren?: ProjectUurCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutWorkordersInput = {
     id?: string
     number: string
     name: string
+    location?: string | null
     customerId: string
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutWorkordersInput = {
@@ -33838,6 +37907,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWorkordersInput = {
@@ -33852,6 +37922,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssignmentUpsertWithoutWorkordersInput = {
@@ -33914,20 +37985,34 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
+    uren?: ProjectUurUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutWorkordersInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type CustomerUpsertWithoutWorkordersInput = {
@@ -34210,6 +38295,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -34250,6 +38337,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -34300,6 +38389,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34340,6 +38431,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -34374,6 +38467,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -34414,6 +38509,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -34464,6 +38561,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34504,6 +38603,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -34538,6 +38639,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -34578,6 +38681,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -34628,6 +38733,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34668,6 +38775,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -34702,6 +38811,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -34742,6 +38853,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -34792,6 +38905,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34832,6 +38947,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -34866,6 +38983,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -34906,6 +39025,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -34956,6 +39077,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34996,6 +39119,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -35030,6 +39155,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -35070,6 +39197,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -35120,6 +39249,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35160,6 +39291,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -35194,6 +39327,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -35234,6 +39369,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -35284,6 +39421,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35324,6 +39463,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -35400,6 +39541,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -35440,6 +39583,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -35513,6 +39658,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -35553,6 +39700,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -35701,6 +39850,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -35741,6 +39892,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -35920,6 +40073,7 @@ export namespace Prisma {
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignmentsInput = {
@@ -35934,6 +40088,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignmentsInput = {
@@ -36009,6 +40164,7 @@ export namespace Prisma {
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignmentsInput = {
@@ -36023,6 +40179,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssignmentCreateWithoutInvoicesInput = {
@@ -36121,6 +40278,7 @@ export namespace Prisma {
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFormsInput = {
@@ -36135,6 +40293,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFormsInput = {
@@ -36165,6 +40324,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFormsInput = {
@@ -36179,6 +40339,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WorkorderCreateWithoutExtraEngineersInput = {
@@ -36200,6 +40361,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -36240,6 +40403,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -36272,6 +40437,7 @@ export namespace Prisma {
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutExtraWorkordersInput = {
@@ -36286,6 +40452,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutExtraWorkordersInput = {
@@ -36323,6 +40490,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36363,6 +40532,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -36401,6 +40572,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExtraWorkordersInput = {
@@ -36415,6 +40587,7 @@ export namespace Prisma {
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssignmentUserCreateManyUserInput = {
@@ -36444,6 +40617,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -36464,6 +40639,16 @@ export namespace Prisma {
     data: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ProjectUurCreateManyUserInput = {
+    id?: string
+    projectId: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
   }
 
   export type AssignmentUserUpdateWithoutUserInput = {
@@ -36503,6 +40688,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36542,6 +40729,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -36579,6 +40768,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -36631,6 +40822,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ProjectUurUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
+  }
+
+  export type ProjectUurUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUurUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AssignmentCreateManyCustomerInput = {
     id?: string
     number: string
@@ -36649,6 +40870,11 @@ export namespace Prisma {
     id?: string
     number: string
     name: string
+    location?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36675,6 +40901,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
@@ -36754,26 +40982,45 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36798,6 +41045,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36837,6 +41086,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -36874,6 +41125,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -36962,11 +41215,33 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+  }
+
+  export type ProjectUurCreateManyProjectInput = {
+    id?: string
+    userId: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectMateriaalCreateManyProjectInput = {
+    id?: string
+    omschrijving: string
+    factuurnummer?: string | null
+    leverancier?: string | null
+    kosten: Decimal | DecimalJsLike | number | string
+    ingekochtOp?: Date | string | null
+    createdAt?: Date | string
   }
 
   export type WorkorderUpdateWithoutProjectInput = {
@@ -36988,6 +41263,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37027,6 +41304,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
@@ -37064,11 +41343,73 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ProjectUurUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
+  }
+
+  export type ProjectUurUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUurUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectMateriaalUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omschrijving?: StringFieldUpdateOperationsInput | string
+    factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    leverancier?: NullableStringFieldUpdateOperationsInput | string | null
+    kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectMateriaalUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omschrijving?: StringFieldUpdateOperationsInput | string
+    factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    leverancier?: NullableStringFieldUpdateOperationsInput | string | null
+    kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectMateriaalUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    omschrijving?: StringFieldUpdateOperationsInput | string
+    factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    leverancier?: NullableStringFieldUpdateOperationsInput | string | null
+    kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DocumentCreateManyWorkorderInput = {
@@ -37419,6 +41760,8 @@ export namespace Prisma {
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
@@ -37486,6 +41829,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37526,6 +41871,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -37563,6 +41910,8 @@ export namespace Prisma {
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

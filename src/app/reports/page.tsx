@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { formatClockHours } from "@/types/oplever";
+
 
 
 interface ReportData {
@@ -13,6 +15,8 @@ interface ReportData {
         hoursTotal:number;
 
         hoursThisMonth:number;
+
+        kilometersThisMonth:number;
 
     };
 
@@ -27,6 +31,8 @@ interface ReportData {
         travel:number;
 
         kilometers:number;
+
+        kilometersThisMonth:number;
 
     }[];
 
@@ -177,7 +183,8 @@ export default function ReportsPage(){
             <section className="
                 grid
                 grid-cols-1
-                md:grid-cols-3
+                md:grid-cols-2
+                lg:grid-cols-4
                 gap-4
             ">
 
@@ -218,7 +225,7 @@ export default function ReportsPage(){
                         text-3xl
                         font-bold
                     ">
-                        {data.totals.hoursTotal}
+                        {formatClockHours(data.totals.hoursTotal) || "0"}
                     </p>
 
                 </div>
@@ -239,7 +246,36 @@ export default function ReportsPage(){
                         text-3xl
                         font-bold
                     ">
-                        {data.totals.hoursThisMonth}
+                        {formatClockHours(data.totals.hoursThisMonth) || "0"}
+                    </p>
+
+                </div>
+
+
+                <div className="
+                    bg-white
+                    border
+                    rounded-2xl
+                    p-4
+                ">
+
+                    <p className="text-gray-500">
+                        Kilometers deze maand
+                    </p>
+
+                    <p className="
+                        text-3xl
+                        font-bold
+                    ">
+                        {data.totals.kilometersThisMonth}
+                    </p>
+
+                    <p className="
+                        text-xs
+                        text-gray-400
+                        mt-1
+                    ">
+                        Geplande ritten kantoor ↔ klus
                     </p>
 
                 </div>
@@ -325,12 +361,23 @@ export default function ReportsPage(){
 
                 <h2 className="
                     font-bold
-                    mb-3
+                    mb-1
                 ">
 
                     👷 Uren per monteur
 
                 </h2>
+
+                <p className="
+                    text-xs
+                    text-gray-500
+                    mb-3
+                ">
+                    Kilometers: ingevuld op de werkbon, anders
+                    automatisch per dag (kantoor → klussen
+                    op volgorde van planning → kantoor).
+                    Uren/reistijd als klok: 1.15, 1.30, 1.45, 2.
+                </p>
 
 
                 {
@@ -378,6 +425,10 @@ export default function ReportsPage(){
                                         Kilometers
                                     </th>
 
+                                    <th className="py-2 text-right">
+                                        Km deze maand
+                                    </th>
+
                                 </tr>
 
                             </thead>
@@ -401,15 +452,19 @@ export default function ReportsPage(){
                                             </td>
 
                                             <td className="py-2 text-right">
-                                                {engineer.hours}
+                                                {formatClockHours(engineer.hours) || "0"}
                                             </td>
 
                                             <td className="py-2 text-right">
-                                                {engineer.travel}
+                                                {formatClockHours(engineer.travel) || "0"}
                                             </td>
 
                                             <td className="py-2 text-right">
                                                 {engineer.kilometers}
+                                            </td>
+
+                                            <td className="py-2 text-right">
+                                                {engineer.kilometersThisMonth}
                                             </td>
 
                                         </tr>
@@ -485,7 +540,7 @@ export default function ReportsPage(){
                                 </span>
 
                                 <strong>
-                                    {customer.hours} uur
+                                    {formatClockHours(customer.hours) || "0"} uur
                                 </strong>
 
                             </div>

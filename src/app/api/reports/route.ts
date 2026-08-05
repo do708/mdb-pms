@@ -4,11 +4,26 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiRole } from "@/lib/auth/guard";
 
-import { mergeOpleverData } from "@/types/oplever";
+import {
+    mergeOpleverData,
+    parseClockHours,
+} from "@/types/oplever";
+
+import { decimalToNumber } from "@/lib/projects/budget";
+
+import {
+    engineerDayKey,
+    jobAddressFromWorkorder,
+    plannedTravelForEngineerDay,
+    projectJobAddress,
+} from "@/lib/travel/plannedKilometers";
 
 
 
-// Hulp: een getal uit een tekstveld halen ("3,5" of "3.5" -> 3.5)
+export const maxDuration = 60;
+
+
+
 function num(value:unknown):number {
 
     if(typeof value === "number"){
@@ -24,6 +39,16 @@ function num(value:unknown):number {
 
     return 0;
 
+}
+
+
+
+function isInCurrentMonth(
+    date:Date,
+    monthStart:Date,
+    monthEnd:Date
+):boolean {
+    return date >= monthStart && date < monthEnd;
 }
 
 
@@ -59,12 +84,16 @@ export async function GET(){
                 1
             );
 
+        const monthEnd =
+            new Date(
+                now.getFullYear(),
+                now.getMonth() + 1,
+                1
+            );
 
 
 
-        // Alle werkbonnen met de gegevens die we nodig hebben. De uren,
-        // reisuren en kilometers komen uit het opleverformulier (formData),
-        // dus uit het bovenste gedeelte van de werkbon.
+
         const workorders =
             await prisma.workorder.findMany({
 
@@ -75,6 +104,12 @@ export async function GET(){
                     status:true,
 
                     createdAt:true,
+
+                    plannedDate:true,
+
+                    location:true,
+
+                    city:true,
 
                     formData:true,
 
@@ -88,7 +123,8 @@ export async function GET(){
                     customer:{
                         select:{
                             id:true,
-                            name:true
+                            name:true,
+                            address:true
                         }
                     },
 
@@ -110,7 +146,184 @@ export async function GET(){
 
 
 
-        // Werkbonnen per status
+        const projectUren =
+            await prisma.projectUur.findMany({
+
+                select:{
+
+                    datum:true,
+
+                    uren:true,
+
+                    user:{
+                        select:{
+                            id:true,
+                            name:true
+                        }
+                    },
+
+                    project:{
+                        select:{
+                            location:true,
+                            customer:{
+                                select:{
+                                    id:true,
+                                    name:true,
+                                    address:true
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+            });
+
+
+
+
+        type DayGroup = {
+            engineerId:string;
+            engineerName:string;
+            plannedDate:Date;
+            items:{
+                formKilometers:number;
+                formReisuren:number;
+                jobAddress:string | null;
+                plannedDate:Date;
+            }[];
+        };
+
+        const dayGroups =
+            new Map<string,DayGroup>();
+
+        for(const workorder of workorders){
+
+            if(
+                !workorder.plannedDate
+                || !workorder.assignedUser
+            ){
+                continue;
+            }
+
+            const engineer =
+                workorder.assignedUser;
+
+            const key =
+                engineerDayKey(
+                    engineer.id,
+                    workorder.plannedDate
+                );
+
+            const oplever =
+                mergeOpleverData(workorder.formData);
+
+            if(oplever.tarief.voorrijtarief === true){
+                continue;
+            }
+
+            const item = {
+                formKilometers:
+                    num(oplever.tarief.kilometers),
+                formReisuren:
+                    parseClockHours(
+                        oplever.tarief.reisuren
+                    ),
+                jobAddress:
+                    jobAddressFromWorkorder(
+                        workorder
+                    ),
+                plannedDate:
+                    workorder.plannedDate
+            };
+
+            const existing =
+                dayGroups.get(key);
+
+            if(existing){
+                existing.items.push(item);
+            } else {
+                dayGroups.set(key,{
+                    engineerId:engineer.id,
+                    engineerName:
+                        engineer.name ?? "Onbekend",
+                    plannedDate:
+                        workorder.plannedDate,
+                    items:[item]
+                });
+            }
+
+        }
+
+        for(const row of projectUren){
+
+            const engineer = row.user;
+
+            const key =
+                engineerDayKey(
+                    engineer.id,
+                    row.datum
+                );
+
+            const item = {
+                formKilometers:0,
+                formReisuren:0,
+                jobAddress:
+                    projectJobAddress(
+                        row.project
+                    ),
+                plannedDate:row.datum
+            };
+
+            const existing =
+                dayGroups.get(key);
+
+            if(existing){
+                existing.items.push(item);
+            } else {
+                dayGroups.set(key,{
+                    engineerId:engineer.id,
+                    engineerName:
+                        engineer.name ?? "Onbekend",
+                    plannedDate:row.datum,
+                    items:[item]
+                });
+            }
+
+        }
+
+        const dayTravelCache =
+            new Map<string,{
+                kilometers:number;
+                reisuren:number;
+            }>();
+
+        async function travelForDayGroup(
+            key:string,
+            group:DayGroup
+        ): Promise<{
+            kilometers:number;
+            reisuren:number;
+        }> {
+
+            if(dayTravelCache.has(key)){
+                return dayTravelCache.get(key)!;
+            }
+
+            const travel =
+                await plannedTravelForEngineerDay(
+                    group.items
+                );
+
+            dayTravelCache.set(key, travel);
+
+            return travel;
+
+        }
+
+
+
+
         const byStatus:Record<string,number> = {};
 
         for(const workorder of workorders){
@@ -127,6 +340,7 @@ export async function GET(){
                 hours:number;
                 travel:number;
                 kilometers:number;
+                kilometersThisMonth:number;
             }>();
 
 
@@ -141,6 +355,11 @@ export async function GET(){
 
         let hoursTotal = 0;
 
+        let kilometersThisMonth = 0;
+
+        const dayTravelApplied =
+            new Set<string>();
+
 
 
 
@@ -151,20 +370,11 @@ export async function GET(){
                 mergeOpleverData(workorder.formData);
 
 
-            // Alle monteururen bij elkaar (monteur 1 t/m 4)
             const uren =
-                num(oplever.tarief.urenMonteur1) +
-                num(oplever.tarief.urenMonteur2) +
-                num(oplever.tarief.urenMonteur3) +
-                num(oplever.tarief.urenMonteur4);
-
-
-            const reisuren =
-                num(oplever.tarief.reisuren);
-
-
-            const kilometers =
-                num(oplever.tarief.kilometers);
+                parseClockHours(oplever.tarief.urenMonteur1) +
+                parseClockHours(oplever.tarief.urenMonteur2) +
+                parseClockHours(oplever.tarief.urenMonteur3) +
+                parseClockHours(oplever.tarief.urenMonteur4);
 
 
             hoursTotal += uren;
@@ -177,7 +387,6 @@ export async function GET(){
 
 
 
-            // Toeschrijven aan de toegewezen monteur
             const engineer =
                 workorder.assignedUser;
 
@@ -192,12 +401,57 @@ export async function GET(){
                             engineer.name ?? "Onbekend",
                         hours:0,
                         travel:0,
-                        kilometers:0
+                        kilometers:0,
+                        kilometersThisMonth:0
                     };
 
                 existing.hours += uren;
-                existing.travel += reisuren;
-                existing.kilometers += kilometers;
+
+                if(workorder.plannedDate){
+
+                    const dayKey =
+                        engineerDayKey(
+                            engineer.id,
+                            workorder.plannedDate
+                        );
+
+                    if(!dayTravelApplied.has(dayKey)){
+
+                        dayTravelApplied.add(dayKey);
+
+                        const group =
+                            dayGroups.get(dayKey);
+
+                        const travel = group
+                            ?
+                            await travelForDayGroup(
+                                dayKey,
+                                group
+                            )
+                            :
+                            { kilometers:0, reisuren:0 };
+
+                        existing.kilometers +=
+                            travel.kilometers;
+                        existing.travel +=
+                            travel.reisuren;
+
+                        if(
+                            isInCurrentMonth(
+                                workorder.plannedDate,
+                                monthStart,
+                                monthEnd
+                            )
+                        ){
+                            kilometersThisMonth +=
+                                travel.kilometers;
+                            existing.kilometersThisMonth +=
+                                travel.kilometers;
+                        }
+
+                    }
+
+                }
 
                 byEngineer.set(engineer.id, existing);
 
@@ -206,7 +460,6 @@ export async function GET(){
 
 
 
-            // Uren per opdrachtgever
             const customer =
                 workorder.customer
                 ??
@@ -232,6 +485,95 @@ export async function GET(){
 
 
 
+        for(const row of projectUren){
+
+            const engineer = row.user;
+            const uren = decimalToNumber(row.uren);
+
+            hoursTotal += uren;
+
+            if(row.datum >= monthStart){
+                hoursThisMonth += uren;
+            }
+
+            const existing =
+                byEngineer.get(engineer.id)
+                ??
+                {
+                    name:
+                        engineer.name ?? "Onbekend",
+                    hours:0,
+                    travel:0,
+                    kilometers:0,
+                    kilometersThisMonth:0
+                };
+
+            existing.hours += uren;
+
+            const customer =
+                row.project.customer
+                ??
+                { id:"onbekend", name:"Onbekende opdrachtgever" };
+
+            const existingCustomer =
+                byCustomer.get(customer.id)
+                ??
+                {
+                    name:customer.name,
+                    hours:0
+                };
+
+            existingCustomer.hours += uren;
+            byCustomer.set(customer.id, existingCustomer);
+
+            const dayKey =
+                engineerDayKey(
+                    engineer.id,
+                    row.datum
+                );
+
+            if(!dayTravelApplied.has(dayKey)){
+
+                dayTravelApplied.add(dayKey);
+
+                const group =
+                    dayGroups.get(dayKey);
+
+                const travel = group
+                    ?
+                    await travelForDayGroup(
+                        dayKey,
+                        group
+                    )
+                    :
+                    { kilometers:0, reisuren:0 };
+
+                existing.kilometers +=
+                    travel.kilometers;
+                existing.travel +=
+                    travel.reisuren;
+
+                if(
+                    isInCurrentMonth(
+                        row.datum,
+                        monthStart,
+                        monthEnd
+                    )
+                ){
+                    kilometersThisMonth +=
+                        travel.kilometers;
+                    existing.kilometersThisMonth +=
+                        travel.kilometers;
+                }
+
+            }
+
+            byEngineer.set(engineer.id, existing);
+
+        }
+
+
+
 
         return NextResponse.json({
 
@@ -239,7 +581,9 @@ export async function GET(){
                 workorders:
                     workorders.length,
                 hoursTotal,
-                hoursThisMonth
+                hoursThisMonth,
+                kilometersThisMonth:
+                    Math.round(kilometersThisMonth)
             },
 
             byStatus,

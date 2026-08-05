@@ -126,6 +126,9 @@ export default function WeekView({
     const DAG_PADDING_TOP = 8;
     const DAG_HOOGTE = (DAG_EIND_UUR - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
 
+    // Leesbaarheid in ingeplande blokken (was 10px)
+    const blokTekst = "text-[13px]";
+
 
     // Bereken de verticale positie (top) en hoogte van een klus binnen één dag,
     // op basis van de van-/tot-tijd. Geen tijd? Dan vult het blok de hele dag.
@@ -182,7 +185,7 @@ export default function WeekView({
         const top = (beginUur - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
 
         const height = Math.max(
-            30,
+            36,
             (eindUur - beginUur) * PX_PER_UUR
         );
 
@@ -264,10 +267,10 @@ export default function WeekView({
             <h2 className="
                 text-xl
                 font-bold
-                mb-5
+                mb-1
             ">
 
-                Monteur planning
+                Overzicht monteurs van de week
 
                 <span className="
                     text-gray-400
@@ -280,6 +283,11 @@ export default function WeekView({
                 </span>
 
             </h2>
+
+            <p className="text-sm text-gray-500 mb-4">
+                Ingepland werk per monteur (ma–za). Klik op een dag om een
+                werkbon klaar te zetten.
+            </p>
 
 
 
@@ -298,6 +306,10 @@ export default function WeekView({
 
 
 
+
+            <h3 className="text-base font-bold mb-3 mt-2">
+                Ingepland werk
+            </h3>
 
             <div className="
                 min-w-[900px]
@@ -338,6 +350,7 @@ export default function WeekView({
 
                                 className="
                                     font-bold
+                                    text-sm
                                     text-center
                                     hover:text-blue-600
                                     hover:underline
@@ -393,7 +406,7 @@ export default function WeekView({
 
                             <div className="
                                 font-medium
-                                text-xs
+                                text-sm
                                 break-words
                             ">
 
@@ -582,14 +595,14 @@ export default function WeekView({
                                                                 label += `–${eh}:${em}`;
                                                             }
                                                             return (
-                                                                <span className="text-[10px] font-bold block">
+                                                                <span className={`${blokTekst} font-bold block`}>
                                                                     🕐 {label}
                                                                 </span>
                                                             );
                                                         })()
                                                     }
 
-                                                    <span className="text-[10px] block truncate font-semibold">
+                                                    <span className={`${blokTekst} block truncate font-semibold`}>
 
                                                         {
                                                             (item.customer?.name ?? item.project?.customer?.name)
@@ -599,9 +612,9 @@ export default function WeekView({
                                                     </span>
 
 
-                                                    <strong className="text-[10px] block truncate font-normal opacity-90">
+                                                    <strong className={`${blokTekst} block truncate font-medium opacity-95`}>
 
-                                                        {item.title}
+                                                        {item.project?.name ?? item.title}
 
                                                     </strong>
 

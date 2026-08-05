@@ -447,9 +447,9 @@ function opleverSections(
   <div class="section">
     <div class="section-title">1. Tarief &amp; Uren</div>
     <table class="qa">
-      ${t.voorrijtarief ? row("Voorrijtarief?",pill(t.voorrijtarief)) : ""}
-      ${t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
-      ${t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
+      ${t.voorrijtarief !== null ? row("Voorrijtarief?",t.voorrijtarief ? `<span class="pill pill-yes">Vast</span>` : `<span class="pill pill-no">KM's + Uren</span>`) : ""}
+      ${t.voorrijtarief === false && t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
+      ${t.voorrijtarief === false && t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
       ${urenRows}
       ${kostenRows}
     </table>

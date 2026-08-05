@@ -902,3 +902,323 @@ export function mergeOpleverData(
     return merged;
 
 }
+
+
+
+function tariefFieldEmpty(
+    value:string | undefined
+):boolean {
+
+    if(!value){
+        return true;
+    }
+
+    return value.trim().length === 0;
+
+}
+
+
+
+/** Kilometers zonder decimalen. */
+export function formatKilometers(
+    value:number
+):string {
+
+    return String(Math.round(value));
+
+}
+
+
+
+/**
+ * Uren/reistijd als klok: 1.15, 1.30, 1.45, 2, 2.15, …
+ * De cijfers na de punt zijn minuten (geen decimale uren).
+ */
+export function roundToQuarterHourMinutes(
+    totalMinutes:number
+):number {
+
+    if(totalMinutes <= 0){
+        return 0;
+    }
+
+    const rounded =
+        Math.round(totalMinutes / 15) * 15;
+
+    return rounded;
+
+}
+
+
+
+export function normalizeClockParts(
+    hours:number,
+    minutes:number
+):{ hours:number; minutes:number } {
+
+    let h = hours;
+    let m = minutes;
+
+    if(m >= 60){
+        h += Math.floor(m / 60);
+        m = m % 60;
+    }
+
+    // Alleen .00 / .15 / .30 / .45; 40–59 (behalve 45) → volgend uur
+    if(m === 0 || m === 15 || m === 30 || m === 45){
+        return { hours:h, minutes:m };
+    }
+
+    if(m >= 40){
+        return { hours:h + 1, minutes:0 };
+    }
+
+    if(m >= 23){
+        return { hours:h, minutes:30 };
+    }
+
+    if(m >= 8){
+        return { hours:h, minutes:15 };
+    }
+
+    return { hours:h, minutes:0 };
+
+}
+
+
+
+/** Decimale uren → afronden op kwartier. */
+export function roundToClockHours(
+    value:number
+):number {
+
+    if(value <= 0){
+        return 0;
+    }
+
+    const minutes =
+        roundToQuarterHourMinutes(value * 60);
+
+    return minutes / 60;
+
+}
+
+
+
+/** Weergave: 1, 1.15, 1.30, 1.45, 2, … */
+export function formatClockHours(
+    value:number
+):string {
+
+    if(value <= 0){
+        return "";
+    }
+
+    const totalMinutes =
+        roundToQuarterHourMinutes(value * 60);
+
+    const hours =
+        Math.floor(totalMinutes / 60);
+
+    const minutes =
+        totalMinutes % 60;
+
+    if(minutes === 0){
+        return String(hours);
+    }
+
+    return `${hours}.${String(minutes).padStart(2, "0")}`;
+
+}
+
+
+
+/** @deprecated gebruik formatClockHours */
+export function formatReisurenHalfHours(
+    value:number
+):string {
+    return formatClockHours(value);
+}
+
+
+
+/** @deprecated */
+export function roundToHalfHours(
+    value:number
+):number {
+    return roundToClockHours(value);
+}
+
+
+
+/**
+ * Parseert kloknotatie "1.30" (= 1 uur 30 min) en legacy "1,5" / "1 1/2".
+ * Geeft decimale uren terug voor berekeningen.
+ */
+export function parseClockHours(
+    value:unknown
+):number {
+
+    if(typeof value === "number"){
+        return isNaN(value) ? 0 : value;
+    }
+
+    if(typeof value !== "string"){
+        return 0;
+    }
+
+    const cleaned =
+        value
+        .trim()
+        .toLowerCase()
+        .replace(/\s*uur(en)?\s*$/i, "")
+        .replace("½", " 1/2")
+        .trim();
+
+    if(!cleaned){
+        return 0;
+    }
+
+    const mixed =
+        cleaned.match(
+            /^(\d+)\s+1\s*\/\s*2$/
+        );
+
+    if(mixed){
+        return Number(mixed[1]) + 0.5;
+    }
+
+    if(cleaned === "1/2"){
+        return 0.5;
+    }
+
+    const clock =
+        cleaned.match(
+            /^(\d+)[.,](\d{1,2})$/
+        );
+
+    if(clock){
+
+        const hours =
+            Number(clock[1]);
+
+        let minutes =
+            Number(clock[2]);
+
+        // "1.3" → 1.30; "1.5" → 1.50 als één cijfer
+        if(clock[2].length === 1){
+            minutes = minutes * 10;
+        }
+
+        const normalized =
+            normalizeClockParts(hours, minutes);
+
+        return (
+            normalized.hours
+            + normalized.minutes / 60
+        );
+
+    }
+
+    const whole =
+        cleaned.match(/^(\d+)$/);
+
+    if(whole){
+        return Number(whole[1]);
+    }
+
+    const n = parseFloat(
+        cleaned.replace(",", ".")
+    );
+
+    return isNaN(n) ? 0 : n;
+
+}
+
+
+
+/** Alias voor reisuren. */
+export function parseReisuren(
+    value:unknown
+):number {
+    return parseClockHours(value);
+}
+
+
+
+/** Vult km/reisuren in opleverformulier vanuit planning (alleen bij geen voorrijtarief). */
+export function applyPlannedTravelToFormData(
+    stored:unknown,
+    plannedRoundTripKm:number | null | undefined,
+    plannedReisuren:number | null | undefined
+):OpleverData {
+
+    const merged =
+        mergeOpleverData(stored);
+
+    enforceVoorrijtariefTravelRules(
+        merged,
+        plannedRoundTripKm,
+        plannedReisuren,
+        true
+    );
+
+    return merged;
+
+}
+
+
+
+/** Vast = geen km/reisuren; KM's + Uren = km + reisuren (uit planning). */
+export function enforceVoorrijtariefTravelRules(
+    data:OpleverData,
+    plannedRoundTripKm:number | null | undefined,
+    plannedReisuren:number | null | undefined,
+    onlyFillEmptyKm:boolean
+):void {
+
+    if(data.tarief.voorrijtarief === true){
+
+        data.tarief.kilometers = "";
+        data.tarief.reisuren = "";
+
+        return;
+
+    }
+
+    const km =
+        plannedRoundTripKm ?? 0;
+
+    if(km <= 0){
+        return;
+    }
+
+    data.tarief.voorrijtarief = false;
+
+    if(
+        !onlyFillEmptyKm
+        || tariefFieldEmpty(data.tarief.kilometers)
+    ){
+        data.tarief.kilometers =
+            formatKilometers(km);
+    }
+
+    if(
+        !onlyFillEmptyKm
+        || tariefFieldEmpty(data.tarief.reisuren)
+    ){
+
+        const hours =
+            plannedReisuren != null
+            && plannedReisuren > 0
+            ?
+            plannedReisuren
+            :
+            km / 60;
+
+        data.tarief.reisuren =
+            formatClockHours(hours);
+
+    }
+
+}

@@ -13,7 +13,8 @@ import {
     emptySchermBlok,
     emptyKioskBlok,
     KioskBlok,
-    mergeOpleverData
+    mergeOpleverData,
+    enforceVoorrijtariefTravelRules
 } from "@/types/oplever";
 
 import {
@@ -52,6 +53,11 @@ interface Props {
     // het Tarief & Uren-blok met een opmerkingenveld; "evalue8" toont het
     // Tarief-blok plus de eValue8-installatiesecties.
     variant?:"volledig" | "uren" | "evalue8";
+
+    /** Berekende rit zaak ↔ klus (bij voorrijtarief Nee) */
+    plannedRoundTripKm?:number | null;
+
+    plannedReisuren?:number | null;
 
 }
 
@@ -1332,6 +1338,12 @@ export default function OpleverForm({
 
     variant = "volledig"
 
+    ,
+
+    plannedRoundTripKm = null,
+
+    plannedReisuren = null
+
 }:Props){
 
 
@@ -1890,9 +1902,17 @@ export default function OpleverForm({
 
                             value={t.voorrijtarief}
 
+                            labels={["Vast","KM's + Uren"]}
+
                             onChange={(v)=>
                                 update(draft=>{
                                     draft.tarief.voorrijtarief = v;
+                                    enforceVoorrijtariefTravelRules(
+                                        draft,
+                                        plannedRoundTripKm,
+                                        plannedReisuren,
+                                        true
+                                    );
                                 })
                             }
 
@@ -1900,16 +1920,10 @@ export default function OpleverForm({
 
                     </div>
 
-                    <p className="
-                        text-sm
-                        font-bold
-                        underline
-                        pb-2.5
-                    ">
+                    {
+                        t.voorrijtarief === false && (
 
-                        of
-
-                    </p>
+                            <>
 
                     <Veld
 
@@ -1922,6 +1936,9 @@ export default function OpleverForm({
                         onChange={(v)=>
                             update(draft=>{
                                 draft.tarief.kilometers = v;
+                                if(v.trim()){
+                                    draft.tarief.voorrijtarief = false;
+                                }
                             })
                         }
 
@@ -1938,10 +1955,18 @@ export default function OpleverForm({
                         onChange={(v)=>
                             update(draft=>{
                                 draft.tarief.reisuren = v;
+                                if(v.trim()){
+                                    draft.tarief.voorrijtarief = false;
+                                }
                             })
                         }
 
                     />
+
+                            </>
+
+                        )
+                    }
 
                 </div>
 

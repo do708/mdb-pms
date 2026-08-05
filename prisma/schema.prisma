@@ -20,6 +20,7 @@ model User {
   workorders  Workorder[]
   extraWorkorders WorkorderEngineer[]
   forms       FormSubmission[]
+  projectUren ProjectUur[]
 }
 
 model Customer {
@@ -66,15 +67,52 @@ model Aanvraag {
 }
 
 model Project {
-  id         String      @id @default(cuid())
-  number     String      @unique
-  name       String
-  customerId String
-  status     String      @default("new")
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  customer   Customer    @relation(fields: [customerId], references: [id])
-  workorders Workorder[]
+  id               String             @id @default(cuid())
+  number           String             @unique
+  name             String
+  location         String?
+  customerId       String
+  geoffreerdeUren  Decimal?           @db.Decimal(10, 2)
+  geoffreerdBedrag Decimal?           @db.Decimal(12, 2)
+  offerteUrl       String?
+  offerteFilename  String?
+  status           String             @default("actief")
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  customer         Customer           @relation(fields: [customerId], references: [id])
+  workorders       Workorder[]
+  uren             ProjectUur[]
+  materialen       ProjectMateriaal[]
+}
+
+model ProjectUur {
+  id           String   @id @default(cuid())
+  projectId    String
+  userId       String
+  datum        DateTime
+  uren         Decimal  @db.Decimal(6, 2)
+  omschrijving String?
+  kilometers   Float?
+  createdAt    DateTime @default(now())
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+model ProjectMateriaal {
+  id             String    @id @default(cuid())
+  projectId      String
+  omschrijving   String
+  factuurnummer  String?
+  leverancier    String?
+  kosten         Decimal   @db.Decimal(12, 2)
+  ingekochtOp    DateTime?
+  createdAt      DateTime  @default(now())
+  project        Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
 }
 
 model Workorder {
@@ -99,6 +137,10 @@ model Workorder {
   plannedDate    DateTime?
   plannedEndDate DateTime?
   plannedHours   Float?
+  /// Heen + terug kantoor ↔ klus (berekend bij planning)
+  plannedRoundTripKm Float?
+  /// Rijtijd bij plannedRoundTripKm (zelfde dagroute, verdeeld per stop)
+  plannedReisuren    Float?
   assignmentId   String?
   formData       Json?
   pdfData        Bytes?
