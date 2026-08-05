@@ -62,9 +62,14 @@ export default function EditWorkorderPage(){
         useState("");
 
 
-    const [location,setLocation] =
+    const [straat,setStraat] =
         useState("");
 
+    const [huisnummer,setHuisnummer] =
+        useState("");
+
+    const [postcode,setPostcode] =
+        useState("");
 
     const [city,setCity] =
         useState("");
@@ -214,7 +219,13 @@ export default function EditWorkorderPage(){
                     ""
                 );
 
-                setLocation(wo.location ?? "");
+                setStraat(wo.straat ?? "");
+                setHuisnummer(wo.huisnummer ?? "");
+                setPostcode(wo.postcode ?? "");
+                // Legacy: oude werkbonnen hebben alleen location
+                if (!wo.straat && wo.location) {
+                    setStraat(wo.location);
+                }
 
                 setCity(wo.city ?? "");
 
@@ -392,7 +403,18 @@ export default function EditWorkorderPage(){
 
                             customerId,
 
-                            location,
+                            straat,
+
+                            huisnummer,
+
+                            postcode,
+
+                            location:
+                                [straat, huisnummer]
+                                    .filter(Boolean)
+                                    .join(" ")
+                                    .trim()
+                                || null,
 
                             city,
 
@@ -610,183 +632,113 @@ export default function EditWorkorderPage(){
             ">
 
 
-                <label className="block">
+                <div className="space-y-4">
 
-                    <span className="text-sm text-gray-600">
+                    <h2 className="font-semibold text-gray-800 border-b pb-1">
+                        Gegevens locatie &amp; contactpersoon
+                    </h2>
 
-                        Projectnaam:
+                    <label className="block">
+                        <span className="text-sm text-gray-600">
+                            Locatie / filiaalnaam
+                        </span>
+                        <input
+                            value={title}
+                            onChange={(e)=>setTitle(e.target.value)}
+                            placeholder="Bijv. Filiaal Almere Centrum"
+                            className="w-full border rounded-xl p-3 mt-1"
+                        />
+                    </label>
 
-                    </span>
-
-                    <input
-
-                        value={title}
-
-                        onChange={(e)=>setTitle(e.target.value)}
-
-                        placeholder="Bijv. Bedrijfsnaam"
-
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-1
-                        "
-
-                    />
-
-                </label>
-
-
-                <label className="block">
-
-                    <span className="text-sm text-gray-600">
-
-                        Opdrachtgever
-
-                    </span>
-
-                    <select
-
-                        value={customerId}
-
-                        onChange={(e)=>setCustomerId(e.target.value)}
-
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-1
-                            bg-white
-                        "
-
-                    >
-
-                        <option value="">
-
-                            Kies opdrachtgever
-
-                        </option>
-
-                        {
-                            customers.map(customer=>(
-
+                    <label className="block">
+                        <span className="text-sm text-gray-600">
+                            Opdrachtgever
+                        </span>
+                        <select
+                            value={customerId}
+                            onChange={(e)=>setCustomerId(e.target.value)}
+                            className="w-full border rounded-xl p-3 mt-1 bg-white"
+                        >
+                            <option value="">Kies opdrachtgever</option>
+                            {customers.map(customer=>(
                                 <option
-
                                     key={customer.id}
-
                                     value={customer.id}
-
                                 >
-
                                     {customer.name}
-
                                 </option>
+                            ))}
+                        </select>
+                    </label>
 
-                            ))
-                        }
-
-                    </select>
-
-                </label>
-
-
-                <div>
-
-                    <span className="text-sm text-gray-600">
-
-                        Waar? (adres en plaats)
-
-                    </span>
-
-                    <div className="
-                        flex
-                        flex-wrap
-                        gap-3
-                        mt-2
-                    ">
-
-                        <input
-
-                            value={location}
-
-                            onChange={(e)=>setLocation(e.target.value)}
-
-                            placeholder="Straat en huisnummer"
-
-                            className="
-                                flex-1
-                                min-w-[200px]
-                                border
-                                rounded-xl
-                                p-3
-                            "
-
-                        />
-
-                        <input
-
-                            value={city}
-
-                            onChange={(e)=>setCity(e.target.value)}
-
-                            placeholder="Plaats"
-
-                            className="
-                                w-48
-                                border
-                                rounded-xl
-                                p-3
-                            "
-
-                        />
-
+                    <div className="flex flex-wrap gap-3">
+                        <label className="block flex-1 min-w-[180px]">
+                            <span className="text-sm text-gray-600">Straat</span>
+                            <input
+                                value={straat}
+                                onChange={(e)=>setStraat(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
+                            />
+                        </label>
+                        <label className="block w-28">
+                            <span className="text-sm text-gray-600">Huisnr.</span>
+                            <input
+                                value={huisnummer}
+                                onChange={(e)=>setHuisnummer(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
+                            />
+                        </label>
                     </div>
 
-
-                    <div className="mt-4">
-
-                        <span className="text-sm text-gray-600">
-                            Contactpersoon voor de afspraak (optioneel)
-                        </span>
-
-                        <div className="
-                            flex
-                            flex-wrap
-                            gap-3
-                            mt-1
-                        ">
-
+                    <div className="flex flex-wrap gap-3">
+                        <label className="block w-36">
+                            <span className="text-sm text-gray-600">Postcode</span>
                             <input
-                                value={contactPersoon}
-                                onChange={(e)=>setContactPersoon(e.target.value)}
-                                placeholder="Naam contactpersoon"
-                                className="flex-1 min-w-[200px] border rounded-xl p-3"
+                                value={postcode}
+                                onChange={(e)=>setPostcode(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
                             />
+                        </label>
+                        <label className="block flex-1 min-w-[180px]">
+                            <span className="text-sm text-gray-600">Plaats</span>
+                            <input
+                                value={city}
+                                onChange={(e)=>setCity(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
+                            />
+                        </label>
+                    </div>
 
+                    <label className="block">
+                        <span className="text-sm text-gray-600">Contactpersoon:</span>
+                        <input
+                            value={contactPersoon}
+                            onChange={(e)=>setContactPersoon(e.target.value)}
+                            placeholder="Naam contactpersoon"
+                            className="w-full border rounded-xl p-3 mt-1"
+                        />
+                    </label>
+
+                    <div className="flex flex-wrap gap-3">
+                        <label className="block flex-1 min-w-[180px]">
+                            <span className="text-sm text-gray-600">E-mailadres</span>
                             <input
                                 type="email"
                                 value={contactEmail}
                                 onChange={(e)=>setContactEmail(e.target.value)}
-                                placeholder="E-mailadres"
-                                className="flex-1 min-w-[200px] border rounded-xl p-3"
+                                placeholder="naam@bedrijf.nl"
+                                className="w-full border rounded-xl p-3 mt-1"
                             />
-
+                        </label>
+                        <label className="block flex-1 min-w-[150px]">
+                            <span className="text-sm text-gray-600">Telefoonnummer</span>
                             <input
                                 value={contactPhone}
                                 onChange={(e)=>setContactPhone(e.target.value)}
-                                placeholder="Telefoonnummer"
-                                className="flex-1 min-w-[140px] border rounded-xl p-3"
+                                placeholder="06 ..."
+                                className="w-full border rounded-xl p-3 mt-1"
                             />
-
-                        </div>
-
-                        <span className="block text-xs text-gray-500 mt-1">
-                            Wordt gebruikt voor de afspraakbevestiging. Mag leeg blijven.
-                        </span>
-
+                        </label>
                     </div>
 
                 </div>

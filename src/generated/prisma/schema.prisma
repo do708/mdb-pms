@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id              String              @id @default(cuid())
-  name            String?
-  email           String              @unique
-  password        String
-  role            String              @default("user")
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  active          Boolean             @default(true)
-  assignments     AssignmentUser[]
-  workorders      Workorder[]
-  extraWorkorders WorkorderEngineer[]
-  forms           FormSubmission[]
-  projectUren     ProjectUur[]
+  id                 String              @id @default(cuid())
+  name               String?
+  email              String              @unique
+  password           String
+  role               String              @default("user")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  active             Boolean             @default(true)
+  assignments        AssignmentUser[]
+  workorders         Workorder[]
+  extraWorkorders    WorkorderEngineer[]
+  forms              FormSubmission[]
+  projectUren        ProjectUur[]        @relation("ProjectUurMonteur")
+  projectUrenGeboekt ProjectUur[]        @relation("ProjectUurGeboektDoor")
 }
 
 model Customer {
@@ -69,7 +70,10 @@ model Project {
   id               String             @id @default(cuid())
   number           String             @unique
   name             String
+  /// Straat + huisnummer
   location         String?
+  /// Plaats / woonplaats
+  plaats           String?
   customerId       String
   geoffreerdeUren  Decimal?           @db.Decimal(10, 2)
   geoffreerdBedrag Decimal?           @db.Decimal(12, 2)
@@ -85,19 +89,23 @@ model Project {
 }
 
 model ProjectUur {
-  id           String   @id @default(cuid())
-  projectId    String
-  userId       String
-  datum        DateTime
-  uren         Decimal  @db.Decimal(6, 2)
-  omschrijving String?
-  kilometers   Float?
-  createdAt    DateTime @default(now())
-  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  projectId      String
+  userId         String
+  /// Wie de uren heeft ingevoerd (kan afwijken van userId bij boeken voor collega)
+  bookedByUserId String?
+  datum          DateTime
+  uren           Decimal  @db.Decimal(6, 2)
+  omschrijving   String?
+  kilometers     Float?
+  createdAt      DateTime @default(now())
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user           User     @relation("ProjectUurMonteur", fields: [userId], references: [id], onDelete: Cascade)
+  bookedBy       User?    @relation("ProjectUurGeboektDoor", fields: [bookedByUserId], references: [id], onDelete: SetNull)
 
   @@index([projectId])
   @@index([userId])
+  @@index([bookedByUserId])
 }
 
 model ProjectMateriaal {
@@ -120,7 +128,11 @@ model Workorder {
   status             String                @default("ontvangen")
   projectId          String?
   customerId         String?
+  /// Locatie / filiaalnaam staat in title; adresvelden hieronder (zelfde als Aanvraag)
   location           String?
+  straat             String?
+  huisnummer         String?
+  postcode           String?
   city               String?
   contactPersoon     String?
   contactEmail       String?
@@ -329,4 +341,30 @@ model WorkorderEngineer {
   user        User      @relation(fields: [userId], references: [id])
 
   @@unique([workorderId, userId])
+}
+
+/// Geocode-cache (Nominatim): genormaliseerd adres → coördinaten
+model TravelGeocodeCache {
+  id        String   @id @default(cuid())
+  /// Lowercase trim van het zoekadres
+  queryKey  String   @unique
+  lat       Float?
+  lon       Float?
+  /// true = geocode mislukt (niet opnieuw blijven proberen)
+  missed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Route-cache (OSRM): MD5(vertrek_aankomst) of multi-stop pad
+model TravelRouteCache {
+  id            String   @id @default(cuid())
+  /// MD5(normalize(from) + "_" + normalize(to)) of multi-stop key
+  cacheKey      String   @unique
+  fromAddress   String
+  toAddress     String
+  kilometers    Float
+  durationHours Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

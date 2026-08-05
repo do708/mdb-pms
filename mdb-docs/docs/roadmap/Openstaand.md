@@ -2,6 +2,15 @@
 
 Losse verbeteringen die nog open staan. Elk is een op zichzelf staande wijziging.
 
+## Travel / projecturen (zie ook `architecture/Travel-en-projecturen.md`)
+
+- **P0:** Travel één keer opslaan bij plan/uren-boek; geen stille herberekening-drift. ~~Deels done~~ (geen sync bij project-GET; cache + opslaan bij boek/plan).
+- ~~**P0:** Auditveld bij project-uren: wie boekte vs voor wie.~~ Done (`bookedByUserId` + `createdAt` in UI/Excel).
+- ~~**P1:** Intern minuten/decimale uren; kloknotatie alleen in UI.~~ Done (`parseHoursInput` / `formatHoursDisplay`).
+- **P1:** `voorrijModus: vast | km` i.p.v. boolean-semantiek.
+- ~~**P1:** Locatie-validatie voor km; cache geocode/route.~~ Done (zachte waarschuwing + `TravelRouteCache` / `TravelGeocodeCache`).
+- **P2:** Stops-van-de-dag; maandfilter rapportages; declarabel vs werkelijk gereden.
+
 ## Hardware-tabel — Fase 2 (automatische koppeling)
 De "Benaming"-kolom bestaat nu in de hardware-tabel (`OpleverForm.tsx`,
 `HardwareRegel.benaming`). **Nog te doen:** bij het openen van een werkbon

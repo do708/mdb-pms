@@ -123,6 +123,16 @@ export type FormSubmission = $Result.DefaultSelection<Prisma.$FormSubmissionPayl
  * 
  */
 export type WorkorderEngineer = $Result.DefaultSelection<Prisma.$WorkorderEngineerPayload>
+/**
+ * Model TravelGeocodeCache
+ * Geocode-cache (Nominatim): genormaliseerd adres → coördinaten
+ */
+export type TravelGeocodeCache = $Result.DefaultSelection<Prisma.$TravelGeocodeCachePayload>
+/**
+ * Model TravelRouteCache
+ * Route-cache (OSRM): MD5(vertrek_aankomst) of multi-stop pad
+ */
+export type TravelRouteCache = $Result.DefaultSelection<Prisma.$TravelRouteCachePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -464,6 +474,26 @@ export class PrismaClient<
     * ```
     */
   get workorderEngineer(): Prisma.WorkorderEngineerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.travelGeocodeCache`: Exposes CRUD operations for the **TravelGeocodeCache** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TravelGeocodeCaches
+    * const travelGeocodeCaches = await prisma.travelGeocodeCache.findMany()
+    * ```
+    */
+  get travelGeocodeCache(): Prisma.TravelGeocodeCacheDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.travelRouteCache`: Exposes CRUD operations for the **TravelRouteCache** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TravelRouteCaches
+    * const travelRouteCaches = await prisma.travelRouteCache.findMany()
+    * ```
+    */
+  get travelRouteCache(): Prisma.TravelRouteCacheDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -932,7 +962,9 @@ export namespace Prisma {
     AssignmentUser: 'AssignmentUser',
     Invoice: 'Invoice',
     FormSubmission: 'FormSubmission',
-    WorkorderEngineer: 'WorkorderEngineer'
+    WorkorderEngineer: 'WorkorderEngineer',
+    TravelGeocodeCache: 'TravelGeocodeCache',
+    TravelRouteCache: 'TravelRouteCache'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -948,7 +980,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer"
+      modelProps: "user" | "customer" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2580,6 +2612,154 @@ export namespace Prisma {
           }
         }
       }
+      TravelGeocodeCache: {
+        payload: Prisma.$TravelGeocodeCachePayload<ExtArgs>
+        fields: Prisma.TravelGeocodeCacheFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TravelGeocodeCacheFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TravelGeocodeCacheFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>
+          }
+          findFirst: {
+            args: Prisma.TravelGeocodeCacheFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TravelGeocodeCacheFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>
+          }
+          findMany: {
+            args: Prisma.TravelGeocodeCacheFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>[]
+          }
+          create: {
+            args: Prisma.TravelGeocodeCacheCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>
+          }
+          createMany: {
+            args: Prisma.TravelGeocodeCacheCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TravelGeocodeCacheCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>[]
+          }
+          delete: {
+            args: Prisma.TravelGeocodeCacheDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>
+          }
+          update: {
+            args: Prisma.TravelGeocodeCacheUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>
+          }
+          deleteMany: {
+            args: Prisma.TravelGeocodeCacheDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TravelGeocodeCacheUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TravelGeocodeCacheUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>[]
+          }
+          upsert: {
+            args: Prisma.TravelGeocodeCacheUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelGeocodeCachePayload>
+          }
+          aggregate: {
+            args: Prisma.TravelGeocodeCacheAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTravelGeocodeCache>
+          }
+          groupBy: {
+            args: Prisma.TravelGeocodeCacheGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TravelGeocodeCacheGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TravelGeocodeCacheCountArgs<ExtArgs>
+            result: $Utils.Optional<TravelGeocodeCacheCountAggregateOutputType> | number
+          }
+        }
+      }
+      TravelRouteCache: {
+        payload: Prisma.$TravelRouteCachePayload<ExtArgs>
+        fields: Prisma.TravelRouteCacheFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TravelRouteCacheFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TravelRouteCacheFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>
+          }
+          findFirst: {
+            args: Prisma.TravelRouteCacheFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TravelRouteCacheFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>
+          }
+          findMany: {
+            args: Prisma.TravelRouteCacheFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>[]
+          }
+          create: {
+            args: Prisma.TravelRouteCacheCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>
+          }
+          createMany: {
+            args: Prisma.TravelRouteCacheCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TravelRouteCacheCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>[]
+          }
+          delete: {
+            args: Prisma.TravelRouteCacheDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>
+          }
+          update: {
+            args: Prisma.TravelRouteCacheUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>
+          }
+          deleteMany: {
+            args: Prisma.TravelRouteCacheDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TravelRouteCacheUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TravelRouteCacheUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>[]
+          }
+          upsert: {
+            args: Prisma.TravelRouteCacheUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TravelRouteCachePayload>
+          }
+          aggregate: {
+            args: Prisma.TravelRouteCacheAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTravelRouteCache>
+          }
+          groupBy: {
+            args: Prisma.TravelRouteCacheGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TravelRouteCacheGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TravelRouteCacheCountArgs<ExtArgs>
+            result: $Utils.Optional<TravelRouteCacheCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2725,6 +2905,8 @@ export namespace Prisma {
     invoice?: InvoiceOmit
     formSubmission?: FormSubmissionOmit
     workorderEngineer?: WorkorderEngineerOmit
+    travelGeocodeCache?: TravelGeocodeCacheOmit
+    travelRouteCache?: TravelRouteCacheOmit
   }
 
   /* Types for Logging */
@@ -2810,6 +2992,7 @@ export namespace Prisma {
     extraWorkorders: number
     forms: number
     projectUren: number
+    projectUrenGeboekt: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2818,6 +3001,7 @@ export namespace Prisma {
     extraWorkorders?: boolean | UserCountOutputTypeCountExtraWorkordersArgs
     forms?: boolean | UserCountOutputTypeCountFormsArgs
     projectUren?: boolean | UserCountOutputTypeCountProjectUrenArgs
+    projectUrenGeboekt?: boolean | UserCountOutputTypeCountProjectUrenGeboektArgs
   }
 
   // Custom InputTypes
@@ -2863,6 +3047,13 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountProjectUrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectUurWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountProjectUrenGeboektArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProjectUurWhereInput
   }
 
@@ -3345,6 +3536,7 @@ export namespace Prisma {
     extraWorkorders?: boolean | User$extraWorkordersArgs<ExtArgs>
     forms?: boolean | User$formsArgs<ExtArgs>
     projectUren?: boolean | User$projectUrenArgs<ExtArgs>
+    projectUrenGeboekt?: boolean | User$projectUrenGeboektArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3388,6 +3580,7 @@ export namespace Prisma {
     extraWorkorders?: boolean | User$extraWorkordersArgs<ExtArgs>
     forms?: boolean | User$formsArgs<ExtArgs>
     projectUren?: boolean | User$projectUrenArgs<ExtArgs>
+    projectUrenGeboekt?: boolean | User$projectUrenGeboektArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3401,6 +3594,7 @@ export namespace Prisma {
       extraWorkorders: Prisma.$WorkorderEngineerPayload<ExtArgs>[]
       forms: Prisma.$FormSubmissionPayload<ExtArgs>[]
       projectUren: Prisma.$ProjectUurPayload<ExtArgs>[]
+      projectUrenGeboekt: Prisma.$ProjectUurPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3810,6 +4004,7 @@ export namespace Prisma {
     extraWorkorders<T extends User$extraWorkordersArgs<ExtArgs> = {}>(args?: Subset<T, User$extraWorkordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     forms<T extends User$formsArgs<ExtArgs> = {}>(args?: Subset<T, User$formsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projectUren<T extends User$projectUrenArgs<ExtArgs> = {}>(args?: Subset<T, User$projectUrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    projectUrenGeboekt<T extends User$projectUrenGeboektArgs<ExtArgs> = {}>(args?: Subset<T, User$projectUrenGeboektArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4339,6 +4534,30 @@ export namespace Prisma {
    * User.projectUren
    */
   export type User$projectUrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectUur
+     */
+    select?: ProjectUurSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectUur
+     */
+    omit?: ProjectUurOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectUurInclude<ExtArgs> | null
+    where?: ProjectUurWhereInput
+    orderBy?: ProjectUurOrderByWithRelationInput | ProjectUurOrderByWithRelationInput[]
+    cursor?: ProjectUurWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectUurScalarFieldEnum | ProjectUurScalarFieldEnum[]
+  }
+
+  /**
+   * User.projectUrenGeboekt
+   */
+  export type User$projectUrenGeboektArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the ProjectUur
      */
@@ -6849,6 +7068,7 @@ export namespace Prisma {
     number: string | null
     name: string | null
     location: string | null
+    plaats: string | null
     customerId: string | null
     geoffreerdeUren: Decimal | null
     geoffreerdBedrag: Decimal | null
@@ -6864,6 +7084,7 @@ export namespace Prisma {
     number: string | null
     name: string | null
     location: string | null
+    plaats: string | null
     customerId: string | null
     geoffreerdeUren: Decimal | null
     geoffreerdBedrag: Decimal | null
@@ -6879,6 +7100,7 @@ export namespace Prisma {
     number: number
     name: number
     location: number
+    plaats: number
     customerId: number
     geoffreerdeUren: number
     geoffreerdBedrag: number
@@ -6906,6 +7128,7 @@ export namespace Prisma {
     number?: true
     name?: true
     location?: true
+    plaats?: true
     customerId?: true
     geoffreerdeUren?: true
     geoffreerdBedrag?: true
@@ -6921,6 +7144,7 @@ export namespace Prisma {
     number?: true
     name?: true
     location?: true
+    plaats?: true
     customerId?: true
     geoffreerdeUren?: true
     geoffreerdBedrag?: true
@@ -6936,6 +7160,7 @@ export namespace Prisma {
     number?: true
     name?: true
     location?: true
+    plaats?: true
     customerId?: true
     geoffreerdeUren?: true
     geoffreerdBedrag?: true
@@ -7038,6 +7263,7 @@ export namespace Prisma {
     number: string
     name: string
     location: string | null
+    plaats: string | null
     customerId: string
     geoffreerdeUren: Decimal | null
     geoffreerdBedrag: Decimal | null
@@ -7072,6 +7298,7 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     location?: boolean
+    plaats?: boolean
     customerId?: boolean
     geoffreerdeUren?: boolean
     geoffreerdBedrag?: boolean
@@ -7092,6 +7319,7 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     location?: boolean
+    plaats?: boolean
     customerId?: boolean
     geoffreerdeUren?: boolean
     geoffreerdBedrag?: boolean
@@ -7108,6 +7336,7 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     location?: boolean
+    plaats?: boolean
     customerId?: boolean
     geoffreerdeUren?: boolean
     geoffreerdBedrag?: boolean
@@ -7124,6 +7353,7 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     location?: boolean
+    plaats?: boolean
     customerId?: boolean
     geoffreerdeUren?: boolean
     geoffreerdBedrag?: boolean
@@ -7134,7 +7364,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "location" | "customerId" | "geoffreerdeUren" | "geoffreerdBedrag" | "offerteUrl" | "offerteFilename" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "location" | "plaats" | "customerId" | "geoffreerdeUren" | "geoffreerdBedrag" | "offerteUrl" | "offerteFilename" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     workorders?: boolean | Project$workordersArgs<ExtArgs>
@@ -7161,7 +7391,14 @@ export namespace Prisma {
       id: string
       number: string
       name: string
+      /**
+       * Straat + huisnummer
+       */
       location: string | null
+      /**
+       * Plaats / woonplaats
+       */
+      plaats: string | null
       customerId: string
       geoffreerdeUren: Prisma.Decimal | null
       geoffreerdBedrag: Prisma.Decimal | null
@@ -7601,6 +7838,7 @@ export namespace Prisma {
     readonly number: FieldRef<"Project", 'String'>
     readonly name: FieldRef<"Project", 'String'>
     readonly location: FieldRef<"Project", 'String'>
+    readonly plaats: FieldRef<"Project", 'String'>
     readonly customerId: FieldRef<"Project", 'String'>
     readonly geoffreerdeUren: FieldRef<"Project", 'Decimal'>
     readonly geoffreerdBedrag: FieldRef<"Project", 'Decimal'>
@@ -8126,6 +8364,7 @@ export namespace Prisma {
     id: string | null
     projectId: string | null
     userId: string | null
+    bookedByUserId: string | null
     datum: Date | null
     uren: Decimal | null
     omschrijving: string | null
@@ -8137,6 +8376,7 @@ export namespace Prisma {
     id: string | null
     projectId: string | null
     userId: string | null
+    bookedByUserId: string | null
     datum: Date | null
     uren: Decimal | null
     omschrijving: string | null
@@ -8148,6 +8388,7 @@ export namespace Prisma {
     id: number
     projectId: number
     userId: number
+    bookedByUserId: number
     datum: number
     uren: number
     omschrijving: number
@@ -8171,6 +8412,7 @@ export namespace Prisma {
     id?: true
     projectId?: true
     userId?: true
+    bookedByUserId?: true
     datum?: true
     uren?: true
     omschrijving?: true
@@ -8182,6 +8424,7 @@ export namespace Prisma {
     id?: true
     projectId?: true
     userId?: true
+    bookedByUserId?: true
     datum?: true
     uren?: true
     omschrijving?: true
@@ -8193,6 +8436,7 @@ export namespace Prisma {
     id?: true
     projectId?: true
     userId?: true
+    bookedByUserId?: true
     datum?: true
     uren?: true
     omschrijving?: true
@@ -8291,6 +8535,7 @@ export namespace Prisma {
     id: string
     projectId: string
     userId: string
+    bookedByUserId: string | null
     datum: Date
     uren: Decimal
     omschrijving: string | null
@@ -8321,6 +8566,7 @@ export namespace Prisma {
     id?: boolean
     projectId?: boolean
     userId?: boolean
+    bookedByUserId?: boolean
     datum?: boolean
     uren?: boolean
     omschrijving?: boolean
@@ -8328,12 +8574,14 @@ export namespace Prisma {
     createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookedBy?: boolean | ProjectUur$bookedByArgs<ExtArgs>
   }, ExtArgs["result"]["projectUur"]>
 
   export type ProjectUurSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     projectId?: boolean
     userId?: boolean
+    bookedByUserId?: boolean
     datum?: boolean
     uren?: boolean
     omschrijving?: boolean
@@ -8341,12 +8589,14 @@ export namespace Prisma {
     createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookedBy?: boolean | ProjectUur$bookedByArgs<ExtArgs>
   }, ExtArgs["result"]["projectUur"]>
 
   export type ProjectUurSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     projectId?: boolean
     userId?: boolean
+    bookedByUserId?: boolean
     datum?: boolean
     uren?: boolean
     omschrijving?: boolean
@@ -8354,12 +8604,14 @@ export namespace Prisma {
     createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookedBy?: boolean | ProjectUur$bookedByArgs<ExtArgs>
   }, ExtArgs["result"]["projectUur"]>
 
   export type ProjectUurSelectScalar = {
     id?: boolean
     projectId?: boolean
     userId?: boolean
+    bookedByUserId?: boolean
     datum?: boolean
     uren?: boolean
     omschrijving?: boolean
@@ -8367,18 +8619,21 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type ProjectUurOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "userId" | "datum" | "uren" | "omschrijving" | "kilometers" | "createdAt", ExtArgs["result"]["projectUur"]>
+  export type ProjectUurOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "userId" | "bookedByUserId" | "datum" | "uren" | "omschrijving" | "kilometers" | "createdAt", ExtArgs["result"]["projectUur"]>
   export type ProjectUurInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookedBy?: boolean | ProjectUur$bookedByArgs<ExtArgs>
   }
   export type ProjectUurIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookedBy?: boolean | ProjectUur$bookedByArgs<ExtArgs>
   }
   export type ProjectUurIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookedBy?: boolean | ProjectUur$bookedByArgs<ExtArgs>
   }
 
   export type $ProjectUurPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8386,11 +8641,16 @@ export namespace Prisma {
     objects: {
       project: Prisma.$ProjectPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      bookedBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       projectId: string
       userId: string
+      /**
+       * Wie de uren heeft ingevoerd (kan afwijken van userId bij boeken voor collega)
+       */
+      bookedByUserId: string | null
       datum: Date
       uren: Prisma.Decimal
       omschrijving: string | null
@@ -8792,6 +9052,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    bookedBy<T extends ProjectUur$bookedByArgs<ExtArgs> = {}>(args?: Subset<T, ProjectUur$bookedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8824,6 +9085,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ProjectUur", 'String'>
     readonly projectId: FieldRef<"ProjectUur", 'String'>
     readonly userId: FieldRef<"ProjectUur", 'String'>
+    readonly bookedByUserId: FieldRef<"ProjectUur", 'String'>
     readonly datum: FieldRef<"ProjectUur", 'DateTime'>
     readonly uren: FieldRef<"ProjectUur", 'Decimal'>
     readonly omschrijving: FieldRef<"ProjectUur", 'String'>
@@ -9227,6 +9489,25 @@ export namespace Prisma {
      * Limit how many ProjectUurs to delete.
      */
     limit?: number
+  }
+
+  /**
+   * ProjectUur.bookedBy
+   */
+  export type ProjectUur$bookedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -10415,6 +10696,9 @@ export namespace Prisma {
     projectId: string | null
     customerId: string | null
     location: string | null
+    straat: string | null
+    huisnummer: string | null
+    postcode: string | null
     city: string | null
     contactPersoon: string | null
     contactEmail: string | null
@@ -10445,6 +10729,9 @@ export namespace Prisma {
     projectId: string | null
     customerId: string | null
     location: string | null
+    straat: string | null
+    huisnummer: string | null
+    postcode: string | null
     city: string | null
     contactPersoon: string | null
     contactEmail: string | null
@@ -10475,6 +10762,9 @@ export namespace Prisma {
     projectId: number
     customerId: number
     location: number
+    straat: number
+    huisnummer: number
+    postcode: number
     city: number
     contactPersoon: number
     contactEmail: number
@@ -10520,6 +10810,9 @@ export namespace Prisma {
     projectId?: true
     customerId?: true
     location?: true
+    straat?: true
+    huisnummer?: true
+    postcode?: true
     city?: true
     contactPersoon?: true
     contactEmail?: true
@@ -10550,6 +10843,9 @@ export namespace Prisma {
     projectId?: true
     customerId?: true
     location?: true
+    straat?: true
+    huisnummer?: true
+    postcode?: true
     city?: true
     contactPersoon?: true
     contactEmail?: true
@@ -10580,6 +10876,9 @@ export namespace Prisma {
     projectId?: true
     customerId?: true
     location?: true
+    straat?: true
+    huisnummer?: true
+    postcode?: true
     city?: true
     contactPersoon?: true
     contactEmail?: true
@@ -10698,6 +10997,9 @@ export namespace Prisma {
     projectId: string | null
     customerId: string | null
     location: string | null
+    straat: string | null
+    huisnummer: string | null
+    postcode: string | null
     city: string | null
     contactPersoon: string | null
     contactEmail: string | null
@@ -10748,6 +11050,9 @@ export namespace Prisma {
     projectId?: boolean
     customerId?: boolean
     location?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
     city?: boolean
     contactPersoon?: boolean
     contactEmail?: boolean
@@ -10793,6 +11098,9 @@ export namespace Prisma {
     projectId?: boolean
     customerId?: boolean
     location?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
     city?: boolean
     contactPersoon?: boolean
     contactEmail?: boolean
@@ -10828,6 +11136,9 @@ export namespace Prisma {
     projectId?: boolean
     customerId?: boolean
     location?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
     city?: boolean
     contactPersoon?: boolean
     contactEmail?: boolean
@@ -10863,6 +11174,9 @@ export namespace Prisma {
     projectId?: boolean
     customerId?: boolean
     location?: boolean
+    straat?: boolean
+    huisnummer?: boolean
+    postcode?: boolean
     city?: boolean
     contactPersoon?: boolean
     contactEmail?: boolean
@@ -10887,7 +11201,7 @@ export namespace Prisma {
     sentAt?: boolean
   }
 
-  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
+  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "straat" | "huisnummer" | "postcode" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
   export type WorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -10940,7 +11254,13 @@ export namespace Prisma {
       status: string
       projectId: string | null
       customerId: string | null
+      /**
+       * Locatie / filiaalnaam staat in title; adresvelden hieronder (zelfde als Aanvraag)
+       */
       location: string | null
+      straat: string | null
+      huisnummer: string | null
+      postcode: string | null
       city: string | null
       contactPersoon: string | null
       contactEmail: string | null
@@ -11411,6 +11731,9 @@ export namespace Prisma {
     readonly projectId: FieldRef<"Workorder", 'String'>
     readonly customerId: FieldRef<"Workorder", 'String'>
     readonly location: FieldRef<"Workorder", 'String'>
+    readonly straat: FieldRef<"Workorder", 'String'>
+    readonly huisnummer: FieldRef<"Workorder", 'String'>
+    readonly postcode: FieldRef<"Workorder", 'String'>
     readonly city: FieldRef<"Workorder", 'String'>
     readonly contactPersoon: FieldRef<"Workorder", 'String'>
     readonly contactEmail: FieldRef<"Workorder", 'String'>
@@ -28737,6 +29060,2156 @@ export namespace Prisma {
 
 
   /**
+   * Model TravelGeocodeCache
+   */
+
+  export type AggregateTravelGeocodeCache = {
+    _count: TravelGeocodeCacheCountAggregateOutputType | null
+    _avg: TravelGeocodeCacheAvgAggregateOutputType | null
+    _sum: TravelGeocodeCacheSumAggregateOutputType | null
+    _min: TravelGeocodeCacheMinAggregateOutputType | null
+    _max: TravelGeocodeCacheMaxAggregateOutputType | null
+  }
+
+  export type TravelGeocodeCacheAvgAggregateOutputType = {
+    lat: number | null
+    lon: number | null
+  }
+
+  export type TravelGeocodeCacheSumAggregateOutputType = {
+    lat: number | null
+    lon: number | null
+  }
+
+  export type TravelGeocodeCacheMinAggregateOutputType = {
+    id: string | null
+    queryKey: string | null
+    lat: number | null
+    lon: number | null
+    missed: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TravelGeocodeCacheMaxAggregateOutputType = {
+    id: string | null
+    queryKey: string | null
+    lat: number | null
+    lon: number | null
+    missed: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TravelGeocodeCacheCountAggregateOutputType = {
+    id: number
+    queryKey: number
+    lat: number
+    lon: number
+    missed: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TravelGeocodeCacheAvgAggregateInputType = {
+    lat?: true
+    lon?: true
+  }
+
+  export type TravelGeocodeCacheSumAggregateInputType = {
+    lat?: true
+    lon?: true
+  }
+
+  export type TravelGeocodeCacheMinAggregateInputType = {
+    id?: true
+    queryKey?: true
+    lat?: true
+    lon?: true
+    missed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TravelGeocodeCacheMaxAggregateInputType = {
+    id?: true
+    queryKey?: true
+    lat?: true
+    lon?: true
+    missed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TravelGeocodeCacheCountAggregateInputType = {
+    id?: true
+    queryKey?: true
+    lat?: true
+    lon?: true
+    missed?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TravelGeocodeCacheAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TravelGeocodeCache to aggregate.
+     */
+    where?: TravelGeocodeCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelGeocodeCaches to fetch.
+     */
+    orderBy?: TravelGeocodeCacheOrderByWithRelationInput | TravelGeocodeCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TravelGeocodeCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelGeocodeCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelGeocodeCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TravelGeocodeCaches
+    **/
+    _count?: true | TravelGeocodeCacheCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TravelGeocodeCacheAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TravelGeocodeCacheSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TravelGeocodeCacheMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TravelGeocodeCacheMaxAggregateInputType
+  }
+
+  export type GetTravelGeocodeCacheAggregateType<T extends TravelGeocodeCacheAggregateArgs> = {
+        [P in keyof T & keyof AggregateTravelGeocodeCache]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTravelGeocodeCache[P]>
+      : GetScalarType<T[P], AggregateTravelGeocodeCache[P]>
+  }
+
+
+
+
+  export type TravelGeocodeCacheGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TravelGeocodeCacheWhereInput
+    orderBy?: TravelGeocodeCacheOrderByWithAggregationInput | TravelGeocodeCacheOrderByWithAggregationInput[]
+    by: TravelGeocodeCacheScalarFieldEnum[] | TravelGeocodeCacheScalarFieldEnum
+    having?: TravelGeocodeCacheScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TravelGeocodeCacheCountAggregateInputType | true
+    _avg?: TravelGeocodeCacheAvgAggregateInputType
+    _sum?: TravelGeocodeCacheSumAggregateInputType
+    _min?: TravelGeocodeCacheMinAggregateInputType
+    _max?: TravelGeocodeCacheMaxAggregateInputType
+  }
+
+  export type TravelGeocodeCacheGroupByOutputType = {
+    id: string
+    queryKey: string
+    lat: number | null
+    lon: number | null
+    missed: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: TravelGeocodeCacheCountAggregateOutputType | null
+    _avg: TravelGeocodeCacheAvgAggregateOutputType | null
+    _sum: TravelGeocodeCacheSumAggregateOutputType | null
+    _min: TravelGeocodeCacheMinAggregateOutputType | null
+    _max: TravelGeocodeCacheMaxAggregateOutputType | null
+  }
+
+  type GetTravelGeocodeCacheGroupByPayload<T extends TravelGeocodeCacheGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TravelGeocodeCacheGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TravelGeocodeCacheGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TravelGeocodeCacheGroupByOutputType[P]>
+            : GetScalarType<T[P], TravelGeocodeCacheGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TravelGeocodeCacheSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    queryKey?: boolean
+    lat?: boolean
+    lon?: boolean
+    missed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["travelGeocodeCache"]>
+
+  export type TravelGeocodeCacheSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    queryKey?: boolean
+    lat?: boolean
+    lon?: boolean
+    missed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["travelGeocodeCache"]>
+
+  export type TravelGeocodeCacheSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    queryKey?: boolean
+    lat?: boolean
+    lon?: boolean
+    missed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["travelGeocodeCache"]>
+
+  export type TravelGeocodeCacheSelectScalar = {
+    id?: boolean
+    queryKey?: boolean
+    lat?: boolean
+    lon?: boolean
+    missed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TravelGeocodeCacheOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "queryKey" | "lat" | "lon" | "missed" | "createdAt" | "updatedAt", ExtArgs["result"]["travelGeocodeCache"]>
+
+  export type $TravelGeocodeCachePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TravelGeocodeCache"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * Lowercase trim van het zoekadres
+       */
+      queryKey: string
+      lat: number | null
+      lon: number | null
+      /**
+       * true = geocode mislukt (niet opnieuw blijven proberen)
+       */
+      missed: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["travelGeocodeCache"]>
+    composites: {}
+  }
+
+  type TravelGeocodeCacheGetPayload<S extends boolean | null | undefined | TravelGeocodeCacheDefaultArgs> = $Result.GetResult<Prisma.$TravelGeocodeCachePayload, S>
+
+  type TravelGeocodeCacheCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TravelGeocodeCacheFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TravelGeocodeCacheCountAggregateInputType | true
+    }
+
+  export interface TravelGeocodeCacheDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TravelGeocodeCache'], meta: { name: 'TravelGeocodeCache' } }
+    /**
+     * Find zero or one TravelGeocodeCache that matches the filter.
+     * @param {TravelGeocodeCacheFindUniqueArgs} args - Arguments to find a TravelGeocodeCache
+     * @example
+     * // Get one TravelGeocodeCache
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TravelGeocodeCacheFindUniqueArgs>(args: SelectSubset<T, TravelGeocodeCacheFindUniqueArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TravelGeocodeCache that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TravelGeocodeCacheFindUniqueOrThrowArgs} args - Arguments to find a TravelGeocodeCache
+     * @example
+     * // Get one TravelGeocodeCache
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TravelGeocodeCacheFindUniqueOrThrowArgs>(args: SelectSubset<T, TravelGeocodeCacheFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TravelGeocodeCache that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelGeocodeCacheFindFirstArgs} args - Arguments to find a TravelGeocodeCache
+     * @example
+     * // Get one TravelGeocodeCache
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TravelGeocodeCacheFindFirstArgs>(args?: SelectSubset<T, TravelGeocodeCacheFindFirstArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TravelGeocodeCache that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelGeocodeCacheFindFirstOrThrowArgs} args - Arguments to find a TravelGeocodeCache
+     * @example
+     * // Get one TravelGeocodeCache
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TravelGeocodeCacheFindFirstOrThrowArgs>(args?: SelectSubset<T, TravelGeocodeCacheFindFirstOrThrowArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TravelGeocodeCaches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelGeocodeCacheFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TravelGeocodeCaches
+     * const travelGeocodeCaches = await prisma.travelGeocodeCache.findMany()
+     * 
+     * // Get first 10 TravelGeocodeCaches
+     * const travelGeocodeCaches = await prisma.travelGeocodeCache.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const travelGeocodeCacheWithIdOnly = await prisma.travelGeocodeCache.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TravelGeocodeCacheFindManyArgs>(args?: SelectSubset<T, TravelGeocodeCacheFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TravelGeocodeCache.
+     * @param {TravelGeocodeCacheCreateArgs} args - Arguments to create a TravelGeocodeCache.
+     * @example
+     * // Create one TravelGeocodeCache
+     * const TravelGeocodeCache = await prisma.travelGeocodeCache.create({
+     *   data: {
+     *     // ... data to create a TravelGeocodeCache
+     *   }
+     * })
+     * 
+     */
+    create<T extends TravelGeocodeCacheCreateArgs>(args: SelectSubset<T, TravelGeocodeCacheCreateArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TravelGeocodeCaches.
+     * @param {TravelGeocodeCacheCreateManyArgs} args - Arguments to create many TravelGeocodeCaches.
+     * @example
+     * // Create many TravelGeocodeCaches
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TravelGeocodeCacheCreateManyArgs>(args?: SelectSubset<T, TravelGeocodeCacheCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TravelGeocodeCaches and returns the data saved in the database.
+     * @param {TravelGeocodeCacheCreateManyAndReturnArgs} args - Arguments to create many TravelGeocodeCaches.
+     * @example
+     * // Create many TravelGeocodeCaches
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TravelGeocodeCaches and only return the `id`
+     * const travelGeocodeCacheWithIdOnly = await prisma.travelGeocodeCache.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TravelGeocodeCacheCreateManyAndReturnArgs>(args?: SelectSubset<T, TravelGeocodeCacheCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TravelGeocodeCache.
+     * @param {TravelGeocodeCacheDeleteArgs} args - Arguments to delete one TravelGeocodeCache.
+     * @example
+     * // Delete one TravelGeocodeCache
+     * const TravelGeocodeCache = await prisma.travelGeocodeCache.delete({
+     *   where: {
+     *     // ... filter to delete one TravelGeocodeCache
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TravelGeocodeCacheDeleteArgs>(args: SelectSubset<T, TravelGeocodeCacheDeleteArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TravelGeocodeCache.
+     * @param {TravelGeocodeCacheUpdateArgs} args - Arguments to update one TravelGeocodeCache.
+     * @example
+     * // Update one TravelGeocodeCache
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TravelGeocodeCacheUpdateArgs>(args: SelectSubset<T, TravelGeocodeCacheUpdateArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TravelGeocodeCaches.
+     * @param {TravelGeocodeCacheDeleteManyArgs} args - Arguments to filter TravelGeocodeCaches to delete.
+     * @example
+     * // Delete a few TravelGeocodeCaches
+     * const { count } = await prisma.travelGeocodeCache.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TravelGeocodeCacheDeleteManyArgs>(args?: SelectSubset<T, TravelGeocodeCacheDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TravelGeocodeCaches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelGeocodeCacheUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TravelGeocodeCaches
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TravelGeocodeCacheUpdateManyArgs>(args: SelectSubset<T, TravelGeocodeCacheUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TravelGeocodeCaches and returns the data updated in the database.
+     * @param {TravelGeocodeCacheUpdateManyAndReturnArgs} args - Arguments to update many TravelGeocodeCaches.
+     * @example
+     * // Update many TravelGeocodeCaches
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TravelGeocodeCaches and only return the `id`
+     * const travelGeocodeCacheWithIdOnly = await prisma.travelGeocodeCache.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TravelGeocodeCacheUpdateManyAndReturnArgs>(args: SelectSubset<T, TravelGeocodeCacheUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TravelGeocodeCache.
+     * @param {TravelGeocodeCacheUpsertArgs} args - Arguments to update or create a TravelGeocodeCache.
+     * @example
+     * // Update or create a TravelGeocodeCache
+     * const travelGeocodeCache = await prisma.travelGeocodeCache.upsert({
+     *   create: {
+     *     // ... data to create a TravelGeocodeCache
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TravelGeocodeCache we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TravelGeocodeCacheUpsertArgs>(args: SelectSubset<T, TravelGeocodeCacheUpsertArgs<ExtArgs>>): Prisma__TravelGeocodeCacheClient<$Result.GetResult<Prisma.$TravelGeocodeCachePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TravelGeocodeCaches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelGeocodeCacheCountArgs} args - Arguments to filter TravelGeocodeCaches to count.
+     * @example
+     * // Count the number of TravelGeocodeCaches
+     * const count = await prisma.travelGeocodeCache.count({
+     *   where: {
+     *     // ... the filter for the TravelGeocodeCaches we want to count
+     *   }
+     * })
+    **/
+    count<T extends TravelGeocodeCacheCountArgs>(
+      args?: Subset<T, TravelGeocodeCacheCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TravelGeocodeCacheCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TravelGeocodeCache.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelGeocodeCacheAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TravelGeocodeCacheAggregateArgs>(args: Subset<T, TravelGeocodeCacheAggregateArgs>): Prisma.PrismaPromise<GetTravelGeocodeCacheAggregateType<T>>
+
+    /**
+     * Group by TravelGeocodeCache.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelGeocodeCacheGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TravelGeocodeCacheGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TravelGeocodeCacheGroupByArgs['orderBy'] }
+        : { orderBy?: TravelGeocodeCacheGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TravelGeocodeCacheGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTravelGeocodeCacheGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TravelGeocodeCache model
+   */
+  readonly fields: TravelGeocodeCacheFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TravelGeocodeCache.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TravelGeocodeCacheClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TravelGeocodeCache model
+   */
+  interface TravelGeocodeCacheFieldRefs {
+    readonly id: FieldRef<"TravelGeocodeCache", 'String'>
+    readonly queryKey: FieldRef<"TravelGeocodeCache", 'String'>
+    readonly lat: FieldRef<"TravelGeocodeCache", 'Float'>
+    readonly lon: FieldRef<"TravelGeocodeCache", 'Float'>
+    readonly missed: FieldRef<"TravelGeocodeCache", 'Boolean'>
+    readonly createdAt: FieldRef<"TravelGeocodeCache", 'DateTime'>
+    readonly updatedAt: FieldRef<"TravelGeocodeCache", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TravelGeocodeCache findUnique
+   */
+  export type TravelGeocodeCacheFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelGeocodeCache to fetch.
+     */
+    where: TravelGeocodeCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelGeocodeCache findUniqueOrThrow
+   */
+  export type TravelGeocodeCacheFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelGeocodeCache to fetch.
+     */
+    where: TravelGeocodeCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelGeocodeCache findFirst
+   */
+  export type TravelGeocodeCacheFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelGeocodeCache to fetch.
+     */
+    where?: TravelGeocodeCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelGeocodeCaches to fetch.
+     */
+    orderBy?: TravelGeocodeCacheOrderByWithRelationInput | TravelGeocodeCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TravelGeocodeCaches.
+     */
+    cursor?: TravelGeocodeCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelGeocodeCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelGeocodeCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TravelGeocodeCaches.
+     */
+    distinct?: TravelGeocodeCacheScalarFieldEnum | TravelGeocodeCacheScalarFieldEnum[]
+  }
+
+  /**
+   * TravelGeocodeCache findFirstOrThrow
+   */
+  export type TravelGeocodeCacheFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelGeocodeCache to fetch.
+     */
+    where?: TravelGeocodeCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelGeocodeCaches to fetch.
+     */
+    orderBy?: TravelGeocodeCacheOrderByWithRelationInput | TravelGeocodeCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TravelGeocodeCaches.
+     */
+    cursor?: TravelGeocodeCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelGeocodeCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelGeocodeCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TravelGeocodeCaches.
+     */
+    distinct?: TravelGeocodeCacheScalarFieldEnum | TravelGeocodeCacheScalarFieldEnum[]
+  }
+
+  /**
+   * TravelGeocodeCache findMany
+   */
+  export type TravelGeocodeCacheFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelGeocodeCaches to fetch.
+     */
+    where?: TravelGeocodeCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelGeocodeCaches to fetch.
+     */
+    orderBy?: TravelGeocodeCacheOrderByWithRelationInput | TravelGeocodeCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TravelGeocodeCaches.
+     */
+    cursor?: TravelGeocodeCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelGeocodeCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelGeocodeCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TravelGeocodeCaches.
+     */
+    distinct?: TravelGeocodeCacheScalarFieldEnum | TravelGeocodeCacheScalarFieldEnum[]
+  }
+
+  /**
+   * TravelGeocodeCache create
+   */
+  export type TravelGeocodeCacheCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TravelGeocodeCache.
+     */
+    data: XOR<TravelGeocodeCacheCreateInput, TravelGeocodeCacheUncheckedCreateInput>
+  }
+
+  /**
+   * TravelGeocodeCache createMany
+   */
+  export type TravelGeocodeCacheCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TravelGeocodeCaches.
+     */
+    data: TravelGeocodeCacheCreateManyInput | TravelGeocodeCacheCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TravelGeocodeCache createManyAndReturn
+   */
+  export type TravelGeocodeCacheCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * The data used to create many TravelGeocodeCaches.
+     */
+    data: TravelGeocodeCacheCreateManyInput | TravelGeocodeCacheCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TravelGeocodeCache update
+   */
+  export type TravelGeocodeCacheUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TravelGeocodeCache.
+     */
+    data: XOR<TravelGeocodeCacheUpdateInput, TravelGeocodeCacheUncheckedUpdateInput>
+    /**
+     * Choose, which TravelGeocodeCache to update.
+     */
+    where: TravelGeocodeCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelGeocodeCache updateMany
+   */
+  export type TravelGeocodeCacheUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TravelGeocodeCaches.
+     */
+    data: XOR<TravelGeocodeCacheUpdateManyMutationInput, TravelGeocodeCacheUncheckedUpdateManyInput>
+    /**
+     * Filter which TravelGeocodeCaches to update
+     */
+    where?: TravelGeocodeCacheWhereInput
+    /**
+     * Limit how many TravelGeocodeCaches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TravelGeocodeCache updateManyAndReturn
+   */
+  export type TravelGeocodeCacheUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * The data used to update TravelGeocodeCaches.
+     */
+    data: XOR<TravelGeocodeCacheUpdateManyMutationInput, TravelGeocodeCacheUncheckedUpdateManyInput>
+    /**
+     * Filter which TravelGeocodeCaches to update
+     */
+    where?: TravelGeocodeCacheWhereInput
+    /**
+     * Limit how many TravelGeocodeCaches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TravelGeocodeCache upsert
+   */
+  export type TravelGeocodeCacheUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TravelGeocodeCache to update in case it exists.
+     */
+    where: TravelGeocodeCacheWhereUniqueInput
+    /**
+     * In case the TravelGeocodeCache found by the `where` argument doesn't exist, create a new TravelGeocodeCache with this data.
+     */
+    create: XOR<TravelGeocodeCacheCreateInput, TravelGeocodeCacheUncheckedCreateInput>
+    /**
+     * In case the TravelGeocodeCache was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TravelGeocodeCacheUpdateInput, TravelGeocodeCacheUncheckedUpdateInput>
+  }
+
+  /**
+   * TravelGeocodeCache delete
+   */
+  export type TravelGeocodeCacheDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+    /**
+     * Filter which TravelGeocodeCache to delete.
+     */
+    where: TravelGeocodeCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelGeocodeCache deleteMany
+   */
+  export type TravelGeocodeCacheDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TravelGeocodeCaches to delete
+     */
+    where?: TravelGeocodeCacheWhereInput
+    /**
+     * Limit how many TravelGeocodeCaches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TravelGeocodeCache without action
+   */
+  export type TravelGeocodeCacheDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelGeocodeCache
+     */
+    select?: TravelGeocodeCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelGeocodeCache
+     */
+    omit?: TravelGeocodeCacheOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TravelRouteCache
+   */
+
+  export type AggregateTravelRouteCache = {
+    _count: TravelRouteCacheCountAggregateOutputType | null
+    _avg: TravelRouteCacheAvgAggregateOutputType | null
+    _sum: TravelRouteCacheSumAggregateOutputType | null
+    _min: TravelRouteCacheMinAggregateOutputType | null
+    _max: TravelRouteCacheMaxAggregateOutputType | null
+  }
+
+  export type TravelRouteCacheAvgAggregateOutputType = {
+    kilometers: number | null
+    durationHours: number | null
+  }
+
+  export type TravelRouteCacheSumAggregateOutputType = {
+    kilometers: number | null
+    durationHours: number | null
+  }
+
+  export type TravelRouteCacheMinAggregateOutputType = {
+    id: string | null
+    cacheKey: string | null
+    fromAddress: string | null
+    toAddress: string | null
+    kilometers: number | null
+    durationHours: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TravelRouteCacheMaxAggregateOutputType = {
+    id: string | null
+    cacheKey: string | null
+    fromAddress: string | null
+    toAddress: string | null
+    kilometers: number | null
+    durationHours: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TravelRouteCacheCountAggregateOutputType = {
+    id: number
+    cacheKey: number
+    fromAddress: number
+    toAddress: number
+    kilometers: number
+    durationHours: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TravelRouteCacheAvgAggregateInputType = {
+    kilometers?: true
+    durationHours?: true
+  }
+
+  export type TravelRouteCacheSumAggregateInputType = {
+    kilometers?: true
+    durationHours?: true
+  }
+
+  export type TravelRouteCacheMinAggregateInputType = {
+    id?: true
+    cacheKey?: true
+    fromAddress?: true
+    toAddress?: true
+    kilometers?: true
+    durationHours?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TravelRouteCacheMaxAggregateInputType = {
+    id?: true
+    cacheKey?: true
+    fromAddress?: true
+    toAddress?: true
+    kilometers?: true
+    durationHours?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TravelRouteCacheCountAggregateInputType = {
+    id?: true
+    cacheKey?: true
+    fromAddress?: true
+    toAddress?: true
+    kilometers?: true
+    durationHours?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TravelRouteCacheAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TravelRouteCache to aggregate.
+     */
+    where?: TravelRouteCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelRouteCaches to fetch.
+     */
+    orderBy?: TravelRouteCacheOrderByWithRelationInput | TravelRouteCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TravelRouteCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelRouteCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelRouteCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TravelRouteCaches
+    **/
+    _count?: true | TravelRouteCacheCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TravelRouteCacheAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TravelRouteCacheSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TravelRouteCacheMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TravelRouteCacheMaxAggregateInputType
+  }
+
+  export type GetTravelRouteCacheAggregateType<T extends TravelRouteCacheAggregateArgs> = {
+        [P in keyof T & keyof AggregateTravelRouteCache]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTravelRouteCache[P]>
+      : GetScalarType<T[P], AggregateTravelRouteCache[P]>
+  }
+
+
+
+
+  export type TravelRouteCacheGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TravelRouteCacheWhereInput
+    orderBy?: TravelRouteCacheOrderByWithAggregationInput | TravelRouteCacheOrderByWithAggregationInput[]
+    by: TravelRouteCacheScalarFieldEnum[] | TravelRouteCacheScalarFieldEnum
+    having?: TravelRouteCacheScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TravelRouteCacheCountAggregateInputType | true
+    _avg?: TravelRouteCacheAvgAggregateInputType
+    _sum?: TravelRouteCacheSumAggregateInputType
+    _min?: TravelRouteCacheMinAggregateInputType
+    _max?: TravelRouteCacheMaxAggregateInputType
+  }
+
+  export type TravelRouteCacheGroupByOutputType = {
+    id: string
+    cacheKey: string
+    fromAddress: string
+    toAddress: string
+    kilometers: number
+    durationHours: number
+    createdAt: Date
+    updatedAt: Date
+    _count: TravelRouteCacheCountAggregateOutputType | null
+    _avg: TravelRouteCacheAvgAggregateOutputType | null
+    _sum: TravelRouteCacheSumAggregateOutputType | null
+    _min: TravelRouteCacheMinAggregateOutputType | null
+    _max: TravelRouteCacheMaxAggregateOutputType | null
+  }
+
+  type GetTravelRouteCacheGroupByPayload<T extends TravelRouteCacheGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TravelRouteCacheGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TravelRouteCacheGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TravelRouteCacheGroupByOutputType[P]>
+            : GetScalarType<T[P], TravelRouteCacheGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TravelRouteCacheSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cacheKey?: boolean
+    fromAddress?: boolean
+    toAddress?: boolean
+    kilometers?: boolean
+    durationHours?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["travelRouteCache"]>
+
+  export type TravelRouteCacheSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cacheKey?: boolean
+    fromAddress?: boolean
+    toAddress?: boolean
+    kilometers?: boolean
+    durationHours?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["travelRouteCache"]>
+
+  export type TravelRouteCacheSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cacheKey?: boolean
+    fromAddress?: boolean
+    toAddress?: boolean
+    kilometers?: boolean
+    durationHours?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["travelRouteCache"]>
+
+  export type TravelRouteCacheSelectScalar = {
+    id?: boolean
+    cacheKey?: boolean
+    fromAddress?: boolean
+    toAddress?: boolean
+    kilometers?: boolean
+    durationHours?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TravelRouteCacheOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cacheKey" | "fromAddress" | "toAddress" | "kilometers" | "durationHours" | "createdAt" | "updatedAt", ExtArgs["result"]["travelRouteCache"]>
+
+  export type $TravelRouteCachePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TravelRouteCache"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * MD5(normalize(from) + "_" + normalize(to)) of multi-stop key
+       */
+      cacheKey: string
+      fromAddress: string
+      toAddress: string
+      kilometers: number
+      durationHours: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["travelRouteCache"]>
+    composites: {}
+  }
+
+  type TravelRouteCacheGetPayload<S extends boolean | null | undefined | TravelRouteCacheDefaultArgs> = $Result.GetResult<Prisma.$TravelRouteCachePayload, S>
+
+  type TravelRouteCacheCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TravelRouteCacheFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TravelRouteCacheCountAggregateInputType | true
+    }
+
+  export interface TravelRouteCacheDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TravelRouteCache'], meta: { name: 'TravelRouteCache' } }
+    /**
+     * Find zero or one TravelRouteCache that matches the filter.
+     * @param {TravelRouteCacheFindUniqueArgs} args - Arguments to find a TravelRouteCache
+     * @example
+     * // Get one TravelRouteCache
+     * const travelRouteCache = await prisma.travelRouteCache.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TravelRouteCacheFindUniqueArgs>(args: SelectSubset<T, TravelRouteCacheFindUniqueArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TravelRouteCache that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TravelRouteCacheFindUniqueOrThrowArgs} args - Arguments to find a TravelRouteCache
+     * @example
+     * // Get one TravelRouteCache
+     * const travelRouteCache = await prisma.travelRouteCache.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TravelRouteCacheFindUniqueOrThrowArgs>(args: SelectSubset<T, TravelRouteCacheFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TravelRouteCache that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelRouteCacheFindFirstArgs} args - Arguments to find a TravelRouteCache
+     * @example
+     * // Get one TravelRouteCache
+     * const travelRouteCache = await prisma.travelRouteCache.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TravelRouteCacheFindFirstArgs>(args?: SelectSubset<T, TravelRouteCacheFindFirstArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TravelRouteCache that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelRouteCacheFindFirstOrThrowArgs} args - Arguments to find a TravelRouteCache
+     * @example
+     * // Get one TravelRouteCache
+     * const travelRouteCache = await prisma.travelRouteCache.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TravelRouteCacheFindFirstOrThrowArgs>(args?: SelectSubset<T, TravelRouteCacheFindFirstOrThrowArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TravelRouteCaches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelRouteCacheFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TravelRouteCaches
+     * const travelRouteCaches = await prisma.travelRouteCache.findMany()
+     * 
+     * // Get first 10 TravelRouteCaches
+     * const travelRouteCaches = await prisma.travelRouteCache.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const travelRouteCacheWithIdOnly = await prisma.travelRouteCache.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TravelRouteCacheFindManyArgs>(args?: SelectSubset<T, TravelRouteCacheFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TravelRouteCache.
+     * @param {TravelRouteCacheCreateArgs} args - Arguments to create a TravelRouteCache.
+     * @example
+     * // Create one TravelRouteCache
+     * const TravelRouteCache = await prisma.travelRouteCache.create({
+     *   data: {
+     *     // ... data to create a TravelRouteCache
+     *   }
+     * })
+     * 
+     */
+    create<T extends TravelRouteCacheCreateArgs>(args: SelectSubset<T, TravelRouteCacheCreateArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TravelRouteCaches.
+     * @param {TravelRouteCacheCreateManyArgs} args - Arguments to create many TravelRouteCaches.
+     * @example
+     * // Create many TravelRouteCaches
+     * const travelRouteCache = await prisma.travelRouteCache.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TravelRouteCacheCreateManyArgs>(args?: SelectSubset<T, TravelRouteCacheCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TravelRouteCaches and returns the data saved in the database.
+     * @param {TravelRouteCacheCreateManyAndReturnArgs} args - Arguments to create many TravelRouteCaches.
+     * @example
+     * // Create many TravelRouteCaches
+     * const travelRouteCache = await prisma.travelRouteCache.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TravelRouteCaches and only return the `id`
+     * const travelRouteCacheWithIdOnly = await prisma.travelRouteCache.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TravelRouteCacheCreateManyAndReturnArgs>(args?: SelectSubset<T, TravelRouteCacheCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TravelRouteCache.
+     * @param {TravelRouteCacheDeleteArgs} args - Arguments to delete one TravelRouteCache.
+     * @example
+     * // Delete one TravelRouteCache
+     * const TravelRouteCache = await prisma.travelRouteCache.delete({
+     *   where: {
+     *     // ... filter to delete one TravelRouteCache
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TravelRouteCacheDeleteArgs>(args: SelectSubset<T, TravelRouteCacheDeleteArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TravelRouteCache.
+     * @param {TravelRouteCacheUpdateArgs} args - Arguments to update one TravelRouteCache.
+     * @example
+     * // Update one TravelRouteCache
+     * const travelRouteCache = await prisma.travelRouteCache.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TravelRouteCacheUpdateArgs>(args: SelectSubset<T, TravelRouteCacheUpdateArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TravelRouteCaches.
+     * @param {TravelRouteCacheDeleteManyArgs} args - Arguments to filter TravelRouteCaches to delete.
+     * @example
+     * // Delete a few TravelRouteCaches
+     * const { count } = await prisma.travelRouteCache.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TravelRouteCacheDeleteManyArgs>(args?: SelectSubset<T, TravelRouteCacheDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TravelRouteCaches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelRouteCacheUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TravelRouteCaches
+     * const travelRouteCache = await prisma.travelRouteCache.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TravelRouteCacheUpdateManyArgs>(args: SelectSubset<T, TravelRouteCacheUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TravelRouteCaches and returns the data updated in the database.
+     * @param {TravelRouteCacheUpdateManyAndReturnArgs} args - Arguments to update many TravelRouteCaches.
+     * @example
+     * // Update many TravelRouteCaches
+     * const travelRouteCache = await prisma.travelRouteCache.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TravelRouteCaches and only return the `id`
+     * const travelRouteCacheWithIdOnly = await prisma.travelRouteCache.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TravelRouteCacheUpdateManyAndReturnArgs>(args: SelectSubset<T, TravelRouteCacheUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TravelRouteCache.
+     * @param {TravelRouteCacheUpsertArgs} args - Arguments to update or create a TravelRouteCache.
+     * @example
+     * // Update or create a TravelRouteCache
+     * const travelRouteCache = await prisma.travelRouteCache.upsert({
+     *   create: {
+     *     // ... data to create a TravelRouteCache
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TravelRouteCache we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TravelRouteCacheUpsertArgs>(args: SelectSubset<T, TravelRouteCacheUpsertArgs<ExtArgs>>): Prisma__TravelRouteCacheClient<$Result.GetResult<Prisma.$TravelRouteCachePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TravelRouteCaches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelRouteCacheCountArgs} args - Arguments to filter TravelRouteCaches to count.
+     * @example
+     * // Count the number of TravelRouteCaches
+     * const count = await prisma.travelRouteCache.count({
+     *   where: {
+     *     // ... the filter for the TravelRouteCaches we want to count
+     *   }
+     * })
+    **/
+    count<T extends TravelRouteCacheCountArgs>(
+      args?: Subset<T, TravelRouteCacheCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TravelRouteCacheCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TravelRouteCache.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelRouteCacheAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TravelRouteCacheAggregateArgs>(args: Subset<T, TravelRouteCacheAggregateArgs>): Prisma.PrismaPromise<GetTravelRouteCacheAggregateType<T>>
+
+    /**
+     * Group by TravelRouteCache.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TravelRouteCacheGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TravelRouteCacheGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TravelRouteCacheGroupByArgs['orderBy'] }
+        : { orderBy?: TravelRouteCacheGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TravelRouteCacheGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTravelRouteCacheGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TravelRouteCache model
+   */
+  readonly fields: TravelRouteCacheFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TravelRouteCache.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TravelRouteCacheClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TravelRouteCache model
+   */
+  interface TravelRouteCacheFieldRefs {
+    readonly id: FieldRef<"TravelRouteCache", 'String'>
+    readonly cacheKey: FieldRef<"TravelRouteCache", 'String'>
+    readonly fromAddress: FieldRef<"TravelRouteCache", 'String'>
+    readonly toAddress: FieldRef<"TravelRouteCache", 'String'>
+    readonly kilometers: FieldRef<"TravelRouteCache", 'Float'>
+    readonly durationHours: FieldRef<"TravelRouteCache", 'Float'>
+    readonly createdAt: FieldRef<"TravelRouteCache", 'DateTime'>
+    readonly updatedAt: FieldRef<"TravelRouteCache", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TravelRouteCache findUnique
+   */
+  export type TravelRouteCacheFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelRouteCache to fetch.
+     */
+    where: TravelRouteCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelRouteCache findUniqueOrThrow
+   */
+  export type TravelRouteCacheFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelRouteCache to fetch.
+     */
+    where: TravelRouteCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelRouteCache findFirst
+   */
+  export type TravelRouteCacheFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelRouteCache to fetch.
+     */
+    where?: TravelRouteCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelRouteCaches to fetch.
+     */
+    orderBy?: TravelRouteCacheOrderByWithRelationInput | TravelRouteCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TravelRouteCaches.
+     */
+    cursor?: TravelRouteCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelRouteCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelRouteCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TravelRouteCaches.
+     */
+    distinct?: TravelRouteCacheScalarFieldEnum | TravelRouteCacheScalarFieldEnum[]
+  }
+
+  /**
+   * TravelRouteCache findFirstOrThrow
+   */
+  export type TravelRouteCacheFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelRouteCache to fetch.
+     */
+    where?: TravelRouteCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelRouteCaches to fetch.
+     */
+    orderBy?: TravelRouteCacheOrderByWithRelationInput | TravelRouteCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TravelRouteCaches.
+     */
+    cursor?: TravelRouteCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelRouteCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelRouteCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TravelRouteCaches.
+     */
+    distinct?: TravelRouteCacheScalarFieldEnum | TravelRouteCacheScalarFieldEnum[]
+  }
+
+  /**
+   * TravelRouteCache findMany
+   */
+  export type TravelRouteCacheFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * Filter, which TravelRouteCaches to fetch.
+     */
+    where?: TravelRouteCacheWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TravelRouteCaches to fetch.
+     */
+    orderBy?: TravelRouteCacheOrderByWithRelationInput | TravelRouteCacheOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TravelRouteCaches.
+     */
+    cursor?: TravelRouteCacheWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TravelRouteCaches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TravelRouteCaches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TravelRouteCaches.
+     */
+    distinct?: TravelRouteCacheScalarFieldEnum | TravelRouteCacheScalarFieldEnum[]
+  }
+
+  /**
+   * TravelRouteCache create
+   */
+  export type TravelRouteCacheCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TravelRouteCache.
+     */
+    data: XOR<TravelRouteCacheCreateInput, TravelRouteCacheUncheckedCreateInput>
+  }
+
+  /**
+   * TravelRouteCache createMany
+   */
+  export type TravelRouteCacheCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TravelRouteCaches.
+     */
+    data: TravelRouteCacheCreateManyInput | TravelRouteCacheCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TravelRouteCache createManyAndReturn
+   */
+  export type TravelRouteCacheCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * The data used to create many TravelRouteCaches.
+     */
+    data: TravelRouteCacheCreateManyInput | TravelRouteCacheCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TravelRouteCache update
+   */
+  export type TravelRouteCacheUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TravelRouteCache.
+     */
+    data: XOR<TravelRouteCacheUpdateInput, TravelRouteCacheUncheckedUpdateInput>
+    /**
+     * Choose, which TravelRouteCache to update.
+     */
+    where: TravelRouteCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelRouteCache updateMany
+   */
+  export type TravelRouteCacheUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TravelRouteCaches.
+     */
+    data: XOR<TravelRouteCacheUpdateManyMutationInput, TravelRouteCacheUncheckedUpdateManyInput>
+    /**
+     * Filter which TravelRouteCaches to update
+     */
+    where?: TravelRouteCacheWhereInput
+    /**
+     * Limit how many TravelRouteCaches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TravelRouteCache updateManyAndReturn
+   */
+  export type TravelRouteCacheUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * The data used to update TravelRouteCaches.
+     */
+    data: XOR<TravelRouteCacheUpdateManyMutationInput, TravelRouteCacheUncheckedUpdateManyInput>
+    /**
+     * Filter which TravelRouteCaches to update
+     */
+    where?: TravelRouteCacheWhereInput
+    /**
+     * Limit how many TravelRouteCaches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TravelRouteCache upsert
+   */
+  export type TravelRouteCacheUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TravelRouteCache to update in case it exists.
+     */
+    where: TravelRouteCacheWhereUniqueInput
+    /**
+     * In case the TravelRouteCache found by the `where` argument doesn't exist, create a new TravelRouteCache with this data.
+     */
+    create: XOR<TravelRouteCacheCreateInput, TravelRouteCacheUncheckedCreateInput>
+    /**
+     * In case the TravelRouteCache was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TravelRouteCacheUpdateInput, TravelRouteCacheUncheckedUpdateInput>
+  }
+
+  /**
+   * TravelRouteCache delete
+   */
+  export type TravelRouteCacheDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+    /**
+     * Filter which TravelRouteCache to delete.
+     */
+    where: TravelRouteCacheWhereUniqueInput
+  }
+
+  /**
+   * TravelRouteCache deleteMany
+   */
+  export type TravelRouteCacheDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TravelRouteCaches to delete
+     */
+    where?: TravelRouteCacheWhereInput
+    /**
+     * Limit how many TravelRouteCaches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TravelRouteCache without action
+   */
+  export type TravelRouteCacheDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TravelRouteCache
+     */
+    select?: TravelRouteCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TravelRouteCache
+     */
+    omit?: TravelRouteCacheOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -28809,6 +31282,7 @@ export namespace Prisma {
     number: 'number',
     name: 'name',
     location: 'location',
+    plaats: 'plaats',
     customerId: 'customerId',
     geoffreerdeUren: 'geoffreerdeUren',
     geoffreerdBedrag: 'geoffreerdBedrag',
@@ -28826,6 +31300,7 @@ export namespace Prisma {
     id: 'id',
     projectId: 'projectId',
     userId: 'userId',
+    bookedByUserId: 'bookedByUserId',
     datum: 'datum',
     uren: 'uren',
     omschrijving: 'omschrijving',
@@ -28857,6 +31332,9 @@ export namespace Prisma {
     projectId: 'projectId',
     customerId: 'customerId',
     location: 'location',
+    straat: 'straat',
+    huisnummer: 'huisnummer',
+    postcode: 'postcode',
     city: 'city',
     contactPersoon: 'contactPersoon',
     contactEmail: 'contactEmail',
@@ -29076,6 +31554,33 @@ export namespace Prisma {
   export type WorkorderEngineerScalarFieldEnum = (typeof WorkorderEngineerScalarFieldEnum)[keyof typeof WorkorderEngineerScalarFieldEnum]
 
 
+  export const TravelGeocodeCacheScalarFieldEnum: {
+    id: 'id',
+    queryKey: 'queryKey',
+    lat: 'lat',
+    lon: 'lon',
+    missed: 'missed',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TravelGeocodeCacheScalarFieldEnum = (typeof TravelGeocodeCacheScalarFieldEnum)[keyof typeof TravelGeocodeCacheScalarFieldEnum]
+
+
+  export const TravelRouteCacheScalarFieldEnum: {
+    id: 'id',
+    cacheKey: 'cacheKey',
+    fromAddress: 'fromAddress',
+    toAddress: 'toAddress',
+    kilometers: 'kilometers',
+    durationHours: 'durationHours',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TravelRouteCacheScalarFieldEnum = (typeof TravelRouteCacheScalarFieldEnum)[keyof typeof TravelRouteCacheScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -29254,6 +31759,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerListRelationFilter
     forms?: FormSubmissionListRelationFilter
     projectUren?: ProjectUurListRelationFilter
+    projectUrenGeboekt?: ProjectUurListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -29270,6 +31776,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerOrderByRelationAggregateInput
     forms?: FormSubmissionOrderByRelationAggregateInput
     projectUren?: ProjectUurOrderByRelationAggregateInput
+    projectUrenGeboekt?: ProjectUurOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -29289,6 +31796,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerListRelationFilter
     forms?: FormSubmissionListRelationFilter
     projectUren?: ProjectUurListRelationFilter
+    projectUrenGeboekt?: ProjectUurListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -29536,6 +32044,7 @@ export namespace Prisma {
     number?: StringFilter<"Project"> | string
     name?: StringFilter<"Project"> | string
     location?: StringNullableFilter<"Project"> | string | null
+    plaats?: StringNullableFilter<"Project"> | string | null
     customerId?: StringFilter<"Project"> | string
     geoffreerdeUren?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
@@ -29555,6 +32064,7 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     location?: SortOrderInput | SortOrder
+    plaats?: SortOrderInput | SortOrder
     customerId?: SortOrder
     geoffreerdeUren?: SortOrderInput | SortOrder
     geoffreerdBedrag?: SortOrderInput | SortOrder
@@ -29577,6 +32087,7 @@ export namespace Prisma {
     NOT?: ProjectWhereInput | ProjectWhereInput[]
     name?: StringFilter<"Project"> | string
     location?: StringNullableFilter<"Project"> | string | null
+    plaats?: StringNullableFilter<"Project"> | string | null
     customerId?: StringFilter<"Project"> | string
     geoffreerdeUren?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
@@ -29596,6 +32107,7 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     location?: SortOrderInput | SortOrder
+    plaats?: SortOrderInput | SortOrder
     customerId?: SortOrder
     geoffreerdeUren?: SortOrderInput | SortOrder
     geoffreerdBedrag?: SortOrderInput | SortOrder
@@ -29619,6 +32131,7 @@ export namespace Prisma {
     number?: StringWithAggregatesFilter<"Project"> | string
     name?: StringWithAggregatesFilter<"Project"> | string
     location?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    plaats?: StringNullableWithAggregatesFilter<"Project"> | string | null
     customerId?: StringWithAggregatesFilter<"Project"> | string
     geoffreerdeUren?: DecimalNullableWithAggregatesFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: DecimalNullableWithAggregatesFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
@@ -29636,6 +32149,7 @@ export namespace Prisma {
     id?: StringFilter<"ProjectUur"> | string
     projectId?: StringFilter<"ProjectUur"> | string
     userId?: StringFilter<"ProjectUur"> | string
+    bookedByUserId?: StringNullableFilter<"ProjectUur"> | string | null
     datum?: DateTimeFilter<"ProjectUur"> | Date | string
     uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
@@ -29643,12 +32157,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    bookedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type ProjectUurOrderByWithRelationInput = {
     id?: SortOrder
     projectId?: SortOrder
     userId?: SortOrder
+    bookedByUserId?: SortOrderInput | SortOrder
     datum?: SortOrder
     uren?: SortOrder
     omschrijving?: SortOrderInput | SortOrder
@@ -29656,6 +32172,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     project?: ProjectOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    bookedBy?: UserOrderByWithRelationInput
   }
 
   export type ProjectUurWhereUniqueInput = Prisma.AtLeast<{
@@ -29665,6 +32182,7 @@ export namespace Prisma {
     NOT?: ProjectUurWhereInput | ProjectUurWhereInput[]
     projectId?: StringFilter<"ProjectUur"> | string
     userId?: StringFilter<"ProjectUur"> | string
+    bookedByUserId?: StringNullableFilter<"ProjectUur"> | string | null
     datum?: DateTimeFilter<"ProjectUur"> | Date | string
     uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
@@ -29672,12 +32190,14 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    bookedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type ProjectUurOrderByWithAggregationInput = {
     id?: SortOrder
     projectId?: SortOrder
     userId?: SortOrder
+    bookedByUserId?: SortOrderInput | SortOrder
     datum?: SortOrder
     uren?: SortOrder
     omschrijving?: SortOrderInput | SortOrder
@@ -29697,6 +32217,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ProjectUur"> | string
     projectId?: StringWithAggregatesFilter<"ProjectUur"> | string
     userId?: StringWithAggregatesFilter<"ProjectUur"> | string
+    bookedByUserId?: StringNullableWithAggregatesFilter<"ProjectUur"> | string | null
     datum?: DateTimeWithAggregatesFilter<"ProjectUur"> | Date | string
     uren?: DecimalWithAggregatesFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableWithAggregatesFilter<"ProjectUur"> | string | null
@@ -29786,6 +32307,9 @@ export namespace Prisma {
     projectId?: StringNullableFilter<"Workorder"> | string | null
     customerId?: StringNullableFilter<"Workorder"> | string | null
     location?: StringNullableFilter<"Workorder"> | string | null
+    straat?: StringNullableFilter<"Workorder"> | string | null
+    huisnummer?: StringNullableFilter<"Workorder"> | string | null
+    postcode?: StringNullableFilter<"Workorder"> | string | null
     city?: StringNullableFilter<"Workorder"> | string | null
     contactPersoon?: StringNullableFilter<"Workorder"> | string | null
     contactEmail?: StringNullableFilter<"Workorder"> | string | null
@@ -29830,6 +32354,9 @@ export namespace Prisma {
     projectId?: SortOrderInput | SortOrder
     customerId?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
+    straat?: SortOrderInput | SortOrder
+    huisnummer?: SortOrderInput | SortOrder
+    postcode?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     contactPersoon?: SortOrderInput | SortOrder
     contactEmail?: SortOrderInput | SortOrder
@@ -29878,6 +32405,9 @@ export namespace Prisma {
     projectId?: StringNullableFilter<"Workorder"> | string | null
     customerId?: StringNullableFilter<"Workorder"> | string | null
     location?: StringNullableFilter<"Workorder"> | string | null
+    straat?: StringNullableFilter<"Workorder"> | string | null
+    huisnummer?: StringNullableFilter<"Workorder"> | string | null
+    postcode?: StringNullableFilter<"Workorder"> | string | null
     city?: StringNullableFilter<"Workorder"> | string | null
     contactPersoon?: StringNullableFilter<"Workorder"> | string | null
     contactEmail?: StringNullableFilter<"Workorder"> | string | null
@@ -29921,6 +32451,9 @@ export namespace Prisma {
     projectId?: SortOrderInput | SortOrder
     customerId?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
+    straat?: SortOrderInput | SortOrder
+    huisnummer?: SortOrderInput | SortOrder
+    postcode?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     contactPersoon?: SortOrderInput | SortOrder
     contactEmail?: SortOrderInput | SortOrder
@@ -29960,6 +32493,9 @@ export namespace Prisma {
     projectId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     customerId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     location?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    straat?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    huisnummer?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    postcode?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     city?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     contactPersoon?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     contactEmail?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
@@ -30973,6 +33509,139 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"WorkorderEngineer"> | string
   }
 
+  export type TravelGeocodeCacheWhereInput = {
+    AND?: TravelGeocodeCacheWhereInput | TravelGeocodeCacheWhereInput[]
+    OR?: TravelGeocodeCacheWhereInput[]
+    NOT?: TravelGeocodeCacheWhereInput | TravelGeocodeCacheWhereInput[]
+    id?: StringFilter<"TravelGeocodeCache"> | string
+    queryKey?: StringFilter<"TravelGeocodeCache"> | string
+    lat?: FloatNullableFilter<"TravelGeocodeCache"> | number | null
+    lon?: FloatNullableFilter<"TravelGeocodeCache"> | number | null
+    missed?: BoolFilter<"TravelGeocodeCache"> | boolean
+    createdAt?: DateTimeFilter<"TravelGeocodeCache"> | Date | string
+    updatedAt?: DateTimeFilter<"TravelGeocodeCache"> | Date | string
+  }
+
+  export type TravelGeocodeCacheOrderByWithRelationInput = {
+    id?: SortOrder
+    queryKey?: SortOrder
+    lat?: SortOrderInput | SortOrder
+    lon?: SortOrderInput | SortOrder
+    missed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelGeocodeCacheWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    queryKey?: string
+    AND?: TravelGeocodeCacheWhereInput | TravelGeocodeCacheWhereInput[]
+    OR?: TravelGeocodeCacheWhereInput[]
+    NOT?: TravelGeocodeCacheWhereInput | TravelGeocodeCacheWhereInput[]
+    lat?: FloatNullableFilter<"TravelGeocodeCache"> | number | null
+    lon?: FloatNullableFilter<"TravelGeocodeCache"> | number | null
+    missed?: BoolFilter<"TravelGeocodeCache"> | boolean
+    createdAt?: DateTimeFilter<"TravelGeocodeCache"> | Date | string
+    updatedAt?: DateTimeFilter<"TravelGeocodeCache"> | Date | string
+  }, "id" | "queryKey">
+
+  export type TravelGeocodeCacheOrderByWithAggregationInput = {
+    id?: SortOrder
+    queryKey?: SortOrder
+    lat?: SortOrderInput | SortOrder
+    lon?: SortOrderInput | SortOrder
+    missed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TravelGeocodeCacheCountOrderByAggregateInput
+    _avg?: TravelGeocodeCacheAvgOrderByAggregateInput
+    _max?: TravelGeocodeCacheMaxOrderByAggregateInput
+    _min?: TravelGeocodeCacheMinOrderByAggregateInput
+    _sum?: TravelGeocodeCacheSumOrderByAggregateInput
+  }
+
+  export type TravelGeocodeCacheScalarWhereWithAggregatesInput = {
+    AND?: TravelGeocodeCacheScalarWhereWithAggregatesInput | TravelGeocodeCacheScalarWhereWithAggregatesInput[]
+    OR?: TravelGeocodeCacheScalarWhereWithAggregatesInput[]
+    NOT?: TravelGeocodeCacheScalarWhereWithAggregatesInput | TravelGeocodeCacheScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TravelGeocodeCache"> | string
+    queryKey?: StringWithAggregatesFilter<"TravelGeocodeCache"> | string
+    lat?: FloatNullableWithAggregatesFilter<"TravelGeocodeCache"> | number | null
+    lon?: FloatNullableWithAggregatesFilter<"TravelGeocodeCache"> | number | null
+    missed?: BoolWithAggregatesFilter<"TravelGeocodeCache"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"TravelGeocodeCache"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TravelGeocodeCache"> | Date | string
+  }
+
+  export type TravelRouteCacheWhereInput = {
+    AND?: TravelRouteCacheWhereInput | TravelRouteCacheWhereInput[]
+    OR?: TravelRouteCacheWhereInput[]
+    NOT?: TravelRouteCacheWhereInput | TravelRouteCacheWhereInput[]
+    id?: StringFilter<"TravelRouteCache"> | string
+    cacheKey?: StringFilter<"TravelRouteCache"> | string
+    fromAddress?: StringFilter<"TravelRouteCache"> | string
+    toAddress?: StringFilter<"TravelRouteCache"> | string
+    kilometers?: FloatFilter<"TravelRouteCache"> | number
+    durationHours?: FloatFilter<"TravelRouteCache"> | number
+    createdAt?: DateTimeFilter<"TravelRouteCache"> | Date | string
+    updatedAt?: DateTimeFilter<"TravelRouteCache"> | Date | string
+  }
+
+  export type TravelRouteCacheOrderByWithRelationInput = {
+    id?: SortOrder
+    cacheKey?: SortOrder
+    fromAddress?: SortOrder
+    toAddress?: SortOrder
+    kilometers?: SortOrder
+    durationHours?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelRouteCacheWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    cacheKey?: string
+    AND?: TravelRouteCacheWhereInput | TravelRouteCacheWhereInput[]
+    OR?: TravelRouteCacheWhereInput[]
+    NOT?: TravelRouteCacheWhereInput | TravelRouteCacheWhereInput[]
+    fromAddress?: StringFilter<"TravelRouteCache"> | string
+    toAddress?: StringFilter<"TravelRouteCache"> | string
+    kilometers?: FloatFilter<"TravelRouteCache"> | number
+    durationHours?: FloatFilter<"TravelRouteCache"> | number
+    createdAt?: DateTimeFilter<"TravelRouteCache"> | Date | string
+    updatedAt?: DateTimeFilter<"TravelRouteCache"> | Date | string
+  }, "id" | "cacheKey">
+
+  export type TravelRouteCacheOrderByWithAggregationInput = {
+    id?: SortOrder
+    cacheKey?: SortOrder
+    fromAddress?: SortOrder
+    toAddress?: SortOrder
+    kilometers?: SortOrder
+    durationHours?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TravelRouteCacheCountOrderByAggregateInput
+    _avg?: TravelRouteCacheAvgOrderByAggregateInput
+    _max?: TravelRouteCacheMaxOrderByAggregateInput
+    _min?: TravelRouteCacheMinOrderByAggregateInput
+    _sum?: TravelRouteCacheSumOrderByAggregateInput
+  }
+
+  export type TravelRouteCacheScalarWhereWithAggregatesInput = {
+    AND?: TravelRouteCacheScalarWhereWithAggregatesInput | TravelRouteCacheScalarWhereWithAggregatesInput[]
+    OR?: TravelRouteCacheScalarWhereWithAggregatesInput[]
+    NOT?: TravelRouteCacheScalarWhereWithAggregatesInput | TravelRouteCacheScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TravelRouteCache"> | string
+    cacheKey?: StringWithAggregatesFilter<"TravelRouteCache"> | string
+    fromAddress?: StringWithAggregatesFilter<"TravelRouteCache"> | string
+    toAddress?: StringWithAggregatesFilter<"TravelRouteCache"> | string
+    kilometers?: FloatWithAggregatesFilter<"TravelRouteCache"> | number
+    durationHours?: FloatWithAggregatesFilter<"TravelRouteCache"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"TravelRouteCache"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TravelRouteCache"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -30987,6 +33656,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -31003,6 +33673,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
   }
 
   export type UserUpdateInput = {
@@ -31019,6 +33690,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -31035,6 +33707,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -31328,6 +34001,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
@@ -31346,6 +34020,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     customerId: string
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
@@ -31364,6 +34039,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31382,6 +34058,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -31400,6 +34077,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     customerId: string
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
@@ -31415,6 +34093,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31429,6 +34108,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -31448,12 +34128,14 @@ export namespace Prisma {
     createdAt?: Date | string
     project: ProjectCreateNestedOneWithoutUrenInput
     user: UserCreateNestedOneWithoutProjectUrenInput
+    bookedBy?: UserCreateNestedOneWithoutProjectUrenGeboektInput
   }
 
   export type ProjectUurUncheckedCreateInput = {
     id?: string
     projectId: string
     userId: string
+    bookedByUserId?: string | null
     datum: Date | string
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
@@ -31470,12 +34152,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
     user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
+    bookedBy?: UserUpdateOneWithoutProjectUrenGeboektNestedInput
   }
 
   export type ProjectUurUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    bookedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     datum?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31487,6 +34171,7 @@ export namespace Prisma {
     id?: string
     projectId: string
     userId: string
+    bookedByUserId?: string | null
     datum: Date | string
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
@@ -31507,6 +34192,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    bookedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     datum?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31595,6 +34281,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -31637,6 +34326,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -31675,6 +34367,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31717,6 +34412,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31757,6 +34455,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -31786,6 +34487,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31815,6 +34519,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32868,6 +35575,153 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type TravelGeocodeCacheCreateInput = {
+    id?: string
+    queryKey: string
+    lat?: number | null
+    lon?: number | null
+    missed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TravelGeocodeCacheUncheckedCreateInput = {
+    id?: string
+    queryKey: string
+    lat?: number | null
+    lon?: number | null
+    missed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TravelGeocodeCacheUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    queryKey?: StringFieldUpdateOperationsInput | string
+    lat?: NullableFloatFieldUpdateOperationsInput | number | null
+    lon?: NullableFloatFieldUpdateOperationsInput | number | null
+    missed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TravelGeocodeCacheUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    queryKey?: StringFieldUpdateOperationsInput | string
+    lat?: NullableFloatFieldUpdateOperationsInput | number | null
+    lon?: NullableFloatFieldUpdateOperationsInput | number | null
+    missed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TravelGeocodeCacheCreateManyInput = {
+    id?: string
+    queryKey: string
+    lat?: number | null
+    lon?: number | null
+    missed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TravelGeocodeCacheUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    queryKey?: StringFieldUpdateOperationsInput | string
+    lat?: NullableFloatFieldUpdateOperationsInput | number | null
+    lon?: NullableFloatFieldUpdateOperationsInput | number | null
+    missed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TravelGeocodeCacheUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    queryKey?: StringFieldUpdateOperationsInput | string
+    lat?: NullableFloatFieldUpdateOperationsInput | number | null
+    lon?: NullableFloatFieldUpdateOperationsInput | number | null
+    missed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TravelRouteCacheCreateInput = {
+    id?: string
+    cacheKey: string
+    fromAddress: string
+    toAddress: string
+    kilometers: number
+    durationHours: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TravelRouteCacheUncheckedCreateInput = {
+    id?: string
+    cacheKey: string
+    fromAddress: string
+    toAddress: string
+    kilometers: number
+    durationHours: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TravelRouteCacheUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cacheKey?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toAddress?: StringFieldUpdateOperationsInput | string
+    kilometers?: FloatFieldUpdateOperationsInput | number
+    durationHours?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TravelRouteCacheUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cacheKey?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toAddress?: StringFieldUpdateOperationsInput | string
+    kilometers?: FloatFieldUpdateOperationsInput | number
+    durationHours?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TravelRouteCacheCreateManyInput = {
+    id?: string
+    cacheKey: string
+    fromAddress: string
+    toAddress: string
+    kilometers: number
+    durationHours: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TravelRouteCacheUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cacheKey?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toAddress?: StringFieldUpdateOperationsInput | string
+    kilometers?: FloatFieldUpdateOperationsInput | number
+    durationHours?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TravelRouteCacheUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cacheKey?: StringFieldUpdateOperationsInput | string
+    fromAddress?: StringFieldUpdateOperationsInput | string
+    toAddress?: StringFieldUpdateOperationsInput | string
+    kilometers?: FloatFieldUpdateOperationsInput | number
+    durationHours?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -33266,6 +36120,7 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     location?: SortOrder
+    plaats?: SortOrder
     customerId?: SortOrder
     geoffreerdeUren?: SortOrder
     geoffreerdBedrag?: SortOrder
@@ -33286,6 +36141,7 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     location?: SortOrder
+    plaats?: SortOrder
     customerId?: SortOrder
     geoffreerdeUren?: SortOrder
     geoffreerdBedrag?: SortOrder
@@ -33301,6 +36157,7 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     location?: SortOrder
+    plaats?: SortOrder
     customerId?: SortOrder
     geoffreerdeUren?: SortOrder
     geoffreerdBedrag?: SortOrder
@@ -33364,10 +36221,16 @@ export namespace Prisma {
     isNot?: UserWhereInput
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type ProjectUurCountOrderByAggregateInput = {
     id?: SortOrder
     projectId?: SortOrder
     userId?: SortOrder
+    bookedByUserId?: SortOrder
     datum?: SortOrder
     uren?: SortOrder
     omschrijving?: SortOrder
@@ -33384,6 +36247,7 @@ export namespace Prisma {
     id?: SortOrder
     projectId?: SortOrder
     userId?: SortOrder
+    bookedByUserId?: SortOrder
     datum?: SortOrder
     uren?: SortOrder
     omschrijving?: SortOrder
@@ -33395,6 +36259,7 @@ export namespace Prisma {
     id?: SortOrder
     projectId?: SortOrder
     userId?: SortOrder
+    bookedByUserId?: SortOrder
     datum?: SortOrder
     uren?: SortOrder
     omschrijving?: SortOrder
@@ -33518,11 +36383,6 @@ export namespace Prisma {
     none?: DocumentWhereInput
   }
 
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
-  }
-
   export type AssignmentNullableScalarRelationFilter = {
     is?: AssignmentWhereInput | null
     isNot?: AssignmentWhereInput | null
@@ -33614,6 +36474,9 @@ export namespace Prisma {
     projectId?: SortOrder
     customerId?: SortOrder
     location?: SortOrder
+    straat?: SortOrder
+    huisnummer?: SortOrder
+    postcode?: SortOrder
     city?: SortOrder
     contactPersoon?: SortOrder
     contactEmail?: SortOrder
@@ -33651,6 +36514,9 @@ export namespace Prisma {
     projectId?: SortOrder
     customerId?: SortOrder
     location?: SortOrder
+    straat?: SortOrder
+    huisnummer?: SortOrder
+    postcode?: SortOrder
     city?: SortOrder
     contactPersoon?: SortOrder
     contactEmail?: SortOrder
@@ -33681,6 +36547,9 @@ export namespace Prisma {
     projectId?: SortOrder
     customerId?: SortOrder
     location?: SortOrder
+    straat?: SortOrder
+    huisnummer?: SortOrder
+    postcode?: SortOrder
     city?: SortOrder
     contactPersoon?: SortOrder
     contactEmail?: SortOrder
@@ -34352,6 +37221,89 @@ export namespace Prisma {
     userId?: SortOrder
   }
 
+  export type TravelGeocodeCacheCountOrderByAggregateInput = {
+    id?: SortOrder
+    queryKey?: SortOrder
+    lat?: SortOrder
+    lon?: SortOrder
+    missed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelGeocodeCacheAvgOrderByAggregateInput = {
+    lat?: SortOrder
+    lon?: SortOrder
+  }
+
+  export type TravelGeocodeCacheMaxOrderByAggregateInput = {
+    id?: SortOrder
+    queryKey?: SortOrder
+    lat?: SortOrder
+    lon?: SortOrder
+    missed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelGeocodeCacheMinOrderByAggregateInput = {
+    id?: SortOrder
+    queryKey?: SortOrder
+    lat?: SortOrder
+    lon?: SortOrder
+    missed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelGeocodeCacheSumOrderByAggregateInput = {
+    lat?: SortOrder
+    lon?: SortOrder
+  }
+
+  export type TravelRouteCacheCountOrderByAggregateInput = {
+    id?: SortOrder
+    cacheKey?: SortOrder
+    fromAddress?: SortOrder
+    toAddress?: SortOrder
+    kilometers?: SortOrder
+    durationHours?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelRouteCacheAvgOrderByAggregateInput = {
+    kilometers?: SortOrder
+    durationHours?: SortOrder
+  }
+
+  export type TravelRouteCacheMaxOrderByAggregateInput = {
+    id?: SortOrder
+    cacheKey?: SortOrder
+    fromAddress?: SortOrder
+    toAddress?: SortOrder
+    kilometers?: SortOrder
+    durationHours?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelRouteCacheMinOrderByAggregateInput = {
+    id?: SortOrder
+    cacheKey?: SortOrder
+    fromAddress?: SortOrder
+    toAddress?: SortOrder
+    kilometers?: SortOrder
+    durationHours?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TravelRouteCacheSumOrderByAggregateInput = {
+    kilometers?: SortOrder
+    durationHours?: SortOrder
+  }
+
   export type AssignmentUserCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -34387,6 +37339,13 @@ export namespace Prisma {
     connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
   }
 
+  export type ProjectUurCreateNestedManyWithoutBookedByInput = {
+    create?: XOR<ProjectUurCreateWithoutBookedByInput, ProjectUurUncheckedCreateWithoutBookedByInput> | ProjectUurCreateWithoutBookedByInput[] | ProjectUurUncheckedCreateWithoutBookedByInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutBookedByInput | ProjectUurCreateOrConnectWithoutBookedByInput[]
+    createMany?: ProjectUurCreateManyBookedByInputEnvelope
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+  }
+
   export type AssignmentUserUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -34419,6 +37378,13 @@ export namespace Prisma {
     create?: XOR<ProjectUurCreateWithoutUserInput, ProjectUurUncheckedCreateWithoutUserInput> | ProjectUurCreateWithoutUserInput[] | ProjectUurUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ProjectUurCreateOrConnectWithoutUserInput | ProjectUurCreateOrConnectWithoutUserInput[]
     createMany?: ProjectUurCreateManyUserInputEnvelope
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+  }
+
+  export type ProjectUurUncheckedCreateNestedManyWithoutBookedByInput = {
+    create?: XOR<ProjectUurCreateWithoutBookedByInput, ProjectUurUncheckedCreateWithoutBookedByInput> | ProjectUurCreateWithoutBookedByInput[] | ProjectUurUncheckedCreateWithoutBookedByInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutBookedByInput | ProjectUurCreateOrConnectWithoutBookedByInput[]
+    createMany?: ProjectUurCreateManyBookedByInputEnvelope
     connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
   }
 
@@ -34508,6 +37474,20 @@ export namespace Prisma {
     deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
   }
 
+  export type ProjectUurUpdateManyWithoutBookedByNestedInput = {
+    create?: XOR<ProjectUurCreateWithoutBookedByInput, ProjectUurUncheckedCreateWithoutBookedByInput> | ProjectUurCreateWithoutBookedByInput[] | ProjectUurUncheckedCreateWithoutBookedByInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutBookedByInput | ProjectUurCreateOrConnectWithoutBookedByInput[]
+    upsert?: ProjectUurUpsertWithWhereUniqueWithoutBookedByInput | ProjectUurUpsertWithWhereUniqueWithoutBookedByInput[]
+    createMany?: ProjectUurCreateManyBookedByInputEnvelope
+    set?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    disconnect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    delete?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    update?: ProjectUurUpdateWithWhereUniqueWithoutBookedByInput | ProjectUurUpdateWithWhereUniqueWithoutBookedByInput[]
+    updateMany?: ProjectUurUpdateManyWithWhereWithoutBookedByInput | ProjectUurUpdateManyWithWhereWithoutBookedByInput[]
+    deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+  }
+
   export type AssignmentUserUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -34575,6 +37555,20 @@ export namespace Prisma {
     connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
     update?: ProjectUurUpdateWithWhereUniqueWithoutUserInput | ProjectUurUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ProjectUurUpdateManyWithWhereWithoutUserInput | ProjectUurUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+  }
+
+  export type ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput = {
+    create?: XOR<ProjectUurCreateWithoutBookedByInput, ProjectUurUncheckedCreateWithoutBookedByInput> | ProjectUurCreateWithoutBookedByInput[] | ProjectUurUncheckedCreateWithoutBookedByInput[]
+    connectOrCreate?: ProjectUurCreateOrConnectWithoutBookedByInput | ProjectUurCreateOrConnectWithoutBookedByInput[]
+    upsert?: ProjectUurUpsertWithWhereUniqueWithoutBookedByInput | ProjectUurUpsertWithWhereUniqueWithoutBookedByInput[]
+    createMany?: ProjectUurCreateManyBookedByInputEnvelope
+    set?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    disconnect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    delete?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+    update?: ProjectUurUpdateWithWhereUniqueWithoutBookedByInput | ProjectUurUpdateWithWhereUniqueWithoutBookedByInput[]
+    updateMany?: ProjectUurUpdateManyWithWhereWithoutBookedByInput | ProjectUurUpdateManyWithWhereWithoutBookedByInput[]
     deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
   }
 
@@ -34920,6 +37914,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutProjectUrenGeboektInput = {
+    create?: XOR<UserCreateWithoutProjectUrenGeboektInput, UserUncheckedCreateWithoutProjectUrenGeboektInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProjectUrenGeboektInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type DecimalFieldUpdateOperationsInput = {
     set?: Decimal | DecimalJsLike | number | string
     increment?: Decimal | DecimalJsLike | number | string
@@ -34950,6 +37950,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutProjectUrenInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProjectUrenInput, UserUpdateWithoutProjectUrenInput>, UserUncheckedUpdateWithoutProjectUrenInput>
+  }
+
+  export type UserUpdateOneWithoutProjectUrenGeboektNestedInput = {
+    create?: XOR<UserCreateWithoutProjectUrenGeboektInput, UserUncheckedCreateWithoutProjectUrenGeboektInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProjectUrenGeboektInput
+    upsert?: UserUpsertWithoutProjectUrenGeboektInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProjectUrenGeboektInput, UserUpdateWithoutProjectUrenGeboektInput>, UserUncheckedUpdateWithoutProjectUrenGeboektInput>
   }
 
   export type ProjectCreateNestedOneWithoutMaterialenInput = {
@@ -36179,6 +39189,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -36220,6 +39233,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -36320,11 +39336,13 @@ export namespace Prisma {
     kilometers?: number | null
     createdAt?: Date | string
     project: ProjectCreateNestedOneWithoutUrenInput
+    bookedBy?: UserCreateNestedOneWithoutProjectUrenGeboektInput
   }
 
   export type ProjectUurUncheckedCreateWithoutUserInput = {
     id?: string
     projectId: string
+    bookedByUserId?: string | null
     datum: Date | string
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
@@ -36339,6 +39357,38 @@ export namespace Prisma {
 
   export type ProjectUurCreateManyUserInputEnvelope = {
     data: ProjectUurCreateManyUserInput | ProjectUurCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProjectUurCreateWithoutBookedByInput = {
+    id?: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutUrenInput
+    user: UserCreateNestedOneWithoutProjectUrenInput
+  }
+
+  export type ProjectUurUncheckedCreateWithoutBookedByInput = {
+    id?: string
+    projectId: string
+    userId: string
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectUurCreateOrConnectWithoutBookedByInput = {
+    where: ProjectUurWhereUniqueInput
+    create: XOR<ProjectUurCreateWithoutBookedByInput, ProjectUurUncheckedCreateWithoutBookedByInput>
+  }
+
+  export type ProjectUurCreateManyBookedByInputEnvelope = {
+    data: ProjectUurCreateManyBookedByInput | ProjectUurCreateManyBookedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -36394,6 +39444,9 @@ export namespace Prisma {
     projectId?: StringNullableFilter<"Workorder"> | string | null
     customerId?: StringNullableFilter<"Workorder"> | string | null
     location?: StringNullableFilter<"Workorder"> | string | null
+    straat?: StringNullableFilter<"Workorder"> | string | null
+    huisnummer?: StringNullableFilter<"Workorder"> | string | null
+    postcode?: StringNullableFilter<"Workorder"> | string | null
     city?: StringNullableFilter<"Workorder"> | string | null
     contactPersoon?: StringNullableFilter<"Workorder"> | string | null
     contactEmail?: StringNullableFilter<"Workorder"> | string | null
@@ -36496,11 +39549,28 @@ export namespace Prisma {
     id?: StringFilter<"ProjectUur"> | string
     projectId?: StringFilter<"ProjectUur"> | string
     userId?: StringFilter<"ProjectUur"> | string
+    bookedByUserId?: StringNullableFilter<"ProjectUur"> | string | null
     datum?: DateTimeFilter<"ProjectUur"> | Date | string
     uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
     kilometers?: FloatNullableFilter<"ProjectUur"> | number | null
     createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
+  }
+
+  export type ProjectUurUpsertWithWhereUniqueWithoutBookedByInput = {
+    where: ProjectUurWhereUniqueInput
+    update: XOR<ProjectUurUpdateWithoutBookedByInput, ProjectUurUncheckedUpdateWithoutBookedByInput>
+    create: XOR<ProjectUurCreateWithoutBookedByInput, ProjectUurUncheckedCreateWithoutBookedByInput>
+  }
+
+  export type ProjectUurUpdateWithWhereUniqueWithoutBookedByInput = {
+    where: ProjectUurWhereUniqueInput
+    data: XOR<ProjectUurUpdateWithoutBookedByInput, ProjectUurUncheckedUpdateWithoutBookedByInput>
+  }
+
+  export type ProjectUurUpdateManyWithWhereWithoutBookedByInput = {
+    where: ProjectUurScalarWhereInput
+    data: XOR<ProjectUurUpdateManyMutationInput, ProjectUurUncheckedUpdateManyWithoutBookedByInput>
   }
 
   export type AssignmentCreateWithoutCustomerInput = {
@@ -36552,6 +39622,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
@@ -36569,6 +39640,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
@@ -36596,6 +39668,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -36636,6 +39711,9 @@ export namespace Prisma {
     status?: string
     projectId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -36787,6 +39865,7 @@ export namespace Prisma {
     number?: StringFilter<"Project"> | string
     name?: StringFilter<"Project"> | string
     location?: StringNullableFilter<"Project"> | string | null
+    plaats?: StringNullableFilter<"Project"> | string | null
     customerId?: StringFilter<"Project"> | string
     geoffreerdeUren?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
@@ -36975,6 +40054,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -37015,6 +40097,9 @@ export namespace Prisma {
     status?: string
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -37066,11 +40151,13 @@ export namespace Prisma {
     kilometers?: number | null
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutProjectUrenInput
+    bookedBy?: UserCreateNestedOneWithoutProjectUrenGeboektInput
   }
 
   export type ProjectUurUncheckedCreateWithoutProjectInput = {
     id?: string
     userId: string
+    bookedByUserId?: string | null
     datum: Date | string
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
@@ -37228,6 +40315,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
@@ -37245,6 +40333,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     customerId: string
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
@@ -37275,6 +40364,7 @@ export namespace Prisma {
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
   }
 
   export type UserUncheckedCreateWithoutProjectUrenInput = {
@@ -37290,11 +40380,49 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
   }
 
   export type UserCreateOrConnectWithoutProjectUrenInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutProjectUrenInput, UserUncheckedCreateWithoutProjectUrenInput>
+  }
+
+  export type UserCreateWithoutProjectUrenGeboektInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutProjectUrenGeboektInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutProjectUrenGeboektInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutProjectUrenGeboektInput, UserUncheckedCreateWithoutProjectUrenGeboektInput>
   }
 
   export type ProjectUpsertWithoutUrenInput = {
@@ -37313,6 +40441,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37330,6 +40459,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -37366,6 +40496,7 @@ export namespace Prisma {
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectUrenInput = {
@@ -37381,6 +40512,50 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+  }
+
+  export type UserUpsertWithoutProjectUrenGeboektInput = {
+    update: XOR<UserUpdateWithoutProjectUrenGeboektInput, UserUncheckedUpdateWithoutProjectUrenGeboektInput>
+    create: XOR<UserCreateWithoutProjectUrenGeboektInput, UserUncheckedCreateWithoutProjectUrenGeboektInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutProjectUrenGeboektInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutProjectUrenGeboektInput, UserUncheckedUpdateWithoutProjectUrenGeboektInput>
+  }
+
+  export type UserUpdateWithoutProjectUrenGeboektInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutProjectUrenGeboektInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProjectCreateWithoutMaterialenInput = {
@@ -37388,6 +40563,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
@@ -37405,6 +40581,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     customerId: string
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
@@ -37438,6 +40615,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37455,6 +40633,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -37506,6 +40685,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
   }
 
   export type UserUncheckedCreateWithoutWorkordersInput = {
@@ -37521,6 +40701,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
   }
 
   export type UserCreateOrConnectWithoutWorkordersInput = {
@@ -37572,6 +40753,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
@@ -37589,6 +40771,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     customerId: string
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
@@ -37908,6 +41091,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWorkordersInput = {
@@ -37923,6 +41107,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
   }
 
   export type AssignmentUpsertWithoutWorkordersInput = {
@@ -37986,6 +41171,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38003,6 +41189,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -38281,6 +41468,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38322,6 +41512,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38375,6 +41568,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38416,6 +41612,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38453,6 +41652,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38494,6 +41696,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38547,6 +41752,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38588,6 +41796,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38625,6 +41836,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38666,6 +41880,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38719,6 +41936,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38760,6 +41980,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38797,6 +42020,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38838,6 +42064,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -38891,6 +42120,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38932,6 +42164,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38969,6 +42204,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39010,6 +42248,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39063,6 +42304,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39104,6 +42348,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39141,6 +42388,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39182,6 +42432,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39235,6 +42488,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39276,6 +42532,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39313,6 +42572,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39354,6 +42616,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39407,6 +42672,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39448,6 +42716,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39527,6 +42798,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39568,6 +42842,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39644,6 +42921,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39685,6 +42965,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39836,6 +43119,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -39877,6 +43163,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -40074,6 +43363,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignmentsInput = {
@@ -40089,6 +43379,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignmentsInput = {
@@ -40165,6 +43456,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignmentsInput = {
@@ -40180,6 +43472,7 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
   }
 
   export type AssignmentCreateWithoutInvoicesInput = {
@@ -40279,6 +43572,7 @@ export namespace Prisma {
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
   }
 
   export type UserUncheckedCreateWithoutFormsInput = {
@@ -40294,6 +43588,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
   }
 
   export type UserCreateOrConnectWithoutFormsInput = {
@@ -40325,6 +43620,7 @@ export namespace Prisma {
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFormsInput = {
@@ -40340,6 +43636,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
   }
 
   export type WorkorderCreateWithoutExtraEngineersInput = {
@@ -40347,6 +43644,9 @@ export namespace Prisma {
     title: string
     status?: string
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -40388,6 +43688,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -40438,6 +43741,7 @@ export namespace Prisma {
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
   }
 
   export type UserUncheckedCreateWithoutExtraWorkordersInput = {
@@ -40453,6 +43757,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
   }
 
   export type UserCreateOrConnectWithoutExtraWorkordersInput = {
@@ -40476,6 +43781,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40517,6 +43825,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40573,6 +43884,7 @@ export namespace Prisma {
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExtraWorkordersInput = {
@@ -40588,6 +43900,7 @@ export namespace Prisma {
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
   }
 
   export type AssignmentUserCreateManyUserInput = {
@@ -40603,6 +43916,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -40644,6 +43960,18 @@ export namespace Prisma {
   export type ProjectUurCreateManyUserInput = {
     id?: string
     projectId: string
+    bookedByUserId?: string | null
+    datum: Date | string
+    uren: Decimal | DecimalJsLike | number | string
+    omschrijving?: string | null
+    kilometers?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ProjectUurCreateManyBookedByInput = {
+    id?: string
+    projectId: string
+    userId: string
     datum: Date | string
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
@@ -40674,6 +44002,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40715,6 +44046,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40754,6 +44088,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40830,11 +44167,13 @@ export namespace Prisma {
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
+    bookedBy?: UserUpdateOneWithoutProjectUrenGeboektNestedInput
   }
 
   export type ProjectUurUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
+    bookedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     datum?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40845,6 +44184,40 @@ export namespace Prisma {
   export type ProjectUurUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     projectId?: StringFieldUpdateOperationsInput | string
+    bookedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUurUpdateWithoutBookedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
+    user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
+  }
+
+  export type ProjectUurUncheckedUpdateWithoutBookedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    datum?: DateTimeFieldUpdateOperationsInput | Date | string
+    uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
+    kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUurUncheckedUpdateManyWithoutBookedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     datum?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40871,6 +44244,7 @@ export namespace Prisma {
     number: string
     name: string
     location?: string | null
+    plaats?: string | null
     geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
@@ -40886,6 +44260,9 @@ export namespace Prisma {
     status?: string
     projectId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -40983,6 +44360,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41000,6 +44378,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41017,6 +44396,7 @@ export namespace Prisma {
     number?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
     geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41031,6 +44411,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41071,6 +44454,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41110,6 +44496,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41200,6 +44589,9 @@ export namespace Prisma {
     status?: string
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -41227,6 +44619,7 @@ export namespace Prisma {
   export type ProjectUurCreateManyProjectInput = {
     id?: string
     userId: string
+    bookedByUserId?: string | null
     datum: Date | string
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
@@ -41249,6 +44642,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41289,6 +44685,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41328,6 +44727,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41360,11 +44762,13 @@ export namespace Prisma {
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
+    bookedBy?: UserUpdateOneWithoutProjectUrenGeboektNestedInput
   }
 
   export type ProjectUurUncheckedUpdateWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    bookedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     datum?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41375,6 +44779,7 @@ export namespace Prisma {
   export type ProjectUurUncheckedUpdateManyWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    bookedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     datum?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41745,6 +45150,9 @@ export namespace Prisma {
     projectId?: string | null
     customerId?: string | null
     location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
     city?: string | null
     contactPersoon?: string | null
     contactEmail?: string | null
@@ -41815,6 +45223,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41856,6 +45267,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41895,6 +45309,9 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null

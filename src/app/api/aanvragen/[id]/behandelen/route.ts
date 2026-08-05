@@ -194,7 +194,17 @@ export async function POST(
                     customerId:
                         aanvraag.customerId,
                     location:
-                        adres || null,
+                        [aanvraag.straat, aanvraag.huisnummer]
+                            .filter(Boolean)
+                            .join(" ")
+                            .trim()
+                        || null,
+                    straat:
+                        (aanvraag.straat || null),
+                    huisnummer:
+                        (aanvraag.huisnummer || null),
+                    postcode:
+                        (aanvraag.postcode || null),
                     city:
                         (aanvraag.plaats || null),
                     contactPersoon:

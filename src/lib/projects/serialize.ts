@@ -1,7 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { decimalToNumber } from "@/lib/projects/budget";
 
-export async function projectSummaries(where: object = {}) {
+export async function projectSummaries(
+    where: object = {},
+    options: { forEngineer?: boolean } = {}
+) {
     const projects = await prisma.project.findMany({
         where,
         include: {
@@ -39,11 +42,37 @@ export async function projectSummaries(where: object = {}) {
             0
         );
 
+        if (options.forEngineer) {
+            return {
+                id: p.id,
+                number: p.number,
+                name: p.name,
+                location: p.location,
+                plaats: p.plaats,
+                status: p.status,
+                customer: {
+                    id: p.customer.id,
+                    name: p.customer.name,
+                    color: p.customer.color,
+                },
+                geoffreerdeUren: 0,
+                geoffreerdBedrag: 0,
+                offerteUrl: null,
+                offerteFilename: null,
+                createdAt: p.createdAt,
+                gebruikteUren,
+                materiaalKosten: 0,
+                workorderCount: p._count.workorders,
+                urenRegelCount: p._count.uren,
+            };
+        }
+
         return {
             id: p.id,
             number: p.number,
             name: p.name,
             location: p.location,
+            plaats: p.plaats,
             status: p.status,
             customer: p.customer,
             geoffreerdeUren: decimalToNumber(p.geoffreerdeUren),
@@ -60,7 +89,8 @@ export async function projectSummaries(where: object = {}) {
 }
 
 export function serializeProjectDetail(
-    project: Awaited<ReturnType<typeof loadProjectDetail>>
+    project: Awaited<ReturnType<typeof loadProjectDetail>>,
+    options: { forEngineer?: boolean } = {}
 ) {
     if (!project) {
         return null;
@@ -76,11 +106,49 @@ export function serializeProjectDetail(
         0
     );
 
+    const uren = project.uren.map((row) => ({
+        id: row.id,
+        datum: row.datum,
+        uren: decimalToNumber(row.uren),
+        omschrijving: row.omschrijving,
+        kilometers: row.kilometers,
+        createdAt: row.createdAt,
+        user: row.user,
+        bookedBy: row.bookedBy,
+    }));
+
+    if (options.forEngineer) {
+        return {
+            id: project.id,
+            number: project.number,
+            name: project.name,
+            location: project.location,
+            plaats: project.plaats,
+            status: project.status,
+            customerId: project.customerId,
+            customer: {
+                id: project.customer.id,
+                name: project.customer.name,
+            },
+            geoffreerdeUren: 0,
+            geoffreerdBedrag: 0,
+            offerteUrl: null,
+            offerteFilename: null,
+            createdAt: project.createdAt,
+            gebruikteUren,
+            materiaalKosten: 0,
+            uren,
+            materialen: [],
+            workorders: [],
+        };
+    }
+
     return {
         id: project.id,
         number: project.number,
         name: project.name,
         location: project.location,
+        plaats: project.plaats,
         status: project.status,
         customerId: project.customerId,
         customer: project.customer,
@@ -91,15 +159,7 @@ export function serializeProjectDetail(
         createdAt: project.createdAt,
         gebruikteUren,
         materiaalKosten,
-        uren: project.uren.map((row) => ({
-            id: row.id,
-            datum: row.datum,
-            uren: decimalToNumber(row.uren),
-            omschrijving: row.omschrijving,
-            kilometers: row.kilometers,
-            createdAt: row.createdAt,
-            user: row.user,
-        })),
+        uren,
         materialen: project.materialen.map((row) => ({
             id: row.id,
             omschrijving: row.omschrijving,
@@ -127,6 +187,13 @@ export async function loadProjectDetail(id: string) {
                 orderBy: [{ datum: "desc" }, { createdAt: "desc" }],
                 include: {
                     user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                    bookedBy: {
                         select: {
                             id: true,
                             name: true,

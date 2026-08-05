@@ -11,6 +11,7 @@ Deze map geeft de AI (en jou) houvast bij het doorontwikkelen van MDB PMS.
   - `developer.md` — productieklare full-stack code.
   - `tester.md` — controleren dat het werkt en niets breekt.
 - `architecture/Database.md` — datamodel-overzicht + migratielog.
+- `architecture/Travel-en-projecturen.md` — **km, reisuren, project-uren, rapportages:** spelregels + backlog.
 - `roadmap/Sprint-Projecten.md` — volledige spec van de Projecten-module.
 - `roadmap/Openstaand.md` — kleinere openstaande punten.
 

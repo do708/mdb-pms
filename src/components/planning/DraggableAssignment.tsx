@@ -2,142 +2,59 @@
 
 import Link from "next/link";
 
-
-
 interface Props {
-
-    item:any;
-
-    draggable?:boolean;
-
+    item: any;
+    draggable?: boolean;
 }
 
-
-
 export default function DraggableAssignment({
-
     item,
-
-    draggable = false
-
-}:Props){
-
-
-
+    draggable = false,
+}: Props) {
     // De planning-API levert werkbonnen: de klant hangt onder project.
-    const customer =
-        item.customer
-        ??
-        item.project?.customer;
+    const customer = item.customer ?? item.project?.customer;
 
-
-
-    function handleDragStart(
-        event:React.DragEvent
-    ){
-
-        event.dataTransfer.setData(
-            "workorderId",
-            item.id
-        );
-
+    function handleDragStart(event: React.DragEvent) {
+        event.dataTransfer.setData("workorderId", item.id);
     }
 
-
+    const engineers = [
+        item.assignedUser?.name,
+        ...(Array.isArray(item.extraEngineers)
+            ? item.extraEngineers.map((e: any) => e.user?.name)
+            : []),
+    ]
+        .filter(Boolean)
+        .join(", ");
 
     return (
-
         <div
-
             draggable={draggable}
-
-            onDragStart={
-                draggable
-                ?
-                handleDragStart
-                :
-                undefined
-            }
-
+            onDragStart={draggable ? handleDragStart : undefined}
             className={`
-                text-white
-                rounded-md
-                px-1.5
-                py-1
-                mb-1
-                leading-tight
-                ${
-                    draggable
-                    ?
-                    "cursor-move"
-                    :
-                    ""
-                }
+                text-white rounded-lg px-1.5 py-1 leading-tight
+                shadow-sm ring-1 ring-black/10
+                ${draggable ? "cursor-move" : ""}
             `}
-
             style={{
-                backgroundColor:
-                    customer?.color ?? "#2563eb"
+                backgroundColor: customer?.color ?? "#0066FF",
             }}
-
         >
-
-
             <Link
-
                 href={`/workorders/${item.id}`}
-
-                className="
-                    block
-                "
-
+                className="block"
                 draggable={false}
-
             >
-
-
                 <span className="text-[11px] font-bold block truncate">
-
-                    👷 {
-                        [
-                            item.assignedUser?.name,
-                            ...(
-                                Array.isArray(item.extraEngineers)
-                                ?
-                                item.extraEngineers.map(
-                                    (e:any)=>e.user?.name
-                                )
-                                :
-                                []
-                            )
-                        ]
-                        .filter(Boolean)
-                        .join(", ")
-                        || "Geen monteur"
-                    }
-
+                    {engineers || "Geen monteur"}
                 </span>
-
-
-                <span className="text-[11px] block truncate">
-
-                    🏢 {customer?.name ?? "Onbekende klant"}
-
+                <span className="text-[11px] block truncate opacity-95">
+                    {customer?.name ?? "Onbekende klant"}
                 </span>
-
-
                 <span className="text-[10px] block truncate opacity-90">
-
                     {item.title}
-
                 </span>
-
-
             </Link>
-
-
         </div>
-
     );
-
 }

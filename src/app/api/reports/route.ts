@@ -109,9 +109,19 @@ export async function GET(){
 
                     location:true,
 
+                    straat:true,
+
+                    huisnummer:true,
+
+                    postcode:true,
+
                     city:true,
 
                     formData:true,
+
+                    plannedRoundTripKm:true,
+
+                    plannedReisuren:true,
 
                     assignedUser:{
                         select:{
@@ -155,6 +165,8 @@ export async function GET(){
 
                     uren:true,
 
+                    kilometers:true,
+
                     user:{
                         select:{
                             id:true,
@@ -165,6 +177,7 @@ export async function GET(){
                     project:{
                         select:{
                             location:true,
+                            plaats:true,
                             customer:{
                                 select:{
                                     id:true,
@@ -182,16 +195,20 @@ export async function GET(){
 
 
 
+        type DayItem = {
+            formKilometers:number;
+            formReisuren:number;
+            storedKilometers:number | null;
+            storedReisuren:number | null;
+            jobAddress:string | null;
+            plannedDate:Date;
+        };
+
         type DayGroup = {
             engineerId:string;
             engineerName:string;
             plannedDate:Date;
-            items:{
-                formKilometers:number;
-                formReisuren:number;
-                jobAddress:string | null;
-                plannedDate:Date;
-            }[];
+            items:DayItem[];
         };
 
         const dayGroups =
@@ -222,13 +239,17 @@ export async function GET(){
                 continue;
             }
 
-            const item = {
+            const item: DayItem = {
                 formKilometers:
                     num(oplever.tarief.kilometers),
                 formReisuren:
                     parseClockHours(
                         oplever.tarief.reisuren
                     ),
+                storedKilometers:
+                    workorder.plannedRoundTripKm,
+                storedReisuren:
+                    workorder.plannedReisuren,
                 jobAddress:
                     jobAddressFromWorkorder(
                         workorder
@@ -265,9 +286,11 @@ export async function GET(){
                     row.datum
                 );
 
-            const item = {
+            const item: DayItem = {
                 formKilometers:0,
                 formReisuren:0,
+                storedKilometers:row.kilometers,
+                storedReisuren:null,
                 jobAddress:
                     projectJobAddress(
                         row.project
@@ -310,7 +333,38 @@ export async function GET(){
                 return dayTravelCache.get(key)!;
             }
 
-            const travel =
+            // Voorkeur: opgeslagen km/reistijd (vastgelegd bij plan/boek)
+            let useStored = true;
+            let storedKm = 0;
+            let storedReis = 0;
+
+            for(const item of group.items){
+                if(item.formKilometers > 0){
+                    storedKm += item.formKilometers;
+                    storedReis += item.formReisuren;
+                    continue;
+                }
+
+                if(item.storedKilometers != null){
+                    storedKm += item.storedKilometers;
+                    storedReis +=
+                        item.storedReisuren ?? 0;
+                    continue;
+                }
+
+                if(item.jobAddress){
+                    useStored = false;
+                    break;
+                }
+            }
+
+            const travel = useStored
+                ?
+                {
+                    kilometers:Math.round(storedKm),
+                    reisuren:storedReis
+                }
+                :
                 await plannedTravelForEngineerDay(
                     group.items
                 );

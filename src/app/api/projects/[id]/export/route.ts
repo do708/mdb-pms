@@ -34,6 +34,12 @@ export async function GET(
                                 email: true,
                             },
                         },
+                        bookedBy: {
+                            select: {
+                                name: true,
+                                email: true,
+                            },
+                        },
                     },
                 },
                 materialen: {

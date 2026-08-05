@@ -16,6 +16,7 @@ export default function NewProjectPage() {
     const [customerId, setCustomerId] = useState("");
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
+    const [plaats, setPlaats] = useState("");
     const [geoffreerdeUren, setGeoffreerdeUren] = useState("");
     const [geoffreerdBedrag, setGeoffreerdBedrag] = useState("");
     const [saving, setSaving] = useState(false);
@@ -37,6 +38,15 @@ export default function NewProjectPage() {
             return;
         }
 
+        if (!location.trim() || !plaats.trim()) {
+            const ok = window.confirm(
+                "Adres en/of plaats ontbreekt. Zonder volledig adres blijven kilometers bij urenboeken leeg. Toch doorgaan?"
+            );
+            if (!ok) {
+                return;
+            }
+        }
+
         setSaving(true);
 
         try {
@@ -49,6 +59,7 @@ export default function NewProjectPage() {
                     name,
                     customerId,
                     location,
+                    plaats,
                     geoffreerdeUren,
                     geoffreerdBedrag,
                     status: "actief",
@@ -80,10 +91,6 @@ export default function NewProjectPage() {
                     ← Terug naar projecten
                 </Link>
                 <h1 className="text-2xl font-bold mt-2">Nieuw project</h1>
-                <p className="text-gray-500">
-                    Bijv. Roza Spier in Laren — kantoor vult budget en offerte
-                    later aan op de projectpagina.
-                </p>
             </header>
 
             <section className="bg-white border rounded-2xl p-6 space-y-4">
@@ -109,19 +116,38 @@ export default function NewProjectPage() {
                 <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Bijv. Roza Spier"
+                    placeholder="Bijv. Rosa Spier"
                     className="w-full border rounded-xl p-3"
                 />
 
-                <label className="block text-sm font-medium text-gray-700">
-                    Locatie
-                </label>
-                <input
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Bijv. Laren"
-                    className="w-full border rounded-xl p-3"
-                />
+                <div className="grid sm:grid-cols-[1.4fr_1fr] gap-3">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Adres
+                        </label>
+                        <input
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            placeholder="Bijv. Brink 12"
+                            className="w-full border rounded-xl p-3"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Plaats
+                        </label>
+                        <input
+                            value={plaats}
+                            onChange={(e) => setPlaats(e.target.value)}
+                            placeholder="Bijv. Laren"
+                            className="w-full border rounded-xl p-3"
+                        />
+                    </div>
+                </div>
+                <p className="text-xs text-gray-500 -mt-2">
+                    Zonder adres en plaats kunnen kilometers niet
+                    betrouwbaar worden berekend bij uren boeken.
+                </p>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                     <div>

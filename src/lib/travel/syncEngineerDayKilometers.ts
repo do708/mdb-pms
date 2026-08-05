@@ -114,6 +114,9 @@ export async function syncEngineerDayKilometers(
                     id:true,
                     plannedDate:true,
                     location:true,
+                    straat:true,
+                    huisnummer:true,
+                    postcode:true,
                     city:true,
                     formData:true,
                     customer:{
@@ -142,6 +145,7 @@ export async function syncEngineerDayKilometers(
                     project:{
                         select:{
                             location:true,
+                            plaats:true,
                             customer:{
                                 select:{
                                     address:true

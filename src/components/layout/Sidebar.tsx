@@ -98,14 +98,6 @@ const menu:MenuItem[] = [
     },
 
     {
-        name:"Documenten",
-        href:"/documents",
-        icon:FileText,
-        title:"Centrale opslag voor handleidingen, certificaten, enz.",
-        roles:["admin","office"]
-    },
-
-    {
         name:"Rapportages",
         href:"/reports",
         icon:BarChart3,
@@ -119,6 +111,14 @@ const menu:MenuItem[] = [
         icon:Archive,
         title:"Historie van afgeronde projecten en oude dossiers",
         roles:["admin","office","engineer"]
+    },
+
+    {
+        name:"Documenten",
+        href:"/documents",
+        icon:FileText,
+        title:"Centrale opslag voor handleidingen, certificaten, enz.",
+        roles:["admin","office"]
     },
 
     {
@@ -366,6 +366,7 @@ export default function Sidebar({
 
 
 
+            {role !== "engineer" ? (
             <div className="
                 border-t
                 border-gray-100
@@ -454,6 +455,7 @@ export default function Sidebar({
 
 
             </div>
+            ) : null}
 
 
 

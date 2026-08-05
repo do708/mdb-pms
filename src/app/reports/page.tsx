@@ -373,10 +373,11 @@ export default function ReportsPage(){
                     text-gray-500
                     mb-3
                 ">
-                    Kilometers: ingevuld op de werkbon, anders
-                    automatisch per dag (kantoor → klussen
-                    op volgorde van planning → kantoor).
-                    Uren/reistijd als klok: 1.15, 1.30, 1.45, 2.
+                    Kilometers hier = werkelijk gereden die dag
+                    (kantoor → alle stops op volgorde → kantoor).
+                    Op project-urenlog telt alleen kantoor ↔
+                    projectlocatie. Uren/reistijd als klok:
+                    1.15, 1.30, 1.45, 2.
                 </p>
 
 

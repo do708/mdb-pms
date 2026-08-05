@@ -73,6 +73,16 @@ interface Conflict {
 
 }
 
+/** nl-NL zet maandnamen vaak in kleine letters; maak eerste letter hoofdletter. */
+function formatNlDate(
+    date: Date,
+    options: Intl.DateTimeFormatOptions
+): string {
+    return date
+        .toLocaleDateString("nl-NL", options)
+        .replace(/(^|[\s–-])([a-zà-ÿ])/g, (_, sep, ch) => sep + ch.toUpperCase());
+}
+
 
 
 
@@ -252,54 +262,135 @@ export default function PlanningPage(){
 
 
     async function updatePlanning(
+        id: string,
+        date: string
+    ) {
+        const response = await fetch(`/api/workorders/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                plannedDate: date,
+            }),
+        });
 
-        id:string,
-
-        date:string
-
-    ){
-
-
-
-        const response =
-            await fetch(
-
-                `/api/workorders/${id}`,
-
-                {
-
-                    method:"PUT",
-
-                    headers:{
-
-                        "Content-Type":"application/json"
-
-                    },
-
-                    body:JSON.stringify({
-
-                        plannedDate:date
-
-                    })
-
-                }
-
-            );
-
-
-        if(!response.ok){
-
-            alert(
-                "Planning bijwerken mislukt"
-            );
-
+        if (!response.ok) {
+            alert("Planning bijwerken mislukt");
         }
 
+        await loadPlanning();
+    }
 
+    /** Weekview: sleep naar andere dag/tijd/monteur; meerdaagse duur blijft behouden. */
+    async function moveWeekPlan(args: {
+        workorderId: string;
+        dateIso: string;
+        hour: number;
+        engineerId: string;
+    }) {
+        const item = items.find((w) => w.id === args.workorderId);
+        if (!item?.plannedDate) {
+            return;
+        }
+
+        function dayIso(d: Date): string {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+        }
+
+        const oldStart = new Date(item.plannedDate);
+        const oldEnd = item.plannedEndDate
+            ? new Date(item.plannedEndDate)
+            : null;
+
+        const hours = Math.floor(args.hour);
+        const minutes = Math.round((args.hour - hours) * 60);
+
+        const startIso = dayIso(oldStart);
+        const endIso = oldEnd ? dayIso(oldEnd) : startIso;
+        const inSpan =
+            args.dateIso >= startIso && args.dateIso <= endIso;
+
+        let newStart: Date;
+        let newEnd: Date | null = null;
+
+        if (inSpan) {
+            // Alleen tijd verschuiven; kalenderdagen blijven gelijk
+            const oldBegin =
+                oldStart.getHours() + oldStart.getMinutes() / 60;
+            const delta = args.hour - oldBegin;
+
+            newStart = new Date(oldStart);
+            newStart.setHours(hours, minutes, 0, 0);
+
+            if (oldEnd) {
+                newEnd = new Date(oldEnd);
+                const endHour =
+                    oldEnd.getHours() +
+                    oldEnd.getMinutes() / 60 +
+                    delta;
+                const eh = Math.floor(endHour);
+                const em = Math.round((endHour - eh) * 60);
+                newEnd.setHours(eh, em, 0, 0);
+            }
+        } else {
+            // Hele klus naar nieuwe startdag; aantal dagen + eindtijd behouden
+            const [y, m, d] = args.dateIso.split("-").map(Number);
+            newStart = new Date(y, m - 1, d, hours, minutes, 0, 0);
+
+            if (oldEnd) {
+                const startDay = new Date(
+                    oldStart.getFullYear(),
+                    oldStart.getMonth(),
+                    oldStart.getDate()
+                );
+                const endDay = new Date(
+                    oldEnd.getFullYear(),
+                    oldEnd.getMonth(),
+                    oldEnd.getDate()
+                );
+                const spanDays = Math.round(
+                    (endDay.getTime() - startDay.getTime()) / 86400000
+                );
+                newEnd = new Date(newStart);
+                newEnd.setDate(newEnd.getDate() + spanDays);
+                newEnd.setHours(
+                    oldEnd.getHours(),
+                    oldEnd.getMinutes(),
+                    0,
+                    0
+                );
+            }
+        }
+
+        const body: Record<string, unknown> = {
+            plannedDate: newStart.toISOString(),
+            assignedUserId: args.engineerId,
+        };
+
+        if (newEnd) {
+            body.plannedEndDate = newEnd.toISOString();
+        }
+
+        const response = await fetch(
+            `/api/workorders/${args.workorderId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            }
+        );
+
+        if (!response.ok) {
+            alert("Verplaatsen mislukt");
+        }
 
         await loadPlanning();
-
-
     }
 
 
@@ -339,28 +430,43 @@ export default function PlanningPage(){
         ">
 
 
-            <header>
+            <header className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">
+                        Planning
+                    </h1>
+                </div>
 
-
-                <h1 className="
-                    text-2xl
-                    font-bold
-                ">
-
-                    Planning
-
-                </h1>
-
-
-                <p className="
-                    text-gray-500
-                ">
-
-                    Wie is waar ingepland
-
-                </p>
-
-
+                <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1">
+                    <button
+                        type="button"
+                        onClick={() => setView("week")}
+                        className={`
+                            px-4 py-2 rounded-lg text-sm font-semibold transition
+                            ${
+                                view === "week"
+                                    ? "bg-[#0066FF] text-white shadow-sm"
+                                    : "text-slate-600 hover:text-slate-900"
+                            }
+                        `}
+                    >
+                        Week
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setView("month")}
+                        className={`
+                            px-4 py-2 rounded-lg text-sm font-semibold transition
+                            ${
+                                view === "month"
+                                    ? "bg-[#0066FF] text-white shadow-sm"
+                                    : "text-slate-600 hover:text-slate-900"
+                            }
+                        `}
+                    >
+                        Maand
+                    </button>
+                </div>
             </header>
 
 
@@ -451,210 +557,86 @@ export default function PlanningPage(){
 
 
 
-            <div className="
-                flex
-                gap-3
-            ">
-
-
-                <button
-
-                    onClick={()=>setView("week")}
-
-                    className={`
-                        px-4
-                        py-2
-                        rounded-xl
-                        ${
-                            view==="week"
-                            ?
-                            "bg-blue-600 text-white"
-                            :
-                            "border"
-                        }
-                    `}
-
-                >
-
-                    Week
-
-                </button>
-
-
-
-
-
-                <button
-
-                    onClick={()=>setView("month")}
-
-                    className={`
-                        px-4
-                        py-2
-                        rounded-xl
-                        ${
-                            view==="month"
-                            ?
-                            "bg-blue-600 text-white"
-                            :
-                            "border"
-                        }
-                    `}
-
-                >
-
-                    Maand
-
-                </button>
-
-
-            </div>
-
-
-
-
-
-
-
-            {
-
-                view==="month"
-
-                ?
-
+            {view === "month" ? (
                 <Calendar
-
                     items={items}
-
                     leave={leave}
-
                     onDropDate={
-                        canEdit
-                        ?
-                        updatePlanning
-                        :
-                        undefined
+                        canEdit ? updatePlanning : undefined
                     }
-
                 />
-
-
-                :
-
-                <div>
-
-                    <div className="
-                        flex
-                        items-center
-                        justify-between
-                        mb-3
-                    ">
-
+            ) : (
+                <div className="space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-sm">
                         <button
-
-                            onClick={()=>shiftWeek(-1)}
-
+                            type="button"
+                            onClick={() => shiftWeek(-1)}
                             className="
-                                border
-                                rounded-xl
-                                px-4
-                                py-2
-                                hover:bg-gray-50
+                                inline-flex items-center gap-1.5
+                                rounded-xl border border-slate-200
+                                px-3.5 py-2 text-sm font-medium text-slate-700
+                                hover:bg-slate-50 transition
                             "
-
                         >
-
-                            ← Vorige week
-
+                            ← Vorige
                         </button>
 
-
-                        <div className="
-                            flex
-                            items-center
-                            gap-2
-                        ">
-
-                            <span className="font-medium">
-
-                                {
-                                    weekStart.toLocaleDateString("nl-NL",{
-                                        day:"numeric",
-                                        month:"long"
-                                    })
-                                }
-
+                        <div className="flex flex-wrap items-center justify-center gap-3">
+                            <span className="text-sm sm:text-base font-semibold text-slate-800 tabular-nums">
+                                {formatNlDate(weekStart, {
+                                    day: "numeric",
+                                    month: "long",
+                                })}
                                 {" – "}
-
-                                {
-                                    (()=>{
-                                        const end = new Date(weekStart);
-                                        end.setDate(end.getDate() + 5);
-                                        return end.toLocaleDateString("nl-NL",{
-                                            day:"numeric",
-                                            month:"long",
-                                            year:"numeric"
-                                        });
-                                    })()
-                                }
-
+                                {(() => {
+                                    const end = new Date(weekStart);
+                                    end.setDate(end.getDate() + 5);
+                                    return formatNlDate(end, {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric",
+                                    });
+                                })()}
                             </span>
-
                             <button
-
+                                type="button"
                                 onClick={thisWeek}
-
                                 className="
-                                    text-sm
-                                    text-blue-600
-                                    underline
+                                    text-sm font-semibold
+                                    text-[#0066FF]
+                                    rounded-lg px-2.5 py-1
+                                    hover:bg-[#e8f0ff] transition
                                 "
-
                             >
-
                                 Vandaag
-
                             </button>
-
                         </div>
 
-
                         <button
-
-                            onClick={()=>shiftWeek(1)}
-
+                            type="button"
+                            onClick={() => shiftWeek(1)}
                             className="
-                                border
-                                rounded-xl
-                                px-4
-                                py-2
-                                hover:bg-gray-50
+                                inline-flex items-center gap-1.5
+                                rounded-xl border border-slate-200
+                                px-3.5 py-2 text-sm font-medium text-slate-700
+                                hover:bg-slate-50 transition
                             "
-
                         >
-
-                            Volgende week →
-
+                            Volgende →
                         </button>
-
                     </div>
 
-
                     <WeekView
-
                         items={items}
-
                         leave={leave}
-
                         engineers={engineers}
-
                         weekStart={weekStart}
-
+                        onMovePlan={
+                            canEdit ? moveWeekPlan : undefined
+                        }
                     />
-
                 </div>
-
-            }
+            )}
 
 
 

@@ -110,6 +110,7 @@ export const authConfig = {
                 const allowed = [
                     "/engineer",
                     "/workorders",
+                    "/projects",
                     "/planning",
                     "/notes",
                     "/forms",

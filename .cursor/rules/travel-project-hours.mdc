@@ -1,0 +1,28 @@
+---
+description: Richtlijnen voor kilometers, reisuren, project-uren en rapportages (MDB PMS)
+alwaysApply: true
+---
+
+# Travel, projecturen & rapportages
+
+Lees bij relevant werk ook `mdb-docs/docs/architecture/Travel-en-projecturen.md`.
+
+## Twee km-betekenissen (niet door elkaar halen)
+
+- **Rapportage / werkelijk gereden:** één dagroute per monteur (alle stops die dag).
+- **Project-urenlog / werkbon-tarief:** alleen km van **die** locatie (zaak ↔ klus/project). Nooit werkbon-km op een project boeken.
+
+## Bouwregels
+
+1. Travel **één keer berekenen en opslaan** bij plan/uren-boek; herbreek alleen bij adres/datum/monteur-wijziging.
+2. Intern uren/reistijd als **minuten of echte decimale uren**; UI/PDF mag kloknotatie `1.30` (= 1u30) tonen.
+3. Voorrijtarief: **Vast** = geen km/reisuren; **KM's + Uren** = wel. Vermijd losse Ja/Nee-semantiek in nieuwe code (`vast` | `km`).
+4. Monteurs: wel uren boeken (ook voor collega’s) + overzicht per monteur; **geen** offerte, geoffreerd budget, materialen.
+5. Bij uren voor collega’s: bijhouden **wie boekte** vs **voor wie** (audit), zodra je dat veld toevoegt.
+6. Locatie/adres nodig voor betrouwbare km; waarschuw of blokkeer plannen/boeken zonder adres waar km verwacht wordt.
+7. Geen herhaalde Nominatim/OSRM-calls zonder cache voor dezelfde adresparen.
+8. Nederlandse UI; korte hulptekst bij km/reistijd op rapportages en project-urenlog.
+
+## MDB Excel-export
+
+Kleuren: blauw `#0066FF`, geel `#FFCC00`, roze `#D6007E`. Geen opdrachtgever-adres/e-mail/telefoon/offerte-bestand in de export-kop.

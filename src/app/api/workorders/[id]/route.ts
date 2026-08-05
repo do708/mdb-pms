@@ -428,6 +428,9 @@ export async function PUT(
             && (
                 body.plannedDate !== undefined
                 || body.location !== undefined
+                || body.straat !== undefined
+                || body.huisnummer !== undefined
+                || body.postcode !== undefined
                 || body.city !== undefined
                 || body.customerId !== undefined
                 || body.assignedUserId !== undefined
@@ -604,10 +607,60 @@ export async function PUT(
                         existingWorkorder.location
                         :
                         body.location !== undefined
+                        || body.straat !== undefined
+                        || body.huisnummer !== undefined
                         ?
-                        (body.location || null)
+                        (
+                            body.location
+                            ||
+                            [body.straat ?? existingWorkorder.straat, body.huisnummer ?? existingWorkorder.huisnummer]
+                                .filter(Boolean)
+                                .join(" ")
+                                .trim()
+                            ||
+                            null
+                        )
                         :
                         existingWorkorder.location,
+
+
+                    straat:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.straat
+                        :
+                        body.straat !== undefined
+                        ?
+                        (body.straat || null)
+                        :
+                        existingWorkorder.straat,
+
+
+                    huisnummer:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.huisnummer
+                        :
+                        body.huisnummer !== undefined
+                        ?
+                        (body.huisnummer || null)
+                        :
+                        existingWorkorder.huisnummer,
+
+
+                    postcode:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.postcode
+                        :
+                        body.postcode !== undefined
+                        ?
+                        (body.postcode || null)
+                        :
+                        existingWorkorder.postcode,
 
 
                     city:

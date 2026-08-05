@@ -87,9 +87,15 @@ function NewWorkorderInner(){
         useState("");
 
 
-    const [location,setLocation] =
+    // Adresvelden gelijk aan Aanvraag Service- en Installatiewerkzaamheden
+    const [straat,setStraat] =
         useState("");
 
+    const [huisnummer,setHuisnummer] =
+        useState("");
+
+    const [postcode,setPostcode] =
+        useState("");
 
     const [city,setCity] =
         useState("");
@@ -350,7 +356,18 @@ function NewWorkorderInner(){
 
                             customerId,
 
-                            location,
+                            straat,
+
+                            huisnummer,
+
+                            postcode,
+
+                            location:
+                                [straat, huisnummer]
+                                    .filter(Boolean)
+                                    .join(" ")
+                                    .trim()
+                                || null,
 
                             city,
 
@@ -662,181 +679,92 @@ function NewWorkorderInner(){
                 }
 
 
-                <label className="block">
+                <div className="space-y-4">
 
-                    <span className="text-sm text-gray-600">
+                    <h2 className="font-semibold text-gray-800 border-b pb-1">
+                        Gegevens locatie &amp; contactpersoon
+                    </h2>
 
-                        Projectnaam:
-
-                    </span>
-
-                    <input
-
-                        value={title}
-
-                        onChange={(e)=>
-                            setTitle(e.target.value)
-                        }
-
-                        placeholder="Bijv. Bedrijfsnaam"
-
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-2
-                        "
-
-                    />
-
-                </label>
-
-
-                <div>
-
-                    <span className="text-sm text-gray-600">
-
-                        Waar? (adres en plaats)
-
-                    </span>
-
-                    <div className="
-                        flex
-                        flex-wrap
-                        gap-3
-                        mt-2
-                    ">
-
+                    <label className="block">
+                        <span className="text-sm text-gray-600">
+                            Locatie / filiaalnaam
+                        </span>
                         <input
-
-                            value={location}
-
-                            onChange={(e)=>
-                                setLocation(e.target.value)
-                            }
-
-                            placeholder="Straat en huisnummer"
-
-                            className="
-                                flex-1
-                                min-w-[200px]
-                                border
-                                rounded-xl
-                                p-3
-                            "
-
+                            value={title}
+                            onChange={(e)=>setTitle(e.target.value)}
+                            placeholder="Bijv. Filiaal Almere Centrum"
+                            className="w-full border rounded-xl p-3 mt-1"
                         />
+                    </label>
 
-                        <input
-
-                            value={city}
-
-                            onChange={(e)=>
-                                setCity(e.target.value)
-                            }
-
-                            placeholder="Plaats"
-
-                            className="
-                                flex-1
-                                min-w-[140px]
-                                border
-                                rounded-xl
-                                p-3
-                            "
-
-                        />
-
+                    <div className="flex flex-wrap gap-3">
+                        <label className="block flex-1 min-w-[180px]">
+                            <span className="text-sm text-gray-600">Straat</span>
+                            <input
+                                value={straat}
+                                onChange={(e)=>setStraat(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
+                            />
+                        </label>
+                        <label className="block w-28">
+                            <span className="text-sm text-gray-600">Huisnr.</span>
+                            <input
+                                value={huisnummer}
+                                onChange={(e)=>setHuisnummer(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
+                            />
+                        </label>
                     </div>
 
-
-                    <div className="mt-4">
-
-                        <span className="text-sm text-gray-600">
-                            Contactpersoon voor de afspraak (optioneel)
-                        </span>
-
-                        <div className="
-                            flex
-                            flex-wrap
-                            gap-3
-                            mt-1
-                        ">
-
+                    <div className="flex flex-wrap gap-3">
+                        <label className="block w-36">
+                            <span className="text-sm text-gray-600">Postcode</span>
                             <input
-
-                                value={contactPersoon}
-
-                                onChange={(e)=>
-                                    setContactPersoon(e.target.value)
-                                }
-
-                                placeholder="Naam contactpersoon"
-
-                                className="
-                                    flex-1
-                                    min-w-[200px]
-                                    border
-                                    rounded-xl
-                                    p-3
-                                "
-
+                                value={postcode}
+                                onChange={(e)=>setPostcode(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
                             />
-
+                        </label>
+                        <label className="block flex-1 min-w-[180px]">
+                            <span className="text-sm text-gray-600">Plaats</span>
                             <input
+                                value={city}
+                                onChange={(e)=>setCity(e.target.value)}
+                                className="w-full border rounded-xl p-3 mt-1"
+                            />
+                        </label>
+                    </div>
 
+                    <label className="block">
+                        <span className="text-sm text-gray-600">Contactpersoon:</span>
+                        <input
+                            value={contactPersoon}
+                            onChange={(e)=>setContactPersoon(e.target.value)}
+                            placeholder="Naam contactpersoon"
+                            className="w-full border rounded-xl p-3 mt-1"
+                        />
+                    </label>
+
+                    <div className="flex flex-wrap gap-3">
+                        <label className="block flex-1 min-w-[180px]">
+                            <span className="text-sm text-gray-600">E-mailadres</span>
+                            <input
                                 type="email"
-
                                 value={contactEmail}
-
-                                onChange={(e)=>
-                                    setContactEmail(e.target.value)
-                                }
-
-                                placeholder="E-mailadres"
-
-                                className="
-                                    flex-1
-                                    min-w-[200px]
-                                    border
-                                    rounded-xl
-                                    p-3
-                                "
-
+                                onChange={(e)=>setContactEmail(e.target.value)}
+                                placeholder="naam@bedrijf.nl"
+                                className="w-full border rounded-xl p-3 mt-1"
                             />
-
+                        </label>
+                        <label className="block flex-1 min-w-[150px]">
+                            <span className="text-sm text-gray-600">Telefoonnummer</span>
                             <input
-
                                 value={contactPhone}
-
-                                onChange={(e)=>
-                                    setContactPhone(e.target.value)
-                                }
-
-                                placeholder="Telefoonnummer"
-
-                                className="
-                                    flex-1
-                                    min-w-[140px]
-                                    border
-                                    rounded-xl
-                                    p-3
-                                "
-
+                                onChange={(e)=>setContactPhone(e.target.value)}
+                                placeholder="06 ..."
+                                className="w-full border rounded-xl p-3 mt-1"
                             />
-
-                        </div>
-
-                        <span className="
-                            block
-                            text-xs
-                            text-gray-500
-                            mt-1
-                        ">
-                            Wordt gebruikt voor de afspraakbevestiging. Mag leeg blijven.
-                        </span>
-
+                        </label>
                     </div>
 
                 </div>

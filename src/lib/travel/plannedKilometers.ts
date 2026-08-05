@@ -4,6 +4,16 @@
  * meerdere klussen op één dag: kantoor → klus1 → klus2 → … → kantoor.
  */
 
+import {
+    getCachedGeocode,
+    getCachedRoute,
+    normalizeAddress,
+    routePairCacheKey,
+    routePathCacheKey,
+    setCachedGeocode,
+    setCachedRoute,
+} from "@/lib/travel/routeCache";
+
 const DEFAULT_OFFICE =
     "Monitorweg 10, 1322 BJ Almere, Nederland";
 
@@ -12,7 +22,12 @@ const NOMINATIM_UA =
 
 type Coords = { lat: number; lon: number };
 
-const geocodeCache = new Map<string, Coords | null>();
+/** In-process cache bovenop DB-cache (sneller binnen één request). */
+const geocodeMemory = new Map<string, Coords | null>();
+const routeMemory = new Map<
+    string,
+    { kilometers: number; reisuren: number } | null
+>();
 
 let lastNominatimAt = 0;
 
@@ -34,20 +49,32 @@ export function getOfficeAddress(): string {
 
 export function jobAddressFromWorkorder(workorder: {
     location: string | null;
+    straat?: string | null;
+    huisnummer?: string | null;
+    postcode?: string | null;
     city: string | null;
     customer?: { address: string | null } | null;
 }): string | null {
-    const street = workorder.location?.trim();
-    const city = workorder.city?.trim();
+    const streetParts = [
+        workorder.straat?.trim(),
+        workorder.huisnummer?.trim(),
+    ].filter(Boolean);
+    const street =
+        streetParts.length > 0
+            ? streetParts.join(" ")
+            : workorder.location?.trim() || "";
+    const postcode = workorder.postcode?.trim() || "";
+    const city = workorder.city?.trim() || "";
 
-    if (street && city) {
-        return `${street}, ${city}, Nederland`;
-    }
-    if (street) {
-        return `${street}, Nederland`;
-    }
-    if (city) {
-        return `${city}, Nederland`;
+    const line = [street, [postcode, city].filter(Boolean).join(" ")]
+        .filter(Boolean)
+        .join(", ");
+
+    if (line) {
+        if (/nederland/i.test(line)) {
+            return line;
+        }
+        return `${line}, Nederland`;
     }
 
     const customerAddr =
@@ -63,14 +90,23 @@ export function jobAddressFromWorkorder(workorder: {
 
 export function projectJobAddress(project: {
     location: string | null;
+    plaats?: string | null;
     customer?: { address: string | null } | null;
 }): string | null {
-    const loc = project.location?.trim();
-    if (loc) {
-        if (/nederland/i.test(loc)) {
-            return loc;
+    const street = project.location?.trim();
+    const plaats = project.plaats?.trim();
+
+    if (street && plaats) {
+        return `${street}, ${plaats}, Nederland`;
+    }
+    if (street) {
+        if (/nederland/i.test(street)) {
+            return street;
         }
-        return `${loc}, Nederland`;
+        return `${street}, Nederland`;
+    }
+    if (plaats) {
+        return `${plaats}, Nederland`;
     }
 
     const customerAddr =
@@ -87,9 +123,24 @@ export function projectJobAddress(project: {
 async function geocodeAddress(
     query: string
 ): Promise<Coords | null> {
-    const key = query.trim().toLowerCase();
-    if (geocodeCache.has(key)) {
-        return geocodeCache.get(key) ?? null;
+    const key = normalizeAddress(query);
+
+    if (geocodeMemory.has(key)) {
+        return geocodeMemory.get(key) ?? null;
+    }
+
+    try {
+        const cached = await getCachedGeocode(query);
+        if (cached === "miss") {
+            geocodeMemory.set(key, null);
+            return null;
+        }
+        if (cached) {
+            geocodeMemory.set(key, cached);
+            return cached;
+        }
+    } catch {
+        // DB-cache optioneel; ga door naar Nominatim
     }
 
     await waitNominatimSlot();
@@ -112,7 +163,8 @@ async function geocodeAddress(
         });
 
         if (!res.ok) {
-            geocodeCache.set(key, null);
+            geocodeMemory.set(key, null);
+            void setCachedGeocode(query, null);
             return null;
         }
 
@@ -122,7 +174,8 @@ async function geocodeAddress(
         }[];
 
         if (!data?.length) {
-            geocodeCache.set(key, null);
+            geocodeMemory.set(key, null);
+            void setCachedGeocode(query, null);
             return null;
         }
 
@@ -135,14 +188,16 @@ async function geocodeAddress(
             Number.isNaN(coords.lat) ||
             Number.isNaN(coords.lon)
         ) {
-            geocodeCache.set(key, null);
+            geocodeMemory.set(key, null);
+            void setCachedGeocode(query, null);
             return null;
         }
 
-        geocodeCache.set(key, coords);
+        geocodeMemory.set(key, coords);
+        void setCachedGeocode(query, coords);
         return coords;
     } catch {
-        geocodeCache.set(key, null);
+        geocodeMemory.set(key, null);
         return null;
     }
 }
@@ -168,14 +223,42 @@ export type OfficeRouteResult = {
 };
 
 async function drivingRouteResult(
-    waypoints: Coords[]
+    waypoints: Coords[],
+    addressLabels?: string[]
 ): Promise<OfficeRouteResult | null> {
-    if(waypoints.length < 2){
+    if (waypoints.length < 2) {
         return null;
     }
 
+    const labels =
+        addressLabels &&
+        addressLabels.length === waypoints.length
+            ? addressLabels
+            : waypoints.map(
+                  (c) => `${c.lat.toFixed(5)},${c.lon.toFixed(5)}`
+              );
+
+    const cacheKey =
+        labels.length === 2
+            ? routePairCacheKey(labels[0], labels[1])
+            : routePathCacheKey(labels);
+
+    if (routeMemory.has(cacheKey)) {
+        return routeMemory.get(cacheKey) ?? null;
+    }
+
+    try {
+        const cached = await getCachedRoute(cacheKey);
+        if (cached) {
+            routeMemory.set(cacheKey, cached);
+            return cached;
+        }
+    } catch {
+        // DB-cache optioneel
+    }
+
     const path = waypoints
-        .map((c)=>`${c.lon},${c.lat}`)
+        .map((c) => `${c.lon},${c.lat}`)
         .join(";");
 
     const url = `https://router.project-osrm.org/route/v1/driving/${path}?overview=false`;
@@ -185,7 +268,7 @@ async function drivingRouteResult(
             signal: AbortSignal.timeout(20000),
         });
 
-        if(!res.ok){
+        if (!res.ok) {
             return null;
         }
 
@@ -197,10 +280,10 @@ async function drivingRouteResult(
             }[];
         };
 
-        if(
+        if (
             data.code !== "Ok" ||
             !data.routes?.[0]?.distance
-        ){
+        ) {
             return null;
         }
 
@@ -208,16 +291,25 @@ async function drivingRouteResult(
         const km = route.distance / 1000;
         const reisuren = route.duration / 3600;
 
-        if(km <= 0 || reisuren <= 0){
+        if (km <= 0 || reisuren <= 0) {
             return null;
         }
 
-        return {
-            kilometers:
-                Math.round(km),
+        const result = {
+            kilometers: Math.round(km),
             reisuren:
                 Math.round((route.duration / 3600) * 4) / 4,
         };
+
+        routeMemory.set(cacheKey, result);
+        void setCachedRoute(
+            cacheKey,
+            labels[0],
+            labels[labels.length - 1],
+            result
+        );
+
+        return result;
     } catch {
         return null;
     }
@@ -231,15 +323,19 @@ export async function officeRouteFromJobs(
         jobAddressesOrdered
     );
 
-    if(jobs.length === 0){
+    if (jobs.length === 0) {
         return null;
     }
 
-    if(jobs.length === 1){
-        const office = getOfficeAddress();
-        const officeCoords = await geocodeAddress(office);
+    const office = getOfficeAddress();
+    const officeCoords = await geocodeAddress(office);
+    if (!officeCoords) {
+        return null;
+    }
+
+    if (jobs.length === 1) {
         const jobCoords = await geocodeAddress(jobs[0]);
-        if(!officeCoords || !jobCoords){
+        if (!jobCoords) {
             return null;
         }
         const waypoints = [
@@ -247,19 +343,14 @@ export async function officeRouteFromJobs(
             jobCoords,
             officeCoords,
         ];
-        return drivingRouteResult(waypoints);
-    }
-
-    const office = getOfficeAddress();
-    const officeCoords = await geocodeAddress(office);
-    if(!officeCoords){
-        return null;
+        const labels = [office, jobs[0], office];
+        return drivingRouteResult(waypoints, labels);
     }
 
     const jobCoords: Coords[] = [];
-    for(const job of jobs){
+    for (const job of jobs) {
         const coords = await geocodeAddress(job);
-        if(!coords){
+        if (!coords) {
             return null;
         }
         jobCoords.push(coords);
@@ -270,8 +361,9 @@ export async function officeRouteFromJobs(
         ...jobCoords,
         officeCoords,
     ];
+    const labels = [office, ...jobs, office];
 
-    return drivingRouteResult(waypoints);
+    return drivingRouteResult(waypoints, labels);
 }
 
 /** Zelfde adres na elkaar samenvoegen (volgorde blijft). */
@@ -320,47 +412,8 @@ export function engineerDayKey(
 export async function dayRouteKmFromOffice(
     jobAddressesOrdered: string[]
 ): Promise<number | null> {
-    const jobs = dedupeJobAddressesOrdered(
-        jobAddressesOrdered
-    );
-
-    if(jobs.length === 0){
-        return null;
-    }
-
-    if(jobs.length === 1){
-        return roundTripKmFromOffice(jobs[0]);
-    }
-
-    const office = getOfficeAddress();
-    const officeCoords = await geocodeAddress(office);
-    if(!officeCoords){
-        return null;
-    }
-
-    const jobCoords: Coords[] = [];
-
-    for(const job of jobs){
-        const coords = await geocodeAddress(job);
-        if(!coords){
-            return null;
-        }
-        jobCoords.push(coords);
-    }
-
-    const waypoints = [
-        officeCoords,
-        ...jobCoords,
-        officeCoords,
-    ];
-
-    const km = await drivingRouteKm(waypoints);
-
-    if(km == null || km <= 0){
-        return null;
-    }
-
-    return Math.round(km);
+    const route = await officeRouteFromJobs(jobAddressesOrdered);
+    return route?.kilometers ?? null;
 }
 
 /** Heen en terug kantoor ↔ klus (hele kilometers). */

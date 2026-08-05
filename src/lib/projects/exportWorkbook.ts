@@ -19,6 +19,7 @@ type ProjectExportInput = {
     number: string;
     name: string;
     location: string | null;
+    plaats?: string | null;
     status: string;
     createdAt: Date;
     geoffreerdeUren: { toString(): string } | number | null;
@@ -31,10 +32,15 @@ type ProjectExportInput = {
         uren: { toString(): string } | number;
         kilometers: number | null;
         omschrijving: string | null;
+        createdAt?: Date;
         user: {
             name: string | null;
             email: string;
         };
+        bookedBy?: {
+            name: string | null;
+            email: string;
+        } | null;
     }[];
     materialen: {
         omschrijving: string;
@@ -55,6 +61,16 @@ function formatDateNl(d: Date): string {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
+    });
+}
+
+function formatDateTimeNl(d: Date): string {
+    return d.toLocaleString("nl-NL", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
     });
 }
 
@@ -172,12 +188,13 @@ export async function buildProjectExportWorkbook(
     });
 
     sheet.columns = [
-        { key: "a", width: 24 },
-        { key: "b", width: 28 },
-        { key: "c", width: 18 },
-        { key: "d", width: 14 },
-        { key: "e", width: 14 },
-        { key: "f", width: 36 },
+        { key: "a", width: 14 },
+        { key: "b", width: 22 },
+        { key: "c", width: 10 },
+        { key: "d", width: 12 },
+        { key: "e", width: 22 },
+        { key: "f", width: 18 },
+        { key: "g", width: 28 },
     ];
 
     const gebruikteUren = project.uren.reduce(
@@ -198,7 +215,7 @@ export async function buildProjectExportWorkbook(
         geoffreerd > 0 ? Math.max(0, geoffreerd - gebruikteUren) : null;
 
     // --- Titel (blauw) + gele accentstreep ---
-    sheet.mergeCells("A1:F1");
+    sheet.mergeCells("A1:G1");
     const title = sheet.getCell("A1");
     title.value = "MDB Networks — Projectrapportage";
     title.font = {
@@ -211,13 +228,13 @@ export async function buildProjectExportWorkbook(
     fill(title, BLUE);
     sheet.getRow(1).height = 38;
 
-    sheet.mergeCells("A2:F2");
+    sheet.mergeCells("A2:G2");
     const accent = sheet.getCell("A2");
     accent.value = "";
     fill(accent, YELLOW);
     sheet.getRow(2).height = 6;
 
-    sheet.mergeCells("A3:F3");
+    sheet.mergeCells("A3:G3");
     const subtitle = sheet.getCell("A3");
     subtitle.value = `${project.number}  ·  ${project.name}  ·  Geëxporteerd ${formatDateNl(new Date())}`;
     subtitle.font = {
@@ -231,7 +248,7 @@ export async function buildProjectExportWorkbook(
     let row = 5;
 
     // --- Projectgegevens ---
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     styleSection(sheet.getCell(`A${row}`), BLUE);
     sheet.getCell(`A${row}`).value = "Projectgegevens";
     sheet.getRow(row).height = 24;
@@ -241,7 +258,12 @@ export async function buildProjectExportWorkbook(
         ["Projectnummer", project.number],
         ["Projectnaam", project.name],
         ["Status", statusLabel(project.status)],
-        ["Locatie", project.location || "—"],
+        [
+            "Locatie",
+            [project.location, project.plaats]
+                .filter(Boolean)
+                .join(", ") || "—",
+        ],
         ["Aangemaakt", formatDateNl(project.createdAt)],
         ["Opdrachtgever", project.customer.name],
     ];
@@ -258,7 +280,7 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     // --- Budget / totalen ---
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     styleSection(sheet.getCell(`A${row}`), PINK);
     sheet.getCell(`A${row}`).value = "Overzicht uren & kosten";
     sheet.getRow(row).height = 24;
@@ -302,7 +324,7 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     // --- Uren per monteur ---
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     styleSection(sheet.getCell(`A${row}`), BLUE);
     sheet.getCell(`A${row}`).value = "Uren per monteur";
     sheet.getRow(row).height = 24;
@@ -365,7 +387,7 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     // --- Urenlog detail ---
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     styleSection(sheet.getCell(`A${row}`), PINK);
     sheet.getCell(`A${row}`).value = "Urenlog";
     sheet.getRow(row).height = 24;
@@ -377,7 +399,8 @@ export async function buildProjectExportWorkbook(
         "Monteur",
         "Uren",
         "Kilometers",
-        "",
+        "Geboekt door",
+        "Geboekt op",
         "Omschrijving",
     ].forEach((v, i) => {
         urenHeader.getCell(i + 1).value = v;
@@ -386,13 +409,16 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     if (project.uren.length === 0) {
-        sheet.mergeCells(`A${row}:F${row}`);
+        sheet.mergeCells(`A${row}:G${row}`);
         sheet.getCell(`A${row}`).value = "Geen urenregels.";
         styleValue(sheet.getCell(`A${row}`));
         row += 1;
     } else {
         alt = false;
         for (const u of project.uren) {
+            const geboektDoor = u.bookedBy
+                ? monteurLabel(u.bookedBy)
+                : monteurLabel(u.user);
             sheet.getCell(`A${row}`).value = formatDateNl(u.datum);
             sheet.getCell(`B${row}`).value = monteurLabel(u.user);
             sheet.getCell(`C${row}`).value = hoursDisplay(
@@ -400,13 +426,16 @@ export async function buildProjectExportWorkbook(
             );
             sheet.getCell(`D${row}`).value =
                 u.kilometers != null ? Math.round(u.kilometers) : "—";
-            sheet.mergeCells(`E${row}:F${row}`);
-            sheet.getCell(`E${row}`).value = u.omschrijving || "—";
-            ["A", "B", "C", "D", "E"].forEach((col) =>
+            sheet.getCell(`E${row}`).value = geboektDoor;
+            sheet.getCell(`F${row}`).value = u.createdAt
+                ? formatDateTimeNl(u.createdAt)
+                : "—";
+            sheet.getCell(`G${row}`).value = u.omschrijving || "—";
+            ["A", "B", "C", "D", "E", "F", "G"].forEach((col) =>
                 styleValue(sheet.getCell(`${col}${row}`))
             );
             if (alt) {
-                styleAltRow(sheet, row, ["A", "B", "C", "D", "E", "F"]);
+                styleAltRow(sheet, row, ["A", "B", "C", "D", "E", "F", "G"]);
             }
             alt = !alt;
             row += 1;
@@ -423,7 +452,7 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     // --- Materialen ---
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     styleSection(sheet.getCell(`A${row}`), BLUE);
     sheet.getCell(`A${row}`).value = "Materialen";
     sheet.getRow(row).height = 24;
@@ -444,7 +473,7 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     if (project.materialen.length === 0) {
-        sheet.mergeCells(`A${row}:F${row}`);
+        sheet.mergeCells(`A${row}:G${row}`);
         sheet.getCell(`A${row}`).value = "Geen materialen.";
         styleValue(sheet.getCell(`A${row}`));
         row += 1;
@@ -480,7 +509,7 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     // --- Werkbonnen ---
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     styleSection(sheet.getCell(`A${row}`), PINK);
     sheet.getCell(`A${row}`).value = "Gekoppelde werkbonnen";
     sheet.getRow(row).height = 24;
@@ -515,7 +544,7 @@ export async function buildProjectExportWorkbook(
     }
 
     row += 2;
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     const footer = sheet.getCell(`A${row}`);
     footer.value =
         "MDB Networks PMS · Vertrouwelijk · Alleen voor intern gebruik";
@@ -528,7 +557,7 @@ export async function buildProjectExportWorkbook(
 
     // Gele footer-accent
     row += 1;
-    sheet.mergeCells(`A${row}:F${row}`);
+    sheet.mergeCells(`A${row}:G${row}`);
     fill(sheet.getCell(`A${row}`), YELLOW);
     sheet.getRow(row).height = 4;
 

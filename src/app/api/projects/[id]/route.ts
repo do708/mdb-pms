@@ -26,7 +26,7 @@ export async function GET(
     try {
         const { id } = await context.params;
 
-        let project = await loadProjectDetail(id);
+        const project = await loadProjectDetail(id);
 
         if (!project) {
             return NextResponse.json(
@@ -47,29 +47,12 @@ export async function GET(
             }
         }
 
-        // Project-km opnieuw: alleen projectlocatie, niet andere werkbonnen die dag
-        const synced = new Set<string>();
-
-        for (const row of project.uren) {
-            const key = `${row.userId}:${row.datum.toISOString().slice(0, 10)}`;
-
-            if (synced.has(key)) {
-                continue;
-            }
-
-            synced.add(key);
-
-            await syncEngineerDayKilometers(
-                row.userId,
-                row.datum
-            );
-        }
-
-        if (synced.size > 0) {
-            project = await loadProjectDetail(id);
-        }
-
-        return NextResponse.json(serializeProjectDetail(project));
+        // Km blijven zoals bij boeken opgeslagen — geen herberekening bij openen
+        return NextResponse.json(
+            serializeProjectDetail(project, {
+                forEngineer: guard.user.role === "engineer",
+            })
+        );
     } catch (error) {
         console.error("PROJECT GET ERROR", error);
 
@@ -108,6 +91,10 @@ export async function PATCH(
             data.location = body.location || null;
         }
 
+        if (body.plaats !== undefined) {
+            data.plaats = body.plaats || null;
+        }
+
         if (body.customerId != null) {
             data.customerId = body.customerId;
         }
@@ -138,10 +125,45 @@ export async function PATCH(
             data.offerteFilename = body.offerteFilename || null;
         }
 
+        const existing = await prisma.project.findUnique({
+            where: { id },
+            select: { location: true, plaats: true },
+        });
+
+        if (!existing) {
+            return NextResponse.json(
+                { error: "Project niet gevonden" },
+                { status: 404 }
+            );
+        }
+
+        const locationChanged =
+            (body.location !== undefined &&
+                (body.location || null) !== existing.location) ||
+            (body.plaats !== undefined &&
+                (body.plaats || null) !== existing.plaats);
+
         await prisma.project.update({
             where: { id },
             data,
         });
+
+        // Adres gewijzigd → km herberekeken en opnieuw opslaan (niet stil bij GET)
+        if (locationChanged) {
+            const uren = await prisma.projectUur.findMany({
+                where: { projectId: id },
+                select: { userId: true, datum: true },
+            });
+
+            const synced = new Set<string>();
+
+            for (const row of uren) {
+                const key = `${row.userId}:${row.datum.toISOString().slice(0, 10)}`;
+                if (synced.has(key)) continue;
+                synced.add(key);
+                await syncEngineerDayKilometers(row.userId, row.datum);
+            }
+        }
 
         const project = await loadProjectDetail(id);
 

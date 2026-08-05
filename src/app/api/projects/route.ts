@@ -30,7 +30,9 @@ export async function GET() {
                   }
                 : {};
 
-        const projects = await projectSummaries(engineerFilter);
+        const projects = await projectSummaries(engineerFilter, {
+            forEngineer: guard.user.role === "engineer",
+        });
 
         return NextResponse.json(projects);
     } catch (error) {
@@ -69,6 +71,7 @@ export async function POST(request: Request) {
                 number: generateProjectNumber(),
                 name: body.name,
                 location: body.location || null,
+                plaats: body.plaats || null,
                 customerId: body.customerId,
                 geoffreerdeUren:
                     body.geoffreerdeUren != null &&

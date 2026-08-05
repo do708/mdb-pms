@@ -376,7 +376,23 @@ export async function POST(
 
 
                     location:
-                        body.location || null,
+                        body.location
+                        ||
+                        [body.straat, body.huisnummer]
+                            .filter(Boolean)
+                            .join(" ")
+                            .trim()
+                        ||
+                        null,
+
+                    straat:
+                        body.straat || null,
+
+                    huisnummer:
+                        body.huisnummer || null,
+
+                    postcode:
+                        body.postcode || null,
 
                     city:
                         body.city || null,

@@ -10,12 +10,14 @@ import {
     BudgetBadge,
     ProgressBar,
 } from "@/components/projects/ProjectBudget";
+import { formatHoursDisplay } from "@/lib/hours";
 
 interface ProjectDetail {
     id: string;
     number: string;
     name: string;
     location: string | null;
+    plaats: string | null;
     status: string;
     customerId: string;
     customer: { id: string; name: string };
@@ -31,7 +33,13 @@ interface ProjectDetail {
         uren: number;
         omschrijving: string | null;
         kilometers: number | null;
-        user: { name: string | null; email: string };
+        createdAt: string;
+        user: { id: string; name: string | null; email: string };
+        bookedBy: {
+            id: string;
+            name: string | null;
+            email: string;
+        } | null;
     }[];
     materialen: {
         id: string;
@@ -76,6 +84,18 @@ function formatDate(value: string): string {
     });
 }
 
+function formatDateTime(value: string): string {
+    const d = new Date(value);
+
+    return d.toLocaleString("nl-NL", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
 function formatEuro(value: number): string {
     return new Intl.NumberFormat("nl-NL", {
         style: "currency",
@@ -106,6 +126,7 @@ export default function ProjectDetailPage() {
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
+    const [plaats, setPlaats] = useState("");
     const [customerId, setCustomerId] = useState("");
     const [status, setStatus] = useState("actief");
     const [geoffreerdeUren, setGeoffreerdeUren] = useState("");
@@ -135,6 +156,7 @@ export default function ProjectDetailPage() {
     function resetFormFromProject(data: ProjectDetail) {
         setName(data.name);
         setLocation(data.location || "");
+        setPlaats(data.plaats || "");
         setCustomerId(data.customerId);
         setStatus(data.status === "new" ? "actief" : data.status);
         setGeoffreerdeUren(
@@ -177,20 +199,34 @@ export default function ProjectDetailPage() {
     }, [id]);
 
     useEffect(() => {
-        if (role !== "admin" && role !== "office") {
+        if (role !== "admin" && role !== "office" && role !== "engineer") {
             return;
         }
 
-        fetch("/api/customers")
-            .then((r) => r.json())
-            .then(setCustomers)
-            .catch(console.error);
+        if (role === "admin" || role === "office") {
+            fetch("/api/customers")
+                .then((r) => r.json())
+                .then(setCustomers)
+                .catch(console.error);
+        }
 
         fetch("/api/engineers")
             .then((r) => r.json())
-            .then(setEngineers)
+            .then((list: EngineerOption[]) => {
+                setEngineers(Array.isArray(list) ? list : []);
+            })
             .catch(console.error);
     }, [role]);
+
+    useEffect(() => {
+        if (role !== "engineer" || !session?.user?.id) {
+            return;
+        }
+
+        if (geselecteerdeMonteurs.length === 0) {
+            setGeselecteerdeMonteurs([session.user.id]);
+        }
+    }, [role, session?.user?.id, engineers]);
 
     const urenPerMonteur = useMemo(() => {
         if (!project) {
@@ -235,6 +271,15 @@ export default function ProjectDetailPage() {
     }
 
     async function saveBasics() {
+        if (!location.trim() || !plaats.trim()) {
+            const ok = window.confirm(
+                "Adres en/of plaats ontbreekt. Zonder volledig adres blijven kilometers bij urenboeken leeg. Toch opslaan?"
+            );
+            if (!ok) {
+                return;
+            }
+        }
+
         setSaving(true);
 
         try {
@@ -244,6 +289,7 @@ export default function ProjectDetailPage() {
                 body: JSON.stringify({
                     name,
                     location,
+                    plaats,
                     customerId,
                     status,
                     geoffreerdeUren,
@@ -356,7 +402,7 @@ export default function ProjectDetailPage() {
             return;
         }
 
-        if (isOffice && geselecteerdeMonteurs.length === 0) {
+        if (geselecteerdeMonteurs.length === 0) {
             alert("Selecteer minimaal één monteur");
             return;
         }
@@ -368,7 +414,7 @@ export default function ProjectDetailPage() {
                 datum: urenDatum,
                 uren: urenAantal,
                 omschrijving: urenOmschrijving,
-                userIds: isOffice ? geselecteerdeMonteurs : undefined,
+                userIds: geselecteerdeMonteurs,
             }),
         });
 
@@ -382,7 +428,9 @@ export default function ProjectDetailPage() {
         setProject(data);
         setUrenAantal("");
         setUrenOmschrijving("");
-        if (isOffice) {
+        if (role === "engineer" && session?.user?.id) {
+            setGeselecteerdeMonteurs([session.user.id]);
+        } else if (isOffice) {
             setGeselecteerdeMonteurs([]);
         }
     }
@@ -469,10 +517,13 @@ export default function ProjectDetailPage() {
                     </Link>
                     <h1 className="text-2xl font-bold mt-2">
                         {project.name}
-                        {project.location ? (
+                        {project.location || project.plaats ? (
                             <span className="text-gray-600 font-normal">
                                 {" "}
-                                · {project.location}
+                                ·{" "}
+                                {[project.location, project.plaats]
+                                    .filter(Boolean)
+                                    .join(", ")}
                             </span>
                         ) : null}
                     </h1>
@@ -482,14 +533,14 @@ export default function ProjectDetailPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 lg:justify-end w-full lg:w-auto">
+                    {isOffice ? (
+                        <>
                     <a
                         href={`/api/projects/${id}/export`}
                         className="border rounded-xl px-4 py-3 min-h-[48px] text-sm font-bold hover:bg-gray-50 flex items-center justify-center text-center"
                     >
                         Export Excel
                     </a>
-                    {isOffice ? (
-                        <>
                             {!editingBasics ? (
                                 <button
                                     type="button"
@@ -524,10 +575,18 @@ export default function ProjectDetailPage() {
                     </div>
                     <div>
                         <dt className="font-semibold text-gray-900">
-                            Locatie
+                            Adres
                         </dt>
                         <dd className="mt-1 text-gray-700">
                             {project.location || "—"}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt className="font-semibold text-gray-900">
+                            Plaats
+                        </dt>
+                        <dd className="mt-1 text-gray-700">
+                            {project.plaats || "—"}
                         </dd>
                     </div>
                     <div>
@@ -548,6 +607,8 @@ export default function ProjectDetailPage() {
                                 : "Actief"}
                         </dd>
                     </div>
+                    {isOffice ? (
+                        <>
                     <div>
                         <dt className="font-semibold text-gray-900">
                             Geoffreerde uren
@@ -568,6 +629,17 @@ export default function ProjectDetailPage() {
                                 : "—"}
                         </dd>
                     </div>
+                        </>
+                    ) : (
+                        <div>
+                            <dt className="font-semibold text-gray-900">
+                                Uren geboekt
+                            </dt>
+                            <dd className="mt-1 text-gray-700">
+                                {project.gebruikteUren.toFixed(1)} uur
+                            </dd>
+                        </div>
+                    )}
                 </dl>
             </section>
             ) : null}
@@ -601,20 +673,35 @@ export default function ProjectDetailPage() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 className="border rounded-xl p-3 w-full"
-                                placeholder="Bijv. Roza Spier"
+                                placeholder="Bijv. Rosa Spier"
                             />
                         </div>
                         <div>
                             <label
-                                htmlFor="project-locatie"
+                                htmlFor="project-adres"
                                 className="block text-sm font-semibold text-gray-900 mb-1.5"
                             >
-                                Locatie
+                                Adres
                             </label>
                             <input
-                                id="project-locatie"
+                                id="project-adres"
                                 value={location}
                                 onChange={(e) => setLocation(e.target.value)}
+                                className="border rounded-xl p-3 w-full"
+                                placeholder="Bijv. Brink 12"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="project-plaats"
+                                className="block text-sm font-semibold text-gray-900 mb-1.5"
+                            >
+                                Plaats
+                            </label>
+                            <input
+                                id="project-plaats"
+                                value={plaats}
+                                onChange={(e) => setPlaats(e.target.value)}
                                 className="border rounded-xl p-3 w-full"
                                 placeholder="Bijv. Laren"
                             />
@@ -708,6 +795,7 @@ export default function ProjectDetailPage() {
                 </section>
             ) : null}
 
+            {isOffice ? (
             <section className="grid lg:grid-cols-2 gap-4">
                 <div className="bg-white border rounded-2xl p-5 space-y-4">
                     <h2 className="font-bold">Uren</h2>
@@ -760,7 +848,19 @@ export default function ProjectDetailPage() {
                     )}
                 </div>
             </section>
+            ) : (
+                <section className="bg-white border rounded-2xl p-5">
+                    <h2 className="font-bold mb-2">Uren geboekt</h2>
+                    <p className="text-3xl font-bold text-[#d6007e]">
+                        {project.gebruikteUren.toFixed(1)}
+                        <span className="text-base font-medium text-gray-500 ml-2">
+                            uur totaal
+                        </span>
+                    </p>
+                </section>
+            )}
 
+            {isOffice ? (
             <section className="bg-white border rounded-2xl p-6 space-y-4">
                 <h2 className="font-bold text-lg">Offerte (PDF)</h2>
                 {project.offerteUrl ? (
@@ -799,6 +899,7 @@ export default function ProjectDetailPage() {
                     </label>
                 ) : null}
             </section>
+            ) : null}
 
             <section className="bg-white border rounded-2xl p-6 space-y-4">
                 <h2 className="font-bold text-lg">Urenlog</h2>
@@ -839,19 +940,6 @@ export default function ProjectDetailPage() {
                 (project.status === "actief" ||
                     project.status === "new") ? (
                     <div className="p-4 bg-gray-50 rounded-xl space-y-3">
-                        {role === "engineer" ? (
-                            <p className="text-sm text-gray-600">
-                                Je boekt uren op dit project als{" "}
-                                <strong>
-                                    {session?.user?.name || "monteur"}
-                                </strong>
-                                .                                 Ze verschijnen direct in het overzicht
-                                hieronder. Kilometers worden automatisch
-                                berekend (kantoor ↔ projectlocatie, samen
-                                met andere klussen die dag).
-                            </p>
-                        ) : null}
-
                         <div className="grid sm:grid-cols-2 gap-3">
                             <div>
                                 <label className="text-xs font-medium text-gray-600 block mb-1">
@@ -871,81 +959,77 @@ export default function ProjectDetailPage() {
                                     Aantal uren
                                 </label>
                                 <input
-                                    type="number"
-                                    step={0.25}
-                                    min={0.25}
-                                    max={24}
+                                    type="text"
+                                    inputMode="decimal"
                                     value={urenAantal}
                                     onChange={(e) =>
                                         setUrenAantal(e.target.value)
                                     }
-                                    placeholder="Bijv. 8"
+                                    placeholder="Bijv. 8 of 1.30"
                                     className="border rounded-xl p-3 min-h-[48px] w-full bg-white"
                                 />
                             </div>
                         </div>
 
-                        {isOffice ? (
-                            <div>
-                                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                    <label className="text-xs font-medium text-gray-600">
-                                        Monteurs (meerdere mogelijk)
-                                    </label>
-                                    <button
-                                        type="button"
-                                        onClick={selecteerAlleMonteurs}
-                                        className="text-xs text-[#d6007e] font-medium"
-                                    >
-                                        Alles selecteren
-                                    </button>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {engineers.length === 0 ? (
-                                        <p className="text-sm text-gray-500">
-                                            Geen actieve monteurs gevonden.
-                                        </p>
-                                    ) : (
-                                        engineers.map((eng) => {
-                                            const checked =
-                                                geselecteerdeMonteurs.includes(
-                                                    eng.id
-                                                );
-                                            const label =
-                                                eng.name?.trim() ||
-                                                "Monteur";
+                        <div>
+                            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                <label className="text-xs font-medium text-gray-600">
+                                    Monteurs (meerdere mogelijk)
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={selecteerAlleMonteurs}
+                                    className="text-xs text-[#d6007e] font-medium"
+                                >
+                                    Alles selecteren
+                                </button>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {engineers.length === 0 ? (
+                                    <p className="text-sm text-gray-500">
+                                        Geen actieve monteurs gevonden.
+                                    </p>
+                                ) : (
+                                    engineers.map((eng) => {
+                                        const checked =
+                                            geselecteerdeMonteurs.includes(
+                                                eng.id
+                                            );
+                                        const label =
+                                            eng.name?.trim() ||
+                                            "Monteur";
 
-                                            return (
-                                                <label
-                                                    key={eng.id}
-                                                    className={`
+                                        return (
+                                            <label
+                                                key={eng.id}
+                                                className={`
                                                         inline-flex items-center gap-2
                                                         px-3 py-2 rounded-xl border
-                                                        cursor-pointer text-sm
+                                                        cursor-pointer text-sm min-h-[44px]
                                                         ${
                                                             checked
                                                                 ? "bg-[#fce7f3] border-[#d6007e] text-[#d6007e]"
                                                                 : "bg-white border-gray-200"
                                                         }
                                                     `}
-                                                >
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={checked}
-                                                        onChange={() =>
-                                                            toggleMonteur(
-                                                                eng.id
-                                                            )
-                                                        }
-                                                        className="rounded"
-                                                    />
-                                                    {label}
-                                                </label>
-                                            );
-                                        })
-                                    )}
-                                </div>
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checked}
+                                                    onChange={() =>
+                                                        toggleMonteur(
+                                                            eng.id
+                                                        )
+                                                    }
+                                                    className="rounded"
+                                                />
+                                                {label}
+                                            </label>
+                                        );
+                                    })
+                                )}
                             </div>
-                        ) : null}
+                        </div>
 
                         <div>
                             <label className="text-xs font-medium text-gray-600 block mb-1">
@@ -984,6 +1068,8 @@ export default function ProjectDetailPage() {
                                     <th className="py-2 pr-4">Monteur</th>
                                     <th className="py-2 pr-4">Uren</th>
                                     <th className="py-2 pr-4">Km</th>
+                                    <th className="py-2 pr-4">Geboekt door</th>
+                                    <th className="py-2 pr-4">Geboekt op</th>
                                     <th className="py-2 pr-4">Omschrijving</th>
                                     {isOffice ? (
                                         <th className="py-2" />
@@ -991,7 +1077,12 @@ export default function ProjectDetailPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {project.uren.map((row) => (
+                                {project.uren.map((row) => {
+                                    const geboektDoor = row.bookedBy
+                                        ? monteurLabel(row.bookedBy)
+                                        : monteurLabel(row.user);
+
+                                    return (
                                     <tr key={row.id} className="border-b">
                                         <td className="py-2 pr-4">
                                             {formatDate(row.datum)}
@@ -1000,11 +1091,22 @@ export default function ProjectDetailPage() {
                                             {monteurLabel(row.user)}
                                         </td>
                                         <td className="py-2 pr-4">
-                                            {row.uren}
+                                            {formatHoursDisplay(row.uren) ||
+                                                row.uren}
                                         </td>
                                         <td className="py-2 pr-4">
                                             {row.kilometers != null
                                                 ? row.kilometers
+                                                : "—"}
+                                        </td>
+                                        <td className="py-2 pr-4">
+                                            {geboektDoor}
+                                        </td>
+                                        <td className="py-2 pr-4 whitespace-nowrap">
+                                            {row.createdAt
+                                                ? formatDateTime(
+                                                      row.createdAt
+                                                  )
                                                 : "—"}
                                         </td>
                                         <td className="py-2 pr-4">
@@ -1024,20 +1126,21 @@ export default function ProjectDetailPage() {
                                             </td>
                                         ) : null}
                                     </tr>
-                                ))}
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
                 )}
             </section>
 
+{isOffice ? (
             <section className="bg-white border rounded-2xl p-6 space-y-4">
                 <h2 className="font-bold text-lg">
                     In te kopen / ingekocht materiaal
                 </h2>
 
-                {isOffice ? (
-                    <div className="grid sm:grid-cols-2 gap-3 p-4 bg-gray-50 rounded-xl">
+                <div className="grid sm:grid-cols-2 gap-3 p-4 bg-gray-50 rounded-xl">
                         <input
                             value={matOmschrijving}
                             onChange={(e) =>
@@ -1086,7 +1189,6 @@ export default function ProjectDetailPage() {
                             Materiaal toevoegen
                         </button>
                     </div>
-                ) : null}
 
                 {project.materialen.length === 0 ? (
                     <p className="text-sm text-gray-500">
@@ -1136,6 +1238,7 @@ export default function ProjectDetailPage() {
                     </ul>
                 )}
             </section>
+            ) : null}
 
             {project.workorders.length > 0 ? (
                 <section className="bg-white border rounded-2xl p-6 space-y-3">

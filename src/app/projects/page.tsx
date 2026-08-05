@@ -82,6 +82,12 @@ export default function ProjectsPage() {
     const [urenAantal, setUrenAantal] = useState("");
     const [urenOmschrijving, setUrenOmschrijving] = useState("");
     const [urenSaving, setUrenSaving] = useState(false);
+    const [engineers, setEngineers] = useState<
+        { id: string; name: string | null }[]
+    >([]);
+    const [geselecteerdeMonteurs, setGeselecteerdeMonteurs] = useState<
+        string[]
+    >([]);
 
     async function loadProjects() {
         const response = await fetch("/api/projects");
@@ -94,6 +100,29 @@ export default function ProjectsPage() {
     useEffect(() => {
         loadProjects();
     }, []);
+
+    useEffect(() => {
+        if (role !== "engineer") {
+            return;
+        }
+
+        fetch("/api/engineers")
+            .then((r) => r.json())
+            .then((list) => {
+                setEngineers(Array.isArray(list) ? list : []);
+            })
+            .catch(console.error);
+    }, [role]);
+
+    useEffect(() => {
+        if (role !== "engineer" || !session?.user?.id) {
+            return;
+        }
+
+        if (geselecteerdeMonteurs.length === 0) {
+            setGeselecteerdeMonteurs([session.user.id]);
+        }
+    }, [role, session?.user?.id, engineers]);
 
     const filtered = useMemo(() => {
         const q = search.toLowerCase().trim();
@@ -133,6 +162,11 @@ export default function ProjectsPage() {
             return;
         }
 
+        if (geselecteerdeMonteurs.length === 0) {
+            alert("Selecteer minimaal één monteur");
+            return;
+        }
+
         setUrenSaving(true);
 
         try {
@@ -147,6 +181,7 @@ export default function ProjectsPage() {
                         datum: urenDatum,
                         uren: urenAantal,
                         omschrijving: urenOmschrijving,
+                        userIds: geselecteerdeMonteurs,
                     }),
                 }
             );
@@ -159,6 +194,9 @@ export default function ProjectsPage() {
 
             setUrenAantal("");
             setUrenOmschrijving("");
+            if (session?.user?.id) {
+                setGeselecteerdeMonteurs([session.user.id]);
+            }
             await loadProjects();
 
             const projectNaam =
@@ -281,16 +319,25 @@ export default function ProjectsPage() {
                                                             project.status
                                                         )}
                                                     </span>
-                                                    <BudgetBadge
-                                                        gebruikt={
-                                                            project.gebruikteUren
-                                                        }
-                                                        geoffreerd={
-                                                            project.geoffreerdeUren ||
-                                                            null
-                                                        }
-                                                        eenheid="uur"
-                                                    />
+                                                    {isOffice ? (
+                                                        <BudgetBadge
+                                                            gebruikt={
+                                                                project.gebruikteUren
+                                                            }
+                                                            geoffreerd={
+                                                                project.geoffreerdeUren ||
+                                                                null
+                                                            }
+                                                            eenheid="uur"
+                                                        />
+                                                    ) : (
+                                                        <span className="text-xs font-medium text-gray-700 bg-gray-50 border rounded-lg px-2 py-1">
+                                                            {project.gebruikteUren.toFixed(
+                                                                1
+                                                            )}{" "}
+                                                            uur geboekt
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </Link>
@@ -310,8 +357,9 @@ export default function ProjectsPage() {
                 <div>
                     <h1 className="text-2xl font-bold">Projecten</h1>
                     <p className="text-gray-500">
-                        Grotere klussen met uren, offerte en materialen per
-                        opdrachtgever
+                        {isOffice
+                            ? "Grotere klussen met uren, offerte en materialen per opdrachtgever"
+                            : "Openstaande projecten — uren boeken en overzicht per monteur"}
                     </p>
                 </div>
 
@@ -328,11 +376,6 @@ export default function ProjectsPage() {
             {role === "engineer" ? (
                 <section className="bg-white border rounded-2xl p-5 space-y-4">
                     <h2 className="font-bold text-lg">Uren boeken</h2>
-                    <p className="text-sm text-gray-500">
-                        Kies een project dat kantoor heeft aangemaakt. Je uren
-                        komen direct in het urenlog en overzicht op de
-                        projectpagina.
-                    </p>
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <label className="block sm:col-span-2">
@@ -373,16 +416,81 @@ export default function ProjectsPage() {
                                 Uren
                             </span>
                             <input
-                                type="number"
-                                min={0.25}
-                                max={24}
-                                step={0.25}
+                                type="text"
+                                inputMode="decimal"
                                 value={urenAantal}
                                 onChange={(e) => setUrenAantal(e.target.value)}
-                                placeholder="Bijv. 4"
+                                placeholder="Bijv. 4 of 1.30"
                                 className="border rounded-xl p-3 w-full min-h-[48px] bg-white"
                             />
                         </label>
+
+                        <div className="sm:col-span-2">
+                            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                <span className="text-sm font-medium text-gray-700">
+                                    Monteurs (meerdere mogelijk)
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setGeselecteerdeMonteurs(
+                                            engineers.map((e) => e.id)
+                                        )
+                                    }
+                                    className="text-xs text-[#d6007e] font-medium"
+                                >
+                                    Alles selecteren
+                                </button>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {engineers.map((eng) => {
+                                    const checked =
+                                        geselecteerdeMonteurs.includes(eng.id);
+                                    const label =
+                                        eng.name?.trim() || "Monteur";
+
+                                    return (
+                                        <label
+                                            key={eng.id}
+                                            className={`
+                                                inline-flex items-center gap-2
+                                                px-3 py-2 rounded-xl border
+                                                cursor-pointer text-sm min-h-[44px]
+                                                ${
+                                                    checked
+                                                        ? "bg-[#fce7f3] border-[#d6007e] text-[#d6007e]"
+                                                        : "bg-white border-gray-200"
+                                                }
+                                            `}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={checked}
+                                                onChange={() =>
+                                                    setGeselecteerdeMonteurs(
+                                                        (prev) =>
+                                                            prev.includes(
+                                                                eng.id
+                                                            )
+                                                                ? prev.filter(
+                                                                      (id) =>
+                                                                          id !==
+                                                                          eng.id
+                                                                  )
+                                                                : [
+                                                                      ...prev,
+                                                                      eng.id,
+                                                                  ]
+                                                    )
+                                                }
+                                                className="rounded"
+                                            />
+                                            {label}
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        </div>
 
                         <label className="block sm:col-span-2">
                             <span className="text-sm font-medium text-gray-700 mb-1 block">
@@ -433,6 +541,7 @@ export default function ProjectsPage() {
                           )}
                 </div>
 
+                {isOffice ? (
                 <div className="space-y-3">
                     <h2 className="text-lg font-bold text-gray-700">
                         Afgeronde projecten
@@ -445,6 +554,7 @@ export default function ProjectsPage() {
                               "Nog geen afgeronde projecten."
                           )}
                 </div>
+                ) : null}
             </div>
         </div>
     );

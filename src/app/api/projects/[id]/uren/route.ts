@@ -7,6 +7,7 @@ import {
     loadProjectDetail,
     serializeProjectDetail,
 } from "@/lib/projects/serialize";
+import { parseHoursInput } from "@/lib/hours";
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 
 export async function GET(
@@ -53,6 +54,13 @@ export async function GET(
             orderBy: [{ datum: "desc" }, { createdAt: "desc" }],
             include: {
                 user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+                bookedBy: {
                     select: {
                         id: true,
                         name: true,
@@ -109,11 +117,14 @@ export async function POST(
             );
         }
 
-        const uren = Number(body.uren);
+        // Intern altijd decimale uren (1.5), nooit klok 1.30 optellen
+        const uren = parseHoursInput(body.uren);
 
         if (!Number.isFinite(uren) || uren <= 0 || uren > 24) {
             return NextResponse.json(
-                { error: "Vul een geldig aantal uren in (0–24)" },
+                {
+                    error: "Vul een geldig aantal uren in (bijv. 1.30 of 1,5)",
+                },
                 { status: 400 }
             );
         }
@@ -144,84 +155,63 @@ export async function POST(
             datum: Date;
         }[] = [];
 
-        if (guard.user.role === "engineer") {
-            if (body.userId || body.userIds) {
-                return NextResponse.json(
-                    { error: "Monteur kan alleen eigen uren boeken" },
-                    { status: 403 }
-                );
-            }
+        const rawIds: unknown[] = Array.isArray(body.userIds)
+            ? body.userIds
+            : body.userId
+              ? [body.userId]
+              : guard.user.role === "engineer"
+                ? [guard.user.id]
+                : [];
 
-            await prisma.projectUur.create({
-                data: {
-                    projectId: id,
-                    userId: guard.user.id,
-                    datum,
-                    uren,
-                    omschrijving,
-                },
-            });
-
-            affected.push({
-                userId: guard.user.id,
-                datum,
-            });
-        } else {
-            const rawIds: unknown[] = Array.isArray(body.userIds)
-                ? body.userIds
-                : body.userId
-                  ? [body.userId]
-                  : [];
-
-            const userIds: string[] = [
-                ...new Set(
-                    rawIds.filter(
-                        (uid): uid is string =>
-                            typeof uid === "string" && uid.length > 0
-                    )
-                ),
-            ];
-
-            if (userIds.length === 0) {
-                return NextResponse.json(
-                    { error: "Selecteer minimaal één monteur" },
-                    { status: 400 }
-                );
-            }
-
-            const engineers = await prisma.user.findMany({
-                where: {
-                    id: { in: userIds },
-                    role: "engineer",
-                    active: true,
-                },
-                select: { id: true },
-            });
-
-            if (engineers.length !== userIds.length) {
-                return NextResponse.json(
-                    { error: "Ongeldige monteur(s) geselecteerd" },
-                    { status: 400 }
-                );
-            }
-
-            await prisma.$transaction(
-                userIds.map((userId) =>
-                    prisma.projectUur.create({
-                        data: {
-                            projectId: id,
-                            userId,
-                            datum,
-                            uren,
-                            omschrijving,
-                        },
-                    })
+        const userIds: string[] = [
+            ...new Set(
+                rawIds.filter(
+                    (uid): uid is string =>
+                        typeof uid === "string" && uid.length > 0
                 )
-            );
+            ),
+        ];
 
-            for (const userId of userIds) {
-                affected.push({ userId, datum });
-            }
+        if (userIds.length === 0) {
+            return NextResponse.json(
+                { error: "Selecteer minimaal één monteur" },
+                { status: 400 }
+            );
+        }
+
+        const engineers = await prisma.user.findMany({
+            where: {
+                id: { in: userIds },
+                role: "engineer",
+                active: true,
+            },
+            select: { id: true },
+        });
+
+        if (engineers.length !== userIds.length) {
+            return NextResponse.json(
+                { error: "Ongeldige monteur(s) geselecteerd" },
+                { status: 400 }
+            );
+        }
+
+        await prisma.$transaction(
+            userIds.map((userId) =>
+                prisma.projectUur.create({
+                    data: {
+                        projectId: id,
+                        userId,
+                        bookedByUserId: guard.user.id,
+                        datum,
+                        uren,
+                        omschrijving,
+                    },
+                })
+            )
+        );
+
+        for (const userId of userIds) {
+            affected.push({ userId, datum });
         }
 
         for (const row of affected) {
@@ -233,9 +223,14 @@ export async function POST(
 
         const detail = await loadProjectDetail(id);
 
-        return NextResponse.json(serializeProjectDetail(detail), {
-            status: 201,
-        });
+        return NextResponse.json(
+            serializeProjectDetail(detail, {
+                forEngineer: guard.user.role === "engineer",
+            }),
+            {
+                status: 201,
+            }
+        );
     } catch (error) {
         console.error("PROJECT UREN POST ERROR", error);
 

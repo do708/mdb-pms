@@ -170,6 +170,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
   number: 'number',
   name: 'name',
   location: 'location',
+  plaats: 'plaats',
   customerId: 'customerId',
   geoffreerdeUren: 'geoffreerdeUren',
   geoffreerdBedrag: 'geoffreerdBedrag',
@@ -184,6 +185,7 @@ exports.Prisma.ProjectUurScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
   userId: 'userId',
+  bookedByUserId: 'bookedByUserId',
   datum: 'datum',
   uren: 'uren',
   omschrijving: 'omschrijving',
@@ -209,6 +211,9 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   projectId: 'projectId',
   customerId: 'customerId',
   location: 'location',
+  straat: 'straat',
+  huisnummer: 'huisnummer',
+  postcode: 'postcode',
   city: 'city',
   contactPersoon: 'contactPersoon',
   contactEmail: 'contactEmail',
@@ -380,6 +385,27 @@ exports.Prisma.WorkorderEngineerScalarFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.TravelGeocodeCacheScalarFieldEnum = {
+  id: 'id',
+  queryKey: 'queryKey',
+  lat: 'lat',
+  lon: 'lon',
+  missed: 'missed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TravelRouteCacheScalarFieldEnum = {
+  id: 'id',
+  cacheKey: 'cacheKey',
+  fromAddress: 'fromAddress',
+  toAddress: 'toAddress',
+  kilometers: 'kilometers',
+  durationHours: 'durationHours',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -433,7 +459,9 @@ exports.Prisma.ModelName = {
   AssignmentUser: 'AssignmentUser',
   Invoice: 'Invoice',
   FormSubmission: 'FormSubmission',
-  WorkorderEngineer: 'WorkorderEngineer'
+  WorkorderEngineer: 'WorkorderEngineer',
+  TravelGeocodeCache: 'TravelGeocodeCache',
+  TravelRouteCache: 'TravelRouteCache'
 };
 
 /**
