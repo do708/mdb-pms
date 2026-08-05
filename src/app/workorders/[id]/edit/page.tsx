@@ -818,9 +818,11 @@ export default function EditWorkorderPage(){
                     p-5
                     bg-gray-50
                     space-y-5
+                    min-w-0
+                    overflow-hidden
                 ">
 
-                    <label className="block">
+                    <label className="block min-w-0 w-full overflow-hidden">
 
                         <span className="
                             block
@@ -843,6 +845,7 @@ export default function EditWorkorderPage(){
                             onChange={(e)=>setPlannedDate(e.target.value)}
 
                             className="
+                                block
                                 w-full
                                 max-w-full
                                 min-w-0
@@ -948,13 +951,14 @@ export default function EditWorkorderPage(){
                         </span>
 
                         <div className="
-                            flex
-                            items-end
-                            gap-4
+                            grid
+                            grid-cols-2
+                            gap-3
                             mt-2
+                            min-w-0
                         ">
 
-                            <label className="block">
+                            <label className="block min-w-0">
 
                                 <span className="
                                     block
@@ -978,10 +982,14 @@ export default function EditWorkorderPage(){
 
                                     className="
                                         block
+                                        w-full
+                                        max-w-full
+                                        min-w-0
                                         border
                                         rounded-xl
                                         p-3
                                         bg-white
+                                        box-border
                                     "
 
                                 />
@@ -989,17 +997,7 @@ export default function EditWorkorderPage(){
                             </label>
 
 
-                            <span className="
-                                text-gray-400
-                                pb-3.5
-                            ">
-
-                                —
-
-                            </span>
-
-
-                            <label className="block">
+                            <label className="block min-w-0">
 
                                 <span className="
                                     block
@@ -1023,10 +1021,14 @@ export default function EditWorkorderPage(){
 
                                     className="
                                         block
+                                        w-full
+                                        max-w-full
+                                        min-w-0
                                         border
                                         rounded-xl
                                         p-3
                                         bg-white
+                                        box-border
                                     "
 
                                 />

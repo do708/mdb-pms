@@ -567,21 +567,38 @@ export default function PlanningPage(){
                 />
             ) : (
                 <div className="space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-sm">
-                        <button
-                            type="button"
-                            onClick={() => shiftWeek(-1)}
-                            className="
-                                inline-flex items-center gap-1.5
-                                rounded-xl border border-slate-200
-                                px-3.5 py-2 text-sm font-medium text-slate-700
-                                hover:bg-slate-50 transition
-                            "
-                        >
-                            ← Vorige
-                        </button>
+                    <div className="bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-sm space-y-3">
+                        <div className="flex items-center justify-between gap-3">
+                            <button
+                                type="button"
+                                onClick={() => shiftWeek(-1)}
+                                className="
+                                    inline-flex items-center gap-1.5
+                                    rounded-xl border border-slate-200
+                                    px-3.5 py-2 text-sm font-medium text-slate-700
+                                    hover:bg-slate-50 transition
+                                    shrink-0
+                                "
+                            >
+                                ← Vorige
+                            </button>
 
-                        <div className="flex flex-wrap items-center justify-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => shiftWeek(1)}
+                                className="
+                                    inline-flex items-center gap-1.5
+                                    rounded-xl border border-slate-200
+                                    px-3.5 py-2 text-sm font-medium text-slate-700
+                                    hover:bg-slate-50 transition
+                                    shrink-0
+                                "
+                            >
+                                Volgende →
+                            </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-1.5 text-center">
                             <span className="text-sm sm:text-base font-semibold text-slate-800 tabular-nums">
                                 {formatNlDate(weekStart, {
                                     day: "numeric",
@@ -611,19 +628,6 @@ export default function PlanningPage(){
                                 Vandaag
                             </button>
                         </div>
-
-                        <button
-                            type="button"
-                            onClick={() => shiftWeek(1)}
-                            className="
-                                inline-flex items-center gap-1.5
-                                rounded-xl border border-slate-200
-                                px-3.5 py-2 text-sm font-medium text-slate-700
-                                hover:bg-slate-50 transition
-                            "
-                        >
-                            Volgende →
-                        </button>
                     </div>
 
                     <WeekView

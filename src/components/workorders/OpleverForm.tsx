@@ -211,7 +211,11 @@ function Keuze({
 
     return (
 
-        <div className="flex flex-wrap gap-2">
+        <div className={`
+            flex
+            gap-2
+            ${options.length <= 3 ? "flex-nowrap" : "flex-wrap"}
+        `}>
 
             {
                 options.map((option,index)=>{
@@ -234,7 +238,7 @@ function Keuze({
                             onClick={()=>onChange(option)}
 
                             className={`
-                                px-4
+                                ${options.length <= 3 ? "flex-1 min-w-0 px-2 sm:px-4 text-center" : "px-4"}
                                 py-1.5
                                 rounded-full
                                 border
@@ -343,9 +347,12 @@ function EValue8Regel({
 
             <div className="
                 flex
-                items-start
-                justify-between
+                flex-col
                 gap-3
+                sm:flex-row
+                sm:items-start
+                sm:justify-between
+                min-w-0
             ">
 
                 <label className="
@@ -354,6 +361,7 @@ function EValue8Regel({
                     gap-3
                     cursor-pointer
                     flex-1
+                    min-w-0
                 ">
                     <input
                         type="checkbox"
@@ -364,10 +372,10 @@ function EValue8Regel({
                                 aantal:e.target.checked ? (item.aantal || "1") : ""
                             })
                         }
-                        className="w-4 h-4 mt-0.5"
+                        className="w-4 h-4 mt-0.5 shrink-0"
                     />
 
-                    <span>
+                    <span className="min-w-0">
                         <span className="
                             block
                             text-sm
@@ -393,9 +401,12 @@ function EValue8Regel({
                             flex
                             items-center
                             gap-2
-                            shrink-0
+                            pl-7
+                            sm:pl-0
+                            sm:shrink-0
+                            min-w-0
                         ">
-                            <span className="text-xs text-slate-500">Aantal:</span>
+                            <span className="text-xs text-slate-500 shrink-0">Aantal:</span>
                             <input
                                 inputMode="numeric"
                                 value={item.aantal}
@@ -405,7 +416,7 @@ function EValue8Regel({
                                         aantal:e.target.value
                                     })
                                 }
-                                className="w-16 border rounded-lg p-1.5 text-sm"
+                                className="w-16 max-w-full min-w-0 border rounded-lg p-1.5 text-sm box-border"
                             />
                         </div>
                     )

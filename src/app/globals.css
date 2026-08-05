@@ -29,15 +29,22 @@ body {
   }
 }
 
-/* iOS Safari: native date/datetime-pickers hebben een vaste min-breedte */
+/* iOS Safari: native date/datetime-pickers hebben een vaste min-breedte.
+   Time-inputs NIET op width:100% zetten — die staan vaak naast elkaar (Van/Tot). */
 input[type="date"],
 input[type="datetime-local"],
-input[type="time"],
 input[type="month"],
 input[type="week"] {
+  display: block;
   max-width: 100%;
   min-width: 0;
   width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="time"] {
+  max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 
