@@ -619,6 +619,7 @@ export default function WeekView({
                                                         )}
                                                     </div>
 
+                                                    {onMovePlan ? (
                                                     <Link
                                                         href={`/workorders/new?date=${iso}&engineer=${user.id}`}
                                                         title="Werkbon klaarzetten voor deze monteur op deze dag"
@@ -642,6 +643,7 @@ export default function WeekView({
                                                         </span>
                                                         Plannen
                                                     </Link>
+                                                    ) : null}
                                                 </div>
                                             );
                                         })}
