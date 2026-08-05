@@ -64,7 +64,7 @@ export default function AppShell({
                 <main
                     className={`flex-1 p-4 sm:p-6 lg:p-8 max-w-full overflow-x-hidden min-w-0 ${
                         isEngineer
-                            ? "max-lg:pb-20 lg:pb-8"
+                            ? "max-lg:pb-[4.25rem] lg:pb-8"
                             : "pb-4 sm:pb-6 lg:pb-8"
                     }`}
                 >

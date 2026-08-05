@@ -33,11 +33,10 @@ export default function EngineerMobileNav() {
                 bg-white
                 border-t
                 border-gray-200
-                pb-[max(0.25rem,env(safe-area-inset-bottom))]
             "
             aria-label="Hoofdnavigatie"
         >
-            <div className="grid grid-cols-3">
+            <div className="grid grid-cols-3 h-14">
                 {links.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(pathname, item.href);
@@ -52,10 +51,8 @@ export default function EngineerMobileNav() {
                                 items-center
                                 justify-center
                                 gap-0.5
-                                min-h-[52px]
+                                h-14
                                 px-2
-                                pt-1.5
-                                pb-1
                                 text-xs
                                 font-semibold
                                 ${

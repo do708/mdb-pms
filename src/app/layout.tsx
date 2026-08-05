@@ -6,7 +6,8 @@ import "./globals.css";
 export const viewport = {
     width: "device-width",
     initialScale: 1,
-    viewportFit: "cover",
+    // Geen viewportFit cover: op iOS Safari gaf dat een grote
+    // lege strook onder de vaste monteur-footer.
 };
 
 export default function RootLayout({

@@ -209,12 +209,16 @@ function Keuze({
 
 }){
 
+    const korteOpties =
+        options.length <= 3 &&
+        options.every((option) => option.length <= 10);
+
     return (
 
         <div className={`
             flex
             gap-2
-            ${options.length <= 3 ? "flex-nowrap" : "flex-wrap"}
+            ${korteOpties ? "flex-nowrap" : "flex-wrap"}
         `}>
 
             {
@@ -238,12 +242,18 @@ function Keuze({
                             onClick={()=>onChange(option)}
 
                             className={`
-                                ${options.length <= 3 ? "flex-1 min-w-0 px-2 sm:px-4 text-center" : "px-4"}
-                                py-1.5
                                 rounded-full
                                 border
-                                text-sm
                                 transition
+                                leading-snug
+                                text-center
+                                ${
+                                    korteOpties
+                                    ?
+                                    "flex-1 min-w-0 px-2 sm:px-4 py-1.5 text-sm"
+                                    :
+                                    "px-2.5 sm:px-3.5 py-1.5 text-[11px] sm:text-sm max-w-full"
+                                }
                                 ${
                                     value === option
                                     ?

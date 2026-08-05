@@ -951,14 +951,16 @@ export default function EditWorkorderPage(){
                         </span>
 
                         <div className="
-                            grid
-                            grid-cols-2
+                            flex
+                            flex-col
                             gap-3
                             mt-2
                             min-w-0
+                            sm:grid
+                            sm:grid-cols-2
                         ">
 
-                            <label className="block min-w-0">
+                            <label className="block min-w-0 overflow-hidden">
 
                                 <span className="
                                     block
@@ -997,7 +999,7 @@ export default function EditWorkorderPage(){
                             </label>
 
 
-                            <label className="block min-w-0">
+                            <label className="block min-w-0 overflow-hidden">
 
                                 <span className="
                                     block
