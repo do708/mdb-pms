@@ -28,7 +28,8 @@ export async function GET(){
 
 
 
-        // Monteur mag alleen zichzelf zien (eigen planning-rij).
+        // Volledige monteurslijst: nodig voor o.a. projecturen (boeken voor
+        // collega's). Planning filtert client-side op eigen rij voor monteurs.
         const engineers =
             await prisma.user.findMany({
 
@@ -36,15 +37,7 @@ export async function GET(){
 
                     role:"engineer",
 
-                    active:true,
-
-                    ...(
-                        guard.user.role === "engineer"
-                        ?
-                        { id: guard.user.id }
-                        :
-                        {}
-                    )
+                    active:true
 
                 },
 
