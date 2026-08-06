@@ -1,11 +1,4 @@
-import { Resend } from "resend";
-
-
-
-const resend =
-    process.env.RESEND_API_KEY
-    ? new Resend(process.env.RESEND_API_KEY)
-    : null;
+import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
 
 
 
@@ -32,11 +25,6 @@ interface AfspraakMailData {
 export async function sendAfspraakMail(
     data:AfspraakMailData
 ){
-
-
-    if(!resend){
-        throw new Error("RESEND_API_KEY ontbreekt");
-    }
 
 
     // Absolute URL naar het logo (moet publiek bereikbaar zijn voor e-mail).
@@ -172,7 +160,7 @@ MDB Networks
 
 
 
-    await resend.emails.send({
+    await sendResendEmail({
 
         from:
             "MDB Networks <noreply@mdb-networks.nl>",
@@ -182,11 +170,11 @@ MDB Networks
         ],
 
         bcc:[
-            "projects@mdb-networks.nl"
+            projectMailbox()
         ],
 
         replyTo:
-            "projects@mdb-networks.nl",
+            projectMailbox(),
 
         subject:
             `Afspraakbevestiging — werkzaamheden ${data.klant}`,

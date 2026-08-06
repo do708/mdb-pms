@@ -1,45 +1,16 @@
-import { Resend } from "resend";
-
-
-
-const resend =
-    process.env.RESEND_API_KEY
-    ? new Resend(process.env.RESEND_API_KEY)
-    : null;
-
-
+import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
 
 interface WorkorderMailData {
-
-    workorderNumber:string;
-
-    customer:string;
-
-    project:string;
-
-    monteur:string;
-
-    datum:string;
-
-    pdfBuffer:Buffer;
-
+    workorderNumber: string;
+    customer: string;
+    project: string;
+    monteur: string;
+    datum: string;
+    pdfBuffer: Buffer;
 }
 
-
-
-export async function sendWorkorderMail(
-    data:WorkorderMailData
-){
-
-
-    if(!resend){
-        throw new Error("RESEND_API_KEY ontbreekt");
-    }
-
-
-
-    const tekst =
-`Beste Projects,
+export async function sendWorkorderMail(data: WorkorderMailData) {
+    const tekst = `Beste Projects,
 
 ${data.monteur} heeft een nieuwe werkbon/formulier ingevuld.
 
@@ -54,9 +25,7 @@ De werkbon PDF is als bijlage toegevoegd.
 Team MDB Networks
 `;
 
-
-    const html =
-`<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#0f172a;line-height:1.6">
+    const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#0f172a;line-height:1.6">
 
   <p>Beste Projects,</p>
 
@@ -80,35 +49,17 @@ Team MDB Networks
 
 </div>`;
 
-
-
-    await resend.emails.send({
-
-        from:
-            "MDB Networks <noreply@mdb-networks.nl>",
-
-        to:[
-            "projects@mdb-networks.nl"
-        ],
-
-        subject:
-            `Nieuwe werkbon ingevuld — ${data.project} (${data.workorderNumber})`,
-
-        text:
-            tekst,
-
-        html:
-            html,
-
-        attachments:[
+    await sendResendEmail({
+        from: "MDB Networks <noreply@mdb-networks.nl>",
+        to: [projectMailbox()],
+        subject: `Nieuwe werkbon ingevuld — ${data.project} (${data.workorderNumber})`,
+        text: tekst,
+        html,
+        attachments: [
             {
-                filename:
-                    `${data.workorderNumber}.pdf`,
-                content:
-                    data.pdfBuffer.toString("base64")
-            }
-        ]
-
+                filename: `${data.workorderNumber}.pdf`,
+                content: data.pdfBuffer.toString("base64"),
+            },
+        ],
     });
-
 }

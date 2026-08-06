@@ -1,50 +1,20 @@
-import { Resend } from "resend";
-
-
-
-const resend =
-    process.env.RESEND_API_KEY
-    ? new Resend(process.env.RESEND_API_KEY)
-    : null;
-
-
+import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
 
 interface NietGereedMailData {
-
-    workorderNumber:string;
-
-    opdrachtgever:string;
-
-    klant:string;
-
-    adres:string;
-
-    werkzaamheden:string;
-
-    omschrijving:string;
-
-    monteur:string;
-
+    workorderNumber: string;
+    opdrachtgever: string;
+    klant: string;
+    adres: string;
+    werkzaamheden: string;
+    omschrijving: string;
+    monteur: string;
 }
-
-
 
 // Melding naar kantoor wanneer een monteur een werkbon afrondt met
 // "Werkzaamheden niet gereed". Kantoor kan dan opnieuw inplannen en
 // eventueel materiaal bestellen.
-export async function sendNietGereedMail(
-    data:NietGereedMailData
-){
-
-
-    if(!resend){
-        throw new Error("RESEND_API_KEY ontbreekt");
-    }
-
-
-
-    const tekst =
-`Werkzaamheden niet gereed
+export async function sendNietGereedMail(data: NietGereedMailData) {
+    const tekst = `Werkzaamheden niet gereed
 
 Monteur ${data.monteur} heeft een werkbon afgerond, maar de werkzaamheden zijn NIET gereed.
 
@@ -65,9 +35,7 @@ https://pms.mdb-networks.nl
 Team MDB Networks
 `;
 
-
-    const html =
-`<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#0f172a;line-height:1.6">
+    const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#0f172a;line-height:1.6">
 
   <p style="font-size:16px;font-weight:800;color:#d6007e;margin-bottom:4px">
      Werkzaamheden niet gereed
@@ -104,26 +72,11 @@ Team MDB Networks
 
 </div>`;
 
-
-
-    await resend.emails.send({
-
-        from:
-            "MDB Networks <noreply@mdb-networks.nl>",
-
-        to:[
-            "projects@mdb-networks.nl"
-        ],
-
-        subject:
-            `Werkzaamheden niet gereed — ${data.werkzaamheden} (${data.workorderNumber})`,
-
-        text:
-            tekst,
-
-        html:
-            html
-
+    await sendResendEmail({
+        from: "MDB Networks <noreply@mdb-networks.nl>",
+        to: [projectMailbox()],
+        subject: `Werkzaamheden niet gereed — ${data.werkzaamheden} (${data.workorderNumber})`,
+        text: tekst,
+        html,
     });
-
 }

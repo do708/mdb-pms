@@ -1,42 +1,16 @@
-import { Resend } from "resend";
-
-
-
-const resend =
-    process.env.RESEND_API_KEY
-    ? new Resend(process.env.RESEND_API_KEY)
-    : null;
-
-
+import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
 
 interface AanvraagMailData {
-
-    opdrachtgever:string;
-
-    locatie:string;
-
+    opdrachtgever: string;
+    locatie: string;
 }
-
-
 
 // Notificatie naar kantoor wanneer een opdrachtgever een nieuwe aanvraag
 // indient via de publieke portal.
-export async function sendAanvraagMail(
-    data:AanvraagMailData
-){
+export async function sendAanvraagMail(data: AanvraagMailData) {
+    const dashboardUrl = "https://pms.mdb-networks.nl/dashboard";
 
-
-    if(!resend){
-        throw new Error("RESEND_API_KEY ontbreekt");
-    }
-
-
-    const dashboardUrl =
-        "https://pms.mdb-networks.nl/dashboard";
-
-
-    const tekst =
-`Nieuwe opdrachtaanvraag via PMS
+    const tekst = `Nieuwe opdrachtaanvraag via PMS
 
 ${data.opdrachtgever} heeft een nieuwe aanvraag ingediend via de portal.
 
@@ -48,9 +22,7 @@ ${dashboardUrl}
 Team MDB Networks
 `;
 
-
-    const html =
-`<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#0f172a;line-height:1.6">
+    const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#0f172a;line-height:1.6">
 
   <p style="font-size:16px;font-weight:800;color:#0066ff;margin-bottom:4px">
      Nieuwe opdrachtaanvraag via PMS
@@ -71,25 +43,11 @@ Team MDB Networks
 
 </div>`;
 
-
-    await resend.emails.send({
-
-        from:
-            "MDB Networks <noreply@mdb-networks.nl>",
-
-        to:[
-            "projects@mdb-networks.nl"
-        ],
-
-        subject:
-            `Nieuwe opdrachtaanvraag via PMS: ${data.opdrachtgever} - ${data.locatie}`,
-
-        text:
-            tekst,
-
-        html:
-            html
-
+    await sendResendEmail({
+        from: "MDB Networks <noreply@mdb-networks.nl>",
+        to: [projectMailbox()],
+        subject: `Nieuwe opdrachtaanvraag via PMS: ${data.opdrachtgever} - ${data.locatie}`,
+        text: tekst,
+        html,
     });
-
 }
