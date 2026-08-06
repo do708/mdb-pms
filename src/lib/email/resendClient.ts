@@ -27,6 +27,13 @@ export async function sendResendEmail(payload: SendPayload) {
     return data;
 }
 
+const INFO_MAILBOX = "info@mdb-networks.nl";
+
 export function projectMailbox(): string {
     return process.env.PROJECT_EMAIL || "projects@mdb-networks.nl";
+}
+
+/** Interne meldingen (formulieren, aanvragen, werkbonnen). */
+export function internalNotificationRecipients(): string[] {
+    return [...new Set([projectMailbox(), INFO_MAILBOX])];
 }

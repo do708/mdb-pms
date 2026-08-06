@@ -7,6 +7,7 @@ import { requireApiUser } from "@/lib/auth/guard";
 import { getFormDefinition } from "@/constants/formDefinitions";
 
 import { excludeArchivedForms } from "@/lib/archive";
+import { sendFormSubmissionMail } from "@/lib/email/sendFormSubmissionMail";
 
 
 
@@ -203,6 +204,27 @@ export async function POST(
                 }
 
             });
+
+
+        try {
+            await sendFormSubmissionMail({
+                formType: body.type,
+                title,
+                submitterName:
+                    guard.user.name?.trim() ||
+                    guard.user.email ||
+                    "Onbekend",
+                data:
+                    (body.data && typeof body.data === "object"
+                        ? body.data
+                        : {}) as Record<string, unknown>,
+            });
+        } catch (mailError) {
+            console.error(
+                "FORM MAIL MISLUKT (formulier opgeslagen)",
+                mailError
+            );
+        }
 
 
 

@@ -1,4 +1,7 @@
-import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
+import {
+    internalNotificationRecipients,
+    sendResendEmail,
+} from "@/lib/email/resendClient";
 
 interface AanvraagMailData {
     opdrachtgever: string;
@@ -45,7 +48,7 @@ Team MDB Networks
 
     await sendResendEmail({
         from: "MDB Networks <noreply@mdb-networks.nl>",
-        to: [projectMailbox()],
+        to: internalNotificationRecipients(),
         subject: `Nieuwe opdrachtaanvraag via PMS: ${data.opdrachtgever} - ${data.locatie}`,
         text: tekst,
         html,

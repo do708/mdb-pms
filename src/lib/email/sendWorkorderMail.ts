@@ -1,4 +1,7 @@
-import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
+import {
+    internalNotificationRecipients,
+    sendResendEmail,
+} from "@/lib/email/resendClient";
 
 interface WorkorderMailData {
     workorderNumber: string;
@@ -51,7 +54,7 @@ Team MDB Networks
 
     await sendResendEmail({
         from: "MDB Networks <noreply@mdb-networks.nl>",
-        to: [projectMailbox()],
+        to: internalNotificationRecipients(),
         subject: `Nieuwe werkbon ingevuld — ${data.project} (${data.workorderNumber})`,
         text: tekst,
         html,

@@ -36,6 +36,13 @@ function monteurNameLines(name: string | null | undefined): {
     };
 }
 
+interface WeekNavigation {
+    rangeLabel: string;
+    onPrevious: () => void;
+    onNext: () => void;
+    onToday: () => void;
+}
+
 interface WeekViewProps {
     items: any[];
     leave?: any[];
@@ -43,6 +50,7 @@ interface WeekViewProps {
     engineers?: { id: string; name: string | null }[];
     // Maandag van de te tonen week; standaard deze week
     weekStart?: Date;
+    weekNavigation?: WeekNavigation;
     /** Sleep een klus naar een andere dag/tijd/monteur */
     onMovePlan?: (args: {
         workorderId: string;
@@ -64,6 +72,7 @@ export default function WeekView({
     leave = [],
     engineers = [],
     weekStart,
+    weekNavigation,
     onMovePlan,
 }: WeekViewProps) {
     const today = new Date();
@@ -268,12 +277,22 @@ export default function WeekView({
                   ).values()
               ) as { id: string; name: string | null }[]);
 
+    function dayJobCount(day: Date): number {
+        return users.reduce(
+            (sum, user) => sum + itemsForUserDay(user.id, day).length,
+            0
+        );
+    }
+
     const gridCols =
-        "120px repeat(6, minmax(110px, 1fr))";
+        `120px repeat(${Math.max(users.length, 1)}, minmax(110px, 1fr))`;
+
+    const minGridWidth =
+        120 + Math.max(users.length, 1) * 110;
 
     return (
-        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-            <div className="flex flex-wrap items-center gap-2 px-5 pt-5 pb-4 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
+        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm">
+            <div className="flex flex-wrap items-center gap-2 px-5 pt-4 pb-3 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
                 <h2 className="text-lg font-bold text-slate-900">
                     Weekoverzicht
                 </h2>
@@ -282,67 +301,85 @@ export default function WeekView({
                 </span>
             </div>
 
+            {weekNavigation ? (
+                <div className="flex items-center justify-between gap-2 px-3 sm:px-4 py-2 border-b border-slate-100 bg-slate-50/80">
+                    <button
+                        type="button"
+                        onClick={weekNavigation.onPrevious}
+                        className="
+                            inline-flex items-center gap-1
+                            rounded-lg border border-slate-200 bg-white
+                            px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700
+                            hover:bg-slate-50 transition shrink-0
+                        "
+                    >
+                        ← Vorige
+                    </button>
+
+                    <div className="flex flex-col items-center gap-0.5 min-w-0 flex-1 text-center">
+                        <span className="text-xs sm:text-sm font-semibold text-slate-800 tabular-nums leading-tight">
+                            {weekNavigation.rangeLabel}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={weekNavigation.onToday}
+                            className="
+                                text-xs font-semibold text-[#0066FF]
+                                rounded px-1.5 py-0.5
+                                hover:bg-[#e8f0ff] transition
+                            "
+                        >
+                            Vandaag
+                        </button>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={weekNavigation.onNext}
+                        className="
+                            inline-flex items-center gap-1
+                            rounded-lg border border-slate-200 bg-white
+                            px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700
+                            hover:bg-slate-50 transition shrink-0
+                        "
+                    >
+                        Volgende →
+                    </button>
+                </div>
+            ) : null}
+
             {users.length === 0 ? (
                 <p className="text-slate-500 p-6">
                     Geen werkbonnen met monteur ingepland deze week.
                 </p>
             ) : (
-                <div className="overflow-x-auto">
-                    <div className="min-w-[980px] p-3 sm:p-4">
-                        {/* Koprij */}
+                <div
+                    className="
+                        max-h-[min(72vh,calc(100dvh-14rem))]
+                        overflow-auto
+                    "
+                >
+                    <div
+                        className="p-3 sm:p-4 min-h-0"
+                        style={{ minWidth: `${minGridWidth}px` }}
+                    >
+                        {/* Koprij: monteurs (blijft zichtbaar bij verticaal scrollen) */}
                         <div
-                            className="grid gap-2 mb-2 sticky top-0 z-20"
+                            className="
+                                grid gap-2 mb-2 sticky top-0 z-30
+                                bg-white
+                                border-b border-slate-200
+                                shadow-sm
+                                px-1 pb-2 pt-1
+                            "
                             style={{ gridTemplateColumns: gridCols }}
                         >
-                            <div className="flex items-end px-2 pb-2">
+                            <div className="flex items-end px-2 pb-1">
                                 <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                                    Monteur
+                                    Dag
                                 </span>
                             </div>
 
-                            {days.map((day) => {
-                                const iso = isoDate(day);
-                                const isToday = iso === todayIso;
-                                const weekday = day.toLocaleDateString(
-                                    "nl-NL",
-                                    { weekday: "short" }
-                                );
-                                const dayNum = day.getDate();
-
-                                return (
-                                    <Link
-                                        key={day.toISOString()}
-                                        href={`/workorders/new?date=${iso}`}
-                                        title="Werkbon klaarzetten op deze dag"
-                                            className={`
-                                            group flex flex-col items-center justify-center
-                                            rounded-xl px-2 py-2.5 transition
-                                            ${
-                                                isToday
-                                                    ? "bg-[#d6007e] text-white shadow-sm shadow-[#d6007e]/25"
-                                                    : "bg-[#e8f0ff]/70 text-slate-700 hover:bg-[#e8f0ff]"
-                                            }
-                                        `}
-                                    >
-                                        <span
-                                            className={`text-[11px] font-medium uppercase tracking-wide ${
-                                                isToday
-                                                    ? "text-white/80"
-                                                    : "text-[#0066FF]/70"
-                                            }`}
-                                        >
-                                            {weekday}
-                                        </span>
-                                        <span className="text-lg font-bold leading-none mt-0.5 tabular-nums">
-                                            {dayNum}
-                                        </span>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-
-                        {/* Rijen */}
-                        <div className="space-y-2">
                             {users.map((user) => {
                                 const jobs = weekJobCount(user.id);
                                 const { voornaam, achternaam } =
@@ -351,32 +388,86 @@ export default function WeekView({
                                 return (
                                     <div
                                         key={user.id}
+                                        className="px-1.5 py-1 min-w-0 text-center"
+                                    >
+                                        <p className="text-sm font-semibold text-slate-800 leading-snug">
+                                            {voornaam}
+                                            {achternaam ? (
+                                                <>
+                                                    <br />
+                                                    {achternaam}
+                                                </>
+                                            ) : null}
+                                        </p>
+                                        <p className="text-[11px] text-slate-400 mt-0.5">
+                                            {jobs === 0
+                                                ? "Niets gepland"
+                                                : `${jobs}× deze week`}
+                                        </p>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Rijen: dagen */}
+                        <div className="space-y-2">
+                            {days.map((day) => {
+                                const iso = isoDate(day);
+                                const isToday = iso === todayIso;
+                                const weekday = day.toLocaleDateString(
+                                    "nl-NL",
+                                    { weekday: "short" }
+                                );
+                                const dayNum = day.getDate();
+                                const jobsDay = dayJobCount(day);
+
+                                return (
+                                    <div
+                                        key={day.toISOString()}
                                         className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50/40 p-2 hover:border-slate-200 hover:bg-white transition"
                                         style={{
                                             gridTemplateColumns: gridCols,
                                         }}
                                     >
-                                        <div className="px-1.5 py-2 min-w-0">
-                                            <p className="text-sm font-semibold text-slate-800 leading-snug">
-                                                {voornaam}
-                                                {achternaam ? (
-                                                    <>
-                                                        <br />
-                                                        {achternaam}
-                                                    </>
-                                                ) : null}
-                                            </p>
-                                            <p className="text-[11px] text-slate-400 mt-0.5">
-                                                {jobs === 0
-                                                    ? "Niets gepland"
-                                                    : `${jobs}× deze week`}
-                                            </p>
-                                        </div>
+                                        <Link
+                                            href={`/workorders/new?date=${iso}`}
+                                            title="Werkbon klaarzetten op deze dag"
+                                            className={`
+                                                group flex flex-col items-center justify-center
+                                                rounded-xl px-2 py-2.5 transition min-h-[4rem]
+                                                ${
+                                                    isToday
+                                                        ? "bg-[#d6007e] text-white shadow-sm shadow-[#d6007e]/25"
+                                                        : "bg-[#e8f0ff]/70 text-slate-700 hover:bg-[#e8f0ff]"
+                                                }
+                                            `}
+                                        >
+                                            <span
+                                                className={`text-[11px] font-medium uppercase tracking-wide ${
+                                                    isToday
+                                                        ? "text-white/80"
+                                                        : "text-[#0066FF]/70"
+                                                }`}
+                                            >
+                                                {weekday}
+                                            </span>
+                                            <span className="text-lg font-bold leading-none mt-0.5 tabular-nums">
+                                                {dayNum}
+                                            </span>
+                                            <span
+                                                className={`text-[10px] mt-1 ${
+                                                    isToday
+                                                        ? "text-white/75"
+                                                        : "text-slate-400"
+                                                }`}
+                                            >
+                                                {jobsDay === 0
+                                                    ? "Geen klussen"
+                                                    : `${jobsDay} klus${jobsDay === 1 ? "" : "sen"}`}
+                                            </span>
+                                        </Link>
 
-                                        {days.map((day) => {
-                                            const iso = isoDate(day);
-                                            const isToday =
-                                                iso === todayIso;
+                                        {users.map((user) => {
                                             const verlof = leaveOn(
                                                 user.id,
                                                 day
@@ -389,7 +480,7 @@ export default function WeekView({
 
                                             return (
                                                 <div
-                                                    key={day.toISOString()}
+                                                    key={user.id}
                                                     className="flex flex-col gap-1.5 min-w-0"
                                                 >
                                                     <div
@@ -453,7 +544,6 @@ export default function WeekView({
                                                                 : undefined
                                                         }
                                                     >
-                                                        {/* Uurlijnen */}
                                                         {!verlof &&
                                                             uurLijnen.map(
                                                                 (uur) => {
@@ -583,7 +673,6 @@ export default function WeekView({
                                                                             onClick={(
                                                                                 e
                                                                             ) => {
-                                                                                // Voorkom navigatie direct na slepen
                                                                                 if (
                                                                                     e.defaultPrevented
                                                                                 ) {
@@ -620,29 +709,29 @@ export default function WeekView({
                                                     </div>
 
                                                     {onMovePlan ? (
-                                                    <Link
-                                                        href={`/workorders/new?date=${iso}&engineer=${user.id}`}
-                                                        title="Werkbon klaarzetten voor deze monteur op deze dag"
-                                                        className="
-                                                            group/plan flex items-center justify-center gap-1
-                                                            rounded-lg py-1.5 text-[11px] font-medium
-                                                            text-slate-400 bg-white border border-transparent
-                                                            hover:border-[#0066FF]/30 hover:bg-[#e8f0ff]
-                                                            hover:text-[#0066FF] transition
-                                                        "
-                                                    >
-                                                        <span
+                                                        <Link
+                                                            href={`/workorders/new?date=${iso}&engineer=${user.id}`}
+                                                            title="Werkbon klaarzetten voor deze monteur op deze dag"
                                                             className="
-                                                                inline-flex h-4 w-4 items-center justify-center
-                                                                rounded-full bg-slate-100 text-slate-500
-                                                                group-hover/plan:bg-[#0066FF] group-hover/plan:text-white
-                                                                text-[10px] font-bold leading-none transition
+                                                                group/plan flex items-center justify-center gap-1
+                                                                rounded-lg py-1.5 text-[11px] font-medium
+                                                                text-slate-400 bg-white border border-transparent
+                                                                hover:border-[#0066FF]/30 hover:bg-[#e8f0ff]
+                                                                hover:text-[#0066FF] transition
                                                             "
                                                         >
-                                                            +
-                                                        </span>
-                                                        Plannen
-                                                    </Link>
+                                                            <span
+                                                                className="
+                                                                    inline-flex h-4 w-4 items-center justify-center
+                                                                    rounded-full bg-slate-100 text-slate-500
+                                                                    group-hover/plan:bg-[#0066FF] group-hover/plan:text-white
+                                                                    text-[10px] font-bold leading-none transition
+                                                                "
+                                                            >
+                                                                +
+                                                            </span>
+                                                            Plannen
+                                                        </Link>
                                                     ) : null}
                                                 </div>
                                             );

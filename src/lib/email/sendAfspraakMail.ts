@@ -1,4 +1,8 @@
-import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
+import {
+    internalNotificationRecipients,
+    projectMailbox,
+    sendResendEmail,
+} from "@/lib/email/resendClient";
 
 
 
@@ -169,9 +173,7 @@ MDB Networks
             data.to
         ],
 
-        bcc:[
-            projectMailbox()
-        ],
+        bcc: internalNotificationRecipients(),
 
         replyTo:
             projectMailbox(),

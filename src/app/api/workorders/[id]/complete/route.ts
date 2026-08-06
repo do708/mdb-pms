@@ -11,9 +11,7 @@ import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 import { sendNietGereedMail } from "@/lib/email/sendNietGereedMail";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
-
-
-
+export const maxDuration = 60;
 
 export async function POST(
 

@@ -1,7 +1,7 @@
-import puppeteer from "puppeteer";
-
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+
+import { launchBrowserForPdf } from "@/lib/pdf/launchBrowserForPdf";
 
 
 import {
@@ -1061,16 +1061,7 @@ export async function generateWorkorderHtmlPdf(
 
 
     const browser =
-        await puppeteer.launch({
-            headless:true,
-            args:[
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage"
-            ],
-            executablePath:
-                process.env.PUPPETEER_EXECUTABLE_PATH
-        });
+        await launchBrowserForPdf();
 
 
     try {
@@ -1079,8 +1070,12 @@ export async function generateWorkorderHtmlPdf(
             await browser.newPage();
 
         await page.setContent(html,{
-            waitUntil:"networkidle0"
+            waitUntil:"domcontentloaded",
+            timeout:45_000
         });
+
+        // Korte pauze zodat externe foto-URL's kunnen laden (zonder networkidle0).
+        await new Promise((resolve)=>setTimeout(resolve,2_000));
 
         const pdf =
             await page.pdf({

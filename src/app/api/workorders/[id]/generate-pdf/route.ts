@@ -10,7 +10,7 @@ import { createClient } from "@supabase/supabase-js";
 
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
-
+export const maxDuration = 60;
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

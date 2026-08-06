@@ -572,80 +572,32 @@ export default function PlanningPage(){
                     }
                 />
             ) : (
-                <div className="space-y-4">
-                    <div className="bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-sm space-y-3">
-                        <div className="flex items-center justify-between gap-3">
-                            <button
-                                type="button"
-                                onClick={() => shiftWeek(-1)}
-                                className="
-                                    inline-flex items-center gap-1.5
-                                    rounded-xl border border-slate-200
-                                    px-3.5 py-2 text-sm font-medium text-slate-700
-                                    hover:bg-slate-50 transition
-                                    shrink-0
-                                "
-                            >
-                                ← Vorige
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => shiftWeek(1)}
-                                className="
-                                    inline-flex items-center gap-1.5
-                                    rounded-xl border border-slate-200
-                                    px-3.5 py-2 text-sm font-medium text-slate-700
-                                    hover:bg-slate-50 transition
-                                    shrink-0
-                                "
-                            >
-                                Volgende →
-                            </button>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-1.5 text-center">
-                            <span className="text-sm sm:text-base font-semibold text-slate-800 tabular-nums">
-                                {formatNlDate(weekStart, {
-                                    day: "numeric",
-                                    month: "long",
-                                })}
-                                {" – "}
-                                {(() => {
-                                    const end = new Date(weekStart);
-                                    end.setDate(end.getDate() + 5);
-                                    return formatNlDate(end, {
-                                        day: "numeric",
-                                        month: "long",
-                                        year: "numeric",
-                                    });
-                                })()}
-                            </span>
-                            <button
-                                type="button"
-                                onClick={thisWeek}
-                                className="
-                                    text-sm font-semibold
-                                    text-[#0066FF]
-                                    rounded-lg px-2.5 py-1
-                                    hover:bg-[#e8f0ff] transition
-                                "
-                            >
-                                Vandaag
-                            </button>
-                        </div>
-                    </div>
-
-                    <WeekView
-                        items={items}
-                        leave={leave}
-                        engineers={engineers}
-                        weekStart={weekStart}
-                        onMovePlan={
-                            canEdit ? moveWeekPlan : undefined
-                        }
-                    />
-                </div>
+                <WeekView
+                    items={items}
+                    leave={leave}
+                    engineers={engineers}
+                    weekStart={weekStart}
+                    weekNavigation={{
+                        rangeLabel: `${formatNlDate(weekStart, {
+                            day: "numeric",
+                            month: "long",
+                        })} – ${(() => {
+                            const end = new Date(weekStart);
+                            end.setDate(end.getDate() + 5);
+                            return formatNlDate(end, {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                            });
+                        })()}`,
+                        onPrevious: () => shiftWeek(-1),
+                        onNext: () => shiftWeek(1),
+                        onToday: thisWeek,
+                    }}
+                    onMovePlan={
+                        canEdit ? moveWeekPlan : undefined
+                    }
+                />
             )}
 
 

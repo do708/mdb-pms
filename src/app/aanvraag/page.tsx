@@ -25,7 +25,7 @@ const ONDERDELEN:{
     key:string;
     titel:string;
     kleur:string;
-    velden:{ key:string; label:string; plh?:string; opties?:string[]; beugels?:string[] }[];
+    velden:{ key:string; label:string; plh?:string; opties?:string[]; beugels?:string[]; meerdere?:boolean }[];
 }[] = [
     {
         key:"schermen",
@@ -33,7 +33,7 @@ const ONDERDELEN:{
         kleur:"bg-sky-50 border-sky-200",
         velden:[
             { key:"aantal", label:"Aantal schermen", plh:"Bijv. 2" },
-            { key:"formaat", label:"Formaat / inch", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"] },
+            { key:"formaat", label:"Formaat / inch (meerdere mogelijk)", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"], meerdere:true },
             {
                 key:"beugels",
                 label:"Welke beugels? (vul het aantal in)",
@@ -56,7 +56,7 @@ const ONDERDELEN:{
         kleur:"bg-emerald-50 border-emerald-200",
         velden:[
             { key:"configuratie", label:"Configuratie", plh:"Bijv. 2x2, 3x3" },
-            { key:"formaat", label:"Formaat / inch", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"] },
+            { key:"formaat", label:"Formaat / inch (meerdere mogelijk)", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"], meerdere:true },
             { key:"orientatie", label:"Oriëntatie", opties:["Landscape","Portrait"] },
             { key:"opmerking", label:"Locatie scherm", plh:"Waar komt het scherm?" }
         ]
@@ -91,6 +91,16 @@ const ONDERDELEN:{
         ]
     }
 ];
+
+
+
+function parseGekozenOpties(waarde:string):string[] {
+    if(!waarde.trim()){
+        return [];
+    }
+
+    return waarde.split(",").map((s)=>s.trim()).filter(Boolean);
+}
 
 
 
@@ -236,6 +246,40 @@ function AanvraagFormulier(){
     }
 
 
+    function toggleMeerdereOptie(
+        blok:string,
+        veldKey:string,
+        optie:string
+    ){
+        setSpecs((s)=>{
+            const huidig =
+                parseGekozenOpties(s[blok].velden[veldKey] || "");
+
+            const volgende =
+                huidig.includes(optie)
+                ? huidig.filter((o)=>o !== optie)
+                : [...huidig, optie];
+
+            const velden:Record<string,string> = {
+                ...s[blok].velden,
+                [veldKey]: volgende.join(", ")
+            };
+
+            if(optie === "Anders" && !volgende.includes("Anders")){
+                delete velden.formaatAnders;
+            }
+
+            return {
+                ...s,
+                [blok]:{
+                    ...s[blok],
+                    velden
+                }
+            };
+        });
+    }
+
+
 
     const verwerkBestanden =
         useCallback(async (files:FileList | File[])=>{
@@ -310,7 +354,11 @@ function AanvraagFormulier(){
         // Korte samenvatting van de aangevinkte schermen (voor de lijstweergave).
         const schermenSamenvatting =
             specs.schermen?.aan
-            ? [specs.schermen.velden.aantal, specs.schermen.velden.formaat]
+            ? [
+                specs.schermen.velden.aantal,
+                parseGekozenOpties(specs.schermen.velden.formaat || "").join(" + ")
+                    || specs.schermen.velden.formaat
+              ]
                 .filter(Boolean).join(" x ")
             : "";
 
@@ -630,6 +678,39 @@ function AanvraagFormulier(){
                                                                             />
                                                                         </div>
                                                                     ))}
+                                                                </div>
+                                                            )
+                                                            : v.opties && v.meerdere
+                                                            ? (
+                                                                <div className="mt-1 space-y-2">
+                                                                    <div className="flex flex-wrap gap-2">
+                                                                        {v.opties.map((optie)=>(
+                                                                            <button
+                                                                                key={optie}
+                                                                                type="button"
+                                                                                onClick={()=>toggleMeerdereOptie(o.key, v.key, optie)}
+                                                                                className={
+                                                                                    "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                                                                                    +
+                                                                                    (parseGekozenOpties(blok.velden[v.key] || "").includes(optie)
+                                                                                        ? "bg-sky-100 text-sky-900 border-sky-300"
+                                                                                        : "bg-white text-gray-700 border-gray-200")
+                                                                                }
+                                                                            >
+                                                                                {optie}
+                                                                            </button>
+                                                                        ))}
+                                                                    </div>
+                                                                    {
+                                                                        parseGekozenOpties(blok.velden[v.key] || "").includes("Anders") && (
+                                                                            <input
+                                                                                value={blok.velden.formaatAnders || ""}
+                                                                                onChange={(e)=>zetVeld(o.key, "formaatAnders", e.target.value)}
+                                                                                placeholder="Anders formaat (inch)"
+                                                                                className="w-full border rounded-lg p-2 bg-white"
+                                                                            />
+                                                                        )
+                                                                    }
                                                                 </div>
                                                             )
                                                             : v.opties

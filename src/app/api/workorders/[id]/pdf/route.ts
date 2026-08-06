@@ -7,9 +7,7 @@ import { customerName, resolveCustomer } from "@/lib/workorderCustomer";
 import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
-
-
-
+export const maxDuration = 60;
 
 export async function GET(
 

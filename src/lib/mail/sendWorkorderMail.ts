@@ -1,4 +1,7 @@
-import { projectMailbox, sendResendEmail } from "@/lib/email/resendClient";
+import {
+    internalNotificationRecipients,
+    sendResendEmail,
+} from "@/lib/email/resendClient";
 
 interface WorkorderMailProps {
     pdf: Buffer;
@@ -17,7 +20,7 @@ export async function sendWorkorderMail({
 }: WorkorderMailProps) {
     await sendResendEmail({
         from: "MDB PMS <noreply@mdb-networks.nl>",
-        to: [projectMailbox()],
+        to: internalNotificationRecipients(),
         subject: `Werkbon ${workorderNumber} afgerond`,
         html: `
         <h2>Werkbon afgerond</h2>
