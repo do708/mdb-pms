@@ -114,7 +114,6 @@ export default function SchermenSpecificatie({
                             scherm,
                             items
                         );
-                        const eerdere = items.slice(0, index);
                         const pastel =
                             FORMAAT_PASTEL[scherm.formaat] || {
                                 bg: "bg-slate-100",
@@ -150,106 +149,82 @@ export default function SchermenSpecificatie({
                                 </div>
 
                                 {index > 0 ? (
-                                    <div className="rounded-lg bg-slate-50 border border-slate-200 p-2.5 space-y-2">
-                                        <label className="flex items-start gap-2 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                className="mt-1 accent-[#0066FF]"
-                                                checked={Boolean(
-                                                    scherm.naastSchermId
-                                                )}
-                                                onChange={(e) => {
-                                                    if (
-                                                        !e.target
-                                                            .checked
-                                                    ) {
-                                                        updateItem(
-                                                            scherm.id,
-                                                            {
-                                                                naastSchermId:
-                                                                    "",
-                                                            }
-                                                        );
-                                                        return;
-                                                    }
+                                    <label className="block">
+                                        <span className="text-xs text-gray-600">
+                                            Dit scherm monteren naast
+                                        </span>
+                                        <select
+                                            value={
+                                                scherm.naastSchermId ||
+                                                "__geen__"
+                                            }
+                                            onChange={(e) => {
+                                                const value =
+                                                    e.target.value;
 
-                                                    const anker =
-                                                        eerdere.find(
-                                                            (s) =>
-                                                                !s.naastSchermId
-                                                        ) ||
-                                                        eerdere[0];
-
+                                                if (
+                                                    value ===
+                                                    "__geen__"
+                                                ) {
                                                     updateItem(
                                                         scherm.id,
                                                         {
                                                             naastSchermId:
-                                                                anker?.id ||
                                                                 "",
-                                                            locatie:
-                                                                anker?.locatie ||
-                                                                scherm.locatie,
                                                         }
                                                     );
-                                                }}
-                                            />
-                                            <span className="text-sm text-gray-700">
-                                                Zelfde locatie als een
-                                                ander scherm (2e, 3e, …
-                                                = vervolgtype)
-                                            </span>
-                                        </label>
-
-                                        {scherm.naastSchermId ? (
-                                            <select
-                                                value={
-                                                    scherm.naastSchermId
+                                                    return;
                                                 }
-                                                onChange={(e) => {
-                                                    const anker =
-                                                        items.find(
-                                                            (s) =>
-                                                                s.id ===
-                                                                e
-                                                                    .target
-                                                                    .value
-                                                        );
-                                                    updateItem(
-                                                        scherm.id,
-                                                        {
-                                                            naastSchermId:
-                                                                e
-                                                                    .target
-                                                                    .value,
-                                                            locatie:
-                                                                anker?.locatie ||
-                                                                scherm.locatie,
-                                                        }
+
+                                                const anker =
+                                                    items.find(
+                                                        (s) =>
+                                                            s.id ===
+                                                            value
                                                     );
-                                                }}
-                                                className="w-full border rounded-lg p-2 bg-white text-sm"
-                                            >
-                                                {eerdere.map(
-                                                    (s, si) => (
-                                                        <option
-                                                            key={s.id}
-                                                            value={
-                                                                s.id
-                                                            }
-                                                        >
-                                                            Zelfde
-                                                            locatie als
-                                                            scherm{" "}
-                                                            {si + 1}
-                                                            {s.locatie
-                                                                ? ` (${s.locatie})`
-                                                                : ""}
-                                                        </option>
-                                                    )
-                                                )}
-                                            </select>
-                                        ) : null}
-                                    </div>
+
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        naastSchermId:
+                                                            value,
+                                                        locatie:
+                                                            anker?.locatie ||
+                                                            scherm.locatie,
+                                                    }
+                                                );
+                                            }}
+                                            className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                        >
+                                            {items
+                                                .map((s, si) =>
+                                                    s.id ===
+                                                    scherm.id
+                                                        ? null
+                                                        : (
+                                                              <option
+                                                                  key={
+                                                                      s.id
+                                                                  }
+                                                                  value={
+                                                                      s.id
+                                                                  }
+                                                              >
+                                                                  Scherm{" "}
+                                                                  {si +
+                                                                      1}
+                                                                  {s.locatie
+                                                                      ? ` (${s.locatie})`
+                                                                      : ""}
+                                                              </option>
+                                                          )
+                                                )
+                                                .filter(Boolean)}
+                                            <option value="__geen__">
+                                                Geen — aparte locatie
+                                            </option>
+                                        </select>
+                                    </label>
                                 ) : null}
 
                                 <div className="space-y-1.5">
@@ -441,10 +416,8 @@ export default function SchermenSpecificatie({
                                     />
                                     {scherm.naastSchermId ? (
                                         <span className="text-[11px] text-gray-500">
-                                            Locatie overgenomen — dit
-                                            scherm telt als vervolg op
-                                            die locatie (tenzij het
-                                            groter is dan de andere)
+                                            Locatie overgenomen van het
+                                            gekozen scherm
                                         </span>
                                     ) : null}
                                 </label>
@@ -596,9 +569,21 @@ export default function SchermenSpecificatie({
                                                 ? `Type ${t}`
                                                 : "— vul formaat in"}
                                         </strong>
-                                        {isHoofdType(s, items)
-                                            ? " · hoofdtype (grootste op locatie)"
-                                            : " · vervolgtype (zelfde locatie)"}
+                                        {s.naastSchermId
+                                            ? (() => {
+                                                  const ni =
+                                                      items.findIndex(
+                                                          (x) =>
+                                                              x.id ===
+                                                              s.naastSchermId
+                                                      );
+                                                  return ni >= 0
+                                                      ? ` · naast scherm ${ni + 1}`
+                                                      : " · vervolgtype";
+                                              })()
+                                            : isHoofdType(s, items)
+                                              ? " · hoofdtype"
+                                              : " · vervolgtype"}
                                     </li>
                                 );
                             })}

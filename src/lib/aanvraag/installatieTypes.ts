@@ -124,7 +124,13 @@ export function syncSchermItems(
     const next = [...items];
 
     while (next.length < n) {
-        next.push(emptySchermItem());
+        const nieuw = emptySchermItem();
+        // Standaard: koppel aan eerste scherm (zelfde locatie / vervolg).
+        if (next.length > 0) {
+            nieuw.naastSchermId = next[0].id;
+            nieuw.locatie = next[0].locatie;
+        }
+        next.push(nieuw);
     }
 
     while (next.length > n) {
@@ -140,14 +146,25 @@ export function syncSchermItems(
             naast = "";
         }
 
-        if (naast) {
-            const targetIndex = next.findIndex((x) => x.id === naast);
-            if (targetIndex < 0 || targetIndex >= i) {
-                naast = "";
-            }
+        // Mag niet naar zichzelf wijzen
+        if (naast === s.id) {
+            naast = "";
         }
 
-        return { ...s, naastSchermId: naast };
+        // Standaard actief voor scherm 2+: koppel aan scherm 1 als leeg
+        if (i > 0 && !naast && next[0]) {
+            naast = next[0].id;
+        }
+
+        const anker = naast
+            ? next.find((x) => x.id === naast)
+            : undefined;
+
+        return {
+            ...s,
+            naastSchermId: naast,
+            locatie: anker ? anker.locatie : s.locatie,
+        };
     });
 }
 
