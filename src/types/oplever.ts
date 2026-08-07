@@ -3,6 +3,17 @@
 //
 // Wordt opgeslagen in Workorder.formData (Json).
 
+import {
+    ExtraDiensten,
+    InstallatieRuimte,
+    InstallatieScherm,
+    StroomInternetBlok,
+    emptyExtra,
+    emptyRuimte,
+    emptyScherm,
+    emptyStroomInternet,
+} from "@/types/installatieRuimtes";
+
 export const OPDRACHTGEVERS = [
     "Axians",
     "Comsysco",
@@ -114,6 +125,13 @@ export interface OpleverData {
     };
 
     installatie:{
+        // Nieuwe ruimtes-hiërarchie (digital signage werkbon)
+        ruimtes:InstallatieRuimte[];
+        stroomBlok:StroomInternetBlok;
+        internetBlok:StroomInternetBlok;
+        extra:ExtraDiensten;
+
+        // Oude velden (backward compatible / legacy PDF)
         nieuweSchermen:boolean | null;
         nieuweFormaten:SchermBlok[];
 
@@ -383,6 +401,10 @@ export function emptyOpleverData():OpleverData {
         },
 
         installatie:{
+            ruimtes:[emptyRuimte()],
+            stroomBlok:emptyStroomInternet(),
+            internetBlok:emptyStroomInternet(),
+            extra:emptyExtra(),
             nieuweSchermen:null,
             nieuweFormaten:[],
             hergebruikteSchermen:null,
@@ -607,6 +629,45 @@ export function mergeOpleverData(
         installatie:{
             ...empty.installatie,
             ...data.installatie,
+
+            ruimtes:
+                Array.isArray(data.installatie?.ruimtes) &&
+                data.installatie.ruimtes.length > 0
+                ?
+                data.installatie.ruimtes.map(
+                    (r:Partial<InstallatieRuimte>)=>({
+                        ...emptyRuimte(),
+                        ...r,
+                        schermen:
+                            Array.isArray(r.schermen) && r.schermen.length > 0
+                            ?
+                            r.schermen.map(
+                                (s:Partial<InstallatieScherm>, i:number)=>({
+                                    ...emptyScherm(i),
+                                    ...s
+                                })
+                            )
+                            :
+                            [emptyScherm(0)]
+                    })
+                )
+                :
+                [emptyRuimte()],
+
+            stroomBlok:{
+                ...emptyStroomInternet(),
+                ...(data.installatie?.stroomBlok || {})
+            },
+
+            internetBlok:{
+                ...emptyStroomInternet(),
+                ...(data.installatie?.internetBlok || {})
+            },
+
+            extra:{
+                ...emptyExtra(),
+                ...(data.installatie?.extra || {})
+            },
 
             nieuweFormaten:
                 Array.isArray(data.installatie?.nieuweFormaten)
@@ -1146,11 +1207,11 @@ export function parseReisuren(
 
 
 
-/** Vult km/reisuren in opleverformulier vanuit planning (alleen bij geen voorrijtarief). */
+/** Geen automatische km meer; alleen voorrijtarief-regels toepassen. */
 export function applyPlannedTravelToFormData(
     stored:unknown,
-    plannedRoundTripKm:number | null | undefined,
-    plannedReisuren:number | null | undefined
+    _plannedRoundTripKm:number | null | undefined,
+    _plannedReisuren:number | null | undefined
 ):OpleverData {
 
     const merged =
@@ -1158,8 +1219,8 @@ export function applyPlannedTravelToFormData(
 
     enforceVoorrijtariefTravelRules(
         merged,
-        plannedRoundTripKm,
-        plannedReisuren,
+        null,
+        null,
         true
     );
 
@@ -1169,55 +1230,18 @@ export function applyPlannedTravelToFormData(
 
 
 
-/** Vast = geen km/reisuren; KM's + Uren = km + reisuren (uit planning). */
+/** Vast = geen km/reisuren; KM's + Uren = handmatig (geen auto-km uit planning). */
 export function enforceVoorrijtariefTravelRules(
     data:OpleverData,
-    plannedRoundTripKm:number | null | undefined,
-    plannedReisuren:number | null | undefined,
-    onlyFillEmptyKm:boolean
+    _plannedRoundTripKm:number | null | undefined,
+    _plannedReisuren:number | null | undefined,
+    _onlyFillEmptyKm:boolean
 ):void {
 
     if(data.tarief.voorrijtarief === true){
 
         data.tarief.kilometers = "";
         data.tarief.reisuren = "";
-
-        return;
-
-    }
-
-    const km =
-        plannedRoundTripKm ?? 0;
-
-    if(km <= 0){
-        return;
-    }
-
-    data.tarief.voorrijtarief = false;
-
-    if(
-        !onlyFillEmptyKm
-        || tariefFieldEmpty(data.tarief.kilometers)
-    ){
-        data.tarief.kilometers =
-            formatKilometers(km);
-    }
-
-    if(
-        !onlyFillEmptyKm
-        || tariefFieldEmpty(data.tarief.reisuren)
-    ){
-
-        const hours =
-            plannedReisuren != null
-            && plannedReisuren > 0
-            ?
-            plannedReisuren
-            :
-            km / 60;
-
-        data.tarief.reisuren =
-            formatClockHours(hours);
 
     }
 

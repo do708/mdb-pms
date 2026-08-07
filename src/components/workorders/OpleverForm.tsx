@@ -22,6 +22,7 @@ import {
 } from "@/types/customerForms";
 
 import CustomerFormSection from "./CustomerFormSection";
+import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 
 
 
@@ -1552,6 +1553,38 @@ export default function OpleverForm({
 
     const i = data.installatie;
 
+    async function uploadSchermFoto(file:File):Promise<{ url:string; name:string } | null>{
+        if(!workorderId){
+            return null;
+        }
+
+        if(!file.type.startsWith("image/")){
+            return null;
+        }
+
+        const fd = new FormData();
+        fd.append("file", file);
+
+        try {
+            const res = await fetch(`/api/workorders/${workorderId}/attachments`, {
+                method:"POST",
+                body:fd
+            });
+            const att = await res.json();
+            if(res.ok && att.url){
+                return {
+                    url:att.url,
+                    name:att.originalName || file.name
+                };
+            }
+        } catch {
+            // stil falen; monteur kan opnieuw proberen
+        }
+
+        return null;
+    }
+
+
     const m = data.materialen;
 
     const c = data.checklist;
@@ -1930,8 +1963,8 @@ export default function OpleverForm({
                                     draft.tarief.voorrijtarief = v;
                                     enforceVoorrijtariefTravelRules(
                                         draft,
-                                        plannedRoundTripKm,
-                                        plannedReisuren,
+                                        null,
+                                        null,
                                         true
                                     );
                                 })
@@ -2187,416 +2220,33 @@ export default function OpleverForm({
                 </p>
 
 
-                <UitklapVraag
-                    label="1. Schermen"
-                    actief={i.nieuweSchermen === true}
-                    onToggle={(v)=>
+                <InstallatieRuimtesSectie
+                    ruimtes={i.ruimtes}
+                    onRuimtesChange={(ruimtes)=>
                         update(draft=>{
-                            draft.installatie.nieuweSchermen = v;
-                            if(
-                                v &&
-                                draft.installatie.nieuweFormaten.length === 0
-                            ){
-                                draft.installatie.nieuweFormaten = [
-                                    emptySchermBlok()
-                                ];
-                            }
+                            draft.installatie.ruimtes = ruimtes;
                         })
                     }
-                >
-
-                    <SchermBlokken
-
-                        blokken={i.nieuweFormaten}
-
-                        onChange={(blokken)=>
-                            update(draft=>{
-                                draft.installatie.nieuweFormaten =
-                                    blokken;
-                            })
-                        }
-
-                    />
-
-                </UitklapVraag>
-
-
-                <UitklapVraag
-                    label="2. Videowall"
-                    actief={i.videowall === true}
-                    onToggle={(v)=>
+                    stroom={i.stroomBlok}
+                    onStroomChange={(v)=>
                         update(draft=>{
-                            draft.installatie.videowall = v;
+                            draft.installatie.stroomBlok = v;
                         })
                     }
-                >
-
-                    {
-                        i.videowall === true && (
-
-                            <div className="space-y-4">
-
-                                {/* Geïnstalleerd / gedemonteerd */}
-                                <div className="space-y-2">
-                                    <p className="text-sm text-gray-600">Status</p>
-                                    <Keuze
-                                        value={i.videowallStatus}
-                                        options={["Geïnstalleerd","Gedemonteerd"]}
-                                        onChange={(v)=>
-                                            update(draft=>{
-                                                draft.installatie.videowallStatus =
-                                                    v as OpleverData["installatie"]["videowallStatus"];
-                                            })
-                                        }
-                                    />
-                                </div>
-
-                                {/* Configuratie: aantal schermen horizontaal x verticaal */}
-                                <div>
-                                    <p className="text-sm text-gray-600 mb-2">
-                                        Configuratie (aantal schermen)
-                                    </p>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <Veld
-                                            label="Horizontaal"
-                                            value={i.videowallHorizontaal}
-                                            onChange={(v)=>
-                                                update(draft=>{
-                                                    draft.installatie.videowallHorizontaal = v;
-                                                })
-                                            }
-                                        />
-                                        <Veld
-                                            label="Verticaal"
-                                            value={i.videowallVerticaal}
-                                            onChange={(v)=>
-                                                update(draft=>{
-                                                    draft.installatie.videowallVerticaal = v;
-                                                })
-                                            }
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Formaat schermen (dropdown) */}
-                                <div>
-                                    <span className="block text-sm text-gray-600 mb-1">
-                                        Formaat schermen
-                                    </span>
-                                    <select
-                                        value={i.videowallFormaat}
-                                        onChange={(e)=>
-                                            update(draft=>{
-                                                draft.installatie.videowallFormaat = e.target.value;
-                                            })
-                                        }
-                                        className="w-full sm:w-64 border rounded-xl p-2 bg-white"
-                                    >
-                                        <option value="">— Kies —</option>
-                                        {
-                                            SCHERM_FORMATEN.map(f=>(
-                                                <option key={f} value={f}>{f}</option>
-                                            ))
-                                        }
-                                    </select>
-                                    {
-                                        i.videowallFormaat === "Anders" && (
-                                            <input
-                                                value={i.videowallFormaatAnders}
-                                                placeholder="Eigen formaat"
-                                                onChange={(e)=>
-                                                    update(draft=>{
-                                                        draft.installatie.videowallFormaatAnders = e.target.value;
-                                                    })
-                                                }
-                                                className="w-full sm:w-64 border rounded-xl p-2 mt-2 block"
-                                            />
-                                        )
-                                    }
-                                </div>
-
-                                {/* Oriëntatie */}
-                                <div className="space-y-2">
-                                    <p className="text-sm text-gray-600">Oriëntatie</p>
-                                    <Keuze
-                                        value={i.videowallOrientatie}
-                                        options={["Landscape","Portrait"]}
-                                        onChange={(v)=>
-                                            update(draft=>{
-                                                draft.installatie.videowallOrientatie =
-                                                    v as OpleverData["installatie"]["videowallOrientatie"];
-                                            })
-                                        }
-                                    />
-                                </div>
-
-                            </div>
-
-                        )
-                    }
-
-                </UitklapVraag>
-
-
-                <UitklapVraag
-                    label="3. Kiosk"
-                    actief={i.kiosk === true}
-                    onToggle={(v)=>
+                    internet={i.internetBlok}
+                    onInternetChange={(v)=>
                         update(draft=>{
-                            draft.installatie.kiosk = v;
-                            if(
-                                v &&
-                                draft.installatie.kioskBlokken.length === 0
-                            ){
-                                draft.installatie.kioskBlokken = [
-                                    emptyKioskBlok()
-                                ];
-                            }
+                            draft.installatie.internetBlok = v;
                         })
                     }
-                >
-
-                    <div className="space-y-4">
-
-                        {
-                            i.kioskBlokken.map((kb,ki)=>(
-
-                                <div
-                                    key={ki}
-                                    className="
-                                        relative
-                                        border
-                                        rounded-xl
-                                        p-3
-                                        space-y-3
-                                    "
-                                >
-
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-sm font-semibold text-slate-700">
-                                            Kiosk {ki + 1}
-                                        </p>
-                                        <button
-                                            type="button"
-                                            onClick={()=>update(draft=>{
-                                                draft.installatie.kioskBlokken.splice(ki,1);
-                                            })}
-                                            className="text-slate-400 hover:text-red-500 text-lg leading-none"
-                                            title="Kiosk verwijderen"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <p className="text-sm text-gray-600">Status</p>
-                                        <Keuze
-                                            value={kb.status}
-                                            options={["Geïnstalleerd","Gedemonteerd"]}
-                                            onChange={(v)=>update(draft=>{
-                                                draft.installatie.kioskBlokken[ki].status =
-                                                    v as KioskBlok["status"];
-                                            })}
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                        <div className="sm:col-span-2">
-                                            <Veld
-                                                label="Omschrijving"
-                                                value={kb.omschrijving}
-                                                onChange={(v)=>update(draft=>{
-                                                    draft.installatie.kioskBlokken[ki].omschrijving = v;
-                                                })}
-                                            />
-                                        </div>
-                                        <Veld
-                                            label="Aantal"
-                                            value={kb.aantal}
-                                            onChange={(v)=>update(draft=>{
-                                                draft.installatie.kioskBlokken[ki].aantal = v;
-                                            })}
-                                        />
-                                    </div>
-
-                                </div>
-
-                            ))
-                        }
-
-                        <button
-                            type="button"
-                            onClick={()=>update(draft=>{
-                                draft.installatie.kioskBlokken.push(emptyKioskBlok());
-                            })}
-                            className="
-                                text-sm
-                                border
-                                border-dashed
-                                rounded-xl
-                                px-4
-                                py-2
-                                text-gray-600
-                                hover:bg-gray-50
-                            "
-                        >
-                            ＋ Nog een kiosk toevoegen
-                        </button>
-
-                    </div>
-
-                </UitklapVraag>
-
-
-                <UitklapVraag
-                    label="4. Mediaplayers"
-                    actief={!!i.mediaplayers}
-                    onToggle={(v)=>
+                    extra={i.extra}
+                    onExtraChange={(v)=>
                         update(draft=>{
-                            draft.installatie.mediaplayers =
-                                (v ? "Geïnstalleerd" : "") as OpleverData["installatie"]["mediaplayers"];
-                            if(!v){
-                                draft.installatie.aantalMediaplayers = "";
-                            }
+                            draft.installatie.extra = v;
                         })
                     }
-                >
-
-                    <Keuze
-
-                        value={i.mediaplayers}
-
-                        options={["Geïnstalleerd","Gedemonteerd"]}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.installatie.mediaplayers =
-                                    v as OpleverData["installatie"]["mediaplayers"];
-                            })
-                        }
-
-                    />
-
-                    <Veld
-
-                        small
-
-                        label="Aantal:"
-
-                        value={i.aantalMediaplayers}
-
-                        onChange={(v)=>
-                            update(draft=>{
-                                draft.installatie.aantalMediaplayers = v;
-                            })
-                        }
-
-                    />
-
-                </UitklapVraag>
-
-
-                <UitklapVraag
-                    label="5. Audio"
-                    actief={i.audio === true}
-                    onToggle={(v)=>
-                        update(draft=>{
-                            draft.installatie.audio = v;
-                        })
-                    }
-                >
-
-                    <div className="space-y-4">
-
-                        <div className="space-y-2">
-                            <p className="text-sm text-gray-600">Status</p>
-                            <Keuze
-                                value={i.audioStatus}
-                                options={["Geïnstalleerd","Gedemonteerd"]}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.installatie.audioStatus =
-                                            v as OpleverData["installatie"]["audioStatus"];
-                                    })
-                                }
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-
-                            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">
-                                {
-                                    i.audioStatus === "Gedemonteerd"
-                                    ?
-                                    "Wat is er gedemonteerd? (vul het aantal in)"
-                                    :
-                                    "Wat is er geïnstalleerd? (vul het aantal in)"
-                                }
-                            </p>
-
-                            <AudioRegel
-                                label="Audiospeler"
-                                value={i.audioSpeler}
-                                onChange={(v)=>update(draft=>{
-                                    draft.installatie.audioSpeler = v;
-                                })}
-                            />
-
-                            <AudioRegel
-                                label="Versterker"
-                                value={i.audioVersterker}
-                                onChange={(v)=>update(draft=>{
-                                    draft.installatie.audioVersterker = v;
-                                })}
-                            />
-
-                            <AudioRegel
-                                label="Volumeregelaar"
-                                value={i.audioVolumeregelaar}
-                                onChange={(v)=>update(draft=>{
-                                    draft.installatie.audioVolumeregelaar = v;
-                                })}
-                            />
-
-                            <AudioRegel
-                                label="Speakers"
-                                value={i.audioSpeakers}
-                                onChange={(v)=>update(draft=>{
-                                    draft.installatie.audioSpeakers = v;
-                                })}
-                            />
-
-                            {/* Anders: eigen tekst + aantal */}
-                            <div className="
-                                flex
-                                items-center
-                                gap-3
-                                py-1.5
-                            ">
-                                <input
-                                    value={i.audioAndersTekst}
-                                    placeholder="Anders, namelijk..."
-                                    onChange={(e)=>update(draft=>{
-                                        draft.installatie.audioAndersTekst = e.target.value;
-                                    })}
-                                    className="flex-1 border rounded-lg p-1.5 text-sm"
-                                />
-                                <input
-                                    inputMode="numeric"
-                                    value={i.audioAndersAantal}
-                                    placeholder="Aantal"
-                                    onChange={(e)=>update(draft=>{
-                                        draft.installatie.audioAndersAantal = e.target.value;
-                                    })}
-                                    className="w-20 border rounded-lg p-1.5 text-sm"
-                                />
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </UitklapVraag>
+                    uploadFile={uploadSchermFoto}
+                />
 
 
                 <div className="border-b border-slate-100 py-2.5 space-y-3">

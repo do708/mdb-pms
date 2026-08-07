@@ -1,3 +1,5 @@
+/** Ruimtes/schermen-structuur voor digital-signage werkbon (OpleverForm). */
+
 export type Werkzaamheid =
     | "wand"
     | "plafond"
@@ -21,7 +23,7 @@ export type Actie =
 
 export type Orientatie = "landscape" | "portrait";
 
-export interface AanvraagScherm {
+export interface InstallatieScherm {
     id: string;
     label: string;
     fotoUrl: string;
@@ -31,7 +33,7 @@ export interface AanvraagScherm {
     mac: string;
 }
 
-export interface AanvraagRuimte {
+export interface InstallatieRuimte {
     id: string;
     naam: string;
     werkzaamheid: Werkzaamheid | "";
@@ -40,8 +42,13 @@ export interface AanvraagRuimte {
     actie: Actie | "";
     orientatie: Orientatie | "";
     aantalSchermen: number;
-    schermen: AanvraagScherm[];
+    schermen: InstallatieScherm[];
 }
+
+/** @deprecated alias — oude naam */
+export type AanvraagScherm = InstallatieScherm;
+/** @deprecated alias — oude naam */
+export type AanvraagRuimte = InstallatieRuimte;
 
 export interface StroomInternetBlok {
     aanwezig: "" | "Ja" | "Nee";
@@ -119,7 +126,7 @@ function uid(): string {
 export function emptyScherm(
     index: number,
     label = ""
-): AanvraagScherm {
+): InstallatieScherm {
     return {
         id: uid(),
         label:
@@ -133,7 +140,7 @@ export function emptyScherm(
     };
 }
 
-export function emptyRuimte(): AanvraagRuimte {
+export function emptyRuimte(): InstallatieRuimte {
     return {
         id: uid(),
         naam: "",
@@ -166,9 +173,9 @@ export function emptyExtra(): ExtraDiensten {
 }
 
 export function syncSchermen(
-    ruimte: AanvraagRuimte,
+    ruimte: InstallatieRuimte,
     aantal: number
-): AanvraagRuimte {
+): InstallatieRuimte {
     const n = Math.max(1, Math.min(12, aantal));
     const schermen = [...ruimte.schermen];
 
@@ -205,7 +212,7 @@ export function beugelLabel(value: string): string {
 
 /** Leesbare samenvatting voor dashboard / werkbon. */
 export function summarizeRuimtes(
-    ruimtes: AanvraagRuimte[] | unknown
+    ruimtes: InstallatieRuimte[] | unknown
 ): string[] {
     if (!Array.isArray(ruimtes)) {
         return [];

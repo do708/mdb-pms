@@ -15,6 +15,10 @@ import {
     OpleverData,
     mergeOpleverData
 } from "@/types/oplever";
+import {
+    summarizeRuimtes,
+    summarizeVoorziening,
+} from "@/types/installatieRuimtes";
 
 
 
@@ -673,7 +677,34 @@ export async function generateOpleverPdf(
 
     text("2. Installatie werkzaamheden",{ useBold:true, gap:2 });
 
+    {
+        const ruimtes = data.installatie.ruimtes || [];
+        const heeftRuimtes = ruimtes.some(
+            (r) => r.werkzaamheid || r.naam || (r.schermen && r.schermen.length)
+        );
 
+        if (heeftRuimtes) {
+            for (const regel of summarizeRuimtes(ruimtes)) {
+                text(`• ${regel}`, { gap: 1 });
+            }
+
+            const stroomTekst = summarizeVoorziening(
+                "Stroom",
+                data.installatie.stroomBlok
+            );
+            if (stroomTekst) {
+                text(stroomTekst, { gap: 1 });
+            }
+
+            const internetTekst = summarizeVoorziening(
+                "Internet",
+                data.installatie.internetBlok
+            );
+            if (internetTekst) {
+                text(internetTekst, { gap: 1 });
+            }
+        } else {
+            // legacy layout
     jaNee(
         "Heb je nieuwe schermen geïnstalleerd?",
         data.installatie.nieuweSchermen
@@ -806,6 +837,9 @@ export async function generateOpleverPdf(
     }
 
     dashedLine();
+
+        } // end legacy else
+    }
 
 
     jaNee(

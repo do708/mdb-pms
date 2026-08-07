@@ -10,6 +10,11 @@ import {
     SchermBlok,
     mergeOpleverData
 } from "@/types/oplever";
+import {
+    summarizeVoorziening,
+    werkzaamheidLabel,
+    beugelLabel,
+} from "@/types/installatieRuimtes";
 
 
 
@@ -458,6 +463,35 @@ function opleverSections(
   <div class="section">
     <div class="section-title">2. Installatie werkzaamheden</div>
     <table class="qa">
+      ${Array.isArray(i.ruimtes) && i.ruimtes.some((r)=>r.werkzaamheid || r.naam || (r.schermen && r.schermen.length))
+        ? i.ruimtes.map((r, ri)=>{
+            const naam = (r.naam || `Ruimte ${ri + 1}`).trim();
+            const parts = [
+              r.werkzaamheid ? werkzaamheidLabel(r.werkzaamheid) : "",
+              r.beugelType ? `${beugelLabel(r.beugelType)}${r.beugelMaat ? ` (${r.beugelMaat})` : ""}` : "",
+              r.actie,
+              r.orientatie,
+              r.aantalSchermen ? `${r.aantalSchermen} scherm(en)` : ""
+            ].filter(Boolean);
+            const schermen = (r.schermen || [])
+              .map((s, si)=>{
+                const sParts = [
+                  s.label || `Scherm ${si + 1}`,
+                  s.formaat,
+                  s.merkType,
+                  s.serienummer ? `SN ${s.serienummer}` : "",
+                  s.mac ? `MAC ${s.mac}` : ""
+                ].filter(Boolean);
+                return sParts.join(" · ");
+              })
+              .filter(Boolean)
+              .join("<br/>");
+            return row(
+              esc(naam),
+              textAnswer(parts.join(" · ")) + (schermen ? `<div style="margin-top:4px;font-size:11px">${schermen}</div>` : "")
+            );
+          }).join("")
+        : `
       ${i.nieuweSchermen === true ? row("1. Schermen",pill(i.nieuweSchermen)) : ""}
       ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
       ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
@@ -479,6 +513,17 @@ function opleverSections(
       ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar (aantal)",textAnswer(i.audioVolumeregelaar)) : ""}
       ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
       ${i.audio === true && i.audioAndersTekst ? row(esc(i.audioAndersTekst) + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
+      `}
+      ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
+      ${summarizeVoorziening("Internet", i.internetBlok) ? row("Internet", textAnswer(summarizeVoorziening("Internet", i.internetBlok).replace(/^Internet:\s*/,""))) : ""}
+      ${i.extra && (i.extra.afvoerTm50 || i.extra.afvoerVanaf50 || i.extra.afval || i.extra.audio)
+        ? row("Extra diensten", textAnswer([
+            i.extra.afvoerTm50 ? 'Afvoer t/m 50"' : "",
+            i.extra.afvoerVanaf50 ? 'Afvoer vanaf 50"' : "",
+            i.extra.afval ? "Afval" : "",
+            i.extra.audio ? "Audio" : ""
+          ].filter(Boolean).join(", ")))
+        : ""}
       ${i.isProject === true ? row("6. Project (offertebasis)?",pill(i.isProject)) : ""}
       ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
     </table>
