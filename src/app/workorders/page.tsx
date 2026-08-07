@@ -459,11 +459,15 @@ export default function WorkordersPage(){
                                 gap-2
                                 items-center
                                 shrink-0
+                                flex-wrap
+                                justify-end
                             ">
 
                                 <Link
 
                                     href={`/workorders/${workorder.id}`}
+
+                                    title="Werkbon openen"
 
                                     className="
                                         bg-black
@@ -476,7 +480,7 @@ export default function WorkordersPage(){
 
                                 >
 
-                                    Open
+                                    Werkbon openen
 
                                 </Link>
 
@@ -484,6 +488,8 @@ export default function WorkordersPage(){
                                 <a
 
                                     href={`/api/workorders/${workorder.id}/pdf`}
+
+                                    title="PDF download"
 
                                     className="
                                         border
@@ -495,7 +501,7 @@ export default function WorkordersPage(){
 
                                 >
 
-                                    PDF
+                                    PDF download
 
                                 </a>
 
@@ -503,17 +509,43 @@ export default function WorkordersPage(){
                                 {
                                     (role === "admin" || role === "office") && (
 
-                                        <DeleteButton
+                                        <>
 
-                                            url={`/api/workorders/${workorder.id}`}
+                                            <a
 
-                                            label={`werkbon ${workorder.number}`}
+                                                href={`/api/workorders/${workorder.id}/photos/zip`}
 
-                                            onDeleted={load}
+                                                title="ZIP download met alle foto's"
 
-                                            compact
+                                                className="
+                                                    border
+                                                    px-3
+                                                    py-1.5
+                                                    rounded-lg
+                                                    text-sm
+                                                "
 
-                                        />
+                                            >
+
+                                                ZIP download
+
+                                            </a>
+
+                                            <DeleteButton
+
+                                                url={`/api/workorders/${workorder.id}`}
+
+                                                label={`werkbon ${workorder.number}`}
+
+                                                onDeleted={load}
+
+                                                compact
+
+                                                title="Prullenbak"
+
+                                            />
+
+                                        </>
 
                                     )
                                 }

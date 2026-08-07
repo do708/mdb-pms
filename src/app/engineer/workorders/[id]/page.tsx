@@ -12,7 +12,6 @@ import OpleverForm from "@/components/workorders/OpleverForm";
 import { parseCustomerSchema } from "@/types/customerForms";
 
 import type { OpleverData } from "@/types/oplever";
-import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 
 interface Workorder {
 

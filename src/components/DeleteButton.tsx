@@ -21,6 +21,9 @@ interface Props {
     // Zelfde hoogte als andere toolbar-knoppen (export, wijzigen)
     toolbar?:boolean;
 
+    // Tooltip / title op de knop (bijv. "Prullenbak")
+    title?:string;
+
 }
 
 
@@ -35,7 +38,9 @@ export default function DeleteButton({
 
     compact = false,
 
-    toolbar = false
+    toolbar = false,
+
+    title = "Verwijderen"
 
 }:Props){
 
@@ -192,7 +197,9 @@ export default function DeleteButton({
                 setConfirming(true);
             }}
 
-            title="Verwijderen"
+            title={title}
+
+            aria-label={title}
 
             className={
                 compact
@@ -208,7 +215,7 @@ export default function DeleteButton({
 
         >
 
-            {compact ? "🗑" : "Verwijderen"}
+            {compact ? "🗑" : title}
 
         </button>
 

@@ -154,9 +154,13 @@ export async function POST(
 
 
 
-        // PDF genereren en mailen mag het afronden NIET blokkeren.
-        // Lukt het versturen niet (bijv. geen mailconfiguratie lokaal),
-        // dan wordt de werkbon toch gewoon afgerond.
+        // PDF genereren mag het afronden NIET blokkeren.
+        let pdfBuffer: Buffer | null = null;
+        const appUrl = (
+            process.env.NEXT_PUBLIC_APP_URL
+            ?? "https://pms.mdb-networks.nl"
+        ).replace(/\/$/, "");
+
         try {
 
             const pdf =
@@ -254,100 +258,105 @@ export async function POST(
                         workorder.customer?.formSchema ?? null
 
                 },
-                (
-                    process.env.NEXT_PUBLIC_APP_URL
-                    ?? "http://localhost:3000"
-                ));
+                appUrl);
 
-
-
+            pdfBuffer = Buffer.from(pdf);
 
             // PDF-bytes in de database bewaren.
             await prisma.workorder.update({
                 where:{ id },
                 data:{
-                    pdfData:Buffer.from(pdf),
+                    pdfData:Uint8Array.from(pdfBuffer),
                     pdfGeneratedAt:new Date()
                 }
             });
 
-
-            // Mailen mag falen zonder het afronden te blokkeren.
-            try {
-                await sendWorkorderMail({
-                    workorderNumber:
-                        workorder.number,
-                    customer:
-                        customerName(workorder),
-                    project:
-                        (workorder.project?.name ?? customerName(workorder)),
-                    monteur:
-                        (workorder.assignedUser?.name ?? "Een monteur"),
-                    datum:
-                        (()=>{
-                            const d =
-                                workorder.workDate
-                                ?? workorder.plannedDate
-                                ?? new Date();
-                            return new Date(d).toLocaleDateString("nl-NL",{
-                                day:"numeric",
-                                month:"long",
-                                year:"numeric"
-                            });
-                        })(),
-                    pdfBuffer:
-                        Buffer.from(pdf)
-                });
-            } catch(mailOnlyError){
-                console.error("WERKBON MAIL MISLUKT (afronden gaat door)", mailOnlyError);
-            }
-
-
-            // Extra melding naar kantoor als de werkzaamheden NIET gereed zijn.
-            try {
-
-                const afronding =
-                    (workorder.formData as { afronding?: {
-                        werkzaamhedenGereed?:string;
-                        nietGereedOmschrijving?:string;
-                    } } | null)?.afronding;
-
-                if(afronding?.werkzaamhedenGereed === "niet_gereed"){
-
-                    await sendNietGereedMail({
-                        workorderNumber:
-                            workorder.number,
-                        opdrachtgever:
-                            (workorder.project?.customer?.name
-                             ?? customerName(workorder)),
-                        klant:
-                            customerName(workorder),
-                        adres:
-                            (workorderLocation(workorder)
-                             || [workorder.location, workorder.city].filter(Boolean).join(", ")
-                             || "—"),
-                        werkzaamheden:
-                            (workorder.description ?? workorder.title ?? "—"),
-                        omschrijving:
-                            (afronding.nietGereedOmschrijving || "(geen omschrijving ingevuld)"),
-                        monteur:
-                            (workorder.assignedUser?.name ?? "Een monteur")
-                    });
-
-                }
-
-            } catch(nietGereedError){
-                console.error("NIET-GEREED MAIL MISLUKT (afronden gaat door)", nietGereedError);
-            }
-
-
-        } catch(mailError){
+        } catch(pdfError){
 
             console.error(
-                "WERKBON PDF/MAIL MISLUKT (afronden gaat door)",
-                mailError
+                "WERKBON PDF MISLUKT (afronden gaat door)",
+                pdfError
             );
 
+        }
+
+
+        // Altijd mailen naar projects@ (+ info@) na succesvolle afronding,
+        // ook als de PDF niet lukte. Mail mag afronden niet blokkeren.
+        try {
+            const locatie =
+                workorderLocation(workorder)
+                || [workorder.straat, workorder.huisnummer].filter(Boolean).join(" ")
+                || [workorder.location, workorder.city].filter(Boolean).join(", ")
+                || null;
+
+            await sendWorkorderMail({
+                workorderNumber:
+                    workorder.number,
+                customer:
+                    customerName(workorder),
+                project:
+                    (workorder.project?.name ?? customerName(workorder)),
+                location:
+                    locatie,
+                monteur:
+                    (workorder.assignedUser?.name ?? "Een monteur"),
+                datum:
+                    (()=>{
+                        const d =
+                            workorder.workDate
+                            ?? workorder.plannedDate
+                            ?? new Date();
+                        return new Date(d).toLocaleDateString("nl-NL",{
+                            day:"numeric",
+                            month:"long",
+                            year:"numeric"
+                        });
+                    })(),
+                workorderUrl:
+                    `${appUrl}/workorders/${workorder.id}`,
+                pdfBuffer
+            });
+        } catch(mailOnlyError){
+            console.error("WERKBON MAIL MISLUKT (afronden gaat door)", mailOnlyError);
+        }
+
+
+        // Extra melding naar kantoor als de werkzaamheden NIET gereed zijn.
+        try {
+
+            const afronding =
+                (workorder.formData as { afronding?: {
+                    werkzaamhedenGereed?:string;
+                    nietGereedOmschrijving?:string;
+                } } | null)?.afronding;
+
+            if(afronding?.werkzaamhedenGereed === "niet_gereed"){
+
+                await sendNietGereedMail({
+                    workorderNumber:
+                        workorder.number,
+                    opdrachtgever:
+                        (workorder.project?.customer?.name
+                         ?? customerName(workorder)),
+                    klant:
+                        customerName(workorder),
+                    adres:
+                        (workorderLocation(workorder)
+                         || [workorder.location, workorder.city].filter(Boolean).join(", ")
+                         || "—"),
+                    werkzaamheden:
+                        (workorder.description ?? workorder.title ?? "—"),
+                    omschrijving:
+                        (afronding.nietGereedOmschrijving || "(geen omschrijving ingevuld)"),
+                    monteur:
+                        (workorder.assignedUser?.name ?? "Een monteur")
+                });
+
+            }
+
+        } catch(nietGereedError){
+            console.error("NIET-GEREED MAIL MISLUKT (afronden gaat door)", nietGereedError);
         }
 
 

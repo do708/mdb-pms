@@ -7,23 +7,35 @@ interface WorkorderMailData {
     workorderNumber: string;
     customer: string;
     project: string;
+    location?: string | null;
     monteur: string;
     datum: string;
-    pdfBuffer: Buffer;
+    /** Deep link naar de werkbon in PMS (kantoor). */
+    workorderUrl?: string | null;
+    pdfBuffer?: Buffer | null;
 }
 
 export async function sendWorkorderMail(data: WorkorderMailData) {
+    const locatie = (data.location || "").trim() || "—";
+    const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "https://pms.mdb-networks.nl";
+    const werkbonUrl =
+        (data.workorderUrl || "").trim()
+        || `${baseUrl.replace(/\/$/, "")}/workorders`;
+
     const tekst = `Beste Projects,
 
-${data.monteur} heeft een nieuwe werkbon/formulier ingevuld.
+${data.monteur} heeft een werkbon afgerond en verstuurd.
 
+Werkbon: ${data.workorderNumber}
 Opdrachtgever: ${data.customer}
 Opdracht: ${data.project} - ${data.datum}
+Locatie: ${locatie}
 
-Project Management System:
-https://pms.mdb-networks.nl
+Werkbon openen:
+${werkbonUrl}
 
-De werkbon PDF is als bijlage toegevoegd.
+${data.pdfBuffer ? "De werkbon PDF is als bijlage toegevoegd." : "De PDF-bijlage kon niet worden gegenereerd; open de werkbon in PMS."}
 
 Team MDB Networks
 `;
@@ -32,21 +44,29 @@ Team MDB Networks
 
   <p>Beste Projects,</p>
 
-  <p><strong>${data.monteur}</strong> heeft een nieuwe werkbon/formulier ingevuld.</p>
+  <p><strong>${data.monteur}</strong> heeft een werkbon afgerond en verstuurd.</p>
 
   <p>
+    <strong>Werkbon:</strong> ${data.workorderNumber}<br>
     <strong>Opdrachtgever:</strong> ${data.customer}<br>
-    <strong>Opdracht:</strong> ${data.project} &mdash; ${data.datum}
+    <strong>Opdracht:</strong> ${data.project} &mdash; ${data.datum}<br>
+    <strong>Locatie:</strong> ${locatie}
   </p>
 
   <p>
-    <a href="https://pms.mdb-networks.nl"
+    <a href="${werkbonUrl}"
        style="display:inline-block;background:#d6007e;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:700">
-       Project Management System
+       Werkbon openen
     </a>
   </p>
 
-  <p style="color:#64748b;font-size:13px">De werkbon PDF is als bijlage toegevoegd.</p>
+  <p style="color:#64748b;font-size:13px">
+    ${
+        data.pdfBuffer
+            ? "De werkbon PDF is als bijlage toegevoegd."
+            : "De PDF-bijlage kon niet worden gegenereerd; open de werkbon in PMS."
+    }
+  </p>
 
   <p>Team MDB Networks</p>
 
@@ -55,14 +75,16 @@ Team MDB Networks
     await sendResendEmail({
         from: "MDB Networks <noreply@mdb-networks.nl>",
         to: internalNotificationRecipients(),
-        subject: `Nieuwe werkbon ingevuld — ${data.project} (${data.workorderNumber})`,
+        subject: `Werkbon afgerond — ${data.project} (${data.workorderNumber})`,
         text: tekst,
         html,
-        attachments: [
-            {
-                filename: `${data.workorderNumber}.pdf`,
-                content: data.pdfBuffer.toString("base64"),
-            },
-        ],
+        attachments: data.pdfBuffer
+            ? [
+                  {
+                      filename: `${data.workorderNumber}.pdf`,
+                      content: data.pdfBuffer.toString("base64"),
+                  },
+              ]
+            : undefined,
     });
 }
