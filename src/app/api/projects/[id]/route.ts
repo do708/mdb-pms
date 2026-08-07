@@ -7,7 +7,6 @@ import {
     loadProjectDetail,
     serializeProjectDetail,
 } from "@/lib/projects/serialize";
-import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 
 export async function GET(
     request: Request,
@@ -125,9 +124,53 @@ export async function PATCH(
             data.offerteFilename = body.offerteFilename || null;
         }
 
+        for (const key of [
+            "termijn1Gefactureerd",
+            "termijn2Gefactureerd",
+            "termijn3Gefactureerd",
+            "termijn4Gefactureerd",
+        ] as const) {
+            if (typeof body[key] === "boolean") {
+                data[key] = body[key];
+
+                const dateKey =
+                    `${key}Op` as
+                        | "termijn1GefactureerdOp"
+                        | "termijn2GefactureerdOp"
+                        | "termijn3GefactureerdOp"
+                        | "termijn4GefactureerdOp";
+
+                // Bij aanvinken: datum meegestuurd of vandaag; bij uitvinken: leeg.
+                if (body[key] === false) {
+                    data[dateKey] = null;
+                } else if (body[dateKey] !== undefined) {
+                    data[dateKey] =
+                        body[dateKey] === "" || body[dateKey] == null
+                            ? new Date()
+                            : new Date(String(body[dateKey]));
+                } else {
+                    data[dateKey] = new Date();
+                }
+            }
+        }
+
+        for (const dateKey of [
+            "termijn1GefactureerdOp",
+            "termijn2GefactureerdOp",
+            "termijn3GefactureerdOp",
+            "termijn4GefactureerdOp",
+        ] as const) {
+            if (body[dateKey] !== undefined && data[dateKey] === undefined) {
+                data[dateKey] =
+                    body[dateKey] === "" || body[dateKey] == null
+                        ? null
+                        : new Date(String(body[dateKey]));
+            }
+        }
+
         const existing = await prisma.project.findUnique({
             where: { id },
-            select: { location: true, plaats: true },
+            select: { id: true },
         });
 
         if (!existing) {
@@ -137,33 +180,10 @@ export async function PATCH(
             );
         }
 
-        const locationChanged =
-            (body.location !== undefined &&
-                (body.location || null) !== existing.location) ||
-            (body.plaats !== undefined &&
-                (body.plaats || null) !== existing.plaats);
-
         await prisma.project.update({
             where: { id },
             data,
         });
-
-        // Adres gewijzigd → km herberekeken en opnieuw opslaan (niet stil bij GET)
-        if (locationChanged) {
-            const uren = await prisma.projectUur.findMany({
-                where: { projectId: id },
-                select: { userId: true, datum: true },
-            });
-
-            const synced = new Set<string>();
-
-            for (const row of uren) {
-                const key = `${row.userId}:${row.datum.toISOString().slice(0, 10)}`;
-                if (synced.has(key)) continue;
-                synced.add(key);
-                await syncEngineerDayKilometers(row.userId, row.datum);
-            }
-        }
 
         const project = await loadProjectDetail(id);
 

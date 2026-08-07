@@ -81,6 +81,15 @@ model Project {
   offerteUrl       String?
   offerteFilename  String?
   status           String             @default("actief")
+  /// Facturatie van projecturen per termijn (1–4)
+  termijn1Gefactureerd Boolean          @default(false)
+  termijn2Gefactureerd Boolean          @default(false)
+  termijn3Gefactureerd Boolean          @default(false)
+  termijn4Gefactureerd Boolean          @default(false)
+  termijn1GefactureerdOp DateTime?
+  termijn2GefactureerdOp DateTime?
+  termijn3GefactureerdOp DateTime?
+  termijn4GefactureerdOp DateTime?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   customer         Customer           @relation(fields: [customerId], references: [id])

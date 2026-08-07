@@ -25,6 +25,14 @@ interface ProjectDetail {
     geoffreerdBedrag: number;
     offerteUrl: string | null;
     offerteFilename: string | null;
+    termijn1Gefactureerd: boolean;
+    termijn2Gefactureerd: boolean;
+    termijn3Gefactureerd: boolean;
+    termijn4Gefactureerd: boolean;
+    termijn1GefactureerdOp: string | null;
+    termijn2GefactureerdOp: string | null;
+    termijn3GefactureerdOp: string | null;
+    termijn4GefactureerdOp: string | null;
     gebruikteUren: number;
     materiaalKosten: number;
     uren: {
@@ -273,7 +281,7 @@ export default function ProjectDetailPage() {
     async function saveBasics() {
         if (!location.trim() || !plaats.trim()) {
             const ok = window.confirm(
-                "Adres en/of plaats ontbreekt. Zonder volledig adres blijven kilometers bij urenboeken leeg. Toch opslaan?"
+                "Adres en/of plaats ontbreekt. Toch opslaan?"
             );
             if (!ok) {
                 return;
@@ -394,6 +402,135 @@ export default function ProjectDetailPage() {
         } finally {
             setOfferteUploading(false);
         }
+    }
+
+    async function toggleTermijnGefactureerd(
+        key:
+            | "termijn1Gefactureerd"
+            | "termijn2Gefactureerd"
+            | "termijn3Gefactureerd"
+            | "termijn4Gefactureerd",
+        checked: boolean
+    ) {
+        if (!project) {
+            return;
+        }
+
+        const dateKey =
+            `${key}Op` as
+                | "termijn1GefactureerdOp"
+                | "termijn2GefactureerdOp"
+                | "termijn3GefactureerdOp"
+                | "termijn4GefactureerdOp";
+
+        const previousChecked = project[key];
+        const previousDate = project[dateKey];
+        const nextDate = checked ? todayIso() : null;
+
+        setProject({
+            ...project,
+            [key]: checked,
+            [dateKey]: nextDate,
+        });
+        setSaving(true);
+
+        try {
+            const response = await fetch(`/api/projects/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    [key]: checked,
+                    [dateKey]: nextDate,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setProject({
+                    ...project,
+                    [key]: previousChecked,
+                    [dateKey]: previousDate,
+                });
+                alert(data.error || "Opslaan mislukt");
+                return;
+            }
+
+            setProject(data);
+        } catch (error) {
+            console.error(error);
+            setProject({
+                ...project,
+                [key]: previousChecked,
+                [dateKey]: previousDate,
+            });
+            alert("Opslaan mislukt");
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    async function setTermijnGefactureerdDatum(
+        dateKey:
+            | "termijn1GefactureerdOp"
+            | "termijn2GefactureerdOp"
+            | "termijn3GefactureerdOp"
+            | "termijn4GefactureerdOp",
+        value: string
+    ) {
+        if (!project) {
+            return;
+        }
+
+        const previous = project[dateKey];
+        setProject({ ...project, [dateKey]: value || null });
+        setSaving(true);
+
+        try {
+            const response = await fetch(`/api/projects/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    [dateKey]: value || null,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setProject({ ...project, [dateKey]: previous });
+                alert(data.error || "Opslaan mislukt");
+                return;
+            }
+
+            setProject(data);
+        } catch (error) {
+            console.error(error);
+            setProject({ ...project, [dateKey]: previous });
+            alert("Opslaan mislukt");
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    function termijnDatumIso(
+        value: string | null | undefined
+    ): string {
+        if (!value) {
+            return "";
+        }
+
+        const d = new Date(value);
+
+        if (Number.isNaN(d.getTime())) {
+            return "";
+        }
+
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${y}-${m}-${day}`;
     }
 
     async function boekUren() {
@@ -817,6 +954,90 @@ export default function ProjectDetailPage() {
                         }
                         eenheid="uur"
                     />
+                    <div className="pt-2 border-t border-gray-100 space-y-2">
+                        <p className="text-sm font-semibold text-gray-900">
+                            Termijnen gefactureerd
+                        </p>
+                        <p className="text-xs text-gray-500">
+                            Vink aan wanneer een termijn is gefactureerd en vul
+                            de factuurdatum in.
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {(
+                                [
+                                    {
+                                        key: "termijn1Gefactureerd",
+                                        dateKey: "termijn1GefactureerdOp",
+                                        label: "Termijn 1 — akkoord opdracht (inkoop)",
+                                    },
+                                    {
+                                        key: "termijn2Gefactureerd",
+                                        dateKey: "termijn2GefactureerdOp",
+                                        label: "Termijn 2 — start opdracht",
+                                    },
+                                    {
+                                        key: "termijn3Gefactureerd",
+                                        dateKey: "termijn3GefactureerdOp",
+                                        label: "Termijn 3 — 50%",
+                                    },
+                                    {
+                                        key: "termijn4Gefactureerd",
+                                        dateKey: "termijn4GefactureerdOp",
+                                        label: "Termijn 4 — 100%",
+                                    },
+                                ] as const
+                            ).map((termijn) => (
+                                <div
+                                    key={termijn.key}
+                                    className="
+                                        rounded-xl border border-gray-200
+                                        px-3 py-2 space-y-2
+                                    "
+                                >
+                                    <label className="flex items-start gap-2 text-sm cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={Boolean(
+                                                project[termijn.key]
+                                            )}
+                                            disabled={saving}
+                                            onChange={(e) =>
+                                                toggleTermijnGefactureerd(
+                                                    termijn.key,
+                                                    e.target.checked
+                                                )
+                                            }
+                                            className="mt-0.5 h-4 w-4 accent-[#0066FF]"
+                                        />
+                                        <span className="font-medium text-gray-800 leading-snug">
+                                            {termijn.label}
+                                        </span>
+                                    </label>
+                                    {project[termijn.key] ? (
+                                        <div className="pl-6">
+                                            <label className="block text-xs text-gray-500 mb-1">
+                                                Gefactureerd op
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={termijnDatumIso(
+                                                    project[termijn.dateKey]
+                                                )}
+                                                disabled={saving}
+                                                onChange={(e) =>
+                                                    setTermijnGefactureerdDatum(
+                                                        termijn.dateKey,
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-[11rem] bg-white"
+                                            />
+                                        </div>
+                                    ) : null}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="bg-white border rounded-2xl p-5 space-y-4">
