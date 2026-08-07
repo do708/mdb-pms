@@ -6,6 +6,7 @@ import {
     FORMAAT_PASTEL,
     SCHERM_FORMATEN,
     berekendInstallatieType,
+    isHoofdType,
     syncSchermItems,
 } from "@/lib/aanvraag/installatieTypes";
 
@@ -97,10 +98,13 @@ export default function SchermenSpecificatie({
                 <div className="space-y-4">
                     <p className="text-xs text-gray-500">
                         Vul per scherm formaat, beugel, oriëntatie en
-                        locatie in. Het eerste scherm op een locatie
-                        krijgt een volledig type; een scherm naast een
-                        ander op dezelfde locatie krijgt type +{" "}
-                        <span className="font-semibold">v</span>.
+                        locatie in. Op dezelfde locatie geldt altijd het{" "}
+                        <span className="font-semibold">
+                            grootste scherm
+                        </span>{" "}
+                        als hoofdtype; de overige schermen op die
+                        locatie zijn vervolgtypes (
+                        <span className="font-semibold">v</span>).
                     </p>
 
                     {items.map((scherm, index) => {
@@ -178,10 +182,9 @@ export default function SchermenSpecificatie({
                                                 }}
                                             />
                                             <span className="text-sm text-gray-700">
-                                                Komt naast een ander
-                                                scherm te hangen (zelfde
-                                                locatie / één
-                                                opstelling)
+                                                Zelfde locatie als een
+                                                ander scherm (2e, 3e, …
+                                                = vervolgtype)
                                             </span>
                                         </label>
 
@@ -222,7 +225,8 @@ export default function SchermenSpecificatie({
                                                                 s.id
                                                             }
                                                         >
-                                                            Naast
+                                                            Zelfde
+                                                            locatie als
                                                             scherm{" "}
                                                             {si + 1}
                                                             {s.locatie
@@ -403,8 +407,10 @@ export default function SchermenSpecificatie({
                                     />
                                     {scherm.naastSchermId ? (
                                         <span className="text-[11px] text-gray-500">
-                                            Locatie overgenomen van het
-                                            gekoppelde scherm
+                                            Locatie overgenomen — dit
+                                            scherm telt als vervolg op
+                                            die locatie (tenzij het
+                                            groter is dan de andere)
                                         </span>
                                     ) : null}
                                 </label>
@@ -556,9 +562,9 @@ export default function SchermenSpecificatie({
                                                 ? `Type ${t}`
                                                 : "— vul formaat in"}
                                         </strong>
-                                        {s.naastSchermId
-                                            ? " · naast ander scherm"
-                                            : " · nieuwe locatie"}
+                                        {isHoofdType(s, items)
+                                            ? " · hoofdtype (grootste op locatie)"
+                                            : " · vervolgtype (zelfde locatie)"}
                                     </li>
                                 );
                             })}

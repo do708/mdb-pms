@@ -1,10 +1,11 @@
 /**
- * Installatietype-codes op basis van schermformaat.
- * Eerste scherm op een locatie = vol type (bijv. 05).
- * Extra scherm op dezelfde locatie = type + "v" (bijv. 04v).
+ * Installatietype-codes op basis van schermformaat + locatie.
+ *
+ * Per locatie:
+ * - grootste scherm = hoofdtype (bijv. 85"/86" → 07)
+ * - overige schermen op diezelfde locatie = vervolgtype met "v" (bijv. 55" → 04v)
  *
  * Mapping volgt MDB-voorbeeld: 65" → 05, 55" → 04.
- * Pas aan als de prijslijst/PDF andere codes heeft.
  */
 
 export const SCHERM_FORMATEN = [
@@ -15,6 +16,7 @@ export const SCHERM_FORMATEN = [
     '55"',
     '65"',
     '75"',
+    '85"',
     '86"',
     "Anders",
 ] as const;
@@ -28,6 +30,7 @@ export const FORMAAT_PASTEL: Record<string, { bg: string; border: string; text: 
     '55"': { bg: "bg-lime-100", border: "border-lime-300", text: "text-lime-900" },
     '65"': { bg: "bg-sky-100", border: "border-sky-300", text: "text-sky-900" },
     '75"': { bg: "bg-violet-100", border: "border-violet-300", text: "text-violet-900" },
+    '85"': { bg: "bg-purple-100", border: "border-purple-300", text: "text-purple-900" },
     '86"': { bg: "bg-fuchsia-100", border: "border-fuchsia-300", text: "text-fuchsia-900" },
     Anders: { bg: "bg-slate-100", border: "border-slate-300", text: "text-slate-800" },
 };
@@ -50,6 +53,7 @@ export const TYPE_CODE_PER_FORMAAT: Record<string, string> = {
     '55"': "04",
     '65"': "05",
     '75"': "06",
+    '85"': "07",
     '86"': "07",
 };
 
@@ -60,7 +64,10 @@ export interface AanvraagSchermItem {
     beugel: string;
     orientatie: string;
     locatie: string;
-    /** Leeg = start nieuwe locatie (vol type). Anders id van het ankerscherm. */
+    /**
+     * Zelfde locatie als een ander scherm (groep).
+     * Leeg = eigen locatieveld bepaalt de groep.
+     */
     naastSchermId: string;
     stroom: "" | "Ja" | "Nee";
     stroomMdb: string;
@@ -103,7 +110,6 @@ export function syncSchermItems(
         next.pop();
     }
 
-    // Verwijder verwijzingen naar niet-bestaande schermen
     const ids = new Set(next.map((s) => s.id));
 
     return next.map((s, i) => {
@@ -113,7 +119,6 @@ export function syncSchermItems(
             naast = "";
         }
 
-        // Mag niet naar zichzelf of naar een later scherm (alleen eerdere)
         if (naast) {
             const targetIndex = next.findIndex((x) => x.id === naast);
             if (targetIndex < 0 || targetIndex >= i) {
@@ -133,9 +138,97 @@ export function basisTypeCode(formaat: string): string {
     return TYPE_CODE_PER_FORMAAT[formaat] || "";
 }
 
+/** Inch-waarde voor grootte-vergelijking (85" > 55"). */
+export function formaatInch(item: AanvraagSchermItem): number {
+    const raw =
+        item.formaat === "Anders"
+            ? item.formaatAnders
+            : item.formaat;
+    const match = String(raw || "").match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : 0;
+}
+
+function resolveAnker(
+    item: AanvraagSchermItem,
+    alle: AanvraagSchermItem[]
+): AanvraagSchermItem {
+    let cur = item;
+    const seen = new Set<string>();
+
+    while (cur.naastSchermId && !seen.has(cur.id)) {
+        seen.add(cur.id);
+        const next = alle.find((s) => s.id === cur.naastSchermId);
+        if (!next) {
+            break;
+        }
+        cur = next;
+    }
+
+    return cur;
+}
+
 /**
- * Bepaalt of dit scherm het eerste is op zijn locatiegroep.
- * Eerste = vol type; gekoppeld aan eerder scherm = type + "v".
+ * Groepssleutel: zelfde locatienaam óf gekoppeld via “zelfde locatie als”.
+ * Lege, ongecoppelde locatie = eigen solo-groep.
+ */
+export function locatieGroepKey(
+    item: AanvraagSchermItem,
+    alle: AanvraagSchermItem[]
+): string {
+    const anker = resolveAnker(item, alle);
+    const loc =
+        (item.locatie || anker.locatie).trim().toLowerCase();
+
+    if (loc) {
+        return `loc:${loc}`;
+    }
+
+    if (item.naastSchermId || anker.id !== item.id) {
+        return `anker:${anker.id}`;
+    }
+
+    return `solo:${item.id}`;
+}
+
+export function schermenOpLocatie(
+    item: AanvraagSchermItem,
+    alle: AanvraagSchermItem[]
+): AanvraagSchermItem[] {
+    const key = locatieGroepKey(item, alle);
+    return alle.filter((s) => locatieGroepKey(s, alle) === key);
+}
+
+/** Id van het grootste scherm op deze locatie (= hoofdtype). */
+export function hoofdSchermIdOpLocatie(
+    item: AanvraagSchermItem,
+    alle: AanvraagSchermItem[]
+): string {
+    const groep = schermenOpLocatie(item, alle);
+
+    let bestId = groep[0]?.id || item.id;
+    let bestSize = -1;
+    let bestIndex = Number.POSITIVE_INFINITY;
+
+    for (const s of groep) {
+        const size = formaatInch(s);
+        const idx = alle.findIndex((x) => x.id === s.id);
+
+        if (
+            size > bestSize ||
+            (size === bestSize && idx < bestIndex)
+        ) {
+            bestSize = size;
+            bestIndex = idx;
+            bestId = s.id;
+        }
+    }
+
+    return bestId;
+}
+
+/**
+ * Grootste scherm op de locatie = vol type.
+ * Alle overige schermen op die locatie = type + "v".
  */
 export function berekendInstallatieType(
     item: AanvraagSchermItem,
@@ -147,28 +240,30 @@ export function berekendInstallatieType(
         return "";
     }
 
-    const isVervolg = Boolean(item.naastSchermId);
+    const groep = schermenOpLocatie(item, alle);
 
-    // Ook: zelfde locatietekst als een eerder scherm → vervolg
-    const loc = item.locatie.trim().toLowerCase();
-    let zelfdeLocatieAlsEerder = false;
-
-    if (!isVervolg && loc) {
-        const index = alle.findIndex((s) => s.id === item.id);
-        zelfdeLocatieAlsEerder = alle
-            .slice(0, Math.max(0, index))
-            .some(
-                (s) =>
-                    !s.naastSchermId &&
-                    s.locatie.trim().toLowerCase() === loc
-            );
+    if (groep.length <= 1) {
+        return basis;
     }
 
-    if (isVervolg || zelfdeLocatieAlsEerder) {
-        return `${basis}v`;
+    const hoofdId = hoofdSchermIdOpLocatie(item, alle);
+
+    if (item.id === hoofdId) {
+        return basis;
     }
 
-    return basis;
+    return `${basis}v`;
+}
+
+export function isHoofdType(
+    item: AanvraagSchermItem,
+    alle: AanvraagSchermItem[]
+): boolean {
+    const groep = schermenOpLocatie(item, alle);
+    if (groep.length <= 1) {
+        return true;
+    }
+    return item.id === hoofdSchermIdOpLocatie(item, alle);
 }
 
 export function samenvattingSchermen(
