@@ -268,9 +268,8 @@ export function hoofdSchermIdOpLocatie(
 }
 
 /**
- * Per locatiegroep: alleen het grootste scherm = vol type.
- * Alle overige schermen in die groep = type + "v".
- * Zo is er altijd precies één hoofdtype per opstelling.
+ * Over de hele aanvraag: alleen het grootste scherm = vol type.
+ * Alle overige schermen (ook “aparte locatie”) = type + "v".
  */
 export function berekendInstallatieType(
     item: AanvraagSchermItem,
@@ -282,13 +281,15 @@ export function berekendInstallatieType(
         return "";
     }
 
-    const groep = schermenOpLocatie(item, alle);
+    const metFormaat = alle.filter(
+        (s) => basisTypeCode(s.formaat) || formaatInch(s) > 0
+    );
 
-    if (groep.length <= 1) {
+    if (metFormaat.length <= 1) {
         return basis;
     }
 
-    const hoofdId = hoofdSchermId(groep, alle);
+    const hoofdId = hoofdSchermId(metFormaat, alle);
 
     if (item.id === hoofdId) {
         return basis;
@@ -301,13 +302,15 @@ export function isHoofdType(
     item: AanvraagSchermItem,
     alle: AanvraagSchermItem[]
 ): boolean {
-    const groep = schermenOpLocatie(item, alle);
+    const metFormaat = alle.filter(
+        (s) => basisTypeCode(s.formaat) || formaatInch(s) > 0
+    );
 
-    if (groep.length <= 1) {
+    if (metFormaat.length <= 1) {
         return true;
     }
 
-    return item.id === hoofdSchermId(groep, alle);
+    return item.id === hoofdSchermId(metFormaat, alle);
 }
 
 export function samenvattingSchermen(

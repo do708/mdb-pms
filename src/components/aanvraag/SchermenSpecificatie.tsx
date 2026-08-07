@@ -222,6 +222,7 @@ export default function SchermenSpecificatie({
                                                 .filter(Boolean)}
                                             <option value="__geen__">
                                                 Geen — aparte locatie
+                                                (toch vervolgtype)
                                             </option>
                                         </select>
                                     </label>
