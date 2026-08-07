@@ -80,10 +80,52 @@ export async function POST(
         // Omschrijving/opmerkingen bundelen zodat niets verloren gaat.
         const specs =
             (aanvraag.specificaties && typeof aanvraag.specificaties === "object")
-            ? aanvraag.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string> }>
+            ? aanvraag.specificaties as Record<string, unknown>
             : {};
 
+        const schermenBlok =
+            specs.schermen && typeof specs.schermen === "object"
+            ? specs.schermen as {
+                aan?:boolean;
+                velden?:Record<string,string>;
+                items?:{
+                    formaat?:string;
+                    formaatAnders?:string;
+                    beugel?:string;
+                    orientatie?:string;
+                    locatie?:string;
+                    berekendType?:string;
+                    stroom?:string;
+                    internet?:string;
+                }[];
+              }
+            : null;
+
+        const schermenItemsRegels =
+            schermenBlok?.aan && Array.isArray(schermenBlok.items)
+            ? schermenBlok.items.map((s, i)=>{
+                const formaat =
+                    s.formaat === "Anders"
+                    ? (s.formaatAnders || "Anders")
+                    : (s.formaat || "");
+                return [
+                    `Scherm ${i + 1}`,
+                    formaat,
+                    s.beugel,
+                    s.orientatie,
+                    s.locatie ? `@ ${s.locatie}` : "",
+                    s.berekendType ? `type ${s.berekendType}` : "",
+                    s.stroom ? `stroom: ${s.stroom}` : "",
+                    s.internet ? `internet: ${s.internet}` : ""
+                ].filter(Boolean).join(" · ");
+              })
+            : [];
+
         const specRegels:string[] = [];
+
+        if(schermenItemsRegels.length > 0){
+            specRegels.push(...schermenItemsRegels);
+        }
 
         for(const [key, blok] of Object.entries(specs)){
             if(
@@ -96,10 +138,15 @@ export async function POST(
             ){
                 continue;
             }
-            if(blok && typeof blok === "object" && blok.aan){
+            // Schermen al via items samengevat
+            if(key === "schermen" && schermenItemsRegels.length > 0){
+                continue;
+            }
+            const oud = blok as { aan?:boolean; velden?:Record<string,string> };
+            if(oud && typeof oud === "object" && oud.aan){
                 const velden =
-                    blok.velden
-                    ? Object.entries(blok.velden)
+                    oud.velden
+                    ? Object.entries(oud.velden)
                         .filter(([,v])=>v && String(v).trim())
                         .map(([k,v])=>`${k}: ${v}`)
                         .join(", ")

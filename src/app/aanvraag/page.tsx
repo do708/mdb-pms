@@ -4,6 +4,15 @@ import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+import SchermenSpecificatie from "@/components/aanvraag/SchermenSpecificatie";
+import {
+    AanvraagSchermItem,
+    FORMAAT_PASTEL,
+    berekendInstallatieType,
+    samenvattingSchermen,
+    samenvattingStroomInternet,
+    syncSchermItems,
+} from "@/lib/aanvraag/installatieTypes";
 
 
 interface Bijlage {
@@ -31,24 +40,8 @@ const ONDERDELEN:{
         key:"schermen",
         titel:"1. Schermen",
         kleur:"bg-sky-50 border-sky-200",
-        velden:[
-            { key:"aantal", label:"Aantal schermen", plh:"Bijv. 2" },
-            { key:"formaat", label:"Formaat / inch (meerdere mogelijk)", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"], meerdere:true },
-            {
-                key:"beugels",
-                label:"Welke beugels? (vul het aantal in)",
-                beugels:[
-                    "Muurbeugel",
-                    "Zwenkbeugel",
-                    "Plafondbeugel 150cm",
-                    "Plafondbeugel 300cm",
-                    "Vloerstandaard",
-                    "Overig"
-                ]
-            },
-            { key:"orientatie", label:"Oriëntatie", opties:["Landscape","Portrait","Landscape en Portrait"] },
-            { key:"opmerking", label:"Locatie scherm", plh:"Waar komt het scherm?" }
-        ]
+        // Velden worden via SchermenSpecificatie gerenderd (per scherm).
+        velden:[]
     },
     {
         key:"videowall",
@@ -143,6 +136,9 @@ function AanvraagFormulier(){
             }
             return start;
         });
+
+    const [schermenItems, setSchermenItems] =
+        useState<AanvraagSchermItem[]>([]);
 
     const [project,setProject] = useState("");
     const [stroom,setStroom] = useState("");
@@ -354,27 +350,47 @@ function AanvraagFormulier(){
         // Korte samenvatting van de aangevinkte schermen (voor de lijstweergave).
         const schermenSamenvatting =
             specs.schermen?.aan
-            ? [
-                specs.schermen.velden.aantal,
-                parseGekozenOpties(specs.schermen.velden.formaat || "").join(" + ")
-                    || specs.schermen.velden.formaat
-              ]
-                .filter(Boolean).join(" x ")
+            ? (
+                schermenItems.length > 0
+                ? samenvattingSchermen(schermenItems)
+                : [
+                    specs.schermen.velden.aantal,
+                    parseGekozenOpties(specs.schermen.velden.formaat || "").join(" + ")
+                        || specs.schermen.velden.formaat
+                  ]
+                    .filter(Boolean).join(" x ")
+              )
             : "";
+
+        const perSchermSi =
+            specs.schermen?.aan && schermenItems.length > 0
+            ? samenvattingStroomInternet(schermenItems)
+            : null;
 
         try {
 
-            // Stroom/internet met eventuele "MDB realiseert?"-vervolgvraag
-            // samenvatten tot één leesbare tekst.
+            // Stroom/internet: bij schermen per scherm; anders globale ja/nee.
             const stroomTekst =
-                stroom === "Nee"
-                ? `Nee — MDB realiseren? ${stroomRealisatie === "Anders" ? `Anders: ${stroomRealisatieAnders}` : (stroomRealisatie || "-")}`
-                : stroom;
+                perSchermSi?.stroom
+                || (
+                    stroom === "Nee"
+                    ? `Nee — MDB realiseren? ${stroomRealisatie === "Anders" ? `Anders: ${stroomRealisatieAnders}` : (stroomRealisatie || "-")}`
+                    : stroom
+                );
 
             const internetTekst =
-                internet === "Nee"
-                ? `Nee — MDB realiseren? ${internetRealisatie === "Anders" ? `Anders: ${internetRealisatieAnders}` : (internetRealisatie || "-")}`
-                : internet;
+                perSchermSi?.internet
+                || (
+                    internet === "Nee"
+                    ? `Nee — MDB realiseren? ${internetRealisatie === "Anders" ? `Anders: ${internetRealisatieAnders}` : (internetRealisatie || "-")}`
+                    : internet
+                );
+
+            const schermenMetType =
+                schermenItems.map((s)=>({
+                    ...s,
+                    berekendType:berekendInstallatieType(s, schermenItems)
+                }));
 
             const res =
                 await fetch(`/api/aanvraag/${token}`,{
@@ -389,6 +405,14 @@ function AanvraagFormulier(){
                         aanvragerNaam,
                         specificaties:{
                             ...specs,
+                            schermen:{
+                                ...specs.schermen,
+                                velden:{
+                                    ...specs.schermen.velden,
+                                    aantal:specs.schermen.velden.aantal || String(schermenItems.length || "")
+                                },
+                                items:schermenMetType
+                            },
                             project,
                             typeAanvraag,
                             storing:{
@@ -658,7 +682,24 @@ function AanvraagFormulier(){
                                     {
                                         blok.aan && (
                                             <div className="px-3 pb-3 space-y-2">
-                                                {o.velden.map((v)=>(
+                                                {o.key === "schermen" ? (
+                                                    <SchermenSpecificatie
+                                                        aantal={blok.velden.aantal || ""}
+                                                        onAantalChange={(a)=>{
+                                                            zetVeld("schermen", "aantal", a);
+                                                            const n = parseInt(a, 10);
+                                                            if(!Number.isFinite(n) || n < 0){
+                                                                setSchermenItems([]);
+                                                                return;
+                                                            }
+                                                            setSchermenItems((prev)=>
+                                                                syncSchermItems(prev, n)
+                                                            );
+                                                        }}
+                                                        items={schermenItems}
+                                                        onItemsChange={setSchermenItems}
+                                                    />
+                                                ) : o.velden.map((v)=>(
                                                     <label key={v.key} className="block">
                                                         <span className="text-xs text-gray-600">{v.label}</span>
                                                         {
@@ -684,7 +725,10 @@ function AanvraagFormulier(){
                                                             ? (
                                                                 <div className="mt-1 space-y-2">
                                                                     <div className="flex flex-wrap gap-2">
-                                                                        {v.opties.map((optie)=>(
+                                                                        {v.opties.map((optie)=>{
+                                                                            const pastel = FORMAAT_PASTEL[optie];
+                                                                            const selected = parseGekozenOpties(blok.velden[v.key] || "").includes(optie);
+                                                                            return (
                                                                             <button
                                                                                 key={optie}
                                                                                 type="button"
@@ -692,14 +736,17 @@ function AanvraagFormulier(){
                                                                                 className={
                                                                                     "rounded-lg px-3 py-2 border-2 text-sm font-medium "
                                                                                     +
-                                                                                    (parseGekozenOpties(blok.velden[v.key] || "").includes(optie)
+                                                                                    (selected && pastel
+                                                                                        ? `${pastel.bg} ${pastel.border} ${pastel.text}`
+                                                                                        : selected
                                                                                         ? "bg-sky-100 text-sky-900 border-sky-300"
                                                                                         : "bg-white text-gray-700 border-gray-200")
                                                                                 }
                                                                             >
                                                                                 {optie}
                                                                             </button>
-                                                                        ))}
+                                                                            );
+                                                                        })}
                                                                     </div>
                                                                     {
                                                                         parseGekozenOpties(blok.velden[v.key] || "").includes("Anders") && (
@@ -789,7 +836,9 @@ function AanvraagFormulier(){
                     </label>
 
 
-                    {/* Stroom & internet */}
+                    {/* Stroom & internet — alleen als er géén per-scherm
+                        antwoorden zijn (fallback / geen schermen aangevinkt). */}
+                    {!(specs.schermen?.aan && schermenItems.length > 0) ? (
                     <div className="space-y-4">
 
                         <div>
@@ -940,6 +989,7 @@ function AanvraagFormulier(){
                         </div>
 
                     </div>
+                    ) : null}
                     </>
                     )}
 

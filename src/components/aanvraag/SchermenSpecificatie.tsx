@@ -1,0 +1,571 @@
+"use client";
+
+import {
+    AanvraagSchermItem,
+    BEUGEL_OPTIES,
+    FORMAAT_PASTEL,
+    SCHERM_FORMATEN,
+    berekendInstallatieType,
+    syncSchermItems,
+} from "@/lib/aanvraag/installatieTypes";
+
+function JaNee({
+    value,
+    onChange,
+}: {
+    value: "" | "Ja" | "Nee";
+    onChange: (v: "" | "Ja" | "Nee") => void;
+}) {
+    return (
+        <div className="flex gap-2">
+            {(["Ja", "Nee"] as const).map((optie) => (
+                <button
+                    key={optie}
+                    type="button"
+                    onClick={() =>
+                        onChange(value === optie ? "" : optie)
+                    }
+                    className={
+                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                        +
+                        (value === optie
+                            ? optie === "Ja"
+                                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                                : "bg-amber-100 text-amber-800 border-amber-300"
+                            : "bg-white text-gray-700 border-gray-200")
+                    }
+                >
+                    {optie}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+interface Props {
+    aantal: string;
+    onAantalChange: (aantal: string) => void;
+    items: AanvraagSchermItem[];
+    onItemsChange: (items: AanvraagSchermItem[]) => void;
+}
+
+export default function SchermenSpecificatie({
+    aantal,
+    onAantalChange,
+    items,
+    onItemsChange,
+}: Props) {
+    function zetAantal(raw: string) {
+        onAantalChange(raw);
+        const n = parseInt(raw, 10);
+
+        if (!Number.isFinite(n) || n < 0) {
+            onItemsChange([]);
+            return;
+        }
+
+        onItemsChange(syncSchermItems(items, n));
+    }
+
+    function updateItem(
+        id: string,
+        patch: Partial<AanvraagSchermItem>
+    ) {
+        onItemsChange(
+            items.map((s) => (s.id === id ? { ...s, ...patch } : s))
+        );
+    }
+
+    return (
+        <div className="space-y-4">
+            <label className="block">
+                <span className="text-xs text-gray-600">
+                    Aantal schermen
+                </span>
+                <input
+                    type="number"
+                    min={0}
+                    max={20}
+                    value={aantal}
+                    onChange={(e) => zetAantal(e.target.value)}
+                    placeholder="Bijv. 2"
+                    className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                />
+            </label>
+
+            {items.length > 0 ? (
+                <div className="space-y-4">
+                    <p className="text-xs text-gray-500">
+                        Vul per scherm formaat, beugel, oriëntatie en
+                        locatie in. Het eerste scherm op een locatie
+                        krijgt een volledig type; een scherm naast een
+                        ander op dezelfde locatie krijgt type +{" "}
+                        <span className="font-semibold">v</span>.
+                    </p>
+
+                    {items.map((scherm, index) => {
+                        const type = berekendInstallatieType(
+                            scherm,
+                            items
+                        );
+                        const eerdere = items.slice(0, index);
+                        const pastel =
+                            FORMAAT_PASTEL[scherm.formaat] ||
+                            FORMAAT_PASTEL.Anders;
+
+                        return (
+                            <div
+                                key={scherm.id}
+                                className="rounded-xl border border-sky-200 bg-white p-3 space-y-3"
+                            >
+                                <div className="flex items-center justify-between gap-2">
+                                    <p className="font-semibold text-sm text-gray-800">
+                                        Scherm {index + 1}
+                                    </p>
+                                    {type ? (
+                                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#0066FF]/10 text-[#0066FF] border border-[#0066FF]/30">
+                                            Type {type}
+                                        </span>
+                                    ) : (
+                                        <span className="text-xs text-gray-400">
+                                            Type —
+                                        </span>
+                                    )}
+                                </div>
+
+                                {index > 0 ? (
+                                    <div className="rounded-lg bg-slate-50 border border-slate-200 p-2.5 space-y-2">
+                                        <label className="flex items-start gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="mt-1 accent-[#0066FF]"
+                                                checked={Boolean(
+                                                    scherm.naastSchermId
+                                                )}
+                                                onChange={(e) => {
+                                                    if (
+                                                        !e.target
+                                                            .checked
+                                                    ) {
+                                                        updateItem(
+                                                            scherm.id,
+                                                            {
+                                                                naastSchermId:
+                                                                    "",
+                                                            }
+                                                        );
+                                                        return;
+                                                    }
+
+                                                    const anker =
+                                                        eerdere.find(
+                                                            (s) =>
+                                                                !s.naastSchermId
+                                                        ) ||
+                                                        eerdere[0];
+
+                                                    updateItem(
+                                                        scherm.id,
+                                                        {
+                                                            naastSchermId:
+                                                                anker?.id ||
+                                                                "",
+                                                            locatie:
+                                                                anker?.locatie ||
+                                                                scherm.locatie,
+                                                        }
+                                                    );
+                                                }}
+                                            />
+                                            <span className="text-sm text-gray-700">
+                                                Komt naast een ander
+                                                scherm te hangen (zelfde
+                                                locatie / één
+                                                opstelling)
+                                            </span>
+                                        </label>
+
+                                        {scherm.naastSchermId ? (
+                                            <select
+                                                value={
+                                                    scherm.naastSchermId
+                                                }
+                                                onChange={(e) => {
+                                                    const anker =
+                                                        items.find(
+                                                            (s) =>
+                                                                s.id ===
+                                                                e
+                                                                    .target
+                                                                    .value
+                                                        );
+                                                    updateItem(
+                                                        scherm.id,
+                                                        {
+                                                            naastSchermId:
+                                                                e
+                                                                    .target
+                                                                    .value,
+                                                            locatie:
+                                                                anker?.locatie ||
+                                                                scherm.locatie,
+                                                        }
+                                                    );
+                                                }}
+                                                className="w-full border rounded-lg p-2 bg-white text-sm"
+                                            >
+                                                {eerdere.map(
+                                                    (s, si) => (
+                                                        <option
+                                                            key={s.id}
+                                                            value={
+                                                                s.id
+                                                            }
+                                                        >
+                                                            Naast
+                                                            scherm{" "}
+                                                            {si + 1}
+                                                            {s.locatie
+                                                                ? ` (${s.locatie})`
+                                                                : ""}
+                                                        </option>
+                                                    )
+                                                )}
+                                            </select>
+                                        ) : null}
+                                    </div>
+                                ) : null}
+
+                                <div className="space-y-1.5">
+                                    <span className="text-xs text-gray-600">
+                                        Formaat / inch
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {SCHERM_FORMATEN.map((f) => {
+                                            const c =
+                                                FORMAAT_PASTEL[f];
+                                            const selected =
+                                                scherm.formaat === f;
+
+                                            return (
+                                                <button
+                                                    key={f}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        updateItem(
+                                                            scherm.id,
+                                                            {
+                                                                formaat:
+                                                                    selected
+                                                                        ? ""
+                                                                        : f,
+                                                                formaatAnders:
+                                                                    selected
+                                                                        ? ""
+                                                                        : scherm.formaatAnders,
+                                                            }
+                                                        )
+                                                    }
+                                                    className={
+                                                        "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                                                        +
+                                                        (selected
+                                                            ? `${c.bg} ${c.border} ${c.text}`
+                                                            : "bg-white text-gray-600 border-gray-200")
+                                                    }
+                                                >
+                                                    {f}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    {scherm.formaat === "Anders" ? (
+                                        <input
+                                            value={
+                                                scherm.formaatAnders
+                                            }
+                                            onChange={(e) =>
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        formaatAnders:
+                                                            e.target
+                                                                .value,
+                                                    }
+                                                )
+                                            }
+                                            placeholder="Anders formaat (inch)"
+                                            className="w-full border rounded-lg p-2 bg-white"
+                                        />
+                                    ) : null}
+                                    {scherm.formaat &&
+                                    scherm.formaat !== "Anders" ? (
+                                        <p
+                                            className={`text-xs ${pastel.text}`}
+                                        >
+                                            Gekozen: {scherm.formaat}
+                                        </p>
+                                    ) : null}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <span className="text-xs text-gray-600">
+                                        Beugel
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {BEUGEL_OPTIES.map((b) => (
+                                            <button
+                                                key={b}
+                                                type="button"
+                                                onClick={() =>
+                                                    updateItem(
+                                                        scherm.id,
+                                                        {
+                                                            beugel:
+                                                                scherm.beugel ===
+                                                                b
+                                                                    ? ""
+                                                                    : b,
+                                                        }
+                                                    )
+                                                }
+                                                className={
+                                                    "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                                                    +
+                                                    (scherm.beugel ===
+                                                    b
+                                                        ? "bg-sky-100 text-sky-900 border-sky-300"
+                                                        : "bg-white text-gray-700 border-gray-200")
+                                                }
+                                            >
+                                                {b}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <span className="text-xs text-gray-600">
+                                        Oriëntatie
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            "Landscape",
+                                            "Portrait",
+                                        ].map((o) => (
+                                            <button
+                                                key={o}
+                                                type="button"
+                                                onClick={() =>
+                                                    updateItem(
+                                                        scherm.id,
+                                                        {
+                                                            orientatie:
+                                                                scherm.orientatie ===
+                                                                o
+                                                                    ? ""
+                                                                    : o,
+                                                        }
+                                                    )
+                                                }
+                                                className={
+                                                    "flex-1 min-w-[120px] rounded-lg py-2 border-2 text-sm font-medium "
+                                                    +
+                                                    (scherm.orientatie ===
+                                                    o
+                                                        ? "bg-violet-100 text-violet-900 border-violet-300"
+                                                        : "bg-white text-gray-700 border-gray-200")
+                                                }
+                                            >
+                                                {o}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <label className="block">
+                                    <span className="text-xs text-gray-600">
+                                        Locatie scherm
+                                    </span>
+                                    <input
+                                        value={scherm.locatie}
+                                        onChange={(e) =>
+                                            updateItem(scherm.id, {
+                                                locatie:
+                                                    e.target.value,
+                                            })
+                                        }
+                                        disabled={Boolean(
+                                            scherm.naastSchermId
+                                        )}
+                                        placeholder="Bijv. Entree / Vergaderruimte 1"
+                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white disabled:bg-slate-50 disabled:text-gray-500"
+                                    />
+                                    {scherm.naastSchermId ? (
+                                        <span className="text-[11px] text-gray-500">
+                                            Locatie overgenomen van het
+                                            gekoppelde scherm
+                                        </span>
+                                    ) : null}
+                                </label>
+
+                                <div className="space-y-2 pt-1 border-t border-slate-100">
+                                    <span className="text-xs text-gray-600 block">
+                                        Stroom aanwezig binnen 3 meter?
+                                    </span>
+                                    <JaNee
+                                        value={scherm.stroom}
+                                        onChange={(v) =>
+                                            updateItem(scherm.id, {
+                                                stroom: v,
+                                                stroomMdb:
+                                                    v === "Nee"
+                                                        ? scherm.stroomMdb
+                                                        : "",
+                                            })
+                                        }
+                                    />
+                                    {scherm.stroom === "Nee" ? (
+                                        <div className="pl-2 border-l-2 border-amber-200 space-y-1.5">
+                                            <span className="text-xs text-gray-600 block">
+                                                MDB Networks
+                                                realiseren?
+                                            </span>
+                                            <div className="flex gap-2">
+                                                {[
+                                                    "Ja",
+                                                    "Nee",
+                                                    "Anders",
+                                                ].map((optie) => (
+                                                    <button
+                                                        key={optie}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            updateItem(
+                                                                scherm.id,
+                                                                {
+                                                                    stroomMdb:
+                                                                        scherm.stroomMdb ===
+                                                                        optie
+                                                                            ? ""
+                                                                            : optie,
+                                                                }
+                                                            )
+                                                        }
+                                                        className={
+                                                            "flex-1 rounded-lg py-1.5 border-2 text-xs font-medium "
+                                                            +
+                                                            (scherm.stroomMdb ===
+                                                            optie
+                                                                ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                                : "bg-white text-gray-700 border-gray-200")
+                                                        }
+                                                    >
+                                                        {optie}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <span className="text-xs text-gray-600 block">
+                                        Internet aanwezig binnen 3
+                                        meter?
+                                    </span>
+                                    <JaNee
+                                        value={scherm.internet}
+                                        onChange={(v) =>
+                                            updateItem(scherm.id, {
+                                                internet: v,
+                                                internetMdb:
+                                                    v === "Nee"
+                                                        ? scherm.internetMdb
+                                                        : "",
+                                            })
+                                        }
+                                    />
+                                    {scherm.internet === "Nee" ? (
+                                        <div className="pl-2 border-l-2 border-amber-200 space-y-1.5">
+                                            <span className="text-xs text-gray-600 block">
+                                                MDB Networks
+                                                realiseren?
+                                            </span>
+                                            <div className="flex gap-2">
+                                                {[
+                                                    "Ja",
+                                                    "Nee",
+                                                    "Anders",
+                                                ].map((optie) => (
+                                                    <button
+                                                        key={optie}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            updateItem(
+                                                                scherm.id,
+                                                                {
+                                                                    internetMdb:
+                                                                        scherm.internetMdb ===
+                                                                        optie
+                                                                            ? ""
+                                                                            : optie,
+                                                                }
+                                                            )
+                                                        }
+                                                        className={
+                                                            "flex-1 rounded-lg py-1.5 border-2 text-xs font-medium "
+                                                            +
+                                                            (scherm.internetMdb ===
+                                                            optie
+                                                                ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                                : "bg-white text-gray-700 border-gray-200")
+                                                        }
+                                                    >
+                                                        {optie}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {/* Overzicht berekende types */}
+                    <div className="rounded-xl border border-[#0066FF]/20 bg-[#0066FF]/5 p-3">
+                        <p className="text-xs font-semibold text-[#0066FF] mb-1.5">
+                            Berekende installatietypes
+                        </p>
+                        <ul className="text-sm text-gray-800 space-y-0.5">
+                            {items.map((s, i) => {
+                                const t = berekendInstallatieType(
+                                    s,
+                                    items
+                                );
+                                return (
+                                    <li key={s.id}>
+                                        Scherm {i + 1}
+                                        {s.formaat
+                                            ? ` (${s.formaat === "Anders" ? s.formaatAnders || "Anders" : s.formaat})`
+                                            : ""}
+                                        :{" "}
+                                        <strong>
+                                            {t
+                                                ? `Type ${t}`
+                                                : "— vul formaat in"}
+                                        </strong>
+                                        {s.naastSchermId
+                                            ? " · naast ander scherm"
+                                            : " · nieuwe locatie"}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                </div>
+            ) : null}
+        </div>
+    );
+}

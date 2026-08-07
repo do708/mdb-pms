@@ -192,9 +192,63 @@ function AanvragenSectie(){
                                             : null
                                         }
                                         {
+                                            (()=>{
+                                                if(!a.specificaties || typeof a.specificaties !== "object"){
+                                                    return null;
+                                                }
+                                                const sch = (a.specificaties as Record<string,unknown>).schermen as {
+                                                    aan?:boolean;
+                                                    items?:{
+                                                        formaat?:string;
+                                                        formaatAnders?:string;
+                                                        beugel?:string;
+                                                        locatie?:string;
+                                                        berekendType?:string;
+                                                    }[];
+                                                } | undefined;
+                                                if(!sch?.aan || !Array.isArray(sch.items) || sch.items.length === 0){
+                                                    return null;
+                                                }
+                                                return (
+                                                    <div>
+                                                        <strong>Schermen:</strong>
+                                                        <ul className="mt-1 list-disc pl-5 space-y-0.5">
+                                                            {sch.items.map((s,i)=>{
+                                                                const formaat =
+                                                                    s.formaat === "Anders"
+                                                                    ? (s.formaatAnders || "Anders")
+                                                                    : s.formaat;
+                                                                return (
+                                                                    <li key={i}>
+                                                                        Scherm {i + 1}
+                                                                        {formaat ? ` · ${formaat}` : ""}
+                                                                        {s.beugel ? ` · ${s.beugel}` : ""}
+                                                                        {s.locatie ? ` · ${s.locatie}` : ""}
+                                                                        {s.berekendType ? (
+                                                                            <span className="ml-1 font-semibold text-[#0066FF]">
+                                                                                Type {s.berekendType}
+                                                                            </span>
+                                                                        ) : null}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                );
+                                            })()
+                                        }
+                                        {
                                             a.specificaties && typeof a.specificaties === "object"
-                                            ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string> }>)
-                                                .filter(([k,v])=>k !== "project" && k !== "contact" && v && typeof v === "object" && v.aan)
+                                            ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string>; items?:unknown[] }>)
+                                                .filter(([k,v])=>{
+                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs"){
+                                                        return false;
+                                                    }
+                                                    if(k === "schermen" && Array.isArray(v?.items) && v.items.length > 0){
+                                                        return false;
+                                                    }
+                                                    return !!(v && typeof v === "object" && v.aan);
+                                                })
                                                 .map(([k,v])=>{
                                                     const velden =
                                                         v.velden
