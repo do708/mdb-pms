@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 import SchermenSpecificatie from "@/components/aanvraag/SchermenSpecificatie";
+import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
+import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
 import {
     AanvraagSchermItem,
     FORMAAT_PASTEL,
@@ -47,12 +49,8 @@ const ONDERDELEN:{
         key:"videowall",
         titel:"2. Videowall",
         kleur:"bg-emerald-50 border-emerald-200",
-        velden:[
-            { key:"configuratie", label:"Configuratie", plh:"Bijv. 2x2, 3x3" },
-            { key:"formaat", label:"Formaat / inch (meerdere mogelijk)", opties:["32\"","43\"","49\"","50\"","55\"","65\"","75\"","86\"","Anders"], meerdere:true },
-            { key:"orientatie", label:"Oriëntatie", opties:["Landscape","Portrait"] },
-            { key:"opmerking", label:"Locatie scherm", plh:"Waar komt het scherm?" }
-        ]
+        // Velden via VideowallSpecificatie (LCD/LED).
+        velden:[]
     },
     {
         key:"kiosk",
@@ -78,7 +76,8 @@ const ONDERDELEN:{
         titel:"5. Audio",
         kleur:"bg-rose-50 border-rose-200",
         velden:[
-            { key:"speakers", label:"Speakers", plh:"Aantal / type" },
+            { key:"speakersAantal", label:"Aantal speakers", plh:"Bijv. 4" },
+            { key:"speakersType", label:"Type speakers", plh:"Bijv. plafond" },
             { key:"versterker", label:"Versterker", plh:"Bijv. 1x versterker" },
             { key:"opmerking", label:"Opmerking", plh:"Aanvullende details" }
         ]
@@ -237,6 +236,16 @@ function AanvraagFormulier(){
             [blok]:{
                 ...s[blok],
                 velden:{ ...s[blok].velden, [veld]:waarde }
+            }
+        }));
+    }
+
+    function zetVelden(blok:string, patch:Record<string,string>){
+        setSpecs((s)=>({
+            ...s,
+            [blok]:{
+                ...s[blok],
+                velden:{ ...s[blok].velden, ...patch }
             }
         }));
     }
@@ -699,91 +708,159 @@ function AanvraagFormulier(){
                                                         items={schermenItems}
                                                         onItemsChange={setSchermenItems}
                                                     />
-                                                ) : o.velden.map((v)=>(
-                                                    <label key={v.key} className="block">
-                                                        <span className="text-xs text-gray-600">{v.label}</span>
-                                                        {
-                                                            v.beugels
-                                                            ? (
-                                                                <div className="mt-1 space-y-1.5">
-                                                                    {v.beugels.map((bt)=>(
-                                                                        <div key={bt} className="flex items-center gap-2">
-                                                                            <span className="text-sm text-gray-700 flex-1">{bt}</span>
-                                                                            <input
-                                                                                type="number"
-                                                                                min="0"
-                                                                                value={blok.velden[`beugel_${bt}`] || ""}
-                                                                                onChange={(e)=>zetVeld(o.key, `beugel_${bt}`, e.target.value)}
-                                                                                placeholder="0"
-                                                                                className="w-20 border rounded-lg p-2 bg-white text-center"
-                                                                            />
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            )
-                                                            : v.opties && v.meerdere
-                                                            ? (
-                                                                <div className="mt-1 space-y-2">
-                                                                    <div className="flex flex-wrap gap-2">
-                                                                        {v.opties.map((optie)=>{
-                                                                            const pastel = FORMAAT_PASTEL[optie];
-                                                                            const selected = parseGekozenOpties(blok.velden[v.key] || "").includes(optie);
-                                                                            return (
-                                                                            <button
-                                                                                key={optie}
-                                                                                type="button"
-                                                                                onClick={()=>toggleMeerdereOptie(o.key, v.key, optie)}
-                                                                                className={
-                                                                                    "rounded-lg px-3 py-2 border-2 text-sm font-medium "
-                                                                                    +
-                                                                                    (selected && pastel
-                                                                                        ? `${pastel.bg} ${pastel.border} ${pastel.text}`
-                                                                                        : selected
-                                                                                        ? "bg-sky-100 text-sky-900 border-sky-300"
-                                                                                        : "bg-white text-gray-700 border-gray-200")
-                                                                                }
-                                                                            >
-                                                                                {optie}
-                                                                            </button>
-                                                                            );
-                                                                        })}
-                                                                    </div>
-                                                                    {
-                                                                        parseGekozenOpties(blok.velden[v.key] || "").includes("Anders") && (
-                                                                            <input
-                                                                                value={blok.velden.formaatAnders || ""}
-                                                                                onChange={(e)=>zetVeld(o.key, "formaatAnders", e.target.value)}
-                                                                                placeholder="Anders formaat (inch)"
-                                                                                className="w-full border rounded-lg p-2 bg-white"
-                                                                            />
-                                                                        )
-                                                                    }
-                                                                </div>
-                                                            )
-                                                            : v.opties
-                                                            ? (
-                                                                <select
-                                                                    value={blok.velden[v.key] || ""}
-                                                                    onChange={(e)=>zetVeld(o.key, v.key, e.target.value)}
-                                                                    className="w-full border rounded-lg p-2 mt-0.5 bg-white"
-                                                                >
-                                                                    <option value="">Kies...</option>
-                                                                    {v.opties.map((optie)=>(
-                                                                        <option key={optie} value={optie}>{optie}</option>
-                                                                    ))}
-                                                                </select>
-                                                            )
-                                                            : (
+                                                ) : o.key === "videowall" ? (
+                                                    <VideowallSpecificatie
+                                                        velden={blok.velden}
+                                                        onChange={(veld, waarde)=>
+                                                            zetVeld("videowall", veld, waarde)
+                                                        }
+                                                        onPatch={(patch)=>
+                                                            zetVelden("videowall", patch)
+                                                        }
+                                                        onToggleFormaat={(optie)=>
+                                                            toggleMeerdereOptie("videowall", "formaat", optie)
+                                                        }
+                                                    />
+                                                ) : o.key === "audio" ? (
+                                                    <>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            <label className="block flex-1 min-w-[120px]">
+                                                                <span className="text-xs text-gray-600">Aantal speakers</span>
                                                                 <input
-                                                                    value={blok.velden[v.key] || ""}
-                                                                    onChange={(e)=>zetVeld(o.key, v.key, e.target.value)}
-                                                                    placeholder={v.plh || ""}
+                                                                    value={blok.velden.speakersAantal || ""}
+                                                                    onChange={(e)=>zetVeld("audio", "speakersAantal", e.target.value)}
+                                                                    placeholder="Bijv. 4"
                                                                     className="w-full border rounded-lg p-2 mt-0.5 bg-white"
                                                                 />
+                                                            </label>
+                                                            <label className="block flex-1 min-w-[140px]">
+                                                                <span className="text-xs text-gray-600">Type speakers</span>
+                                                                <input
+                                                                    value={blok.velden.speakersType || ""}
+                                                                    onChange={(e)=>zetVeld("audio", "speakersType", e.target.value)}
+                                                                    placeholder="Bijv. plafond"
+                                                                    className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                                                />
+                                                            </label>
+                                                        </div>
+                                                        {o.velden
+                                                            .filter((v)=>
+                                                                v.key !== "speakersAantal"
+                                                                && v.key !== "speakersType"
                                                             )
-                                                        }
-                                                    </label>
-                                                ))}
+                                                            .map((v)=>(
+                                                                <label key={v.key} className="block">
+                                                                    <span className="text-xs text-gray-600">{v.label}</span>
+                                                                    <input
+                                                                        value={blok.velden[v.key] || ""}
+                                                                        onChange={(e)=>zetVeld(o.key, v.key, e.target.value)}
+                                                                        placeholder={v.plh || ""}
+                                                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                                                    />
+                                                                </label>
+                                                            ))}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {o.velden.map((v)=>(
+                                                            <label key={v.key} className="block">
+                                                                <span className="text-xs text-gray-600">{v.label}</span>
+                                                                {
+                                                                    v.beugels
+                                                                    ? (
+                                                                        <div className="mt-1 space-y-1.5">
+                                                                            {v.beugels.map((bt)=>(
+                                                                                <div key={bt} className="flex items-center gap-2">
+                                                                                    <span className="text-sm text-gray-700 flex-1">{bt}</span>
+                                                                                    <input
+                                                                                        type="number"
+                                                                                        min="0"
+                                                                                        value={blok.velden[`beugel_${bt}`] || ""}
+                                                                                        onChange={(e)=>zetVeld(o.key, `beugel_${bt}`, e.target.value)}
+                                                                                        placeholder="0"
+                                                                                        className="w-20 border rounded-lg p-2 bg-white text-center"
+                                                                                    />
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    )
+                                                                    : v.opties && v.meerdere
+                                                                    ? (
+                                                                        <div className="mt-1 space-y-2">
+                                                                            <div className="flex flex-wrap gap-2">
+                                                                                {v.opties.map((optie)=>{
+                                                                                    const pastel = FORMAAT_PASTEL[optie];
+                                                                                    const selected = parseGekozenOpties(blok.velden[v.key] || "").includes(optie);
+                                                                                    return (
+                                                                                    <button
+                                                                                        key={optie}
+                                                                                        type="button"
+                                                                                        onClick={()=>toggleMeerdereOptie(o.key, v.key, optie)}
+                                                                                        className={
+                                                                                            "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                                                                                            +
+                                                                                            (selected && pastel
+                                                                                                ? `${pastel.bg} ${pastel.border} ${pastel.text}`
+                                                                                                : selected
+                                                                                                ? "bg-sky-100 text-sky-900 border-sky-300"
+                                                                                                : "bg-white text-gray-700 border-gray-200")
+                                                                                        }
+                                                                                    >
+                                                                                        {optie}
+                                                                                    </button>
+                                                                                    );
+                                                                                })}
+                                                                            </div>
+                                                                            {
+                                                                                parseGekozenOpties(blok.velden[v.key] || "").includes("Anders") && (
+                                                                                    <input
+                                                                                        value={blok.velden.formaatAnders || ""}
+                                                                                        onChange={(e)=>zetVeld(o.key, "formaatAnders", e.target.value)}
+                                                                                        placeholder="Anders formaat (inch)"
+                                                                                        className="w-full border rounded-lg p-2 bg-white"
+                                                                                    />
+                                                                                )
+                                                                            }
+                                                                        </div>
+                                                                    )
+                                                                    : v.opties
+                                                                    ? (
+                                                                        <select
+                                                                            value={blok.velden[v.key] || ""}
+                                                                            onChange={(e)=>zetVeld(o.key, v.key, e.target.value)}
+                                                                            className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                                                        >
+                                                                            <option value="">Kies...</option>
+                                                                            {v.opties.map((optie)=>(
+                                                                                <option key={optie} value={optie}>{optie}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    )
+                                                                    : (
+                                                                        <input
+                                                                            value={blok.velden[v.key] || ""}
+                                                                            onChange={(e)=>zetVeld(o.key, v.key, e.target.value)}
+                                                                            placeholder={v.plh || ""}
+                                                                            className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                                                        />
+                                                                    )
+                                                                }
+                                                            </label>
+                                                        ))}
+                                                        {(o.key === "kiosk" || o.key === "mediaplayers") ? (
+                                                            <StroomInternetVragen
+                                                                velden={blok.velden}
+                                                                onChange={(veldOrPatch, waarde)=>{
+                                                                    if(typeof veldOrPatch === "string"){
+                                                                        zetVeld(o.key, veldOrPatch, waarde || "");
+                                                                    } else {
+                                                                        zetVelden(o.key, veldOrPatch);
+                                                                    }
+                                                                }}
+                                                            />
+                                                        ) : null}
+                                                    </>
+                                                )}
                                             </div>
                                         )
                                     }
@@ -801,7 +878,7 @@ function AanvraagFormulier(){
                                 6. Project (offerte-basis) — is het een project?
                             </span>
                             <div className="flex gap-2">
-                                {["Ja","Nee"].map((optie)=>(
+                                {(["Ja","Nee"] as const).map((optie)=>(
                                     <button
                                         key={optie}
                                         type="button"
@@ -810,7 +887,9 @@ function AanvraagFormulier(){
                                             "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
                                             +
                                             (project === optie
-                                                ? "bg-teal-100 text-teal-800 border-teal-300"
+                                                ? optie === "Ja"
+                                                    ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                                                    : "bg-red-100 text-red-800 border-red-300"
                                                 : "bg-white text-gray-700 border-gray-200")
                                         }
                                     >
@@ -836,9 +915,14 @@ function AanvraagFormulier(){
                     </label>
 
 
-                    {/* Stroom & internet — alleen als er géén per-scherm
-                        antwoorden zijn (fallback / geen schermen aangevinkt). */}
-                    {!(specs.schermen?.aan && schermenItems.length > 0) ? (
+                    {/* Stroom & internet — alleen als er géén per-onderdeel
+                        antwoorden zijn (fallback / geen schermen/videowall/kiosk/mediaplayers). */}
+                    {!(
+                        (specs.schermen?.aan && schermenItems.length > 0)
+                        || specs.videowall?.aan
+                        || specs.kiosk?.aan
+                        || specs.mediaplayers?.aan
+                    ) ? (
                     <div className="space-y-4">
 
                         <div>

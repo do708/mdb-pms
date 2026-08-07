@@ -1,0 +1,209 @@
+"use client";
+
+import { KABEL_TRAJECT_OPTIES } from "@/lib/aanvraag/installatieTypes";
+
+export function JaNee({
+    value,
+    onChange,
+}: {
+    value: "" | "Ja" | "Nee";
+    onChange: (v: "" | "Ja" | "Nee") => void;
+}) {
+    return (
+        <div className="flex gap-2">
+            {(["Ja", "Nee"] as const).map((optie) => (
+                <button
+                    key={optie}
+                    type="button"
+                    onClick={() =>
+                        onChange(value === optie ? "" : optie)
+                    }
+                    className={
+                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                        +
+                        (value === optie
+                            ? optie === "Ja"
+                                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                                : "bg-amber-100 text-amber-800 border-amber-300"
+                            : "bg-white text-gray-700 border-gray-200")
+                    }
+                >
+                    {optie}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+export function MdbRealisatieVervolg({
+    mdb,
+    afstand,
+    traject,
+    onMdbChange,
+    onAfstandChange,
+    onTrajectChange,
+}: {
+    mdb: string;
+    afstand: string;
+    traject: string;
+    onMdbChange: (v: "" | "Ja" | "Nee") => void;
+    onAfstandChange: (v: string) => void;
+    onTrajectChange: (v: string) => void;
+}) {
+    return (
+        <div className="pl-2 border-l-2 border-amber-200 space-y-2">
+            <span className="text-xs text-gray-600 block">
+                Wil je dat MDB Networks dit realiseert?
+            </span>
+            <JaNee
+                value={
+                    mdb === "Ja" || mdb === "Nee" ? mdb : ""
+                }
+                onChange={onMdbChange}
+            />
+            {mdb === "Ja" ? (
+                <div className="space-y-2 pt-1">
+                    <label className="block">
+                        <span className="text-xs text-gray-600">
+                            Geschatte afstand (meters)
+                        </span>
+                        <input
+                            value={afstand}
+                            onChange={(e) =>
+                                onAfstandChange(e.target.value)
+                            }
+                            placeholder="Bijv. 8"
+                            className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                        />
+                    </label>
+                    <div className="space-y-1.5">
+                        <span className="text-xs text-gray-600 block">
+                            Traject
+                        </span>
+                        <div className="flex flex-col gap-2">
+                            {KABEL_TRAJECT_OPTIES.map((optie) => (
+                                <button
+                                    key={optie}
+                                    type="button"
+                                    onClick={() =>
+                                        onTrajectChange(
+                                            traject === optie
+                                                ? ""
+                                                : optie
+                                        )
+                                    }
+                                    className={
+                                        "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left "
+                                        +
+                                        (traject === optie
+                                            ? "bg-sky-100 text-sky-800 border-sky-300"
+                                            : "bg-white text-gray-700 border-gray-200")
+                                    }
+                                >
+                                    {optie}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
+/** Stroom + internet/data met MDB-vervolgpatroon (gedeeld door schermen, videowall, kiosk, mediaplayers). */
+export function StroomInternetVragen({
+    velden,
+    onChange,
+    internetLabel = "Internet aanwezig binnen 3 meter?",
+}: {
+    velden: Record<string, string>;
+    /** Enkele veld-update of patch van meerdere velden tegelijk. */
+    onChange: (veldOrPatch: string | Record<string, string>, waarde?: string) => void;
+    internetLabel?: string;
+}) {
+    const stroom = (velden.stroom || "") as "" | "Ja" | "Nee";
+    const internet = (velden.internet || "") as "" | "Ja" | "Nee";
+
+    function zet(veld: string, waarde: string) {
+        onChange(veld, waarde);
+    }
+
+    function zetPatch(patch: Record<string, string>) {
+        onChange(patch);
+    }
+
+    return (
+        <div className="space-y-3 pt-1">
+            <div className="space-y-2">
+                <span className="text-xs text-gray-600 block">
+                    Stroom aanwezig binnen 3 meter?
+                </span>
+                <JaNee
+                    value={stroom === "Ja" || stroom === "Nee" ? stroom : ""}
+                    onChange={(v) => {
+                        zetPatch({
+                            stroom: v,
+                            stroomMdb: "",
+                            stroomAfstand: "",
+                            stroomTraject: "",
+                        });
+                    }}
+                />
+                {stroom === "Nee" ? (
+                    <MdbRealisatieVervolg
+                        mdb={velden.stroomMdb || ""}
+                        afstand={velden.stroomAfstand || ""}
+                        traject={velden.stroomTraject || ""}
+                        onMdbChange={(v) => {
+                            zetPatch({
+                                stroomMdb: v,
+                                stroomAfstand: "",
+                                stroomTraject: "",
+                            });
+                        }}
+                        onAfstandChange={(v) => zet("stroomAfstand", v)}
+                        onTrajectChange={(v) => zet("stroomTraject", v)}
+                    />
+                ) : null}
+            </div>
+
+            <div className="space-y-2">
+                <span className="text-xs text-gray-600 block">
+                    {internetLabel}
+                </span>
+                <JaNee
+                    value={
+                        internet === "Ja" || internet === "Nee"
+                            ? internet
+                            : ""
+                    }
+                    onChange={(v) => {
+                        zetPatch({
+                            internet: v,
+                            internetMdb: "",
+                            internetAfstand: "",
+                            internetTraject: "",
+                        });
+                    }}
+                />
+                {internet === "Nee" ? (
+                    <MdbRealisatieVervolg
+                        mdb={velden.internetMdb || ""}
+                        afstand={velden.internetAfstand || ""}
+                        traject={velden.internetTraject || ""}
+                        onMdbChange={(v) => {
+                            zetPatch({
+                                internetMdb: v,
+                                internetAfstand: "",
+                                internetTraject: "",
+                            });
+                        }}
+                        onAfstandChange={(v) => zet("internetAfstand", v)}
+                        onTrajectChange={(v) => zet("internetTraject", v)}
+                    />
+                ) : null}
+            </div>
+        </div>
+    );
+}
