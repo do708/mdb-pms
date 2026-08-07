@@ -482,8 +482,23 @@ export default function ProjectDetailPage() {
             return;
         }
 
-        const previous = project[dateKey];
-        setProject({ ...project, [dateKey]: value || null });
+        const key =
+            dateKey.replace(/Op$/, "") as
+                | "termijn1Gefactureerd"
+                | "termijn2Gefactureerd"
+                | "termijn3Gefactureerd"
+                | "termijn4Gefactureerd";
+
+        const nextDate = value || null;
+        const nextChecked = Boolean(nextDate);
+        const previousDate = project[dateKey];
+        const previousChecked = project[key];
+
+        setProject({
+            ...project,
+            [dateKey]: nextDate,
+            [key]: nextChecked,
+        });
         setSaving(true);
 
         try {
@@ -491,14 +506,19 @@ export default function ProjectDetailPage() {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    [dateKey]: value || null,
+                    [dateKey]: nextDate,
+                    [key]: nextChecked,
                 }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                setProject({ ...project, [dateKey]: previous });
+                setProject({
+                    ...project,
+                    [dateKey]: previousDate,
+                    [key]: previousChecked,
+                });
                 alert(data.error || "Opslaan mislukt");
                 return;
             }
@@ -506,7 +526,11 @@ export default function ProjectDetailPage() {
             setProject(data);
         } catch (error) {
             console.error(error);
-            setProject({ ...project, [dateKey]: previous });
+            setProject({
+                ...project,
+                [dateKey]: previousDate,
+                [key]: previousChecked,
+            });
             alert("Opslaan mislukt");
         } finally {
             setSaving(false);
@@ -959,8 +983,8 @@ export default function ProjectDetailPage() {
                             Termijnen gefactureerd
                         </p>
                         <p className="text-xs text-gray-500">
-                            Vink aan wanneer een termijn is gefactureerd en vul
-                            de factuurdatum in.
+                            Vul de factuurdatum in: het vinkje gaat dan
+                            automatisch aan. Wis de datum om uit te vinken.
                         </p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {(
@@ -986,7 +1010,14 @@ export default function ProjectDetailPage() {
                                         label: "Termijn 4 — 100%",
                                     },
                                 ] as const
-                            ).map((termijn) => (
+                            ).map((termijn) => {
+                                const factuurdatum = termijnDatumIso(
+                                    project[termijn.dateKey]
+                                );
+                                // Alleen aangevinkt wanneer er een factuurdatum is.
+                                const isChecked = Boolean(factuurdatum);
+
+                                return (
                                 <div
                                     key={termijn.key}
                                     className="
@@ -997,9 +1028,7 @@ export default function ProjectDetailPage() {
                                     <label className="flex items-start gap-2 text-sm cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            checked={Boolean(
-                                                project[termijn.key]
-                                            )}
+                                            checked={isChecked}
                                             disabled={saving}
                                             onChange={(e) =>
                                                 toggleTermijnGefactureerd(
@@ -1013,29 +1042,26 @@ export default function ProjectDetailPage() {
                                             {termijn.label}
                                         </span>
                                     </label>
-                                    {project[termijn.key] ? (
-                                        <div className="pl-6">
-                                            <label className="block text-xs text-gray-500 mb-1">
-                                                Gefactureerd op
-                                            </label>
-                                            <input
-                                                type="date"
-                                                value={termijnDatumIso(
-                                                    project[termijn.dateKey]
-                                                )}
-                                                disabled={saving}
-                                                onChange={(e) =>
-                                                    setTermijnGefactureerdDatum(
-                                                        termijn.dateKey,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-[11rem] bg-white"
-                                            />
-                                        </div>
-                                    ) : null}
+                                    <div className="pl-6">
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Factuurdatum
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={factuurdatum}
+                                            disabled={saving}
+                                            onChange={(e) =>
+                                                setTermijnGefactureerdDatum(
+                                                    termijn.dateKey,
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-[11rem] bg-white"
+                                        />
+                                    </div>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

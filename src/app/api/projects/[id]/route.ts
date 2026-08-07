@@ -161,10 +161,26 @@ export async function PATCH(
             "termijn4GefactureerdOp",
         ] as const) {
             if (body[dateKey] !== undefined && data[dateKey] === undefined) {
-                data[dateKey] =
-                    body[dateKey] === "" || body[dateKey] == null
-                        ? null
-                        : new Date(String(body[dateKey]));
+                const hasDate =
+                    body[dateKey] !== "" && body[dateKey] != null;
+                data[dateKey] = hasDate
+                    ? new Date(String(body[dateKey]))
+                    : null;
+
+                // Datum invullen ⇒ gefactureerd; legen ⇒ niet gefactureerd.
+                const boolKey =
+                    dateKey.replace(
+                        /Op$/,
+                        ""
+                    ) as
+                        | "termijn1Gefactureerd"
+                        | "termijn2Gefactureerd"
+                        | "termijn3Gefactureerd"
+                        | "termijn4Gefactureerd";
+
+                if (data[boolKey] === undefined) {
+                    data[boolKey] = hasDate;
+                }
             }
         }
 
