@@ -5,6 +5,18 @@ import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
+import {
+    AanvraagRuimte,
+    ExtraDiensten,
+    summarizeRuimtes,
+} from "@/types/aanvraagInstallatie";
+
+const TYPE_LABELS: Record<string, string> = {
+    installatie: "Installatiewerkzaamheden",
+    storing: "Storing / Servicebezoek",
+    uren: "Regie / Uren",
+    intake: "Intake op locatie",
+};
 
 
 
@@ -176,7 +188,7 @@ function AanvragenSectie(){
                                     <div className="mt-3 pt-3 border-t text-sm text-gray-600 space-y-1">
                                         {
                                             a.specificaties && typeof a.specificaties === "object" && (a.specificaties as Record<string,unknown>).typeAanvraag
-                                            ? <p><strong>Type:</strong> {String((a.specificaties as Record<string,unknown>).typeAanvraag)}</p>
+                                            ? <p><strong>Type:</strong> {TYPE_LABELS[String((a.specificaties as Record<string,unknown>).typeAanvraag)] || String((a.specificaties as Record<string,unknown>).typeAanvraag)}</p>
                                             : null
                                         }
                                         {a.aanvragerNaam ? <p><strong>Aanvrager:</strong> {a.aanvragerNaam}</p> : null}
@@ -192,9 +204,45 @@ function AanvragenSectie(){
                                             : null
                                         }
                                         {
+                                            (() => {
+                                                if (!a.specificaties || typeof a.specificaties !== "object") {
+                                                    return null;
+                                                }
+                                                const s = a.specificaties as Record<string, unknown>;
+                                                const regels = summarizeRuimtes(
+                                                    s.ruimtes as AanvraagRuimte[] | undefined
+                                                );
+                                                if (regels.length === 0) {
+                                                    return null;
+                                                }
+                                                return (
+                                                    <div>
+                                                        <strong>Ruimtes:</strong>
+                                                        <ul className="mt-1 list-disc pl-5 space-y-0.5">
+                                                            {regels.map((r, i) => (
+                                                                <li key={i}>{r}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                );
+                                            })()
+                                        }
+                                        {
                                             a.specificaties && typeof a.specificaties === "object"
                                             ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string> }>)
-                                                .filter(([k,v])=>k !== "project" && k !== "contact" && v && typeof v === "object" && v.aan)
+                                                .filter(([k,v])=>
+                                                    k !== "project"
+                                                    && k !== "contact"
+                                                    && k !== "typeAanvraag"
+                                                    && k !== "storing"
+                                                    && k !== "geschatUren"
+                                                    && k !== "aantalMonteurs"
+                                                    && k !== "ruimtes"
+                                                    && k !== "stroom"
+                                                    && k !== "internet"
+                                                    && k !== "extra"
+                                                    && v && typeof v === "object" && v.aan
+                                                )
                                                 .map(([k,v])=>{
                                                     const velden =
                                                         v.velden
@@ -212,14 +260,34 @@ function AanvragenSectie(){
                                             : null
                                         }
                                         {
+                                            (() => {
+                                                if (!a.specificaties || typeof a.specificaties !== "object") {
+                                                    return null;
+                                                }
+                                                const extra = (a.specificaties as Record<string, unknown>).extra as ExtraDiensten | undefined;
+                                                if (!extra || typeof extra !== "object") {
+                                                    return null;
+                                                }
+                                                const items = [
+                                                    extra.afvoerTm50 ? 'Afvoer t/m 50"' : "",
+                                                    extra.afvoerVanaf50 ? 'Afvoer vanaf 50"' : "",
+                                                    extra.afval ? "Afval" : "",
+                                                    extra.audio ? "Audio" : "",
+                                                ].filter(Boolean);
+                                                return items.length
+                                                    ? <p><strong>Extra:</strong> {items.join(", ")}</p>
+                                                    : null;
+                                            })()
+                                        }
+                                        {
                                             a.specificaties
                                             && typeof a.specificaties === "object"
                                             && (a.specificaties as Record<string,unknown>).project === "Ja"
                                             ? <p><strong>Project (offerte-basis):</strong> Ja</p>
                                             : null
                                         }
-                                        {a.stroom ? <p><strong>Stroom binnen 3m:</strong> {a.stroom}</p> : null}
-                                        {a.internet ? <p><strong>Internet binnen 3m:</strong> {a.internet}</p> : null}
+                                        {a.stroom ? <p><strong>Stroom:</strong> {a.stroom}</p> : null}
+                                        {a.internet ? <p><strong>Internet:</strong> {a.internet}</p> : null}
                                         {a.opmerkingen ? <p><strong>Opmerkingen:</strong> {a.opmerkingen}</p> : null}
                                         {
                                             aantalBijlagen > 0 && Array.isArray(a.bijlagen) && (

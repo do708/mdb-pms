@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
+import {
+    AanvraagRuimte,
+    ExtraDiensten,
+    summarizeRuimtes,
+} from "@/types/aanvraagInstallatie";
 
 
 
@@ -80,33 +85,73 @@ export async function POST(
         // Omschrijving/opmerkingen bundelen zodat niets verloren gaat.
         const specs =
             (aanvraag.specificaties && typeof aanvraag.specificaties === "object")
-            ? aanvraag.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string> }>
+            ? aanvraag.specificaties as Record<string, unknown>
             : {};
 
-        const specRegels:string[] = [];
+        const ruimtesSamenvatting =
+            summarizeRuimtes(specs.ruimtes as AanvraagRuimte[] | undefined);
 
-        for(const [key, blok] of Object.entries(specs)){
-            if(
+        // Oude installatie-ONDERDELEN (schermen/videowall/…) — backward compatible
+        const oudeSpecRegels: string[] = [];
+
+        for (const [key, blok] of Object.entries(specs)) {
+            if (
                 key === "project" ||
                 key === "contact" ||
                 key === "typeAanvraag" ||
                 key === "storing" ||
                 key === "geschatUren" ||
-                key === "aantalMonteurs"
-            ){
+                key === "aantalMonteurs" ||
+                key === "ruimtes" ||
+                key === "stroom" ||
+                key === "internet" ||
+                key === "extra"
+            ) {
                 continue;
             }
-            if(blok && typeof blok === "object" && blok.aan){
+
+            const oud = blok as { aan?: boolean; velden?: Record<string, string> };
+
+            if (oud && typeof oud === "object" && oud.aan) {
                 const velden =
-                    blok.velden
-                    ? Object.entries(blok.velden)
-                        .filter(([,v])=>v && String(v).trim())
-                        .map(([k,v])=>`${k}: ${v}`)
-                        .join(", ")
-                    : "";
-                specRegels.push(`${key}${velden ? ` (${velden})` : ""}`);
+                    oud.velden
+                        ? Object.entries(oud.velden)
+                            .filter(([, v]) => v && String(v).trim())
+                            .map(([k, v]) => `${k}: ${v}`)
+                            .join(", ")
+                        : "";
+                oudeSpecRegels.push(
+                    `${key}${velden ? ` (${velden})` : ""}`
+                );
             }
         }
+
+        const extra =
+            specs.extra && typeof specs.extra === "object"
+                ? (specs.extra as ExtraDiensten)
+                : null;
+
+        const extraRegels: string[] = [];
+
+        if (extra) {
+            if (extra.afvoerTm50) {
+                extraRegels.push("Afvoer oude schermen t/m 50\"");
+            }
+            if (extra.afvoerVanaf50) {
+                extraRegels.push("Afvoer oude schermen vanaf 50\"");
+            }
+            if (extra.afval) {
+                extraRegels.push("Afvoer afval / verpakkingsmateriaal");
+            }
+            if (extra.audio) {
+                extraRegels.push("Audio / speakers");
+            }
+        }
+
+        const specRegels =
+            ruimtesSamenvatting.length > 0
+                ? ruimtesSamenvatting
+                : oudeSpecRegels;
 
         // Contactgegevens uit de aanvraag (indien ingevuld).
         const contact =
@@ -150,13 +195,20 @@ export async function POST(
         const omschrijvingsdelen =
             [
                 typeAanvraag ? `Type aanvraag: ${typeAanvraag}` : "",
-                specRegels.length ? `Onderdelen: ${specRegels.join("; ")}` : "",
+                ruimtesSamenvatting.length
+                    ? `Ruimtes:\n${ruimtesSamenvatting.map((r) => `• ${r}`).join("\n")}`
+                    : oudeSpecRegels.length
+                      ? `Onderdelen: ${oudeSpecRegels.join("; ")}`
+                      : "",
+                extraRegels.length
+                    ? `Extra diensten: ${extraRegels.join("; ")}`
+                    : "",
                 isProject ? "Project (offerte-basis): Ja" : "",
                 geschatUren ? `Geschat aantal dagen: ${geschatUren}` : "",
                 aantalMonteurs ? `Aantal monteurs: ${aantalMonteurs}` : "",
                 ...storingRegels,
-                aanvraag.stroom ? `Stroom binnen 3m: ${aanvraag.stroom}` : "",
-                aanvraag.internet ? `Internet binnen 3m: ${aanvraag.internet}` : "",
+                aanvraag.stroom ? `Stroom: ${aanvraag.stroom}` : "",
+                aanvraag.internet ? `Internet: ${aanvraag.internet}` : "",
                 aanvraag.aanvragerNaam ? `Aanvrager: ${aanvraag.aanvragerNaam}` : "",
                 aanvraag.opmerkingen ? `Opmerkingen klant: ${aanvraag.opmerkingen}` : ""
             ]
@@ -168,6 +220,28 @@ export async function POST(
             Array.isArray(aanvraag.bijlagen)
             ? (aanvraag.bijlagen as unknown as { url?:string; name?:string }[])
             : [];
+
+        // Schermfoto's uit de nieuwe ruimtes-structuur ook meenemen.
+        const schermFotos: { url: string; name: string }[] = [];
+
+        if (Array.isArray(specs.ruimtes)) {
+            for (const ruimte of specs.ruimtes as AanvraagRuimte[]) {
+                const ruimteNaam = ruimte.naam?.trim() || "Ruimte";
+                for (const scherm of ruimte.schermen || []) {
+                    if (scherm?.fotoUrl) {
+                        schermFotos.push({
+                            url: scherm.fotoUrl,
+                            name:
+                                scherm.label
+                                    ? `${ruimteNaam} – ${scherm.label}`
+                                    : `${ruimteNaam} – schermfoto`,
+                        });
+                    }
+                }
+            }
+        }
+
+        const alleBijlagen = [...bijlagen, ...schermFotos];
 
 
         const werkorder =
@@ -186,6 +260,8 @@ export async function POST(
                             ? (geschatUren
                                 ? `Uren (geschat: ${geschatUren} dag(en)${aantalMonteurs ? `, ${aantalMonteurs} monteur(s)` : ""})`
                                 : "Uren")
+                            : typeAanvraag === "intake"
+                            ? "Intake op locatie"
                             : (specRegels.length
                                 ? `Installatie: ${specRegels.join("; ")}`
                                 : "Nieuwe installatie")),
@@ -220,10 +296,10 @@ export async function POST(
 
 
         // Bijlagen als documenten koppelen (indien aanwezig).
-        if(bijlagen.length > 0){
+        if(alleBijlagen.length > 0){
             await prisma.document.createMany({
                 data:
-                    bijlagen
+                    alleBijlagen
                         .filter((b)=>b && b.url)
                         .map((b)=>({
                             workorderId:werkorder.id,
