@@ -202,6 +202,7 @@ function AanvragenSectie(){
                                                         formaat?:string;
                                                         formaatAnders?:string;
                                                         beugel?:string;
+                                                        bevestigingDetail?:string;
                                                         locatie?:string;
                                                         berekendType?:string;
                                                     }[];
@@ -218,11 +219,13 @@ function AanvragenSectie(){
                                                                     s.formaat === "Anders"
                                                                     ? (s.formaatAnders || "Anders")
                                                                     : s.formaat;
+                                                                const bevestiging =
+                                                                    s.bevestigingDetail || s.beugel;
                                                                 return (
                                                                     <li key={i}>
                                                                         Scherm {i + 1}
                                                                         {formaat ? ` · ${formaat}` : ""}
-                                                                        {s.beugel ? ` · ${s.beugel}` : ""}
+                                                                        {bevestiging ? ` · ${bevestiging}` : ""}
                                                                         {s.locatie ? ` · ${s.locatie}` : ""}
                                                                         {s.berekendType ? (
                                                                             <span className="ml-1 font-semibold text-[#0066FF]">

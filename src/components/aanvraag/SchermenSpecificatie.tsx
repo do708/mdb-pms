@@ -2,7 +2,9 @@
 
 import {
     AanvraagSchermItem,
-    BEUGEL_OPTIES,
+    BEVESTIGING_DETAIL,
+    BEVESTIGING_OPTIES,
+    BevestigingSoort,
     FORMAAT_PASTEL,
     SCHERM_FORMATEN,
     berekendInstallatieType,
@@ -97,7 +99,7 @@ export default function SchermenSpecificatie({
             {items.length > 0 ? (
                 <div className="space-y-4">
                     <p className="text-xs text-gray-500">
-                        Vul per scherm formaat, beugel, oriëntatie en
+                        Vul per scherm formaat, bevestiging, oriëntatie en
                         locatie in. Op dezelfde locatie geldt altijd het{" "}
                         <span className="font-semibold">
                             grootste scherm
@@ -114,8 +116,18 @@ export default function SchermenSpecificatie({
                         );
                         const eerdere = items.slice(0, index);
                         const pastel =
-                            FORMAAT_PASTEL[scherm.formaat] ||
-                            FORMAAT_PASTEL.Anders;
+                            FORMAAT_PASTEL[scherm.formaat] || {
+                                bg: "bg-slate-100",
+                                border: "border-slate-300",
+                                text: "text-slate-800",
+                            };
+                        const detailOpties =
+                            scherm.beugel &&
+                            scherm.beugel in BEVESTIGING_DETAIL
+                                ? BEVESTIGING_DETAIL[
+                                      scherm.beugel as BevestigingSoort
+                                  ]
+                                : [];
 
                         return (
                             <div
@@ -264,9 +276,7 @@ export default function SchermenSpecificatie({
                                                                         ? ""
                                                                         : f,
                                                                 formaatAnders:
-                                                                    selected
-                                                                        ? ""
-                                                                        : scherm.formaatAnders,
+                                                                    "",
                                                             }
                                                         )
                                                     }
@@ -283,27 +293,7 @@ export default function SchermenSpecificatie({
                                             );
                                         })}
                                     </div>
-                                    {scherm.formaat === "Anders" ? (
-                                        <input
-                                            value={
-                                                scherm.formaatAnders
-                                            }
-                                            onChange={(e) =>
-                                                updateItem(
-                                                    scherm.id,
-                                                    {
-                                                        formaatAnders:
-                                                            e.target
-                                                                .value,
-                                                    }
-                                                )
-                                            }
-                                            placeholder="Anders formaat (inch)"
-                                            className="w-full border rounded-lg p-2 bg-white"
-                                        />
-                                    ) : null}
-                                    {scherm.formaat &&
-                                    scherm.formaat !== "Anders" ? (
+                                    {scherm.formaat ? (
                                         <p
                                             className={`text-xs ${pastel.text}`}
                                         >
@@ -314,38 +304,82 @@ export default function SchermenSpecificatie({
 
                                 <div className="space-y-1.5">
                                     <span className="text-xs text-gray-600">
-                                        Beugel
+                                        Bevestiging
                                     </span>
                                     <div className="flex flex-wrap gap-2">
-                                        {BEUGEL_OPTIES.map((b) => (
-                                            <button
-                                                key={b}
-                                                type="button"
-                                                onClick={() =>
-                                                    updateItem(
-                                                        scherm.id,
-                                                        {
-                                                            beugel:
-                                                                scherm.beugel ===
-                                                                b
-                                                                    ? ""
-                                                                    : b,
-                                                        }
-                                                    )
-                                                }
-                                                className={
-                                                    "rounded-lg px-3 py-2 border-2 text-sm font-medium "
-                                                    +
-                                                    (scherm.beugel ===
-                                                    b
-                                                        ? "bg-sky-100 text-sky-900 border-sky-300"
-                                                        : "bg-white text-gray-700 border-gray-200")
-                                                }
-                                            >
-                                                {b}
-                                            </button>
-                                        ))}
+                                        {BEVESTIGING_OPTIES.map(
+                                            (b) => (
+                                                <button
+                                                    key={b}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        updateItem(
+                                                            scherm.id,
+                                                            {
+                                                                beugel:
+                                                                    scherm.beugel ===
+                                                                    b
+                                                                        ? ""
+                                                                        : b,
+                                                                bevestigingDetail:
+                                                                    "",
+                                                            }
+                                                        )
+                                                    }
+                                                    className={
+                                                        "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                                                        +
+                                                        (scherm.beugel ===
+                                                        b
+                                                            ? "bg-sky-100 text-sky-900 border-sky-300"
+                                                            : "bg-white text-gray-700 border-gray-200")
+                                                    }
+                                                >
+                                                    {b}
+                                                </button>
+                                            )
+                                        )}
                                     </div>
+
+                                    {detailOpties.length > 0 ? (
+                                        <div className="mt-2 pl-2 border-l-2 border-sky-200 space-y-1.5">
+                                            <span className="text-xs text-gray-600 block">
+                                                Type {scherm.beugel.toLowerCase()}
+                                            </span>
+                                            <div className="flex flex-wrap gap-2">
+                                                {detailOpties.map(
+                                                    (d) => (
+                                                        <button
+                                                            key={d}
+                                                            type="button"
+                                                            onClick={() =>
+                                                                updateItem(
+                                                                    scherm.id,
+                                                                    {
+                                                                        bevestigingDetail:
+                                                                            scherm.bevestigingDetail ===
+                                                                            d
+                                                                                ? ""
+                                                                                : d,
+                                                                    }
+                                                                )
+                                                            }
+                                                            className={
+                                                                "rounded-lg px-3 py-2 border-2 text-sm font-medium text-left "
+                                                                +
+                                                                (scherm.bevestigingDetail ===
+                                                                d
+                                                                    ? "bg-teal-100 text-teal-900 border-teal-300"
+                                                                    : "bg-white text-gray-700 border-gray-200")
+                                                            }
+                                                        >
+                                                            {d}
+                                                        </button>
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : null}
                                 </div>
 
                                 <div className="space-y-1.5">

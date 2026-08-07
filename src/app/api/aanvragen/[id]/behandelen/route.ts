@@ -92,6 +92,7 @@ export async function POST(
                     formaat?:string;
                     formaatAnders?:string;
                     beugel?:string;
+                    bevestigingDetail?:string;
                     orientatie?:string;
                     locatie?:string;
                     berekendType?:string;
@@ -111,7 +112,7 @@ export async function POST(
                 return [
                     `Scherm ${i + 1}`,
                     formaat,
-                    s.beugel,
+                    s.bevestigingDetail || s.beugel,
                     s.orientatie,
                     s.locatie ? `@ ${s.locatie}` : "",
                     s.berekendType ? `type ${s.berekendType}` : "",

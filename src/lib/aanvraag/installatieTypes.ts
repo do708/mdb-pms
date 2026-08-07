@@ -2,7 +2,7 @@
  * Installatietype-codes op basis van schermformaat + locatie.
  *
  * Per locatie:
- * - grootste scherm = hoofdtype (bijv. 85"/86" → 07)
+ * - grootste scherm = hoofdtype (bijv. 86"/98" → 07/08)
  * - overige schermen op diezelfde locatie = vervolgtype met "v" (bijv. 55" → 04v)
  *
  * Mapping volgt MDB-voorbeeld: 65" → 05, 55" → 04.
@@ -16,9 +16,8 @@ export const SCHERM_FORMATEN = [
     '55"',
     '65"',
     '75"',
-    '85"',
     '86"',
-    "Anders",
+    '98"',
 ] as const;
 
 /** Pastelkleuren per formaat (chips). */
@@ -30,19 +29,37 @@ export const FORMAAT_PASTEL: Record<string, { bg: string; border: string; text: 
     '55"': { bg: "bg-lime-100", border: "border-lime-300", text: "text-lime-900" },
     '65"': { bg: "bg-sky-100", border: "border-sky-300", text: "text-sky-900" },
     '75"': { bg: "bg-violet-100", border: "border-violet-300", text: "text-violet-900" },
-    '85"': { bg: "bg-purple-100", border: "border-purple-300", text: "text-purple-900" },
     '86"': { bg: "bg-fuchsia-100", border: "border-fuchsia-300", text: "text-fuchsia-900" },
-    Anders: { bg: "bg-slate-100", border: "border-slate-300", text: "text-slate-800" },
+    '98"': { bg: "bg-indigo-100", border: "border-indigo-300", text: "text-indigo-900" },
 };
 
-export const BEUGEL_OPTIES = [
+export const BEVESTIGING_OPTIES = [
     "Muurbeugel",
-    "Zwenkbeugel",
-    "Plafondbeugel 150cm",
-    "Plafondbeugel 300cm",
+    "Plafondbeugel",
     "Vloerstandaard",
-    "Overig",
 ] as const;
+
+export type BevestigingSoort = (typeof BEVESTIGING_OPTIES)[number];
+
+export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
+    Muurbeugel: [
+        "Vaste muurbeugel",
+        "Kantelbare muurbeugel",
+        "Draaibare muurbeugel",
+    ],
+    Plafondbeugel: [
+        "Vaste plafondbeugel",
+        "Vaste plafondbeugel kantelbare scherm",
+    ],
+    Vloerstandaard: [
+        "Vaste vloerstandaard",
+        "Mobiele vloerstandaard (trolley)",
+        "Vloer-plafond standaard",
+    ],
+};
+
+/** @deprecated gebruik BEVESTIGING_OPTIES */
+export const BEUGEL_OPTIES = BEVESTIGING_OPTIES;
 
 /** Basis-typecode per inch (zonder v-suffix). */
 export const TYPE_CODE_PER_FORMAAT: Record<string, string> = {
@@ -53,15 +70,18 @@ export const TYPE_CODE_PER_FORMAAT: Record<string, string> = {
     '55"': "04",
     '65"': "05",
     '75"': "06",
-    '85"': "07",
     '86"': "07",
+    '98"': "08",
 };
 
 export interface AanvraagSchermItem {
     id: string;
     formaat: string;
     formaatAnders: string;
+    /** Hoofdcategorie: Muurbeugel / Plafondbeugel / Vloerstandaard */
     beugel: string;
+    /** Specifieke bevestiging binnen de categorie */
+    bevestigingDetail: string;
     orientatie: string;
     locatie: string;
     /**
@@ -85,6 +105,7 @@ export function emptySchermItem(): AanvraagSchermItem {
         formaat: "",
         formaatAnders: "",
         beugel: "",
+        bevestigingDetail: "",
         orientatie: "",
         locatie: "",
         naastSchermId: "",
@@ -283,7 +304,7 @@ export function samenvattingSchermen(
             const parts = [
                 `Scherm ${i + 1}`,
                 formaat,
-                s.beugel,
+                s.bevestigingDetail || s.beugel,
                 s.orientatie,
                 s.locatie ? `@ ${s.locatie}` : "",
                 type ? `type ${type}` : "",
