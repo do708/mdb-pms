@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
+
 import AuthProvider from "@/components/providers/AuthProvider";
 import AppShell from "@/components/layout/AppShell";
+import { APP_NAME } from "@/lib/metadata";
 
 import "./globals.css";
+
+export const metadata: Metadata = {
+    title: {
+        default: APP_NAME,
+        template: `${APP_NAME} - %s`,
+    },
+};
 
 export const viewport = {
     width: "device-width",
