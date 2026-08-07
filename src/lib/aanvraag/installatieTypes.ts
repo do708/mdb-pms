@@ -1,11 +1,13 @@
 /**
- * Installatietype-codes op basis van schermformaat + locatie.
+ * Installatietype-codes o.b.v. Productoverzicht & Tarieven (MC-xx).
  *
- * Per locatie:
- * - grootste scherm = hoofdtype (bijv. 86"/98" → 07/08)
- * - overige schermen op diezelfde locatie = vervolgtype met "v" (bijv. 55" → 04v)
+ * Codes hangen af van bevestiging + schermformaat:
+ * - Wand tot 55" → 03 | Wand 65" → 05 | Wand 75–85" → 06 | Wand 98–100" → 07
+ * - Vloerstaander tot 55" → 04
+ * - Plafond tot 55" → 08 | Plafond 65–85" → 09
  *
- * Mapping volgt MDB-voorbeeld: 65" → 05, 55" → 04.
+ * Over de hele aanvraag: grootste scherm = hoofdtype; overige (ook aparte
+ * locatie) = zelfde code + "v" (vervolg-installatie, MC-xxv).
  */
 
 export const SCHERM_FORMATEN = [
@@ -61,17 +63,96 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
 /** @deprecated gebruik BEVESTIGING_OPTIES */
 export const BEUGEL_OPTIES = BEVESTIGING_OPTIES;
 
-/** Basis-typecode per inch (zonder v-suffix). */
+/** Kabeltraject-keuzes bij MDB-realisatie (aanvraag schermen). */
+export const KABEL_TRAJECT_OPTIES = [
+    "Systeemplafond",
+    "Langs de wand",
+] as const;
+
+export type KabelTraject = (typeof KABEL_TRAJECT_OPTIES)[number];
+
+/**
+ * Formaatbanden uit het productoverzicht (geen prijzen).
+ * 86" valt onder “75 tot 85” (dichtstbijzijnde standaardcode).
+ */
+export type FormaatBand = "tot55" | "65" | "75-85" | "98-100";
+
+export function formaatBand(inch: number): FormaatBand | "" {
+    if (!inch || inch < 1) {
+        return "";
+    }
+    if (inch <= 55) {
+        return "tot55";
+    }
+    if (inch <= 65) {
+        return "65";
+    }
+    if (inch <= 90) {
+        return "75-85";
+    }
+    if (inch <= 100) {
+        return "98-100";
+    }
+    return "";
+}
+
+/**
+ * Basis-typecode (zonder v) o.b.v. bevestiging + formaatband.
+ * MC-01/02 (video-/radiospeler) zijn geen scherminstallaties.
+ */
+export function typeCodeVoorBevestigingEnBand(
+    bevestiging: string,
+    band: FormaatBand | ""
+): string {
+    if (!bevestiging || !band) {
+        return "";
+    }
+
+    if (bevestiging === "Muurbeugel") {
+        switch (band) {
+            case "tot55":
+                return "03";
+            case "65":
+                return "05";
+            case "75-85":
+                return "06";
+            case "98-100":
+                return "07";
+            default:
+                return "";
+        }
+    }
+
+    if (bevestiging === "Vloerstandaard") {
+        return band === "tot55" ? "04" : "";
+    }
+
+    if (bevestiging === "Plafondbeugel") {
+        switch (band) {
+            case "tot55":
+                return "08";
+            case "65":
+            case "75-85":
+                return "09";
+            default:
+                return "";
+        }
+    }
+
+    return "";
+}
+
+/** Fallback size→code voor wand (alleen als bevestiging ontbreekt in oude data). */
 export const TYPE_CODE_PER_FORMAAT: Record<string, string> = {
-    '32"': "01",
-    '43"': "02",
+    '32"': "03",
+    '43"': "03",
     '49"': "03",
     '50"': "03",
-    '55"': "04",
+    '55"': "03",
     '65"': "05",
     '75"': "06",
-    '86"': "07",
-    '98"': "08",
+    '86"': "06",
+    '98"': "07",
 };
 
 export interface AanvraagSchermItem {
@@ -90,9 +171,19 @@ export interface AanvraagSchermItem {
      */
     naastSchermId: string;
     stroom: "" | "Ja" | "Nee";
-    stroomMdb: string;
+    /** Alleen bij stroom === "Nee": wil MDB dit realiseren? */
+    stroomMdb: "" | "Ja" | "Nee" | string;
+    /** Geschatte afstand in meters (alleen bij stroomMdb === "Ja") */
+    stroomAfstand: string;
+    /** Traject: Systeemplafond | Langs de wand (alleen bij stroomMdb === "Ja") */
+    stroomTraject: string;
     internet: "" | "Ja" | "Nee";
-    internetMdb: string;
+    /** Alleen bij internet === "Nee": wil MDB dit realiseren? */
+    internetMdb: "" | "Ja" | "Nee" | string;
+    /** Geschatte afstand in meters (alleen bij internetMdb === "Ja") */
+    internetAfstand: string;
+    /** Traject: Systeemplafond | Langs de wand (alleen bij internetMdb === "Ja") */
+    internetTraject: string;
 }
 
 function uid(): string {
@@ -111,8 +202,12 @@ export function emptySchermItem(): AanvraagSchermItem {
         naastSchermId: "",
         stroom: "",
         stroomMdb: "",
+        stroomAfstand: "",
+        stroomTraject: "",
         internet: "",
         internetMdb: "",
+        internetAfstand: "",
+        internetTraject: "",
     };
 }
 
@@ -168,12 +263,35 @@ export function syncSchermItems(
     });
 }
 
-export function basisTypeCode(formaat: string): string {
-    if (!formaat || formaat === "Anders") {
-        return "";
+/** Basis-typecode voor een schermitem (bevestiging + formaat; geen v). */
+export function basisTypeCode(
+    itemOrFormaat: AanvraagSchermItem | string,
+    beugel?: string
+): string {
+    // Oude aanroep: basisTypeCode(formaat) — alleen formaat, wand-aanname
+    if (typeof itemOrFormaat === "string") {
+        const formaat = itemOrFormaat;
+        if (!formaat || formaat === "Anders") {
+            return "";
+        }
+        if (beugel) {
+            const inchMatch = formaat.match(/(\d+)/);
+            const inch = inchMatch ? parseInt(inchMatch[1], 10) : 0;
+            return typeCodeVoorBevestigingEnBand(beugel, formaatBand(inch));
+        }
+        return TYPE_CODE_PER_FORMAAT[formaat] || "";
     }
 
-    return TYPE_CODE_PER_FORMAAT[formaat] || "";
+    const item = itemOrFormaat;
+    const inch = formaatInch(item);
+    if (!inch) {
+        return "";
+    }
+    if (!item.beugel) {
+        // Zonder bevestiging nog geen betrouwbare MC-code
+        return "";
+    }
+    return typeCodeVoorBevestigingEnBand(item.beugel, formaatBand(inch));
 }
 
 /** Inch-waarde voor grootte-vergelijking (85" > 55"). */
@@ -275,15 +393,13 @@ export function berekendInstallatieType(
     item: AanvraagSchermItem,
     alle: AanvraagSchermItem[]
 ): string {
-    const basis = basisTypeCode(item.formaat);
+    const basis = basisTypeCode(item);
 
     if (!basis) {
         return "";
     }
 
-    const metFormaat = alle.filter(
-        (s) => basisTypeCode(s.formaat) || formaatInch(s) > 0
-    );
+    const metFormaat = alle.filter((s) => formaatInch(s) > 0);
 
     if (metFormaat.length <= 1) {
         return basis;
@@ -302,9 +418,7 @@ export function isHoofdType(
     item: AanvraagSchermItem,
     alle: AanvraagSchermItem[]
 ): boolean {
-    const metFormaat = alle.filter(
-        (s) => basisTypeCode(s.formaat) || formaatInch(s) > 0
-    );
+    const metFormaat = alle.filter((s) => formaatInch(s) > 0);
 
     if (metFormaat.length <= 1) {
         return true;
@@ -341,6 +455,22 @@ export function samenvattingSchermen(
         .join("; ");
 }
 
+function mdbSamenvatting(
+    mdb: string,
+    afstand: string,
+    traject: string
+): string {
+    if (!mdb) return "";
+    if (mdb !== "Ja") return ` (MDB: ${mdb})`;
+    const details = [
+        afstand ? `afstand ${afstand}` : "",
+        traject || "",
+    ].filter(Boolean);
+    return details.length > 0
+        ? ` (MDB: Ja — ${details.join(", ")})`
+        : " (MDB: Ja)";
+}
+
 export function samenvattingStroomInternet(
     items: AanvraagSchermItem[]
 ): { stroom: string; internet: string } {
@@ -348,8 +478,12 @@ export function samenvattingStroomInternet(
         .map((s, i) => {
             if (!s.stroom) return "";
             const mdb =
-                s.stroom === "Nee" && s.stroomMdb
-                    ? ` (MDB: ${s.stroomMdb})`
+                s.stroom === "Nee"
+                    ? mdbSamenvatting(
+                          s.stroomMdb,
+                          s.stroomAfstand,
+                          s.stroomTraject
+                      )
                     : "";
             return `Scherm ${i + 1}: ${s.stroom}${mdb}`;
         })
@@ -359,8 +493,12 @@ export function samenvattingStroomInternet(
         .map((s, i) => {
             if (!s.internet) return "";
             const mdb =
-                s.internet === "Nee" && s.internetMdb
-                    ? ` (MDB: ${s.internetMdb})`
+                s.internet === "Nee"
+                    ? mdbSamenvatting(
+                          s.internetMdb,
+                          s.internetAfstand,
+                          s.internetTraject
+                      )
                     : "";
             return `Scherm ${i + 1}: ${s.internet}${mdb}`;
         })

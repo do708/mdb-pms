@@ -6,6 +6,7 @@ import {
     BEVESTIGING_OPTIES,
     BevestigingSoort,
     FORMAAT_PASTEL,
+    KABEL_TRAJECT_OPTIES,
     SCHERM_FORMATEN,
     berekendInstallatieType,
     isHoofdType,
@@ -41,6 +42,82 @@ function JaNee({
                     {optie}
                 </button>
             ))}
+        </div>
+    );
+}
+
+function MdbRealisatieVervolg({
+    mdb,
+    afstand,
+    traject,
+    onMdbChange,
+    onAfstandChange,
+    onTrajectChange,
+}: {
+    mdb: string;
+    afstand: string;
+    traject: string;
+    onMdbChange: (v: "" | "Ja" | "Nee") => void;
+    onAfstandChange: (v: string) => void;
+    onTrajectChange: (v: string) => void;
+}) {
+    return (
+        <div className="pl-2 border-l-2 border-amber-200 space-y-2">
+            <span className="text-xs text-gray-600 block">
+                Wil je dat MDB Networks dit realiseert?
+            </span>
+            <JaNee
+                value={
+                    mdb === "Ja" || mdb === "Nee" ? mdb : ""
+                }
+                onChange={onMdbChange}
+            />
+            {mdb === "Ja" ? (
+                <div className="space-y-2 pt-1">
+                    <label className="block">
+                        <span className="text-xs text-gray-600">
+                            Geschatte afstand (meters)
+                        </span>
+                        <input
+                            value={afstand}
+                            onChange={(e) =>
+                                onAfstandChange(e.target.value)
+                            }
+                            placeholder="Bijv. 8"
+                            className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                        />
+                    </label>
+                    <div className="space-y-1.5">
+                        <span className="text-xs text-gray-600 block">
+                            Traject
+                        </span>
+                        <div className="flex flex-col gap-2">
+                            {KABEL_TRAJECT_OPTIES.map((optie) => (
+                                <button
+                                    key={optie}
+                                    type="button"
+                                    onClick={() =>
+                                        onTrajectChange(
+                                            traject === optie
+                                                ? ""
+                                                : optie
+                                        )
+                                    }
+                                    className={
+                                        "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left "
+                                        +
+                                        (traject === optie
+                                            ? "bg-sky-100 text-sky-800 border-sky-300"
+                                            : "bg-white text-gray-700 border-gray-200")
+                                    }
+                                >
+                                    {optie}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ) : null}
         </div>
     );
 }
@@ -100,12 +177,13 @@ export default function SchermenSpecificatie({
                 <div className="space-y-4">
                     <p className="text-xs text-gray-500">
                         Vul per scherm formaat, bevestiging, oriëntatie en
-                        locatie in. Op dezelfde locatie geldt altijd het{" "}
+                        locatie in. Het{" "}
                         <span className="font-semibold">
                             grootste scherm
                         </span>{" "}
-                        als hoofdtype; de overige schermen op die
-                        locatie zijn vervolgtypes (
+                        van de hele aanvraag is hoofdtype; alle overige
+                        schermen (ook op een aparte locatie) zijn
+                        vervolgtypes (
                         <span className="font-semibold">v</span>).
                     </p>
 
@@ -143,7 +221,7 @@ export default function SchermenSpecificatie({
                                         </span>
                                     ) : (
                                         <span className="text-xs text-gray-400">
-                                            Type —
+                                            Type — vul formaat + bevestiging
                                         </span>
                                     )}
                                 </div>
@@ -432,54 +510,56 @@ export default function SchermenSpecificatie({
                                         onChange={(v) =>
                                             updateItem(scherm.id, {
                                                 stroom: v,
-                                                stroomMdb:
-                                                    v === "Nee"
-                                                        ? scherm.stroomMdb
-                                                        : "",
+                                                stroomMdb: "",
+                                                stroomAfstand: "",
+                                                stroomTraject: "",
                                             })
                                         }
                                     />
                                     {scherm.stroom === "Nee" ? (
-                                        <div className="pl-2 border-l-2 border-amber-200 space-y-1.5">
-                                            <span className="text-xs text-gray-600 block">
-                                                MDB Networks
-                                                realiseren?
-                                            </span>
-                                            <div className="flex gap-2">
-                                                {[
-                                                    "Ja",
-                                                    "Nee",
-                                                    "Anders",
-                                                ].map((optie) => (
-                                                    <button
-                                                        key={optie}
-                                                        type="button"
-                                                        onClick={() =>
-                                                            updateItem(
-                                                                scherm.id,
-                                                                {
-                                                                    stroomMdb:
-                                                                        scherm.stroomMdb ===
-                                                                        optie
-                                                                            ? ""
-                                                                            : optie,
-                                                                }
-                                                            )
-                                                        }
-                                                        className={
-                                                            "flex-1 rounded-lg py-1.5 border-2 text-xs font-medium "
-                                                            +
-                                                            (scherm.stroomMdb ===
-                                                            optie
-                                                                ? "bg-sky-100 text-sky-800 border-sky-300"
-                                                                : "bg-white text-gray-700 border-gray-200")
-                                                        }
-                                                    >
-                                                        {optie}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
+                                        <MdbRealisatieVervolg
+                                            mdb={scherm.stroomMdb}
+                                            afstand={
+                                                scherm.stroomAfstand
+                                            }
+                                            traject={
+                                                scherm.stroomTraject
+                                            }
+                                            onMdbChange={(v) =>
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        stroomMdb: v,
+                                                        stroomAfstand:
+                                                            "",
+                                                        stroomTraject:
+                                                            "",
+                                                    }
+                                                )
+                                            }
+                                            onAfstandChange={(
+                                                v
+                                            ) =>
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        stroomAfstand:
+                                                            v,
+                                                    }
+                                                )
+                                            }
+                                            onTrajectChange={(
+                                                v
+                                            ) =>
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        stroomTraject:
+                                                            v,
+                                                    }
+                                                )
+                                            }
+                                        />
                                     ) : null}
                                 </div>
 
@@ -493,54 +573,57 @@ export default function SchermenSpecificatie({
                                         onChange={(v) =>
                                             updateItem(scherm.id, {
                                                 internet: v,
-                                                internetMdb:
-                                                    v === "Nee"
-                                                        ? scherm.internetMdb
-                                                        : "",
+                                                internetMdb: "",
+                                                internetAfstand: "",
+                                                internetTraject: "",
                                             })
                                         }
                                     />
                                     {scherm.internet === "Nee" ? (
-                                        <div className="pl-2 border-l-2 border-amber-200 space-y-1.5">
-                                            <span className="text-xs text-gray-600 block">
-                                                MDB Networks
-                                                realiseren?
-                                            </span>
-                                            <div className="flex gap-2">
-                                                {[
-                                                    "Ja",
-                                                    "Nee",
-                                                    "Anders",
-                                                ].map((optie) => (
-                                                    <button
-                                                        key={optie}
-                                                        type="button"
-                                                        onClick={() =>
-                                                            updateItem(
-                                                                scherm.id,
-                                                                {
-                                                                    internetMdb:
-                                                                        scherm.internetMdb ===
-                                                                        optie
-                                                                            ? ""
-                                                                            : optie,
-                                                                }
-                                                            )
-                                                        }
-                                                        className={
-                                                            "flex-1 rounded-lg py-1.5 border-2 text-xs font-medium "
-                                                            +
-                                                            (scherm.internetMdb ===
-                                                            optie
-                                                                ? "bg-sky-100 text-sky-800 border-sky-300"
-                                                                : "bg-white text-gray-700 border-gray-200")
-                                                        }
-                                                    >
-                                                        {optie}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
+                                        <MdbRealisatieVervolg
+                                            mdb={scherm.internetMdb}
+                                            afstand={
+                                                scherm.internetAfstand
+                                            }
+                                            traject={
+                                                scherm.internetTraject
+                                            }
+                                            onMdbChange={(v) =>
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        internetMdb:
+                                                            v,
+                                                        internetAfstand:
+                                                            "",
+                                                        internetTraject:
+                                                            "",
+                                                    }
+                                                )
+                                            }
+                                            onAfstandChange={(
+                                                v
+                                            ) =>
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        internetAfstand:
+                                                            v,
+                                                    }
+                                                )
+                                            }
+                                            onTrajectChange={(
+                                                v
+                                            ) =>
+                                                updateItem(
+                                                    scherm.id,
+                                                    {
+                                                        internetTraject:
+                                                            v,
+                                                    }
+                                                )
+                                            }
+                                        />
                                     ) : null}
                                 </div>
                             </div>
@@ -576,7 +659,7 @@ export default function SchermenSpecificatie({
                                         <strong>
                                             {t
                                                 ? `Type ${t}`
-                                                : "— vul formaat in"}
+                                                : "— vul formaat + bevestiging"}
                                         </strong>
                                         {hoofd
                                             ? " · hoofdtype"
