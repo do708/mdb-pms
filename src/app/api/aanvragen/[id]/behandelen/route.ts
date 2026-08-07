@@ -97,7 +97,13 @@ export async function POST(
                     locatie?:string;
                     berekendType?:string;
                     stroom?:string;
+                    stroomMdb?:string;
+                    stroomAfstand?:string;
+                    stroomTraject?:string;
                     internet?:string;
+                    internetMdb?:string;
+                    internetAfstand?:string;
+                    internetTraject?:string;
                 }[];
               }
             : null;
@@ -109,6 +115,34 @@ export async function POST(
                     s.formaat === "Anders"
                     ? (s.formaatAnders || "Anders")
                     : (s.formaat || "");
+                const stroomDetail =
+                    s.stroom === "Nee" && s.stroomMdb === "Ja"
+                    ? [
+                        "MDB: Ja",
+                        s.stroomAfstand
+                            ? `afstand ${s.stroomAfstand}`
+                            : "",
+                        s.stroomTraject || "",
+                      ]
+                        .filter(Boolean)
+                        .join(", ")
+                    : s.stroom === "Nee" && s.stroomMdb
+                    ? `MDB: ${s.stroomMdb}`
+                    : "";
+                const internetDetail =
+                    s.internet === "Nee" && s.internetMdb === "Ja"
+                    ? [
+                        "MDB: Ja",
+                        s.internetAfstand
+                            ? `afstand ${s.internetAfstand}`
+                            : "",
+                        s.internetTraject || "",
+                      ]
+                        .filter(Boolean)
+                        .join(", ")
+                    : s.internet === "Nee" && s.internetMdb
+                    ? `MDB: ${s.internetMdb}`
+                    : "";
                 return [
                     `Scherm ${i + 1}`,
                     formaat,
@@ -116,8 +150,12 @@ export async function POST(
                     s.orientatie,
                     s.locatie ? `@ ${s.locatie}` : "",
                     s.berekendType ? `type ${s.berekendType}` : "",
-                    s.stroom ? `stroom: ${s.stroom}` : "",
-                    s.internet ? `internet: ${s.internet}` : ""
+                    s.stroom
+                        ? `stroom: ${s.stroom}${stroomDetail ? ` (${stroomDetail})` : ""}`
+                        : "",
+                    s.internet
+                        ? `internet: ${s.internet}${internetDetail ? ` (${internetDetail})` : ""}`
+                        : ""
                 ].filter(Boolean).join(" · ");
               })
             : [];
