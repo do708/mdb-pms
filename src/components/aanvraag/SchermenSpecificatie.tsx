@@ -321,7 +321,7 @@ export default function SchermenSpecificatie({
                                             <span className="text-xs text-gray-600 block">
                                                 Type {scherm.beugel.toLowerCase()}
                                             </span>
-                                            <div className="flex flex-wrap gap-2">
+                                            <div className="flex flex-col gap-2">
                                                 {detailOpties.map(
                                                     (d) => (
                                                         <button
@@ -340,7 +340,7 @@ export default function SchermenSpecificatie({
                                                                 )
                                                             }
                                                             className={
-                                                                "rounded-lg px-3 py-2 border-2 text-sm font-medium text-left "
+                                                                "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left whitespace-nowrap "
                                                                 +
                                                                 (scherm.bevestigingDetail ===
                                                                 d
@@ -557,6 +557,14 @@ export default function SchermenSpecificatie({
                                     s,
                                     items
                                 );
+                                const hoofd = isHoofdType(s, items);
+                                const naastIndex = s.naastSchermId
+                                    ? items.findIndex(
+                                          (x) =>
+                                              x.id === s.naastSchermId
+                                      )
+                                    : -1;
+
                                 return (
                                     <li key={s.id}>
                                         Scherm {i + 1}
@@ -569,21 +577,12 @@ export default function SchermenSpecificatie({
                                                 ? `Type ${t}`
                                                 : "— vul formaat in"}
                                         </strong>
-                                        {s.naastSchermId
-                                            ? (() => {
-                                                  const ni =
-                                                      items.findIndex(
-                                                          (x) =>
-                                                              x.id ===
-                                                              s.naastSchermId
-                                                      );
-                                                  return ni >= 0
-                                                      ? ` · naast scherm ${ni + 1}`
-                                                      : " · vervolgtype";
-                                              })()
-                                            : isHoofdType(s, items)
-                                              ? " · hoofdtype"
-                                              : " · vervolgtype"}
+                                        {hoofd
+                                            ? " · hoofdtype"
+                                            : " · vervolg"}
+                                        {naastIndex >= 0
+                                            ? ` · naast scherm ${naastIndex + 1}`
+                                            : ""}
                                     </li>
                                 );
                             })}

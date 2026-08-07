@@ -206,8 +206,8 @@ function resolveAnker(
 }
 
 /**
- * Groepssleutel: zelfde locatienaam óf gekoppeld via “zelfde locatie als”.
- * Lege, ongecoppelde locatie = eigen solo-groep.
+ * Groepssleutel: zelfde locatienaam óf gekoppeld via “monteren naast”.
+ * Anker + alle gekoppelde schermen delen altijd dezelfde sleutel.
  */
 export function locatieGroepKey(
     item: AanvraagSchermItem,
@@ -221,11 +221,8 @@ export function locatieGroepKey(
         return `loc:${loc}`;
     }
 
-    if (item.naastSchermId || anker.id !== item.id) {
-        return `anker:${anker.id}`;
-    }
-
-    return `solo:${item.id}`;
+    // Lege locatie: hele keten (anker + gekoppelde) = één groep
+    return `anker:${anker.id}`;
 }
 
 export function schermenOpLocatie(
@@ -236,14 +233,12 @@ export function schermenOpLocatie(
     return alle.filter((s) => locatieGroepKey(s, alle) === key);
 }
 
-/** Id van het grootste scherm op deze locatie (= hoofdtype). */
-export function hoofdSchermIdOpLocatie(
-    item: AanvraagSchermItem,
+/** Grootste scherm in een lijst (= enige hoofdtype). */
+export function hoofdSchermId(
+    groep: AanvraagSchermItem[],
     alle: AanvraagSchermItem[]
 ): string {
-    const groep = schermenOpLocatie(item, alle);
-
-    let bestId = groep[0]?.id || item.id;
+    let bestId = groep[0]?.id || "";
     let bestSize = -1;
     let bestIndex = Number.POSITIVE_INFINITY;
 
@@ -264,9 +259,18 @@ export function hoofdSchermIdOpLocatie(
     return bestId;
 }
 
+/** @deprecated alias */
+export function hoofdSchermIdOpLocatie(
+    item: AanvraagSchermItem,
+    alle: AanvraagSchermItem[]
+): string {
+    return hoofdSchermId(schermenOpLocatie(item, alle), alle);
+}
+
 /**
- * Grootste scherm op de locatie = vol type.
- * Alle overige schermen op die locatie = type + "v".
+ * Per locatiegroep: alleen het grootste scherm = vol type.
+ * Alle overige schermen in die groep = type + "v".
+ * Zo is er altijd precies één hoofdtype per opstelling.
  */
 export function berekendInstallatieType(
     item: AanvraagSchermItem,
@@ -284,7 +288,7 @@ export function berekendInstallatieType(
         return basis;
     }
 
-    const hoofdId = hoofdSchermIdOpLocatie(item, alle);
+    const hoofdId = hoofdSchermId(groep, alle);
 
     if (item.id === hoofdId) {
         return basis;
@@ -298,10 +302,12 @@ export function isHoofdType(
     alle: AanvraagSchermItem[]
 ): boolean {
     const groep = schermenOpLocatie(item, alle);
+
     if (groep.length <= 1) {
         return true;
     }
-    return item.id === hoofdSchermIdOpLocatie(item, alle);
+
+    return item.id === hoofdSchermId(groep, alle);
 }
 
 export function samenvattingSchermen(
