@@ -272,7 +272,14 @@ function AanvragenSectie(){
                                             a.specificaties
                                             && typeof a.specificaties === "object"
                                             && (a.specificaties as Record<string,unknown>).project === "Ja"
-                                            ? <p><strong>Project (offerte-basis):</strong> Ja</p>
+                                            ? (
+                                                <>
+                                                    <p><strong>Project (offerte-basis):</strong> Ja</p>
+                                                    {(a.specificaties as Record<string,unknown>).projectOmschrijving
+                                                        ? <p><strong>Projectomschrijving:</strong> {String((a.specificaties as Record<string,unknown>).projectOmschrijving)}</p>
+                                                        : null}
+                                                </>
+                                              )
                                             : null
                                         }
                                         {a.stroom ? <p><strong>Stroom binnen 3m:</strong> {a.stroom}</p> : null}
