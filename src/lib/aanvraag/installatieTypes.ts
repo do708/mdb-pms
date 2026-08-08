@@ -55,8 +55,8 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
     ],
     Vloerstandaard: [
         "Vaste vloerstandaard",
-        "Mobiele vloerstandaard (trolley)",
         "Vloer-plafond standaard",
+        "Mobiele vloerstandaard (trolley)",
     ],
 };
 
@@ -211,9 +211,14 @@ export function emptySchermItem(): AanvraagSchermItem {
     };
 }
 
-/** Locatie + stroom/internet (incl. MDB-vervolg) van een anker-scherm. */
+/** Velden die een gekoppeld scherm overneemt van het anker. */
 export type SchermVoorzieningen = Pick<
     AanvraagSchermItem,
+    | "formaat"
+    | "formaatAnders"
+    | "beugel"
+    | "bevestigingDetail"
+    | "orientatie"
     | "locatie"
     | "stroom"
     | "stroomMdb"
@@ -229,6 +234,11 @@ export function voorzieningenVan(
     anker: AanvraagSchermItem
 ): SchermVoorzieningen {
     return {
+        formaat: anker.formaat,
+        formaatAnders: anker.formaatAnders,
+        beugel: anker.beugel,
+        bevestigingDetail: anker.bevestigingDetail,
+        orientatie: anker.orientatie,
         locatie: anker.locatie,
         stroom: anker.stroom,
         stroomMdb: anker.stroomMdb,
@@ -242,6 +252,11 @@ export function voorzieningenVan(
 }
 
 const VOORZIENING_KEYS: (keyof SchermVoorzieningen)[] = [
+    "formaat",
+    "formaatAnders",
+    "beugel",
+    "bevestigingDetail",
+    "orientatie",
     "locatie",
     "stroom",
     "stroomMdb",
@@ -260,8 +275,8 @@ export function patchRaaktVoorzieningen(
 }
 
 /**
- * Locatie + stroom/internet van elk gekoppeld scherm opnieuw zetten
- * o.b.v. het opgeloste anker (direct of via keten).
+ * Formaat, bevestiging, oriëntatie, locatie + stroom/internet
+ * van elk gekoppeld scherm opnieuw zetten o.b.v. het anker.
  */
 export function syncVoorzieningenVanAnkers(
     items: AanvraagSchermItem[]

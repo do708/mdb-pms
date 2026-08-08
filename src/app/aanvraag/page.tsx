@@ -6,7 +6,7 @@ import { Suspense } from "react";
 
 import SchermenSpecificatie from "@/components/aanvraag/SchermenSpecificatie";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
-import { JaWifiNee, StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
+import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
 import {
     AanvraagSchermItem,
     FORMAAT_PASTEL,
@@ -141,13 +141,6 @@ function AanvraagFormulier(){
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
-    const [stroom,setStroom] = useState("");
-    const [stroomRealisatie,setStroomRealisatie] = useState("");
-    const [stroomRealisatieAnders,setStroomRealisatieAnders] = useState("");
-
-    const [internet,setInternet] = useState("");
-    const [internetRealisatie,setInternetRealisatie] = useState("");
-    const [internetRealisatieAnders,setInternetRealisatieAnders] = useState("");
     const [opmerkingen,setOpmerkingen] = useState("");
 
     const [aanvragerNaam,setAanvragerNaam] = useState("");
@@ -379,22 +372,9 @@ function AanvraagFormulier(){
 
         try {
 
-            // Stroom/internet: bij schermen per scherm; anders globale antwoorden.
-            const stroomTekst =
-                perSchermSi?.stroom
-                || (
-                    stroom === "Nee"
-                    ? `Nee — MDB realiseren? ${stroomRealisatie === "Anders" ? `Anders: ${stroomRealisatieAnders}` : (stroomRealisatie || "-")}`
-                    : stroom
-                );
-
-            const internetTekst =
-                perSchermSi?.internet
-                || (
-                    internet === "Nee"
-                    ? `Nee — MDB realiseren? ${internetRealisatie === "Anders" ? `Anders: ${internetRealisatieAnders}` : (internetRealisatie || "-")}`
-                    : internet
-                );
+            // Stroom/internet-samenvatting uit per-onderdeel antwoorden (schermen).
+            const stroomTekst = perSchermSi?.stroom || "";
+            const internetTekst = perSchermSi?.internet || "";
 
             const schermenMetType =
                 schermenItems.map((s)=>({
@@ -937,151 +917,6 @@ function AanvraagFormulier(){
                     </label>
 
 
-                    {/* Stroom & internet — alleen als er géén per-onderdeel
-                        antwoorden zijn (fallback / geen schermen/videowall/kiosk/mediaplayers). */}
-                    {!(
-                        (specs.schermen?.aan && schermenItems.length > 0)
-                        || specs.videowall?.aan
-                        || specs.kiosk?.aan
-                        || specs.mediaplayers?.aan
-                    ) ? (
-                    <div className="space-y-4">
-
-                        <div>
-                            <span className="text-sm text-gray-600 block mb-1">
-                                Stroom aanwezig binnen 3 meter?
-                            </span>
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={()=>setStroom("Ja")}
-                                    className={
-                                        "flex-1 rounded-xl py-2 border-2 text-sm font-medium "
-                                        +
-                                        (stroom === "Ja"
-                                            ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                            : "bg-white text-gray-700 border-gray-200")
-                                    }
-                                >
-                                    Ja
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={()=>setStroom("Nee")}
-                                    className={
-                                        "flex-1 rounded-xl py-2 border-2 text-sm font-medium "
-                                        +
-                                        (stroom === "Nee"
-                                            ? "bg-amber-100 text-amber-800 border-amber-300"
-                                            : "bg-white text-gray-700 border-gray-200")
-                                    }
-                                >
-                                    Nee
-                                </button>
-                            </div>
-
-                            {
-                                stroom === "Nee" && (
-                                    <div className="mt-3 pl-3 border-l-2 border-amber-200 space-y-2">
-                                        <span className="text-sm text-gray-600 block">
-                                            Wil je dat MDB Networks dit realiseert?
-                                        </span>
-                                        <div className="flex gap-2">
-                                            {["Ja","Nee","Anders"].map((optie)=>(
-                                                <button
-                                                    key={optie}
-                                                    type="button"
-                                                    onClick={()=>setStroomRealisatie(optie)}
-                                                    className={
-                                                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
-                                                        +
-                                                        (stroomRealisatie === optie
-                                                            ? "bg-sky-100 text-sky-800 border-sky-300"
-                                                            : "bg-white text-gray-700 border-gray-200")
-                                                    }
-                                                >
-                                                    {optie}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        {
-                                            stroomRealisatie === "Anders" && (
-                                                <textarea
-                                                    rows={2}
-                                                    value={stroomRealisatieAnders}
-                                                    onChange={(e)=>setStroomRealisatieAnders(e.target.value)}
-                                                    placeholder="Licht toe"
-                                                    className="w-full border rounded-lg p-2 bg-white"
-                                                />
-                                            )
-                                        }
-                                    </div>
-                                )
-                            }
-                        </div>
-
-
-                        <div>
-                            <span className="text-sm text-gray-600 block mb-1">
-                                Internet aanwezig binnen 3 meter?
-                            </span>
-                            <JaWifiNee
-                                value={
-                                    internet === "Ja"
-                                    || internet === "Wifi"
-                                    || internet === "Nee"
-                                        ? internet
-                                        : ""
-                                }
-                                onChange={(v) => {
-                                    setInternet(v);
-                                    setInternetRealisatie("");
-                                    setInternetRealisatieAnders("");
-                                }}
-                            />
-
-                            {
-                                internet === "Nee" && (
-                                    <div className="mt-3 pl-3 border-l-2 border-amber-200 space-y-2">
-                                        <span className="text-sm text-gray-600 block">
-                                            Wil je dat MDB Networks dit realiseert?
-                                        </span>
-                                        <div className="flex gap-2">
-                                            {["Ja","Nee","Anders"].map((optie)=>(
-                                                <button
-                                                    key={optie}
-                                                    type="button"
-                                                    onClick={()=>setInternetRealisatie(optie)}
-                                                    className={
-                                                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
-                                                        +
-                                                        (internetRealisatie === optie
-                                                            ? "bg-sky-100 text-sky-800 border-sky-300"
-                                                            : "bg-white text-gray-700 border-gray-200")
-                                                    }
-                                                >
-                                                    {optie}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        {
-                                            internetRealisatie === "Anders" && (
-                                                <textarea
-                                                    rows={2}
-                                                    value={internetRealisatieAnders}
-                                                    onChange={(e)=>setInternetRealisatieAnders(e.target.value)}
-                                                    placeholder="Licht toe"
-                                                    className="w-full border rounded-lg p-2 bg-white"
-                                                />
-                                            )
-                                        }
-                                    </div>
-                                )
-                            }
-                        </div>
-
-                    </div>
-                    ) : null}
                     </>
                     )}
 

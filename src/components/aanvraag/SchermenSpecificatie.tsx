@@ -81,18 +81,6 @@ export default function SchermenSpecificatie({
 
             {items.length > 0 ? (
                 <div className="space-y-4">
-                    <p className="text-xs text-gray-500">
-                        Vul per scherm formaat, bevestiging, oriëntatie en
-                        locatie in. Het{" "}
-                        <span className="font-semibold">
-                            grootste scherm
-                        </span>{" "}
-                        van de hele aanvraag is hoofdtype; alle overige
-                        schermen (ook op een aparte locatie) zijn
-                        vervolgtypes (
-                        <span className="font-semibold">v</span>).
-                    </p>
-
                     {items.map((scherm, index) => {
                         const type = berekendInstallatieType(
                             scherm,
@@ -219,7 +207,15 @@ export default function SchermenSpecificatie({
                                                 <button
                                                     key={f}
                                                     type="button"
-                                                    onClick={() =>
+                                                    disabled={
+                                                        gekoppeld
+                                                    }
+                                                    onClick={() => {
+                                                        if (
+                                                            gekoppeld
+                                                        ) {
+                                                            return;
+                                                        }
                                                         updateItem(
                                                             scherm.id,
                                                             {
@@ -230,10 +226,10 @@ export default function SchermenSpecificatie({
                                                                 formaatAnders:
                                                                     "",
                                                             }
-                                                        )
-                                                    }
+                                                        );
+                                                    }}
                                                     className={
-                                                        "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                                                        "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
                                                         +
                                                         (selected
                                                             ? `${c.bg} ${c.border} ${c.text}`
@@ -264,7 +260,15 @@ export default function SchermenSpecificatie({
                                                 <button
                                                     key={b}
                                                     type="button"
-                                                    onClick={() =>
+                                                    disabled={
+                                                        gekoppeld
+                                                    }
+                                                    onClick={() => {
+                                                        if (
+                                                            gekoppeld
+                                                        ) {
+                                                            return;
+                                                        }
                                                         updateItem(
                                                             scherm.id,
                                                             {
@@ -276,10 +280,10 @@ export default function SchermenSpecificatie({
                                                                 bevestigingDetail:
                                                                     "",
                                                             }
-                                                        )
-                                                    }
+                                                        );
+                                                    }}
                                                     className={
-                                                        "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                                                        "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
                                                         +
                                                         (scherm.beugel ===
                                                         b
@@ -296,7 +300,8 @@ export default function SchermenSpecificatie({
                                     {detailOpties.length > 0 ? (
                                         <div className="mt-2 pl-2 border-l-2 border-sky-200 space-y-1.5">
                                             <span className="text-xs text-gray-600 block">
-                                                Type {scherm.beugel.toLowerCase()}
+                                                Type{" "}
+                                                {scherm.beugel.toLowerCase()}
                                             </span>
                                             <div className="flex flex-col gap-2">
                                                 {detailOpties.map(
@@ -304,7 +309,15 @@ export default function SchermenSpecificatie({
                                                         <button
                                                             key={d}
                                                             type="button"
-                                                            onClick={() =>
+                                                            disabled={
+                                                                gekoppeld
+                                                            }
+                                                            onClick={() => {
+                                                                if (
+                                                                    gekoppeld
+                                                                ) {
+                                                                    return;
+                                                                }
                                                                 updateItem(
                                                                     scherm.id,
                                                                     {
@@ -314,10 +327,10 @@ export default function SchermenSpecificatie({
                                                                                 ? ""
                                                                                 : d,
                                                                     }
-                                                                )
-                                                            }
+                                                                );
+                                                            }}
                                                             className={
-                                                                "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left whitespace-nowrap "
+                                                                "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed "
                                                                 +
                                                                 (scherm.bevestigingDetail ===
                                                                 d
@@ -346,7 +359,11 @@ export default function SchermenSpecificatie({
                                             <button
                                                 key={o}
                                                 type="button"
-                                                onClick={() =>
+                                                disabled={gekoppeld}
+                                                onClick={() => {
+                                                    if (gekoppeld) {
+                                                        return;
+                                                    }
                                                     updateItem(
                                                         scherm.id,
                                                         {
@@ -356,10 +373,10 @@ export default function SchermenSpecificatie({
                                                                     ? ""
                                                                     : o,
                                                         }
-                                                    )
-                                                }
+                                                    );
+                                                }}
                                                 className={
-                                                    "flex-1 min-w-[120px] rounded-lg py-2 border-2 text-sm font-medium "
+                                                    "flex-1 min-w-[120px] rounded-lg py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
                                                     +
                                                     (scherm.orientatie ===
                                                     o
@@ -391,9 +408,10 @@ export default function SchermenSpecificatie({
                                     />
                                     {gekoppeld ? (
                                         <span className="text-[11px] text-gray-500">
-                                            Locatie, stroom en internet
-                                            overgenomen van het gekozen
-                                            scherm
+                                            Formaat, bevestiging,
+                                            oriëntatie, locatie, stroom
+                                            en internet overgenomen van
+                                            het gekozen scherm
                                         </span>
                                     ) : null}
                                 </label>
