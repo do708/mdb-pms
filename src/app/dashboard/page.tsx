@@ -203,6 +203,7 @@ function AanvragenSectie(){
                                                         formaatAnders?:string;
                                                         beugel?:string;
                                                         bevestigingDetail?:string;
+                                                        plafondHoogte?:string;
                                                         locatie?:string;
                                                         berekendType?:string;
                                                     }[];
@@ -226,6 +227,7 @@ function AanvragenSectie(){
                                                                         Scherm {i + 1}
                                                                         {formaat ? ` · ${formaat}` : ""}
                                                                         {bevestiging ? ` · ${bevestiging}` : ""}
+                                                                        {s.plafondHoogte ? ` · ${s.plafondHoogte}` : ""}
                                                                         {s.locatie ? ` · ${s.locatie}` : ""}
                                                                         {s.berekendType ? (
                                                                             <span className="ml-1 font-semibold text-[#0066FF]">

@@ -6,6 +6,7 @@ import {
     BEVESTIGING_OPTIES,
     BevestigingSoort,
     FORMAAT_PASTEL,
+    PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
     berekendInstallatieType,
     isHoofdType,
@@ -287,6 +288,8 @@ export default function SchermenSpecificatie({
                                                                         : b,
                                                                 bevestigingDetail:
                                                                     "",
+                                                                plafondHoogte:
+                                                                    "",
                                                             }
                                                         );
                                                     }}
@@ -347,6 +350,58 @@ export default function SchermenSpecificatie({
                                                             }
                                                         >
                                                             {d}
+                                                        </button>
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : null}
+
+                                    {scherm.beugel ===
+                                    "Plafondbeugel" ? (
+                                        <div className="mt-2 pl-2 border-l-2 border-violet-200 space-y-1.5">
+                                            <span className="text-xs text-gray-600 block">
+                                                Hoogte{" "}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </span>
+                                            <div className="flex flex-wrap gap-2">
+                                                {PLAFOND_HOOGTE_OPTIES.map(
+                                                    (h) => (
+                                                        <button
+                                                            key={h}
+                                                            type="button"
+                                                            disabled={
+                                                                gekoppeld
+                                                            }
+                                                            onClick={() => {
+                                                                if (
+                                                                    gekoppeld
+                                                                ) {
+                                                                    return;
+                                                                }
+                                                                updateItem(
+                                                                    scherm.id,
+                                                                    {
+                                                                        plafondHoogte:
+                                                                            scherm.plafondHoogte ===
+                                                                            h
+                                                                                ? ""
+                                                                                : h,
+                                                                    }
+                                                                );
+                                                            }}
+                                                            className={
+                                                                "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
+                                                                +
+                                                                (scherm.plafondHoogte ===
+                                                                h
+                                                                    ? "bg-violet-100 text-violet-900 border-violet-300"
+                                                                    : "bg-white text-gray-700 border-gray-200")
+                                                            }
+                                                        >
+                                                            {h}
                                                         </button>
                                                     )
                                                 )}

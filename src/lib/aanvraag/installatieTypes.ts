@@ -60,6 +60,13 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
     ],
 };
 
+/** Hoogte-opties bij plafondbeugel. */
+export const PLAFOND_HOOGTE_OPTIES = [
+    "80cm",
+    "150cm",
+    "300cm",
+] as const;
+
 /** @deprecated gebruik BEVESTIGING_OPTIES */
 export const BEUGEL_OPTIES = BEVESTIGING_OPTIES;
 
@@ -169,6 +176,8 @@ export interface AanvraagSchermItem {
     beugel: string;
     /** Specifieke bevestiging binnen de categorie */
     bevestigingDetail: string;
+    /** Alleen bij Plafondbeugel: 80cm / 150cm / 300cm */
+    plafondHoogte: string;
     orientatie: string;
     locatie: string;
     /**
@@ -203,6 +212,7 @@ export function emptySchermItem(): AanvraagSchermItem {
         formaatAnders: "",
         beugel: "",
         bevestigingDetail: "",
+        plafondHoogte: "",
         orientatie: "",
         locatie: "",
         naastSchermId: "",
@@ -224,6 +234,7 @@ export type SchermVoorzieningen = Pick<
     | "formaatAnders"
     | "beugel"
     | "bevestigingDetail"
+    | "plafondHoogte"
     | "orientatie"
     | "locatie"
     | "stroom"
@@ -244,6 +255,7 @@ export function voorzieningenVan(
         formaatAnders: anker.formaatAnders,
         beugel: anker.beugel,
         bevestigingDetail: anker.bevestigingDetail,
+        plafondHoogte: anker.plafondHoogte,
         orientatie: anker.orientatie,
         locatie: anker.locatie,
         stroom: anker.stroom,
@@ -264,6 +276,7 @@ export function legeVoorzieningen(): SchermVoorzieningen {
         formaatAnders: "",
         beugel: "",
         bevestigingDetail: "",
+        plafondHoogte: "",
         orientatie: "",
         locatie: "",
         stroom: "",
@@ -299,6 +312,13 @@ export function schermVeldenCompleet(
         return false;
     }
 
+    if (
+        scherm.beugel === "Plafondbeugel"
+        && !scherm.plafondHoogte
+    ) {
+        return false;
+    }
+
     return true;
 }
 
@@ -307,6 +327,7 @@ const VOORZIENING_KEYS: (keyof SchermVoorzieningen)[] = [
     "formaatAnders",
     "beugel",
     "bevestigingDetail",
+    "plafondHoogte",
     "orientatie",
     "locatie",
     "stroom",
@@ -634,6 +655,7 @@ export function samenvattingSchermen(
                 `Scherm ${i + 1}`,
                 formaat,
                 s.bevestigingDetail || s.beugel,
+                s.plafondHoogte || "",
                 s.orientatie,
                 s.locatie ? `@ ${s.locatie}` : "",
                 type ? `type ${type}` : "",
