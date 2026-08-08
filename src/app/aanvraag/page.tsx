@@ -8,6 +8,9 @@ import SchermenSpecificatie from "@/components/aanvraag/SchermenSpecificatie";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import KioskSpecificatie from "@/components/aanvraag/KioskSpecificatie";
 import AudioSpecificatie from "@/components/aanvraag/AudioSpecificatie";
+import Evalue8ProductSpecificatie, {
+    Evalue8SelectieState,
+} from "@/components/aanvraag/Evalue8ProductSpecificatie";
 import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
 import {
     AanvraagKioskItem,
@@ -21,6 +24,10 @@ import {
     syncKioskItems,
     syncSchermItems,
 } from "@/lib/aanvraag/installatieTypes";
+import {
+    evalue8KeuzesVanState,
+    isEvalue8Opdrachtgever,
+} from "@/lib/aanvraag/evalue8Producten";
 
 
 interface Bijlage {
@@ -141,6 +148,9 @@ function AanvraagFormulier(){
     const [kioskItems, setKioskItems] =
         useState<AanvraagKioskItem[]>([]);
 
+    const [evalue8Selectie, setEvalue8Selectie] =
+        useState<Evalue8SelectieState>({});
+
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
     const [opmerkingen,setOpmerkingen] = useState("");
@@ -217,6 +227,8 @@ function AanvraagFormulier(){
 
     },[token]);
 
+    const isEvalue8 =
+        isEvalue8Opdrachtgever(opdrachtgever);
 
 
     function toggleBlok(key:string){
@@ -340,7 +352,7 @@ function AanvraagFormulier(){
 
         setFout("");
 
-        if(!typeAanvraag){
+        if(!isEvalue8 && !typeAanvraag){
             setFout("Kies een type aanvraag (Installatie, Storing of Uren).");
             return;
         }
@@ -374,8 +386,19 @@ function AanvraagFormulier(){
             return;
         }
 
+        const evalue8Keuzes =
+            isEvalue8
+            ? evalue8KeuzesVanState(evalue8Selectie)
+            : [];
+
+        if(isEvalue8 && evalue8Keuzes.length === 0){
+            setFout("Selecteer minimaal één product.");
+            return;
+        }
+
         if(
-            typeAanvraag === "installatie"
+            !isEvalue8
+            && typeAanvraag === "installatie"
             && specs.schermen?.aan
             && schermenItems.length > 0
         ){
@@ -391,7 +414,8 @@ function AanvraagFormulier(){
         }
 
         if(
-            typeAanvraag === "installatie"
+            !isEvalue8
+            && typeAanvraag === "installatie"
             && specs.kiosk?.aan
             && kioskItems.length > 0
         ){
@@ -410,7 +434,13 @@ function AanvraagFormulier(){
 
         // Korte samenvatting van de aangevinkte schermen (voor de lijstweergave).
         const schermenSamenvatting =
-            specs.schermen?.aan
+            isEvalue8
+            ? evalue8Keuzes
+                .map((k)=>
+                    `${k.code}${k.aantal && k.aantal !== "1" ? ` ×${k.aantal}` : ""}`
+                )
+                .join(", ")
+            : specs.schermen?.aan
             ? (
                 schermenItems.length > 0
                 ? samenvattingSchermen(schermenItems)
@@ -424,7 +454,9 @@ function AanvraagFormulier(){
             : "";
 
         const perSchermSi =
-            specs.schermen?.aan && schermenItems.length > 0
+            !isEvalue8
+            && specs.schermen?.aan
+            && schermenItems.length > 0
             ? samenvattingStroomInternet(schermenItems)
             : null;
 
@@ -452,35 +484,38 @@ function AanvraagFormulier(){
                         opmerkingen,
                         aanvragerNaam,
                         specificaties:{
-                            ...specs,
-                            schermen:{
-                                ...specs.schermen,
-                                velden:{
-                                    ...specs.schermen.velden,
-                                    aantal:specs.schermen.velden.aantal || String(schermenItems.length || "")
+                            ...(isEvalue8 ? {} : {
+                                ...specs,
+                                schermen:{
+                                    ...specs.schermen,
+                                    velden:{
+                                        ...specs.schermen.velden,
+                                        aantal:specs.schermen.velden.aantal || String(schermenItems.length || "")
+                                    },
+                                    items:schermenMetType
                                 },
-                                items:schermenMetType
-                            },
-                            kiosk:{
-                                ...specs.kiosk,
-                                velden:{
-                                    ...specs.kiosk.velden,
-                                    aantal:specs.kiosk.velden.aantal || String(kioskItems.length || "")
+                                kiosk:{
+                                    ...specs.kiosk,
+                                    velden:{
+                                        ...specs.kiosk.velden,
+                                        aantal:specs.kiosk.velden.aantal || String(kioskItems.length || "")
+                                    },
+                                    items:kioskItems
                                 },
-                                items:kioskItems
-                            },
-                            project,
-                            projectOmschrijving:
-                                project === "Ja" ? projectOmschrijving : "",
-                            typeAanvraag,
-                            storing:{
-                                omschrijving:storingOmschrijving,
-                                hardwareVervangen,
-                                hardwareBesteld,
-                                hardwareLevering
-                            },
-                            geschatUren,
-                            aantalMonteurs,
+                                project,
+                                projectOmschrijving:
+                                    project === "Ja" ? projectOmschrijving : "",
+                                storing:{
+                                    omschrijving:storingOmschrijving,
+                                    hardwareVervangen,
+                                    hardwareBesteld,
+                                    hardwareLevering
+                                },
+                                geschatUren,
+                                aantalMonteurs,
+                            }),
+                            typeAanvraag: isEvalue8 ? "evalue8" : typeAanvraag,
+                            evalue8Producten: isEvalue8 ? evalue8Keuzes : undefined,
                             contact:{
                                 persoon:contactPersoon,
                                 email:contactEmail,
@@ -706,7 +741,8 @@ function AanvraagFormulier(){
                     </div>
 
 
-                    {/* Type aanvraag */}
+                    {/* Type aanvraag — niet voor eValue8 */}
+                    {!isEvalue8 ? (
                     <div className="space-y-2">
                         <h2 className="font-semibold text-gray-800 border-b pb-1">
                             Type aanvraag
@@ -734,10 +770,33 @@ function AanvraagFormulier(){
                             ))}
                         </div>
                     </div>
+                    ) : null}
+
+
+                    {/* ===== eValue8 productoverzicht ===== */}
+                    {isEvalue8 ? (
+                    <>
+                    <Evalue8ProductSpecificatie
+                        selectie={evalue8Selectie}
+                        onChange={setEvalue8Selectie}
+                    />
+
+                    <label className="block">
+                        <span className="text-sm text-gray-600">Opmerkingen</span>
+                        <textarea
+                            rows={3}
+                            value={opmerkingen}
+                            onChange={(e)=>setOpmerkingen(e.target.value)}
+                            placeholder="Aanvullende instructies of details"
+                            className="w-full border rounded-xl p-3 mt-1"
+                        />
+                    </label>
+                    </>
+                    ) : null}
 
 
                     {/* ===== Installatiewerkzaamheden ===== */}
-                    {typeAanvraag === "installatie" && (
+                    {!isEvalue8 && typeAanvraag === "installatie" && (
                     <>
                     {/* Specificatie installatie werkzaamheden */}
                     <div className="space-y-3">
@@ -1009,7 +1068,7 @@ function AanvraagFormulier(){
 
 
                     {/* ===== Storing ===== */}
-                    {typeAanvraag === "storing" && (
+                    {!isEvalue8 && typeAanvraag === "storing" && (
                         <div className="space-y-4">
 
                             <label className="block">
@@ -1139,7 +1198,7 @@ function AanvraagFormulier(){
 
 
                     {/* ===== Uren ===== */}
-                    {typeAanvraag === "uren" && (
+                    { !isEvalue8 && typeAanvraag === "uren" && (
                         <div className="space-y-4">
 
                             <div className="flex flex-wrap gap-3">

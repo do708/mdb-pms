@@ -276,10 +276,42 @@ function AanvragenSectie(){
                                             })()
                                         }
                                         {
+                                            (()=>{
+                                                if(!a.specificaties || typeof a.specificaties !== "object"){
+                                                    return null;
+                                                }
+                                                const producten = (a.specificaties as Record<string,unknown>).evalue8Producten;
+                                                if(!Array.isArray(producten) || producten.length === 0){
+                                                    return null;
+                                                }
+                                                return (
+                                                    <div>
+                                                        <strong>eValue8 producten:</strong>
+                                                        <ul className="mt-1 list-disc pl-5 space-y-0.5">
+                                                            {producten.map((p,i)=>{
+                                                                const item = p as {
+                                                                    code?:string;
+                                                                    product?:string;
+                                                                    aantal?:string;
+                                                                };
+                                                                return (
+                                                                    <li key={i}>
+                                                                        <span className="font-mono text-xs">{item.code}</span>
+                                                                        {item.product ? ` — ${item.product}` : ""}
+                                                                        {item.aantal ? ` ×${item.aantal}` : ""}
+                                                                    </li>
+                                                                );
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                );
+                                            })()
+                                        }
+                                        {
                                             a.specificaties && typeof a.specificaties === "object"
                                             ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string>; items?:unknown[] }>)
                                                 .filter(([k,v])=>{
-                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving"){
+                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "evalue8Producten"){
                                                         return false;
                                                     }
                                                     if(k === "schermen" && Array.isArray(v?.items) && v.items.length > 0){
