@@ -1076,8 +1076,8 @@ function AanvraagFormulier(){
                                 <div className="flex flex-col gap-2 sm:flex-row">
                                     {[
                                         "Al besteld / verstuurd",
-                                        "Op voorraad bij MDB",
-                                        "MDB Networks bestelt",
+                                        "Op voorraad bij MDB Networks",
+                                        "Regelt MDB Networks",
                                     ].map((optie)=>(
                                         <button
                                             key={optie}
@@ -1090,7 +1090,7 @@ function AanvraagFormulier(){
                                                 setProjectHardwareStatus(next);
                                                 if(
                                                     next !== "Al besteld / verstuurd"
-                                                    && next !== "MDB Networks bestelt"
+                                                    && next !== "Regelt MDB Networks"
                                                 ){
                                                     setProjectHardwareLevering("");
                                                 }
@@ -1111,7 +1111,7 @@ function AanvraagFormulier(){
 
                             {(
                                 projectHardwareStatus === "Al besteld / verstuurd"
-                                || projectHardwareStatus === "MDB Networks bestelt"
+                                || projectHardwareStatus === "Regelt MDB Networks"
                             ) ? (
                                 <div>
                                     <span className="text-sm text-gray-600 block mb-1">
