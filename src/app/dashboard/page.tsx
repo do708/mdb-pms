@@ -313,7 +313,7 @@ function AanvragenSectie(){
                                             a.specificaties && typeof a.specificaties === "object"
                                             ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string>; items?:unknown[] }>)
                                                 .filter(([k,v])=>{
-                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "projectHardware" || k === "projectHardwareBesteld" || k === "projectHardwareLevering" || k === "evalue8Producten"){
+                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "projectHardware" || k === "projectHardwareBesteld" || k === "projectHardwareStatus" || k === "projectHardwareLevering" || k === "evalue8Producten"){
                                                         return false;
                                                     }
                                                     if(k === "schermen" && Array.isArray(v?.items) && v.items.length > 0){
@@ -358,14 +358,17 @@ function AanvragenSectie(){
                                             a.specificaties
                                             && typeof a.specificaties === "object"
                                             && (
-                                                (a.specificaties as Record<string,unknown>).projectHardwareBesteld
+                                                (a.specificaties as Record<string,unknown>).projectHardwareStatus
+                                                || (a.specificaties as Record<string,unknown>).projectHardwareBesteld
                                                 || (a.specificaties as Record<string,unknown>).projectHardwareLevering
                                             )
                                             ? (
                                                 <>
-                                                    {(a.specificaties as Record<string,unknown>).projectHardwareBesteld
-                                                        ? <p><strong>Hardware besteld:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareBesteld)}</p>
-                                                        : null}
+                                                    {(a.specificaties as Record<string,unknown>).projectHardwareStatus
+                                                        ? <p><strong>Hardware status:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareStatus)}</p>
+                                                        : (a.specificaties as Record<string,unknown>).projectHardwareBesteld
+                                                            ? <p><strong>Hardware besteld:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareBesteld)}</p>
+                                                            : null}
                                                     {(a.specificaties as Record<string,unknown>).projectHardwareLevering
                                                         ? <p><strong>Hardware levering:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareLevering)}</p>
                                                         : null}

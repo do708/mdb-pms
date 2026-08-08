@@ -156,7 +156,7 @@ function AanvraagFormulier(){
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
-    const [projectHardwareBesteld,setProjectHardwareBesteld] = useState("");
+    const [projectHardwareStatus,setProjectHardwareStatus] = useState("");
     const [projectHardwareLevering,setProjectHardwareLevering] = useState("");
     const [opmerkingen,setOpmerkingen] = useState("");
 
@@ -519,7 +519,7 @@ function AanvraagFormulier(){
                                 project,
                                 projectOmschrijving:
                                     project === "Ja" ? projectOmschrijving : "",
-                                projectHardwareBesteld,
+                                projectHardwareStatus,
                                 projectHardwareLevering,
                                 storing:{
                                     omschrijving:storingOmschrijving,
@@ -1071,65 +1071,35 @@ function AanvraagFormulier(){
 
                             <div>
                                 <span className="text-sm text-gray-600 block mb-1">
-                                    Is deze al besteld/verstuurd?
+                                    Status hardware
                                 </span>
-                                <div className="flex gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={()=>
-                                            setProjectHardwareBesteld((h)=>
-                                                h === "Ja" ? "" : "Ja"
-                                            )
-                                        }
-                                        className={
-                                            "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
-                                            +
-                                            (projectHardwareBesteld === "Ja"
-                                                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                                : "bg-white text-gray-700 border-gray-200")
-                                        }
-                                    >
-                                        Ja
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={()=>
-                                            setProjectHardwareBesteld((h)=>
-                                                h === "Nee" ? "" : "Nee"
-                                            )
-                                        }
-                                        className={
-                                            "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
-                                            +
-                                            (projectHardwareBesteld === "Nee"
-                                                ? "bg-amber-100 text-amber-800 border-amber-300"
-                                                : "bg-white text-gray-700 border-gray-200")
-                                        }
-                                    >
-                                        Nee
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div>
-                                <span className="text-sm text-gray-600 block mb-1">
-                                    Waar wordt deze geleverd?
-                                </span>
-                                <div className="flex gap-2">
-                                    {["MDB Networks","Op locatie"].map((optie)=>(
+                                <div className="flex flex-col gap-2 sm:flex-row">
+                                    {[
+                                        "Al besteld / verstuurd",
+                                        "Op voorraad bij MDB",
+                                        "MDB Networks bestelt",
+                                    ].map((optie)=>(
                                         <button
                                             key={optie}
                                             type="button"
-                                            onClick={()=>
-                                                setProjectHardwareLevering((h)=>
-                                                    h === optie ? "" : optie
-                                                )
-                                            }
+                                            onClick={()=>{
+                                                const next =
+                                                    projectHardwareStatus === optie
+                                                        ? ""
+                                                        : optie;
+                                                setProjectHardwareStatus(next);
+                                                if(
+                                                    next !== "Al besteld / verstuurd"
+                                                    && next !== "MDB Networks bestelt"
+                                                ){
+                                                    setProjectHardwareLevering("");
+                                                }
+                                            }}
                                             className={
-                                                "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                                                "flex-1 rounded-lg py-2 px-2 border-2 text-sm font-medium "
                                                 +
-                                                (projectHardwareLevering === optie
-                                                    ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                (projectHardwareStatus === optie
+                                                    ? "bg-emerald-100 text-emerald-800 border-emerald-300"
                                                     : "bg-white text-gray-700 border-gray-200")
                                             }
                                         >
@@ -1138,6 +1108,39 @@ function AanvraagFormulier(){
                                     ))}
                                 </div>
                             </div>
+
+                            {(
+                                projectHardwareStatus === "Al besteld / verstuurd"
+                                || projectHardwareStatus === "MDB Networks bestelt"
+                            ) ? (
+                                <div>
+                                    <span className="text-sm text-gray-600 block mb-1">
+                                        Waar wordt deze geleverd?
+                                    </span>
+                                    <div className="flex gap-2">
+                                        {["MDB Networks","Op locatie"].map((optie)=>(
+                                            <button
+                                                key={optie}
+                                                type="button"
+                                                onClick={()=>
+                                                    setProjectHardwareLevering((h)=>
+                                                        h === optie ? "" : optie
+                                                    )
+                                                }
+                                                className={
+                                                    "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                                                    +
+                                                    (projectHardwareLevering === optie
+                                                        ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                        : "bg-white text-gray-700 border-gray-200")
+                                                }
+                                            >
+                                                {optie}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : null}
                         </div>
 
                     </div>
