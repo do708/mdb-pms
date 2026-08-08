@@ -957,6 +957,92 @@ export default function ProjectDetailPage() {
             ) : null}
 
             {isOffice ? (
+            <>
+            <section className="bg-white border rounded-2xl p-5 space-y-3">
+                <h2 className="font-bold">Termijnen gefactureerd</h2>
+                <p className="text-xs text-gray-500">
+                    Vul de factuurdatum in: het vinkje gaat dan
+                    automatisch aan. Wis de datum om uit te vinken.
+                </p>
+                <div className="grid grid-cols-4 gap-2 min-w-0 overflow-x-auto">
+                    {(
+                        [
+                            {
+                                key: "termijn1Gefactureerd",
+                                dateKey: "termijn1GefactureerdOp",
+                                label: "Termijn 1 — akkoord opdracht (inkoop)",
+                            },
+                            {
+                                key: "termijn2Gefactureerd",
+                                dateKey: "termijn2GefactureerdOp",
+                                label: "Termijn 2 — start opdracht",
+                            },
+                            {
+                                key: "termijn3Gefactureerd",
+                                dateKey: "termijn3GefactureerdOp",
+                                label: "Termijn 3 — 50%",
+                            },
+                            {
+                                key: "termijn4Gefactureerd",
+                                dateKey: "termijn4GefactureerdOp",
+                                label: "Termijn 4 — 100%",
+                            },
+                        ] as const
+                    ).map((termijn) => {
+                        const factuurdatum = termijnDatumIso(
+                            project[termijn.dateKey]
+                        );
+                        // Alleen aangevinkt wanneer er een factuurdatum is.
+                        const isChecked = Boolean(factuurdatum);
+
+                        return (
+                        <div
+                            key={termijn.key}
+                            className="
+                                rounded-xl border border-gray-200
+                                px-3 py-2 space-y-2 min-w-0
+                            "
+                        >
+                            <label className="flex items-start gap-2 text-sm cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    disabled={saving}
+                                    onChange={(e) =>
+                                        toggleTermijnGefactureerd(
+                                            termijn.key,
+                                            e.target.checked
+                                        )
+                                    }
+                                    className="mt-0.5 h-4 w-4 accent-[#0066FF] shrink-0"
+                                />
+                                <span className="font-medium text-gray-800 leading-snug">
+                                    {termijn.label}
+                                </span>
+                            </label>
+                            <div className="pl-6">
+                                <label className="block text-xs text-gray-500 mb-1">
+                                    Factuurdatum
+                                </label>
+                                <input
+                                    type="date"
+                                    value={factuurdatum}
+                                    disabled={saving}
+                                    onChange={(e) =>
+                                        setTermijnGefactureerdDatum(
+                                            termijn.dateKey,
+                                            e.target.value
+                                        )
+                                    }
+                                    className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
+                                />
+                            </div>
+                        </div>
+                        );
+                    })}
+                </div>
+            </section>
+
             <section className="grid lg:grid-cols-2 gap-4">
                 <div className="bg-white border rounded-2xl p-5 space-y-4">
                     <h2 className="font-bold">Uren</h2>
@@ -978,92 +1064,6 @@ export default function ProjectDetailPage() {
                         }
                         eenheid="uur"
                     />
-                    <div className="pt-2 border-t border-gray-100 space-y-2">
-                        <p className="text-sm font-semibold text-gray-900">
-                            Termijnen gefactureerd
-                        </p>
-                        <p className="text-xs text-gray-500">
-                            Vul de factuurdatum in: het vinkje gaat dan
-                            automatisch aan. Wis de datum om uit te vinken.
-                        </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {(
-                                [
-                                    {
-                                        key: "termijn1Gefactureerd",
-                                        dateKey: "termijn1GefactureerdOp",
-                                        label: "Termijn 1 — akkoord opdracht (inkoop)",
-                                    },
-                                    {
-                                        key: "termijn2Gefactureerd",
-                                        dateKey: "termijn2GefactureerdOp",
-                                        label: "Termijn 2 — start opdracht",
-                                    },
-                                    {
-                                        key: "termijn3Gefactureerd",
-                                        dateKey: "termijn3GefactureerdOp",
-                                        label: "Termijn 3 — 50%",
-                                    },
-                                    {
-                                        key: "termijn4Gefactureerd",
-                                        dateKey: "termijn4GefactureerdOp",
-                                        label: "Termijn 4 — 100%",
-                                    },
-                                ] as const
-                            ).map((termijn) => {
-                                const factuurdatum = termijnDatumIso(
-                                    project[termijn.dateKey]
-                                );
-                                // Alleen aangevinkt wanneer er een factuurdatum is.
-                                const isChecked = Boolean(factuurdatum);
-
-                                return (
-                                <div
-                                    key={termijn.key}
-                                    className="
-                                        rounded-xl border border-gray-200
-                                        px-3 py-2 space-y-2
-                                    "
-                                >
-                                    <label className="flex items-start gap-2 text-sm cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={isChecked}
-                                            disabled={saving}
-                                            onChange={(e) =>
-                                                toggleTermijnGefactureerd(
-                                                    termijn.key,
-                                                    e.target.checked
-                                                )
-                                            }
-                                            className="mt-0.5 h-4 w-4 accent-[#0066FF]"
-                                        />
-                                        <span className="font-medium text-gray-800 leading-snug">
-                                            {termijn.label}
-                                        </span>
-                                    </label>
-                                    <div className="pl-6">
-                                        <label className="block text-xs text-gray-500 mb-1">
-                                            Factuurdatum
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={factuurdatum}
-                                            disabled={saving}
-                                            onChange={(e) =>
-                                                setTermijnGefactureerdDatum(
-                                                    termijn.dateKey,
-                                                    e.target.value
-                                                )
-                                            }
-                                            className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-[11rem] bg-white"
-                                        />
-                                    </div>
-                                </div>
-                                );
-                            })}
-                        </div>
-                    </div>
                 </div>
 
                 <div className="bg-white border rounded-2xl p-5 space-y-4">
@@ -1095,6 +1095,7 @@ export default function ProjectDetailPage() {
                     )}
                 </div>
             </section>
+            </>
             ) : (
                 <section className="bg-white border rounded-2xl p-5">
                     <h2 className="font-bold mb-2">Uren geboekt</h2>
