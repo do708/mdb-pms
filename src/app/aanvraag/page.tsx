@@ -140,6 +140,7 @@ function AanvraagFormulier(){
         useState<AanvraagSchermItem[]>([]);
 
     const [project,setProject] = useState("");
+    const [projectOmschrijving,setProjectOmschrijving] = useState("");
     const [stroom,setStroom] = useState("");
     const [stroomRealisatie,setStroomRealisatie] = useState("");
     const [stroomRealisatieAnders,setStroomRealisatieAnders] = useState("");
@@ -423,6 +424,8 @@ function AanvraagFormulier(){
                                 items:schermenMetType
                             },
                             project,
+                            projectOmschrijving:
+                                project === "Ja" ? projectOmschrijving : "",
                             typeAanvraag,
                             storing:{
                                 omschrijving:storingOmschrijving,
@@ -873,30 +876,67 @@ function AanvraagFormulier(){
 
 
                         {/* Project ja/nee */}
-                        <div className="rounded-xl border border-gray-200 p-3">
-                            <span className="text-sm font-medium text-gray-800 block mb-2">
+                        <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">
+                            <span className="text-sm font-medium text-gray-800 block">
                                 6. Project (offerte-basis) — is het een project?
                             </span>
                             <div className="flex gap-2">
-                                {(["Ja","Nee"] as const).map((optie)=>(
+                                <button
+                                    type="button"
+                                    onClick={()=>{
+                                        setProject((h)=>{
+                                            if(h === "Ja"){
+                                                setProjectOmschrijving("");
+                                                return "";
+                                            }
+                                            return "Ja";
+                                        });
+                                    }}
+                                    className={
+                                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium bg-white "
+                                        +
+                                        (project === "Ja"
+                                            ? "border-emerald-300 text-emerald-700"
+                                            : "border-gray-200 text-gray-700")
+                                    }
+                                >
+                                    Ja
+                                </button>
+                                {project !== "Ja" ? (
                                     <button
-                                        key={optie}
                                         type="button"
-                                        onClick={()=>setProject((h)=>h === optie ? "" : optie)}
+                                        onClick={()=>{
+                                            setProject((h)=>h === "Nee" ? "" : "Nee");
+                                            setProjectOmschrijving("");
+                                        }}
                                         className={
-                                            "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                                            "flex-1 rounded-lg py-2 border-2 text-sm font-medium bg-white "
                                             +
-                                            (project === optie
-                                                ? optie === "Ja"
-                                                    ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                                    : "bg-red-100 text-red-800 border-red-300"
-                                                : "bg-white text-gray-700 border-gray-200")
+                                            (project === "Nee"
+                                                ? "border-red-300 text-red-700"
+                                                : "border-gray-200 text-gray-700")
                                         }
                                     >
-                                        {optie}
+                                        Nee
                                     </button>
-                                ))}
+                                ) : null}
                             </div>
+                            {project === "Ja" ? (
+                                <label className="block">
+                                    <span className="text-xs text-gray-600">
+                                        Omschrijf het project
+                                    </span>
+                                    <textarea
+                                        rows={3}
+                                        value={projectOmschrijving}
+                                        onChange={(e)=>
+                                            setProjectOmschrijving(e.target.value)
+                                        }
+                                        placeholder="Korte omschrijving van het project"
+                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                    />
+                                </label>
+                            ) : null}
                         </div>
 
                     </div>
