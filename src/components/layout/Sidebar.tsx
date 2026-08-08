@@ -454,6 +454,71 @@ export default function Sidebar({
                 </button>
 
 
+                <button
+
+                    type="button"
+
+                    onClick={()=>{
+
+
+                        window.open(
+
+                            "https://www.vogels.com/nl-nl/p/pro-avmountadvisor#/pro-avmountadvisor/display?token=362942eb78612938757db61dc3b301fa",
+
+                            "Vogels",
+
+                            "width=1400,height=900"
+
+                        );
+
+
+                    }}
+
+                    className="
+                        flex
+                        items-center
+                        gap-3
+                        px-4
+                        py-3
+                        rounded-xl
+                        text-gray-600
+                        hover:bg-gray-100
+                        w-full
+                        text-left
+                    "
+
+                >
+
+                    <span className="text-xl">
+
+                        📺
+
+                    </span>
+
+
+
+                    <div>
+
+                        <div className="text-sm font-medium">
+
+                            Vogels
+
+                        </div>
+
+
+                        <div className="text-xs text-gray-400">
+
+                            Pro-AV Advisor
+
+                        </div>
+
+
+                    </div>
+
+
+                </button>
+
+
             </div>
             ) : null}
 
