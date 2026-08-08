@@ -10,6 +10,7 @@ import {
     berekendInstallatieType,
     isHoofdType,
     patchRaaktVoorzieningen,
+    legeVoorzieningen,
     syncSchermItems,
     syncVoorzieningenVanAnkers,
 } from "@/lib/aanvraag/installatieTypes";
@@ -146,6 +147,7 @@ export default function SchermenSpecificatie({
                                                         {
                                                             naastSchermId:
                                                                 "",
+                                                            ...legeVoorzieningen(),
                                                         }
                                                     );
                                                     return;
@@ -194,7 +196,10 @@ export default function SchermenSpecificatie({
 
                                 <div className="space-y-1.5">
                                     <span className="text-xs text-gray-600">
-                                        Formaat / inch
+                                        Formaat / inch{" "}
+                                        <span className="text-red-500">
+                                            *
+                                        </span>
                                     </span>
                                     <div className="flex flex-wrap gap-2">
                                         {SCHERM_FORMATEN.map((f) => {
@@ -252,7 +257,10 @@ export default function SchermenSpecificatie({
 
                                 <div className="space-y-1.5">
                                     <span className="text-xs text-gray-600">
-                                        Bevestiging
+                                        Bevestiging{" "}
+                                        <span className="text-red-500">
+                                            *
+                                        </span>
                                     </span>
                                     <div className="flex flex-wrap gap-2">
                                         {BEVESTIGING_OPTIES.map(
@@ -349,7 +357,10 @@ export default function SchermenSpecificatie({
 
                                 <div className="space-y-1.5">
                                     <span className="text-xs text-gray-600">
-                                        Oriëntatie
+                                        Oriëntatie{" "}
+                                        <span className="text-red-500">
+                                            *
+                                        </span>
                                     </span>
                                     <div className="flex flex-wrap gap-2">
                                         {[
@@ -392,7 +403,10 @@ export default function SchermenSpecificatie({
 
                                 <label className="block">
                                     <span className="text-xs text-gray-600">
-                                        Locatie scherm
+                                        Locatie scherm{" "}
+                                        <span className="text-red-500">
+                                            *
+                                        </span>
                                     </span>
                                     <input
                                         value={scherm.locatie}
@@ -418,7 +432,10 @@ export default function SchermenSpecificatie({
 
                                 <div className="space-y-2 pt-1 border-t border-slate-100">
                                     <span className="text-xs text-gray-600 block">
-                                        Stroom aanwezig binnen 3 meter?
+                                        Stroom aanwezig binnen 3 meter?{" "}
+                                        <span className="text-red-500">
+                                            *
+                                        </span>
                                     </span>
                                     <JaNee
                                         value={scherm.stroom}
@@ -483,7 +500,10 @@ export default function SchermenSpecificatie({
                                 <div className="space-y-2">
                                     <span className="text-xs text-gray-600 block">
                                         Internet aanwezig binnen 3
-                                        meter?
+                                        meter?{" "}
+                                        <span className="text-red-500">
+                                            *
+                                        </span>
                                     </span>
                                     <JaWifiNee
                                         value={scherm.internet}

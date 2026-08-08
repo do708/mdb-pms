@@ -251,6 +251,51 @@ export function voorzieningenVan(
     };
 }
 
+/** Lege voorzieningen — o.a. bij overstap naar Eigen locatie. */
+export function legeVoorzieningen(): SchermVoorzieningen {
+    return {
+        formaat: "",
+        formaatAnders: "",
+        beugel: "",
+        bevestigingDetail: "",
+        orientatie: "",
+        locatie: "",
+        stroom: "",
+        stroomMdb: "",
+        stroomAfstand: "",
+        stroomTraject: "",
+        internet: "",
+        internetMdb: "",
+        internetAfstand: "",
+        internetTraject: "",
+    };
+}
+
+/** Of een scherm (niet-gekoppeld) alle verplichte velden heeft. */
+export function schermVeldenCompleet(
+    scherm: AanvraagSchermItem
+): boolean {
+    if (
+        !scherm.formaat
+        || !scherm.beugel
+        || !scherm.orientatie
+        || !scherm.locatie.trim()
+        || !scherm.stroom
+        || !scherm.internet
+    ) {
+        return false;
+    }
+
+    if (
+        scherm.beugel in BEVESTIGING_DETAIL
+        && !scherm.bevestigingDetail
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
 const VOORZIENING_KEYS: (keyof SchermVoorzieningen)[] = [
     "formaat",
     "formaatAnders",

@@ -13,6 +13,7 @@ import {
     berekendInstallatieType,
     samenvattingSchermen,
     samenvattingStroomInternet,
+    schermVeldenCompleet,
     syncSchermItems,
 } from "@/lib/aanvraag/installatieTypes";
 
@@ -343,9 +344,49 @@ function AanvraagFormulier(){
             return;
         }
 
-        if(!locatie && !straat && !plaats){
-            setFout("Vul minimaal de locatie of het adres van de werklocatie in.");
+        if(!locatie.trim()){
+            setFout("Vul de locatie / filiaalnaam in.");
             return;
+        }
+        if(!straat.trim()){
+            setFout("Vul de straat in.");
+            return;
+        }
+        if(!huisnummer.trim()){
+            setFout("Vul het huisnummer in.");
+            return;
+        }
+        if(!postcode.trim()){
+            setFout("Vul de postcode in.");
+            return;
+        }
+        if(!plaats.trim()){
+            setFout("Vul de plaats in.");
+            return;
+        }
+        if(!contactPersoon.trim()){
+            setFout("Vul de contactpersoon in.");
+            return;
+        }
+        if(!contactEmail.trim() && !contactPhone.trim()){
+            setFout("Vul minimaal een e-mailadres of telefoonnummer in.");
+            return;
+        }
+
+        if(
+            typeAanvraag === "installatie"
+            && specs.schermen?.aan
+            && schermenItems.length > 0
+        ){
+            const incompleet = schermenItems.findIndex(
+                (s)=>!schermVeldenCompleet(s)
+            );
+            if(incompleet >= 0){
+                setFout(
+                    `Scherm ${incompleet + 1}: vul formaat, bevestiging, oriëntatie, locatie, stroom en internet in.`
+                );
+                return;
+            }
         }
 
         setVersturenBezig(true);
@@ -525,66 +566,93 @@ function AanvraagFormulier(){
                         </h2>
 
                         <label className="block">
-                            <span className="text-sm text-gray-600">Locatie / filiaalnaam</span>
+                            <span className="text-sm text-gray-600">
+                                Locatie / filiaalnaam{" "}
+                                <span className="text-red-500">*</span>
+                            </span>
                             <input
                                 value={locatie}
                                 onChange={(e)=>setLocatie(e.target.value)}
                                 placeholder="Bijv. Filiaal Almere Centrum"
                                 className="w-full border rounded-xl p-3 mt-1"
+                                required
                             />
                         </label>
 
                         <div className="flex flex-wrap gap-3">
                             <label className="block flex-1 min-w-[180px]">
-                                <span className="text-sm text-gray-600">Straat</span>
+                                <span className="text-sm text-gray-600">
+                                    Straat{" "}
+                                    <span className="text-red-500">*</span>
+                                </span>
                                 <input
                                     value={straat}
                                     onChange={(e)=>setStraat(e.target.value)}
                                     className="w-full border rounded-xl p-3 mt-1"
+                                    required
                                 />
                             </label>
                             <label className="block w-28">
-                                <span className="text-sm text-gray-600">Huisnr.</span>
+                                <span className="text-sm text-gray-600">
+                                    Huisnr.{" "}
+                                    <span className="text-red-500">*</span>
+                                </span>
                                 <input
                                     value={huisnummer}
                                     onChange={(e)=>setHuisnummer(e.target.value)}
                                     className="w-full border rounded-xl p-3 mt-1"
+                                    required
                                 />
                             </label>
                         </div>
 
                         <div className="flex flex-wrap gap-3">
                             <label className="block w-36">
-                                <span className="text-sm text-gray-600">Postcode</span>
+                                <span className="text-sm text-gray-600">
+                                    Postcode{" "}
+                                    <span className="text-red-500">*</span>
+                                </span>
                                 <input
                                     value={postcode}
                                     onChange={(e)=>setPostcode(e.target.value)}
                                     className="w-full border rounded-xl p-3 mt-1"
+                                    required
                                 />
                             </label>
                             <label className="block flex-1 min-w-[180px]">
-                                <span className="text-sm text-gray-600">Plaats</span>
+                                <span className="text-sm text-gray-600">
+                                    Plaats{" "}
+                                    <span className="text-red-500">*</span>
+                                </span>
                                 <input
                                     value={plaats}
                                     onChange={(e)=>setPlaats(e.target.value)}
                                     className="w-full border rounded-xl p-3 mt-1"
+                                    required
                                 />
                             </label>
                         </div>
 
                         <label className="block">
-                            <span className="text-sm text-gray-600">Contactpersoon:</span>
+                            <span className="text-sm text-gray-600">
+                                Contactpersoon{" "}
+                                <span className="text-red-500">*</span>
+                            </span>
                             <input
                                 value={contactPersoon}
                                 onChange={(e)=>setContactPersoon(e.target.value)}
                                 placeholder="Naam contactpersoon"
                                 className="w-full border rounded-xl p-3 mt-1"
+                                required
                             />
                         </label>
 
                         <div className="flex flex-wrap gap-3">
                             <label className="block flex-1 min-w-[180px]">
-                                <span className="text-sm text-gray-600">E-mailadres</span>
+                                <span className="text-sm text-gray-600">
+                                    E-mailadres{" "}
+                                    <span className="text-red-500">*</span>
+                                </span>
                                 <input
                                     type="email"
                                     value={contactEmail}
@@ -594,7 +662,10 @@ function AanvraagFormulier(){
                                 />
                             </label>
                             <label className="block flex-1 min-w-[150px]">
-                                <span className="text-sm text-gray-600">Telefoonnummer</span>
+                                <span className="text-sm text-gray-600">
+                                    Telefoonnummer{" "}
+                                    <span className="text-red-500">*</span>
+                                </span>
                                 <input
                                     value={contactPhone}
                                     onChange={(e)=>setContactPhone(e.target.value)}
@@ -603,6 +674,9 @@ function AanvraagFormulier(){
                                 />
                             </label>
                         </div>
+                        <p className="text-xs text-gray-500 -mt-2">
+                            Vul minimaal e-mail of telefoon in.
+                        </p>
 
                     </div>
 
