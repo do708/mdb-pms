@@ -348,6 +348,20 @@ function AanvragenSectie(){
                                                     {(a.specificaties as Record<string,unknown>).projectOmschrijving
                                                         ? <p><strong>Projectomschrijving:</strong> {String((a.specificaties as Record<string,unknown>).projectOmschrijving)}</p>
                                                         : null}
+                                                </>
+                                            )
+                                            : null
+                                        }
+                                        {
+                                            a.specificaties
+                                            && typeof a.specificaties === "object"
+                                            && (
+                                                (a.specificaties as Record<string,unknown>).projectHardware
+                                                || (a.specificaties as Record<string,unknown>).projectHardwareBesteld
+                                                || (a.specificaties as Record<string,unknown>).projectHardwareLevering
+                                            )
+                                            ? (
+                                                <>
                                                     {(a.specificaties as Record<string,unknown>).projectHardware
                                                         ? <p><strong>Hardware te installeren:</strong> {String((a.specificaties as Record<string,unknown>).projectHardware)}</p>
                                                         : null}
@@ -358,7 +372,7 @@ function AanvragenSectie(){
                                                         ? <p><strong>Hardware levering:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareLevering)}</p>
                                                         : null}
                                                 </>
-                                              )
+                                            )
                                             : null
                                         }
                                         {a.stroom ? <p><strong>Stroom binnen 3m:</strong> {a.stroom}</p> : null}
