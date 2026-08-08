@@ -241,13 +241,51 @@ function AanvragenSectie(){
                                             })()
                                         }
                                         {
+                                            (()=>{
+                                                if(!a.specificaties || typeof a.specificaties !== "object"){
+                                                    return null;
+                                                }
+                                                const ki = (a.specificaties as Record<string,unknown>).kiosk as {
+                                                    aan?:boolean;
+                                                    items?:{
+                                                        locatie?:string;
+                                                        type?:string;
+                                                        stroom?:string;
+                                                        internet?:string;
+                                                    }[];
+                                                } | undefined;
+                                                if(!ki?.aan || !Array.isArray(ki.items) || ki.items.length === 0){
+                                                    return null;
+                                                }
+                                                return (
+                                                    <div>
+                                                        <strong>Kiosken:</strong>
+                                                        <ul className="mt-1 list-disc pl-5 space-y-0.5">
+                                                            {ki.items.map((k,i)=>(
+                                                                <li key={i}>
+                                                                    Kiosk {i + 1}
+                                                                    {k.locatie ? ` · ${k.locatie}` : ""}
+                                                                    {k.type ? ` · ${k.type}` : ""}
+                                                                    {k.stroom ? ` · stroom ${k.stroom}` : ""}
+                                                                    {k.internet ? ` · internet ${k.internet}` : ""}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                );
+                                            })()
+                                        }
+                                        {
                                             a.specificaties && typeof a.specificaties === "object"
                                             ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string>; items?:unknown[] }>)
                                                 .filter(([k,v])=>{
-                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs"){
+                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving"){
                                                         return false;
                                                     }
                                                     if(k === "schermen" && Array.isArray(v?.items) && v.items.length > 0){
+                                                        return false;
+                                                    }
+                                                    if(k === "kiosk" && Array.isArray(v?.items) && v.items.length > 0){
                                                         return false;
                                                     }
                                                     return !!(v && typeof v === "object" && v.aan);

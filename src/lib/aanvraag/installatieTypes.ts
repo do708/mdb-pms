@@ -71,6 +71,12 @@ export const KABEL_TRAJECT_OPTIES = [
 
 export type KabelTraject = (typeof KABEL_TRAJECT_OPTIES)[number];
 
+/** Traject-keuzes bij audio / luidsprekerkabel. */
+export const AUDIO_KABEL_TRAJECT_OPTIES = [
+    "Systeemplafond",
+    "Kabelgoot",
+] as const;
+
 /**
  * Formaatbanden uit het productoverzicht (geen prijzen).
  * 86" valt onder “75 tot 85” (dichtstbijzijnde standaardcode).
@@ -384,6 +390,66 @@ export function syncSchermItems(
     });
 
     return syncVoorzieningenVanAnkers(metLinks);
+}
+
+export interface AanvraagKioskItem {
+    id: string;
+    locatie: string;
+    type: string;
+    opmerking: string;
+    stroom: "" | "Ja" | "Nee";
+    stroomMdb: string;
+    stroomAfstand: string;
+    stroomTraject: string;
+    internet: "" | "Ja" | "Wifi" | "Nee";
+    internetMdb: string;
+    internetAfstand: string;
+    internetTraject: string;
+}
+
+export function emptyKioskItem(): AanvraagKioskItem {
+    return {
+        id: uid(),
+        locatie: "",
+        type: "",
+        opmerking: "",
+        stroom: "",
+        stroomMdb: "",
+        stroomAfstand: "",
+        stroomTraject: "",
+        internet: "",
+        internetMdb: "",
+        internetAfstand: "",
+        internetTraject: "",
+    };
+}
+
+export function syncKioskItems(
+    items: AanvraagKioskItem[],
+    aantal: number
+): AanvraagKioskItem[] {
+    const n = Math.max(0, Math.min(20, aantal));
+    const next = [...items];
+
+    while (next.length < n) {
+        next.push(emptyKioskItem());
+    }
+
+    while (next.length > n) {
+        next.pop();
+    }
+
+    return next;
+}
+
+export function kioskVeldenCompleet(
+    kiosk: AanvraagKioskItem
+): boolean {
+    return Boolean(
+        kiosk.locatie.trim()
+        && kiosk.stroom
+        && kiosk.internet
+    );
 }
 
 /** Basis-typecode voor een schermitem (bevestiging + formaat; geen v). */

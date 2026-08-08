@@ -93,6 +93,7 @@ export function MdbRealisatieVervolg({
     onAfstandChange,
     onTrajectChange,
     disabled = false,
+    trajectOpties = KABEL_TRAJECT_OPTIES,
 }: {
     mdb: string;
     afstand: string;
@@ -101,6 +102,7 @@ export function MdbRealisatieVervolg({
     onAfstandChange: (v: string) => void;
     onTrajectChange: (v: string) => void;
     disabled?: boolean;
+    trajectOpties?: readonly string[];
 }) {
     return (
         <div className="pl-2 border-l-2 border-amber-200 space-y-2">
@@ -135,7 +137,7 @@ export function MdbRealisatieVervolg({
                             Traject
                         </span>
                         <div className="flex flex-col gap-2">
-                            {KABEL_TRAJECT_OPTIES.map((optie) => (
+                            {trajectOpties.map((optie) => (
                                 <button
                                     key={optie}
                                     type="button"

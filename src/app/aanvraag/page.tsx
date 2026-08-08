@@ -6,14 +6,19 @@ import { Suspense } from "react";
 
 import SchermenSpecificatie from "@/components/aanvraag/SchermenSpecificatie";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
+import KioskSpecificatie from "@/components/aanvraag/KioskSpecificatie";
+import AudioSpecificatie from "@/components/aanvraag/AudioSpecificatie";
 import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
 import {
+    AanvraagKioskItem,
     AanvraagSchermItem,
     FORMAAT_PASTEL,
     berekendInstallatieType,
+    kioskVeldenCompleet,
     samenvattingSchermen,
     samenvattingStroomInternet,
     schermVeldenCompleet,
+    syncKioskItems,
     syncSchermItems,
 } from "@/lib/aanvraag/installatieTypes";
 
@@ -57,11 +62,8 @@ const ONDERDELEN:{
         key:"kiosk",
         titel:"3. Kiosk",
         kleur:"bg-amber-50 border-amber-200",
-        velden:[
-            { key:"aantal", label:"Aantal", plh:"Bijv. 1" },
-            { key:"type", label:"Type kiosk", plh:"Bijv. Easy, Full, Extended" },
-            { key:"opmerking", label:"Opmerking", plh:"Aanvullende details" }
-        ]
+        // Velden via KioskSpecificatie (per kiosk).
+        velden:[]
     },
     {
         key:"mediaplayers",
@@ -76,12 +78,8 @@ const ONDERDELEN:{
         key:"audio",
         titel:"5. Audio",
         kleur:"bg-rose-50 border-rose-200",
-        velden:[
-            { key:"speakersAantal", label:"Aantal speakers", plh:"Bijv. 4" },
-            { key:"speakersType", label:"Type speakers", plh:"Bijv. plafond" },
-            { key:"versterker", label:"Versterker", plh:"Bijv. 1x versterker" },
-            { key:"opmerking", label:"Opmerking", plh:"Aanvullende details" }
-        ]
+        // Velden via AudioSpecificatie.
+        velden:[]
     }
 ];
 
@@ -139,6 +137,9 @@ function AanvraagFormulier(){
 
     const [schermenItems, setSchermenItems] =
         useState<AanvraagSchermItem[]>([]);
+
+    const [kioskItems, setKioskItems] =
+        useState<AanvraagKioskItem[]>([]);
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
@@ -389,6 +390,22 @@ function AanvraagFormulier(){
             }
         }
 
+        if(
+            typeAanvraag === "installatie"
+            && specs.kiosk?.aan
+            && kioskItems.length > 0
+        ){
+            const incompleet = kioskItems.findIndex(
+                (k)=>!kioskVeldenCompleet(k)
+            );
+            if(incompleet >= 0){
+                setFout(
+                    `Kiosk ${incompleet + 1}: vul locatie, stroom en internet in.`
+                );
+                return;
+            }
+        }
+
         setVersturenBezig(true);
 
         // Korte samenvatting van de aangevinkte schermen (voor de lijstweergave).
@@ -443,6 +460,14 @@ function AanvraagFormulier(){
                                     aantal:specs.schermen.velden.aantal || String(schermenItems.length || "")
                                 },
                                 items:schermenMetType
+                            },
+                            kiosk:{
+                                ...specs.kiosk,
+                                velden:{
+                                    ...specs.kiosk.velden,
+                                    aantal:specs.kiosk.velden.aantal || String(kioskItems.length || "")
+                                },
+                                items:kioskItems
                             },
                             project,
                             projectOmschrijving:
@@ -778,45 +803,33 @@ function AanvraagFormulier(){
                                                             toggleMeerdereOptie("videowall", "formaat", optie)
                                                         }
                                                     />
+                                                ) : o.key === "kiosk" ? (
+                                                    <KioskSpecificatie
+                                                        aantal={blok.velden.aantal || ""}
+                                                        onAantalChange={(a)=>{
+                                                            zetVeld("kiosk", "aantal", a);
+                                                            const n = parseInt(a, 10);
+                                                            if(!Number.isFinite(n) || n < 0){
+                                                                setKioskItems([]);
+                                                                return;
+                                                            }
+                                                            setKioskItems((prev)=>
+                                                                syncKioskItems(prev, n)
+                                                            );
+                                                        }}
+                                                        items={kioskItems}
+                                                        onItemsChange={setKioskItems}
+                                                    />
                                                 ) : o.key === "audio" ? (
-                                                    <>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            <label className="block flex-1 min-w-[120px]">
-                                                                <span className="text-xs text-gray-600">Aantal speakers</span>
-                                                                <input
-                                                                    value={blok.velden.speakersAantal || ""}
-                                                                    onChange={(e)=>zetVeld("audio", "speakersAantal", e.target.value)}
-                                                                    placeholder="Bijv. 4"
-                                                                    className="w-full border rounded-lg p-2 mt-0.5 bg-white"
-                                                                />
-                                                            </label>
-                                                            <label className="block flex-1 min-w-[140px]">
-                                                                <span className="text-xs text-gray-600">Type speakers</span>
-                                                                <input
-                                                                    value={blok.velden.speakersType || ""}
-                                                                    onChange={(e)=>zetVeld("audio", "speakersType", e.target.value)}
-                                                                    placeholder="Bijv. plafond"
-                                                                    className="w-full border rounded-lg p-2 mt-0.5 bg-white"
-                                                                />
-                                                            </label>
-                                                        </div>
-                                                        {o.velden
-                                                            .filter((v)=>
-                                                                v.key !== "speakersAantal"
-                                                                && v.key !== "speakersType"
-                                                            )
-                                                            .map((v)=>(
-                                                                <label key={v.key} className="block">
-                                                                    <span className="text-xs text-gray-600">{v.label}</span>
-                                                                    <input
-                                                                        value={blok.velden[v.key] || ""}
-                                                                        onChange={(e)=>zetVeld(o.key, v.key, e.target.value)}
-                                                                        placeholder={v.plh || ""}
-                                                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white"
-                                                                    />
-                                                                </label>
-                                                            ))}
-                                                    </>
+                                                    <AudioSpecificatie
+                                                        velden={blok.velden}
+                                                        onChange={(veld, waarde)=>
+                                                            zetVeld("audio", veld, waarde)
+                                                        }
+                                                        onPatch={(patch)=>
+                                                            zetVelden("audio", patch)
+                                                        }
+                                                    />
                                                 ) : (
                                                     <>
                                                         {o.velden.map((v)=>(
@@ -904,7 +917,7 @@ function AanvraagFormulier(){
                                                                 }
                                                             </label>
                                                         ))}
-                                                        {(o.key === "kiosk" || o.key === "mediaplayers") ? (
+                                                        {o.key === "mediaplayers" ? (
                                                             <StroomInternetVragen
                                                                 velden={blok.velden}
                                                                 onChange={(veldOrPatch, waarde)=>{
