@@ -311,7 +311,7 @@ function AanvragenSectie(){
                                             a.specificaties && typeof a.specificaties === "object"
                                             ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string>; items?:unknown[] }>)
                                                 .filter(([k,v])=>{
-                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "evalue8Producten"){
+                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "projectHardware" || k === "projectHardwareBesteld" || k === "projectHardwareLevering" || k === "evalue8Producten"){
                                                         return false;
                                                     }
                                                     if(k === "schermen" && Array.isArray(v?.items) && v.items.length > 0){
@@ -347,6 +347,15 @@ function AanvragenSectie(){
                                                     <p><strong>Project (offerte-basis):</strong> Ja</p>
                                                     {(a.specificaties as Record<string,unknown>).projectOmschrijving
                                                         ? <p><strong>Projectomschrijving:</strong> {String((a.specificaties as Record<string,unknown>).projectOmschrijving)}</p>
+                                                        : null}
+                                                    {(a.specificaties as Record<string,unknown>).projectHardware
+                                                        ? <p><strong>Hardware te installeren:</strong> {String((a.specificaties as Record<string,unknown>).projectHardware)}</p>
+                                                        : null}
+                                                    {(a.specificaties as Record<string,unknown>).projectHardwareBesteld
+                                                        ? <p><strong>Hardware besteld:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareBesteld)}</p>
+                                                        : null}
+                                                    {(a.specificaties as Record<string,unknown>).projectHardwareLevering
+                                                        ? <p><strong>Hardware levering:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareLevering)}</p>
                                                         : null}
                                                 </>
                                               )

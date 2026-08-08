@@ -156,6 +156,9 @@ function AanvraagFormulier(){
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
+    const [projectHardware,setProjectHardware] = useState("");
+    const [projectHardwareBesteld,setProjectHardwareBesteld] = useState("");
+    const [projectHardwareLevering,setProjectHardwareLevering] = useState("");
     const [opmerkingen,setOpmerkingen] = useState("");
 
     const [aanvragerNaam,setAanvragerNaam] = useState("");
@@ -517,6 +520,16 @@ function AanvraagFormulier(){
                                 project,
                                 projectOmschrijving:
                                     project === "Ja" ? projectOmschrijving : "",
+                                projectHardware:
+                                    project === "Ja" ? projectHardware : "",
+                                projectHardwareBesteld:
+                                    project === "Ja"
+                                    ? projectHardwareBesteld
+                                    : "",
+                                projectHardwareLevering:
+                                    project === "Ja"
+                                    ? projectHardwareLevering
+                                    : "",
                                 storing:{
                                     omschrijving:storingOmschrijving,
                                     hardwareVervangen,
@@ -1025,6 +1038,9 @@ function AanvraagFormulier(){
                                         setProject((h)=>{
                                             if(h === "Ja"){
                                                 setProjectOmschrijving("");
+                                                setProjectHardware("");
+                                                setProjectHardwareBesteld("");
+                                                setProjectHardwareLevering("");
                                                 return "";
                                             }
                                             return "Ja";
@@ -1042,6 +1058,7 @@ function AanvraagFormulier(){
                                 </button>
                             </div>
                             {project === "Ja" ? (
+                                <>
                                 <label className="block">
                                     <span className="text-xs text-gray-600">
                                         Omschrijf het project
@@ -1056,6 +1073,92 @@ function AanvraagFormulier(){
                                         className="w-full border rounded-lg p-2 mt-0.5 bg-white"
                                     />
                                 </label>
+                                <label className="block">
+                                    <span className="text-xs text-gray-600">
+                                        Hardware die geïnstalleerd dient te
+                                        worden
+                                    </span>
+                                    <textarea
+                                        rows={3}
+                                        value={projectHardware}
+                                        onChange={(e)=>
+                                            setProjectHardware(e.target.value)
+                                        }
+                                        placeholder="Bijv. schermen, players, beugels, kabels…"
+                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                    />
+                                </label>
+
+                                <div>
+                                    <span className="text-xs text-gray-600 block mb-1">
+                                        Is deze al besteld?
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={()=>
+                                                setProjectHardwareBesteld((h)=>
+                                                    h === "Ja" ? "" : "Ja"
+                                                )
+                                            }
+                                            className={
+                                                "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                                                +
+                                                (projectHardwareBesteld === "Ja"
+                                                    ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                                                    : "bg-white text-gray-700 border-gray-200")
+                                            }
+                                        >
+                                            Ja
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={()=>
+                                                setProjectHardwareBesteld((h)=>
+                                                    h === "Nee" ? "" : "Nee"
+                                                )
+                                            }
+                                            className={
+                                                "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                                                +
+                                                (projectHardwareBesteld === "Nee"
+                                                    ? "bg-amber-100 text-amber-800 border-amber-300"
+                                                    : "bg-white text-gray-700 border-gray-200")
+                                            }
+                                        >
+                                            Nee
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span className="text-xs text-gray-600 block mb-1">
+                                        Waar wordt deze geleverd?
+                                    </span>
+                                    <div className="flex gap-2">
+                                        {["MDB Networks","Op locatie"].map((optie)=>(
+                                            <button
+                                                key={optie}
+                                                type="button"
+                                                onClick={()=>
+                                                    setProjectHardwareLevering((h)=>
+                                                        h === optie ? "" : optie
+                                                    )
+                                                }
+                                                className={
+                                                    "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                                                    +
+                                                    (projectHardwareLevering === optie
+                                                        ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                        : "bg-white text-gray-700 border-gray-200")
+                                                }
+                                            >
+                                                {optie}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                </>
                             ) : null}
                         </div>
 
