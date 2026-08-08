@@ -1071,7 +1071,7 @@ function AanvraagFormulier(){
 
                             <div>
                                 <span className="text-sm text-gray-600 block mb-1">
-                                    Is deze al besteld?
+                                    Is deze al besteld/verstuurd?
                                 </span>
                                 <div className="flex gap-2">
                                     <button
@@ -1215,7 +1215,7 @@ function AanvraagFormulier(){
 
                                         <div>
                                             <span className="text-sm text-gray-600 block mb-1">
-                                                Is deze al besteld?
+                                                Is deze al besteld/verstuurd?
                                             </span>
                                             <div className="flex gap-2">
                                                 <button
