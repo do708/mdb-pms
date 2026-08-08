@@ -356,15 +356,11 @@ function AanvragenSectie(){
                                             a.specificaties
                                             && typeof a.specificaties === "object"
                                             && (
-                                                (a.specificaties as Record<string,unknown>).projectHardware
-                                                || (a.specificaties as Record<string,unknown>).projectHardwareBesteld
+                                                (a.specificaties as Record<string,unknown>).projectHardwareBesteld
                                                 || (a.specificaties as Record<string,unknown>).projectHardwareLevering
                                             )
                                             ? (
                                                 <>
-                                                    {(a.specificaties as Record<string,unknown>).projectHardware
-                                                        ? <p><strong>Hardware te installeren:</strong> {String((a.specificaties as Record<string,unknown>).projectHardware)}</p>
-                                                        : null}
                                                     {(a.specificaties as Record<string,unknown>).projectHardwareBesteld
                                                         ? <p><strong>Hardware besteld:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareBesteld)}</p>
                                                         : null}

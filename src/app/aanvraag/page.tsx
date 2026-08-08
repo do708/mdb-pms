@@ -156,7 +156,6 @@ function AanvraagFormulier(){
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
-    const [projectHardware,setProjectHardware] = useState("");
     const [projectHardwareBesteld,setProjectHardwareBesteld] = useState("");
     const [projectHardwareLevering,setProjectHardwareLevering] = useState("");
     const [opmerkingen,setOpmerkingen] = useState("");
@@ -520,7 +519,6 @@ function AanvraagFormulier(){
                                 project,
                                 projectOmschrijving:
                                     project === "Ja" ? projectOmschrijving : "",
-                                projectHardware,
                                 projectHardwareBesteld,
                                 projectHardwareLevering,
                                 storing:{
@@ -1067,20 +1065,9 @@ function AanvraagFormulier(){
 
                         {/* Hardware — geldt voor de hele installatie-aanvraag */}
                         <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-3">
-                            <label className="block">
-                                <span className="text-sm font-medium text-gray-800">
-                                    Hardware die geïnstalleerd dient te worden
-                                </span>
-                                <textarea
-                                    rows={3}
-                                    value={projectHardware}
-                                    onChange={(e)=>
-                                        setProjectHardware(e.target.value)
-                                    }
-                                    placeholder="Bijv. schermen, players, beugels, kabels…"
-                                    className="w-full border rounded-lg p-2 mt-1 bg-white"
-                                />
-                            </label>
+                            <span className="text-sm font-medium text-gray-800 block">
+                                Hardware die geïnstalleerd dient te worden
+                            </span>
 
                             <div>
                                 <span className="text-sm text-gray-600 block mb-1">
