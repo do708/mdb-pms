@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+import { PlanningStatusIcon } from "./PlanningStatusIcon";
+
 interface Props {
     item: any;
     draggable?: boolean;
@@ -45,9 +47,12 @@ export default function DraggableAssignment({
                 className="block"
                 draggable={false}
             >
-                <span className="text-[11px] font-bold block truncate">
-                    {engineers || "Geen monteur"}
-                </span>
+                <div className="flex items-start justify-between gap-1">
+                    <span className="text-[11px] font-bold truncate min-w-0">
+                        {engineers || "Geen monteur"}
+                    </span>
+                    <PlanningStatusIcon status={item.status} />
+                </div>
                 <span className="text-[11px] block truncate opacity-95">
                     {customer?.name ?? "Onbekende klant"}
                 </span>

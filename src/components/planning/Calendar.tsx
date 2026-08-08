@@ -37,12 +37,16 @@ interface CalendarProps {
     items: any[];
     leave?: any[];
     onDropDate?: (id: string, date: string) => void;
+    view?: "week" | "month";
+    onViewChange?: (view: "week" | "month") => void;
 }
 
 export default function Calendar({
     items,
     leave = [],
     onDropDate,
+    view = "month",
+    onViewChange,
 }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -143,9 +147,9 @@ export default function Calendar({
 
     return (
         <section className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden w-full max-w-full">
-            <div className="flex flex-wrap items-end justify-between gap-3 px-5 pt-5 pb-4 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
-                <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 pt-3 pb-2.5 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
+                <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
                         <h2 className="text-lg font-bold text-slate-900">
                             {formatNlDate(currentDate, {
                                 month: "long",
@@ -155,8 +159,40 @@ export default function Calendar({
                         <span className="inline-flex items-center rounded-full bg-[#0066FF]/10 text-[#0066FF] text-xs font-semibold px-2.5 py-0.5">
                             Maandoverzicht
                         </span>
+                        {onViewChange ? (
+                            <div className="inline-flex rounded-lg border border-slate-200 bg-white/80 p-0.5">
+                                <button
+                                    type="button"
+                                    onClick={() => onViewChange("week")}
+                                    className={`
+                                        px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition
+                                        ${
+                                            view === "week"
+                                                ? "bg-[#0066FF] text-white shadow-sm"
+                                                : "text-slate-600 hover:text-slate-900"
+                                        }
+                                    `}
+                                >
+                                    Week
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => onViewChange("month")}
+                                    className={`
+                                        px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition
+                                        ${
+                                            view === "month"
+                                                ? "bg-[#0066FF] text-white shadow-sm"
+                                                : "text-slate-600 hover:text-slate-900"
+                                        }
+                                    `}
+                                >
+                                    Maand
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-xs text-slate-500 mt-0.5">
                         {monthJobCount === 0
                             ? "Nog geen werkbonnen deze maand."
                             : `${monthJobCount} werkbon${monthJobCount === 1 ? "" : "nen"} deze maand.`}
@@ -166,14 +202,14 @@ export default function Calendar({
                     </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <button
                         type="button"
                         onClick={previousMonth}
                         className="
-                            inline-flex items-center rounded-xl
+                            inline-flex items-center rounded-lg
                             border border-slate-200 bg-white
-                            px-3.5 py-2 text-sm font-medium text-slate-700
+                            px-2.5 py-1.5 text-sm font-medium text-slate-700
                             hover:bg-slate-50 transition
                         "
                     >
@@ -183,8 +219,8 @@ export default function Calendar({
                         type="button"
                         onClick={goToday}
                         className="
-                            text-sm font-semibold text-[#0066FF]
-                            rounded-lg px-2.5 py-1
+                            text-xs sm:text-sm font-semibold text-[#0066FF]
+                            rounded-lg px-2 py-1
                             hover:bg-[#e8f0ff] transition
                         "
                     >
@@ -194,9 +230,9 @@ export default function Calendar({
                         type="button"
                         onClick={nextMonth}
                         className="
-                            inline-flex items-center rounded-xl
+                            inline-flex items-center rounded-lg
                             border border-slate-200 bg-white
-                            px-3.5 py-2 text-sm font-medium text-slate-700
+                            px-2.5 py-1.5 text-sm font-medium text-slate-700
                             hover:bg-slate-50 transition
                         "
                     >

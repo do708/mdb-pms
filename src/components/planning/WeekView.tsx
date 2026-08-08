@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+import { PlanningStatusIcon } from "./PlanningStatusIcon";
+
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
     const d = new Date(
@@ -51,6 +53,8 @@ interface WeekViewProps {
     // Maandag van de te tonen week; standaard deze week
     weekStart?: Date;
     weekNavigation?: WeekNavigation;
+    view?: "week" | "month";
+    onViewChange?: (view: "week" | "month") => void;
     /** Sleep een klus naar een andere dag/tijd/monteur */
     onMovePlan?: (args: {
         workorderId: string;
@@ -73,6 +77,8 @@ export default function WeekView({
     engineers = [],
     weekStart,
     weekNavigation,
+    view = "week",
+    onViewChange,
     onMovePlan,
 }: WeekViewProps) {
     const today = new Date();
@@ -292,13 +298,47 @@ export default function WeekView({
 
     return (
         <section className="bg-white border border-slate-200 rounded-2xl shadow-sm">
-            <div className="flex flex-wrap items-center gap-2 px-5 pt-4 pb-3 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
-                <h2 className="text-lg font-bold text-slate-900">
-                    Weekoverzicht
-                </h2>
-                <span className="inline-flex items-center rounded-full bg-[#0066FF]/10 text-[#0066FF] text-xs font-semibold px-2.5 py-0.5">
-                    Week {isoWeek(startOfWeek)}
-                </span>
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 pt-3 pb-2.5 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
+                <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    <h2 className="text-lg font-bold text-slate-900">
+                        Weekoverzicht
+                    </h2>
+                    <span className="inline-flex items-center rounded-full bg-[#0066FF]/10 text-[#0066FF] text-xs font-semibold px-2.5 py-0.5">
+                        Week {isoWeek(startOfWeek)}
+                    </span>
+                    {onViewChange ? (
+                        <div className="inline-flex rounded-lg border border-slate-200 bg-white/80 p-0.5 shrink-0">
+                            <button
+                                type="button"
+                                onClick={() => onViewChange("week")}
+                                className={`
+                                    px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition
+                                    ${
+                                        view === "week"
+                                            ? "bg-[#0066FF] text-white shadow-sm"
+                                            : "text-slate-600 hover:text-slate-900"
+                                    }
+                                `}
+                            >
+                                Week
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => onViewChange("month")}
+                                className={`
+                                    px-3 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition
+                                    ${
+                                        view === "month"
+                                            ? "bg-[#0066FF] text-white shadow-sm"
+                                            : "text-slate-600 hover:text-slate-900"
+                                    }
+                                `}
+                            >
+                                Maand
+                            </button>
+                        </div>
+                    ) : null}
+                </div>
             </div>
 
             {weekNavigation ? (
@@ -680,9 +720,16 @@ export default function WeekView({
                                                                                 }
                                                                             }}
                                                                         >
-                                                                            <span className="text-[11px] font-bold block opacity-95">
-                                                                                {timeLabel}
-                                                                            </span>
+                                                                            <div className="flex items-start justify-between gap-1">
+                                                                                <span className="text-[11px] font-bold opacity-95 tabular-nums leading-none pt-0.5 min-w-0 truncate">
+                                                                                    {timeLabel}
+                                                                                </span>
+                                                                                <PlanningStatusIcon
+                                                                                    status={
+                                                                                        item.status
+                                                                                    }
+                                                                                />
+                                                                            </div>
 
                                                                             <span className="text-[12px] block truncate font-semibold">
                                                                                 {(item

@@ -432,48 +432,8 @@ export default function PlanningPage(){
 
         <main className="
             p-6
-            space-y-6
+            space-y-4
         ">
-
-
-            <header className="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">
-                        Planning
-                    </h1>
-                </div>
-
-                <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1">
-                    <button
-                        type="button"
-                        onClick={() => setView("week")}
-                        className={`
-                            px-4 py-2 rounded-lg text-sm font-semibold transition
-                            ${
-                                view === "week"
-                                    ? "bg-[#0066FF] text-white shadow-sm"
-                                    : "text-slate-600 hover:text-slate-900"
-                            }
-                        `}
-                    >
-                        Week
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setView("month")}
-                        className={`
-                            px-4 py-2 rounded-lg text-sm font-semibold transition
-                            ${
-                                view === "month"
-                                    ? "bg-[#0066FF] text-white shadow-sm"
-                                    : "text-slate-600 hover:text-slate-900"
-                            }
-                        `}
-                    >
-                        Maand
-                    </button>
-                </div>
-            </header>
 
 
 
@@ -570,6 +530,8 @@ export default function PlanningPage(){
                     onDropDate={
                         canEdit ? updatePlanning : undefined
                     }
+                    view={view}
+                    onViewChange={setView}
                 />
             ) : (
                 <WeekView
@@ -577,6 +539,8 @@ export default function PlanningPage(){
                     leave={leave}
                     engineers={engineers}
                     weekStart={weekStart}
+                    view={view}
+                    onViewChange={setView}
                     weekNavigation={{
                         rangeLabel: `${formatNlDate(weekStart, {
                             day: "numeric",
