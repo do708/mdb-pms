@@ -26,8 +26,11 @@ import {
 } from "@/lib/aanvraag/installatieTypes";
 import {
     evalue8KeuzesVanState,
-    isEvalue8Opdrachtgever,
 } from "@/lib/aanvraag/evalue8Producten";
+import {
+    isEvalue8Opdrachtgever,
+    isUrenOnlyOpdrachtgever,
+} from "@/lib/aanvraag/opdrachtgeverVorm";
 
 
 interface Bijlage {
@@ -229,6 +232,15 @@ function AanvraagFormulier(){
 
     const isEvalue8 =
         isEvalue8Opdrachtgever(opdrachtgever);
+
+    const isUrenOnly =
+        isUrenOnlyOpdrachtgever(opdrachtgever);
+
+    useEffect(()=>{
+        if(isUrenOnly){
+            setTypeAanvraag("uren");
+        }
+    },[isUrenOnly]);
 
 
     function toggleBlok(key:string){
@@ -741,8 +753,8 @@ function AanvraagFormulier(){
                     </div>
 
 
-                    {/* Type aanvraag — niet voor eValue8 */}
-                    {!isEvalue8 ? (
+                    {/* Type aanvraag — niet voor eValue8; Axians/Hofcon alleen Uren */}
+                    {!isEvalue8 && !isUrenOnly ? (
                     <div className="space-y-2">
                         <h2 className="font-semibold text-gray-800 border-b pb-1">
                             Type aanvraag

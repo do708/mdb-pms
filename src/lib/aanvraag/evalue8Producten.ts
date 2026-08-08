@@ -281,9 +281,7 @@ export interface Evalue8ProductKeuze {
     aantal: string;
 }
 
-export function isEvalue8Opdrachtgever(naam: string): boolean {
-    return naam.trim().toLowerCase().replace(/\s+/g, "") === "evalue8";
-}
+export { isEvalue8Opdrachtgever } from "@/lib/aanvraag/opdrachtgeverVorm";
 
 /** Geselecteerde regels als platte lijst (alleen aangevinkt). */
 export function evalue8KeuzesVanState(
