@@ -875,7 +875,7 @@ function AanvraagFormulier(){
                         })}
 
 
-                        {/* Project ja/nee */}
+                        {/* Project ja/nee — alleen Ja of niets */}
                         <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">
                             <span className="text-sm font-medium text-gray-800 block">
                                 6. Project (offerte-basis) — is het een project?
@@ -902,24 +902,6 @@ function AanvraagFormulier(){
                                 >
                                     Ja
                                 </button>
-                                {project !== "Ja" ? (
-                                    <button
-                                        type="button"
-                                        onClick={()=>{
-                                            setProject((h)=>h === "Nee" ? "" : "Nee");
-                                            setProjectOmschrijving("");
-                                        }}
-                                        className={
-                                            "flex-1 rounded-lg py-2 border-2 text-sm font-medium bg-white "
-                                            +
-                                            (project === "Nee"
-                                                ? "border-red-300 text-red-700"
-                                                : "border-gray-200 text-gray-700")
-                                        }
-                                    >
-                                        Nee
-                                    </button>
-                                ) : null}
                             </div>
                             {project === "Ja" ? (
                                 <label className="block">
