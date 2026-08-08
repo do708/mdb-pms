@@ -1,6 +1,6 @@
 /**
  * eValue8-producten voor het aanvraagportaal (zonder prijzen).
- * Alleen productcode + omschrijving.
+ * Meest voorkomende artikelen eerst; daarna overige installatie/tarieven.
  */
 
 export interface Evalue8Product {
@@ -15,22 +15,111 @@ export interface Evalue8ProductGroep {
 
 export const EVALUE8_PRODUCT_GROEPEN: Evalue8ProductGroep[] = [
     {
-        titel: "Productoverzicht",
+        titel: "Hardware",
         producten: [
             {
-                code: "INST-DS-BE1",
+                code: "LG-43UN640S",
                 product:
-                    "Installatie toeslag Belgie I (< 300 km)",
+                    '43 inch (109 cm) Commercial Lite 4K LED TV',
             },
             {
-                code: "INST-DS-BE2",
+                code: "LG-43PK640S",
                 product:
-                    "Installatie toeslag Belgie I (> 300 km)",
+                    '43 inch (109 cm) Commercial Lite 4K LED TV',
             },
             {
-                code: "INST-DS-DSPL",
+                code: "EV8-WP-BTR6",
                 product:
-                    "Aansluiten extra scherm (i.c.m. volledige installatie)",
+                    "Narrowcasting Speler Beter (Windows)",
+            },
+            {
+                code: "EV8-WP-AIO15-1",
+                product: '15,6" FullHD Panel PC (All-in-One)',
+            },
+            {
+                code: "EV8-WP-AIO21-1",
+                product: '21,5" FullHD Panel PC (All-in-One)',
+            },
+            {
+                code: "EV8-KSK-BASE1",
+                product: "eValue8 modulaire kiosk",
+            },
+            {
+                code: "EV8-KSK-STD1",
+                product: "eValue8 Standaard kiosk VESA",
+            },
+            {
+                code: "EV8-KSK-PRNT1",
+                product:
+                    "Thermische printer t.b.v. eValue8 modulaire kiosk",
+            },
+            {
+                code: "CBL-PCAV1",
+                product: "Kabelset (1 meter)",
+            },
+        ],
+    },
+    {
+        titel: "Software & setup",
+        producten: [
+            {
+                code: "EV8-DS-STP",
+                product: "Setup Narrowcasting/CMS",
+            },
+            {
+                code: "EV8-DS-SW",
+                product:
+                    "Narrowcasting Speler Software (Windows)",
+            },
+            {
+                code: "QPC-STP",
+                product:
+                    "Setup QMS, koppeling Narrowcasting",
+            },
+            {
+                code: "QPC-BSFT",
+                product: "QMS Baliesoftware",
+            },
+            {
+                code: "STP-MOD",
+                product: "Setup Module",
+            },
+            {
+                code: "PCAV-MSC",
+                product: "eValue8 registerpagina",
+            },
+        ],
+    },
+    {
+        titel: "Installatie",
+        producten: [
+            {
+                code: "INST-DS-WKS",
+                product:
+                    "Complete installatie Wachtkamerschermen Narrowcasting",
+            },
+            {
+                code: "INST-DS-SCRN",
+                product: "Complete installatie scherm",
+            },
+            {
+                code: "INST-DS-PLYR",
+                product: "Installatie player (op bestaand scherm)",
+            },
+            {
+                code: "INST-QM-DISP-1M",
+                product:
+                    "Installatie Queue Management Kiosk max. 1m",
+            },
+            {
+                code: "INST-QM-DISP-3M",
+                product:
+                    "Installatie Queue Management Kiosk max. 3m",
+            },
+            {
+                code: "INST-QM-DISP-10M",
+                product:
+                    "Installatie Queue Management Kiosk max. 10m",
             },
             {
                 code: "INST-DS-EASY",
@@ -48,17 +137,9 @@ export const EVALUE8_PRODUCT_GROEPEN: Evalue8ProductGroep[] = [
                     "Demontage + complete installatie Narrowcasting",
             },
             {
-                code: "INST-DS-PLYR",
-                product: "Installatie player (op bestaand scherm)",
-            },
-            {
-                code: "INST-DS-PROJ",
+                code: "INST-DS-DSPL",
                 product:
-                    "Project/Collectief complete installatie Narrowcasting",
-            },
-            {
-                code: "INST-DS-SCRN",
-                product: "Complete installatie scherm",
+                    "Aansluiten extra scherm (i.c.m. volledige installatie)",
             },
             {
                 code: "INST-DS-SWAP",
@@ -66,9 +147,9 @@ export const EVALUE8_PRODUCT_GROEPEN: Evalue8ProductGroep[] = [
                     "Omwisselen scherm/player op bestaande installatie",
             },
             {
-                code: "INST-DS-WKS",
+                code: "INST-DS-PROJ",
                 product:
-                    "Complete installatie Wachtkamerschermen Narrowcasting",
+                    "Project/Collectief complete installatie Narrowcasting",
             },
             {
                 code: "INST-DS-ZKAPG",
@@ -81,27 +162,22 @@ export const EVALUE8_PRODUCT_GROEPEN: Evalue8ProductGroep[] = [
                     "Complete vervolginstallatie Narrowcasting <15 min.",
             },
             {
-                code: "INST-QM-DISP-10M",
+                code: "INST-DS-BE1",
                 product:
-                    "Installatie Queue Management Kiosk max. 10m",
+                    "Installatie toeslag Belgie I (< 300 km)",
             },
             {
-                code: "INST-QM-DISP-1M",
+                code: "INST-DS-BE2",
                 product:
-                    "Installatie Queue Management Kiosk max. 1m",
-            },
-            {
-                code: "INST-QM-DISP-3M",
-                product:
-                    "Installatie Queue Management Kiosk max. 3m",
-            },
-            {
-                code: "INST-VERW",
-                product: "Afvoerkosten materialen",
+                    "Installatie toeslag Belgie I (> 300 km)",
             },
             {
                 code: "INST-VOOR",
                 product: "Voorrijdtarief Installateur",
+            },
+            {
+                code: "INST-VERW",
+                product: "Afvoerkosten materialen",
             },
             {
                 code: "TRF-ARB",
@@ -122,6 +198,15 @@ export const EVALUE8_PRODUCT_GROEPEN: Evalue8ProductGroep[] = [
     {
         titel: "Beugels",
         producten: [
+            {
+                code: "MDB-MBEUG",
+                product: "Muurbeugel 26-63 inch",
+            },
+            {
+                code: "EV8-VESA-P-AIO1",
+                product:
+                    "VESA Portrait beugel t.b.v. AIO Panel PC's",
+            },
             {
                 code: "EV-1",
                 product: 'Levering muur beugel tot 32" (MDB)',
@@ -169,6 +254,15 @@ export const EVALUE8_PRODUCT_GROEPEN: Evalue8ProductGroep[] = [
     {
         titel: "Materiaal",
         producten: [
+            {
+                code: "QPC-THRM",
+                product: "Thermische rollen (5 stuks)",
+            },
+            {
+                code: "QPC-THRM-WKS",
+                product:
+                    "Thermische Wachtkamerscherm rollen (5 stuks)",
+            },
             {
                 code: "MAT-AFVOER",
                 product: "Afval verwijdering",
