@@ -177,7 +177,7 @@ export interface AanvraagSchermItem {
     stroomAfstand: string;
     /** Traject: Systeemplafond | Langs de wand (alleen bij stroomMdb === "Ja") */
     stroomTraject: string;
-    internet: "" | "Ja" | "Nee";
+    internet: "" | "Ja" | "Wifi" | "Nee";
     /** Alleen bij internet === "Nee": wil MDB dit realiseren? */
     internetMdb: "" | "Ja" | "Nee" | string;
     /** Geschatte afstand in meters (alleen bij internetMdb === "Ja") */

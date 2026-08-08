@@ -6,7 +6,7 @@ import { Suspense } from "react";
 
 import SchermenSpecificatie from "@/components/aanvraag/SchermenSpecificatie";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
-import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
+import { JaWifiNee, StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
 import {
     AanvraagSchermItem,
     FORMAAT_PASTEL,
@@ -378,7 +378,7 @@ function AanvraagFormulier(){
 
         try {
 
-            // Stroom/internet: bij schermen per scherm; anders globale ja/nee.
+            // Stroom/internet: bij schermen per scherm; anders globale antwoorden.
             const stroomTekst =
                 perSchermSi?.stroom
                 || (
@@ -1003,34 +1003,20 @@ function AanvraagFormulier(){
                             <span className="text-sm text-gray-600 block mb-1">
                                 Internet aanwezig binnen 3 meter?
                             </span>
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={()=>setInternet("Ja")}
-                                    className={
-                                        "flex-1 rounded-xl py-2 border-2 text-sm font-medium "
-                                        +
-                                        (internet === "Ja"
-                                            ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                            : "bg-white text-gray-700 border-gray-200")
-                                    }
-                                >
-                                    Ja
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={()=>setInternet("Nee")}
-                                    className={
-                                        "flex-1 rounded-xl py-2 border-2 text-sm font-medium "
-                                        +
-                                        (internet === "Nee"
-                                            ? "bg-amber-100 text-amber-800 border-amber-300"
-                                            : "bg-white text-gray-700 border-gray-200")
-                                    }
-                                >
-                                    Nee
-                                </button>
-                            </div>
+                            <JaWifiNee
+                                value={
+                                    internet === "Ja"
+                                    || internet === "Wifi"
+                                    || internet === "Nee"
+                                        ? internet
+                                        : ""
+                                }
+                                onChange={(v) => {
+                                    setInternet(v);
+                                    setInternetRealisatie("");
+                                    setInternetRealisatieAnders("");
+                                }}
+                            />
 
                             {
                                 internet === "Nee" && (

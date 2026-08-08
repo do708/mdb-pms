@@ -13,6 +13,7 @@ import {
 } from "@/lib/aanvraag/installatieTypes";
 import {
     JaNee,
+    JaWifiNee,
     MdbRealisatieVervolg,
 } from "@/components/aanvraag/StroomInternetVragen";
 
@@ -461,7 +462,7 @@ export default function SchermenSpecificatie({
                                         Internet aanwezig binnen 3
                                         meter?
                                     </span>
-                                    <JaNee
+                                    <JaWifiNee
                                         value={scherm.internet}
                                         onChange={(v) =>
                                             updateItem(scherm.id, {

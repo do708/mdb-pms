@@ -35,6 +35,50 @@ export function JaNee({
     );
 }
 
+const INTERNET_OPTIES = ["Ja", "Wifi", "Nee"] as const;
+export type InternetAanwezig = "" | (typeof INTERNET_OPTIES)[number];
+
+const INTERNET_ACTIEF: Record<
+    Exclude<InternetAanwezig, "">,
+    string
+> = {
+    Ja: "bg-emerald-100 text-emerald-800 border-emerald-300",
+    Wifi: "bg-orange-100 text-orange-800 border-orange-300",
+    Nee: "bg-red-100 text-red-800 border-red-300",
+};
+
+/** Ja / Wifi / Nee voor “Internet aanwezig…?” (pastel). */
+export function JaWifiNee({
+    value,
+    onChange,
+}: {
+    value: InternetAanwezig;
+    onChange: (v: InternetAanwezig) => void;
+}) {
+    return (
+        <div className="flex gap-2">
+            {INTERNET_OPTIES.map((optie) => (
+                <button
+                    key={optie}
+                    type="button"
+                    onClick={() =>
+                        onChange(value === optie ? "" : optie)
+                    }
+                    className={
+                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                        +
+                        (value === optie
+                            ? INTERNET_ACTIEF[optie]
+                            : "bg-white text-gray-700 border-gray-200")
+                    }
+                >
+                    {optie}
+                </button>
+            ))}
+        </div>
+    );
+}
+
 export function MdbRealisatieVervolg({
     mdb,
     afstand,
@@ -123,7 +167,11 @@ export function StroomInternetVragen({
     internetLabel?: string;
 }) {
     const stroom = (velden.stroom || "") as "" | "Ja" | "Nee";
-    const internet = (velden.internet || "") as "" | "Ja" | "Nee";
+    const internetRaw = velden.internet || "";
+    const internet: InternetAanwezig =
+        internetRaw === "Ja" || internetRaw === "Wifi" || internetRaw === "Nee"
+            ? internetRaw
+            : "";
 
     function zet(veld: string, waarde: string) {
         onChange(veld, waarde);
@@ -172,12 +220,8 @@ export function StroomInternetVragen({
                 <span className="text-xs text-gray-600 block">
                     {internetLabel}
                 </span>
-                <JaNee
-                    value={
-                        internet === "Ja" || internet === "Nee"
-                            ? internet
-                            : ""
-                    }
+                <JaWifiNee
+                    value={internet}
                     onChange={(v) => {
                         zetPatch({
                             internet: v,
