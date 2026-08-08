@@ -2,9 +2,9 @@
  * Installatietype-codes o.b.v. Productoverzicht & Tarieven (MC-xx).
  *
  * Codes hangen af van bevestiging + schermformaat:
- * - Wand tot 55" → 03 | Wand 65" → 05 | Wand 75–85" → 06 | Wand 98–100" → 07
+ * - Wand tot 55" → 03 | Wand 65" → 05 | Wand 75–85" (incl. 86" en 98") → 06
  * - Vloerstaander tot 55" → 04
- * - Plafond tot 55" → 08 | Plafond 65–85" → 09
+ * - Plafond tot 55" → 08 | Plafond 65–85" (incl. 98") → 09
  *
  * Over de hele aanvraag: grootste scherm = hoofdtype; overige (ook aparte
  * locatie) = zelfde code + "v" (vervolg-installatie, MC-xxv).
@@ -86,9 +86,9 @@ export const AUDIO_KABEL_TRAJECT_OPTIES = [
 
 /**
  * Formaatbanden uit het productoverzicht (geen prijzen).
- * 86" valt onder “75 tot 85” (dichtstbijzijnde standaardcode).
+ * 86" en 98" vallen onder “75 tot 85” (zelfde typecode als 75").
  */
-export type FormaatBand = "tot55" | "65" | "75-85" | "98-100";
+export type FormaatBand = "tot55" | "65" | "75-85";
 
 export function formaatBand(inch: number): FormaatBand | "" {
     if (!inch || inch < 1) {
@@ -100,11 +100,9 @@ export function formaatBand(inch: number): FormaatBand | "" {
     if (inch <= 65) {
         return "65";
     }
-    if (inch <= 90) {
-        return "75-85";
-    }
+    // 75–85, 86" en 98–100" → zelfde band / type als 75"
     if (inch <= 100) {
-        return "98-100";
+        return "75-85";
     }
     return "";
 }
@@ -129,8 +127,6 @@ export function typeCodeVoorBevestigingEnBand(
                 return "05";
             case "75-85":
                 return "06";
-            case "98-100":
-                return "07";
             default:
                 return "";
         }
@@ -165,7 +161,7 @@ export const TYPE_CODE_PER_FORMAAT: Record<string, string> = {
     '65"': "05",
     '75"': "06",
     '86"': "06",
-    '98"': "07",
+    '98"': "06",
 };
 
 export interface AanvraagSchermItem {
