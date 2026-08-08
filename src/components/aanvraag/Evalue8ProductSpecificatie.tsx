@@ -34,19 +34,13 @@ export default function Evalue8ProductSpecificatie({
 
     return (
         <div className="space-y-4">
-            <h2 className="font-semibold text-gray-800 border-b pb-1">
-                Productoverzicht
-            </h2>
-            <p className="text-xs text-gray-500">
-                Vink de gewenste productcodes aan en vul het
-                aantal in.
-            </p>
-
             {EVALUE8_PRODUCT_GROEPEN.map((groep) => (
                 <div key={groep.titel} className="space-y-2">
-                    <h3 className="text-sm font-semibold text-gray-700">
-                        {groep.titel}
-                    </h3>
+                    {groep.titel !== "Productoverzicht" ? (
+                        <h3 className="text-sm font-semibold text-gray-700">
+                            {groep.titel}
+                        </h3>
+                    ) : null}
                     <div className="space-y-2">
                         {groep.producten.map((p) => {
                             const item = selectie[p.code] || {
@@ -65,7 +59,7 @@ export default function Evalue8ProductSpecificatie({
                                             : "bg-white border-slate-200")
                                     }
                                 >
-                                    <label className="flex items-start gap-3 cursor-pointer">
+                                    <div className="flex items-center gap-3">
                                         <input
                                             type="checkbox"
                                             checked={item.aan}
@@ -78,22 +72,18 @@ export default function Evalue8ProductSpecificatie({
                                                         || "1",
                                                 })
                                             }
-                                            className="mt-1 h-4 w-4 accent-sky-600"
+                                            className="h-4 w-4 shrink-0 accent-sky-600"
                                         />
-                                        <span className="flex-1 min-w-0">
-                                            <span className="block text-xs font-mono font-semibold text-sky-800">
+                                        <div className="flex-1 min-w-0">
+                                            <span className="text-xs font-mono font-semibold text-sky-800">
                                                 {p.code}
                                             </span>
-                                            <span className="block text-sm text-gray-800">
-                                                {p.product}
+                                            <span className="text-sm text-gray-800">
+                                                {" "}
+                                                — {p.product}
                                             </span>
-                                        </span>
-                                    </label>
-                                    {item.aan ? (
-                                        <label className="mt-2 ml-7 block w-28">
-                                            <span className="text-xs text-gray-600">
-                                                Aantal
-                                            </span>
+                                        </div>
+                                        {item.aan ? (
                                             <input
                                                 type="number"
                                                 min={1}
@@ -107,10 +97,11 @@ export default function Evalue8ProductSpecificatie({
                                                             .value,
                                                     })
                                                 }
-                                                className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                                aria-label="Aantal"
+                                                className="w-16 shrink-0 border rounded-lg px-2 py-1.5 bg-white text-sm text-center"
                                             />
-                                        </label>
-                                    ) : null}
+                                        ) : null}
+                                    </div>
                                 </div>
                             );
                         })}
