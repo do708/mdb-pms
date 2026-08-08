@@ -173,7 +173,13 @@ export async function POST(
                 key === "typeAanvraag" ||
                 key === "storing" ||
                 key === "geschatUren" ||
-                key === "aantalMonteurs"
+                key === "aantalMonteurs" ||
+                key === "intake" ||
+                key === "intakeWens" ||
+                key === "projectOmschrijving" ||
+                key === "projectHardwareStatus" ||
+                key === "projectHardwareLevering" ||
+                key === "evalue8Producten"
             ){
                 continue;
             }
@@ -209,6 +215,16 @@ export async function POST(
         const aantalMonteurs =
             (specs.aantalMonteurs as unknown as string) || "";
 
+        const intakeWens =
+            (typeof specs.intakeWens === "string" && specs.intakeWens.trim())
+            || (
+                specs.intake
+                && typeof specs.intake === "object"
+                && typeof (specs.intake as { wens?:string }).wens === "string"
+                ? String((specs.intake as { wens?:string }).wens).trim()
+                : ""
+            );
+
         const storing =
             (specs.storing && typeof specs.storing === "object")
             ? specs.storing as unknown as {
@@ -236,6 +252,7 @@ export async function POST(
         const omschrijvingsdelen =
             [
                 typeAanvraag ? `Type aanvraag: ${typeAanvraag}` : "",
+                intakeWens ? `Wens klant: ${intakeWens}` : "",
                 specRegels.length ? `Onderdelen: ${specRegels.join("; ")}` : "",
                 isProject ? "Project (offerte-basis): Ja" : "",
                 geschatUren ? `Geschat aantal dagen: ${geschatUren}` : "",
@@ -268,6 +285,10 @@ export async function POST(
                             ? (storing.omschrijving
                                 ? `Storing: ${storing.omschrijving}`
                                 : "Storing")
+                            : typeAanvraag === "intake"
+                            ? (intakeWens
+                                ? `Intake: ${intakeWens}`
+                                : "Intake")
                             : typeAanvraag === "uren"
                             ? (geschatUren
                                 ? `Uren (geschat: ${geschatUren} dag(en)${aantalMonteurs ? `, ${aantalMonteurs} monteur(s)` : ""})`

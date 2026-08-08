@@ -176,10 +176,42 @@ function AanvragenSectie(){
                                     <div className="mt-3 pt-3 border-t text-sm text-gray-600 space-y-1">
                                         {
                                             a.specificaties && typeof a.specificaties === "object" && (a.specificaties as Record<string,unknown>).typeAanvraag
-                                            ? <p><strong>Type:</strong> {String((a.specificaties as Record<string,unknown>).typeAanvraag)}</p>
+                                            ? <p><strong>Type:</strong> {(()=>{
+                                                const t = String((a.specificaties as Record<string,unknown>).typeAanvraag);
+                                                const labels:Record<string,string> = {
+                                                    installatie:"Installatiewerkzaamheden",
+                                                    intake:"Intake",
+                                                    storing:"Storing",
+                                                    uren:"Uren",
+                                                    evalue8:"eValue8",
+                                                };
+                                                return labels[t] || t;
+                                            })()}</p>
                                             : null
                                         }
                                         {a.aanvragerNaam ? <p><strong>Aanvrager:</strong> {a.aanvragerNaam}</p> : null}
+                                        {
+                                            (()=>{
+                                                if(!a.specificaties || typeof a.specificaties !== "object"){
+                                                    return null;
+                                                }
+                                                const specs = a.specificaties as Record<string,unknown>;
+                                                const flat =
+                                                    typeof specs.intakeWens === "string"
+                                                    ? specs.intakeWens.trim()
+                                                    : "";
+                                                const nested =
+                                                    specs.intake
+                                                    && typeof specs.intake === "object"
+                                                    && typeof (specs.intake as { wens?:string }).wens === "string"
+                                                    ? String((specs.intake as { wens?:string }).wens).trim()
+                                                    : "";
+                                                const wens = flat || nested;
+                                                return wens
+                                                    ? <p><strong>Wens klant:</strong> {wens}</p>
+                                                    : null;
+                                            })()
+                                        }
                                         {
                                             a.specificaties
                                             && typeof a.specificaties === "object"
@@ -313,7 +345,7 @@ function AanvragenSectie(){
                                             a.specificaties && typeof a.specificaties === "object"
                                             ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string>; items?:unknown[] }>)
                                                 .filter(([k,v])=>{
-                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "projectHardware" || k === "projectHardwareBesteld" || k === "projectHardwareStatus" || k === "projectHardwareLevering" || k === "evalue8Producten"){
+                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "projectHardware" || k === "projectHardwareBesteld" || k === "projectHardwareStatus" || k === "projectHardwareLevering" || k === "evalue8Producten" || k === "intake" || k === "intakeWens"){
                                                         return false;
                                                     }
                                                     if(k === "schermen" && Array.isArray(v?.items) && v.items.length > 0){

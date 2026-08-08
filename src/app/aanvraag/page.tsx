@@ -163,8 +163,11 @@ function AanvraagFormulier(){
     const [aanvragerNaam,setAanvragerNaam] = useState("");
 
 
-    // Type aanvraag: "installatie" | "storing" | "uren"
+    // Type aanvraag: "installatie" | "intake" | "storing" | "uren"
     const [typeAanvraag,setTypeAanvraag] = useState("");
+
+    // Intake
+    const [intakeWens,setIntakeWens] = useState("");
 
     // Storing
     const [storingOmschrijving,setStoringOmschrijving] = useState("");
@@ -367,7 +370,7 @@ function AanvraagFormulier(){
         setFout("");
 
         if(!isEvalue8 && !typeAanvraag){
-            setFout("Kies een type aanvraag (Installatie, Storing of Uren).");
+            setFout("Kies een type aanvraag (Installatie, Intake, Storing of Uren).");
             return;
         }
 
@@ -407,6 +410,11 @@ function AanvraagFormulier(){
 
         if(isEvalue8 && evalue8Keuzes.length === 0){
             setFout("Selecteer minimaal één product.");
+            return;
+        }
+
+        if(!isEvalue8 && typeAanvraag === "intake" && !intakeWens.trim()){
+            setFout("Vul in wat de wens van de klant is.");
             return;
         }
 
@@ -498,38 +506,45 @@ function AanvraagFormulier(){
                         opmerkingen,
                         aanvragerNaam,
                         specificaties:{
-                            ...(isEvalue8 ? {} : {
-                                ...specs,
-                                schermen:{
-                                    ...specs.schermen,
-                                    velden:{
-                                        ...specs.schermen.velden,
-                                        aantal:specs.schermen.velden.aantal || String(schermenItems.length || "")
+                            ...(isEvalue8
+                                ? {}
+                                : typeAanvraag === "intake"
+                                ? {
+                                    intake:{ wens:intakeWens.trim() },
+                                    intakeWens:intakeWens.trim(),
+                                  }
+                                : {
+                                    ...specs,
+                                    schermen:{
+                                        ...specs.schermen,
+                                        velden:{
+                                            ...specs.schermen.velden,
+                                            aantal:specs.schermen.velden.aantal || String(schermenItems.length || "")
+                                        },
+                                        items:schermenMetType
                                     },
-                                    items:schermenMetType
-                                },
-                                kiosk:{
-                                    ...specs.kiosk,
-                                    velden:{
-                                        ...specs.kiosk.velden,
-                                        aantal:specs.kiosk.velden.aantal || String(kioskItems.length || "")
+                                    kiosk:{
+                                        ...specs.kiosk,
+                                        velden:{
+                                            ...specs.kiosk.velden,
+                                            aantal:specs.kiosk.velden.aantal || String(kioskItems.length || "")
+                                        },
+                                        items:kioskItems
                                     },
-                                    items:kioskItems
-                                },
-                                project,
-                                projectOmschrijving:
-                                    project === "Ja" ? projectOmschrijving : "",
-                                projectHardwareStatus,
-                                projectHardwareLevering,
-                                storing:{
-                                    omschrijving:storingOmschrijving,
-                                    hardwareVervangen,
-                                    hardwareBesteld,
-                                    hardwareLevering
-                                },
-                                geschatUren,
-                                aantalMonteurs,
-                            }),
+                                    project,
+                                    projectOmschrijving:
+                                        project === "Ja" ? projectOmschrijving : "",
+                                    projectHardwareStatus,
+                                    projectHardwareLevering,
+                                    storing:{
+                                        omschrijving:storingOmschrijving,
+                                        hardwareVervangen,
+                                        hardwareBesteld,
+                                        hardwareLevering
+                                    },
+                                    geschatUren,
+                                    aantalMonteurs,
+                                  }),
                             typeAanvraag: isEvalue8 ? "evalue8" : typeAanvraag,
                             evalue8Producten: isEvalue8 ? evalue8Keuzes : undefined,
                             contact:{
@@ -766,6 +781,7 @@ function AanvraagFormulier(){
                         <div className="flex flex-wrap gap-2">
                             {[
                                 { k:"installatie", label:"Installatiewerkzaamheden" },
+                                { k:"intake", label:"Intake" },
                                 { k:"storing", label:"Storing" },
                                 { k:"uren", label:"Uren" }
                             ].map((t)=>(
@@ -1088,10 +1104,7 @@ function AanvraagFormulier(){
                                                         ? ""
                                                         : optie;
                                                 setProjectHardwareStatus(next);
-                                                if(
-                                                    next !== "Al besteld / verstuurd"
-                                                    && next !== "Regelt MDB Networks"
-                                                ){
+                                                if(next !== "Al besteld / verstuurd"){
                                                     setProjectHardwareLevering("");
                                                 }
                                             }}
@@ -1109,10 +1122,7 @@ function AanvraagFormulier(){
                                 </div>
                             </div>
 
-                            {(
-                                projectHardwareStatus === "Al besteld / verstuurd"
-                                || projectHardwareStatus === "Regelt MDB Networks"
-                            ) ? (
+                            {projectHardwareStatus === "Al besteld / verstuurd" ? (
                                 <div>
                                     <span className="text-sm text-gray-600 block mb-1">
                                         Waar wordt deze geleverd?
@@ -1160,6 +1170,38 @@ function AanvraagFormulier(){
 
 
                     </>
+                    )}
+
+
+                    {/* ===== Intake ===== */}
+                    {!isEvalue8 && typeAanvraag === "intake" && (
+                        <div className="space-y-4">
+
+                            <label className="block">
+                                <span className="text-sm font-medium text-gray-800">
+                                    Wat is de wens van de klant?
+                                </span>
+                                <textarea
+                                    rows={7}
+                                    value={intakeWens}
+                                    onChange={(e)=>setIntakeWens(e.target.value)}
+                                    placeholder="Beschrijf wat de klant wil / nodig heeft"
+                                    className="w-full border rounded-xl p-3 mt-1"
+                                />
+                            </label>
+
+                            <label className="block">
+                                <span className="text-sm text-gray-600">Opmerkingen (optioneel)</span>
+                                <textarea
+                                    rows={3}
+                                    value={opmerkingen}
+                                    onChange={(e)=>setOpmerkingen(e.target.value)}
+                                    placeholder="Aanvullende instructies of details"
+                                    className="w-full border rounded-xl p-3 mt-1"
+                                />
+                            </label>
+
+                        </div>
                     )}
 
 
