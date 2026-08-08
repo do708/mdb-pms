@@ -9,7 +9,9 @@ import {
     SCHERM_FORMATEN,
     berekendInstallatieType,
     isHoofdType,
+    patchRaaktVoorzieningen,
     syncSchermItems,
+    syncVoorzieningenVanAnkers,
 } from "@/lib/aanvraag/installatieTypes";
 import {
     JaNee,
@@ -46,9 +48,18 @@ export default function SchermenSpecificatie({
         id: string,
         patch: Partial<AanvraagSchermItem>
     ) {
-        onItemsChange(
-            items.map((s) => (s.id === id ? { ...s, ...patch } : s))
+        let next = items.map((s) =>
+            s.id === id ? { ...s, ...patch } : s
         );
+
+        if (
+            patchRaaktVoorzieningen(patch) ||
+            "naastSchermId" in patch
+        ) {
+            next = syncVoorzieningenVanAnkers(next);
+        }
+
+        onItemsChange(next);
     }
 
     return (
@@ -100,6 +111,9 @@ export default function SchermenSpecificatie({
                                       scherm.beugel as BevestigingSoort
                                   ]
                                 : [];
+                        const gekoppeld = Boolean(
+                            scherm.naastSchermId
+                        );
 
                         return (
                             <div
@@ -149,21 +163,11 @@ export default function SchermenSpecificatie({
                                                     return;
                                                 }
 
-                                                const anker =
-                                                    items.find(
-                                                        (s) =>
-                                                            s.id ===
-                                                            value
-                                                    );
-
                                                 updateItem(
                                                     scherm.id,
                                                     {
                                                         naastSchermId:
                                                             value,
-                                                        locatie:
-                                                            anker?.locatie ||
-                                                            scherm.locatie,
                                                     }
                                                 );
                                             }}
@@ -381,16 +385,15 @@ export default function SchermenSpecificatie({
                                                     e.target.value,
                                             })
                                         }
-                                        disabled={Boolean(
-                                            scherm.naastSchermId
-                                        )}
+                                        disabled={gekoppeld}
                                         placeholder="Bijv. Entree / Vergaderruimte 1"
                                         className="w-full border rounded-lg p-2 mt-0.5 bg-white disabled:bg-slate-50 disabled:text-gray-500"
                                     />
-                                    {scherm.naastSchermId ? (
+                                    {gekoppeld ? (
                                         <span className="text-[11px] text-gray-500">
-                                            Locatie overgenomen van het
-                                            gekozen scherm
+                                            Locatie, stroom en internet
+                                            overgenomen van het gekozen
+                                            scherm
                                         </span>
                                     ) : null}
                                 </label>
@@ -401,6 +404,7 @@ export default function SchermenSpecificatie({
                                     </span>
                                     <JaNee
                                         value={scherm.stroom}
+                                        disabled={gekoppeld}
                                         onChange={(v) =>
                                             updateItem(scherm.id, {
                                                 stroom: v,
@@ -419,6 +423,7 @@ export default function SchermenSpecificatie({
                                             traject={
                                                 scherm.stroomTraject
                                             }
+                                            disabled={gekoppeld}
                                             onMdbChange={(v) =>
                                                 updateItem(
                                                     scherm.id,
@@ -464,6 +469,7 @@ export default function SchermenSpecificatie({
                                     </span>
                                     <JaWifiNee
                                         value={scherm.internet}
+                                        disabled={gekoppeld}
                                         onChange={(v) =>
                                             updateItem(scherm.id, {
                                                 internet: v,
@@ -482,6 +488,7 @@ export default function SchermenSpecificatie({
                                             traject={
                                                 scherm.internetTraject
                                             }
+                                            disabled={gekoppeld}
                                             onMdbChange={(v) =>
                                                 updateItem(
                                                     scherm.id,

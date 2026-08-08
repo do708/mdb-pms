@@ -211,6 +211,73 @@ export function emptySchermItem(): AanvraagSchermItem {
     };
 }
 
+/** Locatie + stroom/internet (incl. MDB-vervolg) van een anker-scherm. */
+export type SchermVoorzieningen = Pick<
+    AanvraagSchermItem,
+    | "locatie"
+    | "stroom"
+    | "stroomMdb"
+    | "stroomAfstand"
+    | "stroomTraject"
+    | "internet"
+    | "internetMdb"
+    | "internetAfstand"
+    | "internetTraject"
+>;
+
+export function voorzieningenVan(
+    anker: AanvraagSchermItem
+): SchermVoorzieningen {
+    return {
+        locatie: anker.locatie,
+        stroom: anker.stroom,
+        stroomMdb: anker.stroomMdb,
+        stroomAfstand: anker.stroomAfstand,
+        stroomTraject: anker.stroomTraject,
+        internet: anker.internet,
+        internetMdb: anker.internetMdb,
+        internetAfstand: anker.internetAfstand,
+        internetTraject: anker.internetTraject,
+    };
+}
+
+const VOORZIENING_KEYS: (keyof SchermVoorzieningen)[] = [
+    "locatie",
+    "stroom",
+    "stroomMdb",
+    "stroomAfstand",
+    "stroomTraject",
+    "internet",
+    "internetMdb",
+    "internetAfstand",
+    "internetTraject",
+];
+
+export function patchRaaktVoorzieningen(
+    patch: Partial<AanvraagSchermItem>
+): boolean {
+    return VOORZIENING_KEYS.some((k) => k in patch);
+}
+
+/**
+ * Locatie + stroom/internet van elk gekoppeld scherm opnieuw zetten
+ * o.b.v. het opgeloste anker (direct of via keten).
+ */
+export function syncVoorzieningenVanAnkers(
+    items: AanvraagSchermItem[]
+): AanvraagSchermItem[] {
+    return items.map((s) => {
+        if (!s.naastSchermId) {
+            return s;
+        }
+        const anker = resolveAnker(s, items);
+        if (anker.id === s.id) {
+            return s;
+        }
+        return { ...s, ...voorzieningenVan(anker) };
+    });
+}
+
 export function syncSchermItems(
     items: AanvraagSchermItem[],
     aantal: number
@@ -223,7 +290,6 @@ export function syncSchermItems(
         // Standaard: koppel aan eerste scherm (zelfde locatie / vervolg).
         if (next.length > 0) {
             nieuw.naastSchermId = next[0].id;
-            nieuw.locatie = next[0].locatie;
         }
         next.push(nieuw);
     }
@@ -234,7 +300,7 @@ export function syncSchermItems(
 
     const ids = new Set(next.map((s) => s.id));
 
-    return next.map((s, i) => {
+    const metLinks = next.map((s, i) => {
         let naast = s.naastSchermId;
 
         if (naast && !ids.has(naast)) {
@@ -251,16 +317,13 @@ export function syncSchermItems(
             naast = next[0].id;
         }
 
-        const anker = naast
-            ? next.find((x) => x.id === naast)
-            : undefined;
-
         return {
             ...s,
             naastSchermId: naast,
-            locatie: anker ? anker.locatie : s.locatie,
         };
     });
+
+    return syncVoorzieningenVanAnkers(metLinks);
 }
 
 /** Basis-typecode voor een schermitem (bevestiging + formaat; geen v). */

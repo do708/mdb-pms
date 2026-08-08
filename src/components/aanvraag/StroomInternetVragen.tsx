@@ -5,9 +5,11 @@ import { KABEL_TRAJECT_OPTIES } from "@/lib/aanvraag/installatieTypes";
 export function JaNee({
     value,
     onChange,
+    disabled = false,
 }: {
     value: "" | "Ja" | "Nee";
     onChange: (v: "" | "Ja" | "Nee") => void;
+    disabled?: boolean;
 }) {
     return (
         <div className="flex gap-2">
@@ -15,11 +17,12 @@ export function JaNee({
                 <button
                     key={optie}
                     type="button"
+                    disabled={disabled}
                     onClick={() =>
                         onChange(value === optie ? "" : optie)
                     }
                     className={
-                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
                         +
                         (value === optie
                             ? optie === "Ja"
@@ -51,9 +54,11 @@ const INTERNET_ACTIEF: Record<
 export function JaWifiNee({
     value,
     onChange,
+    disabled = false,
 }: {
     value: InternetAanwezig;
     onChange: (v: InternetAanwezig) => void;
+    disabled?: boolean;
 }) {
     return (
         <div className="flex gap-2">
@@ -61,11 +66,12 @@ export function JaWifiNee({
                 <button
                     key={optie}
                     type="button"
+                    disabled={disabled}
                     onClick={() =>
                         onChange(value === optie ? "" : optie)
                     }
                     className={
-                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
                         +
                         (value === optie
                             ? INTERNET_ACTIEF[optie]
@@ -86,6 +92,7 @@ export function MdbRealisatieVervolg({
     onMdbChange,
     onAfstandChange,
     onTrajectChange,
+    disabled = false,
 }: {
     mdb: string;
     afstand: string;
@@ -93,6 +100,7 @@ export function MdbRealisatieVervolg({
     onMdbChange: (v: "" | "Ja" | "Nee") => void;
     onAfstandChange: (v: string) => void;
     onTrajectChange: (v: string) => void;
+    disabled?: boolean;
 }) {
     return (
         <div className="pl-2 border-l-2 border-amber-200 space-y-2">
@@ -104,6 +112,7 @@ export function MdbRealisatieVervolg({
                     mdb === "Ja" || mdb === "Nee" ? mdb : ""
                 }
                 onChange={onMdbChange}
+                disabled={disabled}
             />
             {mdb === "Ja" ? (
                 <div className="space-y-2 pt-1">
@@ -113,11 +122,12 @@ export function MdbRealisatieVervolg({
                         </span>
                         <input
                             value={afstand}
+                            disabled={disabled}
                             onChange={(e) =>
                                 onAfstandChange(e.target.value)
                             }
                             placeholder="Bijv. 8"
-                            className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                            className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm disabled:bg-slate-50 disabled:text-gray-500"
                         />
                     </label>
                     <div className="space-y-1.5">
@@ -129,6 +139,7 @@ export function MdbRealisatieVervolg({
                                 <button
                                     key={optie}
                                     type="button"
+                                    disabled={disabled}
                                     onClick={() =>
                                         onTrajectChange(
                                             traject === optie
@@ -137,7 +148,7 @@ export function MdbRealisatieVervolg({
                                         )
                                     }
                                     className={
-                                        "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left "
+                                        "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left disabled:opacity-60 disabled:cursor-not-allowed "
                                         +
                                         (traject === optie
                                             ? "bg-sky-100 text-sky-800 border-sky-300"
