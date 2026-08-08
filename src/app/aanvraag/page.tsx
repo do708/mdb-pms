@@ -778,7 +778,7 @@ function AanvraagFormulier(){
                         <h2 className="font-semibold text-gray-800 border-b pb-1">
                             Type aanvraag
                         </h2>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                             {[
                                 { k:"installatie", label:"Installatiewerkzaamheden" },
                                 { k:"intake", label:"Intake" },
@@ -790,7 +790,7 @@ function AanvraagFormulier(){
                                     type="button"
                                     onClick={()=>setTypeAanvraag(t.k)}
                                     className={
-                                        "flex-1 min-w-[140px] rounded-xl py-3 px-3 border-2 text-sm font-medium "
+                                        "rounded-xl py-3 px-2 border-2 text-sm font-medium text-center leading-snug whitespace-normal break-words "
                                         +
                                         (typeAanvraag === t.k
                                             ? "bg-sky-100 text-sky-800 border-sky-300"
