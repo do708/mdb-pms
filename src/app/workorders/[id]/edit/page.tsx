@@ -728,12 +728,9 @@ export default function EditWorkorderPage(){
                                 onClick={verstuurAfspraak}
                                 disabled={saving}
                                 className="
-                                    bg-[#0066FF]
-                                    text-white
-                                    rounded-xl
-                                    px-5
-                                    py-3
-                                    font-bold
+                                    bg-[#0066FF] text-white
+                                    rounded-lg px-4 py-2
+                                    text-sm font-semibold
                                     whitespace-nowrap
                                     disabled:opacity-50
                                 "
@@ -1069,14 +1066,9 @@ export default function EditWorkorderPage(){
                                 type="button"
                                 onClick={gaNaarInplannen}
                                 className="
-                                    w-full
-                                    sm:w-auto
-                                    bg-[#0066FF]
-                                    text-white
-                                    rounded-xl
-                                    px-5
-                                    py-3
-                                    font-bold
+                                    bg-[#0066FF] text-white
+                                    rounded-lg px-4 py-2
+                                    text-sm font-semibold
                                     disabled:opacity-50
                                 "
                             >
@@ -1366,79 +1358,54 @@ export default function EditWorkorderPage(){
                 )
             }
 
-            <div className="
-                flex
-                gap-3
-            ">
+            <div className="flex flex-wrap gap-2">
 
                 <button
-
+                    type="button"
                     onClick={()=>save(true)}
-
                     disabled={saving}
-
                     className="
-                        bg-black
-                        text-white
-                        rounded-xl
-                        px-5
-                        py-3
-                        font-bold
+                        bg-[#d6007e] text-white
+                        rounded-lg px-4 py-2
+                        text-sm font-semibold
                         disabled:opacity-50
                     "
-
                 >
-
                     {saving ? "Bezig..." : "Opslaan"}
-
                 </button>
 
-
                 <button
-
+                    type="button"
                     onClick={verstuurAfspraak}
-
                     disabled={saving || !afspraakKanVerstuurd}
-
                     title={
                         afspraakKanVerstuurd
                         ? "Verstuur de afspraakbevestiging"
                         : "Plan eerst in via de planning (datum, tijd en monteur)"
                     }
-
                     className="
-                        bg-sky-600
-                        text-white
-                        rounded-xl
-                        px-5
-                        py-3
-                        font-bold
+                        bg-[#0066FF] text-white
+                        rounded-lg px-4 py-2
+                        text-sm font-semibold
                         disabled:opacity-40
                         disabled:cursor-not-allowed
                     "
-
                 >
-
                     Afspraak versturen
-
                 </button>
 
 
                 <button
-
+                    type="button"
                     onClick={()=>router.push(`/workorders/${id}`)}
-
                     className="
-                        border
-                        rounded-xl
-                        px-5
-                        py-3
+                        border border-gray-200
+                        rounded-lg px-4 py-2
+                        text-sm font-medium text-gray-700
+                        hover:bg-gray-50
                     "
-
                 >
-
                     Annuleren
-
                 </button>
 
             </div>

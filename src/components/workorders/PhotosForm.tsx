@@ -202,18 +202,29 @@ export default function PhotosForm({
                             disabled={uploading}
                             className="
                                 w-full rounded-lg border border-dashed
-                                border-gray-300 bg-white px-3 py-3
-                                text-xs font-medium text-gray-600
+                                border-gray-300 bg-white px-3 py-4
+                                text-sm font-medium text-gray-700
                                 hover:border-sky-300 hover:bg-sky-50/50
                                 disabled:opacity-50
+                                flex flex-col items-center gap-1
                             "
                         >
                             {
                                 uploading
-                                ?
-                                "Bezig met uploaden..."
-                                :
-                                "Foto's toevoegen"
+                                ? (
+                                    <span>Bezig met uploaden...</span>
+                                )
+                                : (
+                                    <>
+                                        <span className="text-2xl" aria-hidden>
+                                            📷
+                                        </span>
+                                        <span>Foto&apos;s toevoegen</span>
+                                        <span className="text-xs font-normal text-gray-500">
+                                            Klik om foto&apos;s te kiezen
+                                        </span>
+                                    </>
+                                )
                             }
                         </button>
                     </>

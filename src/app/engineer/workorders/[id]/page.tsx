@@ -1379,9 +1379,6 @@ async function completeWorkorder(){
                         rounded-xl border border-gray-200
                         bg-white p-2.5 space-y-1.5
                     ">
-                        <p className="text-xs text-gray-500">
-                            Uitgevoerde werkzaamheden
-                        </p>
                         <textarea
                             value={notes}
                             onChange={(e)=>
@@ -1398,7 +1395,7 @@ async function completeWorkorder(){
                                 text-sm text-gray-900
                                 placeholder:text-gray-400
                             "
-                            placeholder="Beschrijf uitgevoerde werkzaamheden"
+                            placeholder="Beschrijf werkzaamheden"
                         />
                     </div>
 

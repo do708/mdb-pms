@@ -32,7 +32,6 @@ import {
     isUrenOnlyOpdrachtgever,
 } from "@/lib/aanvraag/opdrachtgeverVorm";
 import {
-    PROJECT_HARDWARE_STATUS_BESTELD,
     PROJECT_HARDWARE_STATUS_OPTIONS,
     ProjectHardwareStatus,
     isProjectHardwareBesteld,
@@ -1131,95 +1130,90 @@ function AanvraagFormulier(){
                             </span>
 
                             <div>
-                                <span className="text-sm text-gray-600 block mb-1">
+                                <span className="text-xs text-gray-500 block mb-1.5">
                                     Status hardware{" "}
                                     <span className="text-red-500">*</span>{" "}
-                                    <span className="text-xs text-gray-400 font-normal">
+                                    <span className="text-gray-400 font-normal">
                                         (meerdere mogelijk)
                                     </span>
                                 </span>
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-wrap gap-1.5">
                                     {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie)=>{
                                         const selected =
                                             projectHardwareStatus.includes(optie);
 
                                         return (
-                                            <div key={optie} className="space-y-2">
-                                                <button
-                                                    type="button"
-                                                    aria-pressed={selected}
-                                                    onClick={()=>{
-                                                        const next =
-                                                            toggleProjectHardwareStatus(
-                                                                projectHardwareStatus,
-                                                                optie
-                                                            );
-                                                        setProjectHardwareStatus(
-                                                            next as ProjectHardwareStatus[]
+                                            <button
+                                                key={optie}
+                                                type="button"
+                                                aria-pressed={selected}
+                                                onClick={()=>{
+                                                    const next =
+                                                        toggleProjectHardwareStatus(
+                                                            projectHardwareStatus,
+                                                            optie
                                                         );
-                                                        if(
-                                                            !isProjectHardwareBesteld(
-                                                                next
-                                                            )
-                                                        ){
-                                                            setProjectHardwareLevering(
-                                                                ""
-                                                            );
-                                                        }
-                                                    }}
-                                                    className={
-                                                        "w-full rounded-lg py-2 px-2 border-2 text-sm font-medium text-left "
-                                                        +
-                                                        (selected
-                                                            ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                                            : "bg-white text-gray-700 border-gray-200")
+                                                    setProjectHardwareStatus(
+                                                        next as ProjectHardwareStatus[]
+                                                    );
+                                                    if(
+                                                        !isProjectHardwareBesteld(
+                                                            next
+                                                        )
+                                                    ){
+                                                        setProjectHardwareLevering(
+                                                            ""
+                                                        );
                                                     }
-                                                >
-                                                    {optie}
-                                                </button>
-
-                                                {optie === PROJECT_HARDWARE_STATUS_BESTELD
-                                                && selected ? (
-                                                    <div className="ml-1 pl-3 border-l-2 border-sky-200 space-y-1.5">
-                                                        <span className="text-sm text-gray-600 block">
-                                                            Waar wordt deze geleverd?{" "}
-                                                            <span className="text-red-500">*</span>
-                                                        </span>
-                                                        <div className="flex gap-2">
-                                                            {[
-                                                                "MDB Networks",
-                                                                "Op locatie",
-                                                            ].map((lev)=>(
-                                                                <button
-                                                                    key={lev}
-                                                                    type="button"
-                                                                    onClick={()=>
-                                                                        setProjectHardwareLevering(
-                                                                            (h)=>
-                                                                                h === lev
-                                                                                    ? ""
-                                                                                    : lev
-                                                                        )
-                                                                    }
-                                                                    className={
-                                                                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
-                                                                        +
-                                                                        (projectHardwareLevering ===
-                                                                        lev
-                                                                            ? "bg-sky-100 text-sky-800 border-sky-300"
-                                                                            : "bg-white text-gray-700 border-gray-200")
-                                                                    }
-                                                                >
-                                                                    {lev}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                ) : null}
-                                            </div>
+                                                }}
+                                                className={
+                                                    "rounded-md border px-2.5 py-1 text-xs font-medium "
+                                                    +
+                                                    (selected
+                                                        ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                                                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
+                                                }
+                                            >
+                                                {optie}
+                                            </button>
                                         );
                                     })}
                                 </div>
+
+                                {isProjectHardwareBesteld(projectHardwareStatus) ? (
+                                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                                        <span className="text-xs text-gray-500">
+                                            Levering{" "}
+                                            <span className="text-red-500">*</span>
+                                        </span>
+                                        {[
+                                            "MDB Networks",
+                                            "Op locatie",
+                                        ].map((lev)=>(
+                                            <button
+                                                key={lev}
+                                                type="button"
+                                                onClick={()=>
+                                                    setProjectHardwareLevering(
+                                                        (h)=>
+                                                            h === lev
+                                                                ? ""
+                                                                : lev
+                                                    )
+                                                }
+                                                className={
+                                                    "rounded-md border px-2.5 py-1 text-xs font-medium "
+                                                    +
+                                                    (projectHardwareLevering === lev
+                                                        ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
+                                                }
+                                            >
+                                                {lev}
+                                            </button>
+                                        ))}
+                                    </div>
+                                ) : null}
                             </div>
                         </div>
 

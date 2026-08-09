@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import {
+    isProjectHardwareBesteld,
     normalizeProjectHardwareStatuses,
 } from "@/lib/aanvraag/hardwareStatus";
 import {
@@ -678,123 +679,72 @@ export default function AanvraagSpecificatiesOverzicht({
                     title="Hardware"
                     kleur="bg-fuchsia-50 border-fuchsia-200"
                 >
-                    <div className="space-y-2">
-                        <p className="text-xs font-medium text-fuchsia-800/70">
-                            Hardware status
-                        </p>
-
+                    <div className="
+                        rounded-lg border border-gray-200
+                        bg-white px-2.5 py-2 space-y-1.5
+                    ">
                         {hardwareStatus ? (
-                            <div className="flex flex-col gap-2">
-                                {normalizeProjectHardwareStatuses(
-                                    hardwareStatus
-                                ).map((status) => {
-                                    const isBesteld =
-                                        status
-                                        === "Besteld / Onderweg";
-                                    const toonLevering =
-                                        isBesteld
-                                        && !!hardwareLevering;
-
-                                    return (
-                                        <div
+                            <>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {normalizeProjectHardwareStatuses(
+                                        hardwareStatus
+                                    ).map((status) => (
+                                        <span
                                             key={status}
                                             className="
-                                                rounded-lg border border-gray-200
-                                                bg-white p-2.5 space-y-2
+                                                inline-flex items-center
+                                                rounded-md border border-gray-200
+                                                bg-gray-50 px-2 py-0.5
+                                                text-xs font-medium text-gray-800
                                             "
                                         >
-                                            <span
-                                                className="
-                                                    inline-flex items-center
-                                                    rounded-md border border-gray-300
-                                                    bg-white px-2.5 py-1
-                                                    text-sm font-semibold text-gray-900
-                                                "
-                                            >
-                                                {status}
-                                            </span>
-                                            {toonLevering ? (
-                                                <div className="
-                                                    ml-0.5 pl-3
-                                                    border-l-2 border-sky-500
-                                                    space-y-1
-                                                ">
-                                                    <p className="text-[11px] font-medium text-gray-500">
-                                                        Levering bij Besteld / Onderweg
-                                                    </p>
-                                                    <span
-                                                        className="
-                                                            inline-flex items-center
-                                                            rounded-md border border-sky-400
-                                                            bg-white px-2.5 py-1
-                                                            text-sm font-semibold text-sky-900
-                                                        "
-                                                    >
-                                                        {hardwareLevering}
-                                                    </span>
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                                            {status}
+                                        </span>
+                                    ))}
+                                </div>
+                                {isProjectHardwareBesteld(hardwareStatus)
+                                && hardwareLevering ? (
+                                    <p className="text-[11px] text-gray-500">
+                                        Levering:{" "}
+                                        <span className="font-medium text-gray-800">
+                                            {hardwareLevering}
+                                        </span>
+                                    </p>
+                                ) : null}
+                            </>
                         ) : hardwareBesteldLegacy ? (
-                            <div className="
-                                rounded-lg border border-gray-200
-                                bg-white p-2.5 space-y-2
-                            ">
+                            <>
                                 <span
                                     className="
                                         inline-flex items-center
-                                        rounded-md border border-gray-300
-                                        bg-white px-2.5 py-1
-                                        text-sm font-semibold text-gray-900
+                                        rounded-md border border-gray-200
+                                        bg-gray-50 px-2 py-0.5
+                                        text-xs font-medium text-gray-800
                                     "
                                 >
                                     {hardwareBesteldLegacy}
                                 </span>
                                 {hardwareLevering ? (
-                                    <div className="
-                                        ml-0.5 pl-3
-                                        border-l-2 border-sky-500
-                                        space-y-1
-                                    ">
-                                        <p className="text-[11px] font-medium text-gray-500">
-                                            Levering
-                                        </p>
-                                        <span
-                                            className="
-                                                inline-flex items-center
-                                                rounded-md border border-sky-400
-                                                bg-white px-2.5 py-1
-                                                text-sm font-semibold text-sky-900
-                                            "
-                                        >
+                                    <p className="text-[11px] text-gray-500">
+                                        Levering:{" "}
+                                        <span className="font-medium text-gray-800">
                                             {hardwareLevering}
                                         </span>
-                                    </div>
+                                    </p>
                                 ) : null}
-                            </div>
+                            </>
                         ) : hardwareLevering ? (
-                            <div className="
-                                rounded-lg border border-gray-200
-                                bg-white p-2.5
-                            ">
-                                <p className="text-[11px] font-medium text-gray-500 mb-1">
-                                    Hardware levering
-                                </p>
-                                <span
-                                    className="
-                                        inline-flex items-center
-                                        rounded-md border border-sky-400
-                                        bg-white px-2.5 py-1
-                                        text-sm font-semibold text-sky-900
-                                    "
-                                >
+                            <p className="text-[11px] text-gray-500">
+                                Levering:{" "}
+                                <span className="font-medium text-gray-800">
                                     {hardwareLevering}
                                 </span>
-                            </div>
-                        ) : null}
+                            </p>
+                        ) : (
+                            <p className="text-xs text-gray-500">
+                                Geen hardwarestatus.
+                            </p>
+                        )}
                     </div>
                 </Section>
             ) : null}

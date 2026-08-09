@@ -898,14 +898,9 @@ function NewWorkorderInner(){
                                     onClick={()=>void save({ goToPlanning:true })}
                                     disabled={saving}
                                     className="
-                                        w-full
-                                        sm:w-auto
-                                        bg-[#0066FF]
-                                        text-white
-                                        rounded-xl
-                                        px-5
-                                        py-3
-                                        font-bold
+                                        bg-[#0066FF] text-white
+                                        rounded-lg px-4 py-2
+                                        text-sm font-semibold
                                         disabled:opacity-50
                                     "
                                 >
@@ -1321,37 +1316,28 @@ function NewWorkorderInner(){
 
 
             <button
-
+                type="button"
                 onClick={()=>void save()}
-
                 disabled={saving}
-
                 className={
                     isEngineer
                     ?
                     `
-                    w-full
-                    bg-green-600
-                    text-white
-                    rounded-xl
-                    px-5
-                    py-4
-                    font-bold
+                    w-full sm:w-auto
+                    bg-emerald-600 text-white
+                    rounded-lg px-4 py-2.5
+                    text-sm font-semibold
                     disabled:opacity-50
                     `
                     :
                     `
-                    w-full
-                    bg-black
-                    text-white
-                    rounded-xl
-                    px-5
-                    py-4
-                    font-bold
+                    w-full sm:w-auto
+                    bg-[#d6007e] text-white
+                    rounded-lg px-4 py-2.5
+                    text-sm font-semibold
                     disabled:opacity-50
                     `
                 }
-
             >
 
                 {
@@ -1361,7 +1347,7 @@ function NewWorkorderInner(){
                     :
                     isEngineer
                     ?
-                    "📤 Opdracht versturen"
+                    "Opdracht versturen"
                     :
                     "Opslaan"
                 }

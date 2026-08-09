@@ -229,7 +229,11 @@ export default function CorrespondentieBlok({
                             }}
                         />
 
-                        <p className="text-xs font-medium text-gray-700">
+                        <div className="text-2xl mb-1" aria-hidden>
+                            📥
+                        </div>
+
+                        <p className="text-sm font-medium text-gray-700">
                             {
                                 bezig
                                 ?
