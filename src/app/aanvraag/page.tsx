@@ -369,7 +369,7 @@ function AanvraagFormulier(){
 
         setFout("");
 
-        if(!isEvalue8 && !typeAanvraag){
+        if(!isEvalue8 && !isUrenOnly && !typeAanvraag){
             setFout("Kies een type aanvraag (Installatie, Intake, Storing of Uren).");
             return;
         }
@@ -400,6 +400,10 @@ function AanvraagFormulier(){
         }
         if(!contactEmail.trim() && !contactPhone.trim()){
             setFout("Vul minimaal een e-mailadres of telefoonnummer in.");
+            return;
+        }
+        if(!aanvragerNaam.trim()){
+            setFout("Vul uw naam in.");
             return;
         }
 
@@ -776,9 +780,10 @@ function AanvraagFormulier(){
                     {!isEvalue8 && !isUrenOnly ? (
                     <div className="space-y-2">
                         <h2 className="font-semibold text-gray-800 border-b pb-1">
-                            Type aanvraag
+                            Type aanvraag{" "}
+                            <span className="text-red-500">*</span>
                         </h2>
-                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                        <div className="grid grid-cols-2 gap-2">
                             {[
                                 { k:"installatie", label:"Installatiewerkzaamheden" },
                                 { k:"intake", label:"Intake" },
@@ -790,7 +795,7 @@ function AanvraagFormulier(){
                                     type="button"
                                     onClick={()=>setTypeAanvraag(t.k)}
                                     className={
-                                        "rounded-xl py-3 px-2 border-2 text-sm font-medium text-center leading-snug whitespace-normal break-words "
+                                        "rounded-xl py-3 px-2 border-2 text-xs sm:text-sm font-medium text-center leading-snug whitespace-normal break-words min-h-[3rem] "
                                         +
                                         (typeAanvraag === t.k
                                             ? "bg-sky-100 text-sky-800 border-sky-300"
@@ -1455,12 +1460,16 @@ function AanvraagFormulier(){
                     {/* Naam aanvrager + opdrachtgever */}
                     <div className="space-y-1">
                         <label className="block">
-                            <span className="text-sm text-gray-600">Naam:</span>
+                            <span className="text-sm text-gray-600">
+                                Uw naam{" "}
+                                <span className="text-red-500">*</span>
+                            </span>
                             <input
                                 value={aanvragerNaam}
                                 onChange={(e)=>setAanvragerNaam(e.target.value)}
                                 placeholder="Uw naam"
                                 className="w-full border rounded-xl p-3 mt-1"
+                                required
                             />
                         </label>
                         <p className="text-xs text-gray-400">
