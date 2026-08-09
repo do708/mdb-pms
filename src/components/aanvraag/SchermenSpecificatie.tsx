@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
     AanvraagSchermItem,
     BEVESTIGING_DETAIL,
@@ -34,19 +35,30 @@ export default function SchermenSpecificatie({
     items,
     onItemsChange,
 }: Props) {
-    const aantalNum = parseInt(aantal, 10);
-    const meerDan15Schermen =
-        Number.isFinite(aantalNum) && aantalNum > 15;
+    const [toondeMaxMelding, setToondeMaxMelding] = useState(false);
 
     function zetAantal(raw: string) {
-        onAantalChange(raw);
-        const n = parseInt(raw, 10);
-
-        if (!Number.isFinite(n) || n < 0) {
+        if (raw === "") {
+            setToondeMaxMelding(false);
+            onAantalChange("");
             onItemsChange([]);
             return;
         }
 
+        const parsed = parseInt(raw, 10);
+
+        if (!Number.isFinite(parsed) || parsed < 0) {
+            setToondeMaxMelding(false);
+            onAantalChange(raw);
+            onItemsChange([]);
+            return;
+        }
+
+        const probeerdeMeerDan15 = parsed > 15;
+        const n = Math.min(15, parsed);
+
+        setToondeMaxMelding(probeerdeMeerDan15);
+        onAantalChange(String(n));
         onItemsChange(syncSchermItems(items, n));
     }
 
@@ -77,15 +89,15 @@ export default function SchermenSpecificatie({
                 <input
                     type="number"
                     min={0}
-                    max={20}
+                    max={15}
                     value={aantal}
                     onChange={(e) => zetAantal(e.target.value)}
                     placeholder="Bijv. 2"
                     className="w-full border rounded-lg p-2 mt-0.5 bg-white"
                 />
-                {meerDan15Schermen ? (
+                {toondeMaxMelding ? (
                     <p className="mt-1.5 text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
-                        Meer dan 15 schermen geldt als project
+                        Maximaal 15 schermen. Meer dan 15 schermen geldt als project.
                     </p>
                 ) : null}
             </label>

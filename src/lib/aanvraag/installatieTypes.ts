@@ -365,7 +365,7 @@ export function syncSchermItems(
     items: AanvraagSchermItem[],
     aantal: number
 ): AanvraagSchermItem[] {
-    const n = Math.max(0, Math.min(20, aantal));
+    const n = Math.max(0, Math.min(15, aantal));
     const next = [...items];
 
     while (next.length < n) {

@@ -628,14 +628,6 @@ function AanvraagFormulier(){
         );
     }
 
-    const schermenAantalNum = parseInt(
-        specs.schermen?.velden?.aantal || "",
-        10
-    );
-    const meerDan15Schermen =
-        Number.isFinite(schermenAantalNum) && schermenAantalNum > 15;
-
-
     return (
 
         <div className="min-h-screen bg-gray-50 py-5 sm:py-8 px-4">
@@ -646,7 +638,7 @@ function AanvraagFormulier(){
                     <img
                         src="/images/MDB-Logo.png"
                         alt="MDB Networks"
-                        className="mx-auto mb-3 h-auto w-full max-w-[200px] object-contain sm:mb-4 sm:max-w-[280px] md:max-w-[360px]"
+                        className="mx-auto mb-3 h-auto w-full max-w-[300px] object-contain sm:mb-4 sm:max-w-[320px] md:max-w-[360px]"
                     />
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-snug">
                         Aanvraag Service- en Installatiewerkzaamheden
@@ -797,7 +789,7 @@ function AanvraagFormulier(){
                             Type aanvraag{" "}
                             <span className="text-red-500">*</span>
                         </h2>
-                        <div className="flex w-full flex-nowrap gap-2">
+                        <div className="flex w-full flex-nowrap gap-1">
                             {[
                                 {
                                     k:"installatie",
@@ -815,7 +807,7 @@ function AanvraagFormulier(){
                                     title={"fullLabel" in t ? t.fullLabel : undefined}
                                     aria-label={"fullLabel" in t ? t.fullLabel : undefined}
                                     className={
-                                        "flex-1 min-w-0 rounded-xl border-2 py-2.5 px-2 text-sm font-medium text-center whitespace-nowrap "
+                                        "flex-1 min-w-0 overflow-hidden rounded-xl border-2 py-2.5 px-1.5 sm:px-2 text-[11px] sm:text-sm font-medium text-center leading-none whitespace-nowrap "
                                         +
                                         (typeAanvraag === t.k
                                             ? "bg-sky-100 text-sky-800 border-sky-300"
@@ -893,16 +885,14 @@ function AanvraagFormulier(){
                                                     <SchermenSpecificatie
                                                         aantal={blok.velden.aantal || ""}
                                                         onAantalChange={(a)=>{
-                                                            zetVeld("schermen", "aantal", a);
-                                                            const n = parseInt(a, 10);
-                                                            // >15 schermen = project; alleen auto-aan, nooit auto-uit
-                                                            if(Number.isFinite(n) && n > 15){
-                                                                setProject("Ja");
-                                                            }
-                                                            if(!Number.isFinite(n) || n < 0){
+                                                            const parsed = parseInt(a, 10);
+                                                            if(a === "" || !Number.isFinite(parsed) || parsed < 0){
+                                                                zetVeld("schermen", "aantal", a);
                                                                 setSchermenItems([]);
                                                                 return;
                                                             }
+                                                            const n = Math.min(15, parsed);
+                                                            zetVeld("schermen", "aantal", String(n));
                                                             setSchermenItems((prev)=>
                                                                 syncSchermItems(prev, n)
                                                             );
@@ -1067,11 +1057,6 @@ function AanvraagFormulier(){
                             <span className="text-sm font-medium text-gray-800 block">
                                 6. Project (offerte-basis) — is het een project?
                             </span>
-                            {meerDan15Schermen ? (
-                                <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
-                                    Meer dan 15 schermen geldt als project
-                                </p>
-                            ) : null}
                             <div className="flex gap-2">
                                 <button
                                     type="button"
