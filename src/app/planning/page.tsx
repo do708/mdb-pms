@@ -660,10 +660,6 @@ export default function PlanningPage(){
             space-y-4
         ">
 
-            <WorkorderStatusIconLegend className="
-                rounded-xl border border-slate-200 bg-white px-3 py-2
-            " />
-
 
 
 

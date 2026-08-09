@@ -438,9 +438,7 @@ export default function WorkordersPage(){
                                             className="h-3.5 w-3.5"
                                         />
                                         {
-                                            migrateStatus(workorder.status) === "gefactureerd"
-                                                ? "Gefac."
-                                                : getStatus(migrateStatus(workorder.status)).label
+                                            getStatus(migrateStatus(workorder.status)).label
                                         }
                                     </span>
 

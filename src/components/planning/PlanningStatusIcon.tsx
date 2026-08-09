@@ -13,7 +13,7 @@ export const WORKORDER_STATUS_ICON_LEGEND = [
     { key: "ontvangen", shortLabel: "Opdracht ontvangen" },
     { key: "afspraak", shortLabel: "Afspraak verstuurd" },
     { key: "ingepland", shortLabel: "Ingepland" },
-    { key: "gefactureerd", shortLabel: "Gefac." },
+    { key: "gefactureerd", shortLabel: "Gefactureerd" },
 ] as const;
 
 function iconForStatus(key: string) {
@@ -56,7 +56,7 @@ export function PlanningStatusIcon({
     );
 }
 
-/** Compacte legenda: Opdracht ontvangen · Afspraak · Ingepland · Gefac. */
+/** Compacte legenda: Opdracht ontvangen · Afspraak · Ingepland · Gefactureerd */
 export function WorkorderStatusIconLegend({
     className = "",
 }: {
