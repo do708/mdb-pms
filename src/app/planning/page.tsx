@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 
 import Calendar from "@/components/planning/Calendar";
 
 import WeekView from "@/components/planning/WeekView";
+import {
+    clearPendingSchedule,
+    getPendingSchedule,
+    type PendingSchedule,
+} from "@/lib/planning/pendingSchedule";
 
 
 
@@ -90,6 +97,10 @@ function formatNlDate(
 export default function PlanningPage(){
 
 
+    const router =
+        useRouter();
+
+
     const { data:session, status:sessionStatus } =
         useSession();
 
@@ -122,6 +133,14 @@ export default function PlanningPage(){
 
     const [view,setView] =
         useState<"month"|"week">("week");
+
+
+    const [pending,setPending] =
+        useState<PendingSchedule | null>(null);
+
+
+    const [scheduling,setScheduling] =
+        useState(false);
 
 
     // Maandag van de getoonde week (voor de week-navigatie)
@@ -262,6 +281,18 @@ export default function PlanningPage(){
     }, [sessionStatus, session?.user?.id, session?.user?.role]);
 
 
+    useEffect(()=>{
+        setPending(getPendingSchedule());
+    },[]);
+
+
+    useEffect(()=>{
+        if(pending){
+            setView("week");
+        }
+    },[pending]);
+
+
 
 
 
@@ -286,6 +317,63 @@ export default function PlanningPage(){
         }
 
         await loadPlanning();
+    }
+
+    function formatHour(hour: number): string {
+        const h = Math.floor(hour);
+        const m = Math.round((hour - h) * 60);
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    }
+
+    /** Pending aanvraag/klus inplannen op gekozen slot → terug naar klusdetail. */
+    async function schedulePending(args: {
+        dateIso: string;
+        hour: number;
+        engineerId: string;
+    }) {
+        const current = pending || getPendingSchedule();
+        if (!current || scheduling || !canEdit) {
+            return;
+        }
+
+        setScheduling(true);
+
+        const startTime = formatHour(args.hour);
+        const endHour = Math.min(args.hour + 2, 17);
+        const endTime = formatHour(endHour);
+
+        try {
+            const response = await fetch(
+                `/api/workorders/${current.workorderId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        plannedDate: `${args.dateIso}T${startTime}`,
+                        plannedEndDate: `${args.dateIso}T${endTime}`,
+                        assignedUserId: args.engineerId,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                alert("Inplannen mislukt");
+                return;
+            }
+
+            clearPendingSchedule();
+            setPending(null);
+            router.push(`/workorders/${current.workorderId}/edit`);
+        } finally {
+            setScheduling(false);
+        }
+    }
+
+    function annuleerPending() {
+        clearPendingSchedule();
+        setPending(null);
     }
 
     /** Weekview: sleep naar andere dag/tijd/monteur; meerdaagse duur blijft behouden. */
@@ -442,6 +530,64 @@ export default function PlanningPage(){
 
 
             {
+                pending && canEdit && (
+                    <section className="
+                        sticky
+                        top-2
+                        z-20
+                        flex
+                        flex-wrap
+                        items-center
+                        justify-between
+                        gap-3
+                        rounded-2xl
+                        border
+                        border-[#0066FF]/30
+                        bg-[#e8f0ff]
+                        px-4
+                        py-3
+                        shadow-sm
+                    ">
+                        <div className="min-w-0">
+                            <p className="text-sm font-bold text-[#0066FF]">
+                                Inplannen: {pending.label}
+                            </p>
+                            <p className="text-xs text-slate-600 mt-0.5">
+                                {
+                                    scheduling
+                                    ? "Bezig met inplannen…"
+                                    : "Klik op een vrij tijdstip bij een monteur, of op “Hier inplannen”."
+                                }
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={annuleerPending}
+                            disabled={scheduling}
+                            className="
+                                shrink-0
+                                rounded-lg
+                                border
+                                border-slate-300
+                                bg-white
+                                px-3
+                                py-1.5
+                                text-sm
+                                font-medium
+                                text-slate-700
+                                hover:bg-slate-50
+                                disabled:opacity-50
+                            "
+                        >
+                            Annuleren
+                        </button>
+                    </section>
+                )
+            }
+
+
+
+            {
                 conflicts.length > 0 && (
 
                     <section className="
@@ -560,6 +706,16 @@ export default function PlanningPage(){
                     }}
                     onMovePlan={
                         canEdit ? moveWeekPlan : undefined
+                    }
+                    pendingSchedule={
+                        canEdit && pending && !scheduling
+                            ? pending
+                            : null
+                    }
+                    onSchedulePending={
+                        canEdit && pending && !scheduling
+                            ? schedulePending
+                            : undefined
                     }
                 />
             )}

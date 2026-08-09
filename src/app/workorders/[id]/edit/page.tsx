@@ -10,6 +10,7 @@ import AanvraagSpecificatiesOverzicht, {
     parseAanvraagSnapshot,
     type AanvraagOverzichtSnapshot,
 } from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
+import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 
 
 
@@ -565,6 +566,73 @@ export default function EditWorkorderPage(){
 
     }
 
+
+    function gaNaarInplannen(){
+        const customerName =
+            customers.find((c)=>c.id === customerId)?.name
+            || "";
+        const label =
+            [customerName, title].filter(Boolean).join(" · ")
+            || title
+            || "Klus";
+
+        setPendingSchedule({
+            workorderId:id,
+            label,
+        });
+
+        router.push("/planning");
+    }
+
+
+    const isIngepland =
+        Boolean(plannedDate) && Boolean(assignedUserId);
+
+
+    function planningSamenvatting():string {
+        if(!plannedDate){
+            return "";
+        }
+
+        const delen:string[] = [];
+
+        try {
+            const d = new Date(
+                plannedDate.includes("T")
+                    ? plannedDate
+                    : `${plannedDate}T12:00:00`
+            );
+            if(!isNaN(d.getTime())){
+                delen.push(
+                    d.toLocaleDateString("nl-NL",{
+                        weekday:"short",
+                        day:"numeric",
+                        month:"long",
+                        year:"numeric",
+                    })
+                );
+            }
+        } catch {
+            delen.push(plannedDate);
+        }
+
+        if(startTime){
+            delen.push(
+                endTime
+                    ? `${startTime}–${endTime}`
+                    : `vanaf ${startTime}`
+            );
+        }
+
+        const monteur =
+            engineers.find((e)=>e.id === assignedUserId)?.name;
+        if(monteur){
+            delen.push(monteur);
+        }
+
+        return delen.join(" · ");
+    }
+
     if(loading){
 
         return (
@@ -591,22 +659,90 @@ export default function EditWorkorderPage(){
         ">
 
 
-            <header>
+            <header className="space-y-3">
 
-                <h1 className="
-                    text-2xl
-                    font-bold
-                ">
+                <div className="flex flex-wrap items-start justify-between gap-3">
 
-                    Werkbon wijzigen
+                    <div className="min-w-0">
 
-                </h1>
+                        <h1 className="
+                            text-2xl
+                            font-bold
+                        ">
 
-                <p className="text-gray-500">
+                            Werkbon wijzigen
 
-                    {title}
+                        </h1>
 
-                </p>
+                        <p className="text-gray-500">
+
+                            {title}
+
+                        </p>
+
+                    </div>
+
+                    {
+                        afspraakKanVerstuurd && (
+                            <button
+                                type="button"
+                                onClick={verstuurAfspraak}
+                                disabled={saving}
+                                className="
+                                    bg-[#0066FF]
+                                    text-white
+                                    rounded-xl
+                                    px-5
+                                    py-3
+                                    font-bold
+                                    whitespace-nowrap
+                                    disabled:opacity-50
+                                "
+                            >
+                                {saving ? "Bezig..." : "Afspraak versturen"}
+                            </button>
+                        )
+                    }
+
+                </div>
+
+                {
+                    isIngepland && (
+                        <div className="
+                            rounded-xl
+                            border
+                            border-emerald-200
+                            bg-emerald-50
+                            px-4
+                            py-3
+                            text-sm
+                            text-emerald-900
+                            flex
+                            flex-wrap
+                            items-center
+                            justify-between
+                            gap-2
+                        ">
+                            <p>
+                                <span className="font-semibold">Ingepland:</span>{" "}
+                                {planningSamenvatting() || "Datum en monteur gezet"}
+                            </p>
+                            <button
+                                type="button"
+                                onClick={gaNaarInplannen}
+                                className="
+                                    text-sm
+                                    font-semibold
+                                    text-[#0066FF]
+                                    underline
+                                    underline-offset-2
+                                "
+                            >
+                                Wijzig in planning
+                            </button>
+                        </div>
+                    )
+                }
 
             </header>
 
@@ -854,237 +990,56 @@ export default function EditWorkorderPage(){
                     rounded-2xl
                     p-5
                     bg-gray-50
-                    space-y-5
+                    space-y-4
                     min-w-0
                     overflow-hidden
                 ">
 
-                    <label className="block min-w-0 w-full overflow-hidden">
-
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-gray-700
-                            mb-2
-                        ">
-
-                            Datum:
-
-                        </span>
-
-                        <input
-
-                            type="date"
-
-                            value={plannedDate}
-
-                            onChange={(e)=>setPlannedDate(e.target.value)}
-
-                            className="
-                                block
-                                w-full
-                                max-w-full
-                                min-w-0
-                                border
-                                rounded-xl
-                                p-3
-                                bg-white
-                                box-border
-                            "
-
-                        />
-
-                    </label>
-
-
-                    <label className="
-                        flex
-                        items-center
-                        gap-2
-                        cursor-pointer
-                        select-none
-                    ">
-
-                        <input
-
-                            type="checkbox"
-
-                            checked={multiDay}
-
-                            onChange={(e)=>setMultiDay(e.target.checked)}
-
-                        />
-
-                        <span className="text-sm text-gray-700">
-
-                            Meerdere dagen
-
-                        </span>
-
-                    </label>
-
+                    <div>
+                        <h2 className="font-semibold text-gray-800">
+                            Planning
+                        </h2>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                            Kies een vrij moment in de weekplanning. Datum en monteur zet je daar.
+                        </p>
+                    </div>
 
                     {
-                        multiDay && (
-
-                            <label className="block min-w-0 w-full overflow-hidden">
-
-                                <span className="
-                                    block
-                                    text-sm
-                                    font-medium
-                                    text-gray-700
-                                    mb-2
-                                ">
-
-                                    Tot en met:
-
-                                </span>
-
-                                <input
-
-                                    type="date"
-
-                                    value={endDate}
-
-                                    min={plannedDate}
-
-                                    onChange={(e)=>setEndDate(e.target.value)}
-
-                                    className="
-                                        block
-                                        w-full
-                                        max-w-full
-                                        min-w-0
-                                        border
-                                        rounded-xl
-                                        p-3
-                                        bg-white
-                                        box-border
-                                    "
-
-                                />
-
-                            </label>
-
+                        !isIngepland && (
+                            <button
+                                type="button"
+                                onClick={gaNaarInplannen}
+                                className="
+                                    w-full
+                                    sm:w-auto
+                                    bg-[#0066FF]
+                                    text-white
+                                    rounded-xl
+                                    px-5
+                                    py-3
+                                    font-bold
+                                    disabled:opacity-50
+                                "
+                            >
+                                Inplannen
+                            </button>
                         )
                     }
 
-
                     {
-                        !multiDay && (
-
-                    <div>
-
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-gray-700
-                        ">
-
-                            Tijdstip (optioneel)
-
-                        </span>
-
-                        <div className="
-                            flex
-                            flex-col
-                            gap-3
-                            mt-2
-                            min-w-0
-                            sm:grid
-                            sm:grid-cols-2
-                        ">
-
-                            <label className="block min-w-0 overflow-hidden">
-
-                                <span className="
-                                    block
-                                    text-sm
-                                    font-medium
-                                    text-gray-700
-                                    mb-2
-                                ">
-
-                                    Van
-
-                                </span>
-
-                                <input
-
-                                    type="time"
-
-                                    value={startTime}
-
-                                    onChange={(e)=>setStartTime(e.target.value)}
-
-                                    className="
-                                        block
-                                        w-full
-                                        max-w-full
-                                        min-w-0
-                                        border
-                                        rounded-xl
-                                        p-3
-                                        bg-white
-                                        box-border
-                                    "
-
-                                />
-
-                            </label>
-
-
-                            <label className="block min-w-0 overflow-hidden">
-
-                                <span className="
-                                    block
-                                    text-sm
-                                    font-medium
-                                    text-gray-700
-                                    mb-2
-                                ">
-
-                                    Tot
-
-                                </span>
-
-                                <input
-
-                                    type="time"
-
-                                    value={endTime}
-
-                                    onChange={(e)=>setEndTime(e.target.value)}
-
-                                    className="
-                                        block
-                                        w-full
-                                        max-w-full
-                                        min-w-0
-                                        border
-                                        rounded-xl
-                                        p-3
-                                        bg-white
-                                        box-border
-                                    "
-
-                                />
-
-                            </label>
-
-                        </div>
-
-                    </div>
-
+                        isIngepland && (
+                            <p className="text-sm text-gray-700">
+                                {planningSamenvatting()}
+                            </p>
                         )
                     }
 
                 </div>
 
 
+                {
+                    isIngepland && (
+                        <>
                 <label className="block">
 
                     <span className="text-sm text-gray-600">
@@ -1203,6 +1158,9 @@ export default function EditWorkorderPage(){
                     </div>
 
                 </div>
+                        </>
+                    )
+                }
 
 
 
@@ -1332,7 +1290,13 @@ export default function EditWorkorderPage(){
             {
                 !afspraakKanVerstuurd && (
                     <p className="text-sm text-gray-500 mb-2">
-                        Vul datum, starttijd en een hoofdmonteur in om de afspraak te kunnen versturen.
+                        {
+                            !isIngepland
+                            ? "Plan de klus eerst in via Inplannen. Daarna kun je de afspraak versturen."
+                            : !startTime
+                            ? "Zet in de planning ook een starttijd (klik op een tijdstip) om de afspraak te versturen."
+                            : "Controleer monteur en tijdstip om de afspraak te kunnen versturen."
+                        }
                     </p>
                 )
             }
@@ -1374,7 +1338,7 @@ export default function EditWorkorderPage(){
                     title={
                         afspraakKanVerstuurd
                         ? "Verstuur de afspraakbevestiging"
-                        : "Vul eerst datum, starttijd en hoofdmonteur in"
+                        : "Plan eerst in via de planning (datum, tijd en monteur)"
                     }
 
                     className="

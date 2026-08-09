@@ -62,6 +62,13 @@ interface WeekViewProps {
         hour: number;
         engineerId: string;
     }) => void;
+    /** Pending klus om in te plannen (banner + klik op slot) */
+    pendingSchedule?: { workorderId: string; label: string } | null;
+    onSchedulePending?: (args: {
+        dateIso: string;
+        hour: number;
+        engineerId: string;
+    }) => void;
 }
 
 function toIsoDate(d: Date): string {
@@ -80,6 +87,8 @@ export default function WeekView({
     view = "week",
     onViewChange,
     onMovePlan,
+    pendingSchedule = null,
+    onSchedulePending,
 }: WeekViewProps) {
     const today = new Date();
     const todayIso = toIsoDate(today);
@@ -470,8 +479,21 @@ export default function WeekView({
                                         }}
                                     >
                                         <Link
-                                            href={`/workorders/new?date=${iso}`}
-                                            title="Werkbon klaarzetten op deze dag"
+                                            href={
+                                                pendingSchedule
+                                                ? "#"
+                                                : `/workorders/new?date=${iso}`
+                                            }
+                                            onClick={(e)=>{
+                                                if(pendingSchedule){
+                                                    e.preventDefault();
+                                                }
+                                            }}
+                                            title={
+                                                pendingSchedule
+                                                ? "Kies een monteurkolom hiernaast om in te plannen"
+                                                : "Werkbon klaarzetten op deze dag"
+                                            }
                                             className={`
                                                 group flex flex-col items-center justify-center
                                                 rounded-xl px-2 py-2.5 transition min-h-[4rem]
@@ -479,6 +501,11 @@ export default function WeekView({
                                                     isToday
                                                         ? "bg-[#d6007e] text-white shadow-sm shadow-[#d6007e]/25"
                                                         : "bg-[#e8f0ff]/70 text-slate-700 hover:bg-[#e8f0ff]"
+                                                }
+                                                ${
+                                                    pendingSchedule
+                                                        ? "opacity-80 cursor-default"
+                                                        : ""
                                                 }
                                             `}
                                         >
@@ -537,10 +564,54 @@ export default function WeekView({
                                                                     ? "border-orange-200"
                                                                     : ""
                                                             }
+                                                            ${
+                                                                pendingSchedule
+                                                                && onSchedulePending
+                                                                && !verlof
+                                                                    ? "cursor-pointer ring-1 ring-[#0066FF]/20 hover:ring-[#0066FF]/45"
+                                                                    : ""
+                                                            }
                                                         `}
                                                         style={{
                                                             minHeight: `${DAG_HOOGTE}px`,
                                                         }}
+                                                        onClick={
+                                                            pendingSchedule
+                                                            && onSchedulePending
+                                                            && !verlof
+                                                                ? (e) => {
+                                                                      const target =
+                                                                          e.target as HTMLElement;
+                                                                      if (
+                                                                          target.closest(
+                                                                              "[data-planning-job]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "a"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "button"
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
+                                                                      const hour =
+                                                                          hourFromClientY(
+                                                                              e.clientY,
+                                                                              e.currentTarget
+                                                                          );
+                                                                      onSchedulePending(
+                                                                          {
+                                                                              dateIso:
+                                                                                  iso,
+                                                                              hour,
+                                                                              engineerId:
+                                                                                  user.id,
+                                                                          }
+                                                                      );
+                                                                  }
+                                                                : undefined
+                                                        }
                                                         onDragOver={
                                                             onMovePlan &&
                                                             !verlof
@@ -695,6 +766,7 @@ export default function WeekView({
                                                                                     : ""
                                                                             }
                                                                         `}
+                                                                        data-planning-job
                                                                         style={{
                                                                             backgroundColor:
                                                                                 color,
@@ -755,7 +827,37 @@ export default function WeekView({
                                                         )}
                                                     </div>
 
-                                                    {onMovePlan ? (
+                                                    {onMovePlan || onSchedulePending ? (
+                                                        pendingSchedule && onSchedulePending && !verlof ? (
+                                                            <button
+                                                                type="button"
+                                                                title={`Inplannen: ${pendingSchedule.label}`}
+                                                                onClick={() =>
+                                                                    onSchedulePending({
+                                                                        dateIso: iso,
+                                                                        hour: 9,
+                                                                        engineerId: user.id,
+                                                                    })
+                                                                }
+                                                                className="
+                                                                    group/plan flex items-center justify-center gap-1
+                                                                    rounded-lg py-1.5 text-[11px] font-semibold
+                                                                    text-white bg-[#0066FF] border border-[#0066FF]
+                                                                    hover:bg-[#0052cc] transition
+                                                                "
+                                                            >
+                                                                <span
+                                                                    className="
+                                                                        inline-flex h-4 w-4 items-center justify-center
+                                                                        rounded-full bg-white/20 text-white
+                                                                        text-[10px] font-bold leading-none
+                                                                    "
+                                                                >
+                                                                    ✓
+                                                                </span>
+                                                                Hier inplannen
+                                                            </button>
+                                                        ) : onMovePlan ? (
                                                         <Link
                                                             href={`/workorders/new?date=${iso}&engineer=${user.id}`}
                                                             title="Werkbon klaarzetten voor deze monteur op deze dag"
@@ -779,6 +881,7 @@ export default function WeekView({
                                                             </span>
                                                             Plannen
                                                         </Link>
+                                                        ) : null
                                                     ) : null}
                                                 </div>
                                             );
