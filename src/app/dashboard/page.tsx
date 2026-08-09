@@ -191,6 +191,7 @@ function AanvragenSectie(){
                                                 huisnummer:a.huisnummer,
                                                 postcode:a.postcode,
                                                 plaats:a.plaats,
+                                                opdrachtgever:a.customer.name,
                                             }}
                                             bijlagen={
                                                 Array.isArray(a.bijlagen)

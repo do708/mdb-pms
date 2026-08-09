@@ -144,14 +144,26 @@ export default function PlanningPage(){
         useState(false);
 
     /** Voorstel vóór “Hier inplannen”: monteurs, starttijd + duur. */
-    const [pendingAantalMonteurs, setPendingAantalMonteurs] =
-        useState(1);
+    const [pendingAantalTekst, setPendingAantalTekst] =
+        useState("1");
 
     const [pendingStartTime, setPendingStartTime] =
         useState("09:00");
 
-    const [pendingDuurUren, setPendingDuurUren] =
-        useState(2);
+    const [pendingDuurTekst, setPendingDuurTekst] =
+        useState("2");
+
+    function pendingAantalMonteurs(): number {
+        const n = Number.parseInt(pendingAantalTekst, 10);
+        if (!Number.isFinite(n) || n < 1) return 1;
+        return Math.min(8, n);
+    }
+
+    function pendingDuurUren(): number {
+        const n = Number.parseFloat(pendingDuurTekst.replace(",", "."));
+        if (!Number.isFinite(n) || n <= 0) return 2;
+        return Math.min(16, n);
+    }
 
     /** Slot gekozen; nog extra monteurs kiezen als aantal > 1. */
     const [pendingSlot, setPendingSlot] =
@@ -366,20 +378,24 @@ export default function PlanningPage(){
     }
 
     function voorstelGeldig(): boolean {
+        const aantal = pendingAantalMonteurs();
+        const duur = pendingDuurUren();
         const startHour = parseTimeToHour(pendingStartTime);
         return (
-            pendingAantalMonteurs >= 1
-            && pendingAantalMonteurs <= 8
-            && pendingDuurUren > 0
-            && pendingDuurUren <= 16
+            pendingAantalTekst.trim() !== ""
+            && pendingDuurTekst.trim() !== ""
+            && aantal >= 1
+            && aantal <= 8
+            && duur > 0
+            && duur <= 16
             && startHour !== null
         );
     }
 
     function resetPendingVoorstel() {
-        setPendingAantalMonteurs(1);
+        setPendingAantalTekst("1");
         setPendingStartTime("09:00");
-        setPendingDuurUren(2);
+        setPendingDuurTekst("2");
         setPendingSlot(null);
         setPendingExtraIds([]);
     }
@@ -425,7 +441,10 @@ export default function PlanningPage(){
             startHour,
         };
 
-        if (pendingAantalMonteurs <= 1) {
+        const aantal = pendingAantalMonteurs();
+        const duur = pendingDuurUren();
+
+        if (aantal <= 1) {
             void finalizePendingSchedule(slot, []);
             return;
         }
@@ -447,7 +466,9 @@ export default function PlanningPage(){
             return;
         }
 
-        const nodigExtra = Math.max(0, pendingAantalMonteurs - 1);
+        const aantal = pendingAantalMonteurs();
+        const duur = pendingDuurUren();
+        const nodigExtra = Math.max(0, aantal - 1);
         if (extraEngineerIds.length !== nodigExtra) {
             alert(
                 nodigExtra === 1
@@ -460,7 +481,7 @@ export default function PlanningPage(){
         setScheduling(true);
 
         const startTime = formatHour(args.startHour);
-        const endTime = formatHour(args.startHour + pendingDuurUren);
+        const endTime = formatHour(args.startHour + duur);
 
         try {
             const response = await fetch(
@@ -473,7 +494,7 @@ export default function PlanningPage(){
                     body: JSON.stringify({
                         plannedDate: `${args.dateIso}T${startTime}`,
                         plannedEndDate: `${args.dateIso}T${endTime}`,
-                        plannedHours: pendingDuurUren,
+                        plannedHours: duur,
                         assignedUserId: args.engineerId,
                         extraEngineerIds,
                     }),
@@ -505,7 +526,7 @@ export default function PlanningPage(){
             if (prev.includes(id)) {
                 return prev.filter((x) => x !== id);
             }
-            const max = Math.max(0, pendingAantalMonteurs - 1);
+            const max = Math.max(0, pendingAantalMonteurs() - 1);
             if (prev.length >= max) {
                 return [...prev.slice(1), id];
             }
@@ -725,17 +746,17 @@ export default function PlanningPage(){
                                     Aantal monteurs *
                                 </span>
                                 <input
-                                    type="number"
-                                    min={1}
-                                    max={8}
-                                    step={1}
-                                    value={pendingAantalMonteurs}
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    value={pendingAantalTekst}
                                     disabled={scheduling || !!pendingSlot}
                                     onChange={(e) => {
-                                        const n = Number.parseInt(e.target.value, 10);
-                                        setPendingAantalMonteurs(
-                                            Number.isFinite(n) ? Math.min(8, Math.max(1, n)) : 1
-                                        );
+                                        const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+                                        setPendingAantalTekst(v);
+                                    }}
+                                    onBlur={() => {
+                                        setPendingAantalTekst(String(pendingAantalMonteurs()));
                                     }}
                                     className="
                                         mt-0.5 block w-24 rounded-lg border border-slate-300
@@ -767,16 +788,20 @@ export default function PlanningPage(){
                                     Duur (uren) *
                                 </span>
                                 <input
-                                    type="number"
-                                    min={0.5}
-                                    max={16}
-                                    step={0.5}
-                                    value={pendingDuurUren}
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={pendingDuurTekst}
                                     disabled={scheduling || !!pendingSlot}
                                     onChange={(e) => {
-                                        const n = Number.parseFloat(e.target.value);
-                                        setPendingDuurUren(
-                                            Number.isFinite(n) ? Math.min(16, Math.max(0.5, n)) : 2
+                                        const v = e.target.value
+                                            .replace(/[^\d.,]/g, "")
+                                            .slice(0, 5);
+                                        setPendingDuurTekst(v);
+                                    }}
+                                    onBlur={() => {
+                                        const n = pendingDuurUren();
+                                        setPendingDuurTekst(
+                                            Number.isInteger(n) ? String(n) : String(n)
                                         );
                                     }}
                                     className="
@@ -791,7 +816,7 @@ export default function PlanningPage(){
                                     (() => {
                                         const start = parseTimeToHour(pendingStartTime);
                                         if (start === null) return "Eindtijd: —";
-                                        return `Eindtijd: ${formatHour(start + pendingDuurUren)} · bijv. 13:00 + 1u, of 09:00 + 8u`;
+                                        return `Eindtijd: ${formatHour(start + pendingDuurUren())}`;
                                     })()
                                 }
                             </p>
@@ -817,13 +842,13 @@ export default function PlanningPage(){
                                         {pendingSlot.dateIso}
                                         {" · "}
                                         {formatHour(pendingSlot.startHour)}
-                                        –{formatHour(pendingSlot.startHour + pendingDuurUren)}
+                                        –{formatHour(pendingSlot.startHour + pendingDuurUren())}
                                     </p>
                                     <p className="text-xs text-slate-500">
                                         Kies{" "}
-                                        {pendingAantalMonteurs - 1 === 1
+                                        {pendingAantalMonteurs() - 1 === 1
                                             ? "1 extra monteur"
-                                            : `${pendingAantalMonteurs - 1} extra monteurs`}
+                                            : `${pendingAantalMonteurs() - 1} extra monteurs`}
                                         :
                                     </p>
                                     <div className="flex flex-wrap gap-2">
@@ -862,7 +887,7 @@ export default function PlanningPage(){
                                             type="button"
                                             disabled={
                                                 scheduling
-                                                || pendingExtraIds.length !== pendingAantalMonteurs - 1
+                                                || pendingExtraIds.length !== pendingAantalMonteurs() - 1
                                             }
                                             onClick={() =>
                                                 void finalizePendingSchedule(

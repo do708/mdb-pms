@@ -40,6 +40,7 @@ interface Props {
         contactPersoon?: string | null;
         contactEmail?: string | null;
         contactPhone?: string | null;
+        opdrachtgever?: string | null;
     } | null;
     bijlagen?: Bijlage[] | null;
     className?: string;
@@ -392,7 +393,8 @@ export default function AanvraagSpecificatiesOverzicht({
     const showLocatie =
         locatie
         && (
-            str(locatie.locatie)
+            str(locatie.opdrachtgever)
+            || str(locatie.locatie)
             || str(locatie.straat)
             || str(locatie.postcode)
             || str(locatie.plaats)
@@ -473,6 +475,10 @@ export default function AanvraagSpecificatiesOverzicht({
             {showLocatie ? (
                 <Section title="Gegevens locatie & contactpersoon">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <Field
+                            label="Opdrachtgever"
+                            value={locatie?.opdrachtgever}
+                        />
                         <Field
                             label="Locatie / filiaalnaam"
                             value={locatie?.locatie}

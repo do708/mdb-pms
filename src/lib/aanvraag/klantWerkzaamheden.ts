@@ -3,7 +3,7 @@
  * afspraakmail. Geen beugel/type/stroom-details — die staan in de
  * specificatie-weergave voor office/uitvoering.
  *
- * Voorbeeld: `2× 50" schermen Landscape in de kantine, 1× kiosk in de entree`
+ * Voorbeeld: `2× 50" schermen in de kantine, 1× kiosk in de entree`
  */
 
 type SchermItem = {
@@ -41,14 +41,13 @@ function locatieZin(locatie: string | undefined): string {
 function groepeerSchermen(items: SchermItem[]): string[] {
     const map = new Map<
         string,
-        { count: number; formaat: string; orientatie: string; locatie: string }
+        { count: number; formaat: string; locatie: string }
     >();
 
     for (const s of items) {
         const formaat = formaatLabel(s);
-        const orientatie = (s.orientatie || "").trim();
         const locatie = (s.locatie || "").trim();
-        const key = `${formaat.toLowerCase()}|${orientatie.toLowerCase()}|${locatie.toLowerCase()}`;
+        const key = `${formaat.toLowerCase()}|${locatie.toLowerCase()}`;
         const bestaand = map.get(key);
         if (bestaand) {
             bestaand.count += 1;
@@ -56,7 +55,6 @@ function groepeerSchermen(items: SchermItem[]): string[] {
             map.set(key, {
                 count: 1,
                 formaat,
-                orientatie,
                 locatie,
             });
         }
@@ -65,9 +63,8 @@ function groepeerSchermen(items: SchermItem[]): string[] {
     return [...map.values()].map((g) => {
         const woord = g.count === 1 ? "scherm" : "schermen";
         const formaatDeel = g.formaat ? `${g.formaat} ` : "";
-        const ori = g.orientatie ? ` ${g.orientatie}` : "";
         const loc = locatieZin(g.locatie);
-        return [`${g.count}× ${formaatDeel}${woord}${ori}`, loc]
+        return [`${g.count}× ${formaatDeel}${woord}`, loc]
             .filter(Boolean)
             .join(" ");
     });

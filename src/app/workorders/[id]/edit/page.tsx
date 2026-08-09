@@ -263,7 +263,8 @@ export default function EditWorkorderPage(){
                     || (
                         /^Installatie:/i.test(rawDescription)
                         && /stroom:/i.test(rawDescription)
-                    );
+                    )
+                    || /\b(Landscape|Portrait)\b/i.test(rawDescription);
 
                 if (specsRec && isOudeDichteTekst) {
                     const type =
@@ -826,18 +827,6 @@ export default function EditWorkorderPage(){
 
                     <label className="block">
                         <span className="text-sm text-gray-600">
-                            Locatie / filiaalnaam
-                        </span>
-                        <input
-                            value={title}
-                            onChange={(e)=>setTitle(e.target.value)}
-                            placeholder="Bijv. Filiaal Almere Centrum"
-                            className="w-full border rounded-xl p-3 mt-1"
-                        />
-                    </label>
-
-                    <label className="block">
-                        <span className="text-sm text-gray-600">
                             Opdrachtgever
                         </span>
                         <select
@@ -855,6 +844,18 @@ export default function EditWorkorderPage(){
                                 </option>
                             ))}
                         </select>
+                    </label>
+
+                    <label className="block">
+                        <span className="text-sm text-gray-600">
+                            Locatie / filiaalnaam
+                        </span>
+                        <input
+                            value={title}
+                            onChange={(e)=>setTitle(e.target.value)}
+                            placeholder="Bijv. Filiaal Almere Centrum"
+                            className="w-full border rounded-xl p-3 mt-1"
+                        />
                     </label>
 
                     <div className="flex flex-wrap gap-3">
@@ -963,7 +964,7 @@ export default function EditWorkorderPage(){
                     </span>
 
                     <span className="block text-xs text-gray-400 mb-1">
-                        Korte samenvatting voor de afspraakmail (bijv. aantal × formaat + oriëntatie + locatie).
+                        Korte samenvatting voor de afspraakmail (bijv. aantal × formaat + locatie).
                         Pas aan indien nodig; het overzicht hierboven blijft leidend voor de uitvoering.
                     </span>
 
@@ -973,7 +974,7 @@ export default function EditWorkorderPage(){
 
                         onChange={(e)=>setDescription(e.target.value)}
 
-                        placeholder='Bijv. 2× 50" schermen Landscape in de kantine, 1× kiosk in de entree'
+                        placeholder='Bijv. 2× 50" schermen in de kantine, 1× kiosk in de entree'
 
                         className="
                             w-full
@@ -1368,7 +1369,7 @@ export default function EditWorkorderPage(){
 
                 >
 
-                    {saving ? "Bezig..." : "Opslaan als concept"}
+                    {saving ? "Bezig..." : "Opslaan"}
 
                 </button>
 
