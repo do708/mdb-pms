@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import DeleteButton from "@/components/DeleteButton";
-import { getStatus, WORKORDER_STATUSES } from "@/constants/workorderStatus";
+import { PlanningStatusIcon, WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
+import { getStatus, migrateStatus, WORKORDER_STATUSES } from "@/constants/workorderStatus";
 
 
 
@@ -323,6 +324,12 @@ export default function WorkordersPage(){
 
 
 
+                <WorkorderStatusIconLegend />
+
+
+
+
+
                 <select
 
                     value={status}
@@ -421,10 +428,20 @@ export default function WorkordersPage(){
 
                                     </span>
 
-                                    <span className={`px-2 py-0.5 rounded-full text-xs ${getStatus(workorder.status).badge}`}>
-
-                                        {getStatus(workorder.status).label}
-
+                                    <span className={`
+                                        inline-flex items-center gap-1.5
+                                        px-2 py-0.5 rounded-full text-xs
+                                        ${getStatus(migrateStatus(workorder.status)).badge}
+                                    `}>
+                                        <PlanningStatusIcon
+                                            status={workorder.status}
+                                            className="h-3.5 w-3.5"
+                                        />
+                                        {
+                                            migrateStatus(workorder.status) === "gefactureerd"
+                                                ? "Gefac."
+                                                : getStatus(migrateStatus(workorder.status)).label
+                                        }
                                     </span>
 
                                 </div>

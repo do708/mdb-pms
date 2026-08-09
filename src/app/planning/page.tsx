@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import Calendar from "@/components/planning/Calendar";
 
 import WeekView from "@/components/planning/WeekView";
+import { WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
 import {
     clearPendingSchedule,
     getPendingSchedule,
@@ -658,6 +659,10 @@ export default function PlanningPage(){
             p-6
             space-y-4
         ">
+
+            <WorkorderStatusIconLegend className="
+                rounded-xl border border-slate-200 bg-white px-3 py-2
+            " />
 
 
 
