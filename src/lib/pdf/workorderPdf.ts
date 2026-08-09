@@ -114,7 +114,7 @@ export async function generateWorkorderPdf(
 
     write(
 
-        "Werkbon",
+        "Opdracht",
 
         16
 

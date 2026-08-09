@@ -450,7 +450,7 @@ export default function AssignmentDetailPage({
                     mb-3
                 ">
 
-                    Werkbonnen
+                    Gekoppelde opdrachten
 
                 </h2>
 

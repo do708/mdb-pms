@@ -77,14 +77,14 @@ export async function generateWorkorderPdf(workorder:any) {
 
 
     text(
-        "MDB Networks - Werkbon",
+        "MDB Networks - Opdracht",
         18,
         true
     );
 
 
     text(
-        `Werkbonnummer: ${workorder.number ?? ""}`
+        `Opdrachtnummer: ${workorder.number ?? ""}`
     );
 
 

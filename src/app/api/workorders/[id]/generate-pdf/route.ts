@@ -89,7 +89,7 @@ customer:true,
             return NextResponse.json(
 
                 {
-                    error:"Werkbon niet gevonden"
+                    error:"Opdracht niet gevonden"
                 },
 
                 {

@@ -152,7 +152,7 @@ export async function DELETE(request: NextRequest, context: Ctx) {
             );
         }
 
-        // Werkbonnen en planningen verwijzen naar de gebruiker.
+        // Opdrachten en planningen verwijzen naar de gebruiker.
         // Daarom deactiveren i.p.v. hard verwijderen: de historie blijft kloppen.
         const linked = await prisma.workorder.count({
             where: { assignedUserId: id },
@@ -169,7 +169,7 @@ export async function DELETE(request: NextRequest, context: Ctx) {
                 success: true,
                 deactivated: true,
                 message:
-                    "Gebruiker heeft werkbonnen en is daarom op inactief gezet.",
+                    "Gebruiker heeft opdrachten en is daarom op inactief gezet.",
                 user,
             });
         }

@@ -179,7 +179,7 @@ export default function CorrespondentieBlok({
 
             <p className="text-xs text-slate-500 mb-3">
                 Sleep hier e-mails (.msg/.eml), PDF&apos;s, foto&apos;s of andere
-                bestanden naartoe om ze bij deze werkbon te bewaren.
+                bestanden naartoe om ze bij deze opdracht te bewaren.
             </p>
 
 

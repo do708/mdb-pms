@@ -815,7 +815,7 @@ export default function DashboardPage(){
                         mb-3
                     ">
 
-                        📋 Laatste werkbonnen
+                        📋 Laatste opdrachten
 
                     </h2>
 
@@ -892,7 +892,7 @@ export default function DashboardPage(){
 
                                 <p className="text-sm text-gray-400">
 
-                                    Nog geen werkbonnen.
+                                    Nog geen opdrachten.
 
                                 </p>
 

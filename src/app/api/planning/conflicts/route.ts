@@ -113,7 +113,7 @@ export async function GET(){
 
 
 
-        // Overlappen twee werkbonnen in tijd?
+        // Overlappen twee opdrachten in tijd?
         // - Zonder starttijd (alleen een datum) rekenen we als "hele dag"
         //   en dus overlappend met elke andere werkbon op die dag.
         // - Met tijden overlappen ze alleen als de intervallen elkaar raken.

@@ -1,6 +1,6 @@
 import { pageTitle } from "@/lib/metadata";
 
-export const metadata = pageTitle("Werkbon");
+export const metadata = pageTitle("Opdracht");
 
 export default function Layout({
     children,

@@ -61,14 +61,14 @@ export async function GET(
 
         if (!workorder) {
             return NextResponse.json(
-                { error: "Werkbon niet gevonden" },
+                { error: "Opdracht niet gevonden" },
                 { status: 404 }
             );
         }
 
         if (workorder.photos.length === 0) {
             return NextResponse.json(
-                { error: "Geen foto's op deze werkbon" },
+                { error: "Geen foto's op deze opdracht" },
                 { status: 404 }
             );
         }

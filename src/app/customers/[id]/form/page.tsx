@@ -124,11 +124,11 @@ export default function CustomerFormPage({
                 </button>
 
                 <h1 className="text-2xl font-bold">
-                    Werkbon-vragen — {name}
+                    Opdracht-vragen — {name}
                 </h1>
 
                 <p className="text-sm text-gray-500 mt-1">
-                    Deze vragen verschijnen bovenaan de werkbon voor deze
+                    Deze vragen verschijnen bovenaan de opdracht voor deze
                     opdrachtgever.
                 </p>
 

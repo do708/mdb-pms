@@ -15,7 +15,7 @@ export default function DraggableAssignment({
     draggable = false,
     showStatusIcon = true,
 }: Props) {
-    // De planning-API levert werkbonnen: de klant hangt onder project.
+    // De planning-API levert opdrachten: de klant hangt onder project.
     const customer = item.customer ?? item.project?.customer;
 
     function handleDragStart(event: React.DragEvent) {

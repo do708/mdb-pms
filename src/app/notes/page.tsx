@@ -141,7 +141,7 @@ export default function NotesPage(){
                     text-gray-500
                 ">
 
-                    Alle werkbonnen met een interne notitie
+                    Alle opdrachten met een interne notitie
 
                 </p>
 
@@ -156,7 +156,7 @@ export default function NotesPage(){
 
                     <p className="text-gray-500">
 
-                        Geen werkbonnen met interne notities.
+                        Geen opdrachten met interne notities.
 
                     </p>
 

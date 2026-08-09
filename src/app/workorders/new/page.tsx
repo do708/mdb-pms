@@ -553,7 +553,7 @@ function NewWorkorderInner(){
 
 
                 setError(
-                    "Werkbon aanmaken mislukt"
+                    "Opdracht aanmaken mislukt"
                 );
 
                 window.scrollTo({ top:0, behavior:"smooth" });
@@ -594,7 +594,7 @@ function NewWorkorderInner(){
                     {
                         isEngineer
                         ?
-                        "Werkbon invullen"
+                        "Opdracht invullen"
                         :
                         "Opdracht inplannen"
                     }
@@ -1289,7 +1289,7 @@ function NewWorkorderInner(){
                                 }
 
                                 <p className="text-xs text-gray-400">
-                                    De foto's worden opgeslagen zodra je de werkbon opslaat.
+                                    De foto's worden opgeslagen zodra je de opdracht opslaat.
                                 </p>
 
                             </div>
@@ -1377,7 +1377,7 @@ function NewWorkorderInner(){
                     :
                     isEngineer
                     ?
-                    "📤 Werkbon versturen"
+                    "📤 Opdracht versturen"
                     :
                     "Opslaan"
                 }

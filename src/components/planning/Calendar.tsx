@@ -196,8 +196,8 @@ export default function Calendar({
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5">
                         {monthJobCount === 0
-                            ? "Nog geen werkbonnen deze maand."
-                            : `${monthJobCount} werkbon${monthJobCount === 1 ? "" : "nen"} deze maand.`}
+                            ? "Nog geen opdrachten deze maand."
+                            : `${monthJobCount} opdracht${monthJobCount === 1 ? "" : "en"} deze maand.`}
                         {onDropDate
                             ? " Sleep een klus naar een andere dag of klik op plannen."
                             : ""}
@@ -400,7 +400,7 @@ export default function Calendar({
                                                     {onDropDate ? (
                                                         <Link
                                                             href={`/workorders/new?date=${isoDateOf(day)}`}
-                                                            title="Werkbon klaarzetten op deze dag"
+                                                            title="Opdracht inplannen op deze dag"
                                                             className="
                                                                 group/plan mt-auto flex items-center justify-center gap-1
                                                                 rounded-lg py-1 text-[10px] font-medium

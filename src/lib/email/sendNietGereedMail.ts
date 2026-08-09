@@ -19,9 +19,9 @@ interface NietGereedMailData {
 export async function sendNietGereedMail(data: NietGereedMailData) {
     const tekst = `Werkzaamheden niet gereed
 
-Monteur ${data.monteur} heeft een werkbon afgerond, maar de werkzaamheden zijn NIET gereed.
+Monteur ${data.monteur} heeft een opdracht afgerond, maar de werkzaamheden zijn NIET gereed.
 
-Werkbon: ${data.workorderNumber}
+Opdrachtnummer: ${data.workorderNumber}
 Opdrachtgever: ${data.opdrachtgever}
 Opdrachtgever: ${data.klant}
 Adres: ${data.adres}
@@ -44,11 +44,11 @@ Team MDB Networks
      Werkzaamheden niet gereed
   </p>
 
-  <p>Monteur <strong>${data.monteur}</strong> heeft een werkbon afgerond, maar de
+  <p>Monteur <strong>${data.monteur}</strong> heeft een opdracht afgerond, maar de
      werkzaamheden zijn <strong>niet gereed</strong>.</p>
 
   <p>
-    <strong>Werkbon:</strong> ${data.workorderNumber}<br>
+    <strong>Opdrachtnummer:</strong> ${data.workorderNumber}<br>
     <strong>Opdrachtgever:</strong> ${data.opdrachtgever}<br>
     <strong>Opdrachtgever:</strong> ${data.klant}<br>
     <strong>Adres:</strong> ${data.adres}<br>

@@ -91,10 +91,10 @@ export const authConfig = {
             }
 
             // Monteur: eigen omgeving + de gedeelde pagina's.
-            // De API's filteren daar al op eigen werkbonnen.
+            // De API's filteren daar al op eigen opdrachten.
             if (role === "engineer") {
 
-                // Werkbon-detail: naar de monteursversie van de pagina
+                // Opdracht-detail: naar de monteursversie van de pagina
                 const workorderDetail =
                     pathname.match(/^\/workorders\/([^/]+)$/);
 

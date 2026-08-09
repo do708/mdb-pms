@@ -993,7 +993,7 @@ export async function generateOpleverPdf(
 
     if(input.materials.length > 0){
 
-        text("Overige materialen (werkbon):",{ useBold:true, gap:2 });
+        text("Overige materialen (opdracht):",{ useBold:true, gap:2 });
 
         for(const material of input.materials){
 

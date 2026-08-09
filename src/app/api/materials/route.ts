@@ -25,7 +25,7 @@ export async function GET(){
 
 
 
-        // Monteur ziet alleen materiaal van eigen werkbonnen
+        // Monteur ziet alleen materiaal van eigen opdrachten
         const engineerFilter =
 
             guard.user.role === "engineer"

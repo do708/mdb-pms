@@ -131,7 +131,7 @@ export default function EngineerPage(){
 
 
         return (
-            <p className="text-gray-500">Werkbonnen laden…</p>
+            <p className="text-gray-500">Opdrachten laden…</p>
         );
 
 }
@@ -193,7 +193,7 @@ export default function EngineerPage(){
                             p-5
                         ">
 
-                            Geen geplande werkbonnen
+                            Geen geplande opdrachten
 
                         </div>
 
@@ -348,7 +348,7 @@ export default function EngineerPage(){
 
                             >
 
-                                Open werkbon
+                                Open opdracht
 
                             </Link>
 

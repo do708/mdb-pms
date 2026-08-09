@@ -97,7 +97,7 @@ customer:true,
                 {
 
                     error:
-                    "Werkbon niet gevonden"
+                    "Opdracht niet gevonden"
 
                 },
 

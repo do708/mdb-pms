@@ -1,5 +1,5 @@
 // Wanneer telt een werkbon/formulier als "gearchiveerd"?
-// Werkbonnen: status gefactureerd of afgerond (Betaald) → direct uit de
+// Opdrachten: status gefactureerd of afgerond (Betaald) → direct uit de
 // gewone overzichten, alleen nog via het Archief te vinden.
 // Formulieren: ouder dan ARCHIVE_WEEKS.
 
@@ -31,7 +31,7 @@ export function isArchivedWorkorderStatus(
     );
 }
 
-// Prisma-where die gearchiveerde werkbonnen UITSLUIT (voor gewone lijsten).
+// Prisma-where die gearchiveerde opdrachten UITSLUIT (voor gewone lijsten).
 export function excludeArchivedWorkorders() {
     return {
         NOT: {
@@ -42,7 +42,7 @@ export function excludeArchivedWorkorders() {
     };
 }
 
-// Prisma-where die ALLEEN de gearchiveerde werkbonnen teruggeeft.
+// Prisma-where die ALLEEN de gearchiveerde opdrachten teruggeeft.
 export function onlyArchivedWorkorders() {
     return {
         status: {

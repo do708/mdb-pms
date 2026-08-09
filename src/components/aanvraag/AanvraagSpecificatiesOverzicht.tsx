@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import {
-    formatProjectHardwareStatuses,
     isProjectHardwareBesteld,
+    normalizeProjectHardwareStatuses,
 } from "@/lib/aanvraag/hardwareStatus";
 import {
     META_KEYS,
@@ -627,24 +627,62 @@ export default function AanvraagSpecificatiesOverzicht({
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {hardwareStatus ? (
-                            <Field
-                                label="Hardware status"
-                                value={formatProjectHardwareStatuses(
-                                    hardwareStatus
-                                )}
-                            />
+                            <div className="min-w-0 space-y-1.5">
+                                <p className="text-xs font-medium text-fuchsia-800/70">
+                                    Hardware status
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {normalizeProjectHardwareStatuses(
+                                        hardwareStatus
+                                    ).map((status) => (
+                                            <span
+                                                key={status}
+                                                className="
+                                                    inline-flex items-center
+                                                    rounded-md border border-fuchsia-300
+                                                    bg-white px-2.5 py-1
+                                                    text-sm font-semibold text-fuchsia-900
+                                                "
+                                            >
+                                                {status}
+                                            </span>
+                                        ))}
+                                </div>
+                            </div>
                         ) : hardwareBesteldLegacy ? (
-                            <Field
-                                label="Hardware besteld"
-                                value={hardwareBesteldLegacy}
-                            />
+                            <div className="min-w-0 space-y-1.5">
+                                <p className="text-xs font-medium text-fuchsia-800/70">
+                                    Hardware besteld
+                                </p>
+                                <span
+                                    className="
+                                        inline-flex items-center
+                                        rounded-md border border-fuchsia-300
+                                        bg-white px-2.5 py-1
+                                        text-sm font-semibold text-fuchsia-900
+                                    "
+                                >
+                                    {hardwareBesteldLegacy}
+                                </span>
+                            </div>
                         ) : null}
                         {hardwareLevering
                         && isProjectHardwareBesteld(hardwareStatus) ? (
-                            <Field
-                                label="Hardware levering"
-                                value={hardwareLevering}
-                            />
+                            <div className="min-w-0 space-y-1.5">
+                                <p className="text-xs font-medium text-fuchsia-800/70">
+                                    Hardware levering
+                                </p>
+                                <span
+                                    className="
+                                        inline-flex items-center
+                                        rounded-md border border-sky-300
+                                        bg-sky-50 px-2.5 py-1
+                                        text-sm font-semibold text-sky-900
+                                    "
+                                >
+                                    {hardwareLevering}
+                                </span>
+                            </div>
                         ) : null}
                     </div>
                 </Section>

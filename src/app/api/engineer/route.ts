@@ -145,7 +145,7 @@ export async function GET(){
             {
 
                 error:
-                "Engineer werkbonnen ophalen mislukt"
+                "Engineer opdrachten ophalen mislukt"
 
             },
 

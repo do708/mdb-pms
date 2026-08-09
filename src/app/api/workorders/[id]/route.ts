@@ -135,7 +135,7 @@ customer:true,
             return NextResponse.json(
 
                 {
-                    error:"Werkbon niet gevonden"
+                    error:"Opdracht niet gevonden"
                 },
 
                 {
@@ -263,7 +263,7 @@ customer:true,
             {
 
                 error:
-                "Werkbon ophalen mislukt"
+                "Opdracht ophalen mislukt"
 
             },
 
@@ -352,6 +352,14 @@ export async function PUT(
 
                     id
 
+                },
+
+                include:{
+                    extraEngineers:{
+                        select:{
+                            userId:true
+                        }
+                    }
                 }
 
             });
@@ -368,7 +376,7 @@ export async function PUT(
             return NextResponse.json(
 
                 {
-                    error:"Werkbon niet gevonden"
+                    error:"Opdracht niet gevonden"
                 },
 
                 {
@@ -707,24 +715,12 @@ export async function PUT(
 
 
 
-        if(planningFieldsChanged){
-
-            await syncEngineerDayKilometers(
-                previousEngineerId,
-                previousPlannedDate
-            );
-
-            await syncEngineerDayKilometers(
-                workorder.assignedUserId,
-                workorder.plannedDate
-            );
-
-        }
-
-
-
-
         // Extra monteurs bijwerken (alleen kantoor/admin)
+        let nextExtraIds: string[] =
+            existingWorkorder.extraEngineers.map(
+                (e)=>e.userId
+            );
+
         if(
             session.user.role !== "engineer"
             &&
@@ -741,9 +737,15 @@ export async function PUT(
                 [...new Set(
                     body.extraEngineerIds.filter(
                         (uid:string)=>
-                            uid && uid !== body.assignedUserId
+                            uid
+                            && uid !== (
+                                body.assignedUserId
+                                ?? workorder.assignedUserId
+                            )
                     )
                 )] as string[];
+
+            nextExtraIds = unique;
 
             for(const uid of unique){
                 await prisma.workorderEngineer.create({
@@ -752,6 +754,51 @@ export async function PUT(
                         userId:uid
                     }
                 }).catch(()=>{});
+            }
+
+        }
+
+
+        if(
+            planningFieldsChanged
+            || Array.isArray(body.extraEngineerIds)
+        ){
+
+            const engineerIds = new Set<string>();
+
+            if(previousEngineerId){
+                engineerIds.add(previousEngineerId);
+            }
+
+            if(workorder.assignedUserId){
+                engineerIds.add(workorder.assignedUserId);
+            }
+
+            for(const e of existingWorkorder.extraEngineers){
+                engineerIds.add(e.userId);
+            }
+
+            for(const uid of nextExtraIds){
+                engineerIds.add(uid);
+            }
+
+            const dates = new Set<number>();
+
+            if(previousPlannedDate){
+                dates.add(previousPlannedDate.getTime());
+            }
+
+            if(workorder.plannedDate){
+                dates.add(workorder.plannedDate.getTime());
+            }
+
+            for(const engineerId of engineerIds){
+                for(const ts of dates){
+                    await syncEngineerDayKilometers(
+                        engineerId,
+                        new Date(ts)
+                    );
+                }
             }
 
         }
@@ -788,7 +835,7 @@ export async function PUT(
             {
 
                 error:
-                "Werkbon opslaan mislukt"
+                "Opdracht opslaan mislukt"
 
             },
 
@@ -818,7 +865,7 @@ export async function DELETE(
 ){
 
 
-    // Alleen kantoor en admin mogen werkbonnen verwijderen.
+    // Alleen kantoor en admin mogen opdrachten verwijderen.
     const guard =
         await requireApiRole(["admin","office"]);
 
@@ -864,7 +911,7 @@ export async function DELETE(
         return NextResponse.json(
 
             {
-                error:"Werkbon verwijderen mislukt"
+                error:"Opdracht verwijderen mislukt"
             },
 
             {

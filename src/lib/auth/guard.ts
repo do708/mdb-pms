@@ -75,7 +75,7 @@ export async function requireWorkorderAccess(
         return {
             ok: false,
             response: NextResponse.json(
-                { error: "Werkbon niet gevonden" },
+                { error: "Opdracht niet gevonden" },
                 { status: 404 }
             ),
         };

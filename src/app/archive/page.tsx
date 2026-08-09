@@ -241,7 +241,7 @@ export default function ArchivePage(){
 
                 <p className="text-gray-500">
 
-                    Afgeronde werkbonnen en oudere formulieren
+                    Afgeronde opdrachten en oudere formulieren
 
                 </p>
 
@@ -427,7 +427,7 @@ export default function ArchivePage(){
 
                             <option value="">Alles</option>
 
-                            <option value="werkbon">Werkbonnen</option>
+                            <option value="werkbon">Opdrachten</option>
 
                             <option value="formulier">Formulieren</option>
 
@@ -502,7 +502,7 @@ export default function ArchivePage(){
 
 
 
-            {/* Resultaten werkbonnen */}
+            {/* Resultaten opdrachten */}
 
             {
                 type !== "formulier" && (
@@ -516,7 +516,7 @@ export default function ArchivePage(){
 
                         <h2 className="font-bold mb-3">
 
-                            📋 Werkbonnen ({workorders.length})
+                            📋 Opdrachten ({workorders.length})
 
                         </h2>
 
@@ -602,7 +602,7 @@ export default function ArchivePage(){
 
                                     <p className="text-sm text-gray-400">
 
-                                        Geen werkbonnen gevonden.
+                                        Geen opdrachten gevonden.
 
                                     </p>
 

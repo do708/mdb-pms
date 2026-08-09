@@ -6,7 +6,7 @@ import { requireApiUser } from "@/lib/auth/guard";
 
 
 
-// Globale zoekfunctie: werkbonnen, projecten, formulieren, opdrachtgevers,
+// Globale zoekfunctie: opdrachten, projecten, formulieren, opdrachtgevers,
 // gebruikers, opdrachten, documenten en aanvragen. Monteurs zien geen
 // kantoor-only gegevens (gebruikers, klanten, opdrachten, documenten, aanvragen).
 
@@ -59,7 +59,7 @@ export async function GET(
 
 
 
-        // ---- Werkbonnen ----
+        // ---- Opdrachten ----
         const workorders =
             await prisma.workorder.findMany({
 

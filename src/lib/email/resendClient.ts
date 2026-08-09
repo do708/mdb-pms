@@ -33,7 +33,7 @@ export function projectMailbox(): string {
     return process.env.PROJECT_EMAIL || "projects@mdb-networks.nl";
 }
 
-/** Interne meldingen (formulieren, aanvragen, werkbonnen). */
+/** Interne meldingen (formulieren, aanvragen, opdrachten). */
 export function internalNotificationRecipients(): string[] {
     return [...new Set([projectMailbox(), INFO_MAILBOX])];
 }

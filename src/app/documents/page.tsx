@@ -129,7 +129,7 @@ export default function DocumentsPage(){
                     text-gray-500
                 ">
 
-                    Werkbonnen, rapporten en bestanden
+                    Opdrachten, rapporten en bestanden
 
                 </p>
 

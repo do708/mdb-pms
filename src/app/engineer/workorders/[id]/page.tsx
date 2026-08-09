@@ -182,7 +182,7 @@ function MateriaalRij({
                         ? "bg-emerald-100 text-emerald-800 border-emerald-300"
                         : warn
                         ? "bg-white text-slate-600 border-red-300"
-                        : "bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-white"
+                        : "bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-white"
                     }
                 `}
             >
@@ -194,31 +194,27 @@ function MateriaalRij({
     return (
         <div className={`
             rounded-lg border px-3 py-2.5 space-y-2
-            ${nietInOrde ? "border-red-200 bg-red-50/50" : "border-slate-200/90 bg-white"}
+            ${nietInOrde ? "border-red-200 bg-red-50/50" : "border-gray-200 bg-white"}
         `}>
 
             <div className="flex items-baseline justify-between gap-2">
-                <span className="text-[13px] font-semibold text-slate-800">
+                <span className="text-[13px] font-semibold text-gray-800">
                     {label}
                 </span>
                 {
                     !ingevuld
                     ? (
-                        <span className="text-[10px] uppercase tracking-wide text-slate-400 font-medium">
+                        <span className="text-[10px] uppercase tracking-wide text-gray-400 font-medium">
                             n.v.t.
                         </span>
                     )
-                    : statusOk
+                    : !statusOk
                     ? (
-                        <span className="text-[10px] font-medium text-emerald-600">
-                            ok
-                        </span>
-                    )
-                    : (
                         <span className="text-[10px] font-medium text-red-600">
                             status kiezen
                         </span>
                     )
+                    : null
                 }
             </div>
 
@@ -229,8 +225,8 @@ function MateriaalRij({
                 placeholder={plh}
                 className={`
                     w-full border rounded-md px-2.5 py-2 text-sm bg-white
-                    placeholder:text-slate-400
-                    ${nietInOrde ? "border-red-300" : "border-slate-200"}
+                    placeholder:text-gray-400
+                    ${nietInOrde ? "border-red-300" : "border-gray-200"}
                 `}
             />
 
@@ -251,7 +247,7 @@ function MateriaalRij({
                 >
                     Klaargezet
                 </Chip>
-                <span className="px-0.5 text-[10px] font-medium text-slate-400">
+                <span className="px-0.5 text-[10px] font-medium text-gray-400">
                     of
                 </span>
                 <Chip
@@ -565,7 +561,7 @@ export default function EngineerWorkorderPage(){
 
 
                 alert(
-                    "Werkbon opgeslagen"
+                    "Opdracht opgeslagen"
                 );
 
 
@@ -616,7 +612,7 @@ export default function EngineerWorkorderPage(){
 
 
         return (
-            <p className="text-gray-500">Werkbon laden…</p>
+            <p className="text-gray-500">Opdracht laden…</p>
         );
 
     }
@@ -703,7 +699,7 @@ async function completeWorkorder(){
 
         if(ontbreekt){
             alert(
-                "Vul eerst de volledige checklist in voordat je de werkbon verstuurt."
+                "Vul eerst de volledige checklist in voordat je de opdracht verstuurt."
             );
             return;
         }
@@ -713,7 +709,7 @@ async function completeWorkorder(){
 
     const confirmComplete =
         confirm(
-            "Werkbon versturen? De werkbon wordt afgerond, als PDF opgeslagen en kantoor krijgt een melding."
+            "Opdracht versturen? De opdracht wordt afgerond, als PDF opgeslagen en kantoor krijgt een melding."
         );
 
 
@@ -769,7 +765,7 @@ async function completeWorkorder(){
 
 
             alert(
-                "Werkbon versturen mislukt"
+                "Opdracht versturen mislukt"
             );
 
 
@@ -831,7 +827,7 @@ async function completeWorkorder(){
 
         alert(
 
-            "Fout bij versturen werkbon"
+            "Fout bij versturen opdracht"
 
         );
 
@@ -848,7 +844,7 @@ async function completeWorkorder(){
 
 
         return (
-            <p className="text-gray-500">Werkbon niet gevonden</p>
+            <p className="text-gray-500">Opdracht niet gevonden</p>
         );
 
     }
@@ -870,11 +866,11 @@ async function completeWorkorder(){
                     <div className="text-6xl mb-4">✓</div>
 
                     <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                        Bedankt voor het invullen van je werkbon!
+                        Bedankt voor het invullen van je opdracht!
                     </h1>
 
                     <p className="text-gray-600">
-                        De werkbon is verstuurd en kantoor heeft een melding gekregen.
+                        De opdracht is verstuurd en kantoor heeft een melding gekregen.
                         Je gaat zo automatisch terug naar je dashboard.
                     </p>
 
@@ -1058,102 +1054,155 @@ async function completeWorkorder(){
                 space-y-3
             ">
 
+                <h2 className="font-semibold text-gray-800 border-b pb-1">
+                    Locatie & contact
+                </h2>
 
-                <p>
-                    🏢 {
-                        workorder.customer?.name
-                        ??
-                        workorder.project?.customer.name
-                        ??
-                        "—"
-                    }
-                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
 
-
-                <p className="text-gray-500">
-                    {workorder.title}
-                </p>
-
-
-                {
-                    workorder.contactPersoon && (
-                        <p className="text-gray-700">
-                            👤 {workorder.contactPersoon}
+                    <div className="min-w-0">
+                        <p className="text-xs text-gray-500">
+                            Opdrachtgever
+                        </p>
+                        <p className="text-sm text-gray-900 break-words">
                             {
-                                workorder.contactPhone
-                                ?
-                                ` · 📞 ${workorder.contactPhone}`
-                                :
-                                ""
+                                workorder.customer?.name
+                                ??
+                                workorder.project?.customer.name
+                                ??
+                                "—"
                             }
                         </p>
-                    )
-                }
+                    </div>
 
-                {
-                    workorder.contactEmail && (
-                        <p>
-                            <a
-                                href={`mailto:${workorder.contactEmail}`}
-                                className="text-blue-600 underline"
-                            >
-                                ✉️ {workorder.contactEmail}
-                            </a>
-                        </p>
-                    )
-                }
+                    {
+                        workorder.title
+                        ? (
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">
+                                    Locatie / filiaalnaam
+                                </p>
+                                <p className="text-sm text-gray-900 break-words">
+                                    {workorder.title}
+                                </p>
+                            </div>
+                        )
+                        : null
+                    }
 
+                    {
+                        workorder.contactPersoon
+                        ? (
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">
+                                    Contactpersoon
+                                </p>
+                                <p className="text-sm text-gray-900 break-words">
+                                    {workorder.contactPersoon}
+                                </p>
+                            </div>
+                        )
+                        : null
+                    }
 
-                {
-                    (()=>{
+                    {
+                        workorder.contactPhone
+                        ? (
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">
+                                    Telefoonnummer
+                                </p>
+                                <a
+                                    href={`tel:${workorder.contactPhone}`}
+                                    className="text-sm text-sky-700 hover:underline break-words"
+                                >
+                                    {workorder.contactPhone}
+                                </a>
+                            </div>
+                        )
+                        : null
+                    }
 
-                        const adres =
-                            workorder.location
-                            ??
-                            workorder.customer?.address
-                            ??
-                            workorder.project?.customer.address
-                            ??
-                            "";
+                    {
+                        workorder.contactEmail
+                        ? (
+                            <div className="min-w-0">
+                                <p className="text-xs text-gray-500">
+                                    E-mailadres
+                                </p>
+                                <a
+                                    href={`mailto:${workorder.contactEmail}`}
+                                    className="text-sm text-sky-700 hover:underline break-words"
+                                >
+                                    {workorder.contactEmail}
+                                </a>
+                            </div>
+                        )
+                        : null
+                    }
 
-                        const stad =
-                            workorder.city ?? "";
+                    {
+                        (()=>{
 
-                        const volledig =
-                            [adres, stad]
-                            .filter(Boolean)
-                            .join(", ");
+                            const adres =
+                                workorder.location
+                                ??
+                                workorder.customer?.address
+                                ??
+                                workorder.project?.customer.address
+                                ??
+                                "";
 
-                        if(!volledig){
+                            const stad =
+                                workorder.city ?? "";
+
+                            const volledig =
+                                [adres, stad]
+                                .filter(Boolean)
+                                .join(", ");
+
+                            if(!volledig){
+                                return (
+                                    <div className="min-w-0 sm:col-span-2">
+                                        <p className="text-xs text-gray-500">
+                                            Adres
+                                        </p>
+                                        <p className="text-sm text-gray-500">
+                                            Geen locatie
+                                        </p>
+                                    </div>
+                                );
+                            }
+
+                            const mapsUrl =
+                                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(volledig)}`;
+
                             return (
-                                <p>📍 Geen locatie</p>
+                                <div className="min-w-0 sm:col-span-2">
+                                    <p className="text-xs text-gray-500">
+                                        Adres
+                                    </p>
+                                    <a
+                                        href={mapsUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="
+                                            text-sm text-sky-700 hover:underline
+                                            inline-flex items-center gap-1 break-words
+                                        "
+                                    >
+                                        {volledig}
+                                        <span className="text-xs shrink-0">
+                                            ↗
+                                        </span>
+                                    </a>
+                                </div>
                             );
-                        }
 
-                        const mapsUrl =
-                            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(volledig)}`;
+                        })()
+                    }
 
-                        return (
-                            <a
-                                href={mapsUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="
-                                    text-blue-600
-                                    underline
-                                    inline-flex
-                                    items-center
-                                    gap-1
-                                "
-                            >
-                                📍 {volledig}
-                                <span className="text-xs">↗</span>
-                            </a>
-                        );
-
-                    })()
-                }
-
+                </div>
 
             </section>
 
@@ -1308,78 +1357,63 @@ async function completeWorkorder(){
                 rounded-2xl
                 border
                 p-5
+                space-y-3
             ">
 
-
-                <h2 className="
-                    font-bold
-                    mb-3
-                ">
-
+                <h2 className="font-semibold text-gray-800 border-b pb-1">
                     Werkzaamheden
-
                 </h2>
-
 
                 <div className="
                     grid
                     grid-cols-1
                     md:grid-cols-2
-                    gap-5
+                    gap-4
                 ">
 
-
-                    {/* Links: wat er moet gebeuren */}
-                    <textarea
-
-                        value={notes}
-
-                        onChange={(e)=>
-                            setNotes(
-                                e.target.value
-                            )
-                        }
-
-
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            min-h-40
-                        "
-
-                        placeholder="Beschrijf uitgevoerde werkzaamheden"
-
-                    />
-
-
-                    {/* Rechts: klaargezet materiaal */}
                     <div className="
-                        border border-slate-200
-                        rounded-xl
-                        p-4
-                        bg-slate-50/80
-                        space-y-3
+                        rounded-xl border border-gray-200
+                        bg-white p-3 space-y-2
+                    ">
+                        <p className="text-xs text-gray-500">
+                            Uitgevoerde werkzaamheden
+                        </p>
+                        <textarea
+                            value={notes}
+                            onChange={(e)=>
+                                setNotes(
+                                    e.target.value
+                                )
+                            }
+                            className="
+                                w-full
+                                border border-gray-200
+                                rounded-lg
+                                p-2.5
+                                min-h-40
+                                text-sm text-gray-900
+                                placeholder:text-gray-400
+                            "
+                            placeholder="Beschrijf uitgevoerde werkzaamheden"
+                        />
+                    </div>
+
+                    <div className="
+                        rounded-xl border border-gray-200
+                        bg-white p-3 space-y-3
                     ">
 
-
-                        <div className="flex items-start justify-between gap-3">
-                            <div>
-                                <div className="font-semibold text-slate-800">
-                                    Materiaal
-                                </div>
-                                <p className="mt-0.5 text-[11px] text-slate-500 leading-snug">
-                                    Per soort: geleverd + klaargezet, of al op locatie.
-                                </p>
-                            </div>
+                        <div className="flex items-center justify-between gap-3">
+                            <p className="text-xs text-gray-500">
+                                Materiaal
+                            </p>
 
                             <label className={`
                                 shrink-0 rounded-md border px-2.5 py-1.5
                                 text-xs font-semibold cursor-pointer
                                 ${
                                     pakbonUploaden
-                                    ? "border-slate-200 text-slate-400 bg-white"
+                                    ? "border-gray-200 text-gray-400 bg-white"
                                     : "border-sky-200 text-sky-700 bg-white hover:bg-sky-50"
                                 }
                             `}>
@@ -1542,12 +1576,9 @@ async function completeWorkorder(){
 
                         </div>
 
-
                     </div>
 
-
                 </div>
-
 
            </section>
 
@@ -1642,7 +1673,7 @@ async function completeWorkorder(){
 
                     >
 
-                        📤 Werkbon versturen
+                        📤 Opdracht versturen
 
                     </button>
 

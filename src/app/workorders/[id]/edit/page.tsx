@@ -232,7 +232,7 @@ export default function EditWorkorderPage(){
                 setStraat(wo.straat ?? "");
                 setHuisnummer(wo.huisnummer ?? "");
                 setPostcode(wo.postcode ?? "");
-                // Legacy: oude werkbonnen hebben alleen location
+                // Legacy: oude opdrachten hebben alleen location
                 if (!wo.straat && wo.location) {
                     setStraat(wo.location);
                 }
@@ -377,7 +377,7 @@ export default function EditWorkorderPage(){
             } else {
 
 
-                setError("Werkbon niet gevonden");
+                setError("Opdracht niet gevonden");
 
 
             }
@@ -678,7 +678,7 @@ export default function EditWorkorderPage(){
 
             <main className="p-6">
 
-                Werkbon laden...
+                Opdracht laden...
 
             </main>
 
@@ -709,7 +709,7 @@ export default function EditWorkorderPage(){
                             font-bold
                         ">
 
-                            Werkbon wijzigen
+                            Opdracht wijzigen
 
                         </h1>
 

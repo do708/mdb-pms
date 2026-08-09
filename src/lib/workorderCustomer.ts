@@ -1,6 +1,6 @@
 // Helper om de opdrachtgever van een werkbon te bepalen, ongeacht of
 // die er direct aan hangt (nieuwe situatie) of via een project
-// (oude werkbonnen). Zo blijft alle bestaande data werken.
+// (oude opdrachten). Zo blijft alle bestaande data werken.
 
 interface CustomerLike {
 

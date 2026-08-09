@@ -21,11 +21,11 @@ export async function sendWorkorderMail({
     await sendResendEmail({
         from: "MDB PMS <noreply@mdb-networks.nl>",
         to: internalNotificationRecipients(),
-        subject: `Werkbon ${workorderNumber} afgerond`,
+        subject: `Opdracht ${workorderNumber} afgerond`,
         html: `
-        <h2>Werkbon afgerond</h2>
+        <h2>Opdracht afgerond</h2>
         <p>
-            Werkbon:
+            Opdracht:
             <strong>${workorderNumber}</strong>
         </p>
         <p>
@@ -37,7 +37,7 @@ export async function sendWorkorderMail({
             ${project ?? ""}
         </p>
         <p>
-            De werkbon is automatisch gegenereerd
+            De opdracht is automatisch gegenereerd
             vanuit MDB Project Management Systeem.
         </p>
         `,

@@ -403,7 +403,7 @@ export default function WeekView({
 
             {users.length === 0 ? (
                 <p className="text-slate-500 p-6">
-                    Geen werkbonnen met monteur ingepland deze week.
+                    Geen opdrachten met monteur ingepland deze week.
                 </p>
             ) : (
                 <div
@@ -496,7 +496,7 @@ export default function WeekView({
                                             title={
                                                 pendingSchedule
                                                 ? "Kies een monteurkolom hiernaast om in te plannen"
-                                                : "Werkbon klaarzetten op deze dag"
+                                                : "Opdracht inplannen op deze dag"
                                             }
                                             className={`
                                                 group flex flex-col items-center justify-center
@@ -867,7 +867,7 @@ export default function WeekView({
                                                         ) : onMovePlan ? (
                                                         <Link
                                                             href={`/workorders/new?date=${iso}&engineer=${user.id}`}
-                                                            title="Werkbon klaarzetten voor deze monteur op deze dag"
+                                                            title="Opdracht inplannen voor deze monteur op deze dag"
                                                             className="
                                                                 group/plan flex items-center justify-center gap-1
                                                                 rounded-lg py-1.5 text-[11px] font-medium

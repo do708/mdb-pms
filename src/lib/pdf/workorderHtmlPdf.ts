@@ -913,7 +913,7 @@ function generateHtml(
     <div class="section-title">Projectinformatie</div>
     <div class="grid-2" style="gap:10px">
       <div class="info-box">
-        <div class="info-label">Werkbon</div>
+        <div class="info-label">Opdracht</div>
         <div class="info-value" style="font-size:12px;font-weight:700">${esc(data.title)}</div>
       </div>
       <div class="info-box">
@@ -1065,7 +1065,7 @@ function generateHtml(
   <div class="footer">
     <div class="footer-meta">
       <div style="font-weight:700;color:#1e293b;margin-bottom:2px">MDB Networks B.V.</div>
-      <div>Werkbon: ${esc(data.number)}</div>
+      <div>Opdrachtnummer: ${esc(data.number)}</div>
       <div>Gegenereerd: ${formatDateTime(new Date())}</div>
     </div>
   </div>

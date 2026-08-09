@@ -11,7 +11,7 @@ import {
 
 
 
-// Doorzoekbaar archief van afgeronde werkbonnen en oudere formulieren.
+// Doorzoekbaar archief van afgeronde opdrachten en oudere formulieren.
 // Filters (querystring): q (tekst), customer, engineer, from, to, type.
 
 export async function GET(
@@ -62,7 +62,7 @@ export async function GET(
 
 
 
-        // ---------- Werkbonnen ----------
+        // ---------- Opdrachten ----------
 
         const workorderFilters:object[] = [
             onlyArchivedWorkorders()

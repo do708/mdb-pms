@@ -102,7 +102,7 @@ export function isInPlanning(
 
 
 
-// Oude statuswaarden -> nieuwe, voor bestaande werkbonnen.
+// Oude statuswaarden -> nieuwe, voor bestaande opdrachten.
 export function migrateStatus(
     key:string | null | undefined
 ):string {

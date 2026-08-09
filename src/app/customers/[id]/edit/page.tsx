@@ -400,7 +400,7 @@ export default function EditCustomerPage(){
 
                 >
 
-                    Werkbon-vragen beheren →
+                    Opdracht-vragen beheren →
 
                 </button>
 

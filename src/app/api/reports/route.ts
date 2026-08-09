@@ -14,6 +14,7 @@ import { decimalToNumber } from "@/lib/projects/budget";
 import {
     engineerDayKey,
     jobAddressFromWorkorder,
+    plannedTravelForEngineerDay,
     projectJobAddress,
 } from "@/lib/travel/plannedKilometers";
 
@@ -129,6 +130,17 @@ export async function GET(){
                         }
                     },
 
+                    extraEngineers:{
+                        select:{
+                            user:{
+                                select:{
+                                    id:true,
+                                    name:true
+                                }
+                            }
+                        }
+                    },
+
                     customer:{
                         select:{
                             id:true,
@@ -213,23 +225,38 @@ export async function GET(){
         const dayGroups =
             new Map<string,DayGroup>();
 
-        for(const workorder of workorders){
-
-            if(
-                !workorder.plannedDate
-                || !workorder.assignedUser
-            ){
-                continue;
-            }
-
-            const engineer =
-                workorder.assignedUser;
-
+        function addDayItem(
+            engineer:{ id:string; name:string | null },
+            plannedDate:Date,
+            item:DayItem
+        ){
             const key =
                 engineerDayKey(
                     engineer.id,
-                    workorder.plannedDate
+                    plannedDate
                 );
+
+            const existing =
+                dayGroups.get(key);
+
+            if(existing){
+                existing.items.push(item);
+            } else {
+                dayGroups.set(key,{
+                    engineerId:engineer.id,
+                    engineerName:
+                        engineer.name ?? "Onbekend",
+                    plannedDate,
+                    items:[item]
+                });
+            }
+        }
+
+        for(const workorder of workorders){
+
+            if(!workorder.plannedDate){
+                continue;
+            }
 
             const oplever =
                 mergeOpleverData(workorder.formData);
@@ -238,7 +265,7 @@ export async function GET(){
                 continue;
             }
 
-            const item: DayItem = {
+            const baseItem: DayItem = {
                 formKilometers:
                     num(oplever.tarief.kilometers),
                 formReisuren:
@@ -257,20 +284,36 @@ export async function GET(){
                     workorder.plannedDate
             };
 
-            const existing =
-                dayGroups.get(key);
+            if(workorder.assignedUser){
+                addDayItem(
+                    workorder.assignedUser,
+                    workorder.plannedDate,
+                    baseItem
+                );
+            }
 
-            if(existing){
-                existing.items.push(item);
-            } else {
-                dayGroups.set(key,{
-                    engineerId:engineer.id,
-                    engineerName:
-                        engineer.name ?? "Onbekend",
-                    plannedDate:
-                        workorder.plannedDate,
-                    items:[item]
-                });
+            // Extra monteurs: zelfde stop, maar zonder primary-opgeslagen deel
+            // (hun dagroute wordt live/via sync herberekend).
+            for(const extra of workorder.extraEngineers){
+                if(!extra.user){
+                    continue;
+                }
+                if(
+                    workorder.assignedUser
+                    && extra.user.id
+                        === workorder.assignedUser.id
+                ){
+                    continue;
+                }
+                addDayItem(
+                    extra.user,
+                    workorder.plannedDate,
+                    {
+                        ...baseItem,
+                        storedKilometers:null,
+                        storedReisuren:null
+                    }
+                );
             }
 
         }
@@ -278,12 +321,6 @@ export async function GET(){
         for(const row of projectUren){
 
             const engineer = row.user;
-
-            const key =
-                engineerDayKey(
-                    engineer.id,
-                    row.datum
-                );
 
             const item: DayItem = {
                 formKilometers:0,
@@ -297,20 +334,11 @@ export async function GET(){
                 plannedDate:row.datum
             };
 
-            const existing =
-                dayGroups.get(key);
-
-            if(existing){
-                existing.items.push(item);
-            } else {
-                dayGroups.set(key,{
-                    engineerId:engineer.id,
-                    engineerName:
-                        engineer.name ?? "Onbekend",
-                    plannedDate:row.datum,
-                    items:[item]
-                });
-            }
+            addDayItem(
+                engineer,
+                row.datum,
+                item
+            );
 
         }
 
@@ -332,7 +360,8 @@ export async function GET(){
                 return dayTravelCache.get(key)!;
             }
 
-            // Alleen handmatig ingevulde km/reistijd (geen OSRM / auto-planning).
+            // Voorkeur: opgeslagen km/reistijd (vastgelegd bij plan/boek)
+            let useStored = true;
             let storedKm = 0;
             let storedReis = 0;
 
@@ -340,13 +369,32 @@ export async function GET(){
                 if(item.formKilometers > 0){
                     storedKm += item.formKilometers;
                     storedReis += item.formReisuren;
+                    continue;
+                }
+
+                if(item.storedKilometers != null){
+                    storedKm += item.storedKilometers;
+                    storedReis +=
+                        item.storedReisuren ?? 0;
+                    continue;
+                }
+
+                if(item.jobAddress){
+                    useStored = false;
+                    break;
                 }
             }
 
-            const travel = {
-                kilometers:Math.round(storedKm),
-                reisuren:storedReis
-            };
+            const travel = useStored
+                ?
+                {
+                    kilometers:Math.round(storedKm),
+                    reisuren:storedReis
+                }
+                :
+                await plannedTravelForEngineerDay(
+                    group.items
+                );
 
             dayTravelCache.set(key, travel);
 
@@ -389,9 +437,6 @@ export async function GET(){
         let hoursTotal = 0;
 
         let kilometersThisMonth = 0;
-
-        const dayTravelApplied =
-            new Set<string>();
 
 
 
@@ -439,52 +484,6 @@ export async function GET(){
                     };
 
                 existing.hours += uren;
-
-                if(workorder.plannedDate){
-
-                    const dayKey =
-                        engineerDayKey(
-                            engineer.id,
-                            workorder.plannedDate
-                        );
-
-                    if(!dayTravelApplied.has(dayKey)){
-
-                        dayTravelApplied.add(dayKey);
-
-                        const group =
-                            dayGroups.get(dayKey);
-
-                        const travel = group
-                            ?
-                            await travelForDayGroup(
-                                dayKey,
-                                group
-                            )
-                            :
-                            { kilometers:0, reisuren:0 };
-
-                        existing.kilometers +=
-                            travel.kilometers;
-                        existing.travel +=
-                            travel.reisuren;
-
-                        if(
-                            isInCurrentMonth(
-                                workorder.plannedDate,
-                                monthStart,
-                                monthEnd
-                            )
-                        ){
-                            kilometersThisMonth +=
-                                travel.kilometers;
-                            existing.kilometersThisMonth +=
-                                travel.kilometers;
-                        }
-
-                    }
-
-                }
 
                 byEngineer.set(engineer.id, existing);
 
@@ -559,49 +558,45 @@ export async function GET(){
             existingCustomer.hours += uren;
             byCustomer.set(customer.id, existingCustomer);
 
-            const dayKey =
-                engineerDayKey(
-                    engineer.id,
-                    row.datum
-                );
+            byEngineer.set(engineer.id, existing);
 
-            if(!dayTravelApplied.has(dayKey)){
+        }
 
-                dayTravelApplied.add(dayKey);
 
-                const group =
-                    dayGroups.get(dayKey);
+        // Kilometers/reistijd: één dagroute per monteur (zaak → stops → zaak)
+        for(const [dayKey, group] of dayGroups){
 
-                const travel = group
-                    ?
-                    await travelForDayGroup(
-                        dayKey,
-                        group
-                    )
-                    :
-                    { kilometers:0, reisuren:0 };
+            const travel =
+                await travelForDayGroup(dayKey, group);
 
-                existing.kilometers +=
+            const existing =
+                byEngineer.get(group.engineerId)
+                ??
+                {
+                    name:group.engineerName,
+                    hours:0,
+                    travel:0,
+                    kilometers:0,
+                    kilometersThisMonth:0
+                };
+
+            existing.kilometers += travel.kilometers;
+            existing.travel += travel.reisuren;
+
+            if(
+                isInCurrentMonth(
+                    group.plannedDate,
+                    monthStart,
+                    monthEnd
+                )
+            ){
+                kilometersThisMonth +=
                     travel.kilometers;
-                existing.travel +=
-                    travel.reisuren;
-
-                if(
-                    isInCurrentMonth(
-                        row.datum,
-                        monthStart,
-                        monthEnd
-                    )
-                ){
-                    kilometersThisMonth +=
-                        travel.kilometers;
-                    existing.kilometersThisMonth +=
-                        travel.kilometers;
-                }
-
+                existing.kilometersThisMonth +=
+                    travel.kilometers;
             }
 
-            byEngineer.set(engineer.id, existing);
+            byEngineer.set(group.engineerId, existing);
 
         }
 

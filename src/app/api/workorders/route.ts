@@ -188,7 +188,7 @@ export async function GET(){
             {
 
                 error:
-                "Werkbonnen ophalen mislukt"
+                "Opdrachten ophalen mislukt"
 
             },
 
@@ -548,7 +548,7 @@ export async function POST(
             {
 
                 error:
-                "Werkbon aanmaken mislukt"
+                "Opdracht aanmaken mislukt"
 
             },
 

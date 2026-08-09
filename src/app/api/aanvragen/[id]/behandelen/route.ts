@@ -6,7 +6,7 @@ import { bouwKlantWerkzaamheden } from "@/lib/aanvraag/klantWerkzaamheden";
 
 
 
-function genereerWerkbonnummer(){
+function genereerOpdrachtnummer(){
 
     const year =
         new Date().getFullYear();
@@ -96,7 +96,7 @@ export async function POST(
             await prisma.workorder.create({
                 data:{
                     number:
-                        genereerWerkbonnummer(),
+                        genereerOpdrachtnummer(),
                     title:
                         (aanvraag.locatie || aanvraag.customer.name),
                     // Korte klantsamenvatting voor afspraakmail (geen type/stroom/beugel).
@@ -179,7 +179,7 @@ export async function POST(
         console.error("AANVRAAG BEHANDELEN ERROR", error);
 
         return NextResponse.json(
-            { error:"Kon de aanvraag niet omzetten naar een werkbon" },
+            { error:"Kon de aanvraag niet omzetten naar een opdracht" },
             { status:500 }
         );
 

@@ -6,7 +6,7 @@ import { ClipboardList, Folder, LayoutDashboard } from "lucide-react";
 
 const links = [
     { href: "/engineer", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/workorders", label: "Werkbonnen", icon: ClipboardList },
+    { href: "/workorders", label: "Opdrachten", icon: ClipboardList },
     { href: "/projects", label: "Projecten", icon: Folder },
 ];
 

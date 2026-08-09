@@ -260,7 +260,7 @@ export const CUSTOMER_FORM_SCHEMAS:Record<string,CustomerFormSchema> = {
         sections:[
             {
                 id:"internal",
-                title:"Interne werkbon",
+                title:"Interne opdracht",
                 fields:[
                     { id:"internalProject", label:"Intern project", type:"text" },
                     { id:"department", label:"Afdeling", type:"text" },

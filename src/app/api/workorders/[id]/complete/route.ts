@@ -96,7 +96,7 @@ export async function POST(
                 {
 
                     error:
-                    "Werkbon niet gevonden"
+                    "Opdracht niet gevonden"
 
                 },
 
@@ -372,8 +372,8 @@ export async function POST(
             await prisma.notification.create({
                 data:{
                     type:"workorder_sent",
-                    title:`Werkbon ${workorder.number} verstuurd`,
-                    message:`${customerName(workorder)} — werkbon is uitgevoerd en verstuurd door de monteur.`,
+                    title:`Opdracht ${workorder.number} verstuurd`,
+                    message:`${customerName(workorder)} — opdracht is uitgevoerd en verstuurd door de monteur.`,
                     workorderId:workorder.id
                 }
             });
@@ -387,7 +387,7 @@ export async function POST(
             success:true,
 
             message:
-            "Werkbon afgerond en verzonden",
+            "Opdracht afgerond en verzonden",
 
 
             workorder:updated
@@ -418,7 +418,7 @@ export async function POST(
             {
 
                 error:
-                "Werkbon afronden mislukt"
+                "Opdracht afronden mislukt"
 
             },
 

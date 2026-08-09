@@ -63,6 +63,10 @@ export default function ReportsPage(){
         useState(true);
 
 
+    const [engineerFilter,setEngineerFilter] =
+        useState("alle");
+
+
 
 
     useEffect(()=>{
@@ -170,7 +174,7 @@ export default function ReportsPage(){
                     text-gray-500
                 ">
 
-                    Overzicht uren en werkbonnen
+                    Overzicht uren en opdrachten
 
                 </p>
 
@@ -197,7 +201,7 @@ export default function ReportsPage(){
                 ">
 
                     <p className="text-gray-500">
-                        Werkbonnen totaal
+                        Opdrachten totaal
                     </p>
 
                     <p className="
@@ -275,7 +279,8 @@ export default function ReportsPage(){
                         text-gray-400
                         mt-1
                     ">
-                        Geplande ritten kantoor ↔ klus
+                        Dagroute vanaf Monitorweg 10
+                        (zaak → klussen → zaak)
                     </p>
 
                 </div>
@@ -299,7 +304,7 @@ export default function ReportsPage(){
                     mb-3
                 ">
 
-                    📋 Werkbonnen per status
+                    📋 Opdrachten per status
 
                 </h2>
 
@@ -373,12 +378,41 @@ export default function ReportsPage(){
                     text-gray-500
                     mb-3
                 ">
-                    Kilometers hier = werkelijk gereden die dag
-                    (kantoor → alle stops op volgorde → kantoor).
-                    Op project-urenlog telt alleen kantoor ↔
-                    projectlocatie. Uren/reistijd als klok:
-                    1.15, 1.30, 1.45, 2.
+                    Kilometers = automatisch berekende dagroute
+                    bij inplannen (Monitorweg 10 → alle klussen
+                    die dag → Monitorweg 10). Filter op monteur
+                    hieronder. Op project-urenlog telt alleen
+                    kantoor ↔ projectlocatie. Uren/reistijd als
+                    klok: 1.15, 1.30, 1.45, 2.
                 </p>
+
+                <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Filter monteur
+                    </label>
+                    <select
+                        value={engineerFilter}
+                        onChange={(e)=>
+                            setEngineerFilter(e.target.value)
+                        }
+                        className="
+                            border rounded-lg px-3 py-2 text-sm
+                            bg-white max-w-xs w-full
+                        "
+                    >
+                        <option value="alle">Alle monteurs</option>
+                        {
+                            data.byEngineer.map((engineer)=>(
+                                <option
+                                    key={engineer.name}
+                                    value={engineer.name}
+                                >
+                                    {engineer.name}
+                                </option>
+                            ))
+                        }
+                    </select>
+                </div>
 
 
                 {
@@ -438,7 +472,13 @@ export default function ReportsPage(){
                             <tbody>
 
                                 {
-                                    data.byEngineer.map(engineer=>(
+                                    data.byEngineer
+                                        .filter((engineer)=>
+                                            engineerFilter === "alle"
+                                            || engineer.name
+                                                === engineerFilter
+                                        )
+                                        .map(engineer=>(
 
                                         <tr
 

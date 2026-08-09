@@ -217,7 +217,7 @@ export default function SearchBox() {
                     ) : null}
 
                     {results.workorders.length > 0 ? (
-                        <ResultSection title="Werkbonnen">
+                        <ResultSection title="Opdrachten">
                             {results.workorders.map((w) => (
                                 <ResultButton
                                     key={w.id}

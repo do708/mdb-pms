@@ -25,17 +25,17 @@ export async function sendWorkorderMail(data: WorkorderMailData) {
 
     const tekst = `Beste Projects,
 
-${data.monteur} heeft een werkbon afgerond en verstuurd.
+${data.monteur} heeft een opdracht afgerond en verstuurd.
 
-Werkbon: ${data.workorderNumber}
+Opdrachtnummer: ${data.workorderNumber}
 Opdrachtgever: ${data.customer}
 Opdracht: ${data.project} - ${data.datum}
 Locatie: ${locatie}
 
-Werkbon openen:
+Opdracht openen:
 ${werkbonUrl}
 
-${data.pdfBuffer ? "De werkbon PDF is als bijlage toegevoegd." : "De PDF-bijlage kon niet worden gegenereerd; open de werkbon in PMS."}
+${data.pdfBuffer ? "De opdracht-PDF is als bijlage toegevoegd." : "De PDF-bijlage kon niet worden gegenereerd; open de opdracht in PMS."}
 
 Team MDB Networks
 `;
@@ -44,10 +44,10 @@ Team MDB Networks
 
   <p>Beste Projects,</p>
 
-  <p><strong>${data.monteur}</strong> heeft een werkbon afgerond en verstuurd.</p>
+  <p><strong>${data.monteur}</strong> heeft een opdracht afgerond en verstuurd.</p>
 
   <p>
-    <strong>Werkbon:</strong> ${data.workorderNumber}<br>
+    <strong>Opdrachtnummer:</strong> ${data.workorderNumber}<br>
     <strong>Opdrachtgever:</strong> ${data.customer}<br>
     <strong>Opdracht:</strong> ${data.project} &mdash; ${data.datum}<br>
     <strong>Locatie:</strong> ${locatie}
@@ -56,15 +56,15 @@ Team MDB Networks
   <p>
     <a href="${werkbonUrl}"
        style="display:inline-block;background:#d6007e;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:700">
-       Werkbon openen
+       Opdracht openen
     </a>
   </p>
 
   <p style="color:#64748b;font-size:13px">
     ${
         data.pdfBuffer
-            ? "De werkbon PDF is als bijlage toegevoegd."
-            : "De PDF-bijlage kon niet worden gegenereerd; open de werkbon in PMS."
+            ? "De opdracht-PDF is als bijlage toegevoegd."
+            : "De PDF-bijlage kon niet worden gegenereerd; open de opdracht in PMS."
     }
   </p>
 
@@ -75,7 +75,7 @@ Team MDB Networks
     await sendResendEmail({
         from: "MDB Networks <noreply@mdb-networks.nl>",
         to: internalNotificationRecipients(),
-        subject: `Werkbon afgerond — ${data.project} (${data.workorderNumber})`,
+        subject: `Opdracht afgerond — ${data.project} (${data.workorderNumber})`,
         text: tekst,
         html,
         attachments: data.pdfBuffer

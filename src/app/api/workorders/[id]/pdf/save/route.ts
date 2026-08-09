@@ -112,7 +112,7 @@ customer:true,
             return NextResponse.json(
 
                 {
-                    error:"Werkbon niet gevonden"
+                    error:"Opdracht niet gevonden"
                 },
 
                 {
@@ -143,7 +143,7 @@ customer:true,
 
         const filename =
 
-            `werkbon-${workorder.number}.pdf`;
+            `opdracht-${workorder.number}.pdf`;
 
 
 
@@ -290,7 +290,7 @@ customer:true,
 
             {
 
-                error:"Werkbon verzenden mislukt"
+                error:"Opdracht verzenden mislukt"
 
             },
 

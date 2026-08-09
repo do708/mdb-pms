@@ -141,7 +141,7 @@ export default function WorkordersPage(){
 
             <main className="p-6">
 
-                Werkbonnen laden...
+                Opdrachten laden...
 
             </main>
 
@@ -233,7 +233,7 @@ export default function WorkordersPage(){
                         font-bold
                     ">
 
-                        📋 Werkbonnen
+                        📋 Opdrachten
 
                     </h1>
 
@@ -269,7 +269,7 @@ export default function WorkordersPage(){
 
                         >
 
-                            + Nieuwe werkbon
+                            + Nieuwe opdracht
 
                         </Link>
 
@@ -309,7 +309,7 @@ export default function WorkordersPage(){
                         )
                     }
 
-                    placeholder="Zoek werkbon, klant of project"
+                    placeholder="Zoek opdracht, klant of project"
 
                     className="
                         w-full
@@ -405,15 +405,17 @@ export default function WorkordersPage(){
                                 rounded-xl
                                 p-3
                                 flex
-                                items-center
-                                justify-between
+                                flex-col
                                 gap-3
+                                sm:flex-row
+                                sm:items-start
+                                sm:justify-between
                             "
 
                         >
 
 
-                            <div className="min-w-0">
+                            <div className="min-w-0 flex-1">
 
                                 <div className="
                                     flex
@@ -471,11 +473,11 @@ export default function WorkordersPage(){
 
                             <div className="
                                 flex
+                                flex-wrap
                                 gap-2
                                 items-center
-                                shrink-0
-                                flex-wrap
-                                justify-end
+                                sm:justify-end
+                                sm:max-w-[min(100%,22rem)]
                             ">
 
                                 <Link
@@ -491,11 +493,12 @@ export default function WorkordersPage(){
                                         py-1.5
                                         rounded-lg
                                         text-sm
+                                        font-medium
                                     "
 
                                 >
 
-                                    Geplande opdracht openen
+                                    Openen
 
                                 </Link>
 
@@ -516,7 +519,7 @@ export default function WorkordersPage(){
 
                                 >
 
-                                    PDF download
+                                    PDF
 
                                 </a>
 
@@ -542,7 +545,7 @@ export default function WorkordersPage(){
 
                                             >
 
-                                                ZIP download
+                                                ZIP
 
                                             </a>
 
@@ -550,7 +553,7 @@ export default function WorkordersPage(){
 
                                                 url={`/api/workorders/${workorder.id}`}
 
-                                                label={`werkbon ${workorder.number}`}
+                                                label={`Opdracht ${workorder.number}`}
 
                                                 onDeleted={load}
 

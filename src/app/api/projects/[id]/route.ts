@@ -240,7 +240,7 @@ export async function DELETE(
         if (workorders > 0) {
             return NextResponse.json(
                 {
-                    error: `Dit project heeft nog ${workorders} werkbon(nen). Verwijder of ontkoppel die eerst.`,
+                    error: `Dit project heeft nog ${workorders} opdracht(en). Verwijder of ontkoppel die eerst.`,
                 },
                 {
                     status: 400,

@@ -305,7 +305,7 @@ export async function buildProjectExportWorkbook(
         ["Materiaalkosten", money(materiaalKosten)],
         ["Urenregels", String(project.uren.length)],
         ["Materiaalregels", String(project.materialen.length)],
-        ["Gekoppelde werkbonnen", String(project.workorders.length)],
+        ["Gekoppelde opdrachten", String(project.workorders.length)],
     ];
 
     let alt = false;
@@ -508,10 +508,10 @@ export async function buildProjectExportWorkbook(
 
     row += 1;
 
-    // --- Werkbonnen ---
+    // --- Opdrachten ---
     sheet.mergeCells(`A${row}:G${row}`);
     styleSection(sheet.getCell(`A${row}`), PINK);
-    sheet.getCell(`A${row}`).value = "Gekoppelde werkbonnen";
+    sheet.getCell(`A${row}`).value = "Gekoppelde opdrachten";
     sheet.getRow(row).height = 24;
     row += 1;
 
@@ -523,7 +523,7 @@ export async function buildProjectExportWorkbook(
     row += 1;
 
     if (project.workorders.length === 0) {
-        sheet.getCell(`A${row}`).value = "Geen gekoppelde werkbonnen.";
+        sheet.getCell(`A${row}`).value = "Geen gekoppelde opdrachten.";
         styleValue(sheet.getCell(`A${row}`));
         row += 1;
     } else {

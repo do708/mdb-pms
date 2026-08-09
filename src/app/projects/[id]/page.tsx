@@ -1498,7 +1498,7 @@ export default function ProjectDetailPage() {
 
             {project.workorders.length > 0 ? (
                 <section className="bg-white border rounded-2xl p-6 space-y-3">
-                    <h2 className="font-bold text-lg">Gekoppelde werkbonnen</h2>
+                    <h2 className="font-bold text-lg">Gekoppelde opdrachten</h2>
                     <ul className="divide-y">
                         {project.workorders.map((w) => (
                             <li key={w.id} className="py-2">

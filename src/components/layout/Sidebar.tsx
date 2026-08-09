@@ -74,10 +74,10 @@ const menu:MenuItem[] = [
     },
 
     {
-        name:"Werkbonnen",
+        name:"Opdrachten",
         href:"/workorders",
         icon:ClipboardList,
-        title:"Overzicht van actieve en afgeronde werkbonnen",
+        title:"Overzicht van actieve en afgeronde opdrachten",
         roles:["admin","office","engineer"]
     },
 
@@ -85,7 +85,7 @@ const menu:MenuItem[] = [
         name:"Projecten",
         href:"/projects",
         icon:Folder,
-        title:"Grotere, langlopende opdrachten met gebundelde werkbonnen",
+        title:"Grotere, langlopende projecten met gebundelde opdrachten",
         roles:["admin","office","engineer"]
     },
 
@@ -344,7 +344,7 @@ export default function Sidebar({
                                     {
                                         item.href === "/workorders/new" &&
                                         role === "engineer"
-                                            ? "Werkbon invullen"
+                                            ? "Opdracht invullen"
                                             : item.name
                                     }
 
@@ -361,7 +361,7 @@ export default function Sidebar({
 
 
                 {role !== "engineer" ? (
-                    <div className="pt-4 mt-2 border-t border-gray-100 space-y-1">
+                    <div className="pt-4 mt-10 border-t border-gray-100 space-y-1">
                         <p className="
                             px-4
                             text-xs

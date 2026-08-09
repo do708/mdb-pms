@@ -42,7 +42,7 @@ export async function POST(
 
         if(!workorder){
             return NextResponse.json(
-                { error:"Werkbon niet gevonden" },
+                { error:"Opdracht niet gevonden" },
                 { status:404 }
             );
         }
@@ -68,7 +68,7 @@ export async function POST(
 
         if(!ontvanger){
             return NextResponse.json(
-                { error:"Geen e-mailadres bekend. Vul een contactpersoon met e-mailadres in op de werkbon, of een e-mailadres bij de klant." },
+                { error:"Geen e-mailadres bekend. Vul een contactpersoon met e-mailadres in op de opdracht, of een e-mailadres bij de klant." },
                 { status:400 }
             );
         }

@@ -6,7 +6,7 @@ import { requireApiRole } from "@/lib/auth/guard";
 
 
 
-// Werkbonnen die te laat zijn met invullen: klaargezet, geplande datum
+// Opdrachten die te laat zijn met invullen: klaargezet, geplande datum
 // verstreken, en de monteur heeft ze nog niet ingevuld (status voor
 // "uitgevoerd"). Kantoor kan hierop de monteur aanspreken.
 
@@ -77,7 +77,7 @@ export async function GET(){
 
 
 
-        // Recent verstuurde werkbonnen (door de monteur uitgevoerd/verstuurd).
+        // Recent verstuurde opdrachten (door de monteur uitgevoerd/verstuurd).
         // Kantoor/projects ziet deze als melding om af te handelen.
         const zevenDagenGeleden =
             new Date();

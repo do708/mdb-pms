@@ -259,7 +259,7 @@ export default function MaterialsPage(){
                     text-gray-500
                 ">
 
-                    Materiaalverbruik uit werkbonnen
+                    Materiaalverbruik uit opdrachten
 
                 </p>
 
@@ -277,7 +277,7 @@ export default function MaterialsPage(){
                     setSearch(e.target.value)
                 }
 
-                placeholder="Zoek op naam, artikelnummer of werkbon..."
+                placeholder="Zoek op naam, artikelnummer of opdracht..."
 
                 className="
                     w-full
@@ -352,7 +352,7 @@ export default function MaterialsPage(){
                                     </th>
 
                                     <th className="py-2 text-right">
-                                        Werkbonnen
+                                        Opdrachten
                                     </th>
 
                                 </tr>

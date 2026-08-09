@@ -33,7 +33,7 @@ function iconForStatus(key: string) {
     }
 }
 
-/** Statusicoon voor planning en werkbonnen-overzicht. */
+/** Statusicoon voor planning en opdrachten-overzicht. */
 export function PlanningStatusIcon({
     status,
     className = "h-3.5 w-3.5",

@@ -69,7 +69,7 @@ export async function PUT(
 
                 {
                     success:false,
-                    error:"Werkbon niet gevonden"
+                    error:"Opdracht niet gevonden"
                 },
 
                 {
@@ -214,7 +214,7 @@ export async function PUT(
 
             success:true,
 
-            message:"Werkbon opgeslagen",
+            message:"Opdracht opgeslagen",
 
             workorder:updatedWorkorder
 
