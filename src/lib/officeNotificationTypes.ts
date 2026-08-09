@@ -16,8 +16,8 @@ export const OFFICE_NOTIFICATION_LABEL: Record<
     OfficeNotificationSoort,
     string
 > = {
-    aanvraag: "Aanvraag",
-    formulier: "Formulier",
+    aanvraag: "Open aanvraag",
+    formulier: "Formulier te behandelen",
     telaat: "Te laat invullen",
     materiaal: "Materiaal klaarzetten",
 };

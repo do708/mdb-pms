@@ -9,6 +9,19 @@ import type { OfficeNotification } from "@/lib/officeNotificationTypes";
 
 const NOG_IN_TE_VULLEN = ["ontvangen", "afspraak", "ingepland"] as const;
 
+export interface OfficeNotificationCounters {
+    openAanvragen: number;
+    openForms: number;
+    teLaat: number;
+    materiaal: number;
+}
+
+export interface OfficeNotificationsPayload {
+    items: OfficeNotification[];
+    counters: OfficeNotificationCounters;
+    count: number;
+}
+
 function startOfToday(): Date {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -22,8 +35,17 @@ function nlDate(value: Date | string | null | undefined): string {
     return d.toLocaleDateString("nl-NL");
 }
 
-/** Alle openstaande kantoormeldingen (bel + dashboard). */
-export async function loadOfficeNotifications(): Promise<OfficeNotification[]> {
+async function safe<T>(label: string, fn: () => Promise<T>, fallback: T): Promise<T> {
+    try {
+        return await fn();
+    } catch (error) {
+        console.error(`OFFICE NOTIFICATIONS (${label})`, error);
+        return fallback;
+    }
+}
+
+/** Alle openstaande kantoormeldingen (bel + dashboard-tellers). */
+export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayload> {
     const startVandaag = startOfToday();
 
     const startMorgen = new Date(startVandaag);
@@ -34,86 +56,110 @@ export async function loadOfficeNotifications(): Promise<OfficeNotification[]> {
     eindMorgen.setDate(eindMorgen.getDate() + 1);
 
     const [aanvragen, formulieren, teLaat, morgenKlussen] = await Promise.all([
-        prisma.aanvraag.findMany({
-            where: { status: "open" },
-            orderBy: { createdAt: "desc" },
-            include: {
-                customer: { select: { name: true } },
-            },
-        }),
-
-        prisma.formSubmission.findMany({
-            where: { status: "ingediend" },
-            orderBy: { createdAt: "desc" },
-            include: {
-                user: { select: { name: true } },
-            },
-        }),
-
-        prisma.workorder.findMany({
-            where: {
-                plannedDate: { lt: startVandaag },
-                status: { in: [...NOG_IN_TE_VULLEN] },
-            },
-            orderBy: { plannedDate: "asc" },
-            include: {
-                customer: { select: { name: true } },
-                project: {
+        safe(
+            "aanvragen",
+            () =>
+                prisma.aanvraag.findMany({
+                    where: { status: "open" },
+                    orderBy: { createdAt: "desc" },
                     include: {
                         customer: { select: { name: true } },
                     },
-                },
-                assignedUser: { select: { name: true } },
-            },
-        }),
+                }),
+            []
+        ),
 
-        prisma.workorder.findMany({
-            where: {
-                plannedDate: {
-                    gte: startMorgen,
-                    lt: eindMorgen,
-                },
-                status: { in: [...NOG_IN_TE_VULLEN] },
-            },
-            orderBy: { plannedDate: "asc" },
-            include: {
-                customer: { select: { name: true } },
-                project: {
+        safe(
+            "formulieren",
+            () =>
+                prisma.formSubmission.findMany({
+                    where: { status: "ingediend" },
+                    orderBy: { createdAt: "desc" },
+                    include: {
+                        user: { select: { name: true } },
+                    },
+                }),
+            []
+        ),
+
+        safe(
+            "telaat",
+            () =>
+                prisma.workorder.findMany({
+                    where: {
+                        plannedDate: { lt: startVandaag },
+                        status: { in: [...NOG_IN_TE_VULLEN] },
+                    },
+                    orderBy: { plannedDate: "asc" },
                     include: {
                         customer: { select: { name: true } },
+                        project: {
+                            include: {
+                                customer: { select: { name: true } },
+                            },
+                        },
+                        assignedUser: { select: { name: true } },
                     },
-                },
-                assignedUser: { select: { name: true } },
-            },
-        }),
+                }),
+            []
+        ),
+
+        safe(
+            "materiaal-kandidaten",
+            () =>
+                prisma.workorder.findMany({
+                    where: {
+                        plannedDate: {
+                            gte: startMorgen,
+                            lt: eindMorgen,
+                        },
+                        status: { in: [...NOG_IN_TE_VULLEN] },
+                    },
+                    orderBy: { plannedDate: "asc" },
+                    include: {
+                        customer: { select: { name: true } },
+                        project: {
+                            include: {
+                                customer: { select: { name: true } },
+                            },
+                        },
+                        assignedUser: { select: { name: true } },
+                    },
+                }),
+            []
+        ),
     ]);
 
-    const materiaal = morgenKlussen
-        .filter((w) => {
+    const materiaalItems: OfficeNotification[] = [];
+    for (const w of morgenKlussen) {
+        try {
             const km = leesKlaarzetMateriaal(w.formData);
-            return heeftMateriaal(km) && !materiaalCompleet(km);
-        })
-        .map((w): OfficeNotification => {
+            if (!(heeftMateriaal(km) && !materiaalCompleet(km))) {
+                continue;
+            }
             const klant =
                 w.customer?.name ??
                 w.project?.customer?.name ??
                 "—";
-            return {
+            materiaalItems.push({
                 id: `materiaal-${w.id}`,
                 soort: "materiaal",
                 title: `${w.number} — ${w.title}`,
                 subtitle: `Materiaal controleren · ${klant} · gepland ${nlDate(w.plannedDate)}`,
                 href: `/workorders/${w.id}/edit`,
-            };
-        });
+            });
+        } catch (error) {
+            console.error("OFFICE NOTIFICATIONS (materiaal-item)", w.id, error);
+        }
+    }
 
-    return [
+    const items: OfficeNotification[] = [
         ...aanvragen.map((a): OfficeNotification => {
             const locatie = [a.locatie, a.plaats].filter(Boolean).join(" · ");
             return {
                 id: `aanvraag-${a.id}`,
                 soort: "aanvraag",
-                title: `Aanvraag · ${a.customer.name}`,
+                title: `Aanvraag · ${a.customer?.name ?? "Opdrachtgever"}`,
                 subtitle: locatie || "Nieuwe opdrachtgeveraanvraag",
                 href: "/dashboard",
             };
@@ -141,6 +187,21 @@ export async function loadOfficeNotifications(): Promise<OfficeNotification[]> {
             };
         }),
 
-        ...materiaal,
+        ...materiaalItems,
     ];
+
+    const counters: OfficeNotificationCounters = {
+        openAanvragen: aanvragen.length,
+        openForms: formulieren.length,
+        teLaat: teLaat.length,
+        materiaal: materiaalItems.length,
+    };
+
+    const count =
+        counters.openAanvragen
+        + counters.openForms
+        + counters.teLaat
+        + counters.materiaal;
+
+    return { items, counters, count };
 }

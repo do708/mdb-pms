@@ -11,12 +11,9 @@ export async function GET() {
     }
 
     try {
-        const items = await loadOfficeNotifications();
+        const payload = await loadOfficeNotifications();
 
-        return NextResponse.json({
-            count: items.length,
-            items,
-        });
+        return NextResponse.json(payload);
     } catch (error) {
         console.error("NOTIFICATIONS ERROR", error);
 

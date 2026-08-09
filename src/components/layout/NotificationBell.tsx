@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { Bell } from "lucide-react";
+import { canAccessOffice } from "@/lib/auth/checkRole";
 import {
     OFFICE_NOTIFICATION_LABEL,
     type OfficeNotification,
     type OfficeNotificationSoort,
 } from "@/lib/officeNotificationTypes";
 
-const SOORT_STYLE: Record<
-    OfficeNotificationSoort,
-    string
-> = {
+const SOORT_STYLE: Record<OfficeNotificationSoort, string> = {
     aanvraag: "bg-amber-100 text-amber-800",
     formulier: "bg-sky-100 text-sky-800",
     telaat: "bg-red-100 text-red-700",
@@ -20,43 +19,72 @@ const SOORT_STYLE: Record<
 };
 
 export default function NotificationBell() {
-    const { data: session } = useSession();
-    const role = session?.user?.role;
-    const canSee = role === "admin" || role === "office";
+    const { data: session, status } = useSession();
+    const pathname = usePathname();
+    const role = session?.user?.role ?? "";
+    const canSee =
+        status === "authenticated" && canAccessOffice(role);
 
     const [items, setItems] = useState<OfficeNotification[]>([]);
+    const [count, setCount] = useState(0);
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
-    async function load() {
+    const load = useCallback(async () => {
         try {
-            const response = await fetch("/api/notifications");
+            const response = await fetch("/api/notifications", {
+                cache: "no-store",
+            });
 
             if (!response.ok) {
                 return;
             }
 
             const data = await response.json();
+            const nextItems = Array.isArray(data.items) ? data.items : [];
+            const nextCount =
+                typeof data.count === "number"
+                    ? data.count
+                    : nextItems.length;
 
-            setItems(
-                Array.isArray(data.items) ? data.items : []
-            );
+            setItems(nextItems);
+            setCount(nextCount);
         } catch {
-            // stil falen; de bel toont dan gewoon geen meldingen
+            // stil falen; bel blijft staan met laatste bekende stand
         }
-    }
+    }, []);
 
     useEffect(() => {
         if (!canSee) {
             return;
         }
 
-        load();
+        void load();
 
-        const timer = setInterval(load, 5 * 60 * 1000);
+        // Elke 30 seconden verversen (dashboard-tellers blijven synchroon).
+        const timer = setInterval(() => {
+            void load();
+        }, 30 * 1000);
 
-        return () => clearInterval(timer);
-    }, [canSee]);
+        function onFocus() {
+            void load();
+        }
+
+        function onVisibility() {
+            if (document.visibilityState === "visible") {
+                void load();
+            }
+        }
+
+        window.addEventListener("focus", onFocus);
+        document.addEventListener("visibilitychange", onVisibility);
+
+        return () => {
+            clearInterval(timer);
+            window.removeEventListener("focus", onFocus);
+            document.removeEventListener("visibilitychange", onVisibility);
+        };
+    }, [canSee, load, pathname]);
 
     useEffect(() => {
         function onClick(event: MouseEvent) {
@@ -74,17 +102,26 @@ export default function NotificationBell() {
             document.removeEventListener("mousedown", onClick);
     }, []);
 
+    if (status === "loading") {
+        return (
+            <div className="p-2 text-gray-300" aria-hidden>
+                <Bell size={21} />
+            </div>
+        );
+    }
+
     if (!canSee) {
         return null;
     }
-
-    const count = items.length;
 
     return (
         <div ref={containerRef} className="relative">
             <button
                 type="button"
-                onClick={() => setOpen((o) => !o)}
+                onClick={() => {
+                    setOpen((o) => !o);
+                    void load();
+                }}
                 className="
                     relative p-2 rounded-full
                     hover:bg-gray-100 transition
@@ -127,7 +164,7 @@ export default function NotificationBell() {
                             Meldingen
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">
-                            Aanvragen, formulieren, te late opdrachten en materiaal
+                            Open aanvragen, formulieren, te laat invullen en materiaal
                         </p>
                     </div>
 
