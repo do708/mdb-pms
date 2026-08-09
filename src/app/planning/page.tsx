@@ -1036,7 +1036,9 @@ export default function PlanningPage(){
                 />
             )}
 
-
+            <WorkorderStatusIconLegend className="
+                rounded-xl border border-slate-200 bg-white px-3 py-2
+            " />
 
         </main>
 
