@@ -257,6 +257,7 @@ export default function Sidebar({
                 px-4
                 py-6
                 space-y-1
+                overflow-y-auto
             ">
 
 
