@@ -142,6 +142,24 @@ export default function PlanningPage(){
     const [scheduling,setScheduling] =
         useState(false);
 
+    /** Voorstel vóór “Hier inplannen”: hoeveel monteurs + duur. */
+    const [pendingAantalMonteurs, setPendingAantalMonteurs] =
+        useState(1);
+
+    const [pendingDuurUren, setPendingDuurUren] =
+        useState(2);
+
+    /** Slot gekozen; nog extra monteurs kiezen als aantal > 1. */
+    const [pendingSlot, setPendingSlot] =
+        useState<{
+            dateIso: string;
+            hour: number;
+            engineerId: string;
+        } | null>(null);
+
+    const [pendingExtraIds, setPendingExtraIds] =
+        useState<string[]>([]);
+
 
     // Maandag van de getoonde week (voor de week-navigatie)
     const [weekStart,setWeekStart] =
@@ -325,8 +343,17 @@ export default function PlanningPage(){
         return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
     }
 
-    /** Pending aanvraag/klus inplannen op gekozen slot → terug naar klusdetail. */
-    async function schedulePending(args: {
+    function voorstelGeldig(): boolean {
+        return (
+            pendingAantalMonteurs >= 1
+            && pendingAantalMonteurs <= 8
+            && pendingDuurUren > 0
+            && pendingDuurUren <= 16
+        );
+    }
+
+    /** Pending aanvraag/klus: eerst voorstel checken, daarna slot → eventueel extra monteurs. */
+    function schedulePending(args: {
         dateIso: string;
         hour: number;
         engineerId: string;
@@ -336,10 +363,47 @@ export default function PlanningPage(){
             return;
         }
 
+        if (!voorstelGeldig()) {
+            alert("Vul eerst aantal monteurs en duur (uren) in het voorstel hierboven.");
+            return;
+        }
+
+        if (pendingAantalMonteurs <= 1) {
+            void finalizePendingSchedule(args, []);
+            return;
+        }
+
+        setPendingSlot(args);
+        setPendingExtraIds([]);
+    }
+
+    async function finalizePendingSchedule(
+        args: {
+            dateIso: string;
+            hour: number;
+            engineerId: string;
+        },
+        extraEngineerIds: string[]
+    ) {
+        const current = pending || getPendingSchedule();
+        if (!current || scheduling || !canEdit) {
+            return;
+        }
+
+        const nodigExtra = Math.max(0, pendingAantalMonteurs - 1);
+        if (extraEngineerIds.length !== nodigExtra) {
+            alert(
+                nodigExtra === 1
+                    ? "Kies nog 1 extra monteur."
+                    : `Kies nog ${nodigExtra} extra monteurs.`
+            );
+            return;
+        }
+
         setScheduling(true);
 
         const startTime = formatHour(args.hour);
-        const endHour = Math.min(args.hour + 2, 17);
+        const endHour = args.hour + pendingDuurUren;
         const endTime = formatHour(endHour);
 
         try {
@@ -353,7 +417,9 @@ export default function PlanningPage(){
                     body: JSON.stringify({
                         plannedDate: `${args.dateIso}T${startTime}`,
                         plannedEndDate: `${args.dateIso}T${endTime}`,
+                        plannedHours: pendingDuurUren,
                         assignedUserId: args.engineerId,
+                        extraEngineerIds,
                     }),
                 }
             );
@@ -365,6 +431,10 @@ export default function PlanningPage(){
 
             clearPendingSchedule();
             setPending(null);
+            setPendingSlot(null);
+            setPendingExtraIds([]);
+            setPendingAantalMonteurs(1);
+            setPendingDuurUren(2);
             router.push(`/workorders/${current.workorderId}/edit`);
         } finally {
             setScheduling(false);
@@ -374,6 +444,23 @@ export default function PlanningPage(){
     function annuleerPending() {
         clearPendingSchedule();
         setPending(null);
+        setPendingSlot(null);
+        setPendingExtraIds([]);
+        setPendingAantalMonteurs(1);
+        setPendingDuurUren(2);
+    }
+
+    function togglePendingExtra(id: string) {
+        setPendingExtraIds((prev) => {
+            if (prev.includes(id)) {
+                return prev.filter((x) => x !== id);
+            }
+            const max = Math.max(0, pendingAantalMonteurs - 1);
+            if (prev.length >= max) {
+                return [...prev.slice(1), id];
+            }
+            return [...prev, id];
+        });
     }
 
     /** Weekview: sleep naar andere dag/tijd/monteur; meerdaagse duur blijft behouden. */
@@ -535,11 +622,7 @@ export default function PlanningPage(){
                         sticky
                         top-2
                         z-20
-                        flex
-                        flex-wrap
-                        items-center
-                        justify-between
-                        gap-3
+                        space-y-3
                         rounded-2xl
                         border
                         border-[#0066FF]/30
@@ -548,39 +631,198 @@ export default function PlanningPage(){
                         py-3
                         shadow-sm
                     ">
-                        <div className="min-w-0">
-                            <p className="text-sm font-bold text-[#0066FF]">
-                                Inplannen: {pending.label}
-                            </p>
-                            <p className="text-xs text-slate-600 mt-0.5">
-                                {
-                                    scheduling
-                                    ? "Bezig met inplannen…"
-                                    : "Klik op een vrij tijdstip bij een monteur, of op “Hier inplannen”."
-                                }
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div className="min-w-0">
+                                <p className="text-sm font-bold text-[#0066FF]">
+                                    Inplannen: {pending.label}
+                                </p>
+                                <p className="text-xs text-slate-600 mt-0.5">
+                                    {
+                                        scheduling
+                                        ? "Bezig met inplannen…"
+                                        : pendingSlot
+                                        ? "Kies de extra monteur(s) hieronder en bevestig."
+                                        : "Vul eerst aantal monteurs en duur in, kies daarna een vrij moment."
+                                    }
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={annuleerPending}
+                                disabled={scheduling}
+                                className="
+                                    shrink-0
+                                    rounded-lg
+                                    border
+                                    border-slate-300
+                                    bg-white
+                                    px-3
+                                    py-1.5
+                                    text-sm
+                                    font-medium
+                                    text-slate-700
+                                    hover:bg-slate-50
+                                    disabled:opacity-50
+                                "
+                            >
+                                Annuleren
+                            </button>
+                        </div>
+
+                        <div className="flex flex-wrap items-end gap-3">
+                            <label className="block">
+                                <span className="text-xs font-medium text-slate-600">
+                                    Aantal monteurs *
+                                </span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={8}
+                                    step={1}
+                                    value={pendingAantalMonteurs}
+                                    disabled={scheduling || !!pendingSlot}
+                                    onChange={(e) => {
+                                        const n = Number.parseInt(e.target.value, 10);
+                                        setPendingAantalMonteurs(
+                                            Number.isFinite(n) ? Math.min(8, Math.max(1, n)) : 1
+                                        );
+                                    }}
+                                    className="
+                                        mt-0.5 block w-24 rounded-lg border border-slate-300
+                                        bg-white px-2 py-1.5 text-sm
+                                        disabled:opacity-60
+                                    "
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="text-xs font-medium text-slate-600">
+                                    Duur (uren) *
+                                </span>
+                                <input
+                                    type="number"
+                                    min={0.5}
+                                    max={16}
+                                    step={0.5}
+                                    value={pendingDuurUren}
+                                    disabled={scheduling || !!pendingSlot}
+                                    onChange={(e) => {
+                                        const n = Number.parseFloat(e.target.value);
+                                        setPendingDuurUren(
+                                            Number.isFinite(n) ? Math.min(16, Math.max(0.5, n)) : 2
+                                        );
+                                    }}
+                                    className="
+                                        mt-0.5 block w-24 rounded-lg border border-slate-300
+                                        bg-white px-2 py-1.5 text-sm
+                                        disabled:opacity-60
+                                    "
+                                />
+                            </label>
+                            <p className="text-xs text-slate-500 pb-1.5">
+                                Bijv. 1 monteur · 2 uur, of 2 monteurs · 4 uur
                             </p>
                         </div>
-                        <button
-                            type="button"
-                            onClick={annuleerPending}
-                            disabled={scheduling}
-                            className="
-                                shrink-0
-                                rounded-lg
-                                border
-                                border-slate-300
-                                bg-white
-                                px-3
-                                py-1.5
-                                text-sm
-                                font-medium
-                                text-slate-700
-                                hover:bg-slate-50
-                                disabled:opacity-50
-                            "
-                        >
-                            Annuleren
-                        </button>
+
+                        {
+                            pendingSlot && (
+                                <div className="
+                                    rounded-xl border border-[#0066FF]/25 bg-white p-3 space-y-2
+                                ">
+                                    <p className="text-sm text-slate-700">
+                                        Hoofdmonteur:{" "}
+                                        <strong>
+                                            {
+                                                engineers.find(
+                                                    (e: { id: string }) =>
+                                                        e.id === pendingSlot.engineerId
+                                                )?.name
+                                                || "Gekozen monteur"
+                                            }
+                                        </strong>
+                                        {" · "}
+                                        {pendingSlot.dateIso}
+                                        {" · "}
+                                        {formatHour(pendingSlot.hour)}
+                                        –{formatHour(pendingSlot.hour + pendingDuurUren)}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                        Kies{" "}
+                                        {pendingAantalMonteurs - 1 === 1
+                                            ? "1 extra monteur"
+                                            : `${pendingAantalMonteurs - 1} extra monteurs`}
+                                        :
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {
+                                            engineers
+                                                .filter(
+                                                    (e: { id: string }) =>
+                                                        e.id !== pendingSlot.engineerId
+                                                )
+                                                .map((e: { id: string; name?: string | null }) => (
+                                                    <label
+                                                        key={e.id}
+                                                        className={`
+                                                            flex items-center gap-2 rounded-lg border
+                                                            px-3 py-1.5 text-sm cursor-pointer
+                                                            ${
+                                                                pendingExtraIds.includes(e.id)
+                                                                ? "bg-blue-50 border-blue-300"
+                                                                : "bg-white border-slate-200"
+                                                            }
+                                                        `}
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={pendingExtraIds.includes(e.id)}
+                                                            onChange={() => togglePendingExtra(e.id)}
+                                                            disabled={scheduling}
+                                                        />
+                                                        {e.name || "Monteur"}
+                                                    </label>
+                                                ))
+                                        }
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 pt-1">
+                                        <button
+                                            type="button"
+                                            disabled={
+                                                scheduling
+                                                || pendingExtraIds.length !== pendingAantalMonteurs - 1
+                                            }
+                                            onClick={() =>
+                                                void finalizePendingSchedule(
+                                                    pendingSlot,
+                                                    pendingExtraIds
+                                                )
+                                            }
+                                            className="
+                                                rounded-lg bg-[#0066FF] px-3 py-1.5 text-sm
+                                                font-semibold text-white hover:bg-[#0052cc]
+                                                disabled:opacity-50
+                                            "
+                                        >
+                                            Bevestig inplannen
+                                        </button>
+                                        <button
+                                            type="button"
+                                            disabled={scheduling}
+                                            onClick={() => {
+                                                setPendingSlot(null);
+                                                setPendingExtraIds([]);
+                                            }}
+                                            className="
+                                                rounded-lg border border-slate-300 bg-white
+                                                px-3 py-1.5 text-sm text-slate-700
+                                                hover:bg-slate-50 disabled:opacity-50
+                                            "
+                                        >
+                                            Ander moment kiezen
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        }
                     </section>
                 )
             }

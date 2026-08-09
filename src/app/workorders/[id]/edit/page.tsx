@@ -10,6 +10,7 @@ import AanvraagSpecificatiesOverzicht, {
     parseAanvraagSnapshot,
     type AanvraagOverzichtSnapshot,
 } from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
+import { bouwKlantWerkzaamheden } from "@/lib/aanvraag/klantWerkzaamheden";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 
 
@@ -244,15 +245,52 @@ export default function EditWorkorderPage(){
 
                 setContactPhone(wo.contactPhone ?? "");
 
-                setDescription(wo.description ?? "");
+                const snapshot =
+                    parseAanvraagSnapshot(wo.aanvraagSpecificaties);
 
-                setAanvraagSnapshot(
-                    parseAanvraagSnapshot(wo.aanvraagSpecificaties)
-                );
+                setAanvraagSnapshot(snapshot);
+
+                const rawDescription =
+                    wo.description ?? "";
+                // Oude dichte bulletlijst (beugel/type/stroom) → korte klantsamenvatting.
+                const specsRec =
+                    snapshot?.specificaties
+                    && typeof snapshot.specificaties === "object"
+                        ? (snapshot.specificaties as Record<string, unknown>)
+                        : null;
+                const isOudeDichteTekst =
+                    /•\s*Scherm\s+\d+/i.test(rawDescription)
+                    || (
+                        /^Installatie:/i.test(rawDescription)
+                        && /stroom:/i.test(rawDescription)
+                    );
+
+                if (specsRec && isOudeDichteTekst) {
+                    const type =
+                        typeof specsRec.typeAanvraag === "string"
+                            ? specsRec.typeAanvraag
+                            : "installatie";
+                    setDescription(
+                        bouwKlantWerkzaamheden(specsRec, type)
+                    );
+                } else {
+                    setDescription(rawDescription);
+                }
 
                 setWerkInstructie(wo.werkInstructie ?? "");
 
-                setInternalNotes(wo.internalNotes ?? "");
+                const rawInternal =
+                    wo.internalNotes ?? "";
+                // Oude aanvraag-dump (Type/Onderdelen/Hardware…) → leeg;
+                // specificatie-overzicht is leidend.
+                const isOudeAanvraagDump =
+                    /^Type aanvraag:/im.test(rawInternal)
+                    || /^Onderdelen:/im.test(rawInternal)
+                    || /^Hardware status:/im.test(rawInternal);
+
+                setInternalNotes(
+                    isOudeAanvraagDump ? "" : rawInternal
+                );
 
                 setAssignedUserId(wo.assignedUserId ?? "");
 
@@ -925,7 +963,7 @@ export default function EditWorkorderPage(){
                     </span>
 
                     <span className="block text-xs text-gray-400 mb-1">
-                        Deze tekst komt in de afspraakmail naar de klant.
+                        Korte samenvatting voor de afspraakmail (bijv. aantal × formaat + oriëntatie + locatie).
                         Pas aan indien nodig; het overzicht hierboven blijft leidend voor de uitvoering.
                     </span>
 
@@ -935,7 +973,7 @@ export default function EditWorkorderPage(){
 
                         onChange={(e)=>setDescription(e.target.value)}
 
-                        placeholder="Bijv. 2x scherm installeren"
+                        placeholder='Bijv. 2× 50" schermen Landscape in de kantine, 1× kiosk in de entree'
 
                         className="
                             w-full
@@ -1172,11 +1210,17 @@ export default function EditWorkorderPage(){
 
                     </span>
 
+                    <span className="block text-xs text-gray-400 mb-1">
+                        Alleen voor office/monteur. Aanvraagdetails staan in het overzicht hierboven.
+                    </span>
+
                     <textarea
 
                         value={internalNotes}
 
                         onChange={(e)=>setInternalNotes(e.target.value)}
+
+                        placeholder="Optioneel…"
 
                         className="
                             w-full
