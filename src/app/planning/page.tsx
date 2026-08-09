@@ -165,16 +165,13 @@ export default function PlanningPage(){
         return Math.min(16, n);
     }
 
-    /** Slot gekozen; nog extra monteurs kiezen als aantal > 1. */
-    const [pendingSlot, setPendingSlot] =
+    /** Slot-keuzes via “Hier inplannen” (1× per monteur). */
+    const [pendingPicks, setPendingPicks] =
         useState<{
             dateIso: string;
             engineerId: string;
             startHour: number;
-        } | null>(null);
-
-    const [pendingExtraIds, setPendingExtraIds] =
-        useState<string[]>([]);
+        }[]>([]);
 
 
     // Maandag van de getoonde week (voor de week-navigatie)
@@ -396,11 +393,10 @@ export default function PlanningPage(){
         setPendingAantalTekst("1");
         setPendingStartTime("09:00");
         setPendingDuurTekst("2");
-        setPendingSlot(null);
-        setPendingExtraIds([]);
+        setPendingPicks([]);
     }
 
-    /** Pending aanvraag/klus: eerst voorstel checken, daarna dag/monteur → eventueel extra monteurs. */
+    /** Pending aanvraag/klus: klik “Hier inplannen” per monteur (aantal×). */
     function schedulePending(args: {
         dateIso: string;
         hour?: number;
@@ -419,7 +415,6 @@ export default function PlanningPage(){
         }
 
         let startHour = parseTimeToHour(pendingStartTime);
-        // Klik op de tijdlijn: starttijd overnemen (bijv. middagklus).
         if (
             typeof args.hour === "number"
             && Number.isFinite(args.hour)
@@ -435,53 +430,69 @@ export default function PlanningPage(){
             return;
         }
 
-        const slot = {
-            dateIso: args.dateIso,
-            engineerId: args.engineerId,
-            startHour,
-        };
-
         const aantal = pendingAantalMonteurs();
-        const duur = pendingDuurUren();
+        const prev = pendingPicks;
 
-        if (aantal <= 1) {
-            void finalizePendingSchedule(slot, []);
+        if (prev.some((p) => p.engineerId === args.engineerId)) {
+            setPendingPicks(prev.filter((p) => p.engineerId !== args.engineerId));
             return;
         }
 
-        setPendingSlot(slot);
-        setPendingExtraIds([]);
-    }
-
-    async function finalizePendingSchedule(
-        args: {
-            dateIso: string;
-            engineerId: string;
-            startHour: number;
-        },
-        extraEngineerIds: string[]
-    ) {
-        const current = pending || getPendingSchedule();
-        if (!current || scheduling || !canEdit) {
+        if (prev.length >= aantal) {
             return;
         }
 
-        const aantal = pendingAantalMonteurs();
-        const duur = pendingDuurUren();
-        const nodigExtra = Math.max(0, aantal - 1);
-        if (extraEngineerIds.length !== nodigExtra) {
+        const dateIso = prev[0]?.dateIso ?? args.dateIso;
+        const hour = prev[0]?.startHour ?? startHour;
+
+        if (prev.length > 0 && args.dateIso !== dateIso) {
             alert(
-                nodigExtra === 1
-                    ? "Kies nog 1 extra monteur."
-                    : `Kies nog ${nodigExtra} extra monteurs.`
+                "Kies de overige monteur(s) op dezelfde dag als de eerste keuze."
             );
             return;
         }
 
+        const next = [
+            ...prev,
+            {
+                dateIso,
+                engineerId: args.engineerId,
+                startHour: hour,
+            },
+        ];
+
+        setPendingPicks(next);
+
+        if (next.length >= aantal) {
+            void finalizePendingSchedule(next);
+        }
+    }
+
+    async function finalizePendingSchedule(
+        picks: {
+            dateIso: string;
+            engineerId: string;
+            startHour: number;
+        }[]
+    ) {
+        const current = pending || getPendingSchedule();
+        if (!current || scheduling || !canEdit || picks.length === 0) {
+            return;
+        }
+
+        const aantal = pendingAantalMonteurs();
+        if (picks.length !== aantal) {
+            return;
+        }
+
+        const duur = pendingDuurUren();
+        const primary = picks[0];
+        const extraEngineerIds = picks.slice(1).map((p) => p.engineerId);
+
         setScheduling(true);
 
-        const startTime = formatHour(args.startHour);
-        const endTime = formatHour(args.startHour + duur);
+        const startTime = formatHour(primary.startHour);
+        const endTime = formatHour(primary.startHour + duur);
 
         try {
             const response = await fetch(
@@ -492,10 +503,10 @@ export default function PlanningPage(){
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        plannedDate: `${args.dateIso}T${startTime}`,
-                        plannedEndDate: `${args.dateIso}T${endTime}`,
+                        plannedDate: `${primary.dateIso}T${startTime}`,
+                        plannedEndDate: `${primary.dateIso}T${endTime}`,
                         plannedHours: duur,
-                        assignedUserId: args.engineerId,
+                        assignedUserId: primary.engineerId,
                         extraEngineerIds,
                     }),
                 }
@@ -519,19 +530,6 @@ export default function PlanningPage(){
         clearPendingSchedule();
         setPending(null);
         resetPendingVoorstel();
-    }
-
-    function togglePendingExtra(id: string) {
-        setPendingExtraIds((prev) => {
-            if (prev.includes(id)) {
-                return prev.filter((x) => x !== id);
-            }
-            const max = Math.max(0, pendingAantalMonteurs() - 1);
-            if (prev.length >= max) {
-                return [...prev.slice(1), id];
-            }
-            return [...prev, id];
-        });
     }
 
     /** Weekview: sleep naar andere dag/tijd/monteur; meerdaagse duur blijft behouden. */
@@ -711,9 +709,17 @@ export default function PlanningPage(){
                                     {
                                         scheduling
                                         ? "Bezig met inplannen…"
-                                        : pendingSlot
-                                        ? "Kies de extra monteur(s) hieronder en bevestig."
-                                        : "Vul monteurs, starttijd en duur in, kies daarna dag en monteur."
+                                        : pendingPicks.length > 0
+                                        ? (
+                                            pendingPicks.length >= pendingAantalMonteurs()
+                                            ? "Bezig met opslaan…"
+                                            : `Nog ${pendingAantalMonteurs() - pendingPicks.length}× Hier inplannen bij een andere monteur.`
+                                        )
+                                        : (
+                                            pendingAantalMonteurs() <= 1
+                                            ? "Vul starttijd en duur in, klik daarna 1× Hier inplannen bij de monteur."
+                                            : `Vul starttijd en duur in, klik daarna ${pendingAantalMonteurs()}× Hier inplannen (één keer per monteur).`
+                                        )
                                     }
                                 </p>
                             </div>
@@ -750,7 +756,7 @@ export default function PlanningPage(){
                                     inputMode="numeric"
                                     pattern="[0-9]*"
                                     value={pendingAantalTekst}
-                                    disabled={scheduling || !!pendingSlot}
+                                    disabled={scheduling || pendingPicks.length > 0}
                                     onChange={(e) => {
                                         const v = e.target.value.replace(/\D/g, "").slice(0, 2);
                                         setPendingAantalTekst(v);
@@ -772,7 +778,7 @@ export default function PlanningPage(){
                                 <input
                                     type="time"
                                     value={pendingStartTime}
-                                    disabled={scheduling || !!pendingSlot}
+                                    disabled={scheduling || pendingPicks.length > 0}
                                     onChange={(e) =>
                                         setPendingStartTime(e.target.value || "09:00")
                                     }
@@ -791,7 +797,7 @@ export default function PlanningPage(){
                                     type="text"
                                     inputMode="decimal"
                                     value={pendingDuurTekst}
-                                    disabled={scheduling || !!pendingSlot}
+                                    disabled={scheduling || pendingPicks.length > 0}
                                     onChange={(e) => {
                                         const v = e.target.value
                                             .replace(/[^\d.,]/g, "")
@@ -823,105 +829,47 @@ export default function PlanningPage(){
                         </div>
 
                         {
-                            pendingSlot && (
+                            pendingPicks.length > 0 && !scheduling && (
                                 <div className="
                                     rounded-xl border border-[#0066FF]/25 bg-white p-3 space-y-2
                                 ">
                                     <p className="text-sm text-slate-700">
-                                        Hoofdmonteur:{" "}
+                                        Gekozen ({pendingPicks.length}/{pendingAantalMonteurs()}):{" "}
                                         <strong>
                                             {
-                                                engineers.find(
-                                                    (e: { id: string }) =>
-                                                        e.id === pendingSlot.engineerId
-                                                )?.name
-                                                || "Gekozen monteur"
+                                                pendingPicks
+                                                    .map((p) =>
+                                                        engineers.find(
+                                                            (e: { id: string }) =>
+                                                                e.id === p.engineerId
+                                                        )?.name
+                                                        || "Monteur"
+                                                    )
+                                                    .join(", ")
                                             }
                                         </strong>
-                                        {" · "}
-                                        {pendingSlot.dateIso}
-                                        {" · "}
-                                        {formatHour(pendingSlot.startHour)}
-                                        –{formatHour(pendingSlot.startHour + pendingDuurUren())}
-                                    </p>
-                                    <p className="text-xs text-slate-500">
-                                        Kies{" "}
-                                        {pendingAantalMonteurs() - 1 === 1
-                                            ? "1 extra monteur"
-                                            : `${pendingAantalMonteurs() - 1} extra monteurs`}
-                                        :
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
                                         {
-                                            engineers
-                                                .filter(
-                                                    (e: { id: string }) =>
-                                                        e.id !== pendingSlot.engineerId
-                                                )
-                                                .map((e: { id: string; name?: string | null }) => (
-                                                    <label
-                                                        key={e.id}
-                                                        className={`
-                                                            flex items-center gap-2 rounded-lg border
-                                                            px-3 py-1.5 text-sm cursor-pointer
-                                                            ${
-                                                                pendingExtraIds.includes(e.id)
-                                                                ? "bg-blue-50 border-blue-300"
-                                                                : "bg-white border-slate-200"
-                                                            }
-                                                        `}
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={pendingExtraIds.includes(e.id)}
-                                                            onChange={() => togglePendingExtra(e.id)}
-                                                            disabled={scheduling}
-                                                        />
-                                                        {e.name || "Monteur"}
-                                                    </label>
-                                                ))
+                                            pendingPicks[0]
+                                            ? ` · ${pendingPicks[0].dateIso} · ${formatHour(pendingPicks[0].startHour)}–${formatHour(pendingPicks[0].startHour + pendingDuurUren())}`
+                                            : ""
                                         }
-                                    </div>
-                                    <div className="flex flex-wrap gap-2 pt-1">
-                                        <button
-                                            type="button"
-                                            disabled={
-                                                scheduling
-                                                || pendingExtraIds.length !== pendingAantalMonteurs() - 1
-                                            }
-                                            onClick={() =>
-                                                void finalizePendingSchedule(
-                                                    pendingSlot,
-                                                    pendingExtraIds
-                                                )
-                                            }
-                                            className="
-                                                rounded-lg bg-[#0066FF] px-3 py-1.5 text-sm
-                                                font-semibold text-white hover:bg-[#0052cc]
-                                                disabled:opacity-50
-                                            "
-                                        >
-                                            Bevestig inplannen
-                                        </button>
-                                        <button
-                                            type="button"
-                                            disabled={scheduling}
-                                            onClick={() => {
-                                                setPendingSlot(null);
-                                                setPendingExtraIds([]);
-                                            }}
-                                            className="
-                                                rounded-lg border border-slate-300 bg-white
-                                                px-3 py-1.5 text-sm text-slate-700
-                                                hover:bg-slate-50 disabled:opacity-50
-                                            "
-                                        >
-                                            Ander moment kiezen
-                                        </button>
-                                    </div>
+                                    </p>
+                                    <button
+                                        type="button"
+                                        disabled={scheduling}
+                                        onClick={() => setPendingPicks([])}
+                                        className="
+                                            rounded-lg border border-slate-300 bg-white
+                                            px-3 py-1.5 text-sm text-slate-700
+                                            hover:bg-slate-50 disabled:opacity-50
+                                        "
+                                    >
+                                        Keuzes wissen
+                                    </button>
                                 </div>
                             )
                         }
+
                     </section>
                 )
             }
