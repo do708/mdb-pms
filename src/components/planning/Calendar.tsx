@@ -39,6 +39,7 @@ interface CalendarProps {
     onDropDate?: (id: string, date: string) => void;
     view?: "week" | "month";
     onViewChange?: (view: "week" | "month") => void;
+    showStatusIcons?: boolean;
 }
 
 export default function Calendar({
@@ -47,6 +48,7 @@ export default function Calendar({
     onDropDate,
     view = "month",
     onViewChange,
+    showStatusIcons = true,
 }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -386,6 +388,9 @@ export default function Calendar({
                                                                     }
                                                                     draggable={
                                                                         !!onDropDate
+                                                                    }
+                                                                    showStatusIcon={
+                                                                        showStatusIcons
                                                                     }
                                                                 />
                                                             )

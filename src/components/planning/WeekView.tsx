@@ -70,6 +70,8 @@ interface WeekViewProps {
         hour?: number;
         engineerId: string;
     }) => void;
+    /** Statusiconen (klok/mail/vink/€) — alleen voor kantoor/admin. */
+    showStatusIcons?: boolean;
 }
 
 function toIsoDate(d: Date): string {
@@ -90,6 +92,7 @@ export default function WeekView({
     onMovePlan,
     pendingSchedule = null,
     onSchedulePending,
+    showStatusIcons = true,
 }: WeekViewProps) {
     const today = new Date();
     const todayIso = toIsoDate(today);
@@ -797,11 +800,15 @@ export default function WeekView({
                                                                                 <span className="text-[11px] font-bold opacity-95 tabular-nums leading-none pt-0.5 min-w-0 truncate">
                                                                                     {timeLabel}
                                                                                 </span>
-                                                                                <PlanningStatusIcon
-                                                                                    status={
-                                                                                        item.status
-                                                                                    }
-                                                                                />
+                                                                                {
+                                                                                    showStatusIcons && (
+                                                                                        <PlanningStatusIcon
+                                                                                            status={
+                                                                                                item.status
+                                                                                            }
+                                                                                        />
+                                                                                    )
+                                                                                }
                                                                             </div>
 
                                                                             <span className="text-[12px] block truncate font-semibold">

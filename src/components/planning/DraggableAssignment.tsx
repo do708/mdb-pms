@@ -7,11 +7,13 @@ import { PlanningStatusIcon } from "./PlanningStatusIcon";
 interface Props {
     item: any;
     draggable?: boolean;
+    showStatusIcon?: boolean;
 }
 
 export default function DraggableAssignment({
     item,
     draggable = false,
+    showStatusIcon = true,
 }: Props) {
     // De planning-API levert werkbonnen: de klant hangt onder project.
     const customer = item.customer ?? item.project?.customer;
@@ -51,7 +53,11 @@ export default function DraggableAssignment({
                     <span className="text-[11px] font-bold truncate min-w-0">
                         {engineers || "Geen monteur"}
                     </span>
-                    <PlanningStatusIcon status={item.status} />
+                    {
+                        showStatusIcon && (
+                            <PlanningStatusIcon status={item.status} />
+                        )
+                    }
                 </div>
                 <span className="text-[11px] block truncate opacity-95">
                     {customer?.name ?? "Onbekende klant"}

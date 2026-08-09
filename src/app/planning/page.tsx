@@ -1019,6 +1019,7 @@ export default function PlanningPage(){
                     }
                     view={view}
                     onViewChange={setView}
+                    showStatusIcons={canEdit}
                 />
             ) : (
                 <WeekView
@@ -1028,6 +1029,7 @@ export default function PlanningPage(){
                     weekStart={weekStart}
                     view={view}
                     onViewChange={setView}
+                    showStatusIcons={canEdit}
                     weekNavigation={{
                         rangeLabel: `${formatNlDate(weekStart, {
                             day: "numeric",
@@ -1061,9 +1063,13 @@ export default function PlanningPage(){
                 />
             )}
 
-            <WorkorderStatusIconLegend className="
-                rounded-xl border border-slate-200 bg-white px-3 py-2
-            " />
+            {
+                canEdit && (
+                    <WorkorderStatusIconLegend className="
+                        rounded-xl border border-slate-200 bg-white px-3 py-2
+                    " />
+                )
+            }
 
         </main>
 
