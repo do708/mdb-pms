@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import DeleteButton from "@/components/DeleteButton";
 import DocumentDropzone from "@/components/documents/DocumentDropzone";
+import {
+    PageHeader,
+    PageShell,
+    SpecListRow,
+    SpecPageCard,
+    SpecPanel,
+} from "@/components/ui/SpecLayout";
 
 import {
     FileText,
@@ -47,7 +54,6 @@ interface DocumentItem {
 
 
 
-
 export default function DocumentsPage(){
 
 
@@ -57,7 +63,6 @@ export default function DocumentsPage(){
 
     const [loading,setLoading] =
         useState(true);
-
 
 
 
@@ -107,229 +112,112 @@ export default function DocumentsPage(){
 
     return (
 
-        <main className="
-            space-y-6
-            p-6
-        ">
+        <PageShell>
 
 
-            <div>
-
-                <h1 className="
-                    text-2xl
-                    font-bold
-                ">
-
-                    Documenten
-
-                </h1>
-
-
-                <p className="
-                    text-gray-500
-                ">
-
-                    Opdrachten, rapporten en bestanden
-
-                </p>
-
-
-            </div>
-
-
+            <PageHeader
+                title="Documenten"
+                subtitle="Opdrachten, rapporten en bestanden"
+            />
 
 
             {
                 canUpload && (
 
-                    <DocumentDropzone
-
-                        onUploaded={loadDocuments}
-
-                    />
+                    <SpecPanel tone="slate" title="Uploaden">
+                        <DocumentDropzone
+                            onUploaded={loadDocuments}
+                        />
+                    </SpecPanel>
 
                 )
             }
 
 
+            <SpecPageCard>
 
+                <SpecPanel title="Document overzicht">
 
+                    {loading && (
+                        <p className="text-sm text-gray-500">
+                            Laden...
+                        </p>
+                    )}
 
-            <section className="
-                bg-white
-                border
-                rounded-xl
-                p-4
-            ">
+                    {!loading && documents.length === 0 && (
+                        <p className="text-sm text-gray-500">
+                            Nog geen documenten beschikbaar.
+                        </p>
+                    )}
 
+                    <div className="space-y-2">
 
+                        {documents.map((doc)=>(
 
-                <h2 className="
-                    font-bold
-                    mb-4
-                ">
+                            <SpecListRow
+                                key={doc.id}
+                                className="
+                                    flex flex-wrap items-center
+                                    justify-between gap-3
+                                "
+                            >
 
-                    Document overzicht
+                                <div className="flex gap-3 items-center min-w-0">
 
-                </h2>
+                                    <FileText size={20} className="shrink-0 text-gray-500" />
 
+                                    <div className="min-w-0">
 
+                                        <p className="text-sm font-semibold text-gray-900 truncate">
+                                            {doc.name}
+                                        </p>
 
+                                        <p className="text-xs text-gray-500 truncate">
+                                            {doc.workorder?.number ?? ""}
+                                            {" "}
+                                            {doc.workorder?.project?.customer?.name ?? ""}
+                                        </p>
 
-
-                {loading && (
-
-                    <p>
-                        Laden...
-                    </p>
-
-                )}
-
-
-
-
-
-                {!loading && documents.length === 0 && (
-
-                    <p className="text-gray-500">
-
-                        Nog geen documenten beschikbaar.
-
-                    </p>
-
-                )}
-
-
-
-
-
-
-                <div className="
-                    space-y-3
-                ">
-
-
-                    {documents.map((doc)=>(
-
-
-                        <div
-
-                            key={doc.id}
-
-                            className="
-                                border
-                                rounded-xl
-                                p-4
-                                flex
-                                items-center
-                                justify-between
-                            "
-
-                        >
-
-
-                            <div className="
-                                flex
-                                gap-3
-                                items-center
-                            ">
-
-
-                                <FileText size={24}/>
-
-
-
-                                <div>
-
-
-                                    <p className="font-semibold">
-
-                                        {doc.name}
-
-                                    </p>
-
-
-                                    <p className="
-                                        text-sm
-                                        text-gray-500
-                                    ">
-
-                                        {doc.workorder?.number ?? ""}
-                                        
-                                        {" "}
-
-                                        {doc.workorder?.project?.customer?.name ?? ""}
-
-                                    </p>
-
+                                    </div>
 
                                 </div>
 
+                                <div className="flex gap-3 items-center shrink-0">
 
-                            </div>
+                                    <a
+                                        href={doc.url}
+                                        target="_blank"
+                                        className="
+                                            text-sm text-sky-700
+                                            flex gap-1.5 items-center
+                                            hover:underline
+                                        "
+                                    >
+                                        Open
+                                        <ExternalLink size={14}/>
+                                    </a>
 
+                                    <DeleteButton
+                                        url={`/api/documents/${doc.id}`}
+                                        label={`document "${doc.name}"`}
+                                        onDeleted={loadDocuments}
+                                        compact
+                                    />
 
+                                </div>
 
+                            </SpecListRow>
 
+                        ))}
 
-                            <div className="
-                                flex
-                                gap-4
-                                items-center
-                            ">
+                    </div>
 
-                                <a
+                </SpecPanel>
 
-                                    href={doc.url}
-
-                                    target="_blank"
-
-                                    className="
-                                        text-blue-700
-                                        flex
-                                        gap-2
-                                        items-center
-                                    "
-
-                                >
-
-                                    Open
-
-                                    <ExternalLink size={16}/>
-
-                                </a>
-
-
-                                <DeleteButton
-
-                                    url={`/api/documents/${doc.id}`}
-
-                                    label={`document "${doc.name}"`}
-
-                                    onDeleted={loadDocuments}
-
-                                    compact
-
-                                />
-
-                            </div>
+            </SpecPageCard>
 
 
-
-                        </div>
-
-
-                    ))}
-
-
-                </div>
-
-
-
-            </section>
-
-
-        </main>
+        </PageShell>
 
     );
 

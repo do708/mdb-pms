@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
+import {
+    PageHeader,
+    PageShell,
+    SpecPageCard,
+    SpecPanel,
+} from "@/components/ui/SpecLayout";
 
 
 
@@ -103,11 +109,11 @@ export default function NotesPage(){
 
         return (
 
-            <main className="p-6">
-
-                Notities laden...
-
-            </main>
+            <PageShell>
+                <p className="text-sm text-gray-500">
+                    Notities laden...
+                </p>
+            </PageShell>
 
         );
 
@@ -118,149 +124,73 @@ export default function NotesPage(){
 
     return (
 
-        <main className="
-            p-6
-            space-y-6
-        ">
+        <PageShell>
 
 
-            <header>
+            <PageHeader
+                title="Interne notities"
+                subtitle="Alle opdrachten met een interne notitie"
+            />
 
 
-                <h1 className="
-                    text-2xl
-                    font-bold
-                ">
-
-                    Interne notities
-
-                </h1>
-
-
-                <p className="
-                    text-gray-500
-                ">
-
-                    Alle opdrachten met een interne notitie
-
-                </p>
-
-
-            </header>
-
-
-
-
-            {
-                workorders.length === 0 && (
-
-                    <p className="text-gray-500">
-
-                        Geen opdrachten met interne notities.
-
-                    </p>
-
-                )
-            }
-
-
-
-
-            <div className="space-y-4">
+            <SpecPageCard>
 
                 {
-                    workorders.map(workorder=>(
-
-
-                        <Link
-
-                            key={workorder.id}
-
-                            href={`/workorders/${workorder.id}`}
-
-                            className="
-                                block
-                                bg-amber-50
-                                border
-                                border-amber-300
-                                rounded-xl
-                                p-4
-                                hover:bg-amber-100
-                            "
-
-                        >
-
-
-                            <div className="
-                                flex
-                                justify-between
-                                mb-2
-                            ">
-
-
-                                <strong>
-
-                                    {workorder.number}
-                                    {" · "}
-                                    {workorder.title}
-
-                                </strong>
-
-
-                                <span className="
-                                    text-sm
-                                    text-gray-500
-                                ">
-
-                                    {workorder.status}
-
-                                </span>
-
-
-                            </div>
-
-
-                            <p className="
-                                text-sm
-                                text-gray-500
-                                mb-2
-                            ">
-
-                                🏢 {workorder.customer?.name ?? workorder.project?.customer.name ?? "—"}
-                                {" · "}
-                                📍 {workorder.location ?? workorder.project?.name ?? ""}
-
-                                {
-                                    workorder.assignedUser?.name && (
-
-                                        <>
-                                            {" · "}
-                                            👷 {workorder.assignedUser.name}
-                                        </>
-
-                                    )
-                                }
-
-                            </p>
-
-
-                            <p className="whitespace-pre-wrap">
-
-                                🔒 {workorder.internalNotes}
-
-                            </p>
-
-
-                        </Link>
-
-
-                    ))
+                    workorders.length === 0
+                    ? (
+                        <p className="text-sm text-gray-500">
+                            Geen opdrachten met interne notities.
+                        </p>
+                    )
+                    : (
+                        <div className="space-y-2">
+                            {
+                                workorders.map(workorder=>(
+                                    <Link
+                                        key={workorder.id}
+                                        href={`/workorders/${workorder.id}`}
+                                        className="block"
+                                    >
+                                        <SpecPanel tone="amber" className="hover:border-amber-300 transition">
+                                            <div className="flex flex-wrap justify-between gap-2">
+                                                <p className="text-sm font-semibold text-gray-900">
+                                                    {workorder.number}
+                                                    {" · "}
+                                                    {workorder.title}
+                                                </p>
+                                                <span className="text-xs text-gray-500">
+                                                    {workorder.status}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-gray-500">
+                                                {workorder.customer?.name
+                                                    ?? workorder.project?.customer.name
+                                                    ?? "—"}
+                                                {" · "}
+                                                {workorder.location
+                                                    ?? workorder.project?.name
+                                                    ?? ""}
+                                                {
+                                                    workorder.assignedUser?.name
+                                                    ? ` · ${workorder.assignedUser.name}`
+                                                    : ""
+                                                }
+                                            </p>
+                                            <p className="text-sm text-gray-900 whitespace-pre-wrap">
+                                                {workorder.internalNotes}
+                                            </p>
+                                        </SpecPanel>
+                                    </Link>
+                                ))
+                            }
+                        </div>
+                    )
                 }
 
-            </div>
+            </SpecPageCard>
 
 
-        </main>
+        </PageShell>
 
     );
 

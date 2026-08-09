@@ -815,117 +815,167 @@ export default function EditWorkorderPage(){
                 border
                 rounded-2xl
                 p-5
-                space-y-4
+                space-y-3
             ">
 
 
-                <div className="space-y-4">
+                <div className="
+                    rounded-xl border border-gray-200
+                    bg-white p-3 space-y-3
+                ">
 
-                    <h2 className="font-semibold text-gray-800 border-b pb-1">
+                    <h2 className="font-semibold text-sm text-gray-800">
                         Gegevens locatie &amp; contactpersoon
                     </h2>
 
-                    <label className="block">
-                        <span className="text-sm text-gray-600">
-                            Opdrachtgever
-                        </span>
-                        <select
-                            value={customerId}
-                            onChange={(e)=>setCustomerId(e.target.value)}
-                            className="w-full border rounded-xl p-3 mt-1 bg-white"
-                        >
-                            <option value="">Kies opdrachtgever</option>
-                            {customers.map(customer=>(
-                                <option
-                                    key={customer.id}
-                                    value={customer.id}
-                                >
-                                    {customer.name}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
 
-                    <label className="block">
-                        <span className="text-sm text-gray-600">
-                            Locatie / filiaalnaam
-                        </span>
-                        <input
-                            value={title}
-                            onChange={(e)=>setTitle(e.target.value)}
-                            placeholder="Bijv. Filiaal Almere Centrum"
-                            className="w-full border rounded-xl p-3 mt-1"
-                        />
-                    </label>
+                        <label className="min-w-0 block sm:col-span-2">
+                            <span className="text-xs text-gray-500">
+                                Opdrachtgever
+                            </span>
+                            <select
+                                value={customerId}
+                                onChange={(e)=>setCustomerId(e.target.value)}
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm bg-white
+                                    text-gray-900
+                                "
+                            >
+                                <option value="">Kies opdrachtgever</option>
+                                {customers.map(customer=>(
+                                    <option
+                                        key={customer.id}
+                                        value={customer.id}
+                                    >
+                                        {customer.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
 
-                    <div className="flex flex-wrap gap-3">
-                        <label className="block flex-1 min-w-[180px]">
-                            <span className="text-sm text-gray-600">Straat</span>
+                        <label className="min-w-0 block sm:col-span-2">
+                            <span className="text-xs text-gray-500">
+                                Locatie / filiaalnaam
+                            </span>
+                            <input
+                                value={title}
+                                onChange={(e)=>setTitle(e.target.value)}
+                                placeholder="Bijv. Filiaal Almere Centrum"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                    placeholder:text-gray-400
+                                "
+                            />
+                        </label>
+
+                        <label className="min-w-0 block">
+                            <span className="text-xs text-gray-500">
+                                Straat
+                            </span>
                             <input
                                 value={straat}
                                 onChange={(e)=>setStraat(e.target.value)}
-                                className="w-full border rounded-xl p-3 mt-1"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                "
                             />
                         </label>
-                        <label className="block w-28">
-                            <span className="text-sm text-gray-600">Huisnr.</span>
+
+                        <label className="min-w-0 block">
+                            <span className="text-xs text-gray-500">
+                                Huisnr.
+                            </span>
                             <input
                                 value={huisnummer}
                                 onChange={(e)=>setHuisnummer(e.target.value)}
-                                className="w-full border rounded-xl p-3 mt-1"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                "
                             />
                         </label>
-                    </div>
 
-                    <div className="flex flex-wrap gap-3">
-                        <label className="block w-36">
-                            <span className="text-sm text-gray-600">Postcode</span>
+                        <label className="min-w-0 block">
+                            <span className="text-xs text-gray-500">
+                                Postcode
+                            </span>
                             <input
                                 value={postcode}
                                 onChange={(e)=>setPostcode(e.target.value)}
-                                className="w-full border rounded-xl p-3 mt-1"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                "
                             />
                         </label>
-                        <label className="block flex-1 min-w-[180px]">
-                            <span className="text-sm text-gray-600">Plaats</span>
+
+                        <label className="min-w-0 block">
+                            <span className="text-xs text-gray-500">
+                                Plaats
+                            </span>
                             <input
                                 value={city}
                                 onChange={(e)=>setCity(e.target.value)}
-                                className="w-full border rounded-xl p-3 mt-1"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                "
                             />
                         </label>
-                    </div>
 
-                    <label className="block">
-                        <span className="text-sm text-gray-600">Contactpersoon:</span>
-                        <input
-                            value={contactPersoon}
-                            onChange={(e)=>setContactPersoon(e.target.value)}
-                            placeholder="Naam contactpersoon"
-                            className="w-full border rounded-xl p-3 mt-1"
-                        />
-                    </label>
+                        <label className="min-w-0 block sm:col-span-2">
+                            <span className="text-xs text-gray-500">
+                                Contactpersoon
+                            </span>
+                            <input
+                                value={contactPersoon}
+                                onChange={(e)=>setContactPersoon(e.target.value)}
+                                placeholder="Naam contactpersoon"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                    placeholder:text-gray-400
+                                "
+                            />
+                        </label>
 
-                    <div className="flex flex-wrap gap-3">
-                        <label className="block flex-1 min-w-[180px]">
-                            <span className="text-sm text-gray-600">E-mailadres</span>
+                        <label className="min-w-0 block">
+                            <span className="text-xs text-gray-500">
+                                E-mailadres
+                            </span>
                             <input
                                 type="email"
                                 value={contactEmail}
                                 onChange={(e)=>setContactEmail(e.target.value)}
                                 placeholder="naam@bedrijf.nl"
-                                className="w-full border rounded-xl p-3 mt-1"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                    placeholder:text-gray-400
+                                "
                             />
                         </label>
-                        <label className="block flex-1 min-w-[150px]">
-                            <span className="text-sm text-gray-600">Telefoonnummer</span>
+
+                        <label className="min-w-0 block">
+                            <span className="text-xs text-gray-500">
+                                Telefoonnummer
+                            </span>
                             <input
                                 value={contactPhone}
                                 onChange={(e)=>setContactPhone(e.target.value)}
                                 placeholder="06 ..."
-                                className="w-full border rounded-xl p-3 mt-1"
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                    placeholder:text-gray-400
+                                "
                             />
                         </label>
+
                     </div>
 
                 </div>
@@ -934,13 +984,10 @@ export default function EditWorkorderPage(){
                 {
                     aanvraagSnapshot && (
                         <div className="
-                            border
-                            rounded-xl
-                            p-4
-                            bg-slate-50
-                            space-y-2
+                            rounded-xl border border-gray-200
+                            bg-slate-50 p-3 space-y-3
                         ">
-                            <h2 className="font-semibold text-gray-800 border-b pb-1">
+                            <h2 className="font-semibold text-sm text-gray-800">
                                 Specificatie uit aanvraag
                             </h2>
                             <AanvraagSpecificatiesOverzicht
@@ -951,91 +998,68 @@ export default function EditWorkorderPage(){
                 }
 
 
-                <label className="block">
-
-                    <span className="text-sm text-gray-600">
-
+                <div className="
+                    rounded-xl border border-gray-200
+                    bg-white p-3 space-y-2
+                ">
+                    <h2 className="font-semibold text-sm text-gray-800">
                         Werkzaamheden (voor de klant)
-
-                    </span>
-
-                    <span className="block text-xs text-gray-400 mb-1">
-                        Korte samenvatting voor de afspraakmail (bijv. aantal × formaat + locatie).
-                        Pas aan indien nodig; het overzicht hierboven blijft leidend voor de uitvoering.
-                    </span>
-
+                    </h2>
+                    <p className="text-xs text-gray-500 leading-snug">
+                        Korte samenvatting voor de afspraakmail
+                        (bijv. aantal × formaat + locatie). Pas aan
+                        indien nodig; het overzicht hierboven blijft
+                        leidend voor de uitvoering.
+                    </p>
                     <textarea
-
                         value={description}
-
                         onChange={(e)=>setDescription(e.target.value)}
-
                         placeholder='Bijv. 2× 50" schermen in de kantine, 1× kiosk in de entree'
-
                         className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-1
-                            min-h-24
+                            w-full border border-gray-200 rounded-lg
+                            p-2.5 text-sm text-gray-900 min-h-24
+                            placeholder:text-gray-400
                         "
-
                     />
-
-                </label>
-
-
-                <label className="block mt-4">
-
-                    <span className="text-sm text-gray-600">
-
-                        Werkinstructie monteur
-
-                    </span>
-
-                    <span className="block text-xs text-gray-400 mb-1">
-                        Interne instructie voor de monteur. Komt niet in de klant-mail.
-                    </span>
-
-                    <textarea
-
-                        value={werkInstructie}
-
-                        onChange={(e)=>setWerkInstructie(e.target.value)}
-
-                        placeholder="Bijv. sleutel ophalen bij receptie, ladder meenemen"
-
-                        className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-1
-                            min-h-24
-                        "
-
-                    />
-
-                </label>
+                </div>
 
 
                 <div className="
-                    border
-                    rounded-2xl
-                    p-5
-                    bg-gray-50
-                    space-y-4
-                    min-w-0
-                    overflow-hidden
+                    rounded-xl border border-indigo-200
+                    bg-indigo-50/60 p-3 space-y-2
+                ">
+                    <h2 className="font-semibold text-sm text-gray-800">
+                        Werkinstructie monteur
+                    </h2>
+                    <p className="text-xs text-gray-500 leading-snug">
+                        Interne instructie voor de monteur.
+                        Komt niet in de klant-mail.
+                    </p>
+                    <textarea
+                        value={werkInstructie}
+                        onChange={(e)=>setWerkInstructie(e.target.value)}
+                        placeholder="Bijv. sleutel ophalen bij receptie, ladder meenemen"
+                        className="
+                            w-full border border-gray-200 rounded-lg
+                            p-2.5 text-sm text-gray-900 min-h-24 bg-white
+                            placeholder:text-gray-400
+                        "
+                    />
+                </div>
+
+
+                <div className="
+                    rounded-xl border border-gray-200
+                    bg-slate-50 p-3 space-y-3
                 ">
 
                     <div>
-                        <h2 className="font-semibold text-gray-800">
+                        <h2 className="font-semibold text-sm text-gray-800">
                             Planning
                         </h2>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                            Kies een vrij moment in de weekplanning. Datum en monteur zet je daar.
+                        <p className="text-xs text-gray-500 mt-0.5 leading-snug">
+                            Kies een vrij moment in de weekplanning.
+                            Datum en monteur zet je daar.
                         </p>
                     </div>
 

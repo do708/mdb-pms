@@ -6,6 +6,16 @@ import { useSession } from "next-auth/react";
 import { ChevronDown, ChevronRight, Folder } from "lucide-react";
 
 import { BudgetBadge } from "@/components/projects/ProjectBudget";
+import {
+    PageHeader,
+    PageShell,
+    SpecFieldLabel,
+    SpecListRow,
+    SpecPageCard,
+    SpecPanel,
+    specInputClassName,
+    specSelectClassName,
+} from "@/components/ui/SpecLayout";
 
 interface ProjectSummary {
     id: string;
@@ -128,9 +138,10 @@ export default function ProjectsPage() {
         const q = search.toLowerCase().trim();
 
         return projects.filter((project) => {
-            const haystack = `${project.name} ${project.location || ""} ${project.customer.name} ${project.number}`
-                .toLowerCase()
-                .trim();
+            const haystack =
+                `${project.name} ${project.location || ""} ${project.customer.name} ${project.number}`
+                    .toLowerCase()
+                    .trim();
 
             return haystack.includes(q);
         });
@@ -231,23 +242,18 @@ export default function ProjectsPage() {
     ) {
         if (groups.length === 0) {
             return (
-                <p className="p-5 bg-white border rounded-xl text-gray-500 text-sm">
-                    {emptyMessage}
-                </p>
+                <p className="text-sm text-gray-500">{emptyMessage}</p>
             );
         }
 
         return (
-            <div className="space-y-3">
+            <div className="space-y-2">
                 {groups.map((group) => {
                     const key = folderKey(section, group.customerId);
                     const open = openFolders[key] !== false;
 
                     return (
-                        <div
-                            key={key}
-                            className="bg-white border rounded-2xl overflow-hidden"
-                        >
+                        <SpecPanel key={key} tone="white" className="!p-0 overflow-hidden">
                             <button
                                 type="button"
                                 onClick={() =>
@@ -256,7 +262,7 @@ export default function ProjectsPage() {
                                         [key]: !open,
                                     }))
                                 }
-                                className="w-full flex items-center gap-3 px-5 py-4 min-h-[52px] hover:bg-gray-50 active:bg-gray-100 text-left"
+                                className="w-full flex items-center gap-3 px-3 py-3 min-h-[52px] hover:bg-gray-50 active:bg-gray-100 text-left"
                             >
                                 {open ? (
                                     <ChevronDown size={20} />
@@ -276,7 +282,7 @@ export default function ProjectsPage() {
                                 />
 
                                 <div className="flex-1">
-                                    <div className="font-bold">
+                                    <div className="font-semibold text-sm text-gray-800">
                                         {group.customerName}
                                     </div>
                                     <div className="text-xs text-gray-500">
@@ -287,64 +293,66 @@ export default function ProjectsPage() {
                             </button>
 
                             {open ? (
-                                <div className="divide-y border-t">
+                                <div className="space-y-2 border-t px-3 py-3">
                                     {group.items.map((project) => (
                                         <Link
                                             key={project.id}
                                             href={`/projects/${project.id}`}
-                                            className="block px-5 py-4 pl-10 sm:pl-12 hover:bg-[#fce7f3]/40 active:bg-[#fce7f3]/60"
+                                            className="block"
                                         >
-                                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                                <div>
-                                                    <h2 className="font-bold">
-                                                        {project.name}
-                                                        {project.location ? (
-                                                            <span className="font-normal text-gray-600">
-                                                                {" "}
-                                                                ·{" "}
-                                                                {
-                                                                    project.location
-                                                                }
-                                                            </span>
-                                                        ) : null}
-                                                    </h2>
-                                                    <p className="text-sm text-gray-500">
-                                                        {project.number}
-                                                    </p>
-                                                </div>
+                                            <SpecListRow className="hover:bg-[#fce7f3]/40 active:bg-[#fce7f3]/60">
+                                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                                    <div>
+                                                        <h2 className="font-bold text-sm">
+                                                            {project.name}
+                                                            {project.location ? (
+                                                                <span className="font-normal text-gray-600">
+                                                                    {" "}
+                                                                    ·{" "}
+                                                                    {
+                                                                        project.location
+                                                                    }
+                                                                </span>
+                                                            ) : null}
+                                                        </h2>
+                                                        <p className="text-sm text-gray-500">
+                                                            {project.number}
+                                                        </p>
+                                                    </div>
 
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="text-xs bg-gray-100 px-2 py-1 rounded-lg">
-                                                        {statusLabel(
-                                                            project.status
-                                                        )}
-                                                    </span>
-                                                    {isOffice ? (
-                                                        <BudgetBadge
-                                                            gebruikt={
-                                                                project.gebruikteUren
-                                                            }
-                                                            geoffreerd={
-                                                                project.geoffreerdeUren ||
-                                                                null
-                                                            }
-                                                            eenheid="uur"
-                                                        />
-                                                    ) : (
-                                                        <span className="text-xs font-medium text-gray-700 bg-gray-50 border rounded-lg px-2 py-1">
-                                                            {project.gebruikteUren.toFixed(
-                                                                1
-                                                            )}{" "}
-                                                            uur geboekt
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <span className="text-xs bg-gray-100 px-2 py-1 rounded-lg">
+                                                            {statusLabel(
+                                                                project.status
+                                                            )}
                                                         </span>
-                                                    )}
+                                                        {isOffice ? (
+                                                            <BudgetBadge
+                                                                gebruikt={
+                                                                    project.gebruikteUren
+                                                                }
+                                                                geoffreerd={
+                                                                    project.geoffreerdeUren ||
+                                                                    null
+                                                                }
+                                                                eenheid="uur"
+                                                            />
+                                                        ) : (
+                                                            <span className="text-xs font-medium text-gray-700 bg-gray-50 border rounded-lg px-2 py-1">
+                                                                {project.gebruikteUren.toFixed(
+                                                                    1
+                                                                )}{" "}
+                                                                uur geboekt
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </SpecListRow>
                                         </Link>
                                     ))}
                                 </div>
                             ) : null}
-                        </div>
+                        </SpecPanel>
                     );
                 })}
             </div>
@@ -352,218 +360,223 @@ export default function ProjectsPage() {
     }
 
     return (
-        <div className="space-y-6 -m-2 sm:-m-0">
-            <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold">Projecten</h1>
-                    <p className="text-gray-500">
-                        {isOffice
-                            ? "Grotere klussen met uren, offerte en materialen per opdrachtgever"
-                            : "Openstaande projecten — uren boeken en overzicht per monteur"}
-                    </p>
-                </div>
-
-                {isOffice ? (
-                    <Link
-                        href="/projects/new"
-                        className="bg-[#d6007e] text-white px-5 py-4 min-h-[48px] rounded-xl font-bold text-center w-full sm:w-auto flex items-center justify-center"
-                    >
-                        + Nieuw project
-                    </Link>
-                ) : null}
-            </header>
+        <PageShell>
+            <PageHeader
+                title="Projecten"
+                subtitle={
+                    isOffice
+                        ? "Grotere klussen met uren, offerte en materialen per opdrachtgever"
+                        : "Openstaande projecten — uren boeken en overzicht per monteur"
+                }
+                actions={
+                    isOffice ? (
+                        <Link
+                            href="/projects/new"
+                            className="bg-[#d6007e] text-white px-5 py-4 min-h-[48px] rounded-xl font-bold text-center w-full sm:w-auto flex items-center justify-center"
+                        >
+                            + Nieuw project
+                        </Link>
+                    ) : null
+                }
+            />
 
             {role === "engineer" ? (
-                <section className="bg-white border rounded-2xl p-5 space-y-4">
-                    <h2 className="font-bold text-lg">Uren boeken</h2>
-
-                    <div className="grid gap-3 sm:grid-cols-2">
-                        <label className="block sm:col-span-2">
-                            <span className="text-sm font-medium text-gray-700 mb-1 block">
-                                Project
-                            </span>
-                            <select
-                                value={urenProjectId}
-                                onChange={(e) =>
-                                    setUrenProjectId(e.target.value)
-                                }
-                                className="border rounded-xl p-3 w-full min-h-[48px] bg-white"
-                            >
-                            <option value="">Kies project</option>
-                            {activeProjects.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                    {p.name}
-                                    {p.location ? ` — ${p.location}` : ""}
-                                </option>
-                            ))}
-                            </select>
-                        </label>
-
-                        <label className="block">
-                            <span className="text-sm font-medium text-gray-700 mb-1 block">
-                                Datum
-                            </span>
-                            <input
-                                type="date"
-                                value={urenDatum}
-                                onChange={(e) => setUrenDatum(e.target.value)}
-                                className="border rounded-xl p-3 w-full max-w-full min-w-0 min-h-[48px] bg-white box-border"
-                            />
-                        </label>
-
-                        <label className="block">
-                            <span className="text-sm font-medium text-gray-700 mb-1 block">
-                                Uren
-                            </span>
-                            <input
-                                type="text"
-                                inputMode="decimal"
-                                value={urenAantal}
-                                onChange={(e) => setUrenAantal(e.target.value)}
-                                placeholder="Bijv. 4 of 1.30"
-                                className="border rounded-xl p-3 w-full min-h-[48px] bg-white"
-                            />
-                        </label>
-
-                        <div className="sm:col-span-2">
-                            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                <span className="text-sm font-medium text-gray-700">
-                                    Monteurs (meerdere mogelijk)
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setGeselecteerdeMonteurs(
-                                            engineers.map((e) => e.id)
-                                        )
+                <SpecPageCard>
+                    <SpecPanel title="Uren boeken" tone="indigo">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            <label className="block sm:col-span-2">
+                                <SpecFieldLabel>Project</SpecFieldLabel>
+                                <select
+                                    value={urenProjectId}
+                                    onChange={(e) =>
+                                        setUrenProjectId(e.target.value)
                                     }
-                                    className="text-xs text-[#d6007e] font-medium"
+                                    className={`${specSelectClassName} min-h-[48px]`}
                                 >
-                                    Alles selecteren
-                                </button>
-                            </div>
-                            <p className="text-xs text-gray-500 mb-2">
-                                Je mag uren voor collega&apos;s boeken. In het
-                                urenoverzicht blijft zichtbaar{" "}
-                                <span className="font-medium text-gray-600">
-                                    wie de uren heeft ingevoerd
-                                </span>
-                                .
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                                {engineers.map((eng) => {
-                                    const checked =
-                                        geselecteerdeMonteurs.includes(eng.id);
-                                    const label =
-                                        eng.name?.trim() || "Monteur";
+                                    <option value="">Kies project</option>
+                                    {activeProjects.map((p) => (
+                                        <option key={p.id} value={p.id}>
+                                            {p.name}
+                                            {p.location
+                                                ? ` — ${p.location}`
+                                                : ""}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
 
-                                    return (
-                                        <label
-                                            key={eng.id}
-                                            className={`
-                                                inline-flex items-center gap-2
-                                                px-3 py-2 rounded-xl border
-                                                cursor-pointer text-sm min-h-[44px]
-                                                ${
-                                                    checked
-                                                        ? "bg-[#fce7f3] border-[#d6007e] text-[#d6007e]"
-                                                        : "bg-white border-gray-200"
-                                                }
-                                            `}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={checked}
-                                                onChange={() =>
-                                                    setGeselecteerdeMonteurs(
-                                                        (prev) =>
-                                                            prev.includes(
-                                                                eng.id
-                                                            )
-                                                                ? prev.filter(
-                                                                      (id) =>
-                                                                          id !==
-                                                                          eng.id
-                                                                  )
-                                                                : [
-                                                                      ...prev,
-                                                                      eng.id,
-                                                                  ]
-                                                    )
-                                                }
-                                                className="rounded"
-                                            />
-                                            {label}
-                                        </label>
-                                    );
-                                })}
+                            <label className="block">
+                                <SpecFieldLabel>Datum</SpecFieldLabel>
+                                <input
+                                    type="date"
+                                    value={urenDatum}
+                                    onChange={(e) =>
+                                        setUrenDatum(e.target.value)
+                                    }
+                                    className={`${specInputClassName} max-w-full min-w-0 min-h-[48px] box-border`}
+                                />
+                            </label>
+
+                            <label className="block">
+                                <SpecFieldLabel>Uren</SpecFieldLabel>
+                                <input
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={urenAantal}
+                                    onChange={(e) =>
+                                        setUrenAantal(e.target.value)
+                                    }
+                                    placeholder="Bijv. 4 of 1.30"
+                                    className={`${specInputClassName} min-h-[48px]`}
+                                />
+                            </label>
+
+                            <div className="sm:col-span-2">
+                                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                    <SpecFieldLabel>
+                                        Monteurs (meerdere mogelijk)
+                                    </SpecFieldLabel>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setGeselecteerdeMonteurs(
+                                                engineers.map((e) => e.id)
+                                            )
+                                        }
+                                        className="text-xs text-[#d6007e] font-medium"
+                                    >
+                                        Alles selecteren
+                                    </button>
+                                </div>
+                                <p className="text-xs text-gray-500 mb-2">
+                                    Je mag uren voor collega&apos;s boeken. In
+                                    het urenoverzicht blijft zichtbaar{" "}
+                                    <span className="font-medium text-gray-600">
+                                        wie de uren heeft ingevoerd
+                                    </span>
+                                    .
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                    {engineers.map((eng) => {
+                                        const checked =
+                                            geselecteerdeMonteurs.includes(
+                                                eng.id
+                                            );
+                                        const label =
+                                            eng.name?.trim() || "Monteur";
+
+                                        return (
+                                            <label
+                                                key={eng.id}
+                                                className={`
+                                                    inline-flex items-center gap-2
+                                                    px-3 py-2 rounded-xl border
+                                                    cursor-pointer text-sm min-h-[44px]
+                                                    ${
+                                                        checked
+                                                            ? "bg-[#fce7f3] border-[#d6007e] text-[#d6007e]"
+                                                            : "bg-white border-gray-200"
+                                                    }
+                                                `}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checked}
+                                                    onChange={() =>
+                                                        setGeselecteerdeMonteurs(
+                                                            (prev) =>
+                                                                prev.includes(
+                                                                    eng.id
+                                                                )
+                                                                    ? prev.filter(
+                                                                          (
+                                                                              id
+                                                                          ) =>
+                                                                              id !==
+                                                                              eng.id
+                                                                      )
+                                                                    : [
+                                                                          ...prev,
+                                                                          eng.id,
+                                                                      ]
+                                                        )
+                                                    }
+                                                    className="rounded"
+                                                />
+                                                {label}
+                                            </label>
+                                        );
+                                    })}
+                                </div>
                             </div>
+
+                            <label className="block sm:col-span-2">
+                                <SpecFieldLabel>
+                                    Omschrijving (optioneel)
+                                </SpecFieldLabel>
+                                <input
+                                    value={urenOmschrijving}
+                                    onChange={(e) =>
+                                        setUrenOmschrijving(e.target.value)
+                                    }
+                                    placeholder="Wat heb je gedaan?"
+                                    className={`${specInputClassName} min-h-[48px]`}
+                                />
+                            </label>
                         </div>
 
-                        <label className="block sm:col-span-2">
-                            <span className="text-sm font-medium text-gray-700 mb-1 block">
-                                Omschrijving (optioneel)
-                            </span>
-                            <input
-                                value={urenOmschrijving}
-                                onChange={(e) =>
-                                    setUrenOmschrijving(e.target.value)
-                                }
-                                placeholder="Wat heb je gedaan?"
-                                className="border rounded-xl p-3 w-full min-h-[48px] bg-white"
-                            />
-                        </label>
-                    </div>
-
-                    <button
-                        type="button"
-                        onClick={boekUren}
-                        disabled={urenSaving}
-                        className="w-full bg-[#d6007e] text-white rounded-xl px-6 py-4 min-h-[48px] font-bold text-base disabled:opacity-60"
-                    >
-                        {urenSaving ? "Opslaan…" : "Uren opslaan"}
-                    </button>
-                </section>
+                        <button
+                            type="button"
+                            onClick={boekUren}
+                            disabled={urenSaving}
+                            className="w-full bg-[#d6007e] text-white rounded-xl px-6 py-4 min-h-[48px] font-bold text-base disabled:opacity-60"
+                        >
+                            {urenSaving ? "Opslaan…" : "Uren opslaan"}
+                        </button>
+                    </SpecPanel>
+                </SpecPageCard>
             ) : null}
 
             <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Zoeken op project, locatie of opdrachtgever…"
-                className="w-full border rounded-xl p-3 min-h-[48px] bg-white"
+                className={`${specInputClassName} min-h-[48px]`}
             />
 
-            <div className="space-y-8">
-                <div className="space-y-3">
-                    <h2 className="text-lg font-bold">Lopende projecten</h2>
-                    {loading
-                        ? (
-                            <p className="p-5 bg-white border rounded-xl">
-                                Projecten laden…
-                            </p>
+            <div className="space-y-6">
+                <SpecPageCard>
+                    <h2 className="font-semibold text-sm text-gray-800">
+                        Lopende projecten
+                    </h2>
+                    {loading ? (
+                        <p className="text-sm text-gray-500">
+                            Projecten laden…
+                        </p>
+                    ) : (
+                        renderProjectFolders(
+                            "active",
+                            groupedActive,
+                            "Geen lopende projecten gevonden."
                         )
-                        : renderProjectFolders(
-                              "active",
-                              groupedActive,
-                              "Geen lopende projecten gevonden."
-                          )}
-                </div>
+                    )}
+                </SpecPageCard>
 
                 {isOffice ? (
-                <div className="space-y-3">
-                    <h2 className="text-lg font-bold text-gray-700">
-                        Afgeronde projecten
-                    </h2>
-                    {loading
-                        ? null
-                        : renderProjectFolders(
-                              "completed",
-                              groupedCompleted,
-                              "Nog geen afgeronde projecten."
-                          )}
-                </div>
+                    <SpecPageCard>
+                        <h2 className="font-semibold text-sm text-gray-800">
+                            Afgeronde projecten
+                        </h2>
+                        {loading
+                            ? null
+                            : renderProjectFolders(
+                                  "completed",
+                                  groupedCompleted,
+                                  "Nog geen afgeronde projecten."
+                              )}
+                    </SpecPageCard>
                 ) : null}
             </div>
-        </div>
+        </PageShell>
     );
 }

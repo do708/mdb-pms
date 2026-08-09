@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import {
-    isProjectHardwareBesteld,
     normalizeProjectHardwareStatuses,
 } from "@/lib/aanvraag/hardwareStatus";
 import {
@@ -61,16 +60,39 @@ function str(value: unknown): string {
 function Field({
     label,
     value,
+    href,
+    external,
 }: {
     label: string;
     value: unknown;
+    /** Optioneel: maak waarde een link (mailto:/tel:/url). */
+    href?: string;
+    /** Open link in nieuw tabblad (bijv. Google Maps). */
+    external?: boolean;
 }) {
     const text = str(value);
     if (!text) return null;
     return (
         <div className="min-w-0">
             <p className="text-xs text-gray-500">{label}</p>
-            <p className="text-sm text-gray-900 break-words">{text}</p>
+            {href ? (
+                <a
+                    href={href}
+                    {...(
+                        external
+                        ? {
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                        }
+                        : {}
+                    )}
+                    className="text-sm text-sky-700 hover:underline break-words"
+                >
+                    {text}
+                </a>
+            ) : (
+                <p className="text-sm text-gray-900 break-words">{text}</p>
+            )}
         </div>
     );
 }
@@ -483,15 +505,33 @@ export default function AanvraagSpecificatiesOverzicht({
                             label="Locatie / filiaalnaam"
                             value={locatie?.locatie}
                         />
-                        <Field
-                            label="Straat"
-                            value={[
+                        {(() => {
+                            const straatRegel = [
                                 locatie?.straat,
                                 locatie?.huisnummer,
                             ]
                                 .filter(Boolean)
-                                .join(" ")}
-                        />
+                                .join(" ");
+                            const mapsQuery = [
+                                straatRegel,
+                                locatie?.postcode,
+                                locatie?.plaats,
+                            ]
+                                .filter(Boolean)
+                                .join(", ");
+                            return (
+                                <Field
+                                    label="Straat"
+                                    value={straatRegel}
+                                    href={
+                                        mapsQuery
+                                        ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`
+                                        : undefined
+                                    }
+                                    external
+                                />
+                            );
+                        })()}
                         <Field
                             label="Postcode"
                             value={locatie?.postcode}
@@ -501,10 +541,23 @@ export default function AanvraagSpecificatiesOverzicht({
                             label="Contactpersoon"
                             value={contactPersoon}
                         />
-                        <Field label="E-mailadres" value={contactEmail} />
+                        <Field
+                            label="E-mailadres"
+                            value={contactEmail}
+                            href={
+                                contactEmail
+                                ? `mailto:${contactEmail}`
+                                : undefined
+                            }
+                        />
                         <Field
                             label="Telefoonnummer"
                             value={contactPhone}
+                            href={
+                                contactPhone
+                                ? `tel:${String(contactPhone).replace(/\s+/g, "")}`
+                                : undefined
+                            }
                         />
                     </div>
                 </Section>
@@ -625,18 +678,29 @@ export default function AanvraagSpecificatiesOverzicht({
                     title="Hardware"
                     kleur="bg-fuchsia-50 border-fuchsia-200"
                 >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div className="space-y-2">
+                        <p className="text-xs font-medium text-fuchsia-800/70">
+                            Hardware status
+                        </p>
+
                         {hardwareStatus ? (
-                            <div className="min-w-0 space-y-1.5">
-                                <p className="text-xs font-medium text-fuchsia-800/70">
-                                    Hardware status
-                                </p>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {normalizeProjectHardwareStatuses(
-                                        hardwareStatus
-                                    ).map((status) => (
+                            <div className="flex flex-col gap-2">
+                                {normalizeProjectHardwareStatuses(
+                                    hardwareStatus
+                                ).map((status) => {
+                                    const isBesteld =
+                                        status
+                                        === "Besteld / Onderweg";
+                                    const toonLevering =
+                                        isBesteld
+                                        && !!hardwareLevering;
+
+                                    return (
+                                        <div
+                                            key={status}
+                                            className="space-y-1.5"
+                                        >
                                             <span
-                                                key={status}
                                                 className="
                                                     inline-flex items-center
                                                     rounded-md border border-fuchsia-300
@@ -646,14 +710,33 @@ export default function AanvraagSpecificatiesOverzicht({
                                             >
                                                 {status}
                                             </span>
-                                        ))}
-                                </div>
+                                            {toonLevering ? (
+                                                <div className="
+                                                    ml-1 pl-3
+                                                    border-l-2 border-sky-300
+                                                    space-y-1
+                                                ">
+                                                    <p className="text-[11px] font-medium text-sky-800/80">
+                                                        Levering bij Besteld / Onderweg
+                                                    </p>
+                                                    <span
+                                                        className="
+                                                            inline-flex items-center
+                                                            rounded-md border border-sky-300
+                                                            bg-sky-50 px-2.5 py-1
+                                                            text-sm font-semibold text-sky-900
+                                                        "
+                                                    >
+                                                        {hardwareLevering}
+                                                    </span>
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ) : hardwareBesteldLegacy ? (
-                            <div className="min-w-0 space-y-1.5">
-                                <p className="text-xs font-medium text-fuchsia-800/70">
-                                    Hardware besteld
-                                </p>
+                            <div className="space-y-1.5">
                                 <span
                                     className="
                                         inline-flex items-center
@@ -664,12 +747,31 @@ export default function AanvraagSpecificatiesOverzicht({
                                 >
                                     {hardwareBesteldLegacy}
                                 </span>
+                                {hardwareLevering ? (
+                                    <div className="
+                                        ml-1 pl-3
+                                        border-l-2 border-sky-300
+                                        space-y-1
+                                    ">
+                                        <p className="text-[11px] font-medium text-sky-800/80">
+                                            Levering
+                                        </p>
+                                        <span
+                                            className="
+                                                inline-flex items-center
+                                                rounded-md border border-sky-300
+                                                bg-sky-50 px-2.5 py-1
+                                                text-sm font-semibold text-sky-900
+                                            "
+                                        >
+                                            {hardwareLevering}
+                                        </span>
+                                    </div>
+                                ) : null}
                             </div>
-                        ) : null}
-                        {hardwareLevering
-                        && isProjectHardwareBesteld(hardwareStatus) ? (
-                            <div className="min-w-0 space-y-1.5">
-                                <p className="text-xs font-medium text-fuchsia-800/70">
+                        ) : hardwareLevering ? (
+                            <div className="space-y-1.5">
+                                <p className="text-[11px] font-medium text-sky-800/80">
                                     Hardware levering
                                 </p>
                                 <span

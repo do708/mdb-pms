@@ -120,7 +120,7 @@ interface Workorder {
 
 
 
-// Eén materiaalregel: aantal/omschrijving + statuschips.
+// Eén materiaalregel: compact — label + input + chips.
 // Leeg tekstvak = n.v.t. Ingevuld = (Geleverd én Klaargezet) óf Op locatie.
 function MateriaalRij({
     label,
@@ -174,15 +174,15 @@ function MateriaalRij({
                 disabled={disabled}
                 onClick={onToggle}
                 className={`
-                    rounded-md px-2.5 py-1.5 text-[11px] font-semibold
-                    border transition
+                    rounded px-1.5 py-0.5 text-[10px] font-semibold
+                    border transition whitespace-nowrap
                     disabled:opacity-35 disabled:cursor-not-allowed
                     ${
                         active
                         ? "bg-emerald-100 text-emerald-800 border-emerald-300"
                         : warn
-                        ? "bg-white text-slate-600 border-red-300"
-                        : "bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-white"
+                        ? "bg-white text-gray-600 border-red-300"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
                     }
                 `}
             >
@@ -193,44 +193,40 @@ function MateriaalRij({
 
     return (
         <div className={`
-            rounded-lg border px-3 py-2.5 space-y-2
-            ${nietInOrde ? "border-red-200 bg-red-50/50" : "border-gray-200 bg-white"}
+            flex flex-col gap-1 py-1.5
+            border-b border-gray-100 last:border-0
+            ${nietInOrde ? "bg-red-50/40 -mx-1 px-1 rounded" : ""}
         `}>
 
-            <div className="flex items-baseline justify-between gap-2">
-                <span className="text-[13px] font-semibold text-gray-800">
+            <div className="flex items-center gap-2 min-w-0">
+                <span className="
+                    w-[7.5rem] shrink-0 text-xs font-semibold text-gray-800
+                ">
                     {label}
+                    {
+                        !ingevuld
+                        ? (
+                            <span className="ml-1 font-normal text-gray-400">
+                                n.v.t.
+                            </span>
+                        )
+                        : null
+                    }
                 </span>
-                {
-                    !ingevuld
-                    ? (
-                        <span className="text-[10px] uppercase tracking-wide text-gray-400 font-medium">
-                            n.v.t.
-                        </span>
-                    )
-                    : !statusOk
-                    ? (
-                        <span className="text-[10px] font-medium text-red-600">
-                            status kiezen
-                        </span>
-                    )
-                    : null
-                }
+                <input
+                    type="text"
+                    value={aantal}
+                    onChange={(e)=>onAantal(e.target.value)}
+                    placeholder={plh}
+                    className={`
+                        min-w-0 flex-1 border rounded px-2 py-1 text-xs bg-white
+                        placeholder:text-gray-400
+                        ${nietInOrde ? "border-red-300" : "border-gray-200"}
+                    `}
+                />
             </div>
 
-            <input
-                type="text"
-                value={aantal}
-                onChange={(e)=>onAantal(e.target.value)}
-                placeholder={plh}
-                className={`
-                    w-full border rounded-md px-2.5 py-2 text-sm bg-white
-                    placeholder:text-gray-400
-                    ${nietInOrde ? "border-red-300" : "border-gray-200"}
-                `}
-            />
-
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1 sm:pl-[7.5rem]">
                 <Chip
                     active={geleverd}
                     disabled={!ingevuld}
@@ -247,7 +243,7 @@ function MateriaalRij({
                 >
                     Klaargezet
                 </Chip>
-                <span className="px-0.5 text-[10px] font-medium text-gray-400">
+                <span className="text-[10px] text-gray-400 px-0.5">
                     of
                 </span>
                 <Chip
@@ -264,6 +260,7 @@ function MateriaalRij({
     );
 
 }
+
 
 
 export default function EngineerWorkorderPage(){
@@ -1356,11 +1353,11 @@ async function completeWorkorder(){
                 bg-white
                 rounded-2xl
                 border
-                p-5
-                space-y-3
+                p-4
+                space-y-2.5
             ">
 
-                <h2 className="font-semibold text-gray-800 border-b pb-1">
+                <h2 className="font-semibold text-sm text-gray-800 border-b pb-1">
                     Werkzaamheden
                 </h2>
 
@@ -1368,12 +1365,12 @@ async function completeWorkorder(){
                     grid
                     grid-cols-1
                     md:grid-cols-2
-                    gap-4
+                    gap-3
                 ">
 
                     <div className="
                         rounded-xl border border-gray-200
-                        bg-white p-3 space-y-2
+                        bg-white p-2.5 space-y-1.5
                     ">
                         <p className="text-xs text-gray-500">
                             Uitgevoerde werkzaamheden
@@ -1389,8 +1386,8 @@ async function completeWorkorder(){
                                 w-full
                                 border border-gray-200
                                 rounded-lg
-                                p-2.5
-                                min-h-40
+                                p-2
+                                min-h-28
                                 text-sm text-gray-900
                                 placeholder:text-gray-400
                             "
@@ -1400,17 +1397,17 @@ async function completeWorkorder(){
 
                     <div className="
                         rounded-xl border border-gray-200
-                        bg-white p-3 space-y-3
+                        bg-white p-2.5 space-y-1.5
                     ">
 
-                        <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center justify-between gap-2">
                             <p className="text-xs text-gray-500">
                                 Materiaal
                             </p>
 
                             <label className={`
-                                shrink-0 rounded-md border px-2.5 py-1.5
-                                text-xs font-semibold cursor-pointer
+                                shrink-0 rounded border px-2 py-1
+                                text-[11px] font-semibold cursor-pointer
                                 ${
                                     pakbonUploaden
                                     ? "border-gray-200 text-gray-400 bg-white"
@@ -1507,7 +1504,7 @@ async function completeWorkorder(){
                         }
 
 
-                        <div className="space-y-2">
+                        <div className="space-y-0">
 
                         <MateriaalRij
                             label="Schermen"
