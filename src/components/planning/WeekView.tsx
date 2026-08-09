@@ -66,7 +66,8 @@ interface WeekViewProps {
     pendingSchedule?: { workorderId: string; label: string } | null;
     onSchedulePending?: (args: {
         dateIso: string;
-        hour: number;
+        /** Indien gezet (klik op tijdlijn): starttijd. Anders starttijd uit het voorstel. */
+        hour?: number;
         engineerId: string;
     }) => void;
 }
@@ -835,7 +836,6 @@ export default function WeekView({
                                                                 onClick={() =>
                                                                     onSchedulePending({
                                                                         dateIso: iso,
-                                                                        hour: 9,
                                                                         engineerId: user.id,
                                                                     })
                                                                 }

@@ -142,9 +142,12 @@ export default function PlanningPage(){
     const [scheduling,setScheduling] =
         useState(false);
 
-    /** Voorstel vóór “Hier inplannen”: hoeveel monteurs + duur. */
+    /** Voorstel vóór “Hier inplannen”: monteurs, starttijd + duur. */
     const [pendingAantalMonteurs, setPendingAantalMonteurs] =
         useState(1);
+
+    const [pendingStartTime, setPendingStartTime] =
+        useState("09:00");
 
     const [pendingDuurUren, setPendingDuurUren] =
         useState(2);
@@ -153,8 +156,8 @@ export default function PlanningPage(){
     const [pendingSlot, setPendingSlot] =
         useState<{
             dateIso: string;
-            hour: number;
             engineerId: string;
+            startHour: number;
         } | null>(null);
 
     const [pendingExtraIds, setPendingExtraIds] =
@@ -343,19 +346,47 @@ export default function PlanningPage(){
         return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
     }
 
+    function parseTimeToHour(value: string): number | null {
+        const m = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+        if (!m) return null;
+        const h = Number(m[1]);
+        const min = Number(m[2]);
+        if (
+            !Number.isFinite(h)
+            || !Number.isFinite(min)
+            || h < 0
+            || h > 23
+            || min < 0
+            || min > 59
+        ) {
+            return null;
+        }
+        return h + min / 60;
+    }
+
     function voorstelGeldig(): boolean {
+        const startHour = parseTimeToHour(pendingStartTime);
         return (
             pendingAantalMonteurs >= 1
             && pendingAantalMonteurs <= 8
             && pendingDuurUren > 0
             && pendingDuurUren <= 16
+            && startHour !== null
         );
     }
 
-    /** Pending aanvraag/klus: eerst voorstel checken, daarna slot → eventueel extra monteurs. */
+    function resetPendingVoorstel() {
+        setPendingAantalMonteurs(1);
+        setPendingStartTime("09:00");
+        setPendingDuurUren(2);
+        setPendingSlot(null);
+        setPendingExtraIds([]);
+    }
+
+    /** Pending aanvraag/klus: eerst voorstel checken, daarna dag/monteur → eventueel extra monteurs. */
     function schedulePending(args: {
         dateIso: string;
-        hour: number;
+        hour?: number;
         engineerId: string;
     }) {
         const current = pending || getPendingSchedule();
@@ -364,24 +395,49 @@ export default function PlanningPage(){
         }
 
         if (!voorstelGeldig()) {
-            alert("Vul eerst aantal monteurs en duur (uren) in het voorstel hierboven.");
+            alert(
+                "Vul eerst aantal monteurs, starttijd en duur (uren) in het voorstel hierboven."
+            );
             return;
         }
+
+        let startHour = parseTimeToHour(pendingStartTime);
+        // Klik op de tijdlijn: starttijd overnemen (bijv. middagklus).
+        if (
+            typeof args.hour === "number"
+            && Number.isFinite(args.hour)
+            && args.hour >= 6
+            && args.hour <= 20
+        ) {
+            startHour = args.hour;
+            setPendingStartTime(formatHour(args.hour));
+        }
+
+        if (startHour === null) {
+            alert("Ongeldige starttijd. Gebruik bijv. 09:00 of 13:30.");
+            return;
+        }
+
+        const slot = {
+            dateIso: args.dateIso,
+            engineerId: args.engineerId,
+            startHour,
+        };
 
         if (pendingAantalMonteurs <= 1) {
-            void finalizePendingSchedule(args, []);
+            void finalizePendingSchedule(slot, []);
             return;
         }
 
-        setPendingSlot(args);
+        setPendingSlot(slot);
         setPendingExtraIds([]);
     }
 
     async function finalizePendingSchedule(
         args: {
             dateIso: string;
-            hour: number;
             engineerId: string;
+            startHour: number;
         },
         extraEngineerIds: string[]
     ) {
@@ -402,9 +458,8 @@ export default function PlanningPage(){
 
         setScheduling(true);
 
-        const startTime = formatHour(args.hour);
-        const endHour = args.hour + pendingDuurUren;
-        const endTime = formatHour(endHour);
+        const startTime = formatHour(args.startHour);
+        const endTime = formatHour(args.startHour + pendingDuurUren);
 
         try {
             const response = await fetch(
@@ -431,10 +486,7 @@ export default function PlanningPage(){
 
             clearPendingSchedule();
             setPending(null);
-            setPendingSlot(null);
-            setPendingExtraIds([]);
-            setPendingAantalMonteurs(1);
-            setPendingDuurUren(2);
+            resetPendingVoorstel();
             router.push(`/workorders/${current.workorderId}/edit`);
         } finally {
             setScheduling(false);
@@ -444,10 +496,7 @@ export default function PlanningPage(){
     function annuleerPending() {
         clearPendingSchedule();
         setPending(null);
-        setPendingSlot(null);
-        setPendingExtraIds([]);
-        setPendingAantalMonteurs(1);
-        setPendingDuurUren(2);
+        resetPendingVoorstel();
     }
 
     function togglePendingExtra(id: string) {
@@ -642,7 +691,7 @@ export default function PlanningPage(){
                                         ? "Bezig met inplannen…"
                                         : pendingSlot
                                         ? "Kies de extra monteur(s) hieronder en bevestig."
-                                        : "Vul eerst aantal monteurs en duur in, kies daarna een vrij moment."
+                                        : "Vul monteurs, starttijd en duur in, kies daarna dag en monteur."
                                     }
                                 </p>
                             </div>
@@ -696,6 +745,24 @@ export default function PlanningPage(){
                             </label>
                             <label className="block">
                                 <span className="text-xs font-medium text-slate-600">
+                                    Starttijd *
+                                </span>
+                                <input
+                                    type="time"
+                                    value={pendingStartTime}
+                                    disabled={scheduling || !!pendingSlot}
+                                    onChange={(e) =>
+                                        setPendingStartTime(e.target.value || "09:00")
+                                    }
+                                    className="
+                                        mt-0.5 block w-32 rounded-lg border border-slate-300
+                                        bg-white px-2 py-1.5 text-sm
+                                        disabled:opacity-60
+                                    "
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="text-xs font-medium text-slate-600">
                                     Duur (uren) *
                                 </span>
                                 <input
@@ -719,7 +786,13 @@ export default function PlanningPage(){
                                 />
                             </label>
                             <p className="text-xs text-slate-500 pb-1.5">
-                                Bijv. 1 monteur · 2 uur, of 2 monteurs · 4 uur
+                                {
+                                    (() => {
+                                        const start = parseTimeToHour(pendingStartTime);
+                                        if (start === null) return "Eindtijd: —";
+                                        return `Eindtijd: ${formatHour(start + pendingDuurUren)} · bijv. 13:00 + 1u, of 09:00 + 8u`;
+                                    })()
+                                }
                             </p>
                         </div>
 
@@ -742,8 +815,8 @@ export default function PlanningPage(){
                                         {" · "}
                                         {pendingSlot.dateIso}
                                         {" · "}
-                                        {formatHour(pendingSlot.hour)}
-                                        –{formatHour(pendingSlot.hour + pendingDuurUren)}
+                                        {formatHour(pendingSlot.startHour)}
+                                        –{formatHour(pendingSlot.startHour + pendingDuurUren)}
                                     </p>
                                     <p className="text-xs text-slate-500">
                                         Kies{" "}
