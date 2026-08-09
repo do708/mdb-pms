@@ -164,7 +164,7 @@ export default function NewCustomerPage(){
                     font-bold
                 ">
 
-                    Nieuwe klant
+                    Nieuwe opdrachtgever
 
                 </h1>
 

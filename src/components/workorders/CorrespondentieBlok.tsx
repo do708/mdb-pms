@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import {
+    SpecListRow,
+    SpecPageCard,
+} from "@/components/ui/SpecLayout";
 
 
 interface Attachment {
@@ -144,6 +148,7 @@ export default function CorrespondentieBlok({
     }
 
 
+
     async function verwijder(id:string){
 
         if(!confirm("Deze bijlage verwijderen?")){ return; }
@@ -166,21 +171,17 @@ export default function CorrespondentieBlok({
 
     return (
 
-        <section className="
-            bg-white
-            rounded-2xl
-            border
-            p-5
-        ">
+        <SpecPageCard className="space-y-3">
 
-            <h2 className="font-bold mb-1">
-                Correspondentie & bijlagen
-            </h2>
-
-            <p className="text-xs text-slate-500 mb-3">
-                Sleep hier e-mails (.msg/.eml), PDF&apos;s, foto&apos;s of andere
-                bestanden naartoe om ze bij deze opdracht te bewaren.
-            </p>
+            <div className="space-y-0.5 border-b pb-1">
+                <h2 className="font-semibold text-sm text-gray-800">
+                    Correspondentie &amp; bijlagen
+                </h2>
+                <p className="text-xs text-gray-500 leading-snug">
+                    Sleep hier e-mails (.msg/.eml), PDF&apos;s, foto&apos;s of andere
+                    bestanden naartoe om ze bij deze opdracht te bewaren.
+                </p>
+            </div>
 
 
             {
@@ -206,17 +207,11 @@ export default function CorrespondentieBlok({
                         onClick={()=>inputRef.current?.click()}
 
                         className={`
-                            border-2
-                            border-dashed
-                            rounded-xl
-                            p-6
-                            text-center
-                            cursor-pointer
-                            transition
-                            mb-4
+                            rounded-lg border border-dashed px-3 py-4
+                            text-center cursor-pointer transition bg-white
                             ${sleepActief
-                                ? "border-blue-400 bg-blue-50"
-                                : "border-gray-300 hover:bg-gray-50"}
+                                ? "border-sky-400 bg-sky-50"
+                                : "border-gray-300 hover:border-sky-300 hover:bg-sky-50/40"}
                         `}
 
                     >
@@ -234,9 +229,7 @@ export default function CorrespondentieBlok({
                             }}
                         />
 
-                        <div className="text-3xl mb-1">📥</div>
-
-                        <div className="text-sm text-gray-600">
+                        <p className="text-xs font-medium text-gray-700">
                             {
                                 bezig
                                 ?
@@ -244,7 +237,7 @@ export default function CorrespondentieBlok({
                                 :
                                 "Sleep bestanden hierheen of klik om te kiezen"
                             }
-                        </div>
+                        </p>
 
                     </div>
 
@@ -257,17 +250,17 @@ export default function CorrespondentieBlok({
                 laden
                 ?
                 (
-                    <div className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-500">
                         Laden...
-                    </div>
+                    </p>
                 )
                 :
                 items.length === 0
                 ?
                 (
-                    <div className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-500">
                         Nog geen correspondentie bewaard.
-                    </div>
+                    </p>
                 )
                 :
                 (
@@ -283,18 +276,13 @@ export default function CorrespondentieBlok({
 
                                 return (
 
-                                    <li
-                                        key={item.id}
-                                        className="
-                                            flex
-                                            items-center
-                                            justify-between
-                                            gap-2
-                                            border
-                                            rounded-xl
-                                            p-2.5
-                                        "
-                                    >
+                                    <li key={item.id}>
+                                        <SpecListRow
+                                            className="
+                                                flex items-center
+                                                justify-between gap-2
+                                            "
+                                        >
 
                                         <a
                                             href={item.url}
@@ -308,14 +296,14 @@ export default function CorrespondentieBlok({
                                                 hover:underline
                                             "
                                         >
-                                            <span className="text-xl shrink-0">
+                                            <span className="text-base shrink-0">
                                                 {icoonVoor(naam)}
                                             </span>
                                             <span className="min-w-0">
-                                                <span className="block text-sm font-medium truncate">
+                                                <span className="block text-sm font-medium text-gray-900 truncate">
                                                     {naam}
                                                 </span>
-                                                <span className="block text-xs text-gray-400">
+                                                <span className="block text-xs text-gray-500">
                                                     {datumNL(item.createdAt)}
                                                 </span>
                                             </span>
@@ -340,6 +328,7 @@ export default function CorrespondentieBlok({
                                             )
                                         }
 
+                                        </SpecListRow>
                                     </li>
                                 );
 
@@ -351,7 +340,7 @@ export default function CorrespondentieBlok({
             }
 
 
-        </section>
+        </SpecPageCard>
     );
 
 }

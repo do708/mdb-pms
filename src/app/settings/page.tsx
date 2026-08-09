@@ -61,71 +61,88 @@ export default function SettingsPage() {
 
     return (
         <PageShell>
-            <PageHeader title="Instellingen" subtitle="Jouw account" />
+            <PageHeader
+                title="Instellingen"
+                subtitle="Jouw account"
+            />
 
-            <SpecPageCard className="max-w-md">
-                <SpecPanel title="👤 Profiel" tone="slate">
-                    <p>{session?.user?.name ?? "-"}</p>
-                    <p className="text-gray-500">
-                        {session?.user?.email ?? "-"}
+            <SpecPageCard className="max-w-lg space-y-3">
+                <SpecPanel title="Profiel" tone="slate">
+                    <p className="text-sm font-medium text-gray-900">
+                        {session?.user?.name ?? "—"}
                     </p>
-                    <p className="text-sm text-gray-400 mt-2">
-                        Rol: {session?.user?.role ?? "-"}
+                    <p className="text-sm text-gray-500">
+                        {session?.user?.email ?? "—"}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                        Rol: {session?.user?.role ?? "—"}
                     </p>
                 </SpecPanel>
 
-                <SpecPanel title="🔑 Wachtwoord wijzigen">
-                    <label className="block">
-                        <SpecFieldLabel>Huidig wachtwoord</SpecFieldLabel>
-                        <input
-                            type="password"
-                            value={currentPassword}
-                            onChange={(e) =>
-                                setCurrentPassword(e.target.value)
-                            }
-                            placeholder="Huidig wachtwoord"
-                            className={specInputClassName}
-                        />
-                    </label>
+                <SpecPanel title="Wachtwoord wijzigen">
+                    <div className="space-y-3">
+                        <label className="block">
+                            <SpecFieldLabel>Huidig wachtwoord</SpecFieldLabel>
+                            <input
+                                type="password"
+                                value={currentPassword}
+                                onChange={(e) =>
+                                    setCurrentPassword(e.target.value)
+                                }
+                                placeholder="Huidig wachtwoord"
+                                className={specInputClassName}
+                            />
+                        </label>
 
-                    <label className="block">
-                        <SpecFieldLabel>Nieuw wachtwoord</SpecFieldLabel>
-                        <input
-                            type="password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            placeholder="Nieuw wachtwoord (min. 8 tekens)"
-                            className={specInputClassName}
-                        />
-                    </label>
+                        <label className="block">
+                            <SpecFieldLabel>Nieuw wachtwoord</SpecFieldLabel>
+                            <input
+                                type="password"
+                                value={newPassword}
+                                onChange={(e) =>
+                                    setNewPassword(e.target.value)
+                                }
+                                placeholder="Nieuw wachtwoord (min. 8 tekens)"
+                                className={specInputClassName}
+                            />
+                        </label>
 
-                    <label className="block">
-                        <SpecFieldLabel>Herhaal nieuw wachtwoord</SpecFieldLabel>
-                        <input
-                            type="password"
-                            value={repeatPassword}
-                            onChange={(e) =>
-                                setRepeatPassword(e.target.value)
-                            }
-                            placeholder="Herhaal nieuw wachtwoord"
-                            className={specInputClassName}
-                        />
-                    </label>
+                        <label className="block">
+                            <SpecFieldLabel>
+                                Herhaal nieuw wachtwoord
+                            </SpecFieldLabel>
+                            <input
+                                type="password"
+                                value={repeatPassword}
+                                onChange={(e) =>
+                                    setRepeatPassword(e.target.value)
+                                }
+                                placeholder="Herhaal nieuw wachtwoord"
+                                className={specInputClassName}
+                            />
+                        </label>
 
-                    {error && <p className="text-red-600">{error}</p>}
+                        {error ? (
+                            <p className="text-sm text-red-600">{error}</p>
+                        ) : null}
 
-                    {message && <p className="text-green-600">{message}</p>}
+                        {message ? (
+                            <p className="text-sm text-green-600">{message}</p>
+                        ) : null}
 
-                    <button
-                        onClick={changePassword}
-                        disabled={saving}
-                        className="
-                            bg-black text-white rounded-xl
-                            px-5 py-3 disabled:opacity-50
-                        "
-                    >
-                        {saving ? "Bezig..." : "Wachtwoord wijzigen"}
-                    </button>
+                        <button
+                            type="button"
+                            onClick={changePassword}
+                            disabled={saving}
+                            className="
+                                bg-[#d6007e] text-white rounded-xl
+                                px-5 py-3 font-semibold
+                                disabled:opacity-50
+                            "
+                        >
+                            {saving ? "Bezig..." : "Wachtwoord wijzigen"}
+                        </button>
+                    </div>
                 </SpecPanel>
             </SpecPageCard>
         </PageShell>

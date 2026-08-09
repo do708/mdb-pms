@@ -8,6 +8,7 @@ import {
     PageShell,
     SpecListRow,
     SpecPageCard,
+    SpecPanel,
     specInputClassName,
 } from "@/components/ui/SpecLayout";
 
@@ -20,6 +21,14 @@ interface Customer {
     _count?: {
         projects: number;
     };
+}
+
+function contactRegel(customer: Customer): string {
+    const delen = [customer.email, customer.phone, customer.address].filter(
+        Boolean
+    ) as string[];
+
+    return delen.length > 0 ? delen.join(" · ") : "Geen contactgegevens";
 }
 
 // Knopje dat de unieke publieke aanvraaglink van een klant naar het klembord
@@ -66,11 +75,11 @@ function AanvraagLinkKnop({ customerId }: { customerId: string }) {
             disabled={bezig}
             title="Kopieer aanvraaglink voor deze opdrachtgever"
             className="
-                border rounded-lg px-3 py-1.5 text-sm
-                hover:bg-gray-50 disabled:opacity-50
+                border border-gray-200 rounded-lg px-3 py-1.5 text-sm
+                text-gray-700 hover:bg-gray-50 disabled:opacity-50
             "
         >
-            {gekopieerd ? "✓ Gekopieerd" : "🔗 Link"}
+            {gekopieerd ? "Gekopieerd" : "Aanvraaglink"}
         </button>
     );
 }
@@ -100,7 +109,7 @@ export default function CustomersPage() {
         <PageShell>
             <PageHeader
                 title="Opdrachtgevers"
-                subtitle="Beheer klanten binnen MDB Project Management Systeem"
+                subtitle="Beheer opdrachtgevers binnen MDB"
                 actions={
                     <Link
                         href="/customers/new"
@@ -109,17 +118,19 @@ export default function CustomersPage() {
                             px-5 py-3 rounded-xl font-semibold
                         "
                     >
-                        + Nieuwe klant
+                        + Nieuwe opdrachtgever
                     </Link>
                 }
             />
 
-            <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Zoeken op klantnaam..."
-                className={specInputClassName}
-            />
+            <SpecPanel tone="slate">
+                <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Zoeken op naam..."
+                    className={specInputClassName}
+                />
+            </SpecPanel>
 
             <SpecPageCard>
                 {loading ? (
@@ -128,41 +139,47 @@ export default function CustomersPage() {
                     </p>
                 ) : filteredCustomers.length === 0 ? (
                     <p className="text-sm text-gray-500">
-                        Geen klanten gevonden.
+                        Geen opdrachtgevers gevonden.
                     </p>
                 ) : (
                     <div className="space-y-2">
-                        {filteredCustomers.map((customer) => (
-                            <SpecListRow
-                                key={customer.id}
-                                className="
-                                    flex justify-between items-center gap-3
-                                "
-                            >
-                                <div className="min-w-0">
-                                    <h2 className="font-bold text-sm text-gray-900">
-                                        {customer.name}
-                                    </h2>
-                                    <p className="text-sm text-gray-500">
-                                        {customer.email || "Geen e-mail"}
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        {customer.phone || "Geen telefoon"}
-                                    </p>
-                                </div>
+                        {filteredCustomers.map((customer) => {
+                            const projecten =
+                                customer._count?.projects || 0;
 
-                                <div className="text-right text-sm text-gray-500 shrink-0">
-                                    <p>
-                                        📁 {customer._count?.projects || 0}{" "}
-                                        projecten
-                                    </p>
+                            return (
+                                <SpecListRow
+                                    key={customer.id}
+                                    className="
+                                        flex flex-col gap-3
+                                        sm:flex-row sm:items-center
+                                        sm:justify-between
+                                    "
+                                >
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <h2 className="font-bold text-sm text-gray-900">
+                                                {customer.name}
+                                            </h2>
+                                            <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">
+                                                {projecten}{" "}
+                                                {projecten === 1
+                                                    ? "project"
+                                                    : "projecten"}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                            {contactRegel(customer)}
+                                        </p>
+                                    </div>
 
-                                    <div className="mt-3 flex gap-2 justify-end items-center">
+                                    <div className="flex flex-wrap gap-2 items-center shrink-0">
                                         <Link
                                             href={`/customers/${customer.id}/edit`}
                                             className="
-                                                border rounded-lg
-                                                px-3 py-1.5 text-sm
+                                                border border-gray-200
+                                                rounded-lg px-3 py-1.5
+                                                text-sm text-gray-700
                                                 hover:bg-gray-50
                                             "
                                         >
@@ -175,14 +192,14 @@ export default function CustomersPage() {
 
                                         <DeleteButton
                                             url={`/api/customers/${customer.id}`}
-                                            label={`klant ${customer.name}`}
+                                            label={`opdrachtgever ${customer.name}`}
                                             onDeleted={loadCustomers}
                                             compact
                                         />
                                     </div>
-                                </div>
-                            </SpecListRow>
-                        ))}
+                                </SpecListRow>
+                            );
+                        })}
                     </div>
                 )}
             </SpecPageCard>

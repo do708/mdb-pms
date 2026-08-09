@@ -1043,6 +1043,11 @@ async function completeWorkorder(){
 
 
 
+            {
+                !(
+                    isOffice
+                    && !!workorder.aanvraagSpecificaties
+                ) && (
             <section className="
                 bg-white
                 rounded-2xl
@@ -1202,6 +1207,8 @@ async function completeWorkorder(){
                 </div>
 
             </section>
+                )
+            }
 
 
 
@@ -1631,20 +1638,14 @@ async function completeWorkorder(){
 }
 
 
-<PhotosForm
+            <PhotosForm
+                workorderId={id}
+                readOnly={!!workorder.sentAt}
+            />
 
-    workorderId={id}
-
-    readOnly={!!workorder.sentAt}
-
-/>
-
-
-            <div className="mt-6">
-                <CorrespondentieBlok
-                    workorderId={id}
-                />
-            </div>
+            <CorrespondentieBlok
+                workorderId={id}
+            />
 
 
             {

@@ -59,14 +59,14 @@ export default function UsersPage() {
     return (
         <PageShell>
             <PageHeader
-                title="👥 Gebruikersbeheer"
+                title="Gebruikers"
                 subtitle="Beheer medewerkers en rollen"
                 actions={
                     <Link
                         href="/users/new"
                         className="
                             bg-[#d6007e] text-white
-                            px-5 py-3 rounded-xl font-bold
+                            px-5 py-3 rounded-xl font-semibold
                         "
                     >
                         + Nieuwe gebruiker
@@ -75,64 +75,69 @@ export default function UsersPage() {
             />
 
             <SpecPageCard>
-                <h2 className="font-semibold text-sm text-gray-800">
-                    Gebruikers
-                </h2>
-
-                <div className="space-y-2">
-                    {users.map((user) => (
-                        <SpecListRow
-                            key={user.id}
-                            className="
-                                flex items-center justify-between gap-3
-                            "
-                        >
-                            <div className="min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="font-bold text-sm">
-                                        {user.name || "Geen naam"}
-                                    </span>
-
-                                    <span className="text-xs bg-gray-100 rounded-full px-2 py-0.5">
-                                        {user.role}
-                                    </span>
-
-                                    {!user.active && (
-                                        <span className="text-xs bg-red-100 text-red-700 rounded-full px-2 py-0.5">
-                                            Uitgeschakeld
+                {users.length === 0 ? (
+                    <p className="text-sm text-gray-500">
+                        Nog geen gebruikers.
+                    </p>
+                ) : (
+                    <div className="space-y-2">
+                        {users.map((user) => (
+                            <SpecListRow
+                                key={user.id}
+                                className="
+                                    flex flex-col gap-3
+                                    sm:flex-row sm:items-center
+                                    sm:justify-between
+                                "
+                            >
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="font-bold text-sm text-gray-900">
+                                            {user.name || "Geen naam"}
                                         </span>
-                                    )}
+
+                                        <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">
+                                            {user.role}
+                                        </span>
+
+                                        {!user.active && (
+                                            <span className="text-xs bg-red-100 text-red-700 rounded-full px-2 py-0.5">
+                                                Uitgeschakeld
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                        {user.email}
+                                    </p>
                                 </div>
 
-                                <p className="text-xs text-gray-500 truncate">
-                                    {user.email}
-                                </p>
-                            </div>
+                                <div className="flex flex-wrap gap-2 items-center shrink-0">
+                                    <Link
+                                        href={`/users/${user.id}/edit`}
+                                        className="
+                                            border border-gray-200
+                                            rounded-lg px-3 py-1.5
+                                            text-sm text-gray-700
+                                            hover:bg-gray-50
+                                        "
+                                    >
+                                        Wijzigen
+                                    </Link>
 
-                            <div className="flex gap-2 items-center shrink-0">
-                                <Link
-                                    href={`/users/${user.id}/edit`}
-                                    className="
-                                        text-sm text-blue-700
-                                        border border-blue-200
-                                        rounded-lg px-3 py-1.5
-                                        hover:bg-blue-50
-                                    "
-                                >
-                                    Wijzigen
-                                </Link>
-
-                                {session?.user?.id !== user.id && (
-                                    <DeleteButton
-                                        url={`/api/users/${user.id}`}
-                                        label={`gebruiker ${user.name || user.email}`}
-                                        onDeleted={load}
-                                    />
-                                )}
-                            </div>
-                        </SpecListRow>
-                    ))}
-                </div>
+                                    {session?.user?.id !== user.id && (
+                                        <DeleteButton
+                                            url={`/api/users/${user.id}`}
+                                            label={`gebruiker ${user.name || user.email}`}
+                                            onDeleted={load}
+                                            compact
+                                        />
+                                    )}
+                                </div>
+                            </SpecListRow>
+                        ))}
+                    </div>
+                )}
             </SpecPageCard>
         </PageShell>
     );

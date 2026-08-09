@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+    SpecListRow,
+    SpecPageCard,
+} from "@/components/ui/SpecLayout";
 
 
 
@@ -8,7 +12,7 @@ interface PhotosFormProps {
 
     workorderId:string;
 
-    // Als de werkbon al verstuurd is: alleen tonen, geen knop om toe te voegen.
+    // Als de opdracht al verstuurd is: alleen tonen, geen knop om toe te voegen.
     readOnly?:boolean;
 
 }
@@ -174,22 +178,11 @@ export default function PhotosForm({
 
     return (
 
-        <section className="
-            bg-white
-            border
-            rounded-2xl
-            p-5
-            space-y-4
-        ">
+        <SpecPageCard className="space-y-3">
 
-
-            <h2 className="
-                font-bold
-                text-lg
-            ">
-                📷 Foto&apos;s
+            <h2 className="font-semibold text-sm text-gray-800 border-b pb-1">
+                Foto&apos;s
             </h2>
-
 
             {
                 !readOnly && (
@@ -203,20 +196,15 @@ export default function PhotosForm({
                             className="hidden"
                         />
 
-
                         <button
                             type="button"
                             onClick={()=>fileRef.current?.click()}
                             disabled={uploading}
                             className="
-                                w-full
-                                border-2
-                                border-dashed
-                                border-gray-300
-                                rounded-xl
-                                p-4
-                                text-gray-600
-                                hover:bg-gray-50
+                                w-full rounded-lg border border-dashed
+                                border-gray-300 bg-white px-3 py-3
+                                text-xs font-medium text-gray-600
+                                hover:border-sky-300 hover:bg-sky-50/50
                                 disabled:opacity-50
                             "
                         >
@@ -225,7 +213,7 @@ export default function PhotosForm({
                                 ?
                                 "Bezig met uploaden..."
                                 :
-                                "📷 Foto's toevoegen"
+                                "Foto's toevoegen"
                             }
                         </button>
                     </>
@@ -234,38 +222,30 @@ export default function PhotosForm({
 
 
             {
-                photos.length > 0 && (
-
+                photos.length === 0
+                ? (
+                    <p className="text-sm text-gray-500">
+                        Nog geen foto&apos;s toegevoegd.
+                    </p>
+                )
+                : (
                     <div className="
-                        grid
-                        grid-cols-2
-                        sm:grid-cols-3
-                        gap-3
+                        grid grid-cols-2 sm:grid-cols-3 gap-2
                     ">
-
                         {
                             photos.map((photo,index)=>(
-
-                                <div
+                                <SpecListRow
                                     key={photo.id}
-                                    className="
-                                        border
-                                        rounded-xl
-                                        overflow-hidden
-                                        bg-gray-50
-                                    "
+                                    className="!p-0 overflow-hidden"
                                 >
-
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={photo.url}
                                         alt={`Foto ${index + 1}`}
                                         className="
-                                            w-full
-                                            h-28
-                                            object-cover
+                                            w-full h-28 object-cover
                                         "
                                     />
-
                                     <div className="p-2">
                                         <input
                                             value={photo.caption ?? ""}
@@ -278,28 +258,20 @@ export default function PhotosForm({
                                                 saveCaption(photo.id, e.target.value)
                                             }
                                             className={`
-                                                w-full
-                                                border
-                                                rounded-lg
-                                                p-1.5
-                                                text-sm
-                                                ${readOnly ? "bg-gray-50 border-transparent" : ""}
+                                                w-full border border-gray-200
+                                                rounded-md px-2 py-1 text-xs
+                                                ${readOnly ? "bg-gray-50 border-transparent" : "bg-white"}
                                             `}
                                         />
                                     </div>
-
-                                </div>
-
+                                </SpecListRow>
                             ))
                         }
-
                     </div>
-
                 )
             }
 
-
-        </section>
+        </SpecPageCard>
 
     );
 

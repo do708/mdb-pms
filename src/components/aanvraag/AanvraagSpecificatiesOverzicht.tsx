@@ -698,32 +698,35 @@ export default function AanvraagSpecificatiesOverzicht({
                                     return (
                                         <div
                                             key={status}
-                                            className="space-y-1.5"
+                                            className="
+                                                rounded-lg border border-gray-200
+                                                bg-white p-2.5 space-y-2
+                                            "
                                         >
                                             <span
                                                 className="
                                                     inline-flex items-center
-                                                    rounded-md border border-fuchsia-300
+                                                    rounded-md border border-gray-300
                                                     bg-white px-2.5 py-1
-                                                    text-sm font-semibold text-fuchsia-900
+                                                    text-sm font-semibold text-gray-900
                                                 "
                                             >
                                                 {status}
                                             </span>
                                             {toonLevering ? (
                                                 <div className="
-                                                    ml-1 pl-3
-                                                    border-l-2 border-sky-300
+                                                    ml-0.5 pl-3
+                                                    border-l-2 border-sky-500
                                                     space-y-1
                                                 ">
-                                                    <p className="text-[11px] font-medium text-sky-800/80">
+                                                    <p className="text-[11px] font-medium text-gray-500">
                                                         Levering bij Besteld / Onderweg
                                                     </p>
                                                     <span
                                                         className="
                                                             inline-flex items-center
-                                                            rounded-md border border-sky-300
-                                                            bg-sky-50 px-2.5 py-1
+                                                            rounded-md border border-sky-400
+                                                            bg-white px-2.5 py-1
                                                             text-sm font-semibold text-sky-900
                                                         "
                                                     >
@@ -736,31 +739,34 @@ export default function AanvraagSpecificatiesOverzicht({
                                 })}
                             </div>
                         ) : hardwareBesteldLegacy ? (
-                            <div className="space-y-1.5">
+                            <div className="
+                                rounded-lg border border-gray-200
+                                bg-white p-2.5 space-y-2
+                            ">
                                 <span
                                     className="
                                         inline-flex items-center
-                                        rounded-md border border-fuchsia-300
+                                        rounded-md border border-gray-300
                                         bg-white px-2.5 py-1
-                                        text-sm font-semibold text-fuchsia-900
+                                        text-sm font-semibold text-gray-900
                                     "
                                 >
                                     {hardwareBesteldLegacy}
                                 </span>
                                 {hardwareLevering ? (
                                     <div className="
-                                        ml-1 pl-3
-                                        border-l-2 border-sky-300
+                                        ml-0.5 pl-3
+                                        border-l-2 border-sky-500
                                         space-y-1
                                     ">
-                                        <p className="text-[11px] font-medium text-sky-800/80">
+                                        <p className="text-[11px] font-medium text-gray-500">
                                             Levering
                                         </p>
                                         <span
                                             className="
                                                 inline-flex items-center
-                                                rounded-md border border-sky-300
-                                                bg-sky-50 px-2.5 py-1
+                                                rounded-md border border-sky-400
+                                                bg-white px-2.5 py-1
                                                 text-sm font-semibold text-sky-900
                                             "
                                         >
@@ -770,15 +776,18 @@ export default function AanvraagSpecificatiesOverzicht({
                                 ) : null}
                             </div>
                         ) : hardwareLevering ? (
-                            <div className="space-y-1.5">
-                                <p className="text-[11px] font-medium text-sky-800/80">
+                            <div className="
+                                rounded-lg border border-gray-200
+                                bg-white p-2.5
+                            ">
+                                <p className="text-[11px] font-medium text-gray-500 mb-1">
                                     Hardware levering
                                 </p>
                                 <span
                                     className="
                                         inline-flex items-center
-                                        rounded-md border border-sky-300
-                                        bg-sky-50 px-2.5 py-1
+                                        rounded-md border border-sky-400
+                                        bg-white px-2.5 py-1
                                         text-sm font-semibold text-sky-900
                                     "
                                 >
