@@ -624,17 +624,17 @@ function AanvraagFormulier(){
 
     return (
 
-        <div className="min-h-screen bg-gray-50 py-8 px-4">
+        <div className="min-h-screen bg-gray-50 py-5 sm:py-8 px-4">
 
             <div className="max-w-2xl mx-auto">
 
-                <div className="mb-6 text-center">
+                <div className="mb-4 sm:mb-6 text-center">
                     <img
                         src="/images/MDB-Logo.png"
                         alt="MDB Networks"
-                        className="h-24 w-auto mx-auto mb-4"
+                        className="mx-auto mb-3 h-auto w-full max-w-[200px] object-contain sm:mb-4 sm:max-w-[280px] md:max-w-[360px]"
                     />
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-snug">
                         Aanvraag Service- en Installatiewerkzaamheden
                     </h1>
                 </div>
