@@ -14,7 +14,6 @@ import { decimalToNumber } from "@/lib/projects/budget";
 import {
     engineerDayKey,
     jobAddressFromWorkorder,
-    plannedTravelForEngineerDay,
     projectJobAddress,
 } from "@/lib/travel/plannedKilometers";
 
@@ -333,8 +332,7 @@ export async function GET(){
                 return dayTravelCache.get(key)!;
             }
 
-            // Voorkeur: opgeslagen km/reistijd (vastgelegd bij plan/boek)
-            let useStored = true;
+            // Alleen handmatig ingevulde km/reistijd (geen OSRM / auto-planning).
             let storedKm = 0;
             let storedReis = 0;
 
@@ -342,32 +340,13 @@ export async function GET(){
                 if(item.formKilometers > 0){
                     storedKm += item.formKilometers;
                     storedReis += item.formReisuren;
-                    continue;
-                }
-
-                if(item.storedKilometers != null){
-                    storedKm += item.storedKilometers;
-                    storedReis +=
-                        item.storedReisuren ?? 0;
-                    continue;
-                }
-
-                if(item.jobAddress){
-                    useStored = false;
-                    break;
                 }
             }
 
-            const travel = useStored
-                ?
-                {
-                    kilometers:Math.round(storedKm),
-                    reisuren:storedReis
-                }
-                :
-                await plannedTravelForEngineerDay(
-                    group.items
-                );
+            const travel = {
+                kilometers:Math.round(storedKm),
+                reisuren:storedReis
+            };
 
             dayTravelCache.set(key, travel);
 

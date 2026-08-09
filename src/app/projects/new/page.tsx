@@ -145,8 +145,7 @@ export default function NewProjectPage() {
                     </div>
                 </div>
                 <p className="text-xs text-gray-500 -mt-2">
-                    Zonder adres en plaats kunnen kilometers niet
-                    betrouwbaar worden berekend bij uren boeken.
+                    Adres en plaats helpen bij planning en rapportages.
                 </p>
 
                 <div className="grid sm:grid-cols-2 gap-4">

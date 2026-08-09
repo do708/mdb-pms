@@ -526,10 +526,10 @@ export async function plannedKilometersForEngineerDay(
     return result.kilometers;
 }
 
-/** Kilometers voor rapportage: handmatig op werkbon, anders berekend bij planning. */
+/** Kilometers voor rapportage: alleen handmatig op de werkbon. */
 export function reportKilometersForWorkorder(
     formKilometers: number,
-    plannedRoundTripKm: number | null,
+    _plannedRoundTripKm: number | null,
     voorrijtarief: boolean | null = null
 ): number {
     if (voorrijtarief === true) {
@@ -538,5 +538,5 @@ export function reportKilometersForWorkorder(
     if (formKilometers > 0) {
         return formKilometers;
     }
-    return plannedRoundTripKm ?? 0;
+    return 0;
 }

@@ -8,7 +8,6 @@ import {
     serializeProjectDetail,
 } from "@/lib/projects/serialize";
 import { parseHoursInput } from "@/lib/hours";
-import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 
 export async function GET(
     request: Request,
@@ -150,11 +149,6 @@ export async function POST(
                 ? body.omschrijving.trim() || null
                 : null;
 
-        const affected: {
-            userId: string;
-            datum: Date;
-        }[] = [];
-
         const rawIds: unknown[] = Array.isArray(body.userIds)
             ? body.userIds
             : body.userId
@@ -210,17 +204,6 @@ export async function POST(
             )
         );
 
-        for (const userId of userIds) {
-            affected.push({ userId, datum });
-        }
-
-        for (const row of affected) {
-            await syncEngineerDayKilometers(
-                row.userId,
-                row.datum
-            );
-        }
-
         const detail = await loadProjectDetail(id);
 
         return NextResponse.json(
@@ -268,30 +251,12 @@ export async function DELETE(
 
         const { id } = await context.params;
 
-        const existing = await prisma.projectUur.findFirst({
-            where: {
-                id: urenId,
-                projectId: id,
-            },
-            select: {
-                userId: true,
-                datum: true,
-            },
-        });
-
         await prisma.projectUur.deleteMany({
             where: {
                 id: urenId,
                 projectId: id,
             },
         });
-
-        if (existing) {
-            await syncEngineerDayKilometers(
-                existing.userId,
-                existing.datum
-            );
-        }
 
         const detail = await loadProjectDetail(id);
 

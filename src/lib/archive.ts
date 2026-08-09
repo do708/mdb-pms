@@ -1,87 +1,72 @@
-// Wanneer telt een afgeronde werkbon/formulier als "gearchiveerd"?
-// Regel: status afgerond EN ouder dan 2 weken. Zulke items verdwijnen
-// uit de gewone overzichten en zijn alleen nog via het Archief te vinden.
+// Wanneer telt een werkbon/formulier als "gearchiveerd"?
+// Werkbonnen: status gefactureerd of afgerond (Betaald) → direct uit de
+// gewone overzichten, alleen nog via het Archief te vinden.
+// Formulieren: ouder dan ARCHIVE_WEEKS.
 
 export const ARCHIVE_WEEKS = 2;
 
+/** Statussen waarmee een werkbon in het archief hoort. */
+export const ARCHIVED_WORKORDER_STATUSES = [
+    "gefactureerd",
+    "afgerond",
+] as const;
 
+export function archiveCutoff(): Date {
+    const cutoff = new Date();
 
-export function archiveCutoff():Date {
-
-    const cutoff =
-        new Date();
-
-    cutoff.setDate(
-        cutoff.getDate() - ARCHIVE_WEEKS * 7
-    );
+    cutoff.setDate(cutoff.getDate() - ARCHIVE_WEEKS * 7);
 
     return cutoff;
-
 }
 
+export function isArchivedWorkorderStatus(
+    status: string | null | undefined
+): boolean {
+    if (!status) {
+        return false;
+    }
 
+    return (ARCHIVED_WORKORDER_STATUSES as readonly string[]).includes(
+        status
+    );
+}
 
-// Prisma-where die AFGERONDE items UITSLUIT (voor de gewone lijsten).
-// Zodra een werkbon op "afgerond" (Betaald/Afgerond) staat, verdwijnt hij
-// direct uit de gewone overzichten en is hij alleen nog via het Archief te
-// vinden. Niet-afgeronde items blijven altijd zichtbaar.
-export function excludeArchivedWorkorders(){
-
+// Prisma-where die gearchiveerde werkbonnen UITSLUIT (voor gewone lijsten).
+export function excludeArchivedWorkorders() {
     return {
-
-        NOT:{
-
-            status:"afgerond"
-
-        }
-
+        NOT: {
+            status: {
+                in: [...ARCHIVED_WORKORDER_STATUSES],
+            },
+        },
     };
-
 }
-
-
 
 // Prisma-where die ALLEEN de gearchiveerde werkbonnen teruggeeft.
-export function onlyArchivedWorkorders(){
-
+export function onlyArchivedWorkorders() {
     return {
-
-        status:"afgerond"
-
+        status: {
+            in: [...ARCHIVED_WORKORDER_STATUSES],
+        },
     };
-
 }
-
-
 
 // Formulieren: "afgerond" bestaat niet als status; we archiveren op
 // ouderdom van ingediende formulieren.
-export function excludeArchivedForms(){
-
+export function excludeArchivedForms() {
     return {
-
-        NOT:{
-
-            createdAt:{
-                lt:archiveCutoff()
-            }
-
-        }
-
+        NOT: {
+            createdAt: {
+                lt: archiveCutoff(),
+            },
+        },
     };
-
 }
 
-
-
-export function onlyArchivedForms(){
-
+export function onlyArchivedForms() {
     return {
-
-        createdAt:{
-            lt:archiveCutoff()
-        }
-
+        createdAt: {
+            lt: archiveCutoff(),
+        },
     };
-
 }
