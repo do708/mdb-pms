@@ -367,7 +367,7 @@ export async function POST(
                         beugel:aanvraag.beugel,
                         stroom:aanvraag.stroom,
                         internet:aanvraag.internet,
-                    },
+                    } as object,
                     customerId:
                         aanvraag.customerId,
                     location:
