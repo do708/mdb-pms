@@ -66,10 +66,10 @@ const menu:MenuItem[] = [
     },
 
     {
-        name:"Werkbon klaarzetten",
+        name:"Opdracht inplannen",
         href:"/workorders/new",
         icon:PlusCircle,
-        title:"Werkbon voorbereiden en klaarzetten voor de monteur",
+        title:"Opdracht voorbereiden en inplannen",
         roles:["admin","office","engineer"]
     },
 

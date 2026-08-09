@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { PlanningStatusIcon } from "@/components/planning/PlanningStatusIcon";
 import {
     WORKORDER_STATUSES,
     getStatus
@@ -148,6 +149,9 @@ export default function StatusFlow({
             ">
 
                 <span className={`
+                    inline-flex
+                    items-center
+                    gap-1.5
                     px-3
                     py-1
                     rounded-full
@@ -155,6 +159,8 @@ export default function StatusFlow({
                     font-medium
                     ${getStatus(status).badge}
                 `}>
+
+                    <PlanningStatusIcon status={status} className="h-3.5 w-3.5" />
 
                     {getStatus(status).label}
 
@@ -230,6 +236,9 @@ export default function StatusFlow({
                                 title={step.label}
 
                                 className={`
+                                    inline-flex
+                                    items-center
+                                    gap-1.5
                                     text-xs
                                     rounded-full
                                     px-3
@@ -250,6 +259,11 @@ export default function StatusFlow({
                                 `}
 
                             >
+
+                                <PlanningStatusIcon
+                                    status={step.key}
+                                    className="h-3 w-3"
+                                />
 
                                 {index + 1}. {step.label}
 

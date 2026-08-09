@@ -8,10 +8,17 @@ import StatusFlow from "@/components/workorders/StatusFlow";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import CorrespondentieBlok from "@/components/workorders/CorrespondentieBlok";
 import OpleverForm from "@/components/workorders/OpleverForm";
+import AanvraagSpecificatiesOverzicht, {
+    parseAanvraagSnapshot,
+} from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
 
 import { parseCustomerSchema } from "@/types/customerForms";
 
 import type { OpleverData } from "@/types/oplever";
+import {
+    klaarzetVanAanvraagSpecificaties,
+    mergeKlaarzetPrefill,
+} from "@/lib/aanvraag/klaarzetVanSpecificaties";
 
 interface Workorder {
 
@@ -37,6 +44,8 @@ interface Workorder {
     }[];
 
     formData:unknown;
+
+    aanvraagSpecificaties?:unknown;
 
     assignedUser:{
 
@@ -352,19 +361,51 @@ export default function EngineerWorkorderPage(){
             );
 
 
-            // Klaargezet materiaal uit de opgeslagen formData halen.
+            // Klaargezet materiaal uit de opgeslagen formData + aanvraag-prefill.
+            const leegMateriaal = {
+                pakbonUrl:"",
+                schermenAantal:"",
+                schermenGeleverd:false,
+                schermenKlaargezet:false,
+                playersAantal:"",
+                playersGeleverd:false,
+                playersKlaargezet:false,
+                beugelsAantal:"",
+                beugelsGeleverd:false,
+                beugelsKlaargezet:false,
+                kioskAantal:"",
+                kioskGeleverd:false,
+                kioskKlaargezet:false,
+                versterkersAantal:"",
+                versterkersGeleverd:false,
+                versterkersKlaargezet:false
+            };
+
             const opgeslagenMateriaal =
                 data.formData?.klaarzetMateriaal;
+
+            let startMateriaal = { ...leegMateriaal };
 
             if(
                 opgeslagenMateriaal &&
                 typeof opgeslagenMateriaal === "object"
             ){
-                setMateriaal(m=>({
-                    ...m,
+                startMateriaal = {
+                    ...startMateriaal,
                     ...opgeslagenMateriaal
-                }));
+                };
             }
+
+            if(data.aanvraagSpecificaties){
+                startMateriaal = mergeKlaarzetPrefill(
+                    startMateriaal,
+                    klaarzetVanAanvraagSpecificaties(
+                        data.aanvraagSpecificaties
+                    )
+                );
+            }
+
+            setMateriaal(startMateriaal);
 
 
             setStatus(
@@ -925,6 +966,45 @@ async function completeWorkorder(){
             }
 
 
+            {
+                isOffice
+                && !!workorder.aanvraagSpecificaties
+                && (
+                    <section className="
+                        bg-white
+                        rounded-2xl
+                        border
+                        p-5
+                        space-y-2
+                    ">
+                        <h2 className="font-semibold text-gray-800 border-b pb-1">
+                            Specificatie uit aanvraag
+                        </h2>
+                        <p className="text-xs text-gray-500">
+                            Overzicht zoals ingevuld door de opdrachtgever.
+                        </p>
+                        <AanvraagSpecificatiesOverzicht
+                            snapshot={parseAanvraagSnapshot(
+                                workorder.aanvraagSpecificaties
+                            )}
+                            locatie={{
+                                locatie: workorder.title,
+                                opdrachtgever:
+                                    workorder.customer?.name
+                                    ?? workorder.project?.customer.name
+                                    ?? null,
+                                straat: workorder.location,
+                                plaats: workorder.city,
+                                contactPersoon: workorder.contactPersoon,
+                                contactEmail: workorder.contactEmail,
+                                contactPhone: workorder.contactPhone,
+                            }}
+                        />
+                    </section>
+                )
+            }
+
+
 
 
 
@@ -1439,51 +1519,55 @@ async function completeWorkorder(){
            </section>
 
 
-<OpleverForm
+{
+    !isOffice && (
+        <OpleverForm
 
-    workorderId={id}
+            workorderId={id}
 
-    initial={workorder.formData}
+            initial={workorder.formData}
 
-    monteur1Name={workorder.assignedUser?.name ?? null}
+            monteur1Name={workorder.assignedUser?.name ?? null}
 
-    extraEngineerNames={
-        (workorder.extraEngineers ?? [])
-        .map(e=>e.user?.name)
-        .filter((n):n is string => !!n)
-    }
+            extraEngineerNames={
+                (workorder.extraEngineers ?? [])
+                .map(e=>e.user?.name)
+                .filter((n):n is string => !!n)
+            }
 
-    customerSchema={
-        parseCustomerSchema(workorder.customer?.formSchema)
-    }
+            customerSchema={
+                parseCustomerSchema(workorder.customer?.formSchema)
+            }
 
-    customerName={workorder.customer?.name ?? null}
+            customerName={workorder.customer?.name ?? null}
 
-    embedded
+            embedded
 
-    onChange={setOpleverData}
+            onChange={setOpleverData}
 
-    variant={
-        (workorder.forms ?? [])[0]?.formType?.key === "uren"
-        ?
-        "uren"
-        :
-        (workorder.forms ?? [])[0]?.formType?.key === "evalue8"
-        ?
-        "evalue8"
-        :
-        "volledig"
-    }
+            variant={
+                (workorder.forms ?? [])[0]?.formType?.key === "uren"
+                ?
+                "uren"
+                :
+                (workorder.forms ?? [])[0]?.formType?.key === "evalue8"
+                ?
+                "evalue8"
+                :
+                "volledig"
+            }
 
-    plannedRoundTripKm={
-        workorder.plannedRoundTripKm
-    }
+            plannedRoundTripKm={
+                workorder.plannedRoundTripKm
+            }
 
-    plannedReisuren={
-        workorder.plannedReisuren
-    }
+            plannedReisuren={
+                workorder.plannedReisuren
+            }
 
-/>
+        />
+    )
+}
 
 
 <PhotosForm

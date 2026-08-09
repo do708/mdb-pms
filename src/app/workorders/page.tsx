@@ -482,7 +482,7 @@ export default function WorkordersPage(){
 
                                     href={`/workorders/${workorder.id}`}
 
-                                    title="Werkbon openen"
+                                    title="Geplande opdracht openen"
 
                                     className="
                                         bg-black
@@ -495,7 +495,7 @@ export default function WorkordersPage(){
 
                                 >
 
-                                    Werkbon openen
+                                    Geplande opdracht openen
 
                                 </Link>
 
