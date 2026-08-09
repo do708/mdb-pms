@@ -6,6 +6,10 @@ import { useParams, useRouter } from "next/navigation";
 
 import DocumentDropzone from "@/components/documents/DocumentDropzone";
 import DeleteButton from "@/components/DeleteButton";
+import AanvraagSpecificatiesOverzicht, {
+    parseAanvraagSnapshot,
+    type AanvraagOverzichtSnapshot,
+} from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
 
 
 
@@ -144,6 +148,10 @@ export default function EditWorkorderPage(){
         }[]>([]);
 
 
+    const [aanvraagSnapshot,setAanvraagSnapshot] =
+        useState<AanvraagOverzichtSnapshot | null>(null);
+
+
     const [loading,setLoading] =
         useState(true);
 
@@ -236,6 +244,10 @@ export default function EditWorkorderPage(){
                 setContactPhone(wo.contactPhone ?? "");
 
                 setDescription(wo.description ?? "");
+
+                setAanvraagSnapshot(
+                    parseAanvraagSnapshot(wo.aanvraagSpecificaties)
+                );
 
                 setWerkInstructie(wo.werkInstructie ?? "");
 
@@ -744,6 +756,30 @@ export default function EditWorkorderPage(){
                 </div>
 
 
+                {
+                    aanvraagSnapshot && (
+                        <div className="
+                            border
+                            rounded-xl
+                            p-4
+                            bg-slate-50
+                            space-y-2
+                        ">
+                            <h2 className="font-semibold text-gray-800 border-b pb-1">
+                                Specificatie uit aanvraag
+                            </h2>
+                            <p className="text-xs text-gray-500">
+                                Overzicht zoals ingevuld door de opdrachtgever.
+                                De klantmail gebruikt alleen het veld hieronder.
+                            </p>
+                            <AanvraagSpecificatiesOverzicht
+                                snapshot={aanvraagSnapshot}
+                            />
+                        </div>
+                    )
+                }
+
+
                 <label className="block">
 
                     <span className="text-sm text-gray-600">
@@ -754,6 +790,7 @@ export default function EditWorkorderPage(){
 
                     <span className="block text-xs text-gray-400 mb-1">
                         Deze tekst komt in de afspraakmail naar de klant.
+                        Pas aan indien nodig; het overzicht hierboven blijft leidend voor de uitvoering.
                     </span>
 
                     <textarea

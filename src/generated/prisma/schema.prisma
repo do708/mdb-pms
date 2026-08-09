@@ -132,53 +132,55 @@ model ProjectMateriaal {
 }
 
 model Workorder {
-  id                 String                @id @default(cuid())
-  title              String
-  status             String                @default("ontvangen")
-  projectId          String?
-  customerId         String?
+  id                    String                @id @default(cuid())
+  title                 String
+  status                String                @default("ontvangen")
+  projectId             String?
+  customerId            String?
   /// Locatie / filiaalnaam staat in title; adresvelden hieronder (zelfde als Aanvraag)
-  location           String?
-  straat             String?
-  huisnummer         String?
-  postcode           String?
-  city               String?
-  contactPersoon     String?
-  contactEmail       String?
-  contactPhone       String?
-  createdAt          DateTime              @default(now())
-  updatedAt          DateTime              @updatedAt
-  description        String?
-  werkInstructie     String?
-  workDate           DateTime?
-  internalNotes      String?
-  number             String                @unique
-  assignedUserId     String?
-  plannedDate        DateTime?
-  plannedEndDate     DateTime?
-  plannedHours       Float?
+  location              String?
+  straat                String?
+  huisnummer            String?
+  postcode              String?
+  city                  String?
+  contactPersoon        String?
+  contactEmail          String?
+  contactPhone          String?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  description           String?
+  werkInstructie        String?
+  workDate              DateTime?
+  internalNotes         String?
+  number                String                @unique
+  assignedUserId        String?
+  plannedDate           DateTime?
+  plannedEndDate        DateTime?
+  plannedHours          Float?
   /// Heen + terug kantoor ↔ klus (berekend bij planning)
-  plannedRoundTripKm Float?
+  plannedRoundTripKm    Float?
   /// Rijtijd bij plannedRoundTripKm (zelfde dagroute, verdeeld per stop)
-  plannedReisuren    Float?
-  assignmentId       String?
-  formData           Json?
-  pdfData            Bytes?
-  pdfGeneratedAt     DateTime?
-  sentAt             DateTime?
-  documents          Document[]
-  assignedUser       User?                 @relation(fields: [assignedUserId], references: [id])
-  assignment         Assignment?           @relation(fields: [assignmentId], references: [id])
-  project            Project?              @relation(fields: [projectId], references: [id])
-  customer           Customer?             @relation(fields: [customerId], references: [id])
-  hardware           WorkorderHardware[]
-  hours              WorkorderHour[]
-  materials          WorkorderMaterial[]
-  photos             WorkorderPhoto[]
-  attachments        WorkorderAttachment[]
-  signature          WorkorderSignature?
-  extraEngineers     WorkorderEngineer[]
-  forms              WorkorderForm[]
+  plannedReisuren       Float?
+  assignmentId          String?
+  formData              Json?
+  /// Snapshot van klantaanvraag-specificaties (voor gestructureerde weergave bij in behandeling)
+  aanvraagSpecificaties Json?
+  pdfData               Bytes?
+  pdfGeneratedAt        DateTime?
+  sentAt                DateTime?
+  documents             Document[]
+  assignedUser          User?                 @relation(fields: [assignedUserId], references: [id])
+  assignment            Assignment?           @relation(fields: [assignmentId], references: [id])
+  project               Project?              @relation(fields: [projectId], references: [id])
+  customer              Customer?             @relation(fields: [customerId], references: [id])
+  hardware              WorkorderHardware[]
+  hours                 WorkorderHour[]
+  materials             WorkorderMaterial[]
+  photos                WorkorderPhoto[]
+  attachments           WorkorderAttachment[]
+  signature             WorkorderSignature?
+  extraEngineers        WorkorderEngineer[]
+  forms                 WorkorderForm[]
 }
 
 model WorkorderHour {

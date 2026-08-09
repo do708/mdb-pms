@@ -5,10 +5,7 @@ import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
-import {
-    formatProjectHardwareStatuses,
-    isProjectHardwareBesteld,
-} from "@/lib/aanvraag/hardwareStatus";
+import AanvraagSpecificatiesOverzicht from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
 
 
 
@@ -177,268 +174,30 @@ function AanvragenSectie(){
 
                             {
                                 isOpen && (
-                                    <div className="mt-3 pt-3 border-t text-sm text-gray-600 space-y-1">
-                                        {
-                                            a.specificaties && typeof a.specificaties === "object" && (a.specificaties as Record<string,unknown>).typeAanvraag
-                                            ? <p><strong>Type:</strong> {(()=>{
-                                                const t = String((a.specificaties as Record<string,unknown>).typeAanvraag);
-                                                const labels:Record<string,string> = {
-                                                    installatie:"Installatiewerkzaamheden",
-                                                    intake:"Intake",
-                                                    storing:"Storing",
-                                                    uren:"Uren",
-                                                    evalue8:"eValue8",
-                                                };
-                                                return labels[t] || t;
-                                            })()}</p>
-                                            : null
-                                        }
-                                        {a.aanvragerNaam ? <p><strong>Aanvrager:</strong> {a.aanvragerNaam}</p> : null}
-                                        {
-                                            (()=>{
-                                                if(!a.specificaties || typeof a.specificaties !== "object"){
-                                                    return null;
-                                                }
-                                                const specs = a.specificaties as Record<string,unknown>;
-                                                const flat =
-                                                    typeof specs.intakeWens === "string"
-                                                    ? specs.intakeWens.trim()
-                                                    : "";
-                                                const nested =
-                                                    specs.intake
-                                                    && typeof specs.intake === "object"
-                                                    && typeof (specs.intake as { wens?:string }).wens === "string"
-                                                    ? String((specs.intake as { wens?:string }).wens).trim()
-                                                    : "";
-                                                const wens = flat || nested;
-                                                return wens
-                                                    ? <p><strong>Wens klant:</strong> {wens}</p>
-                                                    : null;
-                                            })()
-                                        }
-                                        {
-                                            a.specificaties
-                                            && typeof a.specificaties === "object"
-                                            && (a.specificaties as Record<string, { persoon?:string; email?:string; telefoon?:string }>).contact
-                                            ? (()=>{
-                                                const c = (a.specificaties as Record<string, { persoon?:string; email?:string; telefoon?:string }>).contact;
-                                                const delen = [c.persoon, c.email, c.telefoon].filter(Boolean).join(" · ");
-                                                return delen ? <p><strong>Contact:</strong> {delen}</p> : null;
-                                            })()
-                                            : null
-                                        }
-                                        {
-                                            (()=>{
-                                                if(!a.specificaties || typeof a.specificaties !== "object"){
-                                                    return null;
-                                                }
-                                                const sch = (a.specificaties as Record<string,unknown>).schermen as {
-                                                    aan?:boolean;
-                                                    items?:{
-                                                        formaat?:string;
-                                                        formaatAnders?:string;
-                                                        beugel?:string;
-                                                        bevestigingDetail?:string;
-                                                        plafondHoogte?:string;
-                                                        locatie?:string;
-                                                        berekendType?:string;
-                                                    }[];
-                                                } | undefined;
-                                                if(!sch?.aan || !Array.isArray(sch.items) || sch.items.length === 0){
-                                                    return null;
-                                                }
-                                                return (
-                                                    <div>
-                                                        <strong>Schermen:</strong>
-                                                        <ul className="mt-1 list-disc pl-5 space-y-0.5">
-                                                            {sch.items.map((s,i)=>{
-                                                                const formaat =
-                                                                    s.formaat === "Anders"
-                                                                    ? (s.formaatAnders || "Anders")
-                                                                    : s.formaat;
-                                                                const bevestiging =
-                                                                    s.bevestigingDetail || s.beugel;
-                                                                return (
-                                                                    <li key={i}>
-                                                                        Scherm {i + 1}
-                                                                        {formaat ? ` · ${formaat}` : ""}
-                                                                        {bevestiging ? ` · ${bevestiging}` : ""}
-                                                                        {s.plafondHoogte ? ` · ${s.plafondHoogte}` : ""}
-                                                                        {s.locatie ? ` · ${s.locatie}` : ""}
-                                                                        {s.berekendType ? (
-                                                                            <span className="ml-1 font-semibold text-[#0066FF]">
-                                                                                Type {s.berekendType}
-                                                                            </span>
-                                                                        ) : null}
-                                                                    </li>
-                                                                );
-                                                            })}
-                                                        </ul>
-                                                    </div>
-                                                );
-                                            })()
-                                        }
-                                        {
-                                            (()=>{
-                                                if(!a.specificaties || typeof a.specificaties !== "object"){
-                                                    return null;
-                                                }
-                                                const ki = (a.specificaties as Record<string,unknown>).kiosk as {
-                                                    aan?:boolean;
-                                                    items?:{
-                                                        locatie?:string;
-                                                        type?:string;
-                                                        stroom?:string;
-                                                        internet?:string;
-                                                    }[];
-                                                } | undefined;
-                                                if(!ki?.aan || !Array.isArray(ki.items) || ki.items.length === 0){
-                                                    return null;
-                                                }
-                                                return (
-                                                    <div>
-                                                        <strong>Kiosken:</strong>
-                                                        <ul className="mt-1 list-disc pl-5 space-y-0.5">
-                                                            {ki.items.map((k,i)=>(
-                                                                <li key={i}>
-                                                                    Kiosk {i + 1}
-                                                                    {k.locatie ? ` · ${k.locatie}` : ""}
-                                                                    {k.type ? ` · ${k.type}` : ""}
-                                                                    {k.stroom ? ` · stroom ${k.stroom}` : ""}
-                                                                    {k.internet ? ` · internet ${k.internet}` : ""}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                );
-                                            })()
-                                        }
-                                        {
-                                            (()=>{
-                                                if(!a.specificaties || typeof a.specificaties !== "object"){
-                                                    return null;
-                                                }
-                                                const producten = (a.specificaties as Record<string,unknown>).evalue8Producten;
-                                                if(!Array.isArray(producten) || producten.length === 0){
-                                                    return null;
-                                                }
-                                                return (
-                                                    <div>
-                                                        <strong>eValue8 producten:</strong>
-                                                        <ul className="mt-1 list-disc pl-5 space-y-0.5">
-                                                            {producten.map((p,i)=>{
-                                                                const item = p as {
-                                                                    code?:string;
-                                                                    product?:string;
-                                                                    aantal?:string;
-                                                                };
-                                                                return (
-                                                                    <li key={i}>
-                                                                        <span className="font-mono text-xs">{item.code}</span>
-                                                                        {item.product ? ` — ${item.product}` : ""}
-                                                                        {item.aantal ? ` ×${item.aantal}` : ""}
-                                                                    </li>
-                                                                );
-                                                            })}
-                                                        </ul>
-                                                    </div>
-                                                );
-                                            })()
-                                        }
-                                        {
-                                            a.specificaties && typeof a.specificaties === "object"
-                                            ? Object.entries(a.specificaties as Record<string, { aan?:boolean; velden?:Record<string,string>; items?:unknown[] }>)
-                                                .filter(([k,v])=>{
-                                                    if(k === "project" || k === "contact" || k === "typeAanvraag" || k === "storing" || k === "geschatUren" || k === "aantalMonteurs" || k === "projectOmschrijving" || k === "projectHardware" || k === "projectHardwareBesteld" || k === "projectHardwareStatus" || k === "projectHardwareLevering" || k === "evalue8Producten" || k === "intake" || k === "intakeWens"){
-                                                        return false;
-                                                    }
-                                                    if(k === "schermen" && Array.isArray(v?.items) && v.items.length > 0){
-                                                        return false;
-                                                    }
-                                                    if(k === "kiosk" && Array.isArray(v?.items) && v.items.length > 0){
-                                                        return false;
-                                                    }
-                                                    return !!(v && typeof v === "object" && v.aan);
-                                                })
-                                                .map(([k,v])=>{
-                                                    const velden =
-                                                        v.velden
-                                                        ? Object.entries(v.velden)
-                                                            .filter(([,val])=>val && String(val).trim())
-                                                            .map(([vk,val])=>`${vk}: ${val}`)
-                                                            .join(", ")
-                                                        : "";
-                                                    return (
-                                                        <p key={k}>
-                                                            <strong className="capitalize">{k}:</strong> {velden || "aangevinkt"}
-                                                        </p>
-                                                    );
-                                                })
-                                            : null
-                                        }
-                                        {
-                                            a.specificaties
-                                            && typeof a.specificaties === "object"
-                                            && (a.specificaties as Record<string,unknown>).project === "Ja"
-                                            ? (
-                                                <>
-                                                    <p><strong>Project (offerte-basis):</strong> Ja</p>
-                                                    {(a.specificaties as Record<string,unknown>).projectOmschrijving
-                                                        ? <p><strong>Projectomschrijving:</strong> {String((a.specificaties as Record<string,unknown>).projectOmschrijving)}</p>
-                                                        : null}
-                                                </>
-                                            )
-                                            : null
-                                        }
-                                        {
-                                            a.specificaties
-                                            && typeof a.specificaties === "object"
-                                            && (
-                                                (a.specificaties as Record<string,unknown>).projectHardwareStatus
-                                                || (a.specificaties as Record<string,unknown>).projectHardwareBesteld
-                                                || (a.specificaties as Record<string,unknown>).projectHardwareLevering
-                                            )
-                                            ? (
-                                                <>
-                                                    {(a.specificaties as Record<string,unknown>).projectHardwareStatus
-                                                        ? <p><strong>Hardware status:</strong> {formatProjectHardwareStatuses((a.specificaties as Record<string,unknown>).projectHardwareStatus)}</p>
-                                                        : (a.specificaties as Record<string,unknown>).projectHardwareBesteld
-                                                            ? <p><strong>Hardware besteld:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareBesteld)}</p>
-                                                            : null}
-                                                    {(a.specificaties as Record<string,unknown>).projectHardwareLevering
-                                                        && isProjectHardwareBesteld(
-                                                            (a.specificaties as Record<string,unknown>).projectHardwareStatus,
-                                                        )
-                                                        ? <p><strong>Hardware levering:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareLevering)}</p>
-                                                        : null}
-                                                </>
-                                            )
-                                            : null
-                                        }
-                                        {a.stroom ? <p><strong>Stroom binnen 3m:</strong> {a.stroom}</p> : null}
-                                        {a.internet ? <p><strong>Internet binnen 3m:</strong> {a.internet}</p> : null}
-                                        {a.opmerkingen ? <p><strong>Opmerkingen:</strong> {a.opmerkingen}</p> : null}
-                                        {
-                                            aantalBijlagen > 0 && Array.isArray(a.bijlagen) && (
-                                                <div className="pt-1">
-                                                    <strong>Bijlagen:</strong>
-                                                    <ul className="mt-1 space-y-1">
-                                                        {(a.bijlagen as unknown as { url:string; name:string }[]).map((b,i)=>(
-                                                            <li key={i}>
-                                                                <a
-                                                                    href={b.url}
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
-                                                                    className="text-blue-600 underline"
-                                                                >
-                                                                    📎 {b.name}
-                                                                </a>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )
-                                        }
+                                    <div className="mt-3 pt-3 border-t">
+                                        <AanvraagSpecificatiesOverzicht
+                                            snapshot={{
+                                                specificaties:a.specificaties,
+                                                aanvragerNaam:a.aanvragerNaam,
+                                                opmerkingen:a.opmerkingen,
+                                                schermen:a.schermen,
+                                                beugel:a.beugel,
+                                                stroom:a.stroom,
+                                                internet:a.internet,
+                                            }}
+                                            locatie={{
+                                                locatie:a.locatie,
+                                                straat:a.straat,
+                                                huisnummer:a.huisnummer,
+                                                postcode:a.postcode,
+                                                plaats:a.plaats,
+                                            }}
+                                            bijlagen={
+                                                Array.isArray(a.bijlagen)
+                                                ? (a.bijlagen as { url?:string; name?:string }[])
+                                                : null
+                                            }
+                                        />
                                     </div>
                                 )
                             }

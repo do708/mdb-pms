@@ -544,7 +544,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.9.0
+   * Prisma Client JS version: 7.9.1
    * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
    */
   export type PrismaVersion = {
@@ -10891,6 +10891,7 @@ export namespace Prisma {
     plannedReisuren: number
     assignmentId: number
     formData: number
+    aanvraagSpecificaties: number
     pdfData: number
     pdfGeneratedAt: number
     sentAt: number
@@ -11005,6 +11006,7 @@ export namespace Prisma {
     plannedReisuren?: true
     assignmentId?: true
     formData?: true
+    aanvraagSpecificaties?: true
     pdfData?: true
     pdfGeneratedAt?: true
     sentAt?: true
@@ -11126,6 +11128,7 @@ export namespace Prisma {
     plannedReisuren: number | null
     assignmentId: string | null
     formData: JsonValue | null
+    aanvraagSpecificaties: JsonValue | null
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
     sentAt: Date | null
@@ -11179,6 +11182,7 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
@@ -11227,6 +11231,7 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
@@ -11265,6 +11270,7 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
@@ -11303,12 +11309,13 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
   }
 
-  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "straat" | "huisnummer" | "postcode" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
+  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "straat" | "huisnummer" | "postcode" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "aanvraagSpecificaties" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
   export type WorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -11393,6 +11400,10 @@ export namespace Prisma {
       plannedReisuren: number | null
       assignmentId: string | null
       formData: Prisma.JsonValue | null
+      /**
+       * Snapshot van klantaanvraag-specificaties (voor gestructureerde weergave bij in behandeling)
+       */
+      aanvraagSpecificaties: Prisma.JsonValue | null
       pdfData: Prisma.Bytes | null
       pdfGeneratedAt: Date | null
       sentAt: Date | null
@@ -11860,6 +11871,7 @@ export namespace Prisma {
     readonly plannedReisuren: FieldRef<"Workorder", 'Float'>
     readonly assignmentId: FieldRef<"Workorder", 'String'>
     readonly formData: FieldRef<"Workorder", 'Json'>
+    readonly aanvraagSpecificaties: FieldRef<"Workorder", 'Json'>
     readonly pdfData: FieldRef<"Workorder", 'Bytes'>
     readonly pdfGeneratedAt: FieldRef<"Workorder", 'DateTime'>
     readonly sentAt: FieldRef<"Workorder", 'DateTime'>
@@ -31469,6 +31481,7 @@ export namespace Prisma {
     plannedReisuren: 'plannedReisuren',
     assignmentId: 'assignmentId',
     formData: 'formData',
+    aanvraagSpecificaties: 'aanvraagSpecificaties',
     pdfData: 'pdfData',
     pdfGeneratedAt: 'pdfGeneratedAt',
     sentAt: 'sentAt'
@@ -32484,6 +32497,7 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
+    aanvraagSpecificaties?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -32531,6 +32545,7 @@ export namespace Prisma {
     plannedReisuren?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
+    aanvraagSpecificaties?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
     pdfGeneratedAt?: SortOrderInput | SortOrder
     sentAt?: SortOrderInput | SortOrder
@@ -32581,6 +32596,7 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
+    aanvraagSpecificaties?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -32628,6 +32644,7 @@ export namespace Prisma {
     plannedReisuren?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
+    aanvraagSpecificaties?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
     pdfGeneratedAt?: SortOrderInput | SortOrder
     sentAt?: SortOrderInput | SortOrder
@@ -32670,6 +32687,7 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableWithAggregatesFilter<"Workorder"> | number | null
     assignmentId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     formData?: JsonNullableWithAggregatesFilter<"Workorder">
+    aanvraagSpecificaties?: JsonNullableWithAggregatesFilter<"Workorder">
     pdfData?: BytesNullableWithAggregatesFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
@@ -34512,6 +34530,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -34559,6 +34578,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -34598,6 +34618,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34645,6 +34666,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34688,6 +34710,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -34718,6 +34741,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34752,6 +34776,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36731,6 +36756,7 @@ export namespace Prisma {
     plannedReisuren?: SortOrder
     assignmentId?: SortOrder
     formData?: SortOrder
+    aanvraagSpecificaties?: SortOrder
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
     sentAt?: SortOrder
@@ -39444,6 +39470,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -39489,6 +39516,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -39701,6 +39729,7 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
+    aanvraagSpecificaties?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -39939,6 +39968,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -39984,6 +40014,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -40333,6 +40364,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -40378,6 +40410,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -41843,6 +41876,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -41889,6 +41923,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -41943,6 +41978,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -41989,6 +42025,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42027,6 +42064,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42073,6 +42111,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42127,6 +42166,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42173,6 +42213,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42211,6 +42252,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42257,6 +42299,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42311,6 +42354,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42357,6 +42401,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42395,6 +42440,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42441,6 +42487,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42495,6 +42542,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42541,6 +42589,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42579,6 +42628,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42625,6 +42675,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42679,6 +42730,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42725,6 +42777,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42763,6 +42816,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42809,6 +42863,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42863,6 +42918,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42909,6 +42965,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42947,6 +43004,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -42993,6 +43051,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -43047,6 +43106,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43093,6 +43153,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43173,6 +43234,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -43219,6 +43281,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -43296,6 +43359,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43342,6 +43406,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -43494,6 +43559,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -43539,6 +43605,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -44019,6 +44086,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -44065,6 +44133,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -44156,6 +44225,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44202,6 +44272,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44292,6 +44363,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -44377,6 +44449,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44422,6 +44495,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44464,6 +44538,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44645,6 +44720,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -44818,6 +44894,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44863,6 +44940,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44905,6 +44983,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44998,6 +45077,7 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -45049,6 +45129,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45094,6 +45175,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45136,6 +45218,7 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45558,6 +45641,7 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
@@ -45630,6 +45714,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45675,6 +45760,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45717,6 +45803,7 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

@@ -170,6 +170,44 @@ export async function POST(
             specRegels.push(...schermenItemsRegels);
         }
 
+        const kioskBlok =
+            specs.kiosk && typeof specs.kiosk === "object"
+            ? specs.kiosk as {
+                aan?:boolean;
+                velden?:Record<string,string>;
+                items?:{
+                    locatie?:string;
+                    type?:string;
+                    opmerking?:string;
+                    stroom?:string;
+                    stroomMdb?:string;
+                    stroomAfstand?:string;
+                    stroomTraject?:string;
+                    internet?:string;
+                    internetMdb?:string;
+                    internetAfstand?:string;
+                    internetTraject?:string;
+                }[];
+              }
+            : null;
+
+        const kioskItemsRegels =
+            kioskBlok?.aan && Array.isArray(kioskBlok.items)
+            ? kioskBlok.items.map((k, i)=>{
+                return [
+                    `Kiosk ${i + 1}`,
+                    k.locatie ? `@ ${k.locatie}` : "",
+                    k.type,
+                    k.stroom ? `stroom: ${k.stroom}` : "",
+                    k.internet ? `internet: ${k.internet}` : "",
+                ].filter(Boolean).join(" · ");
+              })
+            : [];
+
+        if(kioskItemsRegels.length > 0){
+            specRegels.push(...kioskItemsRegels);
+        }
+
         for(const [key, blok] of Object.entries(specs)){
             if(
                 key === "project" ||
@@ -187,8 +225,11 @@ export async function POST(
             ){
                 continue;
             }
-            // Schermen al via items samengevat
+            // Schermen/kiosk al via items samengevat
             if(key === "schermen" && schermenItemsRegels.length > 0){
+                continue;
+            }
+            if(key === "kiosk" && kioskItemsRegels.length > 0){
                 continue;
             }
             const oud = blok as { aan?:boolean; velden?:Record<string,string> };
@@ -313,10 +354,20 @@ export async function POST(
                                 ? `Uren (geschat: ${geschatUren} dag(en)${aantalMonteurs ? `, ${aantalMonteurs} monteur(s)` : ""})`
                                 : "Uren")
                             : (specRegels.length
-                                ? `Installatie: ${specRegels.join("; ")}`
+                                ? `Installatie:\n${specRegels.map((r)=>`• ${r}`).join("\n")}`
                                 : "Nieuwe installatie")),
                     internalNotes:
                         omschrijvingsdelen.join("\n"),
+                    // Snapshot voor gestructureerde admin-weergave (niet in klantmail).
+                    aanvraagSpecificaties:{
+                        specificaties:specs,
+                        aanvragerNaam:aanvraag.aanvragerNaam,
+                        opmerkingen:aanvraag.opmerkingen,
+                        schermen:aanvraag.schermen,
+                        beugel:aanvraag.beugel,
+                        stroom:aanvraag.stroom,
+                        internet:aanvraag.internet,
+                    },
                     customerId:
                         aanvraag.customerId,
                     location:

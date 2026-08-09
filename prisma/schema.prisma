@@ -164,6 +164,8 @@ model Workorder {
   plannedReisuren    Float?
   assignmentId   String?
   formData       Json?
+  /// Snapshot van klantaanvraag-specificaties (voor gestructureerde weergave bij in behandeling)
+  aanvraagSpecificaties Json?
   pdfData        Bytes?
   pdfGeneratedAt DateTime?
   sentAt         DateTime?
