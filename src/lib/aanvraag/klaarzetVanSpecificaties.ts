@@ -61,7 +61,11 @@ export function klaarzetVanAanvraagSpecificaties(
             })
             .filter(Boolean);
         const tekst = groepeerTeksten(formaten);
-        if (tekst) out.schermenAantal = tekst;
+        if (tekst) {
+            out.schermenAantal = tekst;
+            // Per scherm standaard één player.
+            out.playersAantal = String(formaten.length);
+        }
 
         const beugels = schermen.items
             .map((item) => {

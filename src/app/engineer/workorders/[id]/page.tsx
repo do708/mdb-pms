@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -120,117 +120,148 @@ interface Workorder {
 
 
 
-// Eén materiaalregel (Schermen / Players / Beugels): aantal-tekstveld +
-// vinkjes "Geleverd" en "Klaargezet". Is het tekstvak leeg, dan geldt de
-// regel als "n.v.t." en zijn de vinkjes niet nodig. Is het tekstvak ingevuld,
-// dan zijn Geleverd én Klaargezet verplicht (rood kader tot ze aanstaan).
+// Eén materiaalregel: aantal/omschrijving + statuschips.
+// Leeg tekstvak = n.v.t. Ingevuld = (Geleverd én Klaargezet) óf Op locatie.
 function MateriaalRij({
     label,
     plh,
     aantal,
     geleverd,
     klaargezet,
+    opLocatie,
     onAantal,
     onGeleverd,
-    onKlaargezet
+    onKlaargezet,
+    onOpLocatie,
 }:{
     label:string;
     plh:string;
     aantal:string;
     geleverd:boolean;
     klaargezet:boolean;
+    opLocatie:boolean;
     onAantal:(v:string)=>void;
     onGeleverd:(v:boolean)=>void;
     onKlaargezet:(v:boolean)=>void;
+    onOpLocatie:(v:boolean)=>void;
 }){
 
     const ingevuld =
         aantal.trim() !== "";
 
-    // Niet in orde = tekstvak ingevuld maar nog niet allebei aangevinkt.
+    const statusOk =
+        opLocatie || (geleverd && klaargezet);
+
     const nietInOrde =
-        ingevuld && (!geleverd || !klaargezet);
+        ingevuld && !statusOk;
+
+    function Chip({
+        active,
+        disabled,
+        children,
+        onToggle,
+        warn,
+    }:{
+        active:boolean;
+        disabled:boolean;
+        children:ReactNode;
+        onToggle:()=>void;
+        warn?:boolean;
+    }){
+        return (
+            <button
+                type="button"
+                disabled={disabled}
+                onClick={onToggle}
+                className={`
+                    rounded-md px-2.5 py-1.5 text-[11px] font-semibold
+                    border transition
+                    disabled:opacity-35 disabled:cursor-not-allowed
+                    ${
+                        active
+                        ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                        : warn
+                        ? "bg-white text-slate-600 border-red-300"
+                        : "bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-white"
+                    }
+                `}
+            >
+                {children}
+            </button>
+        );
+    }
 
     return (
-        <div className="mb-2">
+        <div className={`
+            rounded-lg border px-3 py-2.5 space-y-2
+            ${nietInOrde ? "border-red-200 bg-red-50/50" : "border-slate-200/90 bg-white"}
+        `}>
 
-            <div className="
-                flex
-                items-center
-                justify-between
-                mb-1
-            ">
-                <span className="
-                    text-sm
-                    font-medium
-                    text-slate-700
-                ">
+            <div className="flex items-baseline justify-between gap-2">
+                <span className="text-[13px] font-semibold text-slate-800">
                     {label}
                 </span>
-
                 {
-                    !ingevuld && (
-                        <span className="
-                            text-[11px]
-                            text-slate-400
-                            font-medium
-                        ">
+                    !ingevuld
+                    ? (
+                        <span className="text-[10px] uppercase tracking-wide text-slate-400 font-medium">
                             n.v.t.
+                        </span>
+                    )
+                    : statusOk
+                    ? (
+                        <span className="text-[10px] font-medium text-emerald-600">
+                            ok
+                        </span>
+                    )
+                    : (
+                        <span className="text-[10px] font-medium text-red-600">
+                            status kiezen
                         </span>
                     )
                 }
             </div>
 
-            <div className="
-                grid
-                grid-cols-[1fr_auto_auto]
-                gap-2
-                items-center
-            ">
+            <input
+                type="text"
+                value={aantal}
+                onChange={(e)=>onAantal(e.target.value)}
+                placeholder={plh}
+                className={`
+                    w-full border rounded-md px-2.5 py-2 text-sm bg-white
+                    placeholder:text-slate-400
+                    ${nietInOrde ? "border-red-300" : "border-slate-200"}
+                `}
+            />
 
-                <input
-                    type="text"
-                    value={aantal}
-                    onChange={(e)=>onAantal(e.target.value)}
-                    placeholder={plh}
-                    className={`
-                        border
-                        rounded-lg
-                        p-2
-                        text-sm
-                        bg-white
-                        ${nietInOrde ? "border-red-300" : ""}
-                    `}
-                />
-
-                <div className="w-16 flex justify-center">
-                    <input
-                        type="checkbox"
-                        checked={geleverd}
-                        disabled={!ingevuld}
-                        onChange={(e)=>onGeleverd(e.target.checked)}
-                        className={`
-                            w-5 h-5
-                            ${!ingevuld ? "opacity-30" : ""}
-                            ${nietInOrde && !geleverd ? "ring-2 ring-red-300 rounded" : ""}
-                        `}
-                    />
-                </div>
-
-                <div className="w-16 flex justify-center">
-                    <input
-                        type="checkbox"
-                        checked={klaargezet}
-                        disabled={!ingevuld}
-                        onChange={(e)=>onKlaargezet(e.target.checked)}
-                        className={`
-                            w-5 h-5
-                            ${!ingevuld ? "opacity-30" : ""}
-                            ${nietInOrde && !klaargezet ? "ring-2 ring-red-300 rounded" : ""}
-                        `}
-                    />
-                </div>
-
+            <div className="flex flex-wrap items-center gap-1.5">
+                <Chip
+                    active={geleverd}
+                    disabled={!ingevuld}
+                    warn={nietInOrde && !geleverd && !opLocatie}
+                    onToggle={()=>onGeleverd(!geleverd)}
+                >
+                    Geleverd
+                </Chip>
+                <Chip
+                    active={klaargezet}
+                    disabled={!ingevuld}
+                    warn={nietInOrde && !klaargezet && !opLocatie}
+                    onToggle={()=>onKlaargezet(!klaargezet)}
+                >
+                    Klaargezet
+                </Chip>
+                <span className="px-0.5 text-[10px] font-medium text-slate-400">
+                    of
+                </span>
+                <Chip
+                    active={opLocatie}
+                    disabled={!ingevuld}
+                    warn={nietInOrde && !opLocatie}
+                    onToggle={()=>onOpLocatie(!opLocatie)}
+                >
+                    Op locatie
+                </Chip>
             </div>
 
         </div>
@@ -276,18 +307,23 @@ export default function EngineerWorkorderPage(){
             schermenAantal:"",
             schermenGeleverd:false,
             schermenKlaargezet:false,
+            schermenOpLocatie:false,
             playersAantal:"",
             playersGeleverd:false,
             playersKlaargezet:false,
+            playersOpLocatie:false,
             beugelsAantal:"",
             beugelsGeleverd:false,
             beugelsKlaargezet:false,
+            beugelsOpLocatie:false,
             kioskAantal:"",
             kioskGeleverd:false,
             kioskKlaargezet:false,
+            kioskOpLocatie:false,
             versterkersAantal:"",
             versterkersGeleverd:false,
-            versterkersKlaargezet:false
+            versterkersKlaargezet:false,
+            versterkersOpLocatie:false
         });
 
     const [pakbonUploaden,setPakbonUploaden] =
@@ -367,18 +403,23 @@ export default function EngineerWorkorderPage(){
                 schermenAantal:"",
                 schermenGeleverd:false,
                 schermenKlaargezet:false,
+                schermenOpLocatie:false,
                 playersAantal:"",
                 playersGeleverd:false,
                 playersKlaargezet:false,
+                playersOpLocatie:false,
                 beugelsAantal:"",
                 beugelsGeleverd:false,
                 beugelsKlaargezet:false,
+                beugelsOpLocatie:false,
                 kioskAantal:"",
                 kioskGeleverd:false,
                 kioskKlaargezet:false,
+                kioskOpLocatie:false,
                 versterkersAantal:"",
                 versterkersGeleverd:false,
-                versterkersKlaargezet:false
+                versterkersKlaargezet:false,
+                versterkersOpLocatie:false
             };
 
             const opgeslagenMateriaal =
@@ -980,9 +1021,6 @@ async function completeWorkorder(){
                         <h2 className="font-semibold text-gray-800 border-b pb-1">
                             Specificatie uit aanvraag
                         </h2>
-                        <p className="text-xs text-gray-500">
-                            Overzicht zoals ingevuld door de opdrachtgever.
-                        </p>
                         <AanvraagSpecificatiesOverzicht
                             snapshot={parseAanvraagSnapshot(
                                 workorder.aanvraagSpecificaties
@@ -1318,32 +1356,33 @@ async function completeWorkorder(){
 
                     {/* Rechts: klaargezet materiaal */}
                     <div className="
-                        border
+                        border border-slate-200
                         rounded-xl
                         p-4
-                        bg-slate-50
+                        bg-slate-50/80
+                        space-y-3
                     ">
 
 
-                        <div className="
-                            flex
-                            items-center
-                            justify-between
-                            mb-3
-                        ">
+                        <div className="flex items-start justify-between gap-3">
+                            <div>
+                                <div className="font-semibold text-slate-800">
+                                    Materiaal
+                                </div>
+                                <p className="mt-0.5 text-[11px] text-slate-500 leading-snug">
+                                    Per soort: geleverd + klaargezet, of al op locatie.
+                                </p>
+                            </div>
 
-                            <span className="font-semibold text-slate-700">
-                                Materiaal
-                            </span>
-
-
-                            <label className="
-                                text-sm
-                                text-sky-700
-                                font-medium
-                                cursor-pointer
-                                hover:underline
-                            ">
+                            <label className={`
+                                shrink-0 rounded-md border px-2.5 py-1.5
+                                text-xs font-semibold cursor-pointer
+                                ${
+                                    pakbonUploaden
+                                    ? "border-slate-200 text-slate-400 bg-white"
+                                    : "border-sky-200 text-sky-700 bg-white hover:bg-sky-50"
+                                }
+                            `}>
 
                                 {
                                     pakbonUploaden
@@ -1413,7 +1452,6 @@ async function completeWorkorder(){
                                 />
 
                             </label>
-
                         </div>
 
 
@@ -1424,11 +1462,9 @@ async function completeWorkorder(){
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="
-                                        block
-                                        text-xs
-                                        text-sky-600
-                                        underline
-                                        mb-3
+                                        inline-flex items-center
+                                        text-xs font-medium
+                                        text-sky-700 hover:underline
                                     "
                                 >
                                     Geüploade pakbon bekijken
@@ -1437,22 +1473,7 @@ async function completeWorkorder(){
                         }
 
 
-                        {/* Kolomkoppen */}
-                        <div className="
-                            grid
-                            grid-cols-[1fr_auto_auto]
-                            gap-2
-                            items-center
-                            text-xs
-                            font-medium
-                            text-slate-500
-                            mb-1
-                        ">
-                            <span></span>
-                            <span className="w-16 text-center">Geleverd</span>
-                            <span className="w-16 text-center">Klaargezet</span>
-                        </div>
-
+                        <div className="space-y-2">
 
                         <MateriaalRij
                             label="Schermen"
@@ -1460,9 +1481,11 @@ async function completeWorkorder(){
                             aantal={materiaal.schermenAantal}
                             geleverd={materiaal.schermenGeleverd}
                             klaargezet={materiaal.schermenKlaargezet}
+                            opLocatie={materiaal.schermenOpLocatie}
                             onAantal={(v)=>setMateriaal(m=>({...m,schermenAantal:v}))}
                             onGeleverd={(v)=>setMateriaal(m=>({...m,schermenGeleverd:v}))}
                             onKlaargezet={(v)=>setMateriaal(m=>({...m,schermenKlaargezet:v}))}
+                            onOpLocatie={(v)=>setMateriaal(m=>({...m,schermenOpLocatie:v}))}
                         />
 
                         <MateriaalRij
@@ -1471,9 +1494,11 @@ async function completeWorkorder(){
                             aantal={materiaal.playersAantal}
                             geleverd={materiaal.playersGeleverd}
                             klaargezet={materiaal.playersKlaargezet}
+                            opLocatie={materiaal.playersOpLocatie}
                             onAantal={(v)=>setMateriaal(m=>({...m,playersAantal:v}))}
                             onGeleverd={(v)=>setMateriaal(m=>({...m,playersGeleverd:v}))}
                             onKlaargezet={(v)=>setMateriaal(m=>({...m,playersKlaargezet:v}))}
+                            onOpLocatie={(v)=>setMateriaal(m=>({...m,playersOpLocatie:v}))}
                         />
 
                         <MateriaalRij
@@ -1482,9 +1507,11 @@ async function completeWorkorder(){
                             aantal={materiaal.beugelsAantal}
                             geleverd={materiaal.beugelsGeleverd}
                             klaargezet={materiaal.beugelsKlaargezet}
+                            opLocatie={materiaal.beugelsOpLocatie}
                             onAantal={(v)=>setMateriaal(m=>({...m,beugelsAantal:v}))}
                             onGeleverd={(v)=>setMateriaal(m=>({...m,beugelsGeleverd:v}))}
                             onKlaargezet={(v)=>setMateriaal(m=>({...m,beugelsKlaargezet:v}))}
+                            onOpLocatie={(v)=>setMateriaal(m=>({...m,beugelsOpLocatie:v}))}
                         />
 
                         <MateriaalRij
@@ -1493,9 +1520,11 @@ async function completeWorkorder(){
                             aantal={materiaal.kioskAantal}
                             geleverd={materiaal.kioskGeleverd}
                             klaargezet={materiaal.kioskKlaargezet}
+                            opLocatie={materiaal.kioskOpLocatie}
                             onAantal={(v)=>setMateriaal(m=>({...m,kioskAantal:v}))}
                             onGeleverd={(v)=>setMateriaal(m=>({...m,kioskGeleverd:v}))}
                             onKlaargezet={(v)=>setMateriaal(m=>({...m,kioskKlaargezet:v}))}
+                            onOpLocatie={(v)=>setMateriaal(m=>({...m,kioskOpLocatie:v}))}
                         />
 
                         <MateriaalRij
@@ -1504,10 +1533,14 @@ async function completeWorkorder(){
                             aantal={materiaal.versterkersAantal}
                             geleverd={materiaal.versterkersGeleverd}
                             klaargezet={materiaal.versterkersKlaargezet}
+                            opLocatie={materiaal.versterkersOpLocatie}
                             onAantal={(v)=>setMateriaal(m=>({...m,versterkersAantal:v}))}
                             onGeleverd={(v)=>setMateriaal(m=>({...m,versterkersGeleverd:v}))}
                             onKlaargezet={(v)=>setMateriaal(m=>({...m,versterkersKlaargezet:v}))}
+                            onOpLocatie={(v)=>setMateriaal(m=>({...m,versterkersOpLocatie:v}))}
                         />
+
+                        </div>
 
 
                     </div>

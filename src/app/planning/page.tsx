@@ -148,10 +148,10 @@ export default function PlanningPage(){
         useState("1");
 
     const [pendingStartTime, setPendingStartTime] =
-        useState("09:00");
+        useState("08:00");
 
     const [pendingDuurTekst, setPendingDuurTekst] =
-        useState("2");
+        useState("4");
 
     function pendingAantalMonteurs(): number {
         const n = Number.parseInt(pendingAantalTekst, 10);
@@ -161,7 +161,7 @@ export default function PlanningPage(){
 
     function pendingDuurUren(): number {
         const n = Number.parseFloat(pendingDuurTekst.replace(",", "."));
-        if (!Number.isFinite(n) || n <= 0) return 2;
+        if (!Number.isFinite(n) || n <= 0) return 4;
         return Math.min(16, n);
     }
 
@@ -391,8 +391,8 @@ export default function PlanningPage(){
 
     function resetPendingVoorstel() {
         setPendingAantalTekst("1");
-        setPendingStartTime("09:00");
-        setPendingDuurTekst("2");
+        setPendingStartTime("08:00");
+        setPendingDuurTekst("4");
         setPendingPicks([]);
     }
 
@@ -780,7 +780,7 @@ export default function PlanningPage(){
                                     value={pendingStartTime}
                                     disabled={scheduling || pendingPicks.length > 0}
                                     onChange={(e) =>
-                                        setPendingStartTime(e.target.value || "09:00")
+                                        setPendingStartTime(e.target.value || "08:00")
                                     }
                                     className="
                                         mt-0.5 block w-32 rounded-lg border border-slate-300
@@ -850,7 +850,15 @@ export default function PlanningPage(){
                                         </strong>
                                         {
                                             pendingPicks[0]
-                                            ? ` · ${pendingPicks[0].dateIso} · ${formatHour(pendingPicks[0].startHour)}–${formatHour(pendingPicks[0].startHour + pendingDuurUren())}`
+                                            ? (() => {
+                                                const [y, m, d] =
+                                                    pendingPicks[0].dateIso.split("-");
+                                                const datum =
+                                                    y && m && d
+                                                    ? `${d}-${m}-${y}`
+                                                    : pendingPicks[0].dateIso;
+                                                return ` · ${datum} · ${formatHour(pendingPicks[0].startHour)}–${formatHour(pendingPicks[0].startHour + pendingDuurUren())}`;
+                                            })()
                                             : ""
                                         }
                                     </p>

@@ -943,10 +943,6 @@ export default function EditWorkorderPage(){
                             <h2 className="font-semibold text-gray-800 border-b pb-1">
                                 Specificatie uit aanvraag
                             </h2>
-                            <p className="text-xs text-gray-500">
-                                Overzicht zoals ingevuld door de opdrachtgever.
-                                De klantmail gebruikt alleen het veld hieronder.
-                            </p>
                             <AanvraagSpecificatiesOverzicht
                                 snapshot={aanvraagSnapshot}
                             />

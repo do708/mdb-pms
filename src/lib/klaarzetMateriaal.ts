@@ -1,9 +1,9 @@
 // Controle op het "klaargezet materiaal"-blok van een werkbon.
 //
-// Regel: per soort (Schermen, Players, Beugels) geldt dat als het
-// aantal/omschrijving-tekstvak is ingevuld, "Geleverd" én "Klaargezet" moeten
-// zijn aangevinkt. Is het tekstvak leeg, dan is die soort n.v.t. en hoeft er
-// niets aangevinkt te worden.
+// Regel: per soort (Schermen, Players, Beugels, …) geldt dat als het
+// aantal/omschrijving-tekstvak is ingevuld, ofwel "Op locatie" moet staan,
+// ofwel "Geleverd" én "Klaargezet". Is het tekstvak leeg, dan is die soort
+// n.v.t. en hoeft er niets aangevinkt te worden.
 //
 // De klus is "compleet gecontroleerd" als alle ingevulde soorten in orde zijn.
 
@@ -12,25 +12,31 @@ interface KlaarzetMateriaal {
     schermenAantal?:string;
     schermenGeleverd?:boolean;
     schermenKlaargezet?:boolean;
+    schermenOpLocatie?:boolean;
     playersAantal?:string;
     playersGeleverd?:boolean;
     playersKlaargezet?:boolean;
+    playersOpLocatie?:boolean;
     beugelsAantal?:string;
     beugelsGeleverd?:boolean;
     beugelsKlaargezet?:boolean;
+    beugelsOpLocatie?:boolean;
     kioskAantal?:string;
     kioskGeleverd?:boolean;
     kioskKlaargezet?:boolean;
+    kioskOpLocatie?:boolean;
     versterkersAantal?:string;
     versterkersGeleverd?:boolean;
     versterkersKlaargezet?:boolean;
+    versterkersOpLocatie?:boolean;
 }
 
 
 function regelInOrde(
     aantal:string | undefined,
     geleverd:boolean | undefined,
-    klaargezet:boolean | undefined
+    klaargezet:boolean | undefined,
+    opLocatie?:boolean | undefined
 ):boolean {
 
     const ingevuld =
@@ -41,7 +47,11 @@ function regelInOrde(
         return true;
     }
 
-    // Ingevuld => beide vinkjes verplicht.
+    // Ingevuld => op locatie, of geleverd + klaargezet.
+    if(opLocatie){
+        return true;
+    }
+
     return Boolean(geleverd) && Boolean(klaargezet);
 
 }
@@ -86,13 +96,15 @@ export function heeftMateriaal(
     return Boolean(
         (km.schermenAantal && km.schermenAantal.trim()) ||
         (km.playersAantal && km.playersAantal.trim()) ||
-        (km.beugelsAantal && km.beugelsAantal.trim())
+        (km.beugelsAantal && km.beugelsAantal.trim()) ||
+        (km.kioskAantal && km.kioskAantal.trim()) ||
+        (km.versterkersAantal && km.versterkersAantal.trim())
     );
 
 }
 
 
-// Is het materiaal-blok compleet (alle ingevulde soorten geleverd+klaargezet)?
+// Is het materiaal-blok compleet (alle ingevulde soorten in orde)?
 export function materiaalCompleet(
     km:KlaarzetMateriaal | null
 ):boolean {
@@ -103,11 +115,11 @@ export function materiaalCompleet(
     }
 
     return (
-        regelInOrde(km.schermenAantal, km.schermenGeleverd, km.schermenKlaargezet) &&
-        regelInOrde(km.playersAantal, km.playersGeleverd, km.playersKlaargezet) &&
-        regelInOrde(km.beugelsAantal, km.beugelsGeleverd, km.beugelsKlaargezet) &&
-        regelInOrde(km.kioskAantal, km.kioskGeleverd, km.kioskKlaargezet) &&
-        regelInOrde(km.versterkersAantal, km.versterkersGeleverd, km.versterkersKlaargezet)
+        regelInOrde(km.schermenAantal, km.schermenGeleverd, km.schermenKlaargezet, km.schermenOpLocatie) &&
+        regelInOrde(km.playersAantal, km.playersGeleverd, km.playersKlaargezet, km.playersOpLocatie) &&
+        regelInOrde(km.beugelsAantal, km.beugelsGeleverd, km.beugelsKlaargezet, km.beugelsOpLocatie) &&
+        regelInOrde(km.kioskAantal, km.kioskGeleverd, km.kioskKlaargezet, km.kioskOpLocatie) &&
+        regelInOrde(km.versterkersAantal, km.versterkersGeleverd, km.versterkersKlaargezet, km.versterkersOpLocatie)
     );
 
 }

@@ -285,25 +285,30 @@ export interface OpleverData {
     evalue8SpareMelding:boolean | null;
 
     // Klaargezet materiaal (bij het klaarzetten van de werkbon ingevuld).
-    // Pakbon-upload + per soort een aantal/omschrijving en of het geleverd
-    // en klaargezet is.
+    // Pakbon-upload + per soort aantal/omschrijving; status via
+    // geleverd+klaargezet óf op locatie.
     klaarzetMateriaal:{
         pakbonUrl:string;
         schermenAantal:string;
         schermenGeleverd:boolean;
         schermenKlaargezet:boolean;
+        schermenOpLocatie:boolean;
         playersAantal:string;
         playersGeleverd:boolean;
         playersKlaargezet:boolean;
+        playersOpLocatie:boolean;
         beugelsAantal:string;
         beugelsGeleverd:boolean;
         beugelsKlaargezet:boolean;
+        beugelsOpLocatie:boolean;
         kioskAantal:string;
         kioskGeleverd:boolean;
         kioskKlaargezet:boolean;
+        kioskOpLocatie:boolean;
         versterkersAantal:string;
         versterkersGeleverd:boolean;
         versterkersKlaargezet:boolean;
+        versterkersOpLocatie:boolean;
     };
 
     // Per-opdrachtgever extra velden (dynamisch, afhankelijk van klant)
@@ -544,18 +549,23 @@ export function emptyOpleverData():OpleverData {
             schermenAantal:"",
             schermenGeleverd:false,
             schermenKlaargezet:false,
+            schermenOpLocatie:false,
             playersAantal:"",
             playersGeleverd:false,
             playersKlaargezet:false,
+            playersOpLocatie:false,
             beugelsAantal:"",
             beugelsGeleverd:false,
             beugelsKlaargezet:false,
+            beugelsOpLocatie:false,
             kioskAantal:"",
             kioskGeleverd:false,
             kioskKlaargezet:false,
+            kioskOpLocatie:false,
             versterkersAantal:"",
             versterkersGeleverd:false,
-            versterkersKlaargezet:false
+            versterkersKlaargezet:false,
+            versterkersOpLocatie:false
         },
 
         custom:{}
