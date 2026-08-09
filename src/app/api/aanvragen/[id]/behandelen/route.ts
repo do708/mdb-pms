@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
+import {
+    formatProjectHardwareStatuses,
+    isProjectHardwareBesteld,
+} from "@/lib/aanvraag/hardwareStatus";
 
 
 
@@ -238,6 +242,15 @@ export async function POST(
         const isProject =
             (specs.project as unknown as string) === "Ja";
 
+        const hardwareStatusTekst =
+            formatProjectHardwareStatuses(specs.projectHardwareStatus);
+        const hardwareLeveringTekst =
+            isProjectHardwareBesteld(specs.projectHardwareStatus)
+            && typeof specs.projectHardwareLevering === "string"
+            && specs.projectHardwareLevering.trim()
+                ? String(specs.projectHardwareLevering).trim()
+                : "";
+
 
         const storingRegels =
             typeAanvraag === "storing"
@@ -255,6 +268,12 @@ export async function POST(
                 intakeWens ? `Wens klant: ${intakeWens}` : "",
                 specRegels.length ? `Onderdelen: ${specRegels.join("; ")}` : "",
                 isProject ? "Project (offerte-basis): Ja" : "",
+                hardwareStatusTekst
+                    ? `Hardware status: ${hardwareStatusTekst}`
+                    : "",
+                hardwareLeveringTekst
+                    ? `Hardware levering: ${hardwareLeveringTekst}`
+                    : "",
                 geschatUren ? `Geschat aantal dagen: ${geschatUren}` : "",
                 aantalMonteurs ? `Aantal monteurs: ${aantalMonteurs}` : "",
                 ...storingRegels,

@@ -34,6 +34,9 @@ import {
 import {
     PROJECT_HARDWARE_STATUS_BESTELD,
     PROJECT_HARDWARE_STATUS_OPTIONS,
+    ProjectHardwareStatus,
+    isProjectHardwareBesteld,
+    toggleProjectHardwareStatus,
 } from "@/lib/aanvraag/hardwareStatus";
 
 
@@ -160,7 +163,9 @@ function AanvraagFormulier(){
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
-    const [projectHardwareStatus,setProjectHardwareStatus] = useState("");
+    const [projectHardwareStatus,setProjectHardwareStatus] = useState<
+        ProjectHardwareStatus[]
+    >([]);
     const [projectHardwareLevering,setProjectHardwareLevering] = useState("");
     const [opmerkingen,setOpmerkingen] = useState("");
 
@@ -544,7 +549,9 @@ function AanvraagFormulier(){
                                         project === "Ja" ? projectOmschrijving : "",
                                     projectHardwareStatus,
                                     projectHardwareLevering:
-                                        projectHardwareStatus === PROJECT_HARDWARE_STATUS_BESTELD
+                                        isProjectHardwareBesteld(
+                                            projectHardwareStatus
+                                        )
                                             ? projectHardwareLevering
                                             : "",
                                     storing:{
@@ -1106,66 +1113,93 @@ function AanvraagFormulier(){
 
                             <div>
                                 <span className="text-sm text-gray-600 block mb-1">
-                                    Status hardware
+                                    Status hardware{" "}
+                                    <span className="text-xs text-gray-400 font-normal">
+                                        (meerdere mogelijk)
+                                    </span>
                                 </span>
-                                <div className="flex flex-col gap-2 sm:flex-row">
-                                    {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie)=>(
-                                        <button
-                                            key={optie}
-                                            type="button"
-                                            onClick={()=>{
-                                                const next =
-                                                    projectHardwareStatus === optie
-                                                        ? ""
-                                                        : optie;
-                                                setProjectHardwareStatus(next);
-                                                if(next !== PROJECT_HARDWARE_STATUS_BESTELD){
-                                                    setProjectHardwareLevering("");
-                                                }
-                                            }}
-                                            className={
-                                                "flex-1 rounded-lg py-2 px-2 border-2 text-sm font-medium "
-                                                +
-                                                (projectHardwareStatus === optie
-                                                    ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                                    : "bg-white text-gray-700 border-gray-200")
-                                            }
-                                        >
-                                            {optie}
-                                        </button>
-                                    ))}
+                                <div className="flex flex-col gap-2">
+                                    {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie)=>{
+                                        const selected =
+                                            projectHardwareStatus.includes(optie);
+
+                                        return (
+                                            <div key={optie} className="space-y-2">
+                                                <button
+                                                    type="button"
+                                                    aria-pressed={selected}
+                                                    onClick={()=>{
+                                                        const next =
+                                                            toggleProjectHardwareStatus(
+                                                                projectHardwareStatus,
+                                                                optie
+                                                            );
+                                                        setProjectHardwareStatus(
+                                                            next as ProjectHardwareStatus[]
+                                                        );
+                                                        if(
+                                                            !isProjectHardwareBesteld(
+                                                                next
+                                                            )
+                                                        ){
+                                                            setProjectHardwareLevering(
+                                                                ""
+                                                            );
+                                                        }
+                                                    }}
+                                                    className={
+                                                        "w-full rounded-lg py-2 px-2 border-2 text-sm font-medium text-left "
+                                                        +
+                                                        (selected
+                                                            ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                                                            : "bg-white text-gray-700 border-gray-200")
+                                                    }
+                                                >
+                                                    {optie}
+                                                </button>
+
+                                                {optie === PROJECT_HARDWARE_STATUS_BESTELD
+                                                && selected ? (
+                                                    <div className="ml-1 pl-3 border-l-2 border-sky-200 space-y-1.5">
+                                                        <span className="text-sm text-gray-600 block">
+                                                            Waar wordt deze geleverd?
+                                                        </span>
+                                                        <div className="flex gap-2">
+                                                            {[
+                                                                "MDB Networks",
+                                                                "Op locatie",
+                                                            ].map((lev)=>(
+                                                                <button
+                                                                    key={lev}
+                                                                    type="button"
+                                                                    onClick={()=>
+                                                                        setProjectHardwareLevering(
+                                                                            (h)=>
+                                                                                h === lev
+                                                                                    ? ""
+                                                                                    : lev
+                                                                        )
+                                                                    }
+                                                                    className={
+                                                                        "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
+                                                                        +
+                                                                        (projectHardwareLevering ===
+                                                                        lev
+                                                                            ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                                            : "bg-white text-gray-700 border-gray-200")
+                                                                    }
+                                                                >
+                                                                    {lev}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
-
-                            {projectHardwareStatus === PROJECT_HARDWARE_STATUS_BESTELD ? (
-                                <div>
-                                    <span className="text-sm text-gray-600 block mb-1">
-                                        Waar wordt deze geleverd?
-                                    </span>
-                                    <div className="flex gap-2">
-                                        {["MDB Networks","Op locatie"].map((optie)=>(
-                                            <button
-                                                key={optie}
-                                                type="button"
-                                                onClick={()=>
-                                                    setProjectHardwareLevering((h)=>
-                                                        h === optie ? "" : optie
-                                                    )
-                                                }
-                                                className={
-                                                    "flex-1 rounded-lg py-2 border-2 text-sm font-medium "
-                                                    +
-                                                    (projectHardwareLevering === optie
-                                                        ? "bg-sky-100 text-sky-800 border-sky-300"
-                                                        : "bg-white text-gray-700 border-gray-200")
-                                                }
-                                            >
-                                                {optie}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : null}
                         </div>
 
                     </div>
