@@ -5,6 +5,10 @@ import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
+import {
+    formatProjectHardwareStatus,
+    isProjectHardwareBesteld,
+} from "@/lib/aanvraag/hardwareStatus";
 
 
 
@@ -397,11 +401,14 @@ function AanvragenSectie(){
                                             ? (
                                                 <>
                                                     {(a.specificaties as Record<string,unknown>).projectHardwareStatus
-                                                        ? <p><strong>Hardware status:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareStatus)}</p>
+                                                        ? <p><strong>Hardware status:</strong> {formatProjectHardwareStatus(String((a.specificaties as Record<string,unknown>).projectHardwareStatus))}</p>
                                                         : (a.specificaties as Record<string,unknown>).projectHardwareBesteld
                                                             ? <p><strong>Hardware besteld:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareBesteld)}</p>
                                                             : null}
                                                     {(a.specificaties as Record<string,unknown>).projectHardwareLevering
+                                                        && isProjectHardwareBesteld(
+                                                            String((a.specificaties as Record<string,unknown>).projectHardwareStatus || ""),
+                                                        )
                                                         ? <p><strong>Hardware levering:</strong> {String((a.specificaties as Record<string,unknown>).projectHardwareLevering)}</p>
                                                         : null}
                                                 </>

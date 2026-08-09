@@ -31,6 +31,10 @@ import {
     isEvalue8Opdrachtgever,
     isUrenOnlyOpdrachtgever,
 } from "@/lib/aanvraag/opdrachtgeverVorm";
+import {
+    PROJECT_HARDWARE_STATUS_BESTELD,
+    PROJECT_HARDWARE_STATUS_OPTIONS,
+} from "@/lib/aanvraag/hardwareStatus";
 
 
 interface Bijlage {
@@ -539,7 +543,10 @@ function AanvraagFormulier(){
                                     projectOmschrijving:
                                         project === "Ja" ? projectOmschrijving : "",
                                     projectHardwareStatus,
-                                    projectHardwareLevering,
+                                    projectHardwareLevering:
+                                        projectHardwareStatus === PROJECT_HARDWARE_STATUS_BESTELD
+                                            ? projectHardwareLevering
+                                            : "",
                                     storing:{
                                         omschrijving:storingOmschrijving,
                                         hardwareVervangen,
@@ -1101,11 +1108,7 @@ function AanvraagFormulier(){
                                     Status hardware
                                 </span>
                                 <div className="flex flex-col gap-2 sm:flex-row">
-                                    {[
-                                        "Al besteld / verstuurd",
-                                        "Op voorraad bij MDB Networks",
-                                        "Regelt MDB Networks",
-                                    ].map((optie)=>(
+                                    {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie)=>(
                                         <button
                                             key={optie}
                                             type="button"
@@ -1115,7 +1118,7 @@ function AanvraagFormulier(){
                                                         ? ""
                                                         : optie;
                                                 setProjectHardwareStatus(next);
-                                                if(next !== "Al besteld / verstuurd"){
+                                                if(next !== PROJECT_HARDWARE_STATUS_BESTELD){
                                                     setProjectHardwareLevering("");
                                                 }
                                             }}
@@ -1133,7 +1136,7 @@ function AanvraagFormulier(){
                                 </div>
                             </div>
 
-                            {projectHardwareStatus === "Al besteld / verstuurd" ? (
+                            {projectHardwareStatus === PROJECT_HARDWARE_STATUS_BESTELD ? (
                                 <div>
                                     <span className="text-sm text-gray-600 block mb-1">
                                         Waar wordt deze geleverd?
