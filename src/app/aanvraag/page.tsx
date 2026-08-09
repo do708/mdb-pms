@@ -783,9 +783,13 @@ function AanvraagFormulier(){
                             Type aanvraag{" "}
                             <span className="text-red-500">*</span>
                         </h2>
-                        <div className="flex w-full flex-nowrap gap-1.5">
+                        <div className="flex w-full flex-nowrap gap-2">
                             {[
-                                { k:"installatie", label:"Installatiewerkzaamheden" },
+                                {
+                                    k:"installatie",
+                                    label:"Installatie",
+                                    fullLabel:"Installatiewerkzaamheden",
+                                },
                                 { k:"intake", label:"Intake" },
                                 { k:"storing", label:"Storing" },
                                 { k:"uren", label:"Uren" }
@@ -794,8 +798,10 @@ function AanvraagFormulier(){
                                     key={t.k}
                                     type="button"
                                     onClick={()=>setTypeAanvraag(t.k)}
+                                    title={"fullLabel" in t ? t.fullLabel : undefined}
+                                    aria-label={"fullLabel" in t ? t.fullLabel : undefined}
                                     className={
-                                        "flex-1 min-w-0 rounded-xl border-2 px-2 py-2 text-xs sm:text-sm font-medium text-center leading-tight whitespace-normal break-words "
+                                        "flex-1 min-w-0 rounded-xl border-2 py-2.5 px-2 text-sm font-medium text-center whitespace-nowrap "
                                         +
                                         (typeAanvraag === t.k
                                             ? "bg-sky-100 text-sky-800 border-sky-300"
