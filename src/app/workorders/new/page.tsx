@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import OpleverForm from "@/components/workorders/OpleverForm";
 
 import type { OpleverData } from "@/types/oplever";
+import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 
 
 
@@ -278,7 +279,9 @@ function NewWorkorderInner(){
 
 
 
-    async function save(){
+    async function save(
+        options?:{ goToPlanning?:boolean }
+    ){
 
 
         setError("");
@@ -306,7 +309,10 @@ function NewWorkorderInner(){
         }
 
 
+        // Bij inplannen via planning: geen losse datum/tijd hier valideren.
         if(
+            !options?.goToPlanning
+            &&
             plannedDate &&
             startTime &&
             endTime &&
@@ -377,11 +383,20 @@ function NewWorkorderInner(){
 
                             contactPhone,
 
-                            assignedUserId,
+                            assignedUserId:
+                                options?.goToPlanning
+                                ? ""
+                                : assignedUserId,
 
-                            extraEngineerIds,
+                            extraEngineerIds:
+                                options?.goToPlanning
+                                ? []
+                                : extraEngineerIds,
 
                             plannedDate:
+                                options?.goToPlanning
+                                ? null
+                                :
                                 multiDay
                                 ?
                                 // Meerdaagse klus: automatisch 09:00 op de eerste dag
@@ -394,6 +409,9 @@ function NewWorkorderInner(){
                                 plannedDate,
 
                             plannedEndDate:
+                                options?.goToPlanning
+                                ? null
+                                :
                                 multiDay && endDate
                                 ?
                                 // Meerdaagse klus: automatisch tot 16:00 op de laatste dag
@@ -506,6 +524,25 @@ function NewWorkorderInner(){
                 }
 
 
+                if(options?.goToPlanning){
+                    const customerName =
+                        customers.find((c)=>c.id === customerId)?.name
+                        || "";
+                    const label =
+                        [customerName, title].filter(Boolean).join(" · ")
+                        || title
+                        || "Klus";
+
+                    setPendingSchedule({
+                        workorderId:created.id,
+                        label,
+                    });
+
+                    router.push("/planning");
+                    return;
+                }
+
+
                 // Iedereen komt na het aanmaken op de uitvoerpagina.
                 router.push(
                     `/engineer/workorders/${created.id}`
@@ -559,7 +596,7 @@ function NewWorkorderInner(){
                         ?
                         "Werkbon invullen"
                         :
-                        "Nieuwe werkbon"
+                        "Opdracht inplannen"
                     }
 
                 </h1>
@@ -569,7 +606,13 @@ function NewWorkorderInner(){
                     text-gray-500
                 ">
 
-                    Vul de gegevens in en sla onderaan op
+                    {
+                        isEngineer
+                        ?
+                        "Vul de gegevens in en verstuur onderaan"
+                        :
+                        "Vul de gegevens in en plan in via de weekplanning"
+                    }
 
                 </p>
 
@@ -843,7 +886,7 @@ function NewWorkorderInner(){
 
 
                 {
-                    true && (
+                    !isEngineer && (
 
                         <>
 
@@ -852,396 +895,38 @@ function NewWorkorderInner(){
                                 rounded-2xl
                                 p-5
                                 bg-gray-50
-                                space-y-5
+                                space-y-4
                                 min-w-0
                                 overflow-hidden
                             ">
 
-                                <label className="block min-w-0 w-full overflow-hidden">
-
-                                    <span className="
-                                        block
-                                        text-sm
-                                        font-medium
-                                        text-gray-700
-                                        mb-2
-                                    ">
-
-                                        Datum:
-
-                                    </span>
-
-                                    <input
-
-                                        type="date"
-
-                                        value={plannedDate}
-
-                                        onChange={(e)=>
-                                            setPlannedDate(e.target.value)
-                                        }
-
-                                        className="
-                                            block
-                                            w-full
-                                            max-w-full
-                                            min-w-0
-                                            border
-                                            rounded-xl
-                                            p-3
-                                            bg-white
-                                            box-border
-                                        "
-
-                                    />
-
-                                </label>
-
-
-                                <label className="
-                                    flex
-                                    items-center
-                                    gap-2
-                                    cursor-pointer
-                                    select-none
-                                ">
-
-                                    <input
-
-                                        type="checkbox"
-
-                                        checked={multiDay}
-
-                                        onChange={(e)=>
-                                            setMultiDay(e.target.checked)
-                                        }
-
-                                    />
-
-                                    <span className="text-sm text-gray-700">
-
-                                        Meerdere dagen
-
-                                    </span>
-
-                                </label>
-
-
-                                {
-                                    multiDay && (
-
-                                        <label className="block min-w-0 w-full overflow-hidden">
-
-                                            <span className="
-                                                block
-                                                text-sm
-                                                font-medium
-                                                text-gray-700
-                                                mb-2
-                                            ">
-
-                                                Tot en met:
-
-                                            </span>
-
-                                            <input
-
-                                                type="date"
-
-                                                value={endDate}
-
-                                                min={plannedDate}
-
-                                                onChange={(e)=>
-                                                    setEndDate(e.target.value)
-                                                }
-
-                                                className="
-                                                    block
-                                                    w-full
-                                                    max-w-full
-                                                    min-w-0
-                                                    border
-                                                    rounded-xl
-                                                    p-3
-                                                    bg-white
-                                                    box-border
-                                                "
-
-                                            />
-
-                                        </label>
-
-                                    )
-                                }
-
-
-
-                                {
-                                    !multiDay && (
-
                                 <div>
-
-                                    <span className="
-                                        text-sm
-                                        font-medium
-                                        text-gray-700
-                                    ">
-
-                                        Tijdstip (optioneel)
-
-                                    </span>
-
-                                    <label className="
-                                        flex
-                                        items-center
-                                        gap-2
-                                        mt-2
-                                        cursor-pointer
-                                    ">
-                                        <input
-                                            type="checkbox"
-                                            checked={startTime === "08:00" && endTime === "16:00"}
-                                            onChange={(e)=>{
-                                                if(e.target.checked){
-                                                    setStartTime("08:00");
-                                                    setEndTime("16:00");
-                                                } else {
-                                                    setStartTime("");
-                                                    setEndTime("");
-                                                }
-                                            }}
-                                            className="w-4 h-4"
-                                        />
-                                        <span className="text-sm text-gray-700">
-                                            Hele dag (08:00 – 16:00)
-                                        </span>
-                                    </label>
-
-                                    <div className="
-                                        flex
-                                        flex-col
-                                        gap-3
-                                        mt-2
-                                        min-w-0
-                                        sm:grid
-                                        sm:grid-cols-2
-                                    ">
-
-                                        <label className="block min-w-0 overflow-hidden">
-
-                                            <span className="
-                                                block
-                                                text-sm
-                                                font-medium
-                                                text-gray-700
-                                                mb-2
-                                            ">
-
-                                                Van
-
-                                            </span>
-
-                                            <input
-
-                                                type="time"
-
-                                                value={startTime}
-
-                                                onChange={(e)=>
-                                                    setStartTime(e.target.value)
-                                                }
-
-                                                className="
-                                                    block
-                                                    w-full
-                                                    max-w-full
-                                                    min-w-0
-                                                    border
-                                                    rounded-xl
-                                                    p-3
-                                                    bg-white
-                                                    box-border
-                                                "
-
-                                            />
-
-                                        </label>
-
-
-                                        <label className="block min-w-0 overflow-hidden">
-
-                                            <span className="
-                                                block
-                                                text-sm
-                                                font-medium
-                                                text-gray-700
-                                                mb-2
-                                            ">
-
-                                                Tot
-
-                                            </span>
-
-                                            <input
-
-                                                type="time"
-
-                                                value={endTime}
-
-                                                onChange={(e)=>
-                                                    setEndTime(e.target.value)
-                                                }
-
-                                                className="
-                                                    block
-                                                    w-full
-                                                    max-w-full
-                                                    min-w-0
-                                                    border
-                                                    rounded-xl
-                                                    p-3
-                                                    bg-white
-                                                    box-border
-                                                "
-
-                                            />
-
-                                        </label>
-
-                                    </div>
-
+                                    <h2 className="font-semibold text-gray-800">
+                                        Planning
+                                    </h2>
+                                    <p className="text-xs text-gray-500 mt-0.5">
+                                        Kies een vrij moment in de weekplanning. Datum, tijd en monteur(s) zet je daar.
+                                    </p>
                                 </div>
 
-                                    )
-                                }
-
-                            </div>
-
-
-{
-                          !isEngineer && (
-                            <>
-
-                            <label className="block">
-
-                                <span className="text-sm text-gray-600">
-
-                                    Monteur
-
-                                </span>
-
-                                <select
-
-                                    value={assignedUserId}
-
-                                    onChange={(e)=>
-                                        setAssignedUserId(e.target.value)
-                                    }
-
+                                <button
+                                    type="button"
+                                    onClick={()=>void save({ goToPlanning:true })}
+                                    disabled={saving}
                                     className="
                                         w-full
-                                        border
+                                        sm:w-auto
+                                        bg-[#0066FF]
+                                        text-white
                                         rounded-xl
-                                        p-3
-                                        mt-2
-                                        bg-white
+                                        px-5
+                                        py-3
+                                        font-bold
+                                        disabled:opacity-50
                                     "
-
                                 >
-
-                                    <option value="">
-
-                                        Kies monteur
-
-                                    </option>
-
-                                    {
-                                        engineers.map(engineer=>(
-
-                                            <option
-
-                                                key={engineer.id}
-
-                                                value={engineer.id}
-
-                                            >
-
-                                                {engineer.name}
-
-                                            </option>
-
-                                        ))
-                                    }
-
-                                </select>
-
-                            </label>
-
-
-                            <div>
-
-                                <span className="text-sm text-gray-600">
-
-                                    Extra monteurs (optioneel)
-
-                                </span>
-
-                                <div className="
-                                    mt-2
-                                    flex
-                                    flex-wrap
-                                    gap-2
-                                ">
-
-                                    {
-                                        engineers
-                                        .filter(e=>e.id !== assignedUserId)
-                                        .map(engineer=>(
-
-                                            <label
-
-                                                key={engineer.id}
-
-                                                className={`
-                                                    flex
-                                                    items-center
-                                                    gap-2
-                                                    border
-                                                    rounded-lg
-                                                    px-3
-                                                    py-1.5
-                                                    text-sm
-                                                    cursor-pointer
-                                                    ${
-                                                        extraEngineerIds.includes(engineer.id)
-                                                        ?
-                                                        "bg-blue-50 border-blue-300"
-                                                        :
-                                                        ""
-                                                    }
-                                                `}
-
-                                            >
-
-                                                <input
-
-                                                    type="checkbox"
-
-                                                    checked={extraEngineerIds.includes(engineer.id)}
-
-                                                    onChange={()=>toggleExtra(engineer.id)}
-
-                                                />
-
-                                                {engineer.name}
-
-                                            </label>
-
-                                        ))
-                                    }
-
-                                </div>
+                                    {saving ? "Bezig..." : "Inplannen"}
+                                </button>
 
                             </div>
 
@@ -1326,8 +1011,8 @@ function NewWorkorderInner(){
                                                     ...prev,
                                                     ...Array.from(e.target.files!)
                                                 ]);
+                                                e.target.value = "";
                                             }
-                                            e.target.value = "";
                                         }}
 
                                     />
@@ -1395,10 +1080,6 @@ function NewWorkorderInner(){
                                 }
 
                             </div>
-
-                            </>
-                          )
-                        }
 
                         </>
 
@@ -1657,7 +1338,7 @@ function NewWorkorderInner(){
 
             <button
 
-                onClick={save}
+                onClick={()=>void save()}
 
                 disabled={saving}
 
@@ -1698,7 +1379,7 @@ function NewWorkorderInner(){
                     ?
                     "📤 Werkbon versturen"
                     :
-                    "✓ Werkbon klaarzetten"
+                    "Opslaan"
                 }
 
             </button>
