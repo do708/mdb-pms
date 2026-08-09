@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 
 import { mergeOpleverData } from "@/types/oplever";
 import { excludeArchivedWorkorders } from "@/lib/archive";
+
+import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
 
 
@@ -506,7 +508,11 @@ export async function POST(
 
 
 
-        // Automatische km-berekening uitgeschakeld.
+        await syncEngineerDayKilometers(
+            workorder.assignedUserId,
+            workorder.plannedDate
+        );
+
 
         return NextResponse.json(
 
