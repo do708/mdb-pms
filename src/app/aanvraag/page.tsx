@@ -465,6 +465,24 @@ function AanvraagFormulier(){
             }
         }
 
+        if(!isEvalue8 && typeAanvraag === "installatie"){
+            if(projectHardwareStatus.length === 0){
+                setFout(
+                    "Geef aan wat de status van de hardware is (minimaal één keuze)."
+                );
+                return;
+            }
+            if(
+                isProjectHardwareBesteld(projectHardwareStatus)
+                && !projectHardwareLevering.trim()
+            ){
+                setFout(
+                    "Geef aan waar de bestelde hardware wordt geleverd."
+                );
+                return;
+            }
+        }
+
         setVersturenBezig(true);
 
         // Korte samenvatting van de aangevinkte schermen (voor de lijstweergave).
@@ -1108,12 +1126,14 @@ function AanvraagFormulier(){
                         {/* Hardware — geldt voor de hele installatie-aanvraag */}
                         <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-3">
                             <span className="text-sm font-medium text-gray-800 block">
-                                Hardware die geïnstalleerd dient te worden
+                                Hardware die geïnstalleerd dient te worden{" "}
+                                <span className="text-red-500">*</span>
                             </span>
 
                             <div>
                                 <span className="text-sm text-gray-600 block mb-1">
                                     Status hardware{" "}
+                                    <span className="text-red-500">*</span>{" "}
                                     <span className="text-xs text-gray-400 font-normal">
                                         (meerdere mogelijk)
                                     </span>
@@ -1162,7 +1182,8 @@ function AanvraagFormulier(){
                                                 && selected ? (
                                                     <div className="ml-1 pl-3 border-l-2 border-sky-200 space-y-1.5">
                                                         <span className="text-sm text-gray-600 block">
-                                                            Waar wordt deze geleverd?
+                                                            Waar wordt deze geleverd?{" "}
+                                                            <span className="text-red-500">*</span>
                                                         </span>
                                                         <div className="flex gap-2">
                                                             {[

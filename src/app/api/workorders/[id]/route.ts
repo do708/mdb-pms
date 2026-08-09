@@ -7,8 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 
 import { mergeOpleverData, applyPlannedTravelToFormData } from "@/types/oplever";
+import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
 
-import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 
 
 
@@ -186,48 +186,11 @@ customer:true,
 
 
 
-        if(
-            workorder.plannedDate
-            && workorder.assignedUserId
-            && (
-                workorder.plannedRoundTripKm
-                == null
-                || workorder.plannedReisuren
-                == null
-            )
-        ){
-
-            await syncEngineerDayKilometers(
-                workorder.assignedUserId,
-                workorder.plannedDate
-            );
-
-            const travel =
-                await prisma.workorder.findUnique({
-                    where:{
-                        id
-                    },
-                    select:{
-                        plannedRoundTripKm:true,
-                        plannedReisuren:true
-                    }
-                });
-
-            if(travel){
-                workorder.plannedRoundTripKm =
-                    travel.plannedRoundTripKm;
-                workorder.plannedReisuren =
-                    travel.plannedReisuren;
-            }
-
-        }
-
-
         const formDataForClient =
             applyPlannedTravelToFormData(
                 workorder.formData,
-                workorder.plannedRoundTripKm,
-                workorder.plannedReisuren
+                null,
+                null
             );
 
 
@@ -423,27 +386,6 @@ export async function PUT(
 
 
 
-        const planningFieldsChanged =
-            session.user.role !== "engineer"
-            && (
-                body.plannedDate !== undefined
-                || body.location !== undefined
-                || body.straat !== undefined
-                || body.huisnummer !== undefined
-                || body.postcode !== undefined
-                || body.city !== undefined
-                || body.customerId !== undefined
-                || body.assignedUserId !== undefined
-            );
-
-        const previousEngineerId =
-            existingWorkorder.assignedUserId;
-
-        const previousPlannedDate =
-            existingWorkorder.plannedDate;
-
-
-
         const workorder =
 
             await prisma.workorder.update({
@@ -505,13 +447,7 @@ export async function PUT(
                         :
                         body.plannedDate !== undefined
                         ?
-                        (
-                            body.plannedDate
-                            ?
-                            new Date(body.plannedDate)
-                            :
-                            null
-                        )
+                        parsePlanningDateInput(body.plannedDate)
                         :
                         existingWorkorder.plannedDate,
 
@@ -528,7 +464,7 @@ export async function PUT(
                         (
                             body.plannedEndDate
                             ?
-                            new Date(body.plannedEndDate)
+                            parsePlanningDateInput(body.plannedEndDate)
                             :
                             null
                         )
@@ -708,23 +644,6 @@ export async function PUT(
 
 
             });
-
-
-
-
-        if(planningFieldsChanged){
-
-            await syncEngineerDayKilometers(
-                previousEngineerId,
-                previousPlannedDate
-            );
-
-            await syncEngineerDayKilometers(
-                workorder.assignedUserId,
-                workorder.plannedDate
-            );
-
-        }
 
 
 
