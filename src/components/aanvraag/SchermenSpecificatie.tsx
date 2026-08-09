@@ -34,6 +34,10 @@ export default function SchermenSpecificatie({
     items,
     onItemsChange,
 }: Props) {
+    const aantalNum = parseInt(aantal, 10);
+    const meerDan15Schermen =
+        Number.isFinite(aantalNum) && aantalNum > 15;
+
     function zetAantal(raw: string) {
         onAantalChange(raw);
         const n = parseInt(raw, 10);
@@ -79,6 +83,11 @@ export default function SchermenSpecificatie({
                     placeholder="Bijv. 2"
                     className="w-full border rounded-lg p-2 mt-0.5 bg-white"
                 />
+                {meerDan15Schermen ? (
+                    <p className="mt-1.5 text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
+                        Meer dan 15 schermen geldt als project
+                    </p>
+                ) : null}
             </label>
 
             {items.length > 0 ? (

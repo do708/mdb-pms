@@ -628,6 +628,13 @@ function AanvraagFormulier(){
         );
     }
 
+    const schermenAantalNum = parseInt(
+        specs.schermen?.velden?.aantal || "",
+        10
+    );
+    const meerDan15Schermen =
+        Number.isFinite(schermenAantalNum) && schermenAantalNum > 15;
+
 
     return (
 
@@ -888,6 +895,10 @@ function AanvraagFormulier(){
                                                         onAantalChange={(a)=>{
                                                             zetVeld("schermen", "aantal", a);
                                                             const n = parseInt(a, 10);
+                                                            // >15 schermen = project; alleen auto-aan, nooit auto-uit
+                                                            if(Number.isFinite(n) && n > 15){
+                                                                setProject("Ja");
+                                                            }
                                                             if(!Number.isFinite(n) || n < 0){
                                                                 setSchermenItems([]);
                                                                 return;
@@ -1056,6 +1067,11 @@ function AanvraagFormulier(){
                             <span className="text-sm font-medium text-gray-800 block">
                                 6. Project (offerte-basis) — is het een project?
                             </span>
+                            {meerDan15Schermen ? (
+                                <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">
+                                    Meer dan 15 schermen geldt als project
+                                </p>
+                            ) : null}
                             <div className="flex gap-2">
                                 <button
                                     type="button"
