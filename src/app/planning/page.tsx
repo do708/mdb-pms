@@ -11,6 +11,12 @@ import Calendar from "@/components/planning/Calendar";
 import WeekView from "@/components/planning/WeekView";
 import { WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
 import {
+    PageHeader,
+    PageShell,
+    SpecListRow,
+    SpecPanel,
+} from "@/components/ui/SpecLayout";
+import {
     clearPendingSchedule,
     getPendingSchedule,
     type PendingSchedule,
@@ -655,11 +661,11 @@ export default function PlanningPage(){
 
         return (
 
-            <main className="p-6">
-
-                Planning laden...
-
-            </main>
+            <PageShell>
+                <p className="text-sm text-gray-500">
+                    Planning laden...
+                </p>
+            </PageShell>
 
         );
 
@@ -674,32 +680,24 @@ export default function PlanningPage(){
 
     return (
 
-        <main className="
-            p-6
-            space-y-4
-        ">
+        <PageShell className="!space-y-4">
 
 
-
-
-
+            <PageHeader
+                title="Planning"
+                subtitle="Wie is waar ingepland"
+            />
 
 
             {
                 pending && canEdit && (
-                    <section className="
-                        sticky
-                        top-2
-                        z-20
-                        space-y-3
-                        rounded-2xl
-                        border
-                        border-[#0066FF]/30
-                        bg-[#e8f0ff]
-                        px-4
-                        py-3
-                        shadow-sm
-                    ">
+                    <SpecPanel
+                        className="
+                            sticky top-2 z-20
+                            !border-[#0066FF]/30
+                            !bg-[#e8f0ff]
+                        "
+                    >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="min-w-0">
                                 <p className="text-sm font-bold text-[#0066FF]">
@@ -878,7 +876,7 @@ export default function PlanningPage(){
                             )
                         }
 
-                    </section>
+                    </SpecPanel>
                 )
             }
 
@@ -887,72 +885,40 @@ export default function PlanningPage(){
             {
                 conflicts.length > 0 && (
 
-                    <section className="
-                        bg-red-100
-                        border
-                        border-red-300
-                        rounded-xl
-                        p-4
-                    ">
+                    <SpecPanel
+                        title={`Planningconflicten (${conflicts.length})`}
+                        tone="amber"
+                    >
 
-
-                        <h2 className="
-                            font-bold
-                            text-red-700
-                            mb-3
-                        ">
-
-                            ⚠️ Planning conflicten
-
-                        </h2>
-
-
-
-
+                        <div className="space-y-2">
                         {
                             conflicts.map((conflict,index)=>(
 
 
-                                <div
+                                <SpecListRow key={index}>
 
-                                    key={index}
+                                    <p className="font-semibold text-sm text-gray-900">
+                                        {conflict.user}
+                                    </p>
 
-                                    className="
-                                        mb-3
-                                    "
-
-                                >
-
-                                    <strong>
-
-                                        👷 {conflict.user}
-
-                                    </strong>
-
-
-                                    <p>
-
+                                    <p className="text-xs text-gray-500 mt-0.5">
                                         {conflict.date}
-
                                     </p>
 
-
-                                    <p>
-
+                                    <p className="text-xs text-gray-700 mt-1">
                                         {conflict.workorders.join(" ↔ ")}
-
                                     </p>
 
-
-                                </div>
+                                </SpecListRow>
 
 
                             ))
 
                         }
+                        </div>
 
 
-                    </section>
+                    </SpecPanel>
 
                 )
 
@@ -1021,13 +987,13 @@ export default function PlanningPage(){
 
             {
                 canEdit && (
-                    <WorkorderStatusIconLegend className="
-                        rounded-xl border border-slate-200 bg-white px-3 py-2
-                    " />
+                    <SpecPanel>
+                        <WorkorderStatusIconLegend />
+                    </SpecPanel>
                 )
             }
 
-        </main>
+        </PageShell>
 
     );
 

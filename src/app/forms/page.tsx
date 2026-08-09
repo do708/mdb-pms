@@ -54,24 +54,17 @@ export default function FormsPage() {
                         className="block"
                     >
                         <SpecPanel
-                            tone="white"
-                            className="hover:border-gray-300 transition h-full"
-                        >
-                            <p className="text-3xl mb-1">{definition.icon}</p>
-                            <p className="font-semibold text-sm text-gray-800">
-                                {definition.label}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                                {definition.description}
-                            </p>
-                        </SpecPanel>
+                            title={definition.label}
+                            hint={definition.description}
+                            className="hover:border-sky-300 hover:bg-sky-50/40 transition h-full"
+                        />
                     </Link>
                 ))}
             </div>
 
             <SpecPageCard>
                 <h2 className="font-semibold text-sm text-gray-800">
-                    📋 Ingediende formulieren
+                    Ingediende formulieren
                 </h2>
 
                 {loading && (
@@ -99,7 +92,7 @@ export default function FormsPage() {
                                         <p className="font-semibold text-sm text-gray-900">
                                             {form.title}
                                         </p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-xs text-gray-500 mt-0.5">
                                             {new Date(
                                                 form.createdAt
                                             ).toLocaleDateString("nl-NL")}
@@ -108,7 +101,7 @@ export default function FormsPage() {
                                         </p>
                                     </div>
 
-                                    <span className="text-sm bg-gray-100 rounded-full px-3 py-1 shrink-0">
+                                    <span className="text-xs bg-gray-100 text-gray-700 rounded-full px-2.5 py-0.5 shrink-0">
                                         {form.status}
                                     </span>
                                 </SpecListRow>

@@ -148,8 +148,8 @@ export default function Calendar({
     const weekdayLabels = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
 
     return (
-        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden w-full max-w-full">
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 pt-3 pb-2.5 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
+        <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden w-full max-w-full">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 pt-3 pb-2.5 border-b border-slate-100 bg-slate-50/60">
                 <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                         <h2 className="text-lg font-bold text-slate-900">

@@ -310,8 +310,8 @@ export default function WeekView({
         120 + Math.max(users.length, 1) * 110;
 
     return (
-        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 pt-3 pb-2.5 border-b border-slate-100 bg-gradient-to-br from-[#e8f0ff] via-white to-[#fff5fa]">
+        <section className="bg-white border border-gray-200 rounded-2xl">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-5 pt-3 pb-2.5 border-b border-slate-100 bg-slate-50/60">
                 <div className="flex flex-wrap items-center gap-2 min-w-0">
                     <h2 className="text-lg font-bold text-slate-900">
                         Weekoverzicht

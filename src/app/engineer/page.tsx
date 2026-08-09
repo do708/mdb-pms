@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getStatus } from "@/constants/workorderStatus";
 import {
     PageHeader,
     PageShell,
-    SpecPanel,
+    SpecPageCard,
 } from "@/components/ui/SpecLayout";
 
 interface EngineerWorkorder {
@@ -60,70 +61,90 @@ export default function EngineerPage() {
     return (
         <PageShell className="-m-2 sm:-m-0">
             <PageHeader
-                title="👷 Monteur omgeving"
-                subtitle="Mijn geplande werkzaamheden"
+                title="Mijn opdrachten"
+                subtitle="Geplande werkzaamheden"
             />
 
-            <div className="space-y-4">
-                {workorders.length === 0 && (
-                    <SpecPanel>
-                        <p className="text-sm text-gray-700">
-                            Geen geplande opdrachten
-                        </p>
-                    </SpecPanel>
-                )}
+            <SpecPageCard>
+                {workorders.length === 0 ? (
+                    <p className="text-sm text-gray-500">
+                        Geen geplande opdrachten.
+                    </p>
+                ) : (
+                    <div className="space-y-2">
+                        {workorders.map((item) => {
+                            const kleur =
+                                item.project?.customer?.color ||
+                                item.customer?.color ||
+                                "#d1d5db";
 
-                {workorders.map((item) => (
-                    <div
-                        key={item.id}
-                        className="rounded-xl border-l-8"
-                        style={{
-                            borderLeftColor:
-                                item.project?.customer?.color || "#000000",
-                        }}
-                    >
-                        <SpecPanel className="!rounded-l-none border-l-0 !p-5">
-                            <h2 className="text-xl font-bold">{item.number}</h2>
+                            const opdrachtgever =
+                                item.customer?.name ||
+                                item.project?.customer?.name ||
+                                "—";
 
-                            <p>{item.title}</p>
+                            return (
+                                <div
+                                    key={item.id}
+                                    className="rounded-lg border border-gray-200 bg-white border-l-4"
+                                    style={{ borderLeftColor: kleur }}
+                                >
+                                    <div
+                                        className="
+                                            flex flex-col gap-3 px-3 py-2.5
+                                            sm:flex-row sm:items-center
+                                            sm:justify-between
+                                        "
+                                    >
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <h2 className="font-bold text-sm text-gray-900">
+                                                    {item.number}
+                                                </h2>
+                                                <span
+                                                    className={`
+                                                        px-2 py-0.5 rounded-full text-xs
+                                                        ${getStatus(item.status).badge}
+                                                    `}
+                                                >
+                                                    {
+                                                        getStatus(item.status)
+                                                            .label
+                                                    }
+                                                </span>
+                                            </div>
+                                            <p className="text-sm text-gray-800 mt-0.5">
+                                                {item.title}
+                                            </p>
+                                            <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                                {opdrachtgever}
+                                                {item.project?.name
+                                                    ? ` · ${item.project.name}`
+                                                    : ""}
+                                                {item.assignedUser?.name
+                                                    ? ` · ${item.assignedUser.name}`
+                                                    : ""}
+                                            </p>
+                                        </div>
 
-                            <p className="mt-2">
-                                🏢{" "}
-                                {item.customer?.name ||
-                                    item.project?.customer?.name ||
-                                    "Geen klant"}
-                            </p>
-
-                            <p>
-                                📁{" "}
-                                {item.project?.name ||
-                                    item.title ||
-                                    "Geen project"}
-                            </p>
-
-                            <p>Status: {item.status}</p>
-
-                            <p>
-                                👷{" "}
-                                {item.assignedUser?.name || "Niet toegewezen"}
-                            </p>
-
-                            <Link
-                                href={`/engineer/workorders/${item.id}`}
-                                className="
-                                    flex items-center justify-center
-                                    w-full mt-4
-                                    bg-[#d6007e] text-white
-                                    px-4 py-4 min-h-[48px]
-                                    rounded-xl font-bold text-base
-                                "
-                            >
-                                Open opdracht
-                            </Link>
-                        </SpecPanel>
+                                        <Link
+                                            href={`/engineer/workorders/${item.id}`}
+                                            className="
+                                                shrink-0 inline-flex justify-center
+                                                bg-[#d6007e] text-white
+                                                px-4 py-2.5 rounded-xl
+                                                text-sm font-semibold
+                                            "
+                                        >
+                                            Open opdracht
+                                        </Link>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
-                ))}
-            </div>
+                )}
+            </SpecPageCard>
         </PageShell>
     );
 }

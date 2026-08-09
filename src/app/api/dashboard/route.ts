@@ -218,6 +218,30 @@ export async function GET(){
                 }
             });
 
+        const openFormsList =
+            await prisma.formSubmission.findMany({
+                where:{
+                    status:"ingediend"
+                },
+                orderBy:{
+                    createdAt:"desc"
+                },
+                include:{
+                    user:{
+                        select:{
+                            name:true
+                        }
+                    }
+                }
+            });
+
+        const openAanvragen =
+            await prisma.aanvraag.count({
+                where:{
+                    status:"open"
+                }
+            });
+
 
 
 
@@ -311,7 +335,13 @@ export async function GET(){
                 teLaat:teLaatCount,
 
 
-                openForms
+                openForms,
+
+
+                openAanvragen,
+
+
+                materiaal:materiaalWaarschuwing.length
 
 
             },
@@ -321,6 +351,9 @@ export async function GET(){
 
 
             teLaat,
+
+
+            openFormsList,
 
 
             recent,
