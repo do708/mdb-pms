@@ -352,6 +352,20 @@ export default function WeekView({
                         </div>
                     ) : null}
                 </div>
+
+                {weekNavigation ? (
+                    <button
+                        type="button"
+                        onClick={weekNavigation.onToday}
+                        className="
+                            shrink-0 text-sm font-semibold text-[#0066FF]
+                            rounded-lg border border-[#0066FF]/25 bg-white
+                            px-3 py-1.5 hover:bg-[#e8f0ff] transition
+                        "
+                    >
+                        Vandaag
+                    </button>
+                ) : null}
             </div>
 
             {weekNavigation ? (
@@ -369,22 +383,12 @@ export default function WeekView({
                         ← Vorige
                     </button>
 
-                    <div className="flex flex-col items-center gap-0.5 min-w-0 flex-1 text-center">
-                        <span className="text-xs sm:text-sm font-semibold text-slate-800 tabular-nums leading-tight">
-                            {weekNavigation.rangeLabel}
-                        </span>
-                        <button
-                            type="button"
-                            onClick={weekNavigation.onToday}
-                            className="
-                                text-xs font-semibold text-[#0066FF]
-                                rounded px-1.5 py-0.5
-                                hover:bg-[#e8f0ff] transition
-                            "
-                        >
-                            Vandaag
-                        </button>
-                    </div>
+                    <span className="
+                        text-xs sm:text-sm font-semibold text-slate-800
+                        tabular-nums leading-tight text-center min-w-0 truncate
+                    ">
+                        {weekNavigation.rangeLabel}
+                    </span>
 
                     <button
                         type="button"

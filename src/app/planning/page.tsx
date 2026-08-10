@@ -12,7 +12,6 @@ import WeekView from "@/components/planning/WeekView";
 import EngineerMobileSchedule from "@/components/planning/EngineerMobileSchedule";
 import { WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
 import {
-    PageHeader,
     PageShell,
     SpecListRow,
     SpecPanel,
@@ -684,9 +683,7 @@ export default function PlanningPage(){
         <PageShell className="!space-y-4">
 
 
-            <PageHeader
-                title="Planning"
-            />
+            {/* Pagina-titel "Planning" weggelaten; weekkop staat in WeekView. */}
 
 
             {
