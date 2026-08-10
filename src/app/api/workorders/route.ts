@@ -136,7 +136,13 @@ export async function GET(){
                     customer:true,
 
 
-                    assignedUser:true
+                    assignedUser:true,
+
+                    _count:{
+                        select:{
+                            photos:true
+                        }
+                    }
 
 
                 },

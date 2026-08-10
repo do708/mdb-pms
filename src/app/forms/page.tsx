@@ -54,10 +54,20 @@ export default function FormsPage() {
                         className="block"
                     >
                         <SpecPanel
-                            title={definition.label}
-                            hint={definition.description}
                             className="hover:border-sky-300 hover:bg-sky-50/40 transition h-full"
-                        />
+                        >
+                            <p className="text-2xl leading-none" aria-hidden>
+                                {definition.icon}
+                            </p>
+                            <div className="space-y-0.5">
+                                <p className="font-semibold text-sm text-gray-800">
+                                    {definition.label}
+                                </p>
+                                <p className="text-xs text-gray-500 leading-snug">
+                                    {definition.description}
+                                </p>
+                            </div>
+                        </SpecPanel>
                     </Link>
                 ))}
             </div>

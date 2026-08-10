@@ -79,7 +79,7 @@ function AanvraagLinkKnop({ customerId }: { customerId: string }) {
                 text-gray-700 hover:bg-gray-50 disabled:opacity-50
             "
         >
-            {gekopieerd ? "Gekopieerd" : "Aanvraaglink"}
+            {gekopieerd ? "✓ Gekopieerd" : "🔗 Aanvraaglink"}
         </button>
     );
 }

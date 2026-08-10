@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import Calendar from "@/components/planning/Calendar";
 
 import WeekView from "@/components/planning/WeekView";
+import EngineerMobileSchedule from "@/components/planning/EngineerMobileSchedule";
 import { WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
 import {
     PageHeader,
@@ -932,6 +933,19 @@ export default function PlanningPage(){
 
 
 
+            {isEngineer && session?.user?.id ? (
+                <EngineerMobileSchedule
+                    items={items}
+                    leave={leave}
+                    engineerId={session.user.id}
+                    weekStart={weekStart}
+                    onPreviousWeek={() => shiftWeek(-1)}
+                    onNextWeek={() => shiftWeek(1)}
+                    onThisWeek={thisWeek}
+                />
+            ) : null}
+
+            <div className={isEngineer ? "hidden lg:block" : undefined}>
             {view === "month" ? (
                 <Calendar
                     items={items}
@@ -984,6 +998,7 @@ export default function PlanningPage(){
                     }
                 />
             )}
+            </div>
 
             {
                 canEdit && (

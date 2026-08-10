@@ -1,0 +1,16 @@
+---
+description: Na afronden van werk automatisch committen en pushen naar main
+alwaysApply: true
+---
+
+# Auto-push na afronden
+
+Wanneer een taak of feature **klaar** is (implementatie af, geen open blockers):
+
+1. Commit de relevante wijzigingen (volg de git commit-protocol: status/diff/log, HEREDOC-message).
+2. Push meteen naar `origin` (`git push origin HEAD`) zodat het online staat.
+3. Bevestig kort met commit-hash / branch.
+
+Niet wachten tot de gebruiker “push” zegt — dat is de default voor dit project.
+
+Uitzonderingen: gebruiker zegt expliciet **niet** te pushen; of er zijn secrets/onafgemaakte breaking changes — dan wel vragen.

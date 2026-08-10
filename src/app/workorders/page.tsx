@@ -35,6 +35,9 @@ interface Workorder {
     assignedUser?: {
         name: string | null;
     } | null;
+    _count?: {
+        photos?: number;
+    };
 }
 
 export default function WorkordersPage() {
@@ -198,11 +201,11 @@ export default function WorkordersPage() {
                                 >
                                     <Link
                                         href={`/workorders/${workorder.id}`}
-                                        title="Geplande opdracht openen"
+                                        title="Opdracht openen"
                                         className="
-                                            bg-black text-white
+                                            bg-[#d6007e] text-white
                                             px-3 py-1.5 rounded-lg
-                                            text-sm font-medium
+                                            text-sm font-semibold
                                         "
                                     >
                                         Openen
@@ -212,7 +215,9 @@ export default function WorkordersPage() {
                                         href={`/api/workorders/${workorder.id}/pdf`}
                                         title="PDF download"
                                         className="
-                                            border px-3 py-1.5 rounded-lg text-sm
+                                            border border-gray-200
+                                            px-3 py-1.5 rounded-lg text-sm
+                                            text-gray-700 hover:bg-gray-50
                                         "
                                     >
                                         PDF
@@ -220,15 +225,19 @@ export default function WorkordersPage() {
 
                                     {(role === "admin" || role === "office") && (
                                         <>
-                                            <a
-                                                href={`/api/workorders/${workorder.id}/photos/zip`}
-                                                title="ZIP download met alle foto's"
-                                                className="
-                                                    border px-3 py-1.5 rounded-lg text-sm
-                                                "
-                                            >
-                                                ZIP
-                                            </a>
+                                            {(workorder._count?.photos ?? 0) > 0 && (
+                                                <a
+                                                    href={`/api/workorders/${workorder.id}/photos/zip`}
+                                                    title="ZIP download met alle foto's"
+                                                    className="
+                                                        border border-gray-200
+                                                        px-3 py-1.5 rounded-lg text-sm
+                                                        text-gray-700 hover:bg-gray-50
+                                                    "
+                                                >
+                                                    ZIP foto&apos;s
+                                                </a>
+                                            )}
 
                                             <DeleteButton
                                                 url={`/api/workorders/${workorder.id}`}

@@ -706,7 +706,7 @@ async function completeWorkorder(){
 
     const confirmComplete =
         confirm(
-            "Opdracht versturen? De opdracht wordt afgerond, als PDF opgeslagen en kantoor krijgt een melding."
+            "Opdracht afronden? Status wordt Uitgevoerd, er wordt een PDF gemaakt en kantoor krijgt een melding."
         );
 
 
@@ -922,6 +922,46 @@ async function completeWorkorder(){
 
 
             </header>
+
+
+            {
+                isOffice && (
+                    <div className="
+                        flex flex-wrap gap-2
+                        rounded-xl border border-gray-200
+                        bg-white p-3
+                    ">
+                        <a
+                            href={`/api/workorders/${id}/pdf`}
+                            className="
+                                border border-gray-200 rounded-lg
+                                px-3 py-1.5 text-sm font-medium
+                                text-gray-700 hover:bg-gray-50
+                            "
+                        >
+                            PDF downloaden
+                        </a>
+                        <a
+                            href={`/api/workorders/${id}/photos/zip`}
+                            className="
+                                border border-gray-200 rounded-lg
+                                px-3 py-1.5 text-sm font-medium
+                                text-gray-700 hover:bg-gray-50
+                            "
+                        >
+                            ZIP foto&apos;s
+                        </a>
+                        {(status || workorder.status) === "uitgevoerd" && (
+                            <span className="
+                                text-xs text-emerald-700
+                                self-center ml-1
+                            ">
+                                Status: Uitgevoerd — monteur heeft afgerond
+                            </span>
+                        )}
+                    </div>
+                )
+            }
 
 
             {
@@ -1646,30 +1686,26 @@ async function completeWorkorder(){
 
 
             {
-                /* Versturen-knop alleen tonen als de werkbon nog niet
-                   verstuurd is. Daarna is dit een read-only weergave. */
-                !workorder.sentAt && (
+                /* Alleen monteur rondt af ná inplannen. Kantoor ziet de
+                   opdracht via Opdrachten (openen / PDF / ZIP). */
+                !isOffice
+                && !workorder.sentAt
+                && (status || workorder.status) === "ingepland"
+                && (
 
                     <button
-
+                        type="button"
                         onClick={completeWorkorder}
-
                         disabled={saving}
-
                         className="
                             w-full
-                            bg-green-600
-                            text-white
-                            rounded-xl
-                            py-4
-                            font-bold
+                            bg-[#d6007e] text-white
+                            rounded-lg px-4 py-2.5
+                            text-sm font-semibold
                             disabled:opacity-50
                         "
-
                     >
-
-                        📤 Opdracht versturen
-
+                        {saving ? "Bezig..." : "Afronden — status wordt Uitgevoerd"}
                     </button>
 
                 )

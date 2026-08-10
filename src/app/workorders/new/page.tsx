@@ -507,23 +507,6 @@ function NewWorkorderInner(){
                 }
 
 
-                // Een monteur verstuurt de werkbon meteen: PDF genereren,
-                // melding naar projects en status op "uitgevoerd". Voor
-                // office/admin blijft het bij klaarzetten.
-                if(isEngineer){
-                    try {
-                        await fetch(
-                            `/api/workorders/${created.id}/complete`,
-                            {
-                                method:"POST"
-                            }
-                        );
-                    } catch {
-                        // versturen mag het aanmaken niet blokkeren
-                    }
-                }
-
-
                 if(options?.goToPlanning){
                     const customerName =
                         customers.find((c)=>c.id === customerId)?.name
@@ -1319,35 +1302,19 @@ function NewWorkorderInner(){
                 type="button"
                 onClick={()=>void save()}
                 disabled={saving}
-                className={
-                    isEngineer
-                    ?
-                    `
-                    w-full sm:w-auto
-                    bg-emerald-600 text-white
-                    rounded-lg px-4 py-2.5
-                    text-sm font-semibold
-                    disabled:opacity-50
-                    `
-                    :
-                    `
+                className="
                     w-full sm:w-auto
                     bg-[#d6007e] text-white
                     rounded-lg px-4 py-2.5
                     text-sm font-semibold
                     disabled:opacity-50
-                    `
-                }
+                "
             >
 
                 {
                     saving
                     ?
                     "Bezig met opslaan..."
-                    :
-                    isEngineer
-                    ?
-                    "Opdracht versturen"
                     :
                     "Opslaan"
                 }
