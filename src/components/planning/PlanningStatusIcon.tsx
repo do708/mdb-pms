@@ -1,7 +1,7 @@
 import {
     Banknote,
+    CalendarCheck,
     Check,
-    CircleCheck,
     Clock3,
     Mail,
 } from "lucide-react";
@@ -21,9 +21,9 @@ function iconForStatus(key: string) {
         case "afspraak":
             return Mail;
         case "ingepland":
-            return Check;
+            return CalendarCheck;
         case "uitgevoerd":
-            return CircleCheck;
+            return Check;
         case "gefactureerd":
         case "afgerond":
             return Banknote;
