@@ -686,7 +686,6 @@ export default function PlanningPage(){
 
             <PageHeader
                 title="Planning"
-                subtitle="Wie is waar ingepland"
             />
 
 
