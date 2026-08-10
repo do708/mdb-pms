@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { requireApiUser } from "@/lib/auth/guard";
+import {
+    defaultPlanningEventRange,
+    expandPlanningEvents,
+} from "@/lib/planning/expandPlanningEvents";
 
 
 
@@ -154,7 +158,7 @@ export async function GET(){
 
 
         // Vrije agenda-items: kantoor ziet alles; monteur alleen toegewezen
-        const events =
+        const eventMasters =
             await prisma.planningEvent.findMany({
                 where:
                     guard.user.role === "engineer"
@@ -172,6 +176,13 @@ export async function GET(){
                     },
                 },
             });
+
+        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
+        const events = expandPlanningEvents(
+            eventMasters,
+            rangeStart,
+            rangeEnd
+        );
 
 
         return NextResponse.json({

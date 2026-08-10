@@ -1,5 +1,5 @@
 // Wanneer telt een werkbon/formulier als "gearchiveerd"?
-// Opdrachten: status gefactureerd of afgerond (Betaald) → direct uit de
+// Opdrachten: status gefactureerd → direct uit de
 // gewone overzichten, alleen nog via het Archief te vinden.
 // Formulieren: ouder dan ARCHIVE_WEEKS.
 
@@ -8,8 +8,8 @@ export const ARCHIVE_WEEKS = 2;
 /** Statussen waarmee een werkbon in het archief hoort. */
 export const ARCHIVED_WORKORDER_STATUSES = [
     "gefactureerd",
-    "afgerond",
 ] as const;
+
 
 export function archiveCutoff(): Date {
     const cutoff = new Date();

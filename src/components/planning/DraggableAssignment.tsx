@@ -33,8 +33,10 @@ export default function DraggableAssignment({
 
     return (
         <div
+            data-planning-job
             draggable={draggable}
             onDragStart={draggable ? handleDragStart : undefined}
+            onClick={(e) => e.stopPropagation()}
             className={`
                 text-white rounded-lg px-1.5 py-1 leading-tight
                 shadow-sm ring-1 ring-black/10

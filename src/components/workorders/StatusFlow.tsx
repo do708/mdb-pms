@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { PlanningStatusIcon } from "@/components/planning/PlanningStatusIcon";
 import {
-    WORKORDER_STATUSES,
+    WORKORDER_FLOW_STATUSES,
     getStatus
 } from "@/constants/workorderStatus";
 
@@ -44,11 +44,15 @@ export default function StatusFlow({
     const [busy,setBusy] =
         useState(false);
 
+    useEffect(() => {
+        setStatus(current);
+    }, [current]);
+
 
 
 
     const currentIndex =
-        WORKORDER_STATUSES.findIndex(
+        WORKORDER_FLOW_STATUSES.findIndex(
             s=>s.key === status
         );
 
@@ -129,7 +133,9 @@ export default function StatusFlow({
 
 
     const nextStatus =
-        WORKORDER_STATUSES[currentIndex + 1];
+        currentIndex >= 0
+            ? WORKORDER_FLOW_STATUSES[currentIndex + 1]
+            : WORKORDER_FLOW_STATUSES[0];
 
 
 
@@ -202,23 +208,24 @@ export default function StatusFlow({
 
 
 
-            {/* volledige stappenbalk, elke stap aanklikbaar */}
+            {/* Lineaire stappen links; On Hold rechts uitgelijnd */}
 
             <div className="
                 flex
                 flex-wrap
+                items-center
                 gap-2
             ">
 
                 {
-                    WORKORDER_STATUSES.map((step,index)=>{
+                    WORKORDER_FLOW_STATUSES.map((step,index)=>{
 
 
                         const done =
-                            index < currentIndex;
+                            currentIndex >= 0 && index < currentIndex;
 
                         const active =
-                            index === currentIndex;
+                            step.key === status;
 
 
                         return (
@@ -274,11 +281,44 @@ export default function StatusFlow({
                     })
                 }
 
+                <button
+                    type="button"
+                    onClick={()=>setTo("on_hold")}
+                    disabled={busy}
+                    title="On Hold"
+                    className={`
+                        ml-auto
+                        inline-flex
+                        items-center
+                        gap-1.5
+                        text-xs
+                        rounded-full
+                        px-3
+                        py-1
+                        border
+                        disabled:opacity-50
+                        ${
+                            status === "on_hold"
+                            ?
+                            "bg-amber-500 text-white border-amber-500"
+                            :
+                            "text-amber-800 border-amber-200 bg-amber-50 hover:bg-amber-100"
+                        }
+                    `}
+                >
+                    <PlanningStatusIcon
+                        status="on_hold"
+                        className="h-3 w-3"
+                    />
+                    On Hold
+                </button>
+
             </div>
 
 
         </div>
 
     );
+
 
 }

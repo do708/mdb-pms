@@ -614,6 +614,10 @@ export default function WeekView({
                                                 title={ev.title}
                                             >
                                                 {ev.title}
+                                                {ev.recurrenceFreq &&
+                                                ev.recurrenceFreq !== "none"
+                                                    ? " ↻"
+                                                    : ""}
                                             </button>
                                         ))}
                                         </div>
@@ -995,6 +999,11 @@ export default function WeekView({
                                                                 >
                                                                     <span className="text-[11px] font-bold tabular-nums leading-none block truncate">
                                                                         {timeLabel}
+                                                                        {ev.recurrenceFreq &&
+                                                                        ev.recurrenceFreq !==
+                                                                            "none"
+                                                                            ? " ↻"
+                                                                            : ""}
                                                                     </span>
                                                                     <strong className="text-[12px] block truncate font-semibold mt-0.5">
                                                                         {ev.title}

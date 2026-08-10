@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { parseMasterId } from "@/lib/planning/expandPlanningEvents";
 
 export interface PlanningAgendaEvent {
     id: string;
@@ -13,6 +14,12 @@ export interface PlanningAgendaEvent {
     allDay: boolean;
     assignedUserId: string | null;
     assignedUser?: { id: string; name: string | null } | null;
+    recurrenceFreq?: string | null;
+    recurrenceInterval?: number | null;
+    recurrenceUntil?: string | null;
+    seriesStartAt?: string | null;
+    masterId?: string | null;
+    isOccurrence?: boolean;
 }
 
 interface EngineerOption {
@@ -70,6 +77,11 @@ export default function AgendaEventDialog({
     const [allDay, setAllDay] = useState(false);
     const [assignedUserId, setAssignedUserId] = useState("");
     const [notes, setNotes] = useState("");
+    const [recurrenceFreq, setRecurrenceFreq] = useState<
+        "none" | "weekly" | "monthly"
+    >("none");
+    const [recurrenceInterval, setRecurrenceInterval] = useState("1");
+    const [recurrenceUntil, setRecurrenceUntil] = useState("");
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -78,13 +90,28 @@ export default function AgendaEventDialog({
         if (!open) return;
         setError(null);
         if (event) {
+            const seriesStart = event.seriesStartAt || event.startAt;
             setTitle(event.title || "");
-            setDate(toDateInput(event.startAt));
+            setDate(toDateInput(seriesStart));
             setAllDay(event.allDay);
-            setStartTime(event.allDay ? "" : toTimeInput(event.startAt));
+            setStartTime(event.allDay ? "" : toTimeInput(seriesStart));
             setEndTime(event.allDay ? "" : toTimeInput(event.endAt));
             setAssignedUserId(event.assignedUserId || "");
             setNotes(event.notes || "");
+            const freq =
+                event.recurrenceFreq === "weekly" ||
+                event.recurrenceFreq === "monthly"
+                    ? event.recurrenceFreq
+                    : "none";
+            setRecurrenceFreq(freq);
+            setRecurrenceInterval(
+                String(Math.max(1, event.recurrenceInterval || 1))
+            );
+            setRecurrenceUntil(
+                event.recurrenceUntil
+                    ? toDateInput(event.recurrenceUntil)
+                    : ""
+            );
         } else {
             setTitle("");
             setDate(prefill?.date || "");
@@ -93,6 +120,9 @@ export default function AgendaEventDialog({
             setEndTime("");
             setAssignedUserId(prefill?.engineerId || "");
             setNotes("");
+            setRecurrenceFreq("none");
+            setRecurrenceInterval("1");
+            setRecurrenceUntil("");
         }
     }, [open, event, prefill]);
 
@@ -106,6 +136,8 @@ export default function AgendaEventDialog({
         return q ? `/workorders/new?${q}` : "/workorders/new";
     })();
 
+    const eventApiId = event?.id ? parseMasterId(event.id) : "";
+
     async function save() {
         if (!title.trim()) {
             setError("Titel is verplicht");
@@ -115,6 +147,11 @@ export default function AgendaEventDialog({
             setError("Datum is verplicht");
             return;
         }
+
+        const interval = Math.max(
+            1,
+            Math.min(52, parseInt(recurrenceInterval, 10) || 1)
+        );
 
         setSaving(true);
         setError(null);
@@ -127,11 +164,15 @@ export default function AgendaEventDialog({
                 endTime: allDay ? null : endTime || null,
                 assignedUserId: assignedUserId || null,
                 notes: notes.trim() || null,
+                recurrenceFreq,
+                recurrenceInterval: recurrenceFreq === "none" ? 1 : interval,
+                recurrenceUntil:
+                    recurrenceFreq === "none" ? null : recurrenceUntil || null,
             };
 
             const response = await fetch(
                 isEdit
-                    ? `/api/planning/events/${event!.id}`
+                    ? `/api/planning/events/${eventApiId}`
                     : "/api/planning/events",
                 {
                     method: isEdit ? "PATCH" : "POST",
@@ -161,13 +202,23 @@ export default function AgendaEventDialog({
 
     async function remove() {
         if (!event?.id) return;
-        if (!window.confirm("Agenda-item verwijderen?")) return;
+        const isSeries =
+            event.recurrenceFreq && event.recurrenceFreq !== "none";
+        if (
+            !window.confirm(
+                isSeries
+                    ? "Hele reeks verwijderen (alle herhalingen)?"
+                    : "Agenda-item verwijderen?"
+            )
+        ) {
+            return;
+        }
 
         setDeleting(true);
         setError(null);
         try {
             const response = await fetch(
-                `/api/planning/events/${event.id}`,
+                `/api/planning/events/${eventApiId}`,
                 { method: "DELETE" }
             );
             if (!response.ok) {
@@ -194,10 +245,10 @@ export default function AgendaEventDialog({
             onClick={onClose}
         >
             <div
-                className="w-full max-w-md rounded-2xl bg-white shadow-xl"
+                className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 sticky top-0 bg-white z-10">
                     <h2 className="text-lg font-bold text-slate-900">
                         {isEdit ? "Agenda-item bewerken" : "Agenda-item"}
                     </h2>
@@ -212,6 +263,14 @@ export default function AgendaEventDialog({
                 </div>
 
                 <div className="space-y-4 px-5 py-4">
+                    {isEdit &&
+                        event?.recurrenceFreq &&
+                        event.recurrenceFreq !== "none" && (
+                            <p className="text-xs text-amber-800 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                                Wijzigingen gelden voor de hele reeks.
+                            </p>
+                        )}
+
                     <label className="block">
                         <span className="text-xs font-medium text-slate-600">
                             Titel *
@@ -298,6 +357,68 @@ export default function AgendaEventDialog({
                             ))}
                         </select>
                     </label>
+
+                    <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+                        <label className="block">
+                            <span className="text-xs font-medium text-slate-600">
+                                Herhaling
+                            </span>
+                            <select
+                                value={recurrenceFreq}
+                                onChange={(e) =>
+                                    setRecurrenceFreq(
+                                        e.target.value as
+                                            | "none"
+                                            | "weekly"
+                                            | "monthly"
+                                    )
+                                }
+                                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                            >
+                                <option value="none">Geen</option>
+                                <option value="weekly">Wekelijks</option>
+                                <option value="monthly">Maandelijks</option>
+                            </select>
+                        </label>
+
+                        {recurrenceFreq !== "none" && (
+                            <>
+                                <label className="block">
+                                    <span className="text-xs font-medium text-slate-600">
+                                        Elke N{" "}
+                                        {recurrenceFreq === "weekly"
+                                            ? "weken"
+                                            : "maanden"}
+                                    </span>
+                                    <input
+                                        type="number"
+                                        min={1}
+                                        max={52}
+                                        value={recurrenceInterval}
+                                        onChange={(e) =>
+                                            setRecurrenceInterval(
+                                                e.target.value
+                                            )
+                                        }
+                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                    />
+                                </label>
+                                <label className="block">
+                                    <span className="text-xs font-medium text-slate-600">
+                                        Einddatum (optioneel)
+                                    </span>
+                                    <input
+                                        type="date"
+                                        value={recurrenceUntil}
+                                        onChange={(e) =>
+                                            setRecurrenceUntil(e.target.value)
+                                        }
+                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                    />
+                                </label>
+                            </>
+                        )}
+                    </div>
 
                     <label className="block">
                         <span className="text-xs font-medium text-slate-600">

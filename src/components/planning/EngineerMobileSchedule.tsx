@@ -27,6 +27,7 @@ interface AgendaEvent {
     endAt?: string | null;
     allDay?: boolean;
     assignedUserId?: string | null;
+    recurrenceFreq?: string | null;
 }
 
 interface LeaveItem {
@@ -283,6 +284,10 @@ export default function EngineerMobileSchedule({
                     </p>
                     <p className="text-sm font-bold text-amber-950 leading-snug">
                         {event.title}
+                        {event.recurrenceFreq &&
+                        event.recurrenceFreq !== "none"
+                            ? " ↻"
+                            : ""}
                     </p>
                     {event.notes ? (
                         <p className="text-xs text-amber-900/80 line-clamp-2">

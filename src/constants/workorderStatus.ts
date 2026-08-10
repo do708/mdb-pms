@@ -13,10 +13,14 @@ export interface WorkorderStatus {
     // Vanaf welke status hoort de werkbon in de planning
     inPlanning?:boolean;
 
+    /** Buiten de lineaire stappenbalk (rechts uitgelijnd), bv. On Hold */
+    sideStatus?:boolean;
+
 }
 
 
 
+/** Lineaire flow + side-statussen (On Hold). */
 export const WORKORDER_STATUSES:WorkorderStatus[] = [
 
     {
@@ -52,12 +56,20 @@ export const WORKORDER_STATUSES:WorkorderStatus[] = [
     },
 
     {
-        key:"afgerond",
-        label:"Betaald / Afgerond",
-        badge:"bg-gray-200 text-gray-700"
+        key:"on_hold",
+        label:"On Hold",
+        badge:"bg-amber-100 text-amber-800",
+        inPlanning:true,
+        sideStatus:true
     }
 
 ];
+
+
+
+/** Alleen de genummerde stappen (1–5), zonder On Hold. */
+export const WORKORDER_FLOW_STATUSES =
+    WORKORDER_STATUSES.filter(s=>!s.sideStatus);
 
 
 
@@ -111,7 +123,8 @@ export function migrateStatus(
         open:"ontvangen",
         in_uitvoering:"ingepland",
         materiaal:"ingepland",
-        betaald:"afgerond"
+        betaald:"gefactureerd",
+        afgerond:"gefactureerd"
     };
 
     if(!key){

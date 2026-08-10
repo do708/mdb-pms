@@ -254,13 +254,14 @@ export default function Sidebar({
 
             <nav className="
                 flex-1
+                min-h-0
+                flex
+                flex-col
                 px-4
                 py-6
-                space-y-1
-                overflow-y-auto
             ">
 
-
+                <div className="flex-1 min-h-0 overflow-y-auto space-y-1">
                 {
                     items.map((item)=>{
 
@@ -358,10 +359,11 @@ export default function Sidebar({
 
                     })
                 }
+                </div>
 
 
                 {role !== "engineer" ? (
-                    <div className="pt-4 mt-10 border-t border-gray-100 space-y-1">
+                    <div className="shrink-0 pt-4 mt-auto border-t border-gray-100 space-y-1">
                         <p className="
                             px-4
                             text-xs

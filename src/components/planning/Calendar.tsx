@@ -332,6 +332,36 @@ export default function Calendar({
                                                           handleDrop(e, day)
                                                     : undefined
                                             }
+                                            onClick={
+                                                day > 0 && onCreateAgenda
+                                                    ? (e) => {
+                                                          const target =
+                                                              e.target as HTMLElement;
+                                                          if (
+                                                              target.closest(
+                                                                  "a"
+                                                              ) ||
+                                                              target.closest(
+                                                                  "button"
+                                                              ) ||
+                                                              target.closest(
+                                                                  "[data-planning-job]"
+                                                              ) ||
+                                                              target.closest(
+                                                                  "[data-planning-agenda]"
+                                                              )
+                                                          ) {
+                                                              return;
+                                                          }
+                                                          onCreateAgenda({
+                                                              dateIso:
+                                                                  isoDateOf(
+                                                                      day
+                                                                  ),
+                                                          });
+                                                      }
+                                                    : undefined
+                                            }
                                             className={`
                                                 min-h-[7.5rem] min-w-0 overflow-hidden
                                                 rounded-xl p-1.5 flex flex-col gap-1
@@ -344,6 +374,11 @@ export default function Calendar({
                                                           : isWeekend
                                                             ? "border-slate-100 bg-slate-50/50"
                                                             : "border-slate-200/80 bg-white hover:border-[#0066FF]/25"
+                                                }
+                                                ${
+                                                    day > 0 && onCreateAgenda
+                                                        ? "cursor-pointer"
+                                                        : ""
                                                 }
                                             `}
                                         >
@@ -420,9 +455,11 @@ export default function Calendar({
                                                             <button
                                                                 key={ev.id}
                                                                 type="button"
-                                                                onClick={() =>
-                                                                    onEditAgenda?.(ev)
-                                                                }
+                                                                data-planning-agenda
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    onEditAgenda?.(ev);
+                                                                }}
                                                                 className="
                                                                     w-full text-left
                                                                     bg-amber-100 border border-amber-200
@@ -434,6 +471,11 @@ export default function Calendar({
                                                                 title={ev.title}
                                                             >
                                                                 {ev.title}
+                                                                {ev.recurrenceFreq &&
+                                                                ev.recurrenceFreq !==
+                                                                    "none"
+                                                                    ? " ↻"
+                                                                    : ""}
                                                             </button>
                                                         ))}
                                                     </div>
@@ -443,11 +485,12 @@ export default function Calendar({
                                                         <button
                                                             type="button"
                                                             title="Agenda-item of opdracht op deze dag"
-                                                            onClick={() =>
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
                                                                 onCreateAgenda({
                                                                     dateIso: isoDateOf(day),
-                                                                })
-                                                            }
+                                                                });
+                                                            }}
                                                             className="
                                                                 group/plan mt-auto flex items-center justify-center gap-1
                                                                 rounded-lg py-1 text-[10px] font-medium

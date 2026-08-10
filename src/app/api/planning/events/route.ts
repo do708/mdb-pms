@@ -17,6 +17,47 @@ function parseDateTime(
     return new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
 }
 
+function parseRecurrence(body: Record<string, unknown>): {
+    recurrenceFreq: string;
+    recurrenceInterval: number;
+    recurrenceUntil: Date | null;
+} | { error: string } {
+    const rawFreq =
+        typeof body.recurrenceFreq === "string"
+            ? body.recurrenceFreq.trim()
+            : "none";
+    const recurrenceFreq =
+        rawFreq === "weekly" || rawFreq === "monthly" ? rawFreq : "none";
+
+    let recurrenceInterval = 1;
+    if (body.recurrenceInterval !== undefined && body.recurrenceInterval !== null) {
+        const n = Number(body.recurrenceInterval);
+        if (!Number.isFinite(n) || n < 1 || n > 52) {
+            return { error: "Herhaalinterval moet tussen 1 en 52 liggen" };
+        }
+        recurrenceInterval = Math.floor(n);
+    }
+
+    let recurrenceUntil: Date | null = null;
+    if (
+        typeof body.recurrenceUntil === "string" &&
+        /^\d{4}-\d{2}-\d{2}$/.test(body.recurrenceUntil.trim())
+    ) {
+        const [y, m, d] = body.recurrenceUntil.trim().split("-").map(Number);
+        recurrenceUntil = new Date(y, m - 1, d, 23, 59, 59, 999);
+    }
+
+    if (recurrenceFreq === "none") {
+        return {
+            recurrenceFreq: "none",
+            recurrenceInterval: 1,
+            recurrenceUntil: null,
+        };
+    }
+
+    return { recurrenceFreq, recurrenceInterval, recurrenceUntil };
+}
+
 export async function POST(req: Request) {
     try {
         const guard = await requireApiRole(["admin", "office"]);
@@ -73,6 +114,14 @@ export async function POST(req: Request) {
             }
         }
 
+        const recurrence = parseRecurrence(body);
+        if ("error" in recurrence) {
+            return NextResponse.json(
+                { error: recurrence.error },
+                { status: 400 }
+            );
+        }
+
         const startAt = parseDateTime(dateIso, startTime, allDay);
         let endAt: Date | null = null;
         if (!allDay && endTime) {
@@ -94,6 +143,9 @@ export async function POST(req: Request) {
                 allDay,
                 assignedUserId,
                 createdById: guard.user.id,
+                recurrenceFreq: recurrence.recurrenceFreq,
+                recurrenceInterval: recurrence.recurrenceInterval,
+                recurrenceUntil: recurrence.recurrenceUntil,
             },
             include: {
                 assignedUser: {

@@ -75,7 +75,7 @@ export async function GET(){
 
                     status:{
 
-                        notIn:["uitgevoerd","gefactureerd","afgerond"]
+                        notIn:["uitgevoerd","gefactureerd"]
 
                     }
 

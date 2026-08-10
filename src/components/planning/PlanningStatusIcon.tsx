@@ -4,6 +4,7 @@ import {
     Check,
     Clock3,
     Mail,
+    Pause,
 } from "lucide-react";
 
 import { getStatus, migrateStatus } from "@/constants/workorderStatus";
@@ -25,8 +26,9 @@ function iconForStatus(key: string) {
         case "uitgevoerd":
             return Check;
         case "gefactureerd":
-        case "afgerond":
             return Banknote;
+        case "on_hold":
+            return Pause;
         case "ontvangen":
         default:
             return Clock3;

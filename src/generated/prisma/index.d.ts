@@ -28304,8 +28304,18 @@ export namespace Prisma {
 
   export type AggregatePlanningEvent = {
     _count: PlanningEventCountAggregateOutputType | null
+    _avg: PlanningEventAvgAggregateOutputType | null
+    _sum: PlanningEventSumAggregateOutputType | null
     _min: PlanningEventMinAggregateOutputType | null
     _max: PlanningEventMaxAggregateOutputType | null
+  }
+
+  export type PlanningEventAvgAggregateOutputType = {
+    recurrenceInterval: number | null
+  }
+
+  export type PlanningEventSumAggregateOutputType = {
+    recurrenceInterval: number | null
   }
 
   export type PlanningEventMinAggregateOutputType = {
@@ -28315,6 +28325,9 @@ export namespace Prisma {
     startAt: Date | null
     endAt: Date | null
     allDay: boolean | null
+    recurrenceFreq: string | null
+    recurrenceInterval: number | null
+    recurrenceUntil: Date | null
     assignedUserId: string | null
     createdById: string | null
     createdAt: Date | null
@@ -28328,6 +28341,9 @@ export namespace Prisma {
     startAt: Date | null
     endAt: Date | null
     allDay: boolean | null
+    recurrenceFreq: string | null
+    recurrenceInterval: number | null
+    recurrenceUntil: Date | null
     assignedUserId: string | null
     createdById: string | null
     createdAt: Date | null
@@ -28341,6 +28357,9 @@ export namespace Prisma {
     startAt: number
     endAt: number
     allDay: number
+    recurrenceFreq: number
+    recurrenceInterval: number
+    recurrenceUntil: number
     assignedUserId: number
     createdById: number
     createdAt: number
@@ -28349,6 +28368,14 @@ export namespace Prisma {
   }
 
 
+  export type PlanningEventAvgAggregateInputType = {
+    recurrenceInterval?: true
+  }
+
+  export type PlanningEventSumAggregateInputType = {
+    recurrenceInterval?: true
+  }
+
   export type PlanningEventMinAggregateInputType = {
     id?: true
     title?: true
@@ -28356,6 +28383,9 @@ export namespace Prisma {
     startAt?: true
     endAt?: true
     allDay?: true
+    recurrenceFreq?: true
+    recurrenceInterval?: true
+    recurrenceUntil?: true
     assignedUserId?: true
     createdById?: true
     createdAt?: true
@@ -28369,6 +28399,9 @@ export namespace Prisma {
     startAt?: true
     endAt?: true
     allDay?: true
+    recurrenceFreq?: true
+    recurrenceInterval?: true
+    recurrenceUntil?: true
     assignedUserId?: true
     createdById?: true
     createdAt?: true
@@ -28382,6 +28415,9 @@ export namespace Prisma {
     startAt?: true
     endAt?: true
     allDay?: true
+    recurrenceFreq?: true
+    recurrenceInterval?: true
+    recurrenceUntil?: true
     assignedUserId?: true
     createdById?: true
     createdAt?: true
@@ -28427,6 +28463,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: PlanningEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PlanningEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: PlanningEventMinAggregateInputType
@@ -28457,6 +28505,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: PlanningEventCountAggregateInputType | true
+    _avg?: PlanningEventAvgAggregateInputType
+    _sum?: PlanningEventSumAggregateInputType
     _min?: PlanningEventMinAggregateInputType
     _max?: PlanningEventMaxAggregateInputType
   }
@@ -28468,11 +28518,16 @@ export namespace Prisma {
     startAt: Date
     endAt: Date | null
     allDay: boolean
+    recurrenceFreq: string
+    recurrenceInterval: number
+    recurrenceUntil: Date | null
     assignedUserId: string | null
     createdById: string
     createdAt: Date
     updatedAt: Date
     _count: PlanningEventCountAggregateOutputType | null
+    _avg: PlanningEventAvgAggregateOutputType | null
+    _sum: PlanningEventSumAggregateOutputType | null
     _min: PlanningEventMinAggregateOutputType | null
     _max: PlanningEventMaxAggregateOutputType | null
   }
@@ -28498,6 +28553,9 @@ export namespace Prisma {
     startAt?: boolean
     endAt?: boolean
     allDay?: boolean
+    recurrenceFreq?: boolean
+    recurrenceInterval?: boolean
+    recurrenceUntil?: boolean
     assignedUserId?: boolean
     createdById?: boolean
     createdAt?: boolean
@@ -28513,6 +28571,9 @@ export namespace Prisma {
     startAt?: boolean
     endAt?: boolean
     allDay?: boolean
+    recurrenceFreq?: boolean
+    recurrenceInterval?: boolean
+    recurrenceUntil?: boolean
     assignedUserId?: boolean
     createdById?: boolean
     createdAt?: boolean
@@ -28528,6 +28589,9 @@ export namespace Prisma {
     startAt?: boolean
     endAt?: boolean
     allDay?: boolean
+    recurrenceFreq?: boolean
+    recurrenceInterval?: boolean
+    recurrenceUntil?: boolean
     assignedUserId?: boolean
     createdById?: boolean
     createdAt?: boolean
@@ -28543,13 +28607,16 @@ export namespace Prisma {
     startAt?: boolean
     endAt?: boolean
     allDay?: boolean
+    recurrenceFreq?: boolean
+    recurrenceInterval?: boolean
+    recurrenceUntil?: boolean
     assignedUserId?: boolean
     createdById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PlanningEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "notes" | "startAt" | "endAt" | "allDay" | "assignedUserId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["planningEvent"]>
+  export type PlanningEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "notes" | "startAt" | "endAt" | "allDay" | "recurrenceFreq" | "recurrenceInterval" | "recurrenceUntil" | "assignedUserId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["planningEvent"]>
   export type PlanningEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -28576,6 +28643,15 @@ export namespace Prisma {
       startAt: Date
       endAt: Date | null
       allDay: boolean
+      /**
+       * none | weekly | monthly
+       */
+      recurrenceFreq: string
+      /**
+       * Elke N weken/maanden (1 = elke week/maand)
+       */
+      recurrenceInterval: number
+      recurrenceUntil: Date | null
       assignedUserId: string | null
       createdById: string
       createdAt: Date
@@ -29011,6 +29087,9 @@ export namespace Prisma {
     readonly startAt: FieldRef<"PlanningEvent", 'DateTime'>
     readonly endAt: FieldRef<"PlanningEvent", 'DateTime'>
     readonly allDay: FieldRef<"PlanningEvent", 'Boolean'>
+    readonly recurrenceFreq: FieldRef<"PlanningEvent", 'String'>
+    readonly recurrenceInterval: FieldRef<"PlanningEvent", 'Int'>
+    readonly recurrenceUntil: FieldRef<"PlanningEvent", 'DateTime'>
     readonly assignedUserId: FieldRef<"PlanningEvent", 'String'>
     readonly createdById: FieldRef<"PlanningEvent", 'String'>
     readonly createdAt: FieldRef<"PlanningEvent", 'DateTime'>
@@ -33000,6 +33079,9 @@ export namespace Prisma {
     startAt: 'startAt',
     endAt: 'endAt',
     allDay: 'allDay',
+    recurrenceFreq: 'recurrenceFreq',
+    recurrenceInterval: 'recurrenceInterval',
+    recurrenceUntil: 'recurrenceUntil',
     assignedUserId: 'assignedUserId',
     createdById: 'createdById',
     createdAt: 'createdAt',
@@ -34985,6 +35067,9 @@ export namespace Prisma {
     startAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     endAt?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     allDay?: BoolFilter<"PlanningEvent"> | boolean
+    recurrenceFreq?: StringFilter<"PlanningEvent"> | string
+    recurrenceInterval?: IntFilter<"PlanningEvent"> | number
+    recurrenceUntil?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
     createdById?: StringFilter<"PlanningEvent"> | string
     createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
@@ -35000,6 +35085,9 @@ export namespace Prisma {
     startAt?: SortOrder
     endAt?: SortOrderInput | SortOrder
     allDay?: SortOrder
+    recurrenceFreq?: SortOrder
+    recurrenceInterval?: SortOrder
+    recurrenceUntil?: SortOrderInput | SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
@@ -35018,6 +35106,9 @@ export namespace Prisma {
     startAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     endAt?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     allDay?: BoolFilter<"PlanningEvent"> | boolean
+    recurrenceFreq?: StringFilter<"PlanningEvent"> | string
+    recurrenceInterval?: IntFilter<"PlanningEvent"> | number
+    recurrenceUntil?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
     createdById?: StringFilter<"PlanningEvent"> | string
     createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
@@ -35033,13 +35124,18 @@ export namespace Prisma {
     startAt?: SortOrder
     endAt?: SortOrderInput | SortOrder
     allDay?: SortOrder
+    recurrenceFreq?: SortOrder
+    recurrenceInterval?: SortOrder
+    recurrenceUntil?: SortOrderInput | SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: PlanningEventCountOrderByAggregateInput
+    _avg?: PlanningEventAvgOrderByAggregateInput
     _max?: PlanningEventMaxOrderByAggregateInput
     _min?: PlanningEventMinOrderByAggregateInput
+    _sum?: PlanningEventSumOrderByAggregateInput
   }
 
   export type PlanningEventScalarWhereWithAggregatesInput = {
@@ -35052,6 +35148,9 @@ export namespace Prisma {
     startAt?: DateTimeWithAggregatesFilter<"PlanningEvent"> | Date | string
     endAt?: DateTimeNullableWithAggregatesFilter<"PlanningEvent"> | Date | string | null
     allDay?: BoolWithAggregatesFilter<"PlanningEvent"> | boolean
+    recurrenceFreq?: StringWithAggregatesFilter<"PlanningEvent"> | string
+    recurrenceInterval?: IntWithAggregatesFilter<"PlanningEvent"> | number
+    recurrenceUntil?: DateTimeNullableWithAggregatesFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableWithAggregatesFilter<"PlanningEvent"> | string | null
     createdById?: StringWithAggregatesFilter<"PlanningEvent"> | string
     createdAt?: DateTimeWithAggregatesFilter<"PlanningEvent"> | Date | string
@@ -37211,6 +37310,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedUser?: UserCreateNestedOneWithoutPlanningEventsAssignedInput
@@ -37224,6 +37326,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
     createdById: string
     createdAt?: Date | string
@@ -37237,6 +37342,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedUser?: UserUpdateOneWithoutPlanningEventsAssignedNestedInput
@@ -37250,6 +37358,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37263,6 +37374,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
     createdById: string
     createdAt?: Date | string
@@ -37276,6 +37390,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -37287,6 +37404,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38998,10 +39118,17 @@ export namespace Prisma {
     startAt?: SortOrder
     endAt?: SortOrder
     allDay?: SortOrder
+    recurrenceFreq?: SortOrder
+    recurrenceInterval?: SortOrder
+    recurrenceUntil?: SortOrder
     assignedUserId?: SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PlanningEventAvgOrderByAggregateInput = {
+    recurrenceInterval?: SortOrder
   }
 
   export type PlanningEventMaxOrderByAggregateInput = {
@@ -39011,6 +39138,9 @@ export namespace Prisma {
     startAt?: SortOrder
     endAt?: SortOrder
     allDay?: SortOrder
+    recurrenceFreq?: SortOrder
+    recurrenceInterval?: SortOrder
+    recurrenceUntil?: SortOrder
     assignedUserId?: SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
@@ -39024,10 +39154,17 @@ export namespace Prisma {
     startAt?: SortOrder
     endAt?: SortOrder
     allDay?: SortOrder
+    recurrenceFreq?: SortOrder
+    recurrenceInterval?: SortOrder
+    recurrenceUntil?: SortOrder
     assignedUserId?: SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PlanningEventSumOrderByAggregateInput = {
+    recurrenceInterval?: SortOrder
   }
 
   export type WorkorderEngineerWorkorderIdUserIdCompoundUniqueInput = {
@@ -41347,6 +41484,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutPlanningEventsCreatedInput
@@ -41359,6 +41499,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41381,6 +41524,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedUser?: UserCreateNestedOneWithoutPlanningEventsAssignedInput
@@ -41393,6 +41539,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41616,6 +41765,9 @@ export namespace Prisma {
     startAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     endAt?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     allDay?: BoolFilter<"PlanningEvent"> | boolean
+    recurrenceFreq?: StringFilter<"PlanningEvent"> | string
+    recurrenceInterval?: IntFilter<"PlanningEvent"> | number
+    recurrenceUntil?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
     createdById?: StringFilter<"PlanningEvent"> | string
     createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
@@ -46438,6 +46590,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -46450,6 +46605,9 @@ export namespace Prisma {
     startAt: Date | string
     endAt?: Date | string | null
     allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -46711,6 +46869,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutPlanningEventsCreatedNestedInput
@@ -46723,6 +46884,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46735,6 +46899,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46747,6 +46914,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedUser?: UserUpdateOneWithoutPlanningEventsAssignedNestedInput
@@ -46759,6 +46929,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46771,6 +46944,9 @@ export namespace Prisma {
     startAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
