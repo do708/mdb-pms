@@ -8,20 +8,22 @@ datasource db {
 }
 
 model User {
-  id                 String              @id @default(cuid())
-  name               String?
-  email              String              @unique
-  password           String
-  role               String              @default("user")
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  active             Boolean             @default(true)
-  assignments        AssignmentUser[]
-  workorders         Workorder[]
-  extraWorkorders    WorkorderEngineer[]
-  forms              FormSubmission[]
-  projectUren        ProjectUur[]        @relation("ProjectUurMonteur")
-  projectUrenGeboekt ProjectUur[]        @relation("ProjectUurGeboektDoor")
+  id                     String              @id @default(cuid())
+  name                   String?
+  email                  String              @unique
+  password               String
+  role                   String              @default("user")
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  active                 Boolean             @default(true)
+  assignments            AssignmentUser[]
+  workorders             Workorder[]
+  extraWorkorders        WorkorderEngineer[]
+  forms                  FormSubmission[]
+  projectUren            ProjectUur[]        @relation("ProjectUurMonteur")
+  projectUrenGeboekt     ProjectUur[]        @relation("ProjectUurGeboektDoor")
+  planningEventsAssigned PlanningEvent[]     @relation("PlanningEventAssigned")
+  planningEventsCreated  PlanningEvent[]     @relation("PlanningEventCreatedBy")
 }
 
 model Customer {
@@ -342,6 +344,25 @@ model FormSubmission {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])
+}
+
+/// Vrij agenda-item in de planning (geen werkbon): container legen, keuring, etc.
+model PlanningEvent {
+  id             String    @id @default(cuid())
+  title          String
+  notes          String?
+  startAt        DateTime
+  endAt          DateTime?
+  allDay         Boolean   @default(false)
+  assignedUserId String?
+  createdById    String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  assignedUser   User?     @relation("PlanningEventAssigned", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  createdBy      User      @relation("PlanningEventCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([startAt])
+  @@index([assignedUserId])
 }
 
 model WorkorderEngineer {

@@ -388,6 +388,19 @@ exports.Prisma.FormSubmissionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PlanningEventScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  notes: 'notes',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  allDay: 'allDay',
+  assignedUserId: 'assignedUserId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.WorkorderEngineerScalarFieldEnum = {
   id: 'id',
   workorderId: 'workorderId',
@@ -468,6 +481,7 @@ exports.Prisma.ModelName = {
   AssignmentUser: 'AssignmentUser',
   Invoice: 'Invoice',
   FormSubmission: 'FormSubmission',
+  PlanningEvent: 'PlanningEvent',
   WorkorderEngineer: 'WorkorderEngineer',
   TravelGeocodeCache: 'TravelGeocodeCache',
   TravelRouteCache: 'TravelRouteCache'

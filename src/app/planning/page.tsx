@@ -10,6 +10,10 @@ import Calendar from "@/components/planning/Calendar";
 
 import WeekView from "@/components/planning/WeekView";
 import EngineerMobileSchedule from "@/components/planning/EngineerMobileSchedule";
+import AgendaEventDialog, {
+    type AgendaEventPrefill,
+    type PlanningAgendaEvent,
+} from "@/components/planning/AgendaEventDialog";
 import { WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
 import {
     PageShell,
@@ -126,6 +130,22 @@ export default function PlanningPage(){
 
     const [leave,setLeave] =
         useState<any[]>([]);
+
+
+    const [events,setEvents] =
+        useState<PlanningAgendaEvent[]>([]);
+
+
+    const [agendaOpen,setAgendaOpen] =
+        useState(false);
+
+
+    const [agendaPrefill,setAgendaPrefill] =
+        useState<AgendaEventPrefill | null>(null);
+
+
+    const [agendaEdit,setAgendaEdit] =
+        useState<PlanningAgendaEvent | null>(null);
 
 
     const [engineers,setEngineers] =
@@ -262,6 +282,15 @@ export default function PlanningPage(){
         );
 
 
+        setEvents(
+            Array.isArray(planningData?.events)
+            ?
+            planningData.events
+            :
+            []
+        );
+
+
         const engineersResponse =
             await fetch("/api/engineers");
 
@@ -303,8 +332,36 @@ export default function PlanningPage(){
     }
 
 
+    function formatHourForAgenda(hour: number): string {
+        const h = Math.floor(hour);
+        const m = Math.round((hour - h) * 60);
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    }
 
 
+    function openCreateAgenda(args: {
+        dateIso: string;
+        hour?: number;
+        engineerId?: string | null;
+    }) {
+        setAgendaEdit(null);
+        setAgendaPrefill({
+            date: args.dateIso,
+            startTime:
+                typeof args.hour === "number"
+                    ? formatHourForAgenda(args.hour)
+                    : null,
+            engineerId: args.engineerId ?? null,
+        });
+        setAgendaOpen(true);
+    }
+
+
+    function openEditAgenda(event: PlanningAgendaEvent) {
+        setAgendaPrefill(null);
+        setAgendaEdit(event);
+        setAgendaOpen(true);
+    }
 
 
     useEffect(()=>{
@@ -933,6 +990,7 @@ export default function PlanningPage(){
                 <EngineerMobileSchedule
                     items={items}
                     leave={leave}
+                    events={events}
                     engineerId={session.user.id}
                     weekStart={weekStart}
                     onPreviousWeek={() => shiftWeek(-1)}
@@ -946,17 +1004,25 @@ export default function PlanningPage(){
                 <Calendar
                     items={items}
                     leave={leave}
+                    events={events}
                     onDropDate={
                         canEdit ? updatePlanning : undefined
                     }
                     view={view}
                     onViewChange={setView}
                     showStatusIcons={canEdit}
+                    onCreateAgenda={
+                        canEdit ? openCreateAgenda : undefined
+                    }
+                    onEditAgenda={
+                        canEdit ? openEditAgenda : undefined
+                    }
                 />
             ) : (
                 <WeekView
                     items={items}
                     leave={leave}
+                    events={events}
                     engineers={engineers}
                     weekStart={weekStart}
                     view={view}
@@ -992,9 +1058,32 @@ export default function PlanningPage(){
                             ? schedulePending
                             : undefined
                     }
+                    onCreateAgenda={
+                        canEdit ? openCreateAgenda : undefined
+                    }
+                    onEditAgenda={
+                        canEdit ? openEditAgenda : undefined
+                    }
                 />
             )}
             </div>
+
+            {canEdit && (
+                <AgendaEventDialog
+                    open={agendaOpen}
+                    onClose={() => {
+                        setAgendaOpen(false);
+                        setAgendaEdit(null);
+                        setAgendaPrefill(null);
+                    }}
+                    engineers={engineers}
+                    prefill={agendaPrefill}
+                    event={agendaEdit}
+                    onSaved={() => {
+                        void loadPlanning();
+                    }}
+                />
+            )}
 
             {
                 canEdit && (

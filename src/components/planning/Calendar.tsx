@@ -36,19 +36,25 @@ function formatNlDate(
 interface CalendarProps {
     items: any[];
     leave?: any[];
+    events?: any[];
     onDropDate?: (id: string, date: string) => void;
     view?: "week" | "month";
     onViewChange?: (view: "week" | "month") => void;
     showStatusIcons?: boolean;
+    onCreateAgenda?: (args: { dateIso: string }) => void;
+    onEditAgenda?: (event: any) => void;
 }
 
 export default function Calendar({
     items,
     leave = [],
+    events = [],
     onDropDate,
     view = "month",
     onViewChange,
     showStatusIcons = true,
+    onCreateAgenda,
+    onEditAgenda,
 }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -96,6 +102,16 @@ export default function Calendar({
             const endIso = item.plannedEndDate
                 ? localIso(item.plannedEndDate)
                 : startIso;
+            return startIso <= cellIso && cellIso <= endIso;
+        });
+    }
+
+    function eventsOnDay(d: number) {
+        const cellIso = isoDateOf(d);
+        return events.filter((ev) => {
+            if (!ev?.startAt) return false;
+            const startIso = localIso(ev.startAt);
+            const endIso = ev.endAt ? localIso(ev.endAt) : startIso;
             return startIso <= cellIso && cellIso <= endIso;
         });
     }
@@ -290,12 +306,16 @@ export default function Calendar({
                                     const isWeekend = index >= 5;
                                     const dayItems =
                                         day > 0 ? itemsOnDay(day) : [];
+                                    const dayEvents =
+                                        day > 0 ? eventsOnDay(day) : [];
                                     const dayLeave =
                                         day > 0 ? leaveOnDay(day) : [];
                                     const holiday =
                                         day > 0
                                             ? holidayLookup[isoDateOf(day)]
                                             : undefined;
+                                    const dayCount =
+                                        dayItems.length + dayEvents.length;
 
                                     return (
                                         <div
@@ -351,10 +371,10 @@ export default function Calendar({
                                                             >
                                                                 {holiday}
                                                             </span>
-                                                        ) : dayItems.length >
+                                                        ) : dayCount >
                                                           0 ? (
                                                             <span className="text-[10px] font-semibold text-[#0066FF]/80 tabular-nums">
-                                                                {dayItems.length}
+                                                                {dayCount}
                                                             </span>
                                                         ) : null}
                                                     </div>
@@ -395,9 +415,60 @@ export default function Calendar({
                                                                 />
                                                             )
                                                         )}
+
+                                                        {dayEvents.map((ev) => (
+                                                            <button
+                                                                key={ev.id}
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    onEditAgenda?.(ev)
+                                                                }
+                                                                className="
+                                                                    w-full text-left
+                                                                    bg-amber-100 border border-amber-200
+                                                                    text-amber-950 text-[10px]
+                                                                    rounded-md px-1.5 py-1
+                                                                    truncate leading-tight font-semibold
+                                                                    hover:bg-amber-200 transition
+                                                                "
+                                                                title={ev.title}
+                                                            >
+                                                                {ev.title}
+                                                            </button>
+                                                        ))}
                                                     </div>
 
-                                                    {onDropDate ? (
+                                                    {onCreateAgenda || onDropDate ? (
+                                                        onCreateAgenda ? (
+                                                        <button
+                                                            type="button"
+                                                            title="Agenda-item of opdracht op deze dag"
+                                                            onClick={() =>
+                                                                onCreateAgenda({
+                                                                    dateIso: isoDateOf(day),
+                                                                })
+                                                            }
+                                                            className="
+                                                                group/plan mt-auto flex items-center justify-center gap-1
+                                                                rounded-lg py-1 text-[10px] font-medium
+                                                                text-slate-400 bg-transparent
+                                                                hover:bg-[#e8f0ff] hover:text-[#0066FF]
+                                                                transition
+                                                            "
+                                                        >
+                                                            <span
+                                                                className="
+                                                                    inline-flex h-3.5 w-3.5 items-center justify-center
+                                                                    rounded-full bg-slate-100 text-slate-500
+                                                                    group-hover/plan:bg-[#0066FF] group-hover/plan:text-white
+                                                                    text-[9px] font-bold leading-none transition
+                                                                "
+                                                            >
+                                                                +
+                                                            </span>
+                                                            Plannen
+                                                        </button>
+                                                        ) : (
                                                         <Link
                                                             href={`/workorders/new?date=${isoDateOf(day)}`}
                                                             title="Opdracht inplannen op deze dag"
@@ -421,6 +492,7 @@ export default function Calendar({
                                                             </span>
                                                             Plannen
                                                         </Link>
+                                                        )
                                                     ) : null}
                                                 </>
                                             ) : null}

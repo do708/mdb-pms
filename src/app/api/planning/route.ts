@@ -153,9 +153,31 @@ export async function GET(){
             .filter(l=>l.from);
 
 
+        // Vrije agenda-items: kantoor ziet alles; monteur alleen toegewezen
+        const events =
+            await prisma.planningEvent.findMany({
+                where:
+                    guard.user.role === "engineer"
+                    ?
+                    { assignedUserId: guard.user.id }
+                    :
+                    {},
+                orderBy: { startAt: "asc" },
+                include: {
+                    assignedUser: {
+                        select: { id: true, name: true },
+                    },
+                    createdBy: {
+                        select: { id: true, name: true },
+                    },
+                },
+            });
+
+
         return NextResponse.json({
             workorders,
-            leave
+            leave,
+            events,
         });
 
 

@@ -19,6 +19,16 @@ interface PlanningItem {
     } | null;
 }
 
+interface AgendaEvent {
+    id: string;
+    title: string;
+    notes?: string | null;
+    startAt: string;
+    endAt?: string | null;
+    allDay?: boolean;
+    assignedUserId?: string | null;
+}
+
 interface LeaveItem {
     from?: string;
     to?: string;
@@ -28,6 +38,7 @@ interface LeaveItem {
 interface Props {
     items: PlanningItem[];
     leave?: LeaveItem[];
+    events?: AgendaEvent[];
     engineerId: string;
     weekStart: Date;
     onPreviousWeek: () => void;
@@ -79,9 +90,26 @@ function timeLabel(item: PlanningItem): string {
     return "Hele dag";
 }
 
+function eventOnDay(ev: AgendaEvent, dayIso: string): boolean {
+    if (!ev.startAt) return false;
+    const start = toIsoDate(new Date(ev.startAt));
+    const end = ev.endAt ? toIsoDate(new Date(ev.endAt)) : start;
+    return start <= dayIso && dayIso <= end;
+}
+
+function eventTimeLabel(ev: AgendaEvent): string {
+    if (ev.allDay) return "Hele dag";
+    const start = formatTime(ev.startAt);
+    const end = formatTime(ev.endAt ?? null);
+    if (start && end) return `${start}–${end}`;
+    if (start) return `vanaf ${start}`;
+    return "Hele dag";
+}
+
 export default function EngineerMobileSchedule({
     items,
     leave = [],
+    events = [],
     engineerId,
     weekStart,
     onPreviousWeek,
@@ -129,6 +157,16 @@ export default function EngineerMobileSchedule({
                 const tb = b.plannedDate
                     ? new Date(b.plannedDate).getTime()
                     : 0;
+                return ta - tb;
+            });
+    }
+
+    function eventsForDay(dayIso: string) {
+        return events
+            .filter((ev) => eventOnDay(ev, dayIso))
+            .sort((a, b) => {
+                const ta = a.startAt ? new Date(a.startAt).getTime() : 0;
+                const tb = b.startAt ? new Date(b.startAt).getTime() : 0;
                 return ta - tb;
             });
     }
@@ -231,11 +269,37 @@ export default function EngineerMobileSchedule({
         );
     }
 
+    function EventCard({ event }: { event: AgendaEvent }) {
+        return (
+            <div
+                className="
+                    rounded-xl border border-amber-200
+                    bg-amber-50 overflow-hidden
+                "
+            >
+                <div className="px-3 py-2.5 space-y-1">
+                    <p className="text-xs font-semibold text-amber-800">
+                        {eventTimeLabel(event)}
+                    </p>
+                    <p className="text-sm font-bold text-amber-950 leading-snug">
+                        {event.title}
+                    </p>
+                    {event.notes ? (
+                        <p className="text-xs text-amber-900/80 line-clamp-2">
+                            {event.notes}
+                        </p>
+                    ) : null}
+                </div>
+            </div>
+        );
+    }
+
     function DayJobs({ dayIso, emptyLabel }: { dayIso: string; emptyLabel: string }) {
         const jobs = jobsForDay(dayIso);
+        const dayEvents = eventsForDay(dayIso);
         const hasLeave = leaveOnDay(dayIso);
 
-        if (jobs.length === 0 && !hasLeave) {
+        if (jobs.length === 0 && dayEvents.length === 0 && !hasLeave) {
             return (
                 <p className="text-sm text-gray-500 py-2">{emptyLabel}</p>
             );
@@ -251,6 +315,9 @@ export default function EngineerMobileSchedule({
                         Verlof
                     </div>
                 )}
+                {dayEvents.map((ev) => (
+                    <EventCard key={ev.id} event={ev} />
+                ))}
                 {jobs.map((item) => (
                     <JobCard key={item.id} item={item} />
                 ))}
@@ -400,7 +467,9 @@ export default function EngineerMobileSchedule({
                             {days.map((day) => {
                                 const iso = toIsoDate(day);
                                 const isToday = iso === todayIso;
-                                const count = jobsForDay(iso).length;
+                                const count =
+                                    jobsForDay(iso).length +
+                                    eventsForDay(iso).length;
 
                                 return (
                                     <div key={iso} className="p-3 space-y-2">

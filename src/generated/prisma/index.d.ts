@@ -119,6 +119,11 @@ export type Invoice = $Result.DefaultSelection<Prisma.$InvoicePayload>
  */
 export type FormSubmission = $Result.DefaultSelection<Prisma.$FormSubmissionPayload>
 /**
+ * Model PlanningEvent
+ * Vrij agenda-item in de planning (geen werkbon): container legen, keuring, etc.
+ */
+export type PlanningEvent = $Result.DefaultSelection<Prisma.$PlanningEventPayload>
+/**
  * Model WorkorderEngineer
  * 
  */
@@ -464,6 +469,16 @@ export class PrismaClient<
     * ```
     */
   get formSubmission(): Prisma.FormSubmissionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.planningEvent`: Exposes CRUD operations for the **PlanningEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PlanningEvents
+    * const planningEvents = await prisma.planningEvent.findMany()
+    * ```
+    */
+  get planningEvent(): Prisma.PlanningEventDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.workorderEngineer`: Exposes CRUD operations for the **WorkorderEngineer** model.
@@ -962,6 +977,7 @@ export namespace Prisma {
     AssignmentUser: 'AssignmentUser',
     Invoice: 'Invoice',
     FormSubmission: 'FormSubmission',
+    PlanningEvent: 'PlanningEvent',
     WorkorderEngineer: 'WorkorderEngineer',
     TravelGeocodeCache: 'TravelGeocodeCache',
     TravelRouteCache: 'TravelRouteCache'
@@ -980,7 +996,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache"
+      modelProps: "user" | "customer" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2538,6 +2554,80 @@ export namespace Prisma {
           }
         }
       }
+      PlanningEvent: {
+        payload: Prisma.$PlanningEventPayload<ExtArgs>
+        fields: Prisma.PlanningEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PlanningEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PlanningEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>
+          }
+          findFirst: {
+            args: Prisma.PlanningEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PlanningEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>
+          }
+          findMany: {
+            args: Prisma.PlanningEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>[]
+          }
+          create: {
+            args: Prisma.PlanningEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>
+          }
+          createMany: {
+            args: Prisma.PlanningEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PlanningEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>[]
+          }
+          delete: {
+            args: Prisma.PlanningEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>
+          }
+          update: {
+            args: Prisma.PlanningEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.PlanningEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PlanningEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PlanningEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.PlanningEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlanningEventPayload>
+          }
+          aggregate: {
+            args: Prisma.PlanningEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlanningEvent>
+          }
+          groupBy: {
+            args: Prisma.PlanningEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PlanningEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PlanningEventCountArgs<ExtArgs>
+            result: $Utils.Optional<PlanningEventCountAggregateOutputType> | number
+          }
+        }
+      }
       WorkorderEngineer: {
         payload: Prisma.$WorkorderEngineerPayload<ExtArgs>
         fields: Prisma.WorkorderEngineerFieldRefs
@@ -2904,6 +2994,7 @@ export namespace Prisma {
     assignmentUser?: AssignmentUserOmit
     invoice?: InvoiceOmit
     formSubmission?: FormSubmissionOmit
+    planningEvent?: PlanningEventOmit
     workorderEngineer?: WorkorderEngineerOmit
     travelGeocodeCache?: TravelGeocodeCacheOmit
     travelRouteCache?: TravelRouteCacheOmit
@@ -2993,6 +3084,8 @@ export namespace Prisma {
     forms: number
     projectUren: number
     projectUrenGeboekt: number
+    planningEventsAssigned: number
+    planningEventsCreated: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3002,6 +3095,8 @@ export namespace Prisma {
     forms?: boolean | UserCountOutputTypeCountFormsArgs
     projectUren?: boolean | UserCountOutputTypeCountProjectUrenArgs
     projectUrenGeboekt?: boolean | UserCountOutputTypeCountProjectUrenGeboektArgs
+    planningEventsAssigned?: boolean | UserCountOutputTypeCountPlanningEventsAssignedArgs
+    planningEventsCreated?: boolean | UserCountOutputTypeCountPlanningEventsCreatedArgs
   }
 
   // Custom InputTypes
@@ -3055,6 +3150,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountProjectUrenGeboektArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProjectUurWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPlanningEventsAssignedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlanningEventWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPlanningEventsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlanningEventWhereInput
   }
 
 
@@ -3537,6 +3646,8 @@ export namespace Prisma {
     forms?: boolean | User$formsArgs<ExtArgs>
     projectUren?: boolean | User$projectUrenArgs<ExtArgs>
     projectUrenGeboekt?: boolean | User$projectUrenGeboektArgs<ExtArgs>
+    planningEventsAssigned?: boolean | User$planningEventsAssignedArgs<ExtArgs>
+    planningEventsCreated?: boolean | User$planningEventsCreatedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3581,6 +3692,8 @@ export namespace Prisma {
     forms?: boolean | User$formsArgs<ExtArgs>
     projectUren?: boolean | User$projectUrenArgs<ExtArgs>
     projectUrenGeboekt?: boolean | User$projectUrenGeboektArgs<ExtArgs>
+    planningEventsAssigned?: boolean | User$planningEventsAssignedArgs<ExtArgs>
+    planningEventsCreated?: boolean | User$planningEventsCreatedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3595,6 +3708,8 @@ export namespace Prisma {
       forms: Prisma.$FormSubmissionPayload<ExtArgs>[]
       projectUren: Prisma.$ProjectUurPayload<ExtArgs>[]
       projectUrenGeboekt: Prisma.$ProjectUurPayload<ExtArgs>[]
+      planningEventsAssigned: Prisma.$PlanningEventPayload<ExtArgs>[]
+      planningEventsCreated: Prisma.$PlanningEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4005,6 +4120,8 @@ export namespace Prisma {
     forms<T extends User$formsArgs<ExtArgs> = {}>(args?: Subset<T, User$formsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projectUren<T extends User$projectUrenArgs<ExtArgs> = {}>(args?: Subset<T, User$projectUrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projectUrenGeboekt<T extends User$projectUrenGeboektArgs<ExtArgs> = {}>(args?: Subset<T, User$projectUrenGeboektArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    planningEventsAssigned<T extends User$planningEventsAssignedArgs<ExtArgs> = {}>(args?: Subset<T, User$planningEventsAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    planningEventsCreated<T extends User$planningEventsCreatedArgs<ExtArgs> = {}>(args?: Subset<T, User$planningEventsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4576,6 +4693,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ProjectUurScalarFieldEnum | ProjectUurScalarFieldEnum[]
+  }
+
+  /**
+   * User.planningEventsAssigned
+   */
+  export type User$planningEventsAssignedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    where?: PlanningEventWhereInput
+    orderBy?: PlanningEventOrderByWithRelationInput | PlanningEventOrderByWithRelationInput[]
+    cursor?: PlanningEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlanningEventScalarFieldEnum | PlanningEventScalarFieldEnum[]
+  }
+
+  /**
+   * User.planningEventsCreated
+   */
+  export type User$planningEventsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    where?: PlanningEventWhereInput
+    orderBy?: PlanningEventOrderByWithRelationInput | PlanningEventOrderByWithRelationInput[]
+    cursor?: PlanningEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlanningEventScalarFieldEnum | PlanningEventScalarFieldEnum[]
   }
 
   /**
@@ -28134,6 +28299,1161 @@ export namespace Prisma {
 
 
   /**
+   * Model PlanningEvent
+   */
+
+  export type AggregatePlanningEvent = {
+    _count: PlanningEventCountAggregateOutputType | null
+    _min: PlanningEventMinAggregateOutputType | null
+    _max: PlanningEventMaxAggregateOutputType | null
+  }
+
+  export type PlanningEventMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    notes: string | null
+    startAt: Date | null
+    endAt: Date | null
+    allDay: boolean | null
+    assignedUserId: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PlanningEventMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    notes: string | null
+    startAt: Date | null
+    endAt: Date | null
+    allDay: boolean | null
+    assignedUserId: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PlanningEventCountAggregateOutputType = {
+    id: number
+    title: number
+    notes: number
+    startAt: number
+    endAt: number
+    allDay: number
+    assignedUserId: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PlanningEventMinAggregateInputType = {
+    id?: true
+    title?: true
+    notes?: true
+    startAt?: true
+    endAt?: true
+    allDay?: true
+    assignedUserId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PlanningEventMaxAggregateInputType = {
+    id?: true
+    title?: true
+    notes?: true
+    startAt?: true
+    endAt?: true
+    allDay?: true
+    assignedUserId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PlanningEventCountAggregateInputType = {
+    id?: true
+    title?: true
+    notes?: true
+    startAt?: true
+    endAt?: true
+    allDay?: true
+    assignedUserId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PlanningEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlanningEvent to aggregate.
+     */
+    where?: PlanningEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlanningEvents to fetch.
+     */
+    orderBy?: PlanningEventOrderByWithRelationInput | PlanningEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PlanningEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlanningEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlanningEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PlanningEvents
+    **/
+    _count?: true | PlanningEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PlanningEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PlanningEventMaxAggregateInputType
+  }
+
+  export type GetPlanningEventAggregateType<T extends PlanningEventAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlanningEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlanningEvent[P]>
+      : GetScalarType<T[P], AggregatePlanningEvent[P]>
+  }
+
+
+
+
+  export type PlanningEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlanningEventWhereInput
+    orderBy?: PlanningEventOrderByWithAggregationInput | PlanningEventOrderByWithAggregationInput[]
+    by: PlanningEventScalarFieldEnum[] | PlanningEventScalarFieldEnum
+    having?: PlanningEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PlanningEventCountAggregateInputType | true
+    _min?: PlanningEventMinAggregateInputType
+    _max?: PlanningEventMaxAggregateInputType
+  }
+
+  export type PlanningEventGroupByOutputType = {
+    id: string
+    title: string
+    notes: string | null
+    startAt: Date
+    endAt: Date | null
+    allDay: boolean
+    assignedUserId: string | null
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: PlanningEventCountAggregateOutputType | null
+    _min: PlanningEventMinAggregateOutputType | null
+    _max: PlanningEventMaxAggregateOutputType | null
+  }
+
+  type GetPlanningEventGroupByPayload<T extends PlanningEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PlanningEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PlanningEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PlanningEventGroupByOutputType[P]>
+            : GetScalarType<T[P], PlanningEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PlanningEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    startAt?: boolean
+    endAt?: boolean
+    allDay?: boolean
+    assignedUserId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["planningEvent"]>
+
+  export type PlanningEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    startAt?: boolean
+    endAt?: boolean
+    allDay?: boolean
+    assignedUserId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["planningEvent"]>
+
+  export type PlanningEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    startAt?: boolean
+    endAt?: boolean
+    allDay?: boolean
+    assignedUserId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["planningEvent"]>
+
+  export type PlanningEventSelectScalar = {
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    startAt?: boolean
+    endAt?: boolean
+    allDay?: boolean
+    assignedUserId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PlanningEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "notes" | "startAt" | "endAt" | "allDay" | "assignedUserId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["planningEvent"]>
+  export type PlanningEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PlanningEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PlanningEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PlanningEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PlanningEvent"
+    objects: {
+      assignedUser: Prisma.$UserPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      notes: string | null
+      startAt: Date
+      endAt: Date | null
+      allDay: boolean
+      assignedUserId: string | null
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["planningEvent"]>
+    composites: {}
+  }
+
+  type PlanningEventGetPayload<S extends boolean | null | undefined | PlanningEventDefaultArgs> = $Result.GetResult<Prisma.$PlanningEventPayload, S>
+
+  type PlanningEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PlanningEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PlanningEventCountAggregateInputType | true
+    }
+
+  export interface PlanningEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PlanningEvent'], meta: { name: 'PlanningEvent' } }
+    /**
+     * Find zero or one PlanningEvent that matches the filter.
+     * @param {PlanningEventFindUniqueArgs} args - Arguments to find a PlanningEvent
+     * @example
+     * // Get one PlanningEvent
+     * const planningEvent = await prisma.planningEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PlanningEventFindUniqueArgs>(args: SelectSubset<T, PlanningEventFindUniqueArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PlanningEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PlanningEventFindUniqueOrThrowArgs} args - Arguments to find a PlanningEvent
+     * @example
+     * // Get one PlanningEvent
+     * const planningEvent = await prisma.planningEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PlanningEventFindUniqueOrThrowArgs>(args: SelectSubset<T, PlanningEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlanningEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlanningEventFindFirstArgs} args - Arguments to find a PlanningEvent
+     * @example
+     * // Get one PlanningEvent
+     * const planningEvent = await prisma.planningEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PlanningEventFindFirstArgs>(args?: SelectSubset<T, PlanningEventFindFirstArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlanningEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlanningEventFindFirstOrThrowArgs} args - Arguments to find a PlanningEvent
+     * @example
+     * // Get one PlanningEvent
+     * const planningEvent = await prisma.planningEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PlanningEventFindFirstOrThrowArgs>(args?: SelectSubset<T, PlanningEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PlanningEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlanningEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PlanningEvents
+     * const planningEvents = await prisma.planningEvent.findMany()
+     * 
+     * // Get first 10 PlanningEvents
+     * const planningEvents = await prisma.planningEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const planningEventWithIdOnly = await prisma.planningEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PlanningEventFindManyArgs>(args?: SelectSubset<T, PlanningEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PlanningEvent.
+     * @param {PlanningEventCreateArgs} args - Arguments to create a PlanningEvent.
+     * @example
+     * // Create one PlanningEvent
+     * const PlanningEvent = await prisma.planningEvent.create({
+     *   data: {
+     *     // ... data to create a PlanningEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends PlanningEventCreateArgs>(args: SelectSubset<T, PlanningEventCreateArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PlanningEvents.
+     * @param {PlanningEventCreateManyArgs} args - Arguments to create many PlanningEvents.
+     * @example
+     * // Create many PlanningEvents
+     * const planningEvent = await prisma.planningEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PlanningEventCreateManyArgs>(args?: SelectSubset<T, PlanningEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PlanningEvents and returns the data saved in the database.
+     * @param {PlanningEventCreateManyAndReturnArgs} args - Arguments to create many PlanningEvents.
+     * @example
+     * // Create many PlanningEvents
+     * const planningEvent = await prisma.planningEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PlanningEvents and only return the `id`
+     * const planningEventWithIdOnly = await prisma.planningEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PlanningEventCreateManyAndReturnArgs>(args?: SelectSubset<T, PlanningEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PlanningEvent.
+     * @param {PlanningEventDeleteArgs} args - Arguments to delete one PlanningEvent.
+     * @example
+     * // Delete one PlanningEvent
+     * const PlanningEvent = await prisma.planningEvent.delete({
+     *   where: {
+     *     // ... filter to delete one PlanningEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PlanningEventDeleteArgs>(args: SelectSubset<T, PlanningEventDeleteArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PlanningEvent.
+     * @param {PlanningEventUpdateArgs} args - Arguments to update one PlanningEvent.
+     * @example
+     * // Update one PlanningEvent
+     * const planningEvent = await prisma.planningEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PlanningEventUpdateArgs>(args: SelectSubset<T, PlanningEventUpdateArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PlanningEvents.
+     * @param {PlanningEventDeleteManyArgs} args - Arguments to filter PlanningEvents to delete.
+     * @example
+     * // Delete a few PlanningEvents
+     * const { count } = await prisma.planningEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PlanningEventDeleteManyArgs>(args?: SelectSubset<T, PlanningEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlanningEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlanningEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PlanningEvents
+     * const planningEvent = await prisma.planningEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PlanningEventUpdateManyArgs>(args: SelectSubset<T, PlanningEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlanningEvents and returns the data updated in the database.
+     * @param {PlanningEventUpdateManyAndReturnArgs} args - Arguments to update many PlanningEvents.
+     * @example
+     * // Update many PlanningEvents
+     * const planningEvent = await prisma.planningEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PlanningEvents and only return the `id`
+     * const planningEventWithIdOnly = await prisma.planningEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PlanningEventUpdateManyAndReturnArgs>(args: SelectSubset<T, PlanningEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PlanningEvent.
+     * @param {PlanningEventUpsertArgs} args - Arguments to update or create a PlanningEvent.
+     * @example
+     * // Update or create a PlanningEvent
+     * const planningEvent = await prisma.planningEvent.upsert({
+     *   create: {
+     *     // ... data to create a PlanningEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PlanningEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PlanningEventUpsertArgs>(args: SelectSubset<T, PlanningEventUpsertArgs<ExtArgs>>): Prisma__PlanningEventClient<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PlanningEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlanningEventCountArgs} args - Arguments to filter PlanningEvents to count.
+     * @example
+     * // Count the number of PlanningEvents
+     * const count = await prisma.planningEvent.count({
+     *   where: {
+     *     // ... the filter for the PlanningEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends PlanningEventCountArgs>(
+      args?: Subset<T, PlanningEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PlanningEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PlanningEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlanningEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PlanningEventAggregateArgs>(args: Subset<T, PlanningEventAggregateArgs>): Prisma.PrismaPromise<GetPlanningEventAggregateType<T>>
+
+    /**
+     * Group by PlanningEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlanningEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PlanningEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PlanningEventGroupByArgs['orderBy'] }
+        : { orderBy?: PlanningEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PlanningEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlanningEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PlanningEvent model
+   */
+  readonly fields: PlanningEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PlanningEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PlanningEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    assignedUser<T extends PlanningEvent$assignedUserArgs<ExtArgs> = {}>(args?: Subset<T, PlanningEvent$assignedUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PlanningEvent model
+   */
+  interface PlanningEventFieldRefs {
+    readonly id: FieldRef<"PlanningEvent", 'String'>
+    readonly title: FieldRef<"PlanningEvent", 'String'>
+    readonly notes: FieldRef<"PlanningEvent", 'String'>
+    readonly startAt: FieldRef<"PlanningEvent", 'DateTime'>
+    readonly endAt: FieldRef<"PlanningEvent", 'DateTime'>
+    readonly allDay: FieldRef<"PlanningEvent", 'Boolean'>
+    readonly assignedUserId: FieldRef<"PlanningEvent", 'String'>
+    readonly createdById: FieldRef<"PlanningEvent", 'String'>
+    readonly createdAt: FieldRef<"PlanningEvent", 'DateTime'>
+    readonly updatedAt: FieldRef<"PlanningEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PlanningEvent findUnique
+   */
+  export type PlanningEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * Filter, which PlanningEvent to fetch.
+     */
+    where: PlanningEventWhereUniqueInput
+  }
+
+  /**
+   * PlanningEvent findUniqueOrThrow
+   */
+  export type PlanningEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * Filter, which PlanningEvent to fetch.
+     */
+    where: PlanningEventWhereUniqueInput
+  }
+
+  /**
+   * PlanningEvent findFirst
+   */
+  export type PlanningEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * Filter, which PlanningEvent to fetch.
+     */
+    where?: PlanningEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlanningEvents to fetch.
+     */
+    orderBy?: PlanningEventOrderByWithRelationInput | PlanningEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlanningEvents.
+     */
+    cursor?: PlanningEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlanningEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlanningEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlanningEvents.
+     */
+    distinct?: PlanningEventScalarFieldEnum | PlanningEventScalarFieldEnum[]
+  }
+
+  /**
+   * PlanningEvent findFirstOrThrow
+   */
+  export type PlanningEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * Filter, which PlanningEvent to fetch.
+     */
+    where?: PlanningEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlanningEvents to fetch.
+     */
+    orderBy?: PlanningEventOrderByWithRelationInput | PlanningEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlanningEvents.
+     */
+    cursor?: PlanningEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlanningEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlanningEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlanningEvents.
+     */
+    distinct?: PlanningEventScalarFieldEnum | PlanningEventScalarFieldEnum[]
+  }
+
+  /**
+   * PlanningEvent findMany
+   */
+  export type PlanningEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * Filter, which PlanningEvents to fetch.
+     */
+    where?: PlanningEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlanningEvents to fetch.
+     */
+    orderBy?: PlanningEventOrderByWithRelationInput | PlanningEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PlanningEvents.
+     */
+    cursor?: PlanningEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlanningEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlanningEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlanningEvents.
+     */
+    distinct?: PlanningEventScalarFieldEnum | PlanningEventScalarFieldEnum[]
+  }
+
+  /**
+   * PlanningEvent create
+   */
+  export type PlanningEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PlanningEvent.
+     */
+    data: XOR<PlanningEventCreateInput, PlanningEventUncheckedCreateInput>
+  }
+
+  /**
+   * PlanningEvent createMany
+   */
+  export type PlanningEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PlanningEvents.
+     */
+    data: PlanningEventCreateManyInput | PlanningEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlanningEvent createManyAndReturn
+   */
+  export type PlanningEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many PlanningEvents.
+     */
+    data: PlanningEventCreateManyInput | PlanningEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PlanningEvent update
+   */
+  export type PlanningEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PlanningEvent.
+     */
+    data: XOR<PlanningEventUpdateInput, PlanningEventUncheckedUpdateInput>
+    /**
+     * Choose, which PlanningEvent to update.
+     */
+    where: PlanningEventWhereUniqueInput
+  }
+
+  /**
+   * PlanningEvent updateMany
+   */
+  export type PlanningEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PlanningEvents.
+     */
+    data: XOR<PlanningEventUpdateManyMutationInput, PlanningEventUncheckedUpdateManyInput>
+    /**
+     * Filter which PlanningEvents to update
+     */
+    where?: PlanningEventWhereInput
+    /**
+     * Limit how many PlanningEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlanningEvent updateManyAndReturn
+   */
+  export type PlanningEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * The data used to update PlanningEvents.
+     */
+    data: XOR<PlanningEventUpdateManyMutationInput, PlanningEventUncheckedUpdateManyInput>
+    /**
+     * Filter which PlanningEvents to update
+     */
+    where?: PlanningEventWhereInput
+    /**
+     * Limit how many PlanningEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PlanningEvent upsert
+   */
+  export type PlanningEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PlanningEvent to update in case it exists.
+     */
+    where: PlanningEventWhereUniqueInput
+    /**
+     * In case the PlanningEvent found by the `where` argument doesn't exist, create a new PlanningEvent with this data.
+     */
+    create: XOR<PlanningEventCreateInput, PlanningEventUncheckedCreateInput>
+    /**
+     * In case the PlanningEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PlanningEventUpdateInput, PlanningEventUncheckedUpdateInput>
+  }
+
+  /**
+   * PlanningEvent delete
+   */
+  export type PlanningEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    /**
+     * Filter which PlanningEvent to delete.
+     */
+    where: PlanningEventWhereUniqueInput
+  }
+
+  /**
+   * PlanningEvent deleteMany
+   */
+  export type PlanningEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlanningEvents to delete
+     */
+    where?: PlanningEventWhereInput
+    /**
+     * Limit how many PlanningEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlanningEvent.assignedUser
+   */
+  export type PlanningEvent$assignedUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * PlanningEvent without action
+   */
+  export type PlanningEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model WorkorderEngineer
    */
 
@@ -31673,6 +32993,22 @@ export namespace Prisma {
   export type FormSubmissionScalarFieldEnum = (typeof FormSubmissionScalarFieldEnum)[keyof typeof FormSubmissionScalarFieldEnum]
 
 
+  export const PlanningEventScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    notes: 'notes',
+    startAt: 'startAt',
+    endAt: 'endAt',
+    allDay: 'allDay',
+    assignedUserId: 'assignedUserId',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PlanningEventScalarFieldEnum = (typeof PlanningEventScalarFieldEnum)[keyof typeof PlanningEventScalarFieldEnum]
+
+
   export const WorkorderEngineerScalarFieldEnum: {
     id: 'id',
     workorderId: 'workorderId',
@@ -31888,6 +33224,8 @@ export namespace Prisma {
     forms?: FormSubmissionListRelationFilter
     projectUren?: ProjectUurListRelationFilter
     projectUrenGeboekt?: ProjectUurListRelationFilter
+    planningEventsAssigned?: PlanningEventListRelationFilter
+    planningEventsCreated?: PlanningEventListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -31905,6 +33243,8 @@ export namespace Prisma {
     forms?: FormSubmissionOrderByRelationAggregateInput
     projectUren?: ProjectUurOrderByRelationAggregateInput
     projectUrenGeboekt?: ProjectUurOrderByRelationAggregateInput
+    planningEventsAssigned?: PlanningEventOrderByRelationAggregateInput
+    planningEventsCreated?: PlanningEventOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -31925,6 +33265,8 @@ export namespace Prisma {
     forms?: FormSubmissionListRelationFilter
     projectUren?: ProjectUurListRelationFilter
     projectUrenGeboekt?: ProjectUurListRelationFilter
+    planningEventsAssigned?: PlanningEventListRelationFilter
+    planningEventsCreated?: PlanningEventListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -33633,6 +34975,89 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"FormSubmission"> | Date | string
   }
 
+  export type PlanningEventWhereInput = {
+    AND?: PlanningEventWhereInput | PlanningEventWhereInput[]
+    OR?: PlanningEventWhereInput[]
+    NOT?: PlanningEventWhereInput | PlanningEventWhereInput[]
+    id?: StringFilter<"PlanningEvent"> | string
+    title?: StringFilter<"PlanningEvent"> | string
+    notes?: StringNullableFilter<"PlanningEvent"> | string | null
+    startAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    endAt?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
+    allDay?: BoolFilter<"PlanningEvent"> | boolean
+    assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
+    createdById?: StringFilter<"PlanningEvent"> | string
+    createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type PlanningEventOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrderInput | SortOrder
+    allDay?: SortOrder
+    assignedUserId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assignedUser?: UserOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type PlanningEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PlanningEventWhereInput | PlanningEventWhereInput[]
+    OR?: PlanningEventWhereInput[]
+    NOT?: PlanningEventWhereInput | PlanningEventWhereInput[]
+    title?: StringFilter<"PlanningEvent"> | string
+    notes?: StringNullableFilter<"PlanningEvent"> | string | null
+    startAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    endAt?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
+    allDay?: BoolFilter<"PlanningEvent"> | boolean
+    assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
+    createdById?: StringFilter<"PlanningEvent"> | string
+    createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type PlanningEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrderInput | SortOrder
+    allDay?: SortOrder
+    assignedUserId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PlanningEventCountOrderByAggregateInput
+    _max?: PlanningEventMaxOrderByAggregateInput
+    _min?: PlanningEventMinOrderByAggregateInput
+  }
+
+  export type PlanningEventScalarWhereWithAggregatesInput = {
+    AND?: PlanningEventScalarWhereWithAggregatesInput | PlanningEventScalarWhereWithAggregatesInput[]
+    OR?: PlanningEventScalarWhereWithAggregatesInput[]
+    NOT?: PlanningEventScalarWhereWithAggregatesInput | PlanningEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PlanningEvent"> | string
+    title?: StringWithAggregatesFilter<"PlanningEvent"> | string
+    notes?: StringNullableWithAggregatesFilter<"PlanningEvent"> | string | null
+    startAt?: DateTimeWithAggregatesFilter<"PlanningEvent"> | Date | string
+    endAt?: DateTimeNullableWithAggregatesFilter<"PlanningEvent"> | Date | string | null
+    allDay?: BoolWithAggregatesFilter<"PlanningEvent"> | boolean
+    assignedUserId?: StringNullableWithAggregatesFilter<"PlanningEvent"> | string | null
+    createdById?: StringWithAggregatesFilter<"PlanningEvent"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PlanningEvent"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PlanningEvent"> | Date | string
+  }
+
   export type WorkorderEngineerWhereInput = {
     AND?: WorkorderEngineerWhereInput | WorkorderEngineerWhereInput[]
     OR?: WorkorderEngineerWhereInput[]
@@ -33830,6 +35255,8 @@ export namespace Prisma {
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -33847,6 +35274,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -33864,6 +35293,8 @@ export namespace Prisma {
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -33881,6 +35312,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -35771,6 +37204,95 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PlanningEventCreateInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedUser?: UserCreateNestedOneWithoutPlanningEventsAssignedInput
+    createdBy: UserCreateNestedOneWithoutPlanningEventsCreatedInput
+  }
+
+  export type PlanningEventUncheckedCreateInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    assignedUserId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlanningEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedUser?: UserUpdateOneWithoutPlanningEventsAssignedNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutPlanningEventsCreatedNestedInput
+  }
+
+  export type PlanningEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventCreateManyInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    assignedUserId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlanningEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WorkorderEngineerCreateInput = {
     id?: string
     workorder: WorkorderCreateNestedOneWithoutExtraEngineersInput
@@ -36034,6 +37556,12 @@ export namespace Prisma {
     none?: ProjectUurWhereInput
   }
 
+  export type PlanningEventListRelationFilter = {
+    every?: PlanningEventWhereInput
+    some?: PlanningEventWhereInput
+    none?: PlanningEventWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -36056,6 +37584,10 @@ export namespace Prisma {
   }
 
   export type ProjectUurOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PlanningEventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -37459,6 +38991,45 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type PlanningEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    allDay?: SortOrder
+    assignedUserId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlanningEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    allDay?: SortOrder
+    assignedUserId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PlanningEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrder
+    startAt?: SortOrder
+    endAt?: SortOrder
+    allDay?: SortOrder
+    assignedUserId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type WorkorderEngineerWorkorderIdUserIdCompoundUniqueInput = {
     workorderId: string
     userId: string
@@ -37607,6 +39178,20 @@ export namespace Prisma {
     connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
   }
 
+  export type PlanningEventCreateNestedManyWithoutAssignedUserInput = {
+    create?: XOR<PlanningEventCreateWithoutAssignedUserInput, PlanningEventUncheckedCreateWithoutAssignedUserInput> | PlanningEventCreateWithoutAssignedUserInput[] | PlanningEventUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutAssignedUserInput | PlanningEventCreateOrConnectWithoutAssignedUserInput[]
+    createMany?: PlanningEventCreateManyAssignedUserInputEnvelope
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+  }
+
+  export type PlanningEventCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<PlanningEventCreateWithoutCreatedByInput, PlanningEventUncheckedCreateWithoutCreatedByInput> | PlanningEventCreateWithoutCreatedByInput[] | PlanningEventUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutCreatedByInput | PlanningEventCreateOrConnectWithoutCreatedByInput[]
+    createMany?: PlanningEventCreateManyCreatedByInputEnvelope
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+  }
+
   export type AssignmentUserUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -37647,6 +39232,20 @@ export namespace Prisma {
     connectOrCreate?: ProjectUurCreateOrConnectWithoutBookedByInput | ProjectUurCreateOrConnectWithoutBookedByInput[]
     createMany?: ProjectUurCreateManyBookedByInputEnvelope
     connect?: ProjectUurWhereUniqueInput | ProjectUurWhereUniqueInput[]
+  }
+
+  export type PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput = {
+    create?: XOR<PlanningEventCreateWithoutAssignedUserInput, PlanningEventUncheckedCreateWithoutAssignedUserInput> | PlanningEventCreateWithoutAssignedUserInput[] | PlanningEventUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutAssignedUserInput | PlanningEventCreateOrConnectWithoutAssignedUserInput[]
+    createMany?: PlanningEventCreateManyAssignedUserInputEnvelope
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+  }
+
+  export type PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<PlanningEventCreateWithoutCreatedByInput, PlanningEventUncheckedCreateWithoutCreatedByInput> | PlanningEventCreateWithoutCreatedByInput[] | PlanningEventUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutCreatedByInput | PlanningEventCreateOrConnectWithoutCreatedByInput[]
+    createMany?: PlanningEventCreateManyCreatedByInputEnvelope
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -37749,6 +39348,34 @@ export namespace Prisma {
     deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
   }
 
+  export type PlanningEventUpdateManyWithoutAssignedUserNestedInput = {
+    create?: XOR<PlanningEventCreateWithoutAssignedUserInput, PlanningEventUncheckedCreateWithoutAssignedUserInput> | PlanningEventCreateWithoutAssignedUserInput[] | PlanningEventUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutAssignedUserInput | PlanningEventCreateOrConnectWithoutAssignedUserInput[]
+    upsert?: PlanningEventUpsertWithWhereUniqueWithoutAssignedUserInput | PlanningEventUpsertWithWhereUniqueWithoutAssignedUserInput[]
+    createMany?: PlanningEventCreateManyAssignedUserInputEnvelope
+    set?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    disconnect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    delete?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    update?: PlanningEventUpdateWithWhereUniqueWithoutAssignedUserInput | PlanningEventUpdateWithWhereUniqueWithoutAssignedUserInput[]
+    updateMany?: PlanningEventUpdateManyWithWhereWithoutAssignedUserInput | PlanningEventUpdateManyWithWhereWithoutAssignedUserInput[]
+    deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
+  }
+
+  export type PlanningEventUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<PlanningEventCreateWithoutCreatedByInput, PlanningEventUncheckedCreateWithoutCreatedByInput> | PlanningEventCreateWithoutCreatedByInput[] | PlanningEventUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutCreatedByInput | PlanningEventCreateOrConnectWithoutCreatedByInput[]
+    upsert?: PlanningEventUpsertWithWhereUniqueWithoutCreatedByInput | PlanningEventUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: PlanningEventCreateManyCreatedByInputEnvelope
+    set?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    disconnect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    delete?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    update?: PlanningEventUpdateWithWhereUniqueWithoutCreatedByInput | PlanningEventUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: PlanningEventUpdateManyWithWhereWithoutCreatedByInput | PlanningEventUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
+  }
+
   export type AssignmentUserUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -37831,6 +39458,34 @@ export namespace Prisma {
     update?: ProjectUurUpdateWithWhereUniqueWithoutBookedByInput | ProjectUurUpdateWithWhereUniqueWithoutBookedByInput[]
     updateMany?: ProjectUurUpdateManyWithWhereWithoutBookedByInput | ProjectUurUpdateManyWithWhereWithoutBookedByInput[]
     deleteMany?: ProjectUurScalarWhereInput | ProjectUurScalarWhereInput[]
+  }
+
+  export type PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput = {
+    create?: XOR<PlanningEventCreateWithoutAssignedUserInput, PlanningEventUncheckedCreateWithoutAssignedUserInput> | PlanningEventCreateWithoutAssignedUserInput[] | PlanningEventUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutAssignedUserInput | PlanningEventCreateOrConnectWithoutAssignedUserInput[]
+    upsert?: PlanningEventUpsertWithWhereUniqueWithoutAssignedUserInput | PlanningEventUpsertWithWhereUniqueWithoutAssignedUserInput[]
+    createMany?: PlanningEventCreateManyAssignedUserInputEnvelope
+    set?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    disconnect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    delete?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    update?: PlanningEventUpdateWithWhereUniqueWithoutAssignedUserInput | PlanningEventUpdateWithWhereUniqueWithoutAssignedUserInput[]
+    updateMany?: PlanningEventUpdateManyWithWhereWithoutAssignedUserInput | PlanningEventUpdateManyWithWhereWithoutAssignedUserInput[]
+    deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
+  }
+
+  export type PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<PlanningEventCreateWithoutCreatedByInput, PlanningEventUncheckedCreateWithoutCreatedByInput> | PlanningEventCreateWithoutCreatedByInput[] | PlanningEventUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutCreatedByInput | PlanningEventCreateOrConnectWithoutCreatedByInput[]
+    upsert?: PlanningEventUpsertWithWhereUniqueWithoutCreatedByInput | PlanningEventUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: PlanningEventCreateManyCreatedByInputEnvelope
+    set?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    disconnect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    delete?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    update?: PlanningEventUpdateWithWhereUniqueWithoutCreatedByInput | PlanningEventUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: PlanningEventUpdateManyWithWhereWithoutCreatedByInput | PlanningEventUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
   }
 
   export type AssignmentCreateNestedManyWithoutCustomerInput = {
@@ -39061,6 +40716,36 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFormsInput, UserUpdateWithoutFormsInput>, UserUncheckedUpdateWithoutFormsInput>
   }
 
+  export type UserCreateNestedOneWithoutPlanningEventsAssignedInput = {
+    create?: XOR<UserCreateWithoutPlanningEventsAssignedInput, UserUncheckedCreateWithoutPlanningEventsAssignedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlanningEventsAssignedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutPlanningEventsCreatedInput = {
+    create?: XOR<UserCreateWithoutPlanningEventsCreatedInput, UserUncheckedCreateWithoutPlanningEventsCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlanningEventsCreatedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutPlanningEventsAssignedNestedInput = {
+    create?: XOR<UserCreateWithoutPlanningEventsAssignedInput, UserUncheckedCreateWithoutPlanningEventsAssignedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlanningEventsAssignedInput
+    upsert?: UserUpsertWithoutPlanningEventsAssignedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlanningEventsAssignedInput, UserUpdateWithoutPlanningEventsAssignedInput>, UserUncheckedUpdateWithoutPlanningEventsAssignedInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutPlanningEventsCreatedNestedInput = {
+    create?: XOR<UserCreateWithoutPlanningEventsCreatedInput, UserUncheckedCreateWithoutPlanningEventsCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPlanningEventsCreatedInput
+    upsert?: UserUpsertWithoutPlanningEventsCreatedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlanningEventsCreatedInput, UserUpdateWithoutPlanningEventsCreatedInput>, UserUncheckedUpdateWithoutPlanningEventsCreatedInput>
+  }
+
   export type WorkorderCreateNestedOneWithoutExtraEngineersInput = {
     create?: XOR<WorkorderCreateWithoutExtraEngineersInput, WorkorderUncheckedCreateWithoutExtraEngineersInput>
     connectOrCreate?: WorkorderCreateOrConnectWithoutExtraEngineersInput
@@ -39655,6 +41340,74 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PlanningEventCreateWithoutAssignedUserInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutPlanningEventsCreatedInput
+  }
+
+  export type PlanningEventUncheckedCreateWithoutAssignedUserInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlanningEventCreateOrConnectWithoutAssignedUserInput = {
+    where: PlanningEventWhereUniqueInput
+    create: XOR<PlanningEventCreateWithoutAssignedUserInput, PlanningEventUncheckedCreateWithoutAssignedUserInput>
+  }
+
+  export type PlanningEventCreateManyAssignedUserInputEnvelope = {
+    data: PlanningEventCreateManyAssignedUserInput | PlanningEventCreateManyAssignedUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PlanningEventCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedUser?: UserCreateNestedOneWithoutPlanningEventsAssignedInput
+  }
+
+  export type PlanningEventUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    assignedUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlanningEventCreateOrConnectWithoutCreatedByInput = {
+    where: PlanningEventWhereUniqueInput
+    create: XOR<PlanningEventCreateWithoutCreatedByInput, PlanningEventUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type PlanningEventCreateManyCreatedByInputEnvelope = {
+    data: PlanningEventCreateManyCreatedByInput | PlanningEventCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AssignmentUserUpsertWithWhereUniqueWithoutUserInput = {
     where: AssignmentUserWhereUniqueInput
     update: XOR<AssignmentUserUpdateWithoutUserInput, AssignmentUserUncheckedUpdateWithoutUserInput>
@@ -39835,6 +41588,54 @@ export namespace Prisma {
   export type ProjectUurUpdateManyWithWhereWithoutBookedByInput = {
     where: ProjectUurScalarWhereInput
     data: XOR<ProjectUurUpdateManyMutationInput, ProjectUurUncheckedUpdateManyWithoutBookedByInput>
+  }
+
+  export type PlanningEventUpsertWithWhereUniqueWithoutAssignedUserInput = {
+    where: PlanningEventWhereUniqueInput
+    update: XOR<PlanningEventUpdateWithoutAssignedUserInput, PlanningEventUncheckedUpdateWithoutAssignedUserInput>
+    create: XOR<PlanningEventCreateWithoutAssignedUserInput, PlanningEventUncheckedCreateWithoutAssignedUserInput>
+  }
+
+  export type PlanningEventUpdateWithWhereUniqueWithoutAssignedUserInput = {
+    where: PlanningEventWhereUniqueInput
+    data: XOR<PlanningEventUpdateWithoutAssignedUserInput, PlanningEventUncheckedUpdateWithoutAssignedUserInput>
+  }
+
+  export type PlanningEventUpdateManyWithWhereWithoutAssignedUserInput = {
+    where: PlanningEventScalarWhereInput
+    data: XOR<PlanningEventUpdateManyMutationInput, PlanningEventUncheckedUpdateManyWithoutAssignedUserInput>
+  }
+
+  export type PlanningEventScalarWhereInput = {
+    AND?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
+    OR?: PlanningEventScalarWhereInput[]
+    NOT?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
+    id?: StringFilter<"PlanningEvent"> | string
+    title?: StringFilter<"PlanningEvent"> | string
+    notes?: StringNullableFilter<"PlanningEvent"> | string | null
+    startAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    endAt?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
+    allDay?: BoolFilter<"PlanningEvent"> | boolean
+    assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
+    createdById?: StringFilter<"PlanningEvent"> | string
+    createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"PlanningEvent"> | Date | string
+  }
+
+  export type PlanningEventUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: PlanningEventWhereUniqueInput
+    update: XOR<PlanningEventUpdateWithoutCreatedByInput, PlanningEventUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<PlanningEventCreateWithoutCreatedByInput, PlanningEventUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type PlanningEventUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: PlanningEventWhereUniqueInput
+    data: XOR<PlanningEventUpdateWithoutCreatedByInput, PlanningEventUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type PlanningEventUpdateManyWithWhereWithoutCreatedByInput = {
+    where: PlanningEventScalarWhereInput
+    data: XOR<PlanningEventUpdateManyMutationInput, PlanningEventUncheckedUpdateManyWithoutCreatedByInput>
   }
 
   export type AssignmentCreateWithoutCustomerInput = {
@@ -40673,6 +42474,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutProjectUrenInput = {
@@ -40689,6 +42492,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutProjectUrenInput = {
@@ -40710,6 +42515,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutProjectUrenGeboektInput = {
@@ -40726,6 +42533,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutProjectUrenGeboektInput = {
@@ -40821,6 +42630,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectUrenInput = {
@@ -40837,6 +42648,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutProjectUrenGeboektInput = {
@@ -40864,6 +42677,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectUrenGeboektInput = {
@@ -40880,6 +42695,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ProjectCreateWithoutMaterialenInput = {
@@ -41042,6 +42859,8 @@ export namespace Prisma {
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutWorkordersInput = {
@@ -41058,6 +42877,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutWorkordersInput = {
@@ -41464,6 +43285,8 @@ export namespace Prisma {
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWorkordersInput = {
@@ -41480,6 +43303,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type AssignmentUpsertWithoutWorkordersInput = {
@@ -43786,6 +45611,8 @@ export namespace Prisma {
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAssignmentsInput = {
@@ -43802,6 +45629,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAssignmentsInput = {
@@ -43879,6 +45708,8 @@ export namespace Prisma {
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignmentsInput = {
@@ -43895,6 +45726,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type AssignmentCreateWithoutInvoicesInput = {
@@ -43995,6 +45828,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutFormsInput = {
@@ -44011,6 +45846,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutFormsInput = {
@@ -44043,6 +45880,8 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFormsInput = {
@@ -44059,6 +45898,184 @@ export namespace Prisma {
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserCreateWithoutPlanningEventsAssignedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutPlanningEventsAssignedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutPlanningEventsAssignedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPlanningEventsAssignedInput, UserUncheckedCreateWithoutPlanningEventsAssignedInput>
+  }
+
+  export type UserCreateWithoutPlanningEventsCreatedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPlanningEventsCreatedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPlanningEventsCreatedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPlanningEventsCreatedInput, UserUncheckedCreateWithoutPlanningEventsCreatedInput>
+  }
+
+  export type UserUpsertWithoutPlanningEventsAssignedInput = {
+    update: XOR<UserUpdateWithoutPlanningEventsAssignedInput, UserUncheckedUpdateWithoutPlanningEventsAssignedInput>
+    create: XOR<UserCreateWithoutPlanningEventsAssignedInput, UserUncheckedCreateWithoutPlanningEventsAssignedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPlanningEventsAssignedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPlanningEventsAssignedInput, UserUncheckedUpdateWithoutPlanningEventsAssignedInput>
+  }
+
+  export type UserUpdateWithoutPlanningEventsAssignedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPlanningEventsAssignedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUpsertWithoutPlanningEventsCreatedInput = {
+    update: XOR<UserUpdateWithoutPlanningEventsCreatedInput, UserUncheckedUpdateWithoutPlanningEventsCreatedInput>
+    create: XOR<UserCreateWithoutPlanningEventsCreatedInput, UserUncheckedCreateWithoutPlanningEventsCreatedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPlanningEventsCreatedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPlanningEventsCreatedInput, UserUncheckedUpdateWithoutPlanningEventsCreatedInput>
+  }
+
+  export type UserUpdateWithoutPlanningEventsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPlanningEventsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
   }
 
   export type WorkorderCreateWithoutExtraEngineersInput = {
@@ -44166,6 +46183,8 @@ export namespace Prisma {
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutExtraWorkordersInput = {
@@ -44182,6 +46201,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutExtraWorkordersInput = {
@@ -44311,6 +46332,8 @@ export namespace Prisma {
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExtraWorkordersInput = {
@@ -44327,6 +46350,8 @@ export namespace Prisma {
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type AssignmentUserCreateManyUserInput = {
@@ -44404,6 +46429,30 @@ export namespace Prisma {
     omschrijving?: string | null
     kilometers?: number | null
     createdAt?: Date | string
+  }
+
+  export type PlanningEventCreateManyAssignedUserInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlanningEventCreateManyCreatedByInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    assignedUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AssignmentUserUpdateWithoutUserInput = {
@@ -44653,6 +46702,78 @@ export namespace Prisma {
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventUpdateWithoutAssignedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutPlanningEventsCreatedNestedInput
+  }
+
+  export type PlanningEventUncheckedUpdateWithoutAssignedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventUncheckedUpdateManyWithoutAssignedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedUser?: UserUpdateOneWithoutPlanningEventsAssignedNestedInput
+  }
+
+  export type PlanningEventUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AssignmentCreateManyCustomerInput = {

@@ -48,6 +48,8 @@ interface WeekNavigation {
 interface WeekViewProps {
     items: any[];
     leave?: any[];
+    /** Vrije agenda-items (geen werkbon) */
+    events?: any[];
     // Alle monteurs (zodat ook lege monteurs een rij krijgen)
     engineers?: { id: string; name: string | null }[];
     // Maandag van de te tonen week; standaard deze week
@@ -72,6 +74,14 @@ interface WeekViewProps {
     }) => void;
     /** Statusiconen (klok/mail/vink/€) — alleen voor kantoor/admin. */
     showStatusIcons?: boolean;
+    /** Klik op leeg dag/tijd-vak → agenda-dialoog (office) */
+    onCreateAgenda?: (args: {
+        dateIso: string;
+        hour?: number;
+        engineerId?: string | null;
+    }) => void;
+    /** Klik op bestaand agenda-item → bewerken */
+    onEditAgenda?: (event: any) => void;
 }
 
 function toIsoDate(d: Date): string {
@@ -84,6 +94,7 @@ function toIsoDate(d: Date): string {
 export default function WeekView({
     items,
     leave = [],
+    events = [],
     engineers = [],
     weekStart,
     weekNavigation,
@@ -93,6 +104,8 @@ export default function WeekView({
     pendingSchedule = null,
     onSchedulePending,
     showStatusIcons = true,
+    onCreateAgenda,
+    onEditAgenda,
 }: WeekViewProps) {
     const today = new Date();
     const todayIso = toIsoDate(today);
@@ -296,11 +309,47 @@ export default function WeekView({
                   ).values()
               ) as { id: string; name: string | null }[]);
 
+    function eventOnDay(ev: any, day: Date): boolean {
+        if (!ev?.startAt) return false;
+        const cellIso = isoDate(day);
+        const startIso = isoDate(new Date(ev.startAt));
+        const endIso = ev.endAt
+            ? isoDate(new Date(ev.endAt))
+            : startIso;
+        return startIso <= cellIso && cellIso <= endIso;
+    }
+
+    function eventsForUserDay(userId: string, day: Date) {
+        return events.filter(
+            (ev) =>
+                ev.assignedUserId === userId && eventOnDay(ev, day)
+        );
+    }
+
+    function unassignedEventsOnDay(day: Date) {
+        return events.filter(
+            (ev) => !ev.assignedUserId && eventOnDay(ev, day)
+        );
+    }
+
+    function eventAsBlock(ev: any) {
+        return {
+            plannedDate: ev.startAt,
+            plannedEndDate: ev.endAt ?? (ev.allDay ? ev.startAt : null),
+        };
+    }
+
     function dayJobCount(day: Date): number {
-        return users.reduce(
+        const jobs = users.reduce(
             (sum, user) => sum + itemsForUserDay(user.id, day).length,
             0
         );
+        const assignedEvents = users.reduce(
+            (sum, user) =>
+                sum + eventsForUserDay(user.id, day).length,
+            0
+        );
+        return jobs + assignedEvents + unassignedEventsOnDay(day).length;
     }
 
     const gridCols =
@@ -486,6 +535,7 @@ export default function WeekView({
                                             gridTemplateColumns: gridCols,
                                         }}
                                     >
+                                        <div className="flex flex-col gap-1 min-w-0">
                                         <Link
                                             href={
                                                 pendingSchedule
@@ -495,11 +545,18 @@ export default function WeekView({
                                             onClick={(e)=>{
                                                 if(pendingSchedule){
                                                     e.preventDefault();
+                                                    return;
+                                                }
+                                                if(onCreateAgenda){
+                                                    e.preventDefault();
+                                                    onCreateAgenda({ dateIso: iso });
                                                 }
                                             }}
                                             title={
                                                 pendingSchedule
                                                 ? "Kies een monteurkolom hiernaast om in te plannen"
+                                                : onCreateAgenda
+                                                ? "Agenda-item of opdracht op deze dag"
                                                 : "Opdracht inplannen op deze dag"
                                             }
                                             className={`
@@ -542,6 +599,25 @@ export default function WeekView({
                                             </span>
                                         </Link>
 
+                                        {unassignedEventsOnDay(day).map((ev) => (
+                                            <button
+                                                key={ev.id}
+                                                type="button"
+                                                data-planning-agenda
+                                                onClick={() => onEditAgenda?.(ev)}
+                                                className="
+                                                    w-full text-left rounded-lg px-1.5 py-1
+                                                    bg-amber-100 border border-amber-200
+                                                    text-amber-950 text-[10px] font-semibold
+                                                    hover:bg-amber-200 transition truncate
+                                                "
+                                                title={ev.title}
+                                            >
+                                                {ev.title}
+                                            </button>
+                                        ))}
+                                        </div>
+
                                         {users.map((user) => {
                                             const verlof = leaveOn(
                                                 user.id,
@@ -549,6 +625,11 @@ export default function WeekView({
                                             );
                                             const dayItems =
                                                 itemsForUserDay(
+                                                    user.id,
+                                                    day
+                                                );
+                                            const dayEvents =
+                                                eventsForUserDay(
                                                     user.id,
                                                     day
                                                 );
@@ -577,6 +658,8 @@ export default function WeekView({
                                                                 && onSchedulePending
                                                                 && !verlof
                                                                     ? "cursor-pointer ring-1 ring-[#0066FF]/20 hover:ring-[#0066FF]/45"
+                                                                    : onCreateAgenda && !verlof
+                                                                    ? "cursor-pointer"
                                                                     : ""
                                                             }
                                                         `}
@@ -593,6 +676,9 @@ export default function WeekView({
                                                                       if (
                                                                           target.closest(
                                                                               "[data-planning-job]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "[data-planning-agenda]"
                                                                           )
                                                                           || target.closest(
                                                                               "a"
@@ -617,6 +703,37 @@ export default function WeekView({
                                                                                   user.id,
                                                                           }
                                                                       );
+                                                                  }
+                                                                : onCreateAgenda && !verlof
+                                                                ? (e) => {
+                                                                      const target =
+                                                                          e.target as HTMLElement;
+                                                                      if (
+                                                                          target.closest(
+                                                                              "[data-planning-job]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "[data-planning-agenda]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "a"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "button"
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
+                                                                      const hour =
+                                                                          hourFromClientY(
+                                                                              e.clientY,
+                                                                              e.currentTarget
+                                                                          );
+                                                                      onCreateAgenda({
+                                                                          dateIso: iso,
+                                                                          hour,
+                                                                          engineerId: user.id,
+                                                                      });
                                                                   }
                                                                 : undefined
                                                         }
@@ -837,9 +954,62 @@ export default function WeekView({
                                                                 );
                                                             }
                                                         )}
+
+                                                        {dayEvents.map((ev) => {
+                                                            const pos = blokPositie(
+                                                                eventAsBlock(ev),
+                                                                day
+                                                            );
+                                                            const timeLabel = ev.allDay
+                                                                ? "Hele dag"
+                                                                : `${formatUurLabel(pos.beginUur)}${
+                                                                      ev.endAt
+                                                                          ? `–${formatUurLabel(pos.eindUur)}`
+                                                                          : ""
+                                                                  }`;
+
+                                                            return (
+                                                                <button
+                                                                    key={ev.id}
+                                                                    type="button"
+                                                                    data-planning-agenda
+                                                                    onClick={() =>
+                                                                        onEditAgenda?.(ev)
+                                                                    }
+                                                                    className="
+                                                                        absolute text-left
+                                                                        rounded-lg px-2 py-1
+                                                                        leading-tight overflow-hidden
+                                                                        bg-amber-500 text-white
+                                                                        shadow-sm ring-1 ring-amber-700/20
+                                                                        hover:brightness-110 hover:shadow-md
+                                                                        transition z-[5] cursor-pointer
+                                                                    "
+                                                                    style={{
+                                                                        top: `${pos.top}px`,
+                                                                        height: `${pos.height}px`,
+                                                                        left: "4px",
+                                                                        right: "4px",
+                                                                    }}
+                                                                    title={ev.title}
+                                                                >
+                                                                    <span className="text-[11px] font-bold tabular-nums leading-none block truncate">
+                                                                        {timeLabel}
+                                                                    </span>
+                                                                    <strong className="text-[12px] block truncate font-semibold mt-0.5">
+                                                                        {ev.title}
+                                                                    </strong>
+                                                                    {ev.notes ? (
+                                                                        <span className="text-[10px] block truncate opacity-90">
+                                                                            {ev.notes}
+                                                                        </span>
+                                                                    ) : null}
+                                                                </button>
+                                                            );
+                                                        })}
                                                     </div>
 
-                                                    {onMovePlan || onSchedulePending ? (
+                                                    {onMovePlan || onSchedulePending || onCreateAgenda ? (
                                                         pendingSchedule && onSchedulePending && !verlof ? (
                                                             <button
                                                                 type="button"
@@ -868,6 +1038,36 @@ export default function WeekView({
                                                                 </span>
                                                                 Hier inplannen
                                                             </button>
+                                                        ) : onCreateAgenda ? (
+                                                        <button
+                                                            type="button"
+                                                            title="Agenda-item of opdracht plannen"
+                                                            onClick={() =>
+                                                                onCreateAgenda({
+                                                                    dateIso: iso,
+                                                                    engineerId: user.id,
+                                                                })
+                                                            }
+                                                            className="
+                                                                group/plan flex items-center justify-center gap-1
+                                                                rounded-lg py-1.5 text-[11px] font-medium
+                                                                text-slate-400 bg-white border border-transparent
+                                                                hover:border-[#0066FF]/30 hover:bg-[#e8f0ff]
+                                                                hover:text-[#0066FF] transition
+                                                            "
+                                                        >
+                                                            <span
+                                                                className="
+                                                                    inline-flex h-4 w-4 items-center justify-center
+                                                                    rounded-full bg-slate-100 text-slate-500
+                                                                    group-hover/plan:bg-[#0066FF] group-hover/plan:text-white
+                                                                    text-[10px] font-bold leading-none transition
+                                                                "
+                                                            >
+                                                                +
+                                                            </span>
+                                                            Plannen
+                                                        </button>
                                                         ) : onMovePlan ? (
                                                         <Link
                                                             href={`/workorders/new?date=${iso}&engineer=${user.id}`}
