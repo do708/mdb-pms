@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
+import {
+    alignDateToWeekday,
+    nthWeekdayInMonth,
+    parseRecurrenceBody,
+} from "@/lib/planning/expandPlanningEvents";
 
 function parseDateTime(
     dateIso: string,
@@ -17,45 +22,43 @@ function parseDateTime(
     return new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
 }
 
-function parseRecurrence(body: Record<string, unknown>): {
-    recurrenceFreq: string;
-    recurrenceInterval: number;
-    recurrenceUntil: Date | null;
-} | { error: string } {
-    const rawFreq =
-        typeof body.recurrenceFreq === "string"
-            ? body.recurrenceFreq.trim()
-            : "none";
-    const recurrenceFreq =
-        rawFreq === "weekly" || rawFreq === "monthly" ? rawFreq : "none";
-
-    let recurrenceInterval = 1;
-    if (body.recurrenceInterval !== undefined && body.recurrenceInterval !== null) {
-        const n = Number(body.recurrenceInterval);
-        if (!Number.isFinite(n) || n < 1 || n > 52) {
-            return { error: "Herhaalinterval moet tussen 1 en 52 liggen" };
-        }
-        recurrenceInterval = Math.floor(n);
+function applyRecurrenceStart(
+    startAt: Date,
+    recurrence: {
+        recurrenceFreq: string;
+        recurrenceWeekday: number | null;
+        recurrenceNth: number | null;
     }
-
-    let recurrenceUntil: Date | null = null;
+): Date {
     if (
-        typeof body.recurrenceUntil === "string" &&
-        /^\d{4}-\d{2}-\d{2}$/.test(body.recurrenceUntil.trim())
+        recurrence.recurrenceFreq === "weekly" &&
+        recurrence.recurrenceWeekday != null
     ) {
-        const [y, m, d] = body.recurrenceUntil.trim().split("-").map(Number);
-        recurrenceUntil = new Date(y, m - 1, d, 23, 59, 59, 999);
+        return alignDateToWeekday(startAt, recurrence.recurrenceWeekday);
     }
-
-    if (recurrenceFreq === "none") {
-        return {
-            recurrenceFreq: "none",
-            recurrenceInterval: 1,
-            recurrenceUntil: null,
-        };
+    if (
+        recurrence.recurrenceFreq === "monthly_weekday" &&
+        recurrence.recurrenceWeekday != null &&
+        recurrence.recurrenceNth != null
+    ) {
+        const aligned =
+            nthWeekdayInMonth(
+                startAt.getFullYear(),
+                startAt.getMonth(),
+                recurrence.recurrenceWeekday,
+                recurrence.recurrenceNth,
+                startAt
+            ) ||
+            nthWeekdayInMonth(
+                startAt.getFullYear(),
+                startAt.getMonth() + 1,
+                recurrence.recurrenceWeekday,
+                recurrence.recurrenceNth,
+                startAt
+            );
+        return aligned || startAt;
     }
-
-    return { recurrenceFreq, recurrenceInterval, recurrenceUntil };
+    return startAt;
 }
 
 export async function POST(req: Request) {
@@ -114,7 +117,7 @@ export async function POST(req: Request) {
             }
         }
 
-        const recurrence = parseRecurrence(body);
+        const recurrence = parseRecurrenceBody(body);
         if ("error" in recurrence) {
             return NextResponse.json(
                 { error: recurrence.error },
@@ -122,16 +125,20 @@ export async function POST(req: Request) {
             );
         }
 
-        const startAt = parseDateTime(dateIso, startTime, allDay);
+        let startAt = parseDateTime(dateIso, startTime, allDay);
+        startAt = applyRecurrenceStart(startAt, recurrence);
+
         let endAt: Date | null = null;
         if (!allDay && endTime) {
-            endAt = parseDateTime(dateIso, endTime, false);
-            if (endAt.getTime() <= startAt.getTime()) {
+            const rawEnd = parseDateTime(dateIso, endTime, false);
+            const duration = rawEnd.getTime() - parseDateTime(dateIso, startTime, false).getTime();
+            if (duration <= 0) {
                 return NextResponse.json(
                     { error: "Eindtijd moet na starttijd liggen" },
                     { status: 400 }
                 );
             }
+            endAt = new Date(startAt.getTime() + duration);
         }
 
         const event = await prisma.planningEvent.create({
@@ -145,6 +152,8 @@ export async function POST(req: Request) {
                 createdById: guard.user.id,
                 recurrenceFreq: recurrence.recurrenceFreq,
                 recurrenceInterval: recurrence.recurrenceInterval,
+                recurrenceWeekday: recurrence.recurrenceWeekday,
+                recurrenceNth: recurrence.recurrenceNth,
                 recurrenceUntil: recurrence.recurrenceUntil,
             },
             include: {

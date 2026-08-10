@@ -355,10 +355,14 @@ model PlanningEvent {
   startAt            DateTime
   endAt              DateTime?
   allDay             Boolean   @default(false)
-  /// none | weekly | monthly
+  /// none | weekly | monthly | monthly_weekday
   recurrenceFreq     String    @default("none")
   /// Elke N weken/maanden (1 = elke week/maand)
   recurrenceInterval Int       @default(1)
+  /// ISO weekdag 1=ma … 7=zo (weekly / monthly_weekday)
+  recurrenceWeekday  Int?
+  /// N-de weekdag in de maand: 1–4 of -1 = laatste (monthly_weekday)
+  recurrenceNth      Int?
   recurrenceUntil    DateTime?
   assignedUserId     String?
   createdById        String

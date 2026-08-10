@@ -397,6 +397,8 @@ exports.Prisma.PlanningEventScalarFieldEnum = {
   allDay: 'allDay',
   recurrenceFreq: 'recurrenceFreq',
   recurrenceInterval: 'recurrenceInterval',
+  recurrenceWeekday: 'recurrenceWeekday',
+  recurrenceNth: 'recurrenceNth',
   recurrenceUntil: 'recurrenceUntil',
   assignedUserId: 'assignedUserId',
   createdById: 'createdById',

@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
-import { parseMasterId } from "@/lib/planning/expandPlanningEvents";
+import {
+    alignDateToWeekday,
+    nthWeekdayInMonth,
+    parseMasterId,
+    parseRecurrenceBody,
+} from "@/lib/planning/expandPlanningEvents";
 
 function parseDateTime(
     dateIso: string,
@@ -18,48 +23,43 @@ function parseDateTime(
     return new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
 }
 
-function parseRecurrence(body: Record<string, unknown>): {
-    recurrenceFreq: string;
-    recurrenceInterval: number;
-    recurrenceUntil: Date | null;
-} | { error: string } {
-    const rawFreq =
-        typeof body.recurrenceFreq === "string"
-            ? body.recurrenceFreq.trim()
-            : "none";
-    const recurrenceFreq =
-        rawFreq === "weekly" || rawFreq === "monthly" ? rawFreq : "none";
-
-    let recurrenceInterval = 1;
+function applyRecurrenceStart(
+    startAt: Date,
+    recurrence: {
+        recurrenceFreq: string;
+        recurrenceWeekday: number | null;
+        recurrenceNth: number | null;
+    }
+): Date {
     if (
-        body.recurrenceInterval !== undefined &&
-        body.recurrenceInterval !== null
+        recurrence.recurrenceFreq === "weekly" &&
+        recurrence.recurrenceWeekday != null
     ) {
-        const n = Number(body.recurrenceInterval);
-        if (!Number.isFinite(n) || n < 1 || n > 52) {
-            return { error: "Herhaalinterval moet tussen 1 en 52 liggen" };
-        }
-        recurrenceInterval = Math.floor(n);
+        return alignDateToWeekday(startAt, recurrence.recurrenceWeekday);
     }
-
-    let recurrenceUntil: Date | null = null;
     if (
-        typeof body.recurrenceUntil === "string" &&
-        /^\d{4}-\d{2}-\d{2}$/.test(body.recurrenceUntil.trim())
+        recurrence.recurrenceFreq === "monthly_weekday" &&
+        recurrence.recurrenceWeekday != null &&
+        recurrence.recurrenceNth != null
     ) {
-        const [y, m, d] = body.recurrenceUntil.trim().split("-").map(Number);
-        recurrenceUntil = new Date(y, m - 1, d, 23, 59, 59, 999);
+        const aligned =
+            nthWeekdayInMonth(
+                startAt.getFullYear(),
+                startAt.getMonth(),
+                recurrence.recurrenceWeekday,
+                recurrence.recurrenceNth,
+                startAt
+            ) ||
+            nthWeekdayInMonth(
+                startAt.getFullYear(),
+                startAt.getMonth() + 1,
+                recurrence.recurrenceWeekday,
+                recurrence.recurrenceNth,
+                startAt
+            );
+        return aligned || startAt;
     }
-
-    if (recurrenceFreq === "none") {
-        return {
-            recurrenceFreq: "none",
-            recurrenceInterval: 1,
-            recurrenceUntil: null,
-        };
-    }
-
-    return { recurrenceFreq, recurrenceInterval, recurrenceUntil };
+    return startAt;
 }
 
 export async function PATCH(
@@ -93,6 +93,8 @@ export async function PATCH(
             assignedUserId?: string | null;
             recurrenceFreq?: string;
             recurrenceInterval?: number;
+            recurrenceWeekday?: number | null;
+            recurrenceNth?: number | null;
             recurrenceUntil?: Date | null;
         } = {};
 
@@ -139,12 +141,20 @@ export async function PATCH(
             data.assignedUserId = assignedUserId;
         }
 
+        let recurrenceForAlign: {
+            recurrenceFreq: string;
+            recurrenceWeekday: number | null;
+            recurrenceNth: number | null;
+        } | null = null;
+
         if (
             "recurrenceFreq" in body ||
             "recurrenceInterval" in body ||
-            "recurrenceUntil" in body
+            "recurrenceUntil" in body ||
+            "recurrenceWeekday" in body ||
+            "recurrenceNth" in body
         ) {
-            const recurrence = parseRecurrence(body);
+            const recurrence = parseRecurrenceBody(body);
             if ("error" in recurrence) {
                 return NextResponse.json(
                     { error: recurrence.error },
@@ -153,14 +163,18 @@ export async function PATCH(
             }
             data.recurrenceFreq = recurrence.recurrenceFreq;
             data.recurrenceInterval = recurrence.recurrenceInterval;
+            data.recurrenceWeekday = recurrence.recurrenceWeekday;
+            data.recurrenceNth = recurrence.recurrenceNth;
             data.recurrenceUntil = recurrence.recurrenceUntil;
+            recurrenceForAlign = recurrence;
         }
 
         const hasSchedule =
             typeof body.date === "string" ||
             "startTime" in body ||
             "endTime" in body ||
-            "allDay" in body;
+            "allDay" in body ||
+            recurrenceForAlign != null;
 
         if (hasSchedule) {
             const current = await prisma.planningEvent.findUnique({
@@ -208,16 +222,28 @@ export async function PATCH(
                       ? null
                       : `${String(current.endAt.getHours()).padStart(2, "0")}:${String(current.endAt.getMinutes()).padStart(2, "0")}`;
 
-            const startAt = parseDateTime(dateIso, startTime, allDay);
+            let startAt = parseDateTime(dateIso, startTime, allDay);
+            const align =
+                recurrenceForAlign ||
+                ({
+                    recurrenceFreq: current.recurrenceFreq,
+                    recurrenceWeekday: current.recurrenceWeekday,
+                    recurrenceNth: current.recurrenceNth,
+                } as const);
+            startAt = applyRecurrenceStart(startAt, align);
+
             let endAt: Date | null = null;
             if (!allDay && endTime) {
-                endAt = parseDateTime(dateIso, endTime, false);
-                if (endAt.getTime() <= startAt.getTime()) {
+                const rawEnd = parseDateTime(dateIso, endTime, false);
+                const rawStart = parseDateTime(dateIso, startTime, false);
+                const duration = rawEnd.getTime() - rawStart.getTime();
+                if (duration <= 0) {
                     return NextResponse.json(
                         { error: "Eindtijd moet na starttijd liggen" },
                         { status: 400 }
                     );
                 }
+                endAt = new Date(startAt.getTime() + duration);
             }
 
             data.allDay = allDay;
