@@ -8,7 +8,6 @@ import {
     PageHeader,
     PageShell,
     SpecPageCard,
-    SpecPanel,
 } from "@/components/ui/SpecLayout";
 import type { KlaarzetStatusField } from "@/lib/klaarzetMateriaal";
 
@@ -321,7 +320,7 @@ export default function MateriaalControlePage() {
                         "
                     >
                         <div className="flex flex-wrap items-start justify-between gap-2">
-                            <div className="min-w-0 space-y-0.5">
+                            <div className="min-w-0 flex-1 space-y-0.5">
                                 <h2 className="font-semibold text-sm text-gray-900">
                                     {item.number} — {item.title}
                                 </h2>
@@ -333,30 +332,53 @@ export default function MateriaalControlePage() {
                                     {" · "}
                                     Gepland: {nlDate(item.plannedDate)}
                                 </p>
-                                {item.locatie ? (
-                                    <p className="text-xs text-gray-500">
-                                        {item.locatie}
-                                    </p>
-                                ) : null}
-                                {item.aansturing.length > 0 ? (
-                                    <p className="text-xs text-gray-600">
-                                        Aansturing:{" "}
-                                        {item.aansturing.join(", ")}
-                                    </p>
-                                ) : null}
+                                <p className="text-xs text-gray-500">
+                                    {item.locatie || "—"}
+                                </p>
+                                <p className="text-xs text-gray-600">
+                                    Aansturing:{" "}
+                                    {item.aansturing.length > 0
+                                        ? item.aansturing.join(", ")
+                                        : "—"}
+                                </p>
                             </div>
                             <Link
                                 href={`/workorders/${item.id}/edit`}
                                 className="
                                     print:hidden shrink-0 text-xs font-medium
                                     text-[#0066FF] hover:underline
+                                    self-start
                                 "
                             >
                                 Werkbon openen →
                             </Link>
                         </div>
 
-                        <table className="w-full text-left text-xs border-collapse">
+                        {item.heeftNativeOs ? (
+                            <div
+                                className="
+                                    rounded-lg border border-amber-200
+                                    bg-amber-50 px-3 py-2
+                                    print:bg-white print:border-gray-400
+                                "
+                            >
+                                <p className="font-semibold text-sm text-gray-800">
+                                    Schermen (Tizen / webOS / Android)
+                                </p>
+                                <p className="text-xs text-gray-600 leading-snug mt-0.5">
+                                    Deze schermen moeten binnengekomen,
+                                    geprepareerd en klaargezet zijn vóór de
+                                    klus.
+                                </p>
+                            </div>
+                        ) : null}
+
+                        <table className="w-full table-fixed text-left text-xs border-collapse">
+                            <colgroup>
+                                <col className="w-[22%]" />
+                                <col className="w-[30%]" />
+                                <col className="w-[48%]" />
+                            </colgroup>
                             <thead>
                                 <tr className="border-b border-gray-200 text-gray-500">
                                     <th className="py-1.5 pr-2 font-medium">
@@ -388,10 +410,10 @@ export default function MateriaalControlePage() {
                                             key={regel.key}
                                             className="border-b border-gray-100 last:border-0 align-top"
                                         >
-                                            <td className="py-2 pr-2 font-semibold text-gray-800 whitespace-nowrap">
+                                            <td className="py-2 pr-2 font-semibold text-gray-800">
                                                 {regel.label}
                                             </td>
-                                            <td className="py-2 pr-2 text-gray-700">
+                                            <td className="py-2 pr-2 text-gray-700 break-words">
                                                 {regel.aantal}
                                             </td>
                                             <td className="py-2">
@@ -499,15 +521,6 @@ export default function MateriaalControlePage() {
                                 )}
                             </tbody>
                         </table>
-
-                        {item.heeftNativeOs ? (
-                            <SpecPanel
-                                tone="amber"
-                                title="Schermen (Tizen / webOS / Android)"
-                                hint="Deze schermen moeten binnengekomen, geprepareerd en klaargezet zijn vóór de klus."
-                                className="print:bg-white print:border-gray-400"
-                            />
-                        ) : null}
                     </article>
                 ))}
             </div>
