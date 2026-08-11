@@ -174,11 +174,13 @@ export function SpecStat({
 }: {
     label: ReactNode;
     value: ReactNode;
-    hint?: ReactNode;
+    /** Alleen als mouseover-tooltip, niet zichtbaar in de tegel. */
+    hint?: string;
     className?: string;
 }) {
     return (
         <div
+            title={hint || undefined}
             className={`
                 h-full min-h-[5.75rem]
                 rounded-xl border border-gray-200 bg-white p-3
@@ -192,9 +194,6 @@ export function SpecStat({
             <p className="mt-auto text-2xl font-bold text-gray-900 leading-none">
                 {value}
             </p>
-            {hint ? (
-                <p className="text-xs text-gray-400 leading-snug">{hint}</p>
-            ) : null}
         </div>
     );
 }
