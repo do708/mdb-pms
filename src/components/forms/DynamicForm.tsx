@@ -7,6 +7,10 @@ import {
     FormDefinition,
     FormField
 } from "@/constants/formDefinitions";
+import {
+    SpecFieldLabel,
+    specInputClassName,
+} from "@/components/ui/SpecLayout";
 
 
 
@@ -404,15 +408,18 @@ function PhotoField({
                 onClick={()=>photoRef.current?.click()}
 
                 className="
-                    border-2
-                    border-dashed
-                    border-gray-300
+                    w-full
                     rounded-xl
+                    border border-dashed border-gray-300
+                    bg-white
                     px-4
                     py-3
                     text-sm
-                    text-gray-600
+                    font-medium
+                    text-gray-700
                     hover:bg-gray-50
+                    hover:border-[#0066FF]/40
+                    transition
                 "
 
             >
@@ -598,27 +605,13 @@ export default function DynamicForm({
 
                 return (
 
-                    <div className="block">
+                    <div className="block space-y-1">
 
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
+                        <SpecFieldLabel>
                             {field.label}
-                        </span>
+                        </SpecFieldLabel>
 
-                        <p className="
-                            w-full
-                            border
-                            rounded-xl
-                            p-3
-                            mt-1
-                            bg-gray-50
-                            text-gray-800
-                        ">
+                        <p className={`${specInputClassName} bg-gray-50`}>
                             {monteurNaam || "—"}
                         </p>
 
@@ -631,18 +624,12 @@ export default function DynamicForm({
 
                 return (
 
-                    <label className="block min-w-0 w-full overflow-hidden">
+                    <label className="block min-w-0 w-full overflow-hidden space-y-1">
 
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
+                        <SpecFieldLabel>
                             {field.label}
                             {field.required ? " *" : ""}
-                        </span>
+                        </SpecFieldLabel>
 
                         <input
 
@@ -654,17 +641,7 @@ export default function DynamicForm({
                                 set(field.id,e.target.value)
                             }
 
-                            className="
-                                block
-                                w-full
-                                max-w-full
-                                min-w-0
-                                border
-                                rounded-xl
-                                p-3
-                                mt-1
-                                box-border
-                            "
+                            className={specInputClassName}
 
                         />
 
@@ -698,20 +675,12 @@ export default function DynamicForm({
 
                 return (
 
-                    <label className="block">
+                    <label className="block space-y-1">
 
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             {field.label}
                             {field.required ? " *" : ""}
-
-                        </span>
+                        </SpecFieldLabel>
 
                         <input
 
@@ -721,13 +690,7 @@ export default function DynamicForm({
                                 set(field.id,e.target.value)
                             }
 
-                            className="
-                                w-full
-                                border
-                                rounded-xl
-                                p-3
-                                mt-1
-                            "
+                            className={specInputClassName}
 
                         />
 
@@ -830,29 +793,20 @@ export default function DynamicForm({
 
                 return (
 
-                    <label className="block">
+                    <label className="block space-y-1">
 
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             {field.label}
                             {field.required ? " *" : ""}
-
-                        </span>
+                        </SpecFieldLabel>
 
                         <div className="
                             flex
                             items-center
                             gap-2
-                            mt-1
                         ">
 
-                            <span>€</span>
+                            <span className="text-sm text-gray-600">€</span>
 
                             <input
 
@@ -864,12 +818,7 @@ export default function DynamicForm({
                                     set(field.id,e.target.value)
                                 }
 
-                                className="
-                                    w-40
-                                    border
-                                    rounded-xl
-                                    p-3
-                                "
+                                className={`${specInputClassName} w-40`}
 
                             />
 
@@ -891,24 +840,11 @@ export default function DynamicForm({
 
                 return (
 
-                    <div className="
-                        border-b
-                        border-dashed
-                        pb-3
-                        space-y-2
-                    ">
+                    <div className="space-y-2">
 
-                        <p className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             {field.label}
-
-                        </p>
+                        </SpecFieldLabel>
 
                         <div className="
                             flex
@@ -930,24 +866,26 @@ export default function DynamicForm({
 
                                         className={`
                                             px-4
-                                            py-1.5
-                                            rounded-full
+                                            py-2
+                                            rounded-lg
                                             border
                                             text-sm
+                                            font-medium
+                                            transition
                                             ${
                                                 value === option
                                                 ?
                                                 option === "Ja"
                                                 ?
-                                                "bg-green-500 border-green-500 text-white"
+                                                "bg-emerald-600 border-emerald-600 text-white"
                                                 :
                                                 option === "Nee"
                                                 ?
-                                                "bg-sky-400 border-sky-400 text-white"
+                                                "bg-[#0066FF] border-[#0066FF] text-white"
                                                 :
-                                                "bg-gray-400 border-gray-400 text-white"
+                                                "bg-gray-500 border-gray-500 text-white"
                                                 :
-                                                "text-gray-400"
+                                                "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
                                             }
                                         `}
 
@@ -1053,20 +991,12 @@ export default function DynamicForm({
 
                 return (
 
-                    <div>
+                    <div className="space-y-1.5">
 
-                        <p className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             📷 {field.label}
                             {field.required ? " *" : ""}
-
-                        </p>
+                        </SpecFieldLabel>
 
                         <PhotoField
 
@@ -1087,20 +1017,12 @@ export default function DynamicForm({
 
                 return (
 
-                    <div>
+                    <div className="space-y-1.5">
 
-                        <p className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             ✍️ {field.label}
                             {field.required ? " *" : ""}
-
-                        </p>
+                        </SpecFieldLabel>
 
                         <SignatureField
 
@@ -1126,19 +1048,20 @@ export default function DynamicForm({
 
     return (
 
-        <div className="space-y-5">
+        <div className="space-y-4">
 
 
             {
                 error && (
 
                     <p className="
-                        bg-red-100
+                        bg-red-50
                         border
-                        border-red-300
+                        border-red-200
                         text-red-700
                         rounded-xl
                         p-3
+                        text-sm
                     ">
 
                         {error}
@@ -1150,18 +1073,9 @@ export default function DynamicForm({
 
 
             {
-                definition.fields.map((field,index)=>(
+                definition.fields.map((field)=>(
 
-                    <div
-                        key={field.id}
-                        className={
-                            index === 0
-                            ?
-                            ""
-                            :
-                            "pt-5 border-t border-slate-100"
-                        }
-                    >
+                    <div key={field.id}>
 
                         {renderField(field)}
 
@@ -1179,13 +1093,16 @@ export default function DynamicForm({
 
                 className="
                     w-full
-                    bg-black
+                    bg-[#d6007e]
                     text-white
                     rounded-xl
                     px-5
-                    py-4
+                    py-3.5
+                    text-sm
                     font-bold
+                    hover:bg-[#b8006a]
                     disabled:opacity-50
+                    transition
                 "
 
             >
