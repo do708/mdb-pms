@@ -451,7 +451,20 @@ export default function Calendar({
                                                             )
                                                         )}
 
-                                                        {dayEvents.map((ev) => (
+                                                        {dayEvents.map((ev) => {
+                                                            const who =
+                                                                ev.assignedUser
+                                                                    ?.name ||
+                                                                "Algemeen";
+                                                            const label = `${who}, ${ev.title}`;
+                                                            const recur =
+                                                                ev.recurrenceFreq &&
+                                                                ev.recurrenceFreq !==
+                                                                    "none"
+                                                                    ? " ↻"
+                                                                    : "";
+
+                                                            return (
                                                             <button
                                                                 key={ev.id}
                                                                 type="button"
@@ -468,16 +481,13 @@ export default function Calendar({
                                                                     truncate leading-tight font-semibold
                                                                     hover:bg-amber-200 transition
                                                                 "
-                                                                title={ev.title}
+                                                                title={label}
                                                             >
-                                                                {ev.title}
-                                                                {ev.recurrenceFreq &&
-                                                                ev.recurrenceFreq !==
-                                                                    "none"
-                                                                    ? " ↻"
-                                                                    : ""}
+                                                                {label}
+                                                                {recur}
                                                             </button>
-                                                        ))}
+                                                            );
+                                                        })}
                                                     </div>
 
                                                     {onCreateAgenda || onDropDate ? (
