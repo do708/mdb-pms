@@ -6,6 +6,7 @@ import {
     materiaalCompleet,
     leesSchermAansturing,
 } from "@/lib/klaarzetMateriaal";
+import { loadUpcomingPlanningConflicts } from "@/lib/planning/loadUpcomingConflicts";
 import type { OfficeNotification } from "@/lib/officeNotificationTypes";
 
 const NOG_IN_TE_VULLEN = ["ontvangen", "afspraak", "ingepland"] as const;
@@ -15,6 +16,7 @@ export interface OfficeNotificationCounters {
     openForms: number;
     teLaat: number;
     materiaal: number;
+    planningsconflicten: number;
 }
 
 export interface OfficeNotificationsPayload {
@@ -56,80 +58,83 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
     const eindMorgen = new Date(volgWerkdag);
     eindMorgen.setDate(eindMorgen.getDate() + 1);
 
-    const [aanvragen, formulieren, teLaat, morgenKlussen] = await Promise.all([
-        safe(
-            "aanvragen",
-            () =>
-                prisma.aanvraag.findMany({
-                    where: { status: "open" },
-                    orderBy: { createdAt: "desc" },
-                    include: {
-                        customer: { select: { name: true } },
-                    },
-                }),
-            []
-        ),
+    const [aanvragen, formulieren, teLaat, morgenKlussen, conflicten] =
+        await Promise.all([
+            safe(
+                "aanvragen",
+                () =>
+                    prisma.aanvraag.findMany({
+                        where: { status: "open" },
+                        orderBy: { createdAt: "desc" },
+                        include: {
+                            customer: { select: { name: true } },
+                        },
+                    }),
+                []
+            ),
 
-        safe(
-            "formulieren",
-            () =>
-                prisma.formSubmission.findMany({
-                    where: { status: "ingediend" },
-                    orderBy: { createdAt: "desc" },
-                    include: {
-                        user: { select: { name: true } },
-                    },
-                }),
-            []
-        ),
+            safe(
+                "formulieren",
+                () =>
+                    prisma.formSubmission.findMany({
+                        where: { status: "ingediend" },
+                        orderBy: { createdAt: "desc" },
+                        include: {
+                            user: { select: { name: true } },
+                        },
+                    }),
+                []
+            ),
 
-        safe(
-            "telaat",
-            () =>
-                prisma.workorder.findMany({
-                    where: {
-                        plannedDate: { lt: startVandaag },
-                        status: { in: [...NOG_IN_TE_VULLEN] },
-                    },
-                    orderBy: { plannedDate: "asc" },
-                    include: {
-                        customer: { select: { name: true } },
-                        project: {
-                            include: {
-                                customer: { select: { name: true } },
+            safe(
+                "telaat",
+                () =>
+                    prisma.workorder.findMany({
+                        where: {
+                            plannedDate: { lt: startVandaag },
+                            status: { in: [...NOG_IN_TE_VULLEN] },
+                        },
+                        orderBy: { plannedDate: "asc" },
+                        include: {
+                            customer: { select: { name: true } },
+                            project: {
+                                include: {
+                                    customer: { select: { name: true } },
+                                },
                             },
+                            assignedUser: { select: { name: true } },
                         },
-                        assignedUser: { select: { name: true } },
-                    },
-                }),
-            []
-        ),
+                    }),
+                []
+            ),
 
-        safe(
-            "materiaal-kandidaten",
-            () =>
-                prisma.workorder.findMany({
-                    where: {
-                        plannedDate: {
-                            gte: startMorgen,
-                            lt: eindMorgen,
-                        },
-                        status: { in: [...NOG_IN_TE_VULLEN] },
-                    },
-                    orderBy: { plannedDate: "asc" },
-                    include: {
-                        customer: { select: { name: true } },
-                        project: {
-                            include: {
-                                customer: { select: { name: true } },
+            safe(
+                "materiaal-kandidaten",
+                () =>
+                    prisma.workorder.findMany({
+                        where: {
+                            plannedDate: {
+                                gte: startMorgen,
+                                lt: eindMorgen,
                             },
+                            status: { in: [...NOG_IN_TE_VULLEN] },
                         },
-                        assignedUser: { select: { name: true } },
-                    },
-                }),
-            []
-        ),
-    ]);
+                        orderBy: { plannedDate: "asc" },
+                        include: {
+                            customer: { select: { name: true } },
+                            project: {
+                                include: {
+                                    customer: { select: { name: true } },
+                                },
+                            },
+                            assignedUser: { select: { name: true } },
+                        },
+                    }),
+                []
+            ),
+
+            safe("planningsconflicten", () => loadUpcomingPlanningConflicts(), []),
+        ]);
 
     const materiaalItems: OfficeNotification[] = [];
     for (const w of morgenKlussen) {
@@ -190,6 +195,14 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
         }),
 
         ...materiaalItems,
+
+        ...conflicten.map((c, index): OfficeNotification => ({
+            id: `conflict-${c.userId}-${c.dateIso}-${index}`,
+            soort: "planningsconflict",
+            title: c.user,
+            subtitle: `${c.date} · ${c.items.join(" ↔ ")}`,
+            href: "/planning",
+        })),
     ];
 
     const counters: OfficeNotificationCounters = {
@@ -197,13 +210,15 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
         openForms: formulieren.length,
         teLaat: teLaat.length,
         materiaal: materiaalItems.length,
+        planningsconflicten: conflicten.length,
     };
 
     const count =
         counters.openAanvragen
         + counters.openForms
         + counters.teLaat
-        + counters.materiaal;
+        + counters.materiaal
+        + counters.planningsconflicten;
 
     return { items, counters, count };
 }

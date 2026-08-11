@@ -16,6 +16,7 @@ const SOORT_STYLE: Record<OfficeNotificationSoort, string> = {
     formulier: "bg-sky-100 text-sky-800",
     telaat: "bg-red-100 text-red-700",
     materiaal: "bg-orange-100 text-orange-800",
+    planningsconflict: "bg-pink-100 text-[#d6007e]",
 };
 
 export default function NotificationBell() {
@@ -164,7 +165,8 @@ export default function NotificationBell() {
                             Meldingen
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">
-                            Open aanvragen, formulieren, te laat invullen en materiaal
+                            Open aanvragen, formulieren, te laat, materiaal en
+                            planningsconflicten
                         </p>
                     </div>
 

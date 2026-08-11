@@ -258,7 +258,6 @@ interface DashboardData {
         openForms: number;
         openAanvragen?: number;
         materiaal?: number;
-        planningsconflicten?: number;
     };
     teLaat: Array<{
         id: string;
@@ -275,14 +274,6 @@ interface DashboardData {
         title: string;
         customer?: string | null;
         engineer?: string | null;
-    }>;
-    planningsconflicten?: Array<{
-        type?: string;
-        user: string;
-        date: string;
-        dateIso?: string;
-        items?: string[];
-        workorders?: string[];
     }>;
     openFormsList?: Array<{
         id: string;
@@ -369,10 +360,6 @@ export default function DashboardPage() {
     const openFormsCount = data?.counters.openForms ?? 0;
     const openAanvragenCount = data?.counters.openAanvragen ?? 0;
     const materiaalCount = data?.counters.materiaal ?? 0;
-    const conflictCount =
-        data?.counters.planningsconflicten ??
-        data?.planningsconflicten?.length ??
-        0;
 
     return (
         <PageShell>
@@ -380,7 +367,7 @@ export default function DashboardPage() {
 
             <AanvragenSectie />
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 items-stretch">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-stretch">
                 <SpecStat
                     label="Ingepland"
                     value={data?.counters.ingepland ?? 0}
@@ -451,62 +438,7 @@ export default function DashboardPage() {
                         )
                     }
                 />
-                <SpecStat
-                    label="Planningsconflicten"
-                    value={
-                        conflictCount > 0 ? (
-                            <span className="text-[#d6007e]">
-                                {conflictCount}
-                            </span>
-                        ) : (
-                            conflictCount
-                        )
-                    }
-                />
             </div>
-
-            {(data?.planningsconflicten?.length ?? 0) > 0 && (
-                <SpecPanel
-                    title={`Planningsconflicten (${data?.planningsconflicten?.length})`}
-                    hint="Agenda en opdracht (of meerdere opdrachten) overlappen in tijd voor dezelfde monteur."
-                    tone="amber"
-                >
-                    <div className="space-y-2">
-                        {data?.planningsconflicten?.map((conflict, index) => (
-                            <Link
-                                key={`${conflict.user}-${conflict.dateIso ?? conflict.date}-${index}`}
-                                href="/planning"
-                            >
-                                <SpecListRow
-                                    className="
-                                        flex justify-between items-center gap-3
-                                        hover:bg-gray-50
-                                    "
-                                >
-                                    <div className="min-w-0">
-                                        <p className="font-semibold text-sm text-gray-900 truncate">
-                                            {conflict.user}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-0.5">
-                                            {conflict.date}
-                                        </p>
-                                        <p className="text-xs text-gray-700 mt-1 break-words">
-                                            {(
-                                                conflict.items ??
-                                                conflict.workorders ??
-                                                []
-                                            ).join(" ↔ ")}
-                                        </p>
-                                    </div>
-                                    <span className="text-xs font-medium text-[#d6007e] shrink-0">
-                                        Naar planning →
-                                    </span>
-                                </SpecListRow>
-                            </Link>
-                        ))}
-                    </div>
-                </SpecPanel>
-            )}
 
             {(data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
                 <SpecPanel

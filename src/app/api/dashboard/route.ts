@@ -13,15 +13,6 @@ import {
 } from "@/lib/klaarzetMateriaal";
 
 import { volgendeWerkdag } from "@/lib/holidays";
-import { formatAmsterdamDateIso } from "@/lib/datetime/amsterdam";
-import {
-    defaultPlanningEventRange,
-    expandPlanningEvents,
-} from "@/lib/planning/expandPlanningEvents";
-import {
-    conflictsForApi,
-    detectPlanningConflicts,
-} from "@/lib/planning/detectConflicts";
 
 
 
@@ -348,54 +339,6 @@ export async function GET(){
             }));
 
 
-        // Planningsconflicten: zelfde ±3 mnd-venster als agenda-expansie
-        // (niet alle historische plannedDate-rijen).
-        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
-        const conflictWorkorders = await prisma.workorder.findMany({
-            where: {
-                plannedDate: {
-                    gte: rangeStart,
-                    lte: rangeEnd,
-                },
-                assignedUserId: { not: null },
-                status: { notIn: ["gefactureerd"] },
-            },
-            select: {
-                id: true,
-                number: true,
-                title: true,
-                plannedDate: true,
-                plannedEndDate: true,
-                assignedUserId: true,
-                assignedUser: { select: { name: true } },
-            },
-        });
-
-        const conflictEventMasters =
-            await prisma.planningEvent.findMany({
-                where: { assignedUserId: { not: null } },
-                include: {
-                    assignedUser: {
-                        select: { id: true, name: true },
-                    },
-                },
-            });
-
-        const expandedEvents = expandPlanningEvents(
-            conflictEventMasters,
-            rangeStart,
-            rangeEnd
-        );
-
-        const vandaagIso = formatAmsterdamDateIso(new Date());
-        const planningsconflicten = conflictsForApi(
-            detectPlanningConflicts(
-                conflictWorkorders,
-                expandedEvents
-            ).filter((c) => c.dateIso >= vandaagIso)
-        );
-
-
         return NextResponse.json({
 
             counters:{
@@ -419,16 +362,10 @@ export async function GET(){
                 materiaal:materiaalWaarschuwing.length,
 
 
-                planningsconflicten: planningsconflicten.length,
-
-
             },
 
 
             materiaalWaarschuwing,
-
-
-            planningsconflicten,
 
 
             teLaat,
