@@ -170,18 +170,21 @@ export function SpecStat({
     label,
     value,
     hint,
+    className = "",
 }: {
     label: ReactNode;
     value: ReactNode;
     hint?: ReactNode;
+    className?: string;
 }) {
     return (
         <div
-            className="
+            className={`
                 h-full min-h-[5.75rem]
                 rounded-xl border border-gray-200 bg-white p-3
                 flex flex-col gap-1
-            "
+                ${className}
+            `.trim()}
         >
             <p className="text-xs text-gray-500 leading-snug line-clamp-2 min-h-[2.5rem]">
                 {label}

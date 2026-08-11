@@ -413,18 +413,34 @@ export default function DashboardPage() {
                         )
                     }
                 />
-                <SpecStat
-                    label="Materiaal klaarzetten"
-                    value={
-                        materiaalCount > 0 ? (
-                            <span className="text-orange-700">
-                                {materiaalCount}
-                            </span>
-                        ) : (
-                            materiaalCount
-                        )
-                    }
-                />
+                <Link
+                    href="/dashboard/materiaal-controle"
+                    className="
+                        block h-full rounded-xl
+                        cursor-pointer
+                        focus-visible:outline-none focus-visible:ring-2
+                        focus-visible:ring-[#0066FF]/40
+                    "
+                    title="Materiaal controleren"
+                >
+                    <SpecStat
+                        label="Materiaal klaarzetten"
+                        value={
+                            materiaalCount > 0 ? (
+                                <span className="text-orange-700">
+                                    {materiaalCount}
+                                </span>
+                            ) : (
+                                materiaalCount
+                            )
+                        }
+                        hint="Controleren →"
+                        className="
+                            transition
+                            hover:border-[#0066FF]/40 hover:bg-sky-50/60
+                        "
+                    />
+                </Link>
                 <SpecStat
                     label="Te laat invullen"
                     value={
@@ -531,24 +547,6 @@ export default function DashboardPage() {
                     </div>
                 </SpecPanel>
             )}
-
-            <div>
-                <Link
-                    href="/dashboard/materiaal-controle"
-                    className="
-                        inline-flex items-center justify-center
-                        rounded-lg bg-[#0066FF] px-4 py-2.5
-                        text-sm font-semibold text-white
-                        hover:bg-[#0052cc] transition
-                    "
-                >
-                    Controleren
-                </Link>
-                <p className="mt-1.5 text-xs text-gray-500">
-                    Overzicht van alle ingeplande klussen met openstaand
-                    materiaal — printbaar om door te lopen.
-                </p>
-            </div>
 
             {(data?.teLaat?.length ?? 0) > 0 && (
                 <SpecPanel

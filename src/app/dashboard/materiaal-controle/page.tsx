@@ -309,7 +309,7 @@ export default function MateriaalControlePage() {
                                                 />
                                             </div>
                                             {!regel.inOrde ? (
-                                                <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 print:mt-0">
+                                                <div className="mt-1.5 hidden print:flex flex-wrap gap-x-3 gap-y-1 print:mt-0">
                                                     {regel.nativeOsFlow ? (
                                                         <>
                                                             <PrintTick label="Binnengekomen" />
