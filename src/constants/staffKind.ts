@@ -11,7 +11,7 @@ export type StaffKind = (typeof STAFF_KINDS)[number];
 export const STAFF_KIND_LABELS: Record<StaffKind, string> = {
     monteur: "Eigen monteur",
     inlener: "Inlener (ZZP)",
-    stagiaire: "Stagiaire",
+    stagiaire: "Stagiair",
 };
 
 export function parseStaffKind(value: unknown): StaffKind {

@@ -459,7 +459,7 @@ export default function EditUserPage(){
                             ))}
                         </select>
                         <span className="block text-xs text-gray-400 mt-1">
-                            Inlener en stagiaire tellen niet mee in de
+                            Inlener en stagiair tellen niet mee in de
                             bezettingsuren op de planning.
                         </span>
                     </label>

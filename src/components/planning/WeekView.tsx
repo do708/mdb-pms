@@ -635,7 +635,7 @@ export default function WeekView({
                                                 <p className="text-[10px] font-semibold text-amber-700 mt-0.5">
                                                     {kind === "inlener"
                                                         ? "Inlener"
-                                                        : "Stagiaire"}
+                                                        : "Stagiair"}
                                                 </p>
                                             ) : null}
                                             <p className="text-[11px] text-slate-400 mt-0.5">

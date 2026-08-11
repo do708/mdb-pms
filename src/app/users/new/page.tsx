@@ -111,7 +111,7 @@ export default function NewUserPage() {
                             ))}
                         </select>
                         <p className="text-xs text-gray-400">
-                            Inlener en stagiaire tellen niet mee in de
+                            Inlener en stagiair tellen niet mee in de
                             bezettingsuren op de planning.
                         </p>
                     </div>
