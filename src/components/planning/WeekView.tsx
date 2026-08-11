@@ -72,6 +72,12 @@ interface WeekViewProps {
         hour: number;
         engineerId: string;
     }) => void;
+    /** Sleep boven-/onderkant van een klus om duur te wijzigen */
+    onResizePlan?: (args: {
+        workorderId: string;
+        beginHour: number;
+        endHour: number;
+    }) => void;
     /** Sleep een agenda-item naar een andere dag/tijd/monteur (null = Algemeen) */
     onMoveAgenda?: (args: {
         eventId: string;
@@ -117,6 +123,7 @@ export default function WeekView({
     view = "week",
     onViewChange,
     onMovePlan,
+    onResizePlan,
     onMoveAgenda,
     pendingSchedule = null,
     onSchedulePending,
@@ -127,8 +134,26 @@ export default function WeekView({
     const [dragPreview, setDragPreview] = useState<{
         cellKey: string;
         hour: number;
+        durationHours: number;
     } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const dragMetaRef = useRef<{
+        durationHours: number;
+    } | null>(null);
+    const [resizeOverride, setResizeOverride] = useState<{
+        workorderId: string;
+        beginUur: number;
+        eindUur: number;
+    } | null>(null);
+    const resizeOverrideRef = useRef(resizeOverride);
+    resizeOverrideRef.current = resizeOverride;
+    const resizingRef = useRef<{
+        workorderId: string;
+        edge: "start" | "end";
+        cellKey: string;
+        beginUur: number;
+        eindUur: number;
+    } | null>(null);
     const headerScrollRef = useRef<HTMLDivElement>(null);
     const bodyScrollRef = useRef<HTMLDivElement>(null);
     const syncingScroll = useRef(false);
@@ -153,10 +178,70 @@ export default function WeekView({
         function clearPreview() {
             setDragPreview(null);
             setIsDragging(false);
+            dragMetaRef.current = null;
         }
         window.addEventListener("dragend", clearPreview);
         return () => window.removeEventListener("dragend", clearPreview);
     }, []);
+
+    useEffect(() => {
+        function onPointerMove(e: PointerEvent) {
+            const active = resizingRef.current;
+            if (!active) return;
+            const cell = document.querySelector(
+                `[data-planning-cell="${active.cellKey}"]`
+            );
+            if (!(cell instanceof HTMLElement)) return;
+            const hour = hourFromClientY(e.clientY, cell);
+            if (active.edge === "start") {
+                const beginUur = Math.min(
+                    hour,
+                    active.eindUur - 0.25
+                );
+                setResizeOverride({
+                    workorderId: active.workorderId,
+                    beginUur,
+                    eindUur: active.eindUur,
+                });
+            } else {
+                const eindUur = Math.max(
+                    hour,
+                    active.beginUur + 0.25
+                );
+                setResizeOverride({
+                    workorderId: active.workorderId,
+                    beginUur: active.beginUur,
+                    eindUur: Math.min(DAG_EIND_UUR, eindUur),
+                });
+            }
+        }
+
+        function onPointerUp() {
+            const active = resizingRef.current;
+            const override = resizeOverrideRef.current;
+            resizingRef.current = null;
+            if (active && override && onResizePlan) {
+                onResizePlan({
+                    workorderId: active.workorderId,
+                    beginHour: override.beginUur,
+                    endHour: override.eindUur,
+                });
+            }
+            setResizeOverride(null);
+            setIsDragging(false);
+        }
+
+        window.addEventListener("pointermove", onPointerMove);
+        window.addEventListener("pointerup", onPointerUp);
+        window.addEventListener("pointercancel", onPointerUp);
+        return () => {
+            window.removeEventListener("pointermove", onPointerMove);
+            window.removeEventListener("pointerup", onPointerUp);
+            window.removeEventListener("pointercancel", onPointerUp);
+        };
+        // hourFromClientY / DAG_EIND_UUR zijn stabiel per render; listeners lezen refs.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [onResizePlan]);
 
     useEffect(() => {
         function scrollToDay(iso: string) {
@@ -853,8 +938,9 @@ export default function WeekView({
                                                     className="flex flex-col gap-1.5 min-w-0"
                                                 >
                                                     <div
+                                                        data-planning-cell={`${iso}:${user.id}`}
                                                         className={`
-                                                            relative rounded-xl overflow-hidden
+                                                            relative rounded-xl overflow-visible
                                                             border transition
                                                             ${
                                                                 isToday
@@ -964,6 +1050,11 @@ export default function WeekView({
                                                                               e.currentTarget
                                                                           );
                                                                       const cellKey = `${iso}:${user.id}`;
+                                                                      const durationHours =
+                                                                          dragMetaRef
+                                                                              .current
+                                                                              ?.durationHours ??
+                                                                          1;
                                                                       setDragPreview(
                                                                           (
                                                                               prev
@@ -972,11 +1063,14 @@ export default function WeekView({
                                                                               prev.cellKey ===
                                                                                   cellKey &&
                                                                               prev.hour ===
-                                                                                  hour
+                                                                                  hour &&
+                                                                              prev.durationHours ===
+                                                                                  durationHours
                                                                                   ? prev
                                                                                   : {
                                                                                         cellKey,
                                                                                         hour,
+                                                                                        durationHours,
                                                                                     }
                                                                       );
                                                                   }
@@ -1072,7 +1166,7 @@ export default function WeekView({
                                                         `${iso}:${user.id}` ? (
                                                             <div
                                                                 className="
-                                                                    pointer-events-none absolute left-0 right-0 z-[60]
+                                                                    pointer-events-none absolute left-1 right-1 z-[60]
                                                                 "
                                                                 style={{
                                                                     top: `${
@@ -1081,22 +1175,42 @@ export default function WeekView({
                                                                             PX_PER_UUR +
                                                                         DAG_PADDING_TOP
                                                                     }px`,
+                                                                    height: `${Math.max(
+                                                                        40,
+                                                                        dragPreview.durationHours *
+                                                                            PX_PER_UUR
+                                                                    )}px`,
                                                                 }}
                                                             >
-                                                                <div className="relative border-t-2 border-[#0066FF] shadow-[0_0_0_1px_rgba(0,102,255,0.25)]">
-                                                                    <span
-                                                                        className="
-                                                                            absolute -top-3.5 left-1 z-[61]
-                                                                            rounded-md bg-[#0066FF] text-white
-                                                                            text-[11px] font-bold tabular-nums
-                                                                            px-2 py-0.5 shadow-md ring-1 ring-white/40
-                                                                        "
-                                                                    >
-                                                                        {formatUurLabel(
-                                                                            dragPreview.hour
-                                                                        )}
-                                                                    </span>
-                                                                </div>
+                                                                <span
+                                                                    className="
+                                                                        absolute -top-5 left-1/2 -translate-x-1/2 z-[61]
+                                                                        rounded-md bg-[#0066FF] text-white
+                                                                        text-[11px] font-bold tabular-nums
+                                                                        px-2 py-0.5 shadow-md ring-1 ring-white/40
+                                                                        whitespace-nowrap
+                                                                    "
+                                                                >
+                                                                    {formatUurLabel(
+                                                                        dragPreview.hour
+                                                                    )}
+                                                                    –
+                                                                    {formatUurLabel(
+                                                                        Math.min(
+                                                                            DAG_EIND_UUR,
+                                                                            dragPreview.hour +
+                                                                                dragPreview.durationHours
+                                                                        )
+                                                                    )}
+                                                                </span>
+                                                                <div
+                                                                    className="
+                                                                        h-full w-full rounded-lg
+                                                                        border-2 border-[#0066FF]
+                                                                        bg-[#0066FF]/20
+                                                                        shadow-[0_0_0_1px_rgba(0,102,255,0.25)]
+                                                                    "
+                                                                />
                                                             </div>
                                                         ) : null}
                                                         {!verlof &&
@@ -1160,11 +1274,36 @@ export default function WeekView({
 
                                                         {dayItems.map(
                                                             (item) => {
-                                                                const pos =
+                                                                const basePos =
                                                                     blokPositie(
                                                                         item,
                                                                         day
                                                                     );
+                                                                const override =
+                                                                    resizeOverride?.workorderId ===
+                                                                    item.id
+                                                                        ? resizeOverride
+                                                                        : null;
+                                                                const pos =
+                                                                    override
+                                                                        ? {
+                                                                              beginUur:
+                                                                                  override.beginUur,
+                                                                              eindUur:
+                                                                                  override.eindUur,
+                                                                              top:
+                                                                                  (override.beginUur -
+                                                                                      DAG_START_UUR) *
+                                                                                      PX_PER_UUR +
+                                                                                  DAG_PADDING_TOP,
+                                                                              height: Math.max(
+                                                                                  40,
+                                                                                  (override.eindUur -
+                                                                                      override.beginUur) *
+                                                                                      PX_PER_UUR
+                                                                              ),
+                                                                          }
+                                                                        : basePos;
                                                                 const color =
                                                                     (item
                                                                         .customer
@@ -1176,21 +1315,38 @@ export default function WeekView({
                                                                     "#2563eb";
 
                                                                 const timeLabel = `${formatUurLabel(pos.beginUur)}–${formatUurLabel(pos.eindUur)}`;
+                                                                const cellKey = `${iso}:${user.id}`;
 
-                                                return (
+                                                                return (
                                                                     <div
                                                                         key={
                                                                             item.id
                                                                         }
                                                                         draggable={
-                                                                            !!onMovePlan
+                                                                            !!onMovePlan &&
+                                                                            !resizingRef.current
                                                                         }
                                                                         onDragStart={
                                                                             onMovePlan
                                                                                 ? (e) => {
+                                                                                      if (
+                                                                                          resizingRef.current
+                                                                                      ) {
+                                                                                          e.preventDefault();
+                                                                                          return;
+                                                                                      }
                                                                                       setIsDragging(
                                                                                           true
                                                                                       );
+                                                                                      dragMetaRef.current =
+                                                                                          {
+                                                                                              durationHours:
+                                                                                                  Math.max(
+                                                                                                      0.25,
+                                                                                                      pos.eindUur -
+                                                                                                          pos.beginUur
+                                                                                                  ),
+                                                                                          };
                                                                                       e.dataTransfer.setData(
                                                                                           "workorderId",
                                                                                           item.id
@@ -1205,9 +1361,9 @@ export default function WeekView({
                                                                                 : undefined
                                                                         }
                                                                         className={`
-                                                                            absolute text-white
+                                                                            group/job absolute text-white
                                                                             rounded-lg px-2 py-1
-                                                                            leading-tight overflow-hidden
+                                                                            leading-tight
                                                                             shadow-sm ring-1 ring-black/10
                                                                             hover:brightness-110 hover:shadow-md
                                                                             transition z-[5]
@@ -1218,8 +1374,8 @@ export default function WeekView({
                                                                             }
                                                                         `}
                                                                         data-planning-job
-                                                    style={{
-                                                        backgroundColor:
+                                                                        style={{
+                                                                            backgroundColor:
                                                                                 color,
                                                                             top: `${pos.top}px`,
                                                                             height: `${pos.height}px`,
@@ -1227,17 +1383,119 @@ export default function WeekView({
                                                                             right: "4px",
                                                                         }}
                                                                     >
+                                                                        {onResizePlan ? (
+                                                                            <>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    aria-label="Starttijd aanpassen"
+                                                                                    className="
+                                                                                        absolute left-1/2 -translate-x-1/2 -top-1 z-20
+                                                                                        flex h-3.5 w-8 items-center justify-center
+                                                                                        rounded-full bg-white/95 text-slate-700
+                                                                                        shadow-sm ring-1 ring-black/15
+                                                                                        cursor-ns-resize
+                                                                                        opacity-90 hover:opacity-100
+                                                                                    "
+                                                                                    onMouseDown={(e) => {
+                                                                                        e.preventDefault();
+                                                                                        e.stopPropagation();
+                                                                                    }}
+                                                                                    onPointerDown={(e) => {
+                                                                                        e.preventDefault();
+                                                                                        e.stopPropagation();
+                                                                                        resizingRef.current =
+                                                                                            {
+                                                                                                workorderId:
+                                                                                                    item.id,
+                                                                                                edge: "start",
+                                                                                                cellKey,
+                                                                                                beginUur:
+                                                                                                    pos.beginUur,
+                                                                                                eindUur:
+                                                                                                    pos.eindUur,
+                                                                                            };
+                                                                                        setResizeOverride(
+                                                                                            {
+                                                                                                workorderId:
+                                                                                                    item.id,
+                                                                                                beginUur:
+                                                                                                    pos.beginUur,
+                                                                                                eindUur:
+                                                                                                    pos.eindUur,
+                                                                                            }
+                                                                                        );
+                                                                                        setIsDragging(
+                                                                                            true
+                                                                                        );
+                                                                                    }}
+                                                                                >
+                                                                                    <span className="text-[9px] leading-none font-bold">
+                                                                                        ▲
+                                                                                    </span>
+                                                                                </button>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    aria-label="Eindtijd aanpassen"
+                                                                                    className="
+                                                                                        absolute left-1/2 -translate-x-1/2 -bottom-1 z-20
+                                                                                        flex h-3.5 w-8 items-center justify-center
+                                                                                        rounded-full bg-white/95 text-slate-700
+                                                                                        shadow-sm ring-1 ring-black/15
+                                                                                        cursor-ns-resize
+                                                                                        opacity-90 hover:opacity-100
+                                                                                    "
+                                                                                    onMouseDown={(e) => {
+                                                                                        e.preventDefault();
+                                                                                        e.stopPropagation();
+                                                                                    }}
+                                                                                    onPointerDown={(e) => {
+                                                                                        e.preventDefault();
+                                                                                        e.stopPropagation();
+                                                                                        resizingRef.current =
+                                                                                            {
+                                                                                                workorderId:
+                                                                                                    item.id,
+                                                                                                edge: "end",
+                                                                                                cellKey,
+                                                                                                beginUur:
+                                                                                                    pos.beginUur,
+                                                                                                eindUur:
+                                                                                                    pos.eindUur,
+                                                                                            };
+                                                                                        setResizeOverride(
+                                                                                            {
+                                                                                                workorderId:
+                                                                                                    item.id,
+                                                                                                beginUur:
+                                                                                                    pos.beginUur,
+                                                                                                eindUur:
+                                                                                                    pos.eindUur,
+                                                                                            }
+                                                                                        );
+                                                                                        setIsDragging(
+                                                                                            true
+                                                                                        );
+                                                                                    }}
+                                                                                >
+                                                                                    <span className="text-[9px] leading-none font-bold">
+                                                                                        ▼
+                                                                                    </span>
+                                                                                </button>
+                                                                            </>
+                                                                        ) : null}
+
                                                                         <Link
                                                                             href={`/workorders/${item.id}`}
                                                                             draggable={
                                                                                 false
                                                                             }
-                                                                            className="block h-full"
+                                                                            className="block h-full overflow-hidden"
                                                                             onClick={(
                                                                                 e
                                                                             ) => {
                                                                                 if (
-                                                                                    e.defaultPrevented
+                                                                                    e.defaultPrevented ||
+                                                                                    resizeOverride
                                                                                 ) {
                                                                                     e.preventDefault();
                                                                                 }
@@ -1246,16 +1504,14 @@ export default function WeekView({
                                                                             <div className="flex items-start justify-between gap-1">
                                                                                 <span className="text-[11px] font-bold opacity-95 tabular-nums leading-none pt-0.5 min-w-0 truncate">
                                                                                     {timeLabel}
-                                                                </span>
-                                                                                {
-                                                                                    showStatusIcons && (
-                                                                                        <PlanningStatusIcon
-                                                                                            status={
-                                                                                                item.status
-                                                                                            }
-                                                                                        />
-                                                                                    )
-                                                                                }
+                                                                                </span>
+                                                                                {showStatusIcons ? (
+                                                                                    <PlanningStatusIcon
+                                                                                        status={
+                                                                                            item.status
+                                                                                        }
+                                                                                    />
+                                                                                ) : null}
                                                                             </div>
 
                                                                             <span className="text-[12px] block truncate font-semibold">
@@ -1267,15 +1523,15 @@ export default function WeekView({
                                                                                         ?.customer
                                                                                         ?.name) ??
                                                                                     "Onbekende klant"}
-                                                    </span>
+                                                                            </span>
 
                                                                             <strong className="text-[11px] block truncate font-medium opacity-90">
                                                                                 {item
                                                                                     .project
                                                                                     ?.name ??
                                                                                     item.title}
-                                                    </strong>
-                                                </Link>
+                                                                            </strong>
+                                                                        </Link>
                                                                     </div>
                                                                 );
                                                             }
@@ -1308,6 +1564,15 @@ export default function WeekView({
                                                                                   setIsDragging(
                                                                                       true
                                                                                   );
+                                                                                  dragMetaRef.current =
+                                                                                      {
+                                                                                          durationHours:
+                                                                                              Math.max(
+                                                                                                  0.25,
+                                                                                                  pos.eindUur -
+                                                                                                      pos.beginUur
+                                                                                              ),
+                                                                                      };
                                                                                   e.dataTransfer.setData(
                                                                                       "agendaEventId",
                                                                                       ev.id

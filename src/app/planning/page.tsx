@@ -25,6 +25,7 @@ import {
     getPendingSchedule,
     type PendingSchedule,
 } from "@/lib/planning/pendingSchedule";
+import { amsterdamLocalToDate } from "@/lib/datetime/amsterdam";
 
 
 
@@ -746,6 +747,74 @@ function PlanningPageContent(){
         await loadPlanning();
     }
 
+    /** Weekview: sleep boven-/onderkant → start-/eindtijd wijzigen. */
+    async function resizeWeekPlan(args: {
+        workorderId: string;
+        beginHour: number;
+        endHour: number;
+    }) {
+        const item = items.find((w) => w.id === args.workorderId);
+        if (!item?.plannedDate) {
+            return;
+        }
+
+        function dayIso(d: Date): string {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${y}-${m}-${day}`;
+        }
+
+        function toHHmm(hour: number): string {
+            const h = Math.floor(hour);
+            const m = Math.round((hour - h) * 60);
+            return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+        }
+
+        const oldStart = new Date(item.plannedDate);
+        const oldEnd = item.plannedEndDate
+            ? new Date(item.plannedEndDate)
+            : new Date(item.plannedDate);
+
+        const startDay = dayIso(oldStart);
+        const endDay = dayIso(oldEnd);
+        const begin = Math.min(args.beginHour, args.endHour - 0.25);
+        const end = Math.max(args.endHour, begin + 0.25);
+
+        const newStart = amsterdamLocalToDate(startDay, toHHmm(begin));
+        const newEnd = amsterdamLocalToDate(endDay, toHHmm(end));
+
+        const response = await fetch(
+            `/api/workorders/${args.workorderId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    plannedDate: newStart.toISOString(),
+                    plannedEndDate: newEnd.toISOString(),
+                    plannedHours: end - begin,
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            let message = "Duur aanpassen mislukt";
+            try {
+                const data = await response.json();
+                if (typeof data?.error === "string") {
+                    message = data.error;
+                }
+            } catch {
+                /* ignore */
+            }
+            alert(message);
+        }
+
+        await loadPlanning();
+    }
+
     /** Weekview: sleep agenda-item naar andere dag/tijd/monteur (null = Algemeen). */
     async function moveAgenda(args: {
         eventId: string;
@@ -1159,6 +1228,9 @@ function PlanningPageContent(){
                     }}
                     onMovePlan={
                         canEdit ? moveWeekPlan : undefined
+                    }
+                    onResizePlan={
+                        canEdit ? resizeWeekPlan : undefined
                     }
                     onMoveAgenda={
                         canEdit ? moveAgenda : undefined
