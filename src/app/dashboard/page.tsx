@@ -421,7 +421,6 @@ export default function DashboardPage() {
                                 materiaalCount
                             )
                         }
-                        hint="Controleren →"
                         className="
                             transition
                             hover:border-[#0066FF]/40 hover:bg-sky-50/60
