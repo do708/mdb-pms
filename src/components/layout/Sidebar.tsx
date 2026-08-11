@@ -257,8 +257,9 @@ export default function Sidebar({
 
             </div>
 
-            {pathname === "/planning" ||
-            pathname.startsWith("/planning/") ? (
+            {role !== "engineer" &&
+            (pathname === "/planning" ||
+                pathname.startsWith("/planning/")) ? (
                 <div className="shrink-0 px-2 pt-2">
                     <Suspense fallback={null}>
                         <PlanningMiniMonth />

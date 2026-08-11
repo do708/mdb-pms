@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { Clock3 } from "lucide-react";
 
-import HeaderWeather from "./HeaderWeather";
-
 /** nl-NL zet week-/maandnamen vaak klein; eerste letter hoofdletter. */
 function formatNlDate(date: Date): string {
     const raw = date.toLocaleDateString("nl-NL", {
@@ -35,18 +33,15 @@ export default function DateTime() {
         <div className="flex items-center gap-3 text-sm">
             <Clock3 size={20} className="text-[#12345b] shrink-0" />
 
-            <div className="leading-tight min-w-0 w-[13.5rem]">
-                <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-gray-900 tabular-nums">
-                        {date
-                            ? date.toLocaleTimeString("nl-NL", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                              })
-                            : "--:--"}
-                    </p>
-                    <HeaderWeather />
-                </div>
+            <div className="leading-tight min-w-0">
+                <p className="font-semibold text-gray-900 tabular-nums">
+                    {date
+                        ? date.toLocaleTimeString("nl-NL", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                          })
+                        : "--:--"}
+                </p>
 
                 <p className="text-xs text-gray-500 whitespace-nowrap">
                     {date ? formatNlDate(date) : ""}

@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import SearchBox from "./SearchBox";
 import UserMenu from "./UserMenu";
 import DateTime from "./DateTime";
+import HeaderWeather from "./HeaderWeather";
 import NotificationBell from "./NotificationBell";
 
 export default function Header({
@@ -37,8 +38,9 @@ export default function Header({
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-                <div className="hidden sm:block">
+                <div className="hidden sm:flex sm:items-center sm:gap-3">
                     <DateTime />
+                    <HeaderWeather />
                 </div>
 
                 <NotificationBell />
