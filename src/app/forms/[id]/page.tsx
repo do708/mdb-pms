@@ -335,7 +335,11 @@ export default function FormDetailPage(){
                     font-bold
                 ">
 
-                    {definition?.icon} {form.title}
+                    {definition?.icon}{" "}
+                    {form.title.replace(
+                        /,\s*\d{2}-\d{2}-\d{4}\s*$/,
+                        ""
+                    )}
 
                 </h1>
 
