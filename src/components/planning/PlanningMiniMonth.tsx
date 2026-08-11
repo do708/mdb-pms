@@ -432,21 +432,7 @@ export default function PlanningMiniMonth() {
                 ))}
             </div>
 
-            <div className="mt-2 flex items-center justify-between gap-2 px-1">
-                <div className="flex items-center gap-2 text-[10px] text-slate-500">
-                    <span className="inline-flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        Ruimte
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
-                        ≥60%
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                        ≥90%
-                    </span>
-                </div>
+            <div className="mt-2 flex justify-end px-1">
                 <button
                     type="button"
                     onClick={() => {
