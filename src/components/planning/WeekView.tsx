@@ -111,6 +111,10 @@ interface WeekViewProps {
     }) => void;
     /** Klik op bestaand agenda-item → bewerken */
     onEditAgenda?: (event: any) => void;
+    /** IDs van opdrachten in een planningsconflict */
+    conflictWorkorderIds?: string[];
+    /** IDs van agenda-items in een planningsconflict */
+    conflictEventIds?: string[];
 }
 
 function toIsoDate(d: Date): string {
@@ -139,7 +143,11 @@ export default function WeekView({
     showStatusIcons = true,
     onCreateAgenda,
     onEditAgenda,
+    conflictWorkorderIds = [],
+    conflictEventIds = [],
 }: WeekViewProps) {
+    const conflictWoSet = new Set(conflictWorkorderIds);
+    const conflictEvSet = new Set(conflictEventIds);
     const [dragPreview, setDragPreview] = useState<{
         cellKey: string;
         hour: number;
@@ -1395,6 +1403,10 @@ export default function WeekView({
                                                                             ""
                                                                     ).trim() ||
                                                                     null;
+                                                                const hasConflict =
+                                                                    conflictWoSet.has(
+                                                                        item.id
+                                                                    );
 
                                                                 return (
                                                                     <div
@@ -1443,13 +1455,23 @@ export default function WeekView({
                                                                                   }
                                                                                 : undefined
                                                                         }
+                                                                        title={
+                                                                            hasConflict
+                                                                                ? "Planningsconflict"
+                                                                                : undefined
+                                                                        }
                                                                         className={`
                                                                             group/job absolute text-white
                                                                             rounded-lg px-2 py-1
                                                                             leading-tight overflow-hidden
-                                                                            shadow-sm ring-1 ring-black/10
+                                                                            shadow-sm
                                                                             hover:brightness-110 hover:shadow-md
                                                                             transition z-[5]
+                                                                            ${
+                                                                                hasConflict
+                                                                                    ? "ring-2 ring-[#d6007e] ring-offset-1 ring-offset-white z-[6]"
+                                                                                    : "ring-1 ring-black/10"
+                                                                            }
                                                                             ${
                                                                                 onMovePlan
                                                                                     ? "cursor-grab active:cursor-grabbing"
@@ -1457,6 +1479,11 @@ export default function WeekView({
                                                                             }
                                                                         `}
                                                                         data-planning-job
+                                                                        data-planning-conflict={
+                                                                            hasConflict
+                                                                                ? "true"
+                                                                                : undefined
+                                                                        }
                                                                         style={{
                                                                             backgroundColor:
                                                                                 color,
@@ -1587,7 +1614,20 @@ export default function WeekView({
                                                                             }}
                                                                         >
                                                                             <div className="flex items-start justify-between gap-1">
-                                                                                <span className="text-[11px] font-bold opacity-95 tabular-nums leading-none pt-0.5 min-w-0 truncate">
+                                                                                <span className="text-[11px] font-bold opacity-95 tabular-nums leading-none pt-0.5 min-w-0 truncate flex items-center gap-1">
+                                                                                    {hasConflict ? (
+                                                                                        <span
+                                                                                            className="
+                                                                                                shrink-0 inline-flex h-3.5 min-w-3.5
+                                                                                                items-center justify-center
+                                                                                                rounded bg-white text-[#d6007e]
+                                                                                                text-[9px] font-black leading-none
+                                                                                            "
+                                                                                            aria-label="Planningsconflict"
+                                                                                        >
+                                                                                            !
+                                                                                        </span>
+                                                                                    ) : null}
                                                                                     {timeLabel}
                                                                                 </span>
                                                                                 {showStatusIcons ? (
@@ -1692,11 +1732,20 @@ export default function WeekView({
                                                             const cellKey = `${iso}:${user.id}`;
                                                             const canResize =
                                                                 !!onResizeAgenda;
+                                                            const hasConflict =
+                                                                conflictEvSet.has(
+                                                                    ev.id
+                                                                );
 
                                                             return (
                                                                 <div
                                                                     key={ev.id}
                                                                     data-planning-agenda
+                                                                    data-planning-conflict={
+                                                                        hasConflict
+                                                                            ? "true"
+                                                                            : undefined
+                                                                    }
                                                                     draggable={
                                                                         !!onMoveAgenda &&
                                                                         !resizingRef.current
@@ -1749,15 +1798,25 @@ export default function WeekView({
                                                                             ev
                                                                         );
                                                                     }}
+                                                                    title={
+                                                                        hasConflict
+                                                                            ? `Planningsconflict · ${ev.title}`
+                                                                            : ev.title
+                                                                    }
                                                                     className={`
                                                                         absolute text-left
                                                                         rounded-lg px-2 py-1
                                                                         leading-tight
                                                                         bg-[#FFCC00] text-slate-900
-                                                                        border-2 border-[#e6b800]
-                                                                        shadow-sm ring-1 ring-black/10
+                                                                        border-2
+                                                                        shadow-sm
                                                                         hover:brightness-95 hover:shadow-md
                                                                         transition z-[5]
+                                                                        ${
+                                                                            hasConflict
+                                                                                ? "border-[#d6007e] ring-2 ring-[#d6007e] z-[6]"
+                                                                                : "border-[#e6b800] ring-1 ring-black/10"
+                                                                        }
                                                                         ${
                                                                             onMoveAgenda
                                                                                 ? "cursor-grab active:cursor-grabbing"
@@ -1770,9 +1829,6 @@ export default function WeekView({
                                                                         left: "4px",
                                                                         right: "4px",
                                                                     }}
-                                                                    title={
-                                                                        ev.title
-                                                                    }
                                                                 >
                                                                     {canResize ? (
                                                                         <>

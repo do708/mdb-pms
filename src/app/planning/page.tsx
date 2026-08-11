@@ -86,12 +86,34 @@ interface PlanningItem {
 
 interface Conflict {
 
+    type?: "workorders" | "agenda_workorder" | "agenda";
+
     user:string;
 
     date:string;
 
+    dateIso?:string;
+
+    items?:string[];
+
     workorders:string[];
 
+    workorderIds?:string[];
+
+    eventIds?:string[];
+
+}
+
+function conflictTypeLabel(
+    type: Conflict["type"]
+): string {
+    if (type === "agenda_workorder") {
+        return "Agenda ↔ opdracht";
+    }
+    if (type === "agenda") {
+        return "Agenda-items";
+    }
+    return "Opdrachten";
 }
 
 /** nl-NL zet maandnamen vaak in kleine letters; maak eerste letter hoofdletter. */
@@ -1001,12 +1023,12 @@ function PlanningPageContent(){
 
     }
 
-
-
-
-
-
-
+    const conflictWorkorderIds = Array.from(
+        new Set(conflicts.flatMap((c) => c.workorderIds ?? []))
+    );
+    const conflictEventIds = Array.from(
+        new Set(conflicts.flatMap((c) => c.eventIds ?? []))
+    );
 
     return (
 
@@ -1213,7 +1235,8 @@ function PlanningPageContent(){
                 conflicts.length > 0 && (
 
                     <SpecPanel
-                        title={`Planningconflicten (${conflicts.length})`}
+                        title={`Planningsconflicten (${conflicts.length})`}
+                        hint="Zelfde monteur, overlappende tijd — agenda en/of opdrachten."
                         tone="amber"
                     >
 
@@ -1224,16 +1247,21 @@ function PlanningPageContent(){
 
                                 <SpecListRow key={index}>
 
-                                    <p className="font-semibold text-sm text-gray-900">
-                                        {conflict.user}
-                                    </p>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <p className="font-semibold text-sm text-gray-900">
+                                            {conflict.user}
+                                        </p>
+                                        <span className="text-[10px] font-semibold uppercase tracking-wide rounded px-1.5 py-0.5 bg-[#d6007e]/10 text-[#d6007e]">
+                                            {conflictTypeLabel(conflict.type)}
+                                        </span>
+                                    </div>
 
                                     <p className="text-xs text-gray-500 mt-0.5">
                                         {conflict.date}
                                     </p>
 
                                     <p className="text-xs text-gray-700 mt-1">
-                                        {conflict.workorders.join(" ↔ ")}
+                                        {(conflict.items ?? conflict.workorders).join(" ↔ ")}
                                     </p>
 
                                 </SpecListRow>
@@ -1302,6 +1330,8 @@ function PlanningPageContent(){
                     view={view}
                     onViewChange={setView}
                     showStatusIcons={canEdit}
+                    conflictWorkorderIds={conflictWorkorderIds}
+                    conflictEventIds={conflictEventIds}
                     weekNavigation={{
                         rangeLabel: `${formatNlDate(weekStart, {
                             day: "numeric",
