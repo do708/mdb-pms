@@ -80,7 +80,8 @@ export default function WorkordersPage() {
                 .includes(search.toLowerCase());
 
         const matchesStatus =
-            status === "alle" || workorder.status === status;
+            status === "alle"
+            || migrateStatus(workorder.status) === status;
 
         return matchesSearch && matchesStatus;
     });
@@ -89,7 +90,6 @@ export default function WorkordersPage() {
         <PageShell>
             <PageHeader
                 title="Opdrachten"
-                subtitle="Overzicht alle werkzaamheden"
                 actions={
                     canCreateWorkorder ? (
                         <Link

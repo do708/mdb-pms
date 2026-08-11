@@ -16,6 +16,7 @@ export const WORKORDER_STATUS_ICON_LEGEND = [
     { key: "ingepland", shortLabel: "Ingepland" },
     { key: "uitgevoerd", shortLabel: "Uitgevoerd" },
     { key: "gefactureerd", shortLabel: "Gefactureerd" },
+    { key: "on_hold", shortLabel: "On Hold" },
 ] as const;
 
 function iconForStatus(key: string) {
