@@ -983,11 +983,16 @@ async function completeWorkorder(){
                                 const huidig =
                                     status || workorder.status;
 
-                                // Alles vanaf "afspraak" betekent dat de
-                                // afspraak al verstuurd is (status 2 of hoger).
-                                // Alleen bij "ontvangen" (status 1) mag het nog.
+                                // Alleen echt verstuurd (sentAt) of lineaire
+                                // status vanaf "afspraak" — On Hold telt niet mee.
+                                const flowAlVerstuurd = [
+                                    "afspraak",
+                                    "ingepland",
+                                    "uitgevoerd",
+                                    "gefactureerd",
+                                ].includes(huidig);
                                 const alVerstuurd =
-                                    huidig !== "ontvangen";
+                                    !!workorder.sentAt || flowAlVerstuurd;
 
                                 return (
                                     <>
@@ -1026,6 +1031,10 @@ async function completeWorkorder(){
                                                 ?
                                                 "De afspraak is al verstuurd. Zet de status terug op \"Opdracht ontvangen\" om opnieuw te versturen."
                                                 :
+                                                huidig === "on_hold"
+                                                ?
+                                                "Opdracht staat On Hold. Je kunt de afspraak versturen of eerst hervatten naar \"Opdracht ontvangen\"."
+                                                :
                                                 "Stuurt een afspraakbevestiging naar de klant (bcc naar projects@mdb-networks.nl) en zet de status op \"Afspraak verstuurd\"."
                                             }
                                         </p>
@@ -1039,6 +1048,35 @@ async function completeWorkorder(){
                 )
             }
 
+
+            {
+                isOffice
+                && (status || workorder.status) === "on_hold"
+                && (
+                    <section className="
+                        rounded-2xl
+                        border-2 border-amber-400
+                        bg-amber-50
+                        px-4 py-3
+                        space-y-1
+                    ">
+                        <p className="text-sm font-bold text-amber-950 inline-flex items-center gap-2">
+                            <span className="
+                                inline-flex items-center rounded-full
+                                bg-amber-500 text-white text-xs font-semibold
+                                px-2.5 py-0.5
+                            ">
+                                On Hold
+                            </span>
+                            Deze opdracht staat on hold
+                        </p>
+                        <p className="text-xs text-amber-900/90">
+                            Controleer hieronder de specificatie uit de aanvraag
+                            en de opmerkingen voordat je hervat.
+                        </p>
+                    </section>
+                )
+            }
 
             {
                 isOffice

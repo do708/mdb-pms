@@ -133,11 +133,18 @@ export default function StatusFlow({
 
 
     const nextStatus =
-        currentIndex >= 0
-            ? WORKORDER_FLOW_STATUSES[currentIndex + 1]
-            : WORKORDER_FLOW_STATUSES[0];
+        status === "on_hold"
+            ? WORKORDER_FLOW_STATUSES[0]
+            : currentIndex >= 0
+              ? WORKORDER_FLOW_STATUSES[currentIndex + 1]
+              : WORKORDER_FLOW_STATUSES[0];
 
-
+    const nextLabel =
+        status === "on_hold" && nextStatus
+            ? `Hervatten: ${nextStatus.label}`
+            : nextStatus
+              ? nextStatus.label
+              : "";
 
 
     return (
@@ -196,7 +203,7 @@ export default function StatusFlow({
 
                         >
 
-                            {busy ? "Bezig..." : `→ ${nextStatus.label}`}
+                            {busy ? "Bezig..." : `→ ${nextLabel}`}
 
                         </button>
 
@@ -204,6 +211,13 @@ export default function StatusFlow({
                 }
 
             </div>
+
+            {status === "on_hold" ? (
+                <p className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                    On Hold — niet in de normale flow. Hervat via
+                    &quot;Opdracht ontvangen&quot; of kies een stap hieronder.
+                </p>
+            ) : null}
 
 
 
