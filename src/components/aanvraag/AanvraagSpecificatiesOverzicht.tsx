@@ -268,8 +268,24 @@ function SchermenBlok({
                                 <Field
                                     label="Bevestiging"
                                     value={
-                                        str(s.bevestigingDetail)
-                                        || str(s.beugel)
+                                        str(s.bevestigingDetail) === "Anders"
+                                            ? `Specials: ${str(s.bevestigingAnders) || "Anders"}`
+                                            : [
+                                                  str(s.bevestigingDetail),
+                                                  str(s.beugel),
+                                              ]
+                                                  .filter(Boolean)
+                                                  .join(" · ")
+                                                  || str(s.beugel)
+                                    }
+                                />
+                                <Field
+                                    label="Aansturing"
+                                    value={
+                                        str(s.aansturing) === "Anders"
+                                            ? str(s.aansturingAnders) ||
+                                              "Anders"
+                                            : s.aansturing
                                     }
                                 />
                                 <Field

@@ -39,6 +39,7 @@ export const BEVESTIGING_OPTIES = [
     "Muurbeugel",
     "Plafondbeugel",
     "Vloerstandaard",
+    "Specials",
 ] as const;
 
 export type BevestigingSoort = (typeof BEVESTIGING_OPTIES)[number];
@@ -58,7 +59,23 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
         "Vloer-plafond standaard",
         "Mobiele vloerstandaard (trolley)",
     ],
+    Specials: [
+        "Kolombeugel",
+        "Roterende beugel",
+        "Anders",
+    ],
 };
+
+/** Aansturing van het scherm (onder bevestiging). */
+export const AANSTURING_OPTIES = [
+    "DMV player",
+    "Tizen",
+    "webOS",
+    "Android",
+    "Anders",
+] as const;
+
+export type AansturingSoort = (typeof AANSTURING_OPTIES)[number];
 
 /** Hoogte-opties bij plafondbeugel. */
 export const PLAFOND_HOOGTE_OPTIES = [
@@ -168,12 +185,18 @@ export interface AanvraagSchermItem {
     id: string;
     formaat: string;
     formaatAnders: string;
-    /** Hoofdcategorie: Muurbeugel / Plafondbeugel / Vloerstandaard */
+    /** Hoofdcategorie: Muurbeugel / Plafondbeugel / Vloerstandaard / Specials */
     beugel: string;
     /** Specifieke bevestiging binnen de categorie */
     bevestigingDetail: string;
+    /** Vrije tekst bij Specials → Anders (of overige specials-toelichting) */
+    bevestigingAnders: string;
     /** Alleen bij Plafondbeugel: 80cm / 150cm / 300cm */
     plafondHoogte: string;
+    /** Aansturing: DMV player / Tizen / webOS / Android / Anders */
+    aansturing: string;
+    /** Toelichting bij aansturing = Anders */
+    aansturingAnders: string;
     orientatie: string;
     locatie: string;
     /**
@@ -208,7 +231,10 @@ export function emptySchermItem(): AanvraagSchermItem {
         formaatAnders: "",
         beugel: "",
         bevestigingDetail: "",
+        bevestigingAnders: "",
         plafondHoogte: "",
+        aansturing: "",
+        aansturingAnders: "",
         orientatie: "",
         locatie: "",
         naastSchermId: "",
@@ -230,7 +256,10 @@ export type SchermVoorzieningen = Pick<
     | "formaatAnders"
     | "beugel"
     | "bevestigingDetail"
+    | "bevestigingAnders"
     | "plafondHoogte"
+    | "aansturing"
+    | "aansturingAnders"
     | "orientatie"
     | "locatie"
     | "stroom"
@@ -251,7 +280,10 @@ export function voorzieningenVan(
         formaatAnders: anker.formaatAnders,
         beugel: anker.beugel,
         bevestigingDetail: anker.bevestigingDetail,
+        bevestigingAnders: anker.bevestigingAnders,
         plafondHoogte: anker.plafondHoogte,
+        aansturing: anker.aansturing,
+        aansturingAnders: anker.aansturingAnders,
         orientatie: anker.orientatie,
         locatie: anker.locatie,
         stroom: anker.stroom,
@@ -272,7 +304,10 @@ export function legeVoorzieningen(): SchermVoorzieningen {
         formaatAnders: "",
         beugel: "",
         bevestigingDetail: "",
+        bevestigingAnders: "",
         plafondHoogte: "",
+        aansturing: "",
+        aansturingAnders: "",
         orientatie: "",
         locatie: "",
         stroom: "",
@@ -293,6 +328,7 @@ export function schermVeldenCompleet(
     if (
         !scherm.formaat
         || !scherm.beugel
+        || !scherm.aansturing
         || !scherm.orientatie
         || !scherm.locatie.trim()
         || !scherm.stroom
@@ -304,6 +340,20 @@ export function schermVeldenCompleet(
     if (
         scherm.beugel in BEVESTIGING_DETAIL
         && !scherm.bevestigingDetail
+    ) {
+        return false;
+    }
+
+    if (
+        scherm.bevestigingDetail === "Anders"
+        && !scherm.bevestigingAnders.trim()
+    ) {
+        return false;
+    }
+
+    if (
+        scherm.aansturing === "Anders"
+        && !scherm.aansturingAnders.trim()
     ) {
         return false;
     }
@@ -323,7 +373,10 @@ const VOORZIENING_KEYS: (keyof SchermVoorzieningen)[] = [
     "formaatAnders",
     "beugel",
     "bevestigingDetail",
+    "bevestigingAnders",
     "plafondHoogte",
+    "aansturing",
+    "aansturingAnders",
     "orientatie",
     "locatie",
     "stroom",

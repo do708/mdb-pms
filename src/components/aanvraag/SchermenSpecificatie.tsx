@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
     AanvraagSchermItem,
+    AANSTURING_OPTIES,
     BEVESTIGING_DETAIL,
     BEVESTIGING_OPTIES,
     BevestigingSoort,
@@ -309,6 +310,8 @@ export default function SchermenSpecificatie({
                                                                         : b,
                                                                 bevestigingDetail:
                                                                     "",
+                                                                bevestigingAnders:
+                                                                    "",
                                                                 plafondHoogte:
                                                                     "",
                                                             }
@@ -358,6 +361,8 @@ export default function SchermenSpecificatie({
                                                                             d
                                                                                 ? ""
                                                                                 : d,
+                                                                        bevestigingAnders:
+                                                                            "",
                                                                     }
                                                                 );
                                                             }}
@@ -375,6 +380,29 @@ export default function SchermenSpecificatie({
                                                     )
                                                 )}
                                             </div>
+                                            {scherm.bevestigingDetail ===
+                                            "Anders" ? (
+                                                <input
+                                                    type="text"
+                                                    disabled={gekoppeld}
+                                                    value={
+                                                        scherm.bevestigingAnders ||
+                                                        ""
+                                                    }
+                                                    onChange={(e) =>
+                                                        updateItem(
+                                                            scherm.id,
+                                                            {
+                                                                bevestigingAnders:
+                                                                    e.target
+                                                                        .value,
+                                                            }
+                                                        )
+                                                    }
+                                                    placeholder="Bijv. kolombeugel, speciale constructie…"
+                                                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-60"
+                                                />
+                                            ) : null}
                                         </div>
                                     ) : null}
 
@@ -428,6 +456,63 @@ export default function SchermenSpecificatie({
                                                 )}
                                             </div>
                                         </div>
+                                    ) : null}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <span className="text-xs text-gray-600">
+                                        Aansturing{" "}
+                                        <span className="text-red-500">
+                                            *
+                                        </span>
+                                    </span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {AANSTURING_OPTIES.map((a) => (
+                                            <button
+                                                key={a}
+                                                type="button"
+                                                disabled={gekoppeld}
+                                                onClick={() => {
+                                                    if (gekoppeld) {
+                                                        return;
+                                                    }
+                                                    updateItem(scherm.id, {
+                                                        aansturing:
+                                                            scherm.aansturing ===
+                                                            a
+                                                                ? ""
+                                                                : a,
+                                                        aansturingAnders: "",
+                                                    });
+                                                }}
+                                                className={
+                                                    "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
+                                                    +
+                                                    (scherm.aansturing === a
+                                                        ? "bg-amber-100 text-amber-900 border-amber-300"
+                                                        : "bg-white text-gray-700 border-gray-200")
+                                                }
+                                            >
+                                                {a}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {scherm.aansturing === "Anders" ? (
+                                        <input
+                                            type="text"
+                                            disabled={gekoppeld}
+                                            value={
+                                                scherm.aansturingAnders || ""
+                                            }
+                                            onChange={(e) =>
+                                                updateItem(scherm.id, {
+                                                    aansturingAnders:
+                                                        e.target.value,
+                                                })
+                                            }
+                                            placeholder="Welke aansturing?"
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-60"
+                                        />
                                     ) : null}
                                 </div>
 
