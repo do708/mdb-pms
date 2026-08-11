@@ -156,6 +156,8 @@ model Workorder {
   werkInstructie        String?
   workDate              DateTime?
   internalNotes         String?
+  /// Opmerkingen bij On Hold (zichtbaar in on-hold-banner)
+  onHoldNotes           String?
   number                String                @unique
   assignedUserId        String?
   plannedDate           DateTime?

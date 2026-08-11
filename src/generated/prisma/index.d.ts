@@ -10997,6 +10997,7 @@ export namespace Prisma {
     werkInstructie: string | null
     workDate: Date | null
     internalNotes: string | null
+    onHoldNotes: string | null
     number: string | null
     assignedUserId: string | null
     plannedDate: Date | null
@@ -11030,6 +11031,7 @@ export namespace Prisma {
     werkInstructie: string | null
     workDate: Date | null
     internalNotes: string | null
+    onHoldNotes: string | null
     number: string | null
     assignedUserId: string | null
     plannedDate: Date | null
@@ -11063,6 +11065,7 @@ export namespace Prisma {
     werkInstructie: number
     workDate: number
     internalNotes: number
+    onHoldNotes: number
     number: number
     assignedUserId: number
     plannedDate: number
@@ -11112,6 +11115,7 @@ export namespace Prisma {
     werkInstructie?: true
     workDate?: true
     internalNotes?: true
+    onHoldNotes?: true
     number?: true
     assignedUserId?: true
     plannedDate?: true
@@ -11145,6 +11149,7 @@ export namespace Prisma {
     werkInstructie?: true
     workDate?: true
     internalNotes?: true
+    onHoldNotes?: true
     number?: true
     assignedUserId?: true
     plannedDate?: true
@@ -11178,6 +11183,7 @@ export namespace Prisma {
     werkInstructie?: true
     workDate?: true
     internalNotes?: true
+    onHoldNotes?: true
     number?: true
     assignedUserId?: true
     plannedDate?: true
@@ -11300,6 +11306,7 @@ export namespace Prisma {
     werkInstructie: string | null
     workDate: Date | null
     internalNotes: string | null
+    onHoldNotes: string | null
     number: string
     assignedUserId: string | null
     plannedDate: Date | null
@@ -11354,6 +11361,7 @@ export namespace Prisma {
     werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
+    onHoldNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
@@ -11403,6 +11411,7 @@ export namespace Prisma {
     werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
+    onHoldNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
@@ -11442,6 +11451,7 @@ export namespace Prisma {
     werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
+    onHoldNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
@@ -11481,6 +11491,7 @@ export namespace Prisma {
     werkInstructie?: boolean
     workDate?: boolean
     internalNotes?: boolean
+    onHoldNotes?: boolean
     number?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
@@ -11496,7 +11507,7 @@ export namespace Prisma {
     sentAt?: boolean
   }
 
-  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "straat" | "huisnummer" | "postcode" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "aanvraagSpecificaties" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
+  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "straat" | "huisnummer" | "postcode" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "onHoldNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "aanvraagSpecificaties" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
   export type WorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -11566,6 +11577,10 @@ export namespace Prisma {
       werkInstructie: string | null
       workDate: Date | null
       internalNotes: string | null
+      /**
+       * Opmerkingen bij On Hold (zichtbaar in on-hold-banner)
+       */
+      onHoldNotes: string | null
       number: string
       assignedUserId: string | null
       plannedDate: Date | null
@@ -12043,6 +12058,7 @@ export namespace Prisma {
     readonly werkInstructie: FieldRef<"Workorder", 'String'>
     readonly workDate: FieldRef<"Workorder", 'DateTime'>
     readonly internalNotes: FieldRef<"Workorder", 'String'>
+    readonly onHoldNotes: FieldRef<"Workorder", 'String'>
     readonly number: FieldRef<"Workorder", 'String'>
     readonly assignedUserId: FieldRef<"Workorder", 'String'>
     readonly plannedDate: FieldRef<"Workorder", 'DateTime'>
@@ -32928,6 +32944,7 @@ export namespace Prisma {
     werkInstructie: 'werkInstructie',
     workDate: 'workDate',
     internalNotes: 'internalNotes',
+    onHoldNotes: 'onHoldNotes',
     number: 'number',
     assignedUserId: 'assignedUserId',
     plannedDate: 'plannedDate',
@@ -33976,6 +33993,7 @@ export namespace Prisma {
     werkInstructie?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
+    onHoldNotes?: StringNullableFilter<"Workorder"> | string | null
     number?: StringFilter<"Workorder"> | string
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -34024,6 +34042,7 @@ export namespace Prisma {
     werkInstructie?: SortOrderInput | SortOrder
     workDate?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
+    onHoldNotes?: SortOrderInput | SortOrder
     number?: SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
@@ -34076,6 +34095,7 @@ export namespace Prisma {
     werkInstructie?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
+    onHoldNotes?: StringNullableFilter<"Workorder"> | string | null
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -34123,6 +34143,7 @@ export namespace Prisma {
     werkInstructie?: SortOrderInput | SortOrder
     workDate?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
+    onHoldNotes?: SortOrderInput | SortOrder
     number?: SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
@@ -34166,6 +34187,7 @@ export namespace Prisma {
     werkInstructie?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    onHoldNotes?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     number?: StringWithAggregatesFilter<"Workorder"> | string
     assignedUserId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
@@ -36136,6 +36158,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -36182,6 +36205,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -36224,6 +36248,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36270,6 +36295,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36314,6 +36340,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -36347,6 +36374,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36380,6 +36408,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -38497,6 +38526,7 @@ export namespace Prisma {
     werkInstructie?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
+    onHoldNotes?: SortOrder
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
@@ -38538,6 +38568,7 @@ export namespace Prisma {
     werkInstructie?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
+    onHoldNotes?: SortOrder
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
@@ -38571,6 +38602,7 @@ export namespace Prisma {
     werkInstructie?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
+    onHoldNotes?: SortOrder
     number?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
@@ -41444,6 +41476,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -41489,6 +41522,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -41789,6 +41823,7 @@ export namespace Prisma {
     werkInstructie?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
+    onHoldNotes?: StringNullableFilter<"Workorder"> | string | null
     number?: StringFilter<"Workorder"> | string
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -42083,6 +42118,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -42127,6 +42163,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -42479,6 +42516,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -42523,6 +42561,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -44027,6 +44066,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44072,6 +44112,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -44129,6 +44170,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44174,6 +44216,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44215,6 +44258,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44260,6 +44304,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -44317,6 +44362,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44362,6 +44408,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44403,6 +44450,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44448,6 +44496,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -44505,6 +44554,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44550,6 +44600,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44591,6 +44642,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44636,6 +44688,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -44693,6 +44746,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44738,6 +44792,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44779,6 +44834,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44824,6 +44880,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -44881,6 +44938,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44926,6 +44984,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44967,6 +45026,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45012,6 +45072,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -45069,6 +45130,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45114,6 +45176,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45155,6 +45218,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45200,6 +45264,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -45257,6 +45322,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45302,6 +45368,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45385,6 +45452,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45430,6 +45498,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -45510,6 +45579,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45555,6 +45625,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45710,6 +45781,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45755,6 +45827,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -46445,6 +46518,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -46490,6 +46564,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -46590,6 +46665,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -46635,6 +46711,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -46733,6 +46810,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -46854,6 +46932,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -46899,6 +46978,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -46942,6 +47022,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47225,6 +47306,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -47401,6 +47483,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47445,6 +47528,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47488,6 +47572,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47582,6 +47667,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -47636,6 +47722,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47680,6 +47767,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47723,6 +47811,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48147,6 +48236,7 @@ export namespace Prisma {
     werkInstructie?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
+    onHoldNotes?: string | null
     number: string
     assignedUserId?: string | null
     plannedDate?: Date | string | null
@@ -48221,6 +48311,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48266,6 +48357,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48309,6 +48401,7 @@ export namespace Prisma {
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

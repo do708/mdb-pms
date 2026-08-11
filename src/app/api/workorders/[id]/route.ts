@@ -506,6 +506,27 @@ export async function PUT(
 
 
 
+                    onHoldNotes:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.onHoldNotes
+                        :
+                        body.onHoldNotes !== undefined
+                        ?
+                        (
+                            typeof body.onHoldNotes === "string" &&
+                            body.onHoldNotes.trim()
+                            ?
+                            body.onHoldNotes.trim()
+                            :
+                            null
+                        )
+                        :
+                        existingWorkorder.onHoldNotes,
+
+
+
                     plannedDate:
 
                         session.user.role === "engineer"

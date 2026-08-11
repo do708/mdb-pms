@@ -233,6 +233,7 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   werkInstructie: 'werkInstructie',
   workDate: 'workDate',
   internalNotes: 'internalNotes',
+  onHoldNotes: 'onHoldNotes',
   number: 'number',
   assignedUserId: 'assignedUserId',
   plannedDate: 'plannedDate',

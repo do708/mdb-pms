@@ -33,6 +33,8 @@ interface Workorder {
 
     internalNotes:string | null;
 
+    onHoldNotes:string | null;
+
     documents:{
 
         id:string;
@@ -292,6 +294,12 @@ export default function EngineerWorkorderPage(){
     const [notes,setNotes] =
         useState("");
 
+    const [onHoldNotes,setOnHoldNotes] =
+        useState("");
+
+    const [onHoldNotesSaving,setOnHoldNotesSaving] =
+        useState(false);
+
 
     // Klaargezet materiaal (pakbon + schermen/players/beugels).
     const [materiaal,setMateriaal] =
@@ -387,6 +395,10 @@ export default function EngineerWorkorderPage(){
 
             setNotes(
                 data.description || ""
+            );
+
+            setOnHoldNotes(
+                data.onHoldNotes || ""
             );
 
 
@@ -1058,22 +1070,82 @@ async function completeWorkorder(){
                         border-2 border-amber-400
                         bg-amber-50
                         px-4 py-3
-                        space-y-1
+                        space-y-3
                     ">
-                        <p className="text-sm font-bold text-amber-950 inline-flex items-center gap-2">
-                            <span className="
-                                inline-flex items-center rounded-full
-                                bg-amber-500 text-white text-xs font-semibold
-                                px-2.5 py-0.5
-                            ">
-                                On Hold
+                        <div className="space-y-1">
+                            <p className="text-sm font-bold text-amber-950 inline-flex items-center gap-2">
+                                <span className="
+                                    inline-flex items-center rounded-full
+                                    bg-amber-500 text-white text-xs font-semibold
+                                    px-2.5 py-0.5
+                                ">
+                                    On Hold
+                                </span>
+                                Deze opdracht staat on hold
+                            </p>
+                            <p className="text-xs text-amber-900/90">
+                                Controleer hieronder de specificatie uit de aanvraag
+                                en de opmerkingen voordat je hervat.
+                            </p>
+                        </div>
+
+                        <label className="block space-y-1.5">
+                            <span className="text-xs font-semibold text-amber-950">
+                                Opmerkingen
                             </span>
-                            Deze opdracht staat on hold
-                        </p>
-                        <p className="text-xs text-amber-900/90">
-                            Controleer hieronder de specificatie uit de aanvraag
-                            en de opmerkingen voordat je hervat.
-                        </p>
+                            <textarea
+                                value={onHoldNotes}
+                                onChange={(e) => setOnHoldNotes(e.target.value)}
+                                onBlur={async () => {
+                                    const next = onHoldNotes.trim();
+                                    const prev =
+                                        (workorder.onHoldNotes || "").trim();
+                                    if (next === prev) return;
+                                    setOnHoldNotesSaving(true);
+                                    try {
+                                        const res = await fetch(
+                                            `/api/workorders/${id}`,
+                                            {
+                                                method: "PATCH",
+                                                headers: {
+                                                    "Content-Type":
+                                                        "application/json",
+                                                },
+                                                body: JSON.stringify({
+                                                    onHoldNotes: next || null,
+                                                }),
+                                            }
+                                        );
+                                        if (res.ok) {
+                                            setWorkorder((wo) =>
+                                                wo
+                                                    ? {
+                                                          ...wo,
+                                                          onHoldNotes:
+                                                              next || null,
+                                                      }
+                                                    : wo
+                                            );
+                                        }
+                                    } finally {
+                                        setOnHoldNotesSaving(false);
+                                    }
+                                }}
+                                rows={3}
+                                placeholder="Waarom on hold? Wat moet er nog gebeuren?"
+                                className="
+                                    w-full rounded-xl border border-amber-300
+                                    bg-white px-3 py-2 text-sm text-slate-900
+                                    placeholder:text-slate-400
+                                    focus:outline-none focus:ring-2 focus:ring-amber-400/50
+                                "
+                            />
+                            {onHoldNotesSaving ? (
+                                <span className="text-[11px] text-amber-800">
+                                    Opslaan…
+                                </span>
+                            ) : null}
+                        </label>
                     </section>
                 )
             }
