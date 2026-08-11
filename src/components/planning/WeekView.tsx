@@ -244,7 +244,7 @@ export default function WeekView({
     }, [onResizePlan]);
 
     useEffect(() => {
-        function scrollToDay(iso: string) {
+        function scrollToDay(iso: string, attempt = 0) {
             if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
             const el = document.querySelector(`[data-planning-day="${iso}"]`);
             if (el instanceof HTMLElement) {
@@ -252,20 +252,28 @@ export default function WeekView({
                     behavior: "smooth",
                     block: "start",
                 });
+                return;
+            }
+            // Na weekwissel staat de rij soms nog niet in de DOM
+            if (attempt < 20) {
+                window.setTimeout(
+                    () => scrollToDay(iso, attempt + 1),
+                    50
+                );
             }
         }
 
         function onFocusDay(e: Event) {
             const iso = (e as CustomEvent<string>).detail;
-            window.setTimeout(() => scrollToDay(iso), 80);
+            scrollToDay(iso, 0);
         }
 
         window.addEventListener("planning-focus-day", onFocusDay);
 
         if (focusDateIso) {
             const t = window.setTimeout(
-                () => scrollToDay(focusDateIso),
-                80
+                () => scrollToDay(focusDateIso, 0),
+                50
             );
             return () => {
                 window.clearTimeout(t);

@@ -287,21 +287,26 @@ export default function PlanningMiniMonth() {
     const weeks = useMemo(() => {
         const first = new Date(year, month, 1);
         const start = mondayOf(first);
-        const result: { week: number; days: (Date | null)[] }[] = [];
+        const result: {
+            week: number;
+            days: { date: Date; inMonth: boolean }[];
+        }[] = [];
         let cursorDay = new Date(start);
 
         for (let w = 0; w < 6; w++) {
-            const days: (Date | null)[] = [];
+            const days: { date: Date; inMonth: boolean }[] = [];
             const weekNum = isoWeek(cursorDay);
+            let anyInMonth = false;
             for (let i = 0; i < 7; i++) {
-                if (cursorDay.getMonth() === month) {
-                    days.push(new Date(cursorDay));
-                } else {
-                    days.push(null);
-                }
+                const inMonth = cursorDay.getMonth() === month;
+                if (inMonth) anyInMonth = true;
+                days.push({
+                    date: new Date(cursorDay),
+                    inMonth,
+                });
                 cursorDay.setDate(cursorDay.getDate() + 1);
             }
-            if (w > 0 && days.every((d) => d === null)) break;
+            if (w > 0 && !anyInMonth) break;
             result.push({ week: weekNum, days });
         }
         return result;
@@ -313,11 +318,17 @@ export default function PlanningMiniMonth() {
 
     function selectDay(day: Date) {
         const iso = toIsoDate(day);
+        setCursor(new Date(day.getFullYear(), day.getMonth(), 1));
         router.push(`/planning?date=${iso}`);
-        // Ook bij dezelfde datum opnieuw scrollen naar die dag
+        // Weekwissel: opnieuw proberen tot de dagrij in het DOM staat
         window.dispatchEvent(
             new CustomEvent("planning-focus-day", { detail: iso })
         );
+    }
+
+    function selectWeek(days: { date: Date; inMonth: boolean }[]) {
+        const monday = days[0]?.date;
+        if (monday) selectDay(monday);
     }
 
     const weekdayLabels = ["M", "D", "W", "D", "V", "Z", "Z"];
@@ -376,21 +387,22 @@ export default function PlanningMiniMonth() {
 
                 {weeks.map((row) => (
                     <div
-                        key={`w-${row.week}-${row.days[0]?.toISOString() ?? row.week}`}
+                        key={`w-${row.week}-${row.days[0]?.date.toISOString() ?? row.week}`}
                         className="contents"
                     >
-                        <span className="text-[9px] font-semibold text-[#0066FF] tabular-nums self-center">
+                        <button
+                            type="button"
+                            onClick={() => selectWeek(row.days)}
+                            title={`Week ${row.week}`}
+                            className="
+                                text-[9px] font-semibold text-[#0066FF] tabular-nums
+                                self-center rounded hover:bg-[#e8f0ff] cursor-pointer
+                            "
+                        >
                             {row.week}
-                        </span>
-                        {row.days.map((day, i) => {
-                            if (!day) {
-                                return (
-                                    <span
-                                        key={`e-${row.week}-${i}`}
-                                        className="h-8"
-                                    />
-                                );
-                            }
+                        </button>
+                        {row.days.map((cell, i) => {
+                            const day = cell.date;
                             const iso = toIsoDate(day);
                             const isToday = iso === todayIso;
                             const isSelected = selectedIso === iso;
@@ -404,18 +416,21 @@ export default function PlanningMiniMonth() {
                                     key={iso}
                                     type="button"
                                     onClick={() => selectDay(day)}
-                                    title={`${iso} · ${pct}% bezet`}
+                                    title={`${iso} · ${pct}% bezet — ga naar weekoverzicht`}
                                     className={`
                                         relative h-8 w-full rounded-lg text-[11px] tabular-nums
                                         font-semibold transition flex flex-col items-center justify-center
+                                        cursor-pointer
                                         ${
                                             isSelected
                                                 ? "bg-[#0066FF] text-white"
                                                 : isToday
                                                   ? "bg-[#D6007E] text-white"
-                                                  : isWeekend
-                                                    ? "text-slate-400 hover:bg-slate-100"
-                                                    : "text-slate-800 hover:bg-[#e8f0ff]"
+                                                  : !cell.inMonth
+                                                    ? "text-slate-300 hover:bg-slate-50 hover:text-slate-500"
+                                                    : isWeekend
+                                                      ? "text-slate-400 hover:bg-slate-100"
+                                                      : "text-slate-800 hover:bg-[#e8f0ff]"
                                         }
                                     `}
                                 >
@@ -425,7 +440,11 @@ export default function PlanningMiniMonth() {
                                     <span
                                         className={`
                                             mt-0.5 h-1.5 w-1.5 rounded-full
-                                            ${loadColor(level)}
+                                            ${
+                                                cell.inMonth
+                                                    ? loadColor(level)
+                                                    : "bg-transparent"
+                                            }
                                         `}
                                         aria-hidden
                                     />
