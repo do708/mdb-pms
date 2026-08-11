@@ -813,14 +813,14 @@ export default function WeekView({
                                                     bg-[#FFCC00] border-2 border-[#e6b800]
                                                     text-slate-900 text-[10px] font-bold
                                                     shadow-sm ring-1 ring-black/10
-                                                    hover:brightness-95 transition truncate
+                                                    hover:brightness-95 transition
+                                                    whitespace-normal break-words leading-snug
                                                     ${
                                                         onMoveAgenda
                                                             ? "cursor-grab active:cursor-grabbing"
                                                             : ""
                                                     }
                                                 `}
-                                                title={ev.title}
                                             >
                                                 {ev.title}
                                                 {ev.recurrenceFreq &&
