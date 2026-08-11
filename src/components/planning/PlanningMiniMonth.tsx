@@ -37,10 +37,7 @@ function formatNlMonthYear(date: Date): string {
         .replace(/^./, (c) => c.toUpperCase());
 }
 
-function eachIsoInRange(
-    startIso: string,
-    endIso: string
-): string[] {
+function eachIsoInRange(startIso: string, endIso: string): string[] {
     const out: string[] = [];
     const cur = new Date(startIso + "T12:00:00");
     const end = new Date(endIso + "T12:00:00");
@@ -51,11 +48,83 @@ function eachIsoInRange(
     return out;
 }
 
-type DayMarks = { job: boolean; agenda: boolean };
+const DAG_START_UUR = 7;
+const DAG_EIND_UUR = 18;
+const UREN_PER_DAG = DAG_EIND_UUR - DAG_START_UUR; // 11
+
+function heeftKloktijd(d: Date): boolean {
+    return d.getHours() !== 0 || d.getMinutes() !== 0;
+}
+
+function uurVan(d: Date): number {
+    const u = d.getHours() + d.getMinutes() / 60;
+    return Math.min(DAG_EIND_UUR, Math.max(DAG_START_UUR, u));
+}
+
+/** Geboekte uren van één item op één kalenderdag (07–18). */
+function urenOpDag(
+    startRaw: string | Date | null | undefined,
+    endRaw: string | Date | null | undefined,
+    dayIso: string,
+    allDay?: boolean
+): number {
+    if (!startRaw) return 0;
+    const start = new Date(startRaw);
+    if (Number.isNaN(start.getTime())) return 0;
+    const eind = endRaw ? new Date(endRaw) : null;
+
+    const startIso = toIsoDate(start);
+    const endIso = eind && !Number.isNaN(eind.getTime())
+        ? toIsoDate(eind)
+        : startIso;
+    if (dayIso < startIso || dayIso > endIso) return 0;
+
+    if (allDay || (!heeftKloktijd(start) && !(eind && heeftKloktijd(eind)))) {
+        return UREN_PER_DAG;
+    }
+
+    const meerdaags = startIso !== endIso;
+    let beginUur: number;
+    let eindUur: number;
+
+    if (meerdaags) {
+        beginUur = heeftKloktijd(start) ? uurVan(start) : DAG_START_UUR;
+        eindUur =
+            eind && heeftKloktijd(eind) ? uurVan(eind) : DAG_EIND_UUR;
+    } else {
+        beginUur = heeftKloktijd(start) ? uurVan(start) : DAG_START_UUR;
+        if (eind && heeftKloktijd(eind)) {
+            eindUur = uurVan(eind);
+        } else if (heeftKloktijd(start)) {
+            eindUur = Math.min(DAG_EIND_UUR, uurVan(start) + 2);
+        } else {
+            eindUur = DAG_EIND_UUR;
+        }
+    }
+
+    if (eindUur <= beginUur) {
+        eindUur = Math.min(DAG_EIND_UUR, beginUur + 1);
+    }
+    return Math.max(0, eindUur - beginUur);
+}
+
+type LoadLevel = "free" | "busy" | "full";
+
+function loadLevel(ratio: number): LoadLevel {
+    if (ratio >= 0.9) return "full";
+    if (ratio >= 0.6) return "busy";
+    return "free";
+}
+
+function loadColor(level: LoadLevel): string {
+    if (level === "full") return "bg-red-500 ring-1 ring-white/80";
+    if (level === "busy") return "bg-orange-500 ring-1 ring-white/80";
+    return "bg-emerald-500 ring-1 ring-white/80";
+}
 
 /**
- * Mini-maandkalender voor in de sidebar op /planning (Outlook/Google-stijl).
- * Weeknummers links; stippels voor klussen (blauw) en agenda (geel).
+ * Mini-maandkalender voor in de sidebar op /planning.
+ * Weeknummers links; bezettingsbolletje: groen / oranje (≥60%) / rood (≥90%).
  */
 export default function PlanningMiniMonth() {
     const router = useRouter();
@@ -77,7 +146,7 @@ export default function PlanningMiniMonth() {
         return new Date(today.getFullYear(), today.getMonth(), 1);
     });
 
-    const [marks, setMarks] = useState<Record<string, DayMarks>>({});
+    const [loadByDay, setLoadByDay] = useState<Record<string, number>>({});
 
     useEffect(() => {
         if (!selectedIso || !/^\d{4}-\d{2}-\d{2}$/.test(selectedIso)) return;
@@ -96,13 +165,15 @@ export default function PlanningMiniMonth() {
     useEffect(() => {
         let cancelled = false;
 
-        async function loadMarks() {
+        async function loadCapacity() {
             try {
-                const res = await fetch("/api/planning", {
-                    cache: "no-store",
-                });
-                if (!res.ok) return;
-                const data = await res.json();
+                const [planningRes, engineersRes] = await Promise.all([
+                    fetch("/api/planning", { cache: "no-store" }),
+                    fetch("/api/engineers", { cache: "no-store" }),
+                ]);
+                if (!planningRes.ok) return;
+
+                const data = await planningRes.json();
                 const workorders = Array.isArray(data)
                     ? data
                     : Array.isArray(data?.workorders)
@@ -111,11 +182,19 @@ export default function PlanningMiniMonth() {
                 const events = Array.isArray(data?.events)
                     ? data.events
                     : [];
+                const leave = Array.isArray(data?.leave) ? data.leave : [];
 
-                const next: Record<string, DayMarks> = {};
-                const touch = (iso: string, kind: "job" | "agenda") => {
-                    if (!next[iso]) next[iso] = { job: false, agenda: false };
-                    next[iso][kind] = true;
+                const engineersData = engineersRes.ok
+                    ? await engineersRes.json()
+                    : [];
+                const engineerCount = Array.isArray(engineersData)
+                    ? Math.max(1, engineersData.length)
+                    : 1;
+
+                const capacityPerDay = engineerCount * UREN_PER_DAG;
+                const booked: Record<string, number> = {};
+                const add = (iso: string, hours: number) => {
+                    booked[iso] = (booked[iso] || 0) + hours;
                 };
 
                 for (const item of workorders) {
@@ -124,29 +203,62 @@ export default function PlanningMiniMonth() {
                     const end = item.plannedEndDate
                         ? toIsoDate(new Date(item.plannedEndDate))
                         : start;
+                    const monteurCount =
+                        1 +
+                        (Array.isArray(item.extraEngineers)
+                            ? item.extraEngineers.length
+                            : 0);
                     for (const iso of eachIsoInRange(start, end)) {
-                        touch(iso, "job");
+                        const h = urenOpDag(
+                            item.plannedDate,
+                            item.plannedEndDate,
+                            iso
+                        );
+                        add(iso, h * monteurCount);
                     }
                 }
 
                 for (const ev of events) {
-                    if (!ev?.startAt) continue;
+                    if (!ev?.startAt || !ev.assignedUserId) continue;
                     const start = toIsoDate(new Date(ev.startAt));
                     const end = ev.endAt
                         ? toIsoDate(new Date(ev.endAt))
                         : start;
                     for (const iso of eachIsoInRange(start, end)) {
-                        touch(iso, "agenda");
+                        add(
+                            iso,
+                            urenOpDag(
+                                ev.startAt,
+                                ev.endAt,
+                                iso,
+                                !!ev.allDay
+                            )
+                        );
                     }
                 }
 
-                if (!cancelled) setMarks(next);
+                // Verlof: hele dag van die monteur bezet
+                for (const l of leave) {
+                    if (!l?.from) continue;
+                    const from = String(l.from).slice(0, 10);
+                    const to = String(l.to || l.from).slice(0, 10);
+                    for (const iso of eachIsoInRange(from, to)) {
+                        add(iso, UREN_PER_DAG);
+                    }
+                }
+
+                const next: Record<string, number> = {};
+                for (const [iso, hours] of Object.entries(booked)) {
+                    next[iso] = Math.min(1, hours / capacityPerDay);
+                }
+
+                if (!cancelled) setLoadByDay(next);
             } catch {
-                if (!cancelled) setMarks({});
+                if (!cancelled) setLoadByDay({});
             }
         }
 
-        void loadMarks();
+        void loadCapacity();
         return () => {
             cancelled = true;
         };
@@ -259,20 +371,16 @@ export default function PlanningMiniMonth() {
                             const isToday = iso === todayIso;
                             const isSelected = selectedIso === iso;
                             const isWeekend = i >= 5;
-                            const dayMarks = marks[iso];
-                            const hasJob = !!dayMarks?.job;
-                            const hasAgenda = !!dayMarks?.agenda;
+                            const ratio = loadByDay[iso] ?? 0;
+                            const level = loadLevel(ratio);
+                            const pct = Math.round(ratio * 100);
 
                             return (
                                 <button
                                     key={iso}
                                     type="button"
                                     onClick={() => selectDay(day)}
-                                    title={
-                                        hasAgenda || hasJob
-                                            ? `${iso}${hasJob ? " · klus" : ""}${hasAgenda ? " · agenda" : ""}`
-                                            : iso
-                                    }
+                                    title={`${iso} · ${pct}% bezet`}
                                     className={`
                                         relative h-8 w-full rounded-lg text-[11px] tabular-nums
                                         font-semibold transition flex flex-col items-center justify-center
@@ -290,36 +398,13 @@ export default function PlanningMiniMonth() {
                                     <span className="leading-none">
                                         {day.getDate()}
                                     </span>
-                                    {(hasJob || hasAgenda) && (
-                                        <span className="flex items-center gap-0.5 mt-0.5 h-1.5">
-                                            {hasJob ? (
-                                                <span
-                                                    className={`
-                                                        h-1.5 w-1.5 rounded-full
-                                                        ${
-                                                            isSelected ||
-                                                            isToday
-                                                                ? "bg-white"
-                                                                : "bg-[#0066FF]"
-                                                        }
-                                                    `}
-                                                />
-                                            ) : null}
-                                            {hasAgenda ? (
-                                                <span
-                                                    className={`
-                                                        h-1.5 w-1.5 rounded-full
-                                                        ${
-                                                            isSelected ||
-                                                            isToday
-                                                                ? "bg-[#FFCC00]"
-                                                                : "bg-[#e6b800]"
-                                                        }
-                                                    `}
-                                                />
-                                            ) : null}
-                                        </span>
-                                    )}
+                                    <span
+                                        className={`
+                                            mt-0.5 h-1.5 w-1.5 rounded-full
+                                            ${loadColor(level)}
+                                        `}
+                                        aria-hidden
+                                    />
                                 </button>
                             );
                         })}
@@ -330,12 +415,16 @@ export default function PlanningMiniMonth() {
             <div className="mt-2 flex items-center justify-between gap-2 px-1">
                 <div className="flex items-center gap-2 text-[10px] text-slate-500">
                     <span className="inline-flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#0066FF]" />
-                        Klus
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        Ruimte
                     </span>
                     <span className="inline-flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#e6b800]" />
-                        Agenda
+                        <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
+                        ≥60%
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                        ≥90%
                     </span>
                 </div>
                 <button
