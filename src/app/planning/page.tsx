@@ -25,7 +25,7 @@ import {
     getPendingSchedule,
     type PendingSchedule,
 } from "@/lib/planning/pendingSchedule";
-import { amsterdamLocalToDate } from "@/lib/datetime/amsterdam";
+import { amsterdamLocalToDate, formatAmsterdamDateIso } from "@/lib/datetime/amsterdam";
 
 
 
@@ -356,7 +356,11 @@ function PlanningPageContent(){
 
         setLoading(false);
 
-
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(
+                new CustomEvent("planning-capacity-refresh")
+            );
+        }
     }
 
 
@@ -815,6 +819,59 @@ function PlanningPageContent(){
         await loadPlanning();
     }
 
+    /** Weekview: sleep boven-/onderkant agenda → start-/eindtijd wijzigen. */
+    async function resizeAgenda(args: {
+        eventId: string;
+        beginHour: number;
+        endHour: number;
+    }) {
+        const event = events.find((ev) => ev.id === args.eventId);
+        if (!event?.startAt) {
+            return;
+        }
+
+        function toHHmm(hour: number): string {
+            const h = Math.floor(hour);
+            const m = Math.round((hour - h) * 60);
+            return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+        }
+
+        const begin = Math.min(args.beginHour, args.endHour - 0.25);
+        const end = Math.max(args.endHour, begin + 0.25);
+        const dateIso = formatAmsterdamDateIso(new Date(event.startAt));
+
+        const response = await fetch(
+            `/api/planning/events/${encodeURIComponent(args.eventId)}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    date: dateIso,
+                    allDay: false,
+                    startTime: toHHmm(begin),
+                    endTime: toHHmm(end),
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            let message = "Agenda-duur aanpassen mislukt";
+            try {
+                const data = await response.json();
+                if (typeof data?.error === "string") {
+                    message = data.error;
+                }
+            } catch {
+                /* ignore */
+            }
+            alert(message);
+        }
+
+        await loadPlanning();
+    }
+
     /** Weekview: sleep agenda-item naar andere dag/tijd/monteur (null = Algemeen). */
     async function moveAgenda(args: {
         eventId: string;
@@ -1231,6 +1288,9 @@ function PlanningPageContent(){
                     }
                     onResizePlan={
                         canEdit ? resizeWeekPlan : undefined
+                    }
+                    onResizeAgenda={
+                        canEdit ? resizeAgenda : undefined
                     }
                     onMoveAgenda={
                         canEdit ? moveAgenda : undefined

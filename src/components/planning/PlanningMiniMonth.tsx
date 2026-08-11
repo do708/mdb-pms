@@ -148,6 +148,7 @@ export default function PlanningMiniMonth() {
     });
 
     const [loadByDay, setLoadByDay] = useState<Record<string, number>>({});
+    const [capacityTick, setCapacityTick] = useState(0);
 
     useEffect(() => {
         if (!selectedIso || !/^\d{4}-\d{2}-\d{2}$/.test(selectedIso)) return;
@@ -159,6 +160,22 @@ export default function PlanningMiniMonth() {
             return new Date(y, m - 1, 1);
         });
     }, [selectedIso]);
+
+    useEffect(() => {
+        function onCapacityRefresh() {
+            setCapacityTick((t) => t + 1);
+        }
+        window.addEventListener(
+            "planning-capacity-refresh",
+            onCapacityRefresh
+        );
+        return () => {
+            window.removeEventListener(
+                "planning-capacity-refresh",
+                onCapacityRefresh
+            );
+        };
+    }, []);
 
     const year = cursor.getFullYear();
     const month = cursor.getMonth();
@@ -282,7 +299,7 @@ export default function PlanningMiniMonth() {
         return () => {
             cancelled = true;
         };
-    }, [year, month]);
+    }, [year, month, capacityTick]);
 
     const weeks = useMemo(() => {
         const first = new Date(year, month, 1);

@@ -78,6 +78,12 @@ interface WeekViewProps {
         beginHour: number;
         endHour: number;
     }) => void;
+    /** Sleep boven-/onderkant van een agenda-item om duur te wijzigen */
+    onResizeAgenda?: (args: {
+        eventId: string;
+        beginHour: number;
+        endHour: number;
+    }) => void;
     /** Sleep een agenda-item naar een andere dag/tijd/monteur (null = Algemeen) */
     onMoveAgenda?: (args: {
         eventId: string;
@@ -124,6 +130,7 @@ export default function WeekView({
     onViewChange,
     onMovePlan,
     onResizePlan,
+    onResizeAgenda,
     onMoveAgenda,
     pendingSchedule = null,
     onSchedulePending,
@@ -141,14 +148,16 @@ export default function WeekView({
         durationHours: number;
     } | null>(null);
     const [resizeOverride, setResizeOverride] = useState<{
-        workorderId: string;
+        kind: "workorder" | "agenda";
+        id: string;
         beginUur: number;
         eindUur: number;
     } | null>(null);
     const resizeOverrideRef = useRef(resizeOverride);
     resizeOverrideRef.current = resizeOverride;
     const resizingRef = useRef<{
-        workorderId: string;
+        kind: "workorder" | "agenda";
+        id: string;
         edge: "start" | "end";
         cellKey: string;
         beginUur: number;
@@ -199,7 +208,8 @@ export default function WeekView({
                     active.eindUur - 0.25
                 );
                 setResizeOverride({
-                    workorderId: active.workorderId,
+                    kind: active.kind,
+                    id: active.id,
                     beginUur,
                     eindUur: active.eindUur,
                 });
@@ -209,7 +219,8 @@ export default function WeekView({
                     active.beginUur + 0.25
                 );
                 setResizeOverride({
-                    workorderId: active.workorderId,
+                    kind: active.kind,
+                    id: active.id,
                     beginUur: active.beginUur,
                     eindUur: Math.min(DAG_EIND_UUR, eindUur),
                 });
@@ -220,12 +231,26 @@ export default function WeekView({
             const active = resizingRef.current;
             const override = resizeOverrideRef.current;
             resizingRef.current = null;
-            if (active && override && onResizePlan) {
-                onResizePlan({
-                    workorderId: active.workorderId,
-                    beginHour: override.beginUur,
-                    endHour: override.eindUur,
-                });
+            if (active && override) {
+                if (
+                    active.kind === "workorder" &&
+                    onResizePlan
+                ) {
+                    onResizePlan({
+                        workorderId: active.id,
+                        beginHour: override.beginUur,
+                        endHour: override.eindUur,
+                    });
+                } else if (
+                    active.kind === "agenda" &&
+                    onResizeAgenda
+                ) {
+                    onResizeAgenda({
+                        eventId: active.id,
+                        beginHour: override.beginUur,
+                        endHour: override.eindUur,
+                    });
+                }
             }
             setResizeOverride(null);
             setIsDragging(false);
@@ -239,9 +264,8 @@ export default function WeekView({
             window.removeEventListener("pointerup", onPointerUp);
             window.removeEventListener("pointercancel", onPointerUp);
         };
-        // hourFromClientY / DAG_EIND_UUR zijn stabiel per render; listeners lezen refs.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [onResizePlan]);
+    }, [onResizePlan, onResizeAgenda]);
 
     useEffect(() => {
         function scrollToDay(iso: string, attempt = 0) {
@@ -1288,8 +1312,10 @@ export default function WeekView({
                                                                         day
                                                                     );
                                                                 const override =
-                                                                    resizeOverride?.workorderId ===
-                                                                    item.id
+                                                                    resizeOverride?.kind ===
+                                                                        "workorder" &&
+                                                                    resizeOverride.id ===
+                                                                        item.id
                                                                         ? resizeOverride
                                                                         : null;
                                                                 const pos =
@@ -1397,12 +1423,12 @@ export default function WeekView({
                                                                                     type="button"
                                                                                     aria-label="Starttijd aanpassen"
                                                                                     className="
-                                                                                        absolute left-1/2 -translate-x-1/2 -top-1 z-20
-                                                                                        flex h-3.5 w-8 items-center justify-center
-                                                                                        rounded-full bg-white/95 text-slate-700
-                                                                                        shadow-sm ring-1 ring-black/15
+                                                                                        absolute left-1/2 -translate-x-1/2 -top-0.5 z-20
+                                                                                        flex h-2 w-3.5 items-center justify-center
+                                                                                        rounded bg-white/95 text-slate-600
+                                                                                        shadow-sm ring-1 ring-black/10
                                                                                         cursor-ns-resize
-                                                                                        opacity-90 hover:opacity-100
+                                                                                        opacity-80 hover:opacity-100
                                                                                     "
                                                                                     onMouseDown={(e) => {
                                                                                         e.preventDefault();
@@ -1413,8 +1439,8 @@ export default function WeekView({
                                                                                         e.stopPropagation();
                                                                                         resizingRef.current =
                                                                                             {
-                                                                                                workorderId:
-                                                                                                    item.id,
+                                                                                                kind: "workorder",
+                                                                                                id: item.id,
                                                                                                 edge: "start",
                                                                                                 cellKey,
                                                                                                 beginUur:
@@ -1424,8 +1450,8 @@ export default function WeekView({
                                                                                             };
                                                                                         setResizeOverride(
                                                                                             {
-                                                                                                workorderId:
-                                                                                                    item.id,
+                                                                                                kind: "workorder",
+                                                                                                id: item.id,
                                                                                                 beginUur:
                                                                                                     pos.beginUur,
                                                                                                 eindUur:
@@ -1437,7 +1463,7 @@ export default function WeekView({
                                                                                         );
                                                                                     }}
                                                                                 >
-                                                                                    <span className="text-[9px] leading-none font-bold">
+                                                                                    <span className="text-[6px] leading-none">
                                                                                         ▲
                                                                                     </span>
                                                                                 </button>
@@ -1445,12 +1471,12 @@ export default function WeekView({
                                                                                     type="button"
                                                                                     aria-label="Eindtijd aanpassen"
                                                                                     className="
-                                                                                        absolute left-1/2 -translate-x-1/2 -bottom-1 z-20
-                                                                                        flex h-3.5 w-8 items-center justify-center
-                                                                                        rounded-full bg-white/95 text-slate-700
-                                                                                        shadow-sm ring-1 ring-black/15
+                                                                                        absolute left-1/2 -translate-x-1/2 -bottom-0.5 z-20
+                                                                                        flex h-2 w-3.5 items-center justify-center
+                                                                                        rounded bg-white/95 text-slate-600
+                                                                                        shadow-sm ring-1 ring-black/10
                                                                                         cursor-ns-resize
-                                                                                        opacity-90 hover:opacity-100
+                                                                                        opacity-80 hover:opacity-100
                                                                                     "
                                                                                     onMouseDown={(e) => {
                                                                                         e.preventDefault();
@@ -1461,8 +1487,8 @@ export default function WeekView({
                                                                                         e.stopPropagation();
                                                                                         resizingRef.current =
                                                                                             {
-                                                                                                workorderId:
-                                                                                                    item.id,
+                                                                                                kind: "workorder",
+                                                                                                id: item.id,
                                                                                                 edge: "end",
                                                                                                 cellKey,
                                                                                                 beginUur:
@@ -1472,8 +1498,8 @@ export default function WeekView({
                                                                                             };
                                                                                         setResizeOverride(
                                                                                             {
-                                                                                                workorderId:
-                                                                                                    item.id,
+                                                                                                kind: "workorder",
+                                                                                                id: item.id,
                                                                                                 beginUur:
                                                                                                     pos.beginUur,
                                                                                                 eindUur:
@@ -1485,7 +1511,7 @@ export default function WeekView({
                                                                                         );
                                                                                     }}
                                                                                 >
-                                                                                    <span className="text-[9px] leading-none font-bold">
+                                                                                    <span className="text-[6px] leading-none">
                                                                                         ▼
                                                                                     </span>
                                                                                 </button>
@@ -1546,29 +1572,70 @@ export default function WeekView({
                                                         )}
 
                                                         {dayEvents.map((ev) => {
-                                                            const pos = blokPositie(
-                                                                eventAsBlock(ev),
-                                                                day
-                                                            );
-                                                            const timeLabel = ev.allDay
-                                                                ? "Hele dag"
-                                                                : `${formatUurLabel(pos.beginUur)}${
-                                                                      ev.endAt
-                                                                          ? `–${formatUurLabel(pos.eindUur)}`
-                                                                          : ""
-                                                                  }`;
+                                                            const basePos =
+                                                                blokPositie(
+                                                                    eventAsBlock(
+                                                                        ev
+                                                                    ),
+                                                                    day
+                                                                );
+                                                            const override =
+                                                                resizeOverride?.kind ===
+                                                                    "agenda" &&
+                                                                resizeOverride.id ===
+                                                                    ev.id
+                                                                    ? resizeOverride
+                                                                    : null;
+                                                            const pos = override
+                                                                ? {
+                                                                      beginUur:
+                                                                          override.beginUur,
+                                                                      eindUur:
+                                                                          override.eindUur,
+                                                                      top:
+                                                                          (override.beginUur -
+                                                                              DAG_START_UUR) *
+                                                                              PX_PER_UUR +
+                                                                          DAG_PADDING_TOP,
+                                                                      height: Math.max(
+                                                                          40,
+                                                                          (override.eindUur -
+                                                                              override.beginUur) *
+                                                                              PX_PER_UUR
+                                                                      ),
+                                                                  }
+                                                                : basePos;
+                                                            const timeLabel =
+                                                                !override &&
+                                                                ev.allDay
+                                                                    ? "Hele dag"
+                                                                    : `${formatUurLabel(pos.beginUur)}${
+                                                                          ev.endAt ||
+                                                                          override
+                                                                              ? `–${formatUurLabel(pos.eindUur)}`
+                                                                              : ""
+                                                                      }`;
+                                                            const cellKey = `${iso}:${user.id}`;
+                                                            const canResize =
+                                                                !!onResizeAgenda;
 
                                                             return (
-                                                                <button
+                                                                <div
                                                                     key={ev.id}
-                                                                    type="button"
                                                                     data-planning-agenda
                                                                     draggable={
-                                                                        !!onMoveAgenda
+                                                                        !!onMoveAgenda &&
+                                                                        !resizingRef.current
                                                                     }
                                                                     onDragStart={
                                                                         onMoveAgenda
                                                                             ? (e) => {
+                                                                                  if (
+                                                                                      resizingRef.current
+                                                                                  ) {
+                                                                                      e.preventDefault();
+                                                                                      return;
+                                                                                  }
                                                                                   setIsDragging(
                                                                                       true
                                                                                   );
@@ -1594,13 +1661,19 @@ export default function WeekView({
                                                                               }
                                                                             : undefined
                                                                     }
-                                                                    onClick={() =>
-                                                                        onEditAgenda?.(ev)
-                                                                    }
+                                                                    onClick={() => {
+                                                                        if (
+                                                                            resizeOverride
+                                                                        )
+                                                                            return;
+                                                                        onEditAgenda?.(
+                                                                            ev
+                                                                        );
+                                                                    }}
                                                                     className={`
                                                                         absolute text-left
                                                                         rounded-lg px-2 py-1
-                                                                        leading-tight overflow-hidden
+                                                                        leading-tight
                                                                         bg-[#FFCC00] text-slate-900
                                                                         border-2 border-[#e6b800]
                                                                         shadow-sm ring-1 ring-black/10
@@ -1618,25 +1691,143 @@ export default function WeekView({
                                                                         left: "4px",
                                                                         right: "4px",
                                                                     }}
-                                                                    title={ev.title}
+                                                                    title={
+                                                                        ev.title
+                                                                    }
                                                                 >
-                                                                    <span className="text-[11px] font-bold tabular-nums leading-none block truncate">
-                                                                        {timeLabel}
-                                                                        {ev.recurrenceFreq &&
-                                                                        ev.recurrenceFreq !==
-                                                                            "none"
-                                                                            ? " ↻"
-                                                                            : ""}
-                                                                    </span>
-                                                                    <strong className="text-[12px] block truncate font-semibold mt-0.5">
-                                                                        {ev.title}
-                                                                    </strong>
-                                                                    {ev.notes ? (
-                                                                        <span className="text-[10px] block truncate opacity-90">
-                                                                            {ev.notes}
-                                                                        </span>
+                                                                    {canResize ? (
+                                                                        <>
+                                                                            <button
+                                                                                type="button"
+                                                                                aria-label="Starttijd aanpassen"
+                                                                                className="
+                                                                                    absolute left-1/2 -translate-x-1/2 -top-0.5 z-20
+                                                                                    flex h-2 w-3.5 items-center justify-center
+                                                                                    rounded bg-white/95 text-slate-600
+                                                                                    shadow-sm ring-1 ring-black/10
+                                                                                    cursor-ns-resize
+                                                                                    opacity-80 hover:opacity-100
+                                                                                "
+                                                                                onMouseDown={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                }}
+                                                                                onPointerDown={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                    resizingRef.current =
+                                                                                        {
+                                                                                            kind: "agenda",
+                                                                                            id: ev.id,
+                                                                                            edge: "start",
+                                                                                            cellKey,
+                                                                                            beginUur:
+                                                                                                pos.beginUur,
+                                                                                            eindUur:
+                                                                                                pos.eindUur,
+                                                                                        };
+                                                                                    setResizeOverride(
+                                                                                        {
+                                                                                            kind: "agenda",
+                                                                                            id: ev.id,
+                                                                                            beginUur:
+                                                                                                pos.beginUur,
+                                                                                            eindUur:
+                                                                                                pos.eindUur,
+                                                                                        }
+                                                                                    );
+                                                                                    setIsDragging(
+                                                                                        true
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                <span className="text-[6px] leading-none">
+                                                                                    ▲
+                                                                                </span>
+                                                                            </button>
+                                                                            <button
+                                                                                type="button"
+                                                                                aria-label="Eindtijd aanpassen"
+                                                                                className="
+                                                                                    absolute left-1/2 -translate-x-1/2 -bottom-0.5 z-20
+                                                                                    flex h-2 w-3.5 items-center justify-center
+                                                                                    rounded bg-white/95 text-slate-600
+                                                                                    shadow-sm ring-1 ring-black/10
+                                                                                    cursor-ns-resize
+                                                                                    opacity-80 hover:opacity-100
+                                                                                "
+                                                                                onMouseDown={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                }}
+                                                                                onPointerDown={(
+                                                                                    e
+                                                                                ) => {
+                                                                                    e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                    resizingRef.current =
+                                                                                        {
+                                                                                            kind: "agenda",
+                                                                                            id: ev.id,
+                                                                                            edge: "end",
+                                                                                            cellKey,
+                                                                                            beginUur:
+                                                                                                pos.beginUur,
+                                                                                            eindUur:
+                                                                                                pos.eindUur,
+                                                                                        };
+                                                                                    setResizeOverride(
+                                                                                        {
+                                                                                            kind: "agenda",
+                                                                                            id: ev.id,
+                                                                                            beginUur:
+                                                                                                pos.beginUur,
+                                                                                            eindUur:
+                                                                                                pos.eindUur,
+                                                                                        }
+                                                                                    );
+                                                                                    setIsDragging(
+                                                                                        true
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                <span className="text-[6px] leading-none">
+                                                                                    ▼
+                                                                                </span>
+                                                                            </button>
+                                                                        </>
                                                                     ) : null}
-                                                                </button>
+                                                                    <div className="h-full overflow-hidden">
+                                                                        <span className="text-[11px] font-bold tabular-nums leading-none block truncate">
+                                                                            {
+                                                                                timeLabel
+                                                                            }
+                                                                            {ev.recurrenceFreq &&
+                                                                            ev.recurrenceFreq !==
+                                                                                "none"
+                                                                                ? " ↻"
+                                                                                : ""}
+                                                                        </span>
+                                                                        <strong className="text-[12px] block truncate font-semibold mt-0.5">
+                                                                            {
+                                                                                ev.title
+                                                                            }
+                                                                        </strong>
+                                                                        {ev.notes ? (
+                                                                            <span className="text-[10px] block truncate opacity-90">
+                                                                                {
+                                                                                    ev.notes
+                                                                                }
+                                                                            </span>
+                                                                        ) : null}
+                                                                    </div>
+                                                                </div>
                                                             );
                                                         })}
                                       </div>
