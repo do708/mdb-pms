@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -18,6 +19,8 @@ import {
     Archive,
     Folder
 } from "lucide-react";
+
+import PlanningMiniMonth from "@/components/planning/PlanningMiniMonth";
 
 
 
@@ -359,6 +362,13 @@ export default function Sidebar({
 
                     })
                 }
+
+                {pathname === "/planning" ||
+                pathname.startsWith("/planning/") ? (
+                    <Suspense fallback={null}>
+                        <PlanningMiniMonth />
+                    </Suspense>
+                ) : null}
                 </div>
 
 

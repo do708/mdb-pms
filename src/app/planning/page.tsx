@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
@@ -105,11 +105,21 @@ function formatNlDate(
 
 
 
-export default function PlanningPage(){
+export default function PlanningPage() {
+    return (
+        <Suspense fallback={null}>
+            <PlanningPageContent />
+        </Suspense>
+    );
+}
+
+function PlanningPageContent(){
 
 
     const router =
         useRouter();
+
+    const searchParams = useSearchParams();
 
 
     const { data:session, status:sessionStatus } =
@@ -224,7 +234,24 @@ export default function PlanningPage(){
         d.setDate(d.getDate() - d.getDay() + 1);
         d.setHours(0,0,0,0);
         setWeekStart(d);
+        router.replace("/planning");
     }
+
+
+    // Mini-maand in sidebar: ?date=YYYY-MM-DD → die week tonen
+    useEffect(() => {
+        const raw = searchParams.get("date");
+        if (!raw || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return;
+        const [y, m, d] = raw.split("-").map(Number);
+        const date = new Date(y, m - 1, d);
+        if (Number.isNaN(date.getTime())) return;
+        date.setHours(0, 0, 0, 0);
+        const monday = new Date(date);
+        const dow = monday.getDay();
+        monday.setDate(monday.getDate() - (dow === 0 ? 6 : dow - 1));
+        setWeekStart(monday);
+        setView("week");
+    }, [searchParams]);
 
 
 
