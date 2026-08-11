@@ -6,8 +6,8 @@ import { excludeArchivedWorkorders } from "@/lib/archive";
 import {
     effectiefKlaarzetMateriaal,
     leesSchermAansturing,
-    materiaalCompleet,
     materiaalRegels,
+    moetOpMateriaalControle,
     zetKlaarzetStatus,
     type KlaarzetStatusField,
     type MateriaalSoortKey,
@@ -63,28 +63,18 @@ export async function GET() {
 
         for (const w of workorders) {
             const aansturing = leesSchermAansturing(w.aanvraagSpecificaties);
+            if (!moetOpMateriaalControle(w.formData, w.aanvraagSpecificaties)) {
+                continue;
+            }
+
             const km = effectiefKlaarzetMateriaal(
                 w.formData,
                 w.aanvraagSpecificaties
             );
-
-            // Compleet klaargezet → niet tonen.
-            // Geen/leeg materiaal → wél tonen: nieuw ingeplande klussen
-            // zonder prefill moeten ook gecontroleerd kunnen worden.
-            if (
-                km &&
-                materiaalCompleet(km, { heeftNativeOs: aansturing.heeftNativeOs })
-            ) {
-                continue;
-            }
-
             const regels = materiaalRegels(km, {
                 heeftNativeOs: aansturing.heeftNativeOs,
             });
             const openRegels = regels.filter((r) => !r.inOrde);
-            if (km && openRegels.length === 0) {
-                continue;
-            }
 
             const straatHuis = [w.straat, w.huisnummer]
                 .filter(Boolean)

@@ -447,14 +447,14 @@ export default function DashboardPage() {
             {(data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
                 <SpecPanel
                     title={`Materiaal klaarzetten (${data?.materiaalWaarschuwing?.length})`}
-                    hint="Installatie is morgen (of de eerstvolgende werkdag). Controleer of materiaal geleverd/klaargezet of op locatie is."
+                    hint="Ingeplande klussen waarbij materiaal nog openstaat (ook verderop in de planning)."
                     tone="amber"
                 >
                     <div className="space-y-2">
                         {data?.materiaalWaarschuwing?.map((workorder) => (
                             <a
                                 key={workorder.id}
-                                href={`/workorders/${workorder.id}/edit`}
+                                href="/dashboard/materiaal-controle"
                             >
                                 <SpecListRow
                                     className="

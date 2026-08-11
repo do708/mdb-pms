@@ -248,7 +248,6 @@ export default function MateriaalControlePage() {
             <div className="print:hidden">
                 <PageHeader
                     title="Materiaal controleren"
-                    subtitle="Ingeplande klussen waarbij materiaal nog ontbreekt, geleverd of klaargezet moet worden"
                     actions={
                         <>
                             <Link

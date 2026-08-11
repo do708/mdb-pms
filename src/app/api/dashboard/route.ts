@@ -6,13 +6,8 @@ import { requireApiRole } from "@/lib/auth/guard";
 
 import { excludeArchivedWorkorders, excludeArchivedForms } from "@/lib/archive";
 import {
-    leesKlaarzetMateriaal,
-    heeftMateriaal,
-    materiaalCompleet,
-    leesSchermAansturing,
+    moetOpMateriaalControle,
 } from "@/lib/klaarzetMateriaal";
-
-import { volgendeWerkdag } from "@/lib/holidays";
 
 
 
@@ -257,86 +252,49 @@ export async function GET(){
 
 
 
-        // --- Materiaal-waarschuwing: klussen waarvoor NU (op de laatste
-        //     werkdag vóór de klus) het klaargezet materiaal nog niet volledig
-        //     is. De controle vindt 1 WERKDAG van tevoren plaats: op vrijdag
-        //     waarschuwen we dus ook voor maandag-klussen (weekend + nationale
-        //     feestdagen worden overgeslagen). ---
-        const startMorgen =
-            new Date(startVandaag);
-        startMorgen.setDate(startMorgen.getDate() + 1);
-
-        // De eerstvolgende werkdag ná vandaag. Voor een klus op die dag is
-        // vandaag de laatste werkdag ervoor, dus nu moet de controle gebeuren.
-        const volgWerkdag =
-            volgendeWerkdag(startVandaag);
-
-        // Venster loopt van morgen t/m (en inclusief) die volgende werkdag.
-        const eindMorgen =
-            new Date(volgWerkdag);
-        eindMorgen.setDate(eindMorgen.getDate() + 1);
-
-
-        const morgenKlussen =
+        // Alle ingeplande klussen met open/leeg materiaal (ook over 1–2 weken).
+        const ingeplandKlussen =
             await prisma.workorder.findMany({
-
-                where:{
-
-                    plannedDate:{
-                        gte:startMorgen,
-                        lt:eindMorgen
-                    },
-
-                    status:{
-                        in:NOG_IN_TE_VULLEN
-                    }
-
+                where: {
+                    status: "ingepland",
+                    ...excludeArchivedWorkorders(),
                 },
-
-                orderBy:{
-                    plannedDate:"asc"
+                orderBy: {
+                    plannedDate: "asc",
                 },
-
-                // formData wél nodig voor klaarzet-materiaal; pdfData niet
                 omit: {
                     pdfData: true,
                 },
-
-                include:{
-                    customer:true,
-                    project:{
-                        include:{
-                            customer:true
-                        }
+                include: {
+                    customer: true,
+                    project: {
+                        include: {
+                            customer: true,
+                        },
                     },
-                    assignedUser:true
-                }
-
+                    assignedUser: true,
+                },
             });
 
-
         const materiaalWaarschuwing =
-            morgenKlussen
-            .filter(w=>{
-                const km = leesKlaarzetMateriaal(w.formData);
-                const aansturing = leesSchermAansturing(w.aanvraagSpecificaties);
-                // Waarschuwen zodra er materiaal is dat nog niet compleet is.
-                return heeftMateriaal(km) && !materiaalCompleet(km, {
-                    heeftNativeOs: aansturing.heeftNativeOs,
-                });
-            })
-            .map(w=>({
-                id:w.id,
-                number:w.number,
-                title:w.title,
-                plannedDate:w.plannedDate,
-                customer:
-                    w.customer?.name
-                    ?? w.project?.customer?.name
-                    ?? null,
-                engineer:
-                    w.assignedUser?.name ?? null
-            }));
+            ingeplandKlussen
+                .filter((w) =>
+                    moetOpMateriaalControle(
+                        w.formData,
+                        w.aanvraagSpecificaties
+                    )
+                )
+                .map((w) => ({
+                    id: w.id,
+                    number: w.number,
+                    title: w.title,
+                    plannedDate: w.plannedDate,
+                    customer:
+                        w.customer?.name
+                        ?? w.project?.customer?.name
+                        ?? null,
+                    engineer: w.assignedUser?.name ?? null,
+                }));
 
 
         return NextResponse.json({

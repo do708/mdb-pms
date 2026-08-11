@@ -406,3 +406,24 @@ export function effectiefKlaarzetMateriaal(
 
     return heeftMateriaal(merged) ? merged : null;
 }
+
+/**
+ * Of een ingeplande klus op Materiaal controleren hoort:
+ * leeg materiaal of nog niet volledig geleverd/klaargezet.
+ * Geen datumvenster — ook klussen over 1–2 weken.
+ */
+export function moetOpMateriaalControle(
+    formData: unknown,
+    aanvraagSpecificaties: unknown
+): boolean {
+    const aansturing = leesSchermAansturing(aanvraagSpecificaties);
+    const km = effectiefKlaarzetMateriaal(formData, aanvraagSpecificaties);
+
+    if (!km) {
+        return true;
+    }
+
+    return !materiaalCompleet(km, {
+        heeftNativeOs: aansturing.heeftNativeOs,
+    });
+}
