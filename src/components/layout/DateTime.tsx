@@ -35,8 +35,8 @@ export default function DateTime() {
         <div className="flex items-center gap-3 text-sm">
             <Clock3 size={20} className="text-[#12345b] shrink-0" />
 
-            <div className="leading-tight min-w-0">
-                <div className="flex items-center gap-2.5">
+            <div className="leading-tight min-w-0 w-[13.5rem]">
+                <div className="flex items-center justify-between gap-2">
                     <p className="font-semibold text-gray-900 tabular-nums">
                         {date
                             ? date.toLocaleTimeString("nl-NL", {
@@ -48,7 +48,7 @@ export default function DateTime() {
                     <HeaderWeather />
                 </div>
 
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-xs text-gray-500 whitespace-nowrap">
                     {date ? formatNlDate(date) : ""}
                 </p>
             </div>

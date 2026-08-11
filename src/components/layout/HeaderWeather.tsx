@@ -81,15 +81,15 @@ export default function HeaderWeather() {
     return (
         <div
             className="
-                flex items-center gap-1.5
+                flex items-center gap-1
                 text-sm text-gray-700
-                tabular-nums
+                tabular-nums shrink-0
             "
             title={`${weather.label} · Monitorweg, Almere`}
             aria-label={`Weer: ${weather.label}, ${weather.temperature} graden`}
         >
             <Icon
-                size={18}
+                size={16}
                 className="text-[#12345b] shrink-0"
                 aria-hidden
             />
