@@ -308,10 +308,19 @@ export default function DashboardPage() {
 
     useEffect(() => {
         async function load() {
-            const response = await fetch("/api/dashboard");
-            const result = await response.json();
-            setData(result);
-            setLoading(false);
+            try {
+                const response = await fetch("/api/dashboard");
+                const result = await response.json();
+                if (!response.ok || result?.error) {
+                    setData(null);
+                } else {
+                    setData(result);
+                }
+            } catch {
+                setData(null);
+            } finally {
+                setLoading(false);
+            }
         }
 
         load();
@@ -329,6 +338,22 @@ export default function DashboardPage() {
         return (
             <PageShell>
                 <p className="text-sm text-gray-500">Geen toegang</p>
+            </PageShell>
+        );
+    }
+
+    if (!data?.counters) {
+        return (
+            <PageShell>
+                <PageHeader
+                    title="Dashboard"
+                    subtitle="Overzicht opdrachten en formulieren"
+                />
+                <p className="text-sm text-red-600">
+                    Dashboardgegevens konden niet worden geladen. Vernieuw de
+                    pagina of controleer of de database-migraties zijn
+                    uitgevoerd.
+                </p>
             </PageShell>
         );
     }
