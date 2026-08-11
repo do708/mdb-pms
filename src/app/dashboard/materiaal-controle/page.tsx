@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { canAccessOffice } from "@/lib/auth/checkRole";
@@ -10,6 +10,7 @@ import {
     SpecPageCard,
     SpecPanel,
 } from "@/components/ui/SpecLayout";
+import type { KlaarzetStatusField } from "@/lib/klaarzetMateriaal";
 
 interface MateriaalRegel {
     key: string;
@@ -49,32 +50,62 @@ function nlDate(value: string | null | undefined): string {
     });
 }
 
-function CheckBox({
+function regelInOrde(regel: MateriaalRegel): boolean {
+    if (regel.opLocatie) return true;
+    if (regel.nativeOsFlow && !Boolean(regel.geprepareerd)) {
+        return false;
+    }
+    return Boolean(regel.geleverd) && Boolean(regel.klaargezet);
+}
+
+function applyStatus(
+    regel: MateriaalRegel,
+    field: KlaarzetStatusField,
+    value: boolean
+): MateriaalRegel {
+    const next: MateriaalRegel = { ...regel };
+    if (field === "geleverd") next.geleverd = value;
+    else if (field === "geprepareerd") next.geprepareerd = value;
+    else if (field === "klaargezet") next.klaargezet = value;
+    else if (field === "opLocatie") next.opLocatie = value;
+    next.inOrde = regelInOrde(next);
+    return next;
+}
+
+/** Interactieve checkbox voor scherm; print gebruikt PrintTick. */
+function StatusCheckBox({
     checked,
     label,
+    disabled,
+    onChange,
 }: {
     checked: boolean;
     label: string;
+    disabled?: boolean;
+    onChange: (next: boolean) => void;
 }) {
     return (
-        <span
+        <label
             className={`
-                inline-flex items-center gap-1.5 text-xs
+                inline-flex items-center gap-1.5 text-xs select-none
+                ${disabled ? "opacity-50 cursor-wait" : "cursor-pointer"}
                 ${checked ? "text-emerald-800" : "text-gray-700"}
             `}
         >
-            <span
-                className={`
-                    inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center
-                    border border-gray-400 rounded-[2px] text-[10px] leading-none
-                    ${checked ? "bg-emerald-100 border-emerald-500 text-emerald-800" : "bg-white"}
-                `}
-                aria-hidden
-            >
-                {checked ? "✓" : ""}
-            </span>
+            <input
+                type="checkbox"
+                checked={checked}
+                disabled={disabled}
+                onChange={(e) => onChange(e.target.checked)}
+                className="
+                    h-3.5 w-3.5 shrink-0 rounded-[2px]
+                    border-gray-400 text-emerald-600
+                    focus:ring-emerald-500 focus:ring-offset-0
+                    accent-emerald-600
+                "
+            />
             {label}
-        </span>
+        </label>
     );
 }
 
@@ -100,6 +131,7 @@ export default function MateriaalControlePage() {
     const [items, setItems] = useState<ControleItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [savingKeys, setSavingKeys] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         async function load() {
@@ -122,6 +154,76 @@ export default function MateriaalControlePage() {
 
         load();
     }, []);
+
+    const toggleStatus = useCallback(
+        async (
+            workorderId: string,
+            regelKey: string,
+            field: KlaarzetStatusField,
+            value: boolean
+        ) => {
+            const saveKey = `${workorderId}:${regelKey}:${field}`;
+            let snapshot: ControleItem[] | null = null;
+
+            setSavingKeys((prev) => {
+                const next = new Set(prev);
+                next.add(saveKey);
+                return next;
+            });
+
+            setItems((prev) => {
+                snapshot = prev;
+                return prev.map((item) => {
+                    if (item.id !== workorderId) return item;
+                    const alleRegels = item.alleRegels.map((r) =>
+                        r.key === regelKey ? applyStatus(r, field, value) : r
+                    );
+                    return {
+                        ...item,
+                        alleRegels,
+                        regels: alleRegels.filter((r) => !r.inOrde),
+                    };
+                });
+            });
+
+            setError("");
+
+            try {
+                const res = await fetch("/api/dashboard/materiaal-controle", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        workorderId,
+                        regelKey,
+                        field,
+                        value,
+                    }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || data?.error) {
+                    throw new Error(
+                        typeof data?.error === "string"
+                            ? data.error
+                            : "Opslaan mislukt"
+                    );
+                }
+            } catch (err) {
+                if (snapshot) {
+                    setItems(snapshot);
+                }
+                setError(
+                    err instanceof Error ? err.message : "Opslaan mislukt"
+                );
+            } finally {
+                setSavingKeys((prev) => {
+                    const next = new Set(prev);
+                    next.delete(saveKey);
+                    return next;
+                });
+            }
+        },
+        []
+    );
 
     if (status !== "loading" && !canAccessOffice(userRole)) {
         return (
@@ -295,29 +397,77 @@ export default function MateriaalControlePage() {
                                             </td>
                                             <td className="py-2">
                                                 <div className="flex flex-wrap gap-x-3 gap-y-1 print:hidden">
-                                                    <CheckBox
+                                                    <StatusCheckBox
                                                         checked={regel.geleverd}
+                                                        disabled={savingKeys.has(
+                                                            `${item.id}:${regel.key}:geleverd`
+                                                        )}
                                                         label={
                                                             regel.nativeOsFlow
                                                                 ? "Binnengekomen"
                                                                 : "Geleverd"
                                                         }
+                                                        onChange={(v) =>
+                                                            toggleStatus(
+                                                                item.id,
+                                                                regel.key,
+                                                                "geleverd",
+                                                                v
+                                                            )
+                                                        }
                                                     />
                                                     {regel.nativeOsFlow ? (
-                                                        <CheckBox
+                                                        <StatusCheckBox
                                                             checked={Boolean(
                                                                 regel.geprepareerd
                                                             )}
+                                                            disabled={savingKeys.has(
+                                                                `${item.id}:${regel.key}:geprepareerd`
+                                                            )}
                                                             label="Geprepareerd"
+                                                            onChange={(v) =>
+                                                                toggleStatus(
+                                                                    item.id,
+                                                                    regel.key,
+                                                                    "geprepareerd",
+                                                                    v
+                                                                )
+                                                            }
                                                         />
                                                     ) : null}
-                                                    <CheckBox
-                                                        checked={regel.klaargezet}
+                                                    <StatusCheckBox
+                                                        checked={
+                                                            regel.klaargezet
+                                                        }
+                                                        disabled={savingKeys.has(
+                                                            `${item.id}:${regel.key}:klaargezet`
+                                                        )}
                                                         label="Klaargezet"
+                                                        onChange={(v) =>
+                                                            toggleStatus(
+                                                                item.id,
+                                                                regel.key,
+                                                                "klaargezet",
+                                                                v
+                                                            )
+                                                        }
                                                     />
-                                                    <CheckBox
-                                                        checked={regel.opLocatie}
+                                                    <StatusCheckBox
+                                                        checked={
+                                                            regel.opLocatie
+                                                        }
+                                                        disabled={savingKeys.has(
+                                                            `${item.id}:${regel.key}:opLocatie`
+                                                        )}
                                                         label="Op locatie"
+                                                        onChange={(v) =>
+                                                            toggleStatus(
+                                                                item.id,
+                                                                regel.key,
+                                                                "opLocatie",
+                                                                v
+                                                            )
+                                                        }
                                                     />
                                                 </div>
                                                 {!regel.inOrde ? (

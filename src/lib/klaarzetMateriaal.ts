@@ -54,6 +54,61 @@ export type MateriaalSoortKey =
     | "kiosk"
     | "versterkers";
 
+/** Statusvelden die op het controle-overzicht aan/uit gezet kunnen worden. */
+export type KlaarzetStatusField =
+    | "geleverd"
+    | "geprepareerd"
+    | "klaargezet"
+    | "opLocatie";
+
+const STATUS_FIELD_SUFFIX:Record<
+    Exclude<KlaarzetStatusField, "geprepareerd">,
+    string
+> = {
+    geleverd:"Geleverd",
+    klaargezet:"Klaargezet",
+    opLocatie:"OpLocatie",
+};
+
+/** DB-sleutel voor een statusvinkje, of null als die combinatie niet bestaat. */
+export function klaarzetStatusDbKey(
+    soort:MateriaalSoortKey,
+    field:KlaarzetStatusField
+):keyof KlaarzetMateriaal | null {
+
+    if(field === "geprepareerd"){
+        return soort === "schermen"
+            ? "schermenGeprepareerd"
+            : null;
+    }
+
+    return `${soort}${STATUS_FIELD_SUFFIX[field]}` as keyof KlaarzetMateriaal;
+
+}
+
+/**
+ * Zet één statusvlag in het klaarzet-blok (booleans).
+ * Geeft een nieuw object terug; wijzigt het origineel niet.
+ */
+export function zetKlaarzetStatus(
+    km:KlaarzetMateriaal,
+    soort:MateriaalSoortKey,
+    field:KlaarzetStatusField,
+    value:boolean
+):KlaarzetMateriaal | null {
+
+    const dbKey = klaarzetStatusDbKey(soort, field);
+    if(!dbKey){
+        return null;
+    }
+
+    return {
+        ...km,
+        [dbKey]:value,
+    };
+
+}
+
 export interface MateriaalRegelStatus {
     key:MateriaalSoortKey;
     label:string;
