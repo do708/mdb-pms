@@ -65,8 +65,10 @@ function applyStatus(
     const next: MateriaalRegel = { ...regel };
     if (field === "geleverd") next.geleverd = value;
     else if (field === "geprepareerd") next.geprepareerd = value;
-    else if (field === "klaargezet") next.klaargezet = value;
-    else if (field === "opLocatie") next.opLocatie = value;
+    else if (field === "klaargezet") {
+        next.klaargezet = value;
+        if (value) next.geleverd = true;
+    } else if (field === "opLocatie") next.opLocatie = value;
     next.inOrde = regelInOrde(next);
     return next;
 }
@@ -87,7 +89,7 @@ function StatusCheckBox({
         <label
             className={`
                 inline-flex items-center gap-1.5 text-xs select-none
-                ${disabled ? "opacity-50 cursor-wait" : "cursor-pointer"}
+                ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
                 ${checked ? "text-emerald-800" : "text-gray-700"}
             `}
         >
@@ -101,6 +103,7 @@ function StatusCheckBox({
                     border-gray-400 text-emerald-600
                     focus:ring-emerald-500 focus:ring-offset-0
                     accent-emerald-600
+                    disabled:cursor-not-allowed
                 "
             />
             {label}
@@ -417,12 +420,15 @@ export default function MateriaalControlePage() {
                                                 {regel.aantal}
                                             </td>
                                             <td className="py-2">
-                                                <div className="flex flex-wrap gap-x-3 gap-y-1 print:hidden">
+                                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 print:hidden">
                                                     <StatusCheckBox
                                                         checked={regel.geleverd}
-                                                        disabled={savingKeys.has(
-                                                            `${item.id}:${regel.key}:geleverd`
-                                                        )}
+                                                        disabled={
+                                                            regel.opLocatie
+                                                            || savingKeys.has(
+                                                                `${item.id}:${regel.key}:geleverd`
+                                                            )
+                                                        }
                                                         label={
                                                             regel.nativeOsFlow
                                                                 ? "Binnengekomen"
@@ -442,9 +448,12 @@ export default function MateriaalControlePage() {
                                                             checked={Boolean(
                                                                 regel.geprepareerd
                                                             )}
-                                                            disabled={savingKeys.has(
-                                                                `${item.id}:${regel.key}:geprepareerd`
-                                                            )}
+                                                            disabled={
+                                                                regel.opLocatie
+                                                                || savingKeys.has(
+                                                                    `${item.id}:${regel.key}:geprepareerd`
+                                                                )
+                                                            }
                                                             label="Geprepareerd"
                                                             onChange={(v) =>
                                                                 toggleStatus(
@@ -460,9 +469,12 @@ export default function MateriaalControlePage() {
                                                         checked={
                                                             regel.klaargezet
                                                         }
-                                                        disabled={savingKeys.has(
-                                                            `${item.id}:${regel.key}:klaargezet`
-                                                        )}
+                                                        disabled={
+                                                            regel.opLocatie
+                                                            || savingKeys.has(
+                                                                `${item.id}:${regel.key}:klaargezet`
+                                                            )
+                                                        }
                                                         label="Klaargezet"
                                                         onChange={(v) =>
                                                             toggleStatus(
@@ -473,6 +485,9 @@ export default function MateriaalControlePage() {
                                                             )
                                                         }
                                                     />
+                                                    <span className="text-[10px] text-gray-400 self-center">
+                                                        of
+                                                    </span>
                                                     <StatusCheckBox
                                                         checked={
                                                             regel.opLocatie

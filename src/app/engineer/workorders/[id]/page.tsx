@@ -246,7 +246,7 @@ function MateriaalRij({
             <div className="flex flex-wrap items-center gap-1 sm:pl-[7.5rem]">
                 <Chip
                     active={geleverd}
-                    disabled={!ingevuld}
+                    disabled={!ingevuld || opLocatie}
                     warn={nietInOrde && !geleverd && !opLocatie}
                     onToggle={()=>onGeleverd(!geleverd)}
                 >
@@ -255,7 +255,7 @@ function MateriaalRij({
                 {nativeOsFlow && onGeprepareerd ? (
                     <Chip
                         active={Boolean(geprepareerd)}
-                        disabled={!ingevuld}
+                        disabled={!ingevuld || opLocatie}
                         warn={
                             nietInOrde
                             && !geprepareerd
@@ -270,9 +270,15 @@ function MateriaalRij({
                 ) : null}
                 <Chip
                     active={klaargezet}
-                    disabled={!ingevuld}
+                    disabled={!ingevuld || opLocatie}
                     warn={nietInOrde && !klaargezet && !opLocatie}
-                    onToggle={()=>onKlaargezet(!klaargezet)}
+                    onToggle={()=>{
+                        const next = !klaargezet;
+                        onKlaargezet(next);
+                        if(next){
+                            onGeleverd(true);
+                        }
+                    }}
                 >
                     Klaargezet
                 </Chip>

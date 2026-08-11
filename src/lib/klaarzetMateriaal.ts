@@ -102,10 +102,23 @@ export function zetKlaarzetStatus(
         return null;
     }
 
-    return {
+    let next:KlaarzetMateriaal = {
         ...km,
         [dbKey]:value,
     };
+
+    // Klaargezet ⇒ altijd ook geleverd/binnengekomen.
+    if(field === "klaargezet" && value){
+        const geleverdKey = klaarzetStatusDbKey(soort, "geleverd");
+        if(geleverdKey){
+            next = {
+                ...next,
+                [geleverdKey]:true,
+            };
+        }
+    }
+
+    return next;
 
 }
 
