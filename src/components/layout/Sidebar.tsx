@@ -362,103 +362,104 @@ export default function Sidebar({
 
                     })
                 }
-
-                {pathname === "/planning" ||
-                pathname.startsWith("/planning/") ? (
-                    <Suspense fallback={null}>
-                        <PlanningMiniMonth />
-                    </Suspense>
-                ) : null}
                 </div>
 
+                <div className="shrink-0 mt-auto">
+                    {pathname === "/planning" ||
+                    pathname.startsWith("/planning/") ? (
+                        <Suspense fallback={null}>
+                            <PlanningMiniMonth />
+                        </Suspense>
+                    ) : null}
 
-                {role !== "engineer" ? (
-                    <div className="shrink-0 pt-4 mt-auto border-t border-gray-100 space-y-1">
-                        <p className="
-                            px-4
-                            text-xs
-                            uppercase
-                            text-gray-400
-                            mb-1
-                        ">
-                            Externe systemen
-                        </p>
-
-                        <button
-                            type="button"
-                            onClick={()=>{
-                                window.open(
-                                    "https://www.bunni.nl",
-                                    "Bunni",
-                                    "width=1400,height=900"
-                                );
-                            }}
-                            className="
-                                flex
-                                items-center
-                                gap-3
+                    {role !== "engineer" ? (
+                        <div className="pt-3 border-t border-gray-100 space-y-1">
+                            <p className="
                                 px-4
-                                py-3.5
-                                min-h-[48px]
-                                rounded-xl
-                                text-gray-600
-                                hover:bg-gray-100
-                                active:bg-gray-200
-                                w-full
-                                text-left
-                            "
-                        >
-                            <span className="text-xl w-5 text-center shrink-0">
-                                📒
-                            </span>
-                            <div>
-                                <div className="text-base sm:text-sm font-medium">
-                                    Bunni
-                                </div>
-                                <div className="text-xs text-gray-400">
-                                    Boekhoudsysteem
-                                </div>
-                            </div>
-                        </button>
+                                text-xs
+                                uppercase
+                                text-gray-400
+                                mb-1
+                            ">
+                                Externe systemen
+                            </p>
 
-                        <button
-                            type="button"
-                            onClick={()=>{
-                                window.open(
-                                    "https://www.vogels.com/nl-nl/p/pro-avmountadvisor#/pro-avmountadvisor/display?token=362942eb78612938757db61dc3b301fa",
-                                    "Vogels",
-                                    "width=1400,height=900"
-                                );
-                            }}
-                            className="
-                                flex
-                                items-center
-                                gap-3
-                                px-4
-                                py-3.5
-                                min-h-[48px]
-                                rounded-xl
-                                text-gray-600
-                                hover:bg-gray-100
-                                active:bg-gray-200
-                                w-full
-                                text-left
-                            "
-                        >
-                            <span className="text-xl w-5 text-center shrink-0">
-                                📺
-                            </span>
-                            <div>
-                                <div className="text-base sm:text-sm font-medium">
-                                    Vogels
+                            <button
+                                type="button"
+                                onClick={()=>{
+                                    window.open(
+                                        "https://www.bunni.nl",
+                                        "Bunni",
+                                        "width=1400,height=900"
+                                    );
+                                }}
+                                className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                    px-4
+                                    py-3.5
+                                    min-h-[48px]
+                                    rounded-xl
+                                    text-gray-600
+                                    hover:bg-gray-100
+                                    active:bg-gray-200
+                                    w-full
+                                    text-left
+                                "
+                            >
+                                <span className="text-xl w-5 text-center shrink-0">
+                                    📒
+                                </span>
+                                <div>
+                                    <div className="text-base sm:text-sm font-medium">
+                                        Bunni
+                                    </div>
+                                    <div className="text-xs text-gray-400">
+                                        Boekhoudsysteem
+                                    </div>
                                 </div>
-                                <div className="text-xs text-gray-400">
-                                    Pro-AV Advisor
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={()=>{
+                                    window.open(
+                                        "https://www.vogels.com/nl-nl/p/pro-avmountadvisor#/pro-avmountadvisor/display?token=362942eb78612938757db61dc3b301fa",
+                                        "Vogels",
+                                        "width=1400,height=900"
+                                    );
+                                }}
+                                className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                    px-4
+                                    py-3.5
+                                    min-h-[48px]
+                                    rounded-xl
+                                    text-gray-600
+                                    hover:bg-gray-100
+                                    active:bg-gray-200
+                                    w-full
+                                    text-left
+                                "
+                            >
+                                <span className="text-xl w-5 text-center shrink-0">
+                                    📺
+                                </span>
+                                <div>
+                                    <div className="text-base sm:text-sm font-medium">
+                                        Vogels
+                                    </div>
+                                    <div className="text-xs text-gray-400">
+                                        Pro-AV Advisor
+                                    </div>
                                 </div>
-                            </div>
-                        </button>
-                    </div>
-                ) : null}
+                            </button>
+                        </div>
+                    ) : null}
+                </div>
 
 
             </nav>
