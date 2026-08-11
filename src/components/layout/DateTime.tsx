@@ -3,114 +3,55 @@
 import { useEffect, useState } from "react";
 import { Clock3 } from "lucide-react";
 
+import HeaderWeather from "./HeaderWeather";
+
+/** nl-NL zet week-/maandnamen vaak klein; eerste letter hoofdletter. */
+function formatNlDate(date: Date): string {
+    const raw = date.toLocaleDateString("nl-NL", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+    return raw.replace(
+        /(^|[\s–-])([a-zà-ÿ])/g,
+        (_, sep, ch) => sep + ch.toUpperCase()
+    );
+}
 
 export default function DateTime() {
-
-
     // Start als null zodat server en client hetzelfde renderen (geen tijd).
-    // De klok wordt pas na het mounten (client-side) gevuld.
     const [date, setDate] = useState<Date | null>(null);
 
-
     useEffect(() => {
-
         setDate(new Date());
-
         const timer = setInterval(() => {
-
             setDate(new Date());
-
         }, 1000);
-
-
-
         return () => clearInterval(timer);
-
-
     }, []);
 
-
-
-
-
     return (
+        <div className="flex items-center gap-3 text-sm">
+            <Clock3 size={20} className="text-[#12345b] shrink-0" />
 
-        <div className="
-            flex
-            items-center
-            gap-3
-            text-sm
-        ">
+            <div className="leading-tight min-w-0">
+                <div className="flex items-center gap-2.5">
+                    <p className="font-semibold text-gray-900 tabular-nums">
+                        {date
+                            ? date.toLocaleTimeString("nl-NL", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                              })
+                            : "--:--"}
+                    </p>
+                    <HeaderWeather />
+                </div>
 
-
-            <Clock3
-
-                size={20}
-
-                className="
-                    text-[#12345b]
-                "
-
-            />
-
-
-
-            <div className="
-                leading-tight
-            ">
-
-
-                <p className="
-                    font-semibold
-                    text-gray-900
-                ">
-
-                    {
-                        date
-                        ?
-                        date.toLocaleTimeString(
-                            "nl-NL",
-                            {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            }
-                        )
-                        :
-                        "--:--"
-                    }
-
+                <p className="text-xs text-gray-500 truncate">
+                    {date ? formatNlDate(date) : ""}
                 </p>
-
-
-
-                <p className="
-                    text-xs
-                    text-gray-500
-                ">
-
-                    {
-                        date
-                        ?
-                        date.toLocaleDateString(
-                            "nl-NL",
-                            {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                            }
-                        )
-                        :
-                        ""
-                    }
-
-                </p>
-
-
             </div>
-
-
         </div>
-
     );
-
 }

@@ -42,8 +42,6 @@ export default function Header({
                     <DateTime />
                 </div>
 
-                <HeaderWeather />
-
                 <NotificationBell />
 
                 <UserMenu />
