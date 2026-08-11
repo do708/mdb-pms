@@ -170,17 +170,8 @@ export async function POST(
 
 
 
-        const date =
-            new Date()
-            .toLocaleDateString("nl-NL",{
-                day:"2-digit",
-                month:"2-digit",
-                year:"numeric"
-            });
-
-
         const title =
-            `${definition.label} ${guard.user.name ?? ""}, ${date}`;
+            `${definition.label} ${guard.user.name ?? ""}`.trim();
 
 
 
