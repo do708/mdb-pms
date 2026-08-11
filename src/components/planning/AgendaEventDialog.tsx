@@ -380,7 +380,7 @@ export default function AgendaEventDialog({
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Bijv. Container legen"
+                            autoComplete="off"
                             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
                             autoFocus
                         />
@@ -394,6 +394,7 @@ export default function AgendaEventDialog({
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
+                            autoComplete="off"
                             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
                         />
                     </label>
