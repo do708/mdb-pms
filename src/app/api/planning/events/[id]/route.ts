@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
-import { amsterdamLocalToDate, formatAmsterdamDateIso, formatAmsterdamHHmm } from "@/lib/datetime/amsterdam";
+import {
+    amsterdamLocalToDate,
+    formatAmsterdamDateIso,
+    formatAmsterdamHHmm,
+    getAmsterdamParts,
+} from "@/lib/datetime/amsterdam";
 import {
     alignDateToWeekday,
     nthWeekdayInMonth,
@@ -40,17 +45,18 @@ function applyRecurrenceStart(
         recurrence.recurrenceWeekday != null &&
         recurrence.recurrenceNth != null
     ) {
+        const p = getAmsterdamParts(startAt);
         const aligned =
             nthWeekdayInMonth(
-                startAt.getFullYear(),
-                startAt.getMonth(),
+                p.year,
+                p.month - 1,
                 recurrence.recurrenceWeekday,
                 recurrence.recurrenceNth,
                 startAt
             ) ||
             nthWeekdayInMonth(
-                startAt.getFullYear(),
-                startAt.getMonth() + 1,
+                p.month === 12 ? p.year + 1 : p.year,
+                p.month === 12 ? 0 : p.month,
                 recurrence.recurrenceWeekday,
                 recurrence.recurrenceNth,
                 startAt

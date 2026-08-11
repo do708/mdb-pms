@@ -1,5 +1,16 @@
 /** Herhaling van vrije agenda-items (master + virtuele occurrences). */
 
+import {
+    addAmsterdamCalendarDays,
+    addAmsterdamMonthsClamped,
+    amsterdamIsoWeekday,
+    amsterdamLocalToDate,
+    formatAmsterdamDateIso,
+    formatAmsterdamHHmm,
+    getAmsterdamParts,
+    startOfAmsterdamDay,
+} from "@/lib/datetime/amsterdam";
+
 export type RecurrenceFreq =
     | "none"
     | "weekly"
@@ -50,38 +61,19 @@ function toDate(value: Date | string): Date {
 }
 
 function toIsoDate(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
+    return formatAmsterdamDateIso(d);
 }
 
 function startOfLocalDay(d: Date): Date {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+    return startOfAmsterdamDay(d);
 }
 
 function addDays(d: Date, days: number): Date {
-    const next = new Date(d);
-    next.setDate(next.getDate() + days);
-    return next;
+    return addAmsterdamCalendarDays(d, days);
 }
 
 function addMonthsClamped(d: Date, months: number): Date {
-    const day = d.getDate();
-    const next = new Date(d.getFullYear(), d.getMonth() + months, 1);
-    const lastDay = new Date(
-        next.getFullYear(),
-        next.getMonth() + 1,
-        0
-    ).getDate();
-    next.setDate(Math.min(day, lastDay));
-    next.setHours(
-        d.getHours(),
-        d.getMinutes(),
-        d.getSeconds(),
-        d.getMilliseconds()
-    );
-    return next;
+    return addAmsterdamMonthsClamped(d, months);
 }
 
 /** JS getDay(): 0=zo … 6=za → ISO 1=ma … 7=zo */
@@ -108,17 +100,17 @@ export function parseMasterId(eventId: string): string {
     return at >= 0 ? eventId.slice(0, at) : eventId;
 }
 
-/** Verschuif datum naar de gevraagde ISO-weekdag (zelfde of volgende). */
+/** Verschuif datum naar de gevraagde ISO-weekdag (zelfde of volgende), Europe/Amsterdam. */
 export function alignDateToWeekday(date: Date, isoWeekday: number): Date {
     const iso = isoWeekday >= 1 && isoWeekday <= 7 ? isoWeekday : 1;
-    const current = jsDayToIso(date.getDay());
+    const current = amsterdamIsoWeekday(date);
     let delta = iso - current;
     if (delta < 0) delta += 7;
     return addDays(date, delta);
 }
 
 /**
- * N-de weekdag in een maand.
+ * N-de weekdag in een maand (Europe/Amsterdam-kalender).
  * nth: 1–4 of -1 (laatste). isoWeekday: 1=ma … 7=zo.
  */
 export function nthWeekdayInMonth(
@@ -128,45 +120,22 @@ export function nthWeekdayInMonth(
     nth: number,
     timeFrom: Date
 ): Date | null {
-    const jsTarget = isoToJsDay(isoWeekday);
+    const timeHHmm = formatAmsterdamHHmm(timeFrom);
+    const lastDay = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
 
-    if (nth === -1) {
-        const lastDay = new Date(year, monthIndex + 1, 0).getDate();
-        for (let d = lastDay; d >= 1; d--) {
-            const candidate = new Date(
-                year,
-                monthIndex,
-                d,
-                timeFrom.getHours(),
-                timeFrom.getMinutes(),
-                timeFrom.getSeconds(),
-                timeFrom.getMilliseconds()
-            );
-            if (candidate.getDay() === jsTarget) return candidate;
+    const matches: Date[] = [];
+    for (let d = 1; d <= lastDay; d++) {
+        const dayIso = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const candidate = amsterdamLocalToDate(dayIso, timeHHmm);
+        if (amsterdamIsoWeekday(candidate) === isoWeekday) {
+            matches.push(candidate);
         }
-        return null;
     }
 
+    if (matches.length === 0) return null;
+    if (nth === -1) return matches[matches.length - 1] ?? null;
     if (nth < 1 || nth > 4) return null;
-
-    let count = 0;
-    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
-        const candidate = new Date(
-            year,
-            monthIndex,
-            d,
-            timeFrom.getHours(),
-            timeFrom.getMinutes(),
-            timeFrom.getSeconds(),
-            timeFrom.getMilliseconds()
-        );
-        if (candidate.getDay() === jsTarget) {
-            count += 1;
-            if (count === nth) return candidate;
-        }
-    }
-    return null;
+    return matches[nth - 1] ?? null;
 }
 
 function pushOccurrence(
@@ -238,7 +207,7 @@ export function expandPlanningEvents(
             master.recurrenceWeekday >= 1 &&
             master.recurrenceWeekday <= 7
                 ? master.recurrenceWeekday
-                : jsDayToIso(startAt.getDay());
+                : amsterdamIsoWeekday(startAt);
         const nth =
             master.recurrenceNth === -1
                 ? -1
@@ -257,26 +226,27 @@ export function expandPlanningEvents(
         }
 
         if (freq === "monthly_weekday") {
-            const startMonth = new Date(
-                rangeStart.getFullYear(),
-                rangeStart.getMonth(),
-                1
+            const rangeParts = getAmsterdamParts(rangeStart);
+            const seriesParts = getAmsterdamParts(startAt);
+            const startMonth = amsterdamLocalToDate(
+                `${rangeParts.year}-${String(rangeParts.month).padStart(2, "0")}-01`,
+                "12:00"
             );
-            // Begin vanaf maand van series-start als die later is
-            const seriesMonth = new Date(
-                startAt.getFullYear(),
-                startAt.getMonth(),
-                1
+            const seriesMonth = amsterdamLocalToDate(
+                `${seriesParts.year}-${String(seriesParts.month).padStart(2, "0")}-01`,
+                "12:00"
             );
             let cursor = new Date(
                 Math.max(startMonth.getTime(), seriesMonth.getTime())
             );
+            const rangeEndParts = getAmsterdamParts(rangeEnd);
             let guard = 0;
             while (guard < 60) {
                 guard += 1;
+                const cp = getAmsterdamParts(cursor);
                 const occ = nthWeekdayInMonth(
-                    cursor.getFullYear(),
-                    cursor.getMonth(),
+                    cp.year,
+                    cp.month - 1,
                     weekday,
                     nth,
                     startAt
@@ -285,7 +255,6 @@ export function expandPlanningEvents(
                     const dayMs = startOfLocalDay(occ).getTime();
                     if (until !== null && dayMs > until) break;
                     if (dayMs > rangeTo) break;
-                    // Sla occurrences vóór de echte startdatum over
                     if (
                         dayMs >= rangeFrom &&
                         dayMs >= startOfLocalDay(startAt).getTime()
@@ -293,15 +262,18 @@ export function expandPlanningEvents(
                         pushOccurrence(out, master, startAt, occ, dur, true);
                     }
                 }
-                cursor = new Date(
-                    cursor.getFullYear(),
-                    cursor.getMonth() + interval,
-                    1
+                cursor = addAmsterdamMonthsClamped(
+                    amsterdamLocalToDate(
+                        `${cp.year}-${String(cp.month).padStart(2, "0")}-01`,
+                        "12:00"
+                    ),
+                    interval
                 );
+                const curP = getAmsterdamParts(cursor);
                 if (
-                    cursor.getFullYear() > rangeEnd.getFullYear() + 1 ||
-                    (cursor.getFullYear() === rangeEnd.getFullYear() &&
-                        cursor.getMonth() > rangeEnd.getMonth() + 1)
+                    curP.year > rangeEndParts.year + 1 ||
+                    (curP.year === rangeEndParts.year &&
+                        curP.month > rangeEndParts.month + 1)
                 ) {
                     break;
                 }
@@ -314,9 +286,10 @@ export function expandPlanningEvents(
             freq === "weekly"
                 ? alignDateToWeekday(new Date(startAt), weekday)
                 : new Date(startAt);
-        // Als align vooruit ging vóór de oorspronkelijke start en interval=1, ok;
-        // als cursor vóór startAt ligt (zou niet moeten), schuif een interval.
-        if (startOfLocalDay(cursor).getTime() < startOfLocalDay(startAt).getTime()) {
+        if (
+            startOfLocalDay(cursor).getTime() <
+            startOfLocalDay(startAt).getTime()
+        ) {
             if (freq === "weekly") {
                 cursor = addDays(cursor, 7 * interval);
             } else {
@@ -352,20 +325,25 @@ export function expandPlanningEvents(
     return out;
 }
 
-/** Standaardvenster voor planning-API: ±3 maanden rond vandaag. */
+/** Standaardvenster voor planning-API: ±3 maanden rond vandaag (Amsterdam). */
 export function defaultPlanningEventRange(now = new Date()): {
     rangeStart: Date;
     rangeEnd: Date;
 } {
-    const rangeStart = new Date(
-        now.getFullYear(),
-        now.getMonth() - 3,
-        1
+    const p = getAmsterdamParts(now);
+    const monthStart = amsterdamLocalToDate(
+        `${p.year}-${String(p.month).padStart(2, "0")}-01`,
+        "00:00"
     );
-    const rangeEnd = new Date(
-        now.getFullYear(),
-        now.getMonth() + 4,
-        0
+    const rangeStart = addAmsterdamMonthsClamped(monthStart, -3);
+    const endMonth = addAmsterdamMonthsClamped(monthStart, 3);
+    const endParts = getAmsterdamParts(endMonth);
+    const lastDay = new Date(
+        Date.UTC(endParts.year, endParts.month, 0)
+    ).getUTCDate();
+    const rangeEnd = amsterdamLocalToDate(
+        `${endParts.year}-${String(endParts.month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`,
+        "23:59"
     );
     return { rangeStart, rangeEnd };
 }
@@ -435,8 +413,10 @@ export function parseRecurrenceBody(body: Record<string, unknown>):
         typeof body.recurrenceUntil === "string" &&
         /^\d{4}-\d{2}-\d{2}$/.test(body.recurrenceUntil.trim())
     ) {
-        const [y, m, d] = body.recurrenceUntil.trim().split("-").map(Number);
-        recurrenceUntil = new Date(y, m - 1, d, 23, 59, 59, 999);
+        recurrenceUntil = amsterdamLocalToDate(
+            body.recurrenceUntil.trim(),
+            "23:59"
+        );
     }
 
     if (recurrenceFreq === "none") {

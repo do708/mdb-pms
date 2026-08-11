@@ -93,6 +93,65 @@ export function formatAmsterdamDateIso(date: Date): string {
     return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
 }
 
+/** ISO-weekdag in Europe/Amsterdam: 1=ma … 7=zo */
+export function amsterdamIsoWeekday(date: Date): number {
+    const wd = new Intl.DateTimeFormat("en-US", {
+        timeZone: TZ,
+        weekday: "short",
+    }).format(date);
+    const map: Record<string, number> = {
+        Mon: 1,
+        Tue: 2,
+        Wed: 3,
+        Thu: 4,
+        Fri: 5,
+        Sat: 6,
+        Sun: 7,
+    };
+    return map[wd] ?? 1;
+}
+
+/** Middernacht (00:00) Europe/Amsterdam van de kalenderdag van `date`. */
+export function startOfAmsterdamDay(date: Date): Date {
+    return amsterdamLocalToDate(formatAmsterdamDateIso(date), "00:00");
+}
+
+/**
+ * Tel kalenderdagen op in Europe/Amsterdam, behoud wall-clock tijd.
+ * Gebruikt UTC-kalenderrekenen op de Amsterdam Y-M-D (geen server-TZ).
+ */
+export function addAmsterdamCalendarDays(date: Date, days: number): Date {
+    const p = amsterdamParts(date);
+    const shifted = new Date(Date.UTC(p.year, p.month - 1, p.day + days, 12, 0, 0));
+    const iso = `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2, "0")}-${String(shifted.getUTCDate()).padStart(2, "0")}`;
+    return amsterdamLocalToDate(
+        iso,
+        `${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`
+    );
+}
+
+/**
+ * Tel maanden op in Europe/Amsterdam, met geklemde dag (31 jan + 1m → 28/29 feb).
+ */
+export function addAmsterdamMonthsClamped(date: Date, months: number): Date {
+    const p = amsterdamParts(date);
+    const target = new Date(Date.UTC(p.year, p.month - 1 + months, 1, 12, 0, 0));
+    const y = target.getUTCFullYear();
+    const m = target.getUTCMonth(); // 0-based
+    const lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    const day = Math.min(p.day, lastDay);
+    const iso = `${y}-${String(m + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    return amsterdamLocalToDate(
+        iso,
+        `${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`
+    );
+}
+
+/** Amsterdam jaar/maand/dag van een Date (maand 1–12). */
+export function getAmsterdamParts(date: Date) {
+    return amsterdamParts(date);
+}
+
 /**
  * Parseer API-input voor plannedDate / plannedEndDate.
  * - Met Z of ±offset: normale ISO

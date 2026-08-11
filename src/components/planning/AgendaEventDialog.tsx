@@ -5,10 +5,15 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import {
     parseMasterId,
-    jsDayToIso,
     WEEKDAY_LABELS_NL,
     NTH_LABELS_NL,
 } from "@/lib/planning/expandPlanningEvents";
+import {
+    amsterdamIsoWeekday,
+    amsterdamLocalToDate,
+    formatAmsterdamDateIso,
+    formatAmsterdamHHmm,
+} from "@/lib/datetime/amsterdam";
 
 export interface PlanningAgendaEvent {
     id: string;
@@ -54,24 +59,21 @@ function toTimeInput(iso: string | null | undefined): string {
     if (!iso) return "";
     const d = new Date(iso);
     if (isNaN(d.getTime())) return "";
-    if (d.getHours() === 0 && d.getMinutes() === 0) return "";
-    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    const hhmm = formatAmsterdamHHmm(d);
+    if (hhmm === "00:00") return "";
+    return hhmm;
 }
 
 function toDateInput(iso: string | null | undefined): string {
     if (!iso) return "";
     const d = new Date(iso);
     if (isNaN(d.getTime())) return "";
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
+    return formatAmsterdamDateIso(d);
 }
 
 function weekdayFromDateIso(dateIso: string): number {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dateIso)) return 1;
-    const [y, m, d] = dateIso.split("-").map(Number);
-    return jsDayToIso(new Date(y, m - 1, d).getDay());
+    return amsterdamIsoWeekday(amsterdamLocalToDate(dateIso, "12:00"));
 }
 
 /** Welke "N-de" weekdag is deze datum in de maand (1–4 of -1 = laatste). */
