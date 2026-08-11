@@ -45,7 +45,9 @@ export async function GET(){
 
                     id:true,
 
-                    name:true
+                    name:true,
+
+                    staffKind:true,
 
                 },
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
+import { parseStaffKind } from "@/constants/staffKind";
 
 import bcrypt from "bcryptjs";
 
@@ -24,6 +25,7 @@ export async function GET(request: NextRequest, context: Ctx) {
                 name: true,
                 email: true,
                 role: true,
+                staffKind: true,
                 active: true,
             },
         });
@@ -63,6 +65,7 @@ export async function PUT(request: NextRequest, context: Ctx) {
             name?: string | null;
             email?: string;
             role?: string;
+            staffKind?: string;
             active?: boolean;
             password?: string;
         } = {};
@@ -110,6 +113,26 @@ export async function PUT(request: NextRequest, context: Ctx) {
             );
         }
 
+        const existing = await prisma.user.findUnique({
+            where: { id },
+            select: { role: true },
+        });
+        if (!existing) {
+            return NextResponse.json(
+                { error: "Gebruiker niet gevonden" },
+                { status: 404 }
+            );
+        }
+
+        const nextRole = data.role ?? existing.role;
+        if (nextRole === "engineer") {
+            if (body.staffKind !== undefined || data.role !== undefined) {
+                data.staffKind = parseStaffKind(body.staffKind);
+            }
+        } else {
+            data.staffKind = "monteur";
+        }
+
         const user = await prisma.user.update({
             where: { id },
             data,
@@ -118,6 +141,7 @@ export async function PUT(request: NextRequest, context: Ctx) {
                 name: true,
                 email: true,
                 role: true,
+                staffKind: true,
                 active: true,
             },
         });

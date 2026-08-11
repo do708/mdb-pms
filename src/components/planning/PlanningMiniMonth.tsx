@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { countsTowardCapacity } from "@/constants/staffKind";
 
 function toIsoDate(d: Date): string {
     const y = d.getFullYear();
@@ -187,15 +188,26 @@ export default function PlanningMiniMonth() {
                 const engineersData = engineersRes.ok
                     ? await engineersRes.json()
                     : [];
-                const engineerCount = Array.isArray(engineersData)
-                    ? Math.max(1, engineersData.length)
-                    : 1;
+                const engineersList = Array.isArray(engineersData)
+                    ? engineersData
+                    : [];
+                const capacityIds = new Set(
+                    engineersList
+                        .filter((e: { staffKind?: string }) =>
+                            countsTowardCapacity(e.staffKind)
+                        )
+                        .map((e: { id: string }) => e.id)
+                );
+                const engineerCount = Math.max(1, capacityIds.size);
 
                 const capacityPerDay = engineerCount * UREN_PER_DAG;
                 const booked: Record<string, number> = {};
                 const add = (iso: string, hours: number) => {
+                    if (hours <= 0) return;
                     booked[iso] = (booked[iso] || 0) + hours;
                 };
+                const countsId = (id: string | null | undefined) =>
+                    !!id && capacityIds.has(id);
 
                 for (const item of workorders) {
                     if (!item?.plannedDate) continue;
@@ -203,11 +215,18 @@ export default function PlanningMiniMonth() {
                     const end = item.plannedEndDate
                         ? toIsoDate(new Date(item.plannedEndDate))
                         : start;
-                    const monteurCount =
-                        1 +
-                        (Array.isArray(item.extraEngineers)
-                            ? item.extraEngineers.length
-                            : 0);
+                    let monteurCount = 0;
+                    if (countsId(item.assignedUser?.id)) {
+                        monteurCount += 1;
+                    }
+                    if (Array.isArray(item.extraEngineers)) {
+                        for (const extra of item.extraEngineers) {
+                            if (countsId(extra?.user?.id)) {
+                                monteurCount += 1;
+                            }
+                        }
+                    }
+                    if (monteurCount === 0) continue;
                     for (const iso of eachIsoInRange(start, end)) {
                         const h = urenOpDag(
                             item.plannedDate,
@@ -219,7 +238,9 @@ export default function PlanningMiniMonth() {
                 }
 
                 for (const ev of events) {
-                    if (!ev?.startAt || !ev.assignedUserId) continue;
+                    if (!ev?.startAt || !countsId(ev.assignedUserId)) {
+                        continue;
+                    }
                     const start = toIsoDate(new Date(ev.startAt));
                     const end = ev.endAt
                         ? toIsoDate(new Date(ev.endAt))
@@ -237,9 +258,9 @@ export default function PlanningMiniMonth() {
                     }
                 }
 
-                // Verlof: hele dag van die monteur bezet
+                // Verlof: hele dag van die monteur bezet (alleen eigen monteurs)
                 for (const l of leave) {
-                    if (!l?.from) continue;
+                    if (!l?.from || !countsId(l.userId)) continue;
                     const from = String(l.from).slice(0, 10);
                     const to = String(l.to || l.from).slice(0, 10);
                     for (const iso of eachIsoInRange(from, to)) {

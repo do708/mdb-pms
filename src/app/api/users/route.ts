@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
+import { parseStaffKind } from "@/constants/staffKind";
 
 import bcrypt from "bcryptjs";
 
@@ -18,6 +19,7 @@ export async function GET() {
                 name: true,
                 email: true,
                 role: true,
+                staffKind: true,
                 active: true,
             },
             orderBy: { name: "asc" },
@@ -49,6 +51,10 @@ export async function POST(request: Request) {
         const email = String(body.email ?? "").trim().toLowerCase();
         const password = String(body.password ?? "");
         const role = body.role || "engineer";
+        const staffKind =
+            role === "engineer"
+                ? parseStaffKind(body.staffKind)
+                : "monteur";
 
         if (!email || !password) {
             return NextResponse.json(
@@ -88,6 +94,7 @@ export async function POST(request: Request) {
                 email,
                 password: passwordHash,
                 role,
+                staffKind,
                 active: true,
             },
             select: {
@@ -95,6 +102,7 @@ export async function POST(request: Request) {
                 name: true,
                 email: true,
                 role: true,
+                staffKind: true,
                 active: true,
             },
         });

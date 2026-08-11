@@ -11,12 +11,17 @@ import {
     SpecListRow,
     SpecPageCard,
 } from "@/components/ui/SpecLayout";
+import {
+    STAFF_KIND_LABELS,
+    parseStaffKind,
+} from "@/constants/staffKind";
 
 interface User {
     id: string;
     name: string | null;
     email: string;
     role: string;
+    staffKind?: string;
     active: boolean;
 }
 
@@ -99,6 +104,20 @@ export default function UsersPage() {
                                         <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">
                                             {user.role}
                                         </span>
+
+                                        {user.role === "engineer" &&
+                                        parseStaffKind(user.staffKind) !==
+                                            "monteur" ? (
+                                            <span className="text-xs bg-amber-100 text-amber-800 rounded-full px-2 py-0.5">
+                                                {
+                                                    STAFF_KIND_LABELS[
+                                                        parseStaffKind(
+                                                            user.staffKind
+                                                        )
+                                                    ]
+                                                }
+                                            </span>
+                                        ) : null}
 
                                         {!user.active && (
                                             <span className="text-xs bg-red-100 text-red-700 rounded-full px-2 py-0.5">

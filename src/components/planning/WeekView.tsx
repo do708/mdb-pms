@@ -3,6 +3,11 @@
 import Link from "next/link";
 
 import { PlanningStatusIcon } from "./PlanningStatusIcon";
+import {
+    STAFF_KIND_LABELS,
+    parseStaffKind,
+    type StaffKind,
+} from "@/constants/staffKind";
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
@@ -51,7 +56,7 @@ interface WeekViewProps {
     /** Vrije agenda-items (geen werkbon) */
     events?: any[];
     // Alle monteurs (zodat ook lege monteurs een rij krijgen)
-    engineers?: { id: string; name: string | null }[];
+    engineers?: { id: string; name: string | null; staffKind?: string }[];
     // Maandag van de te tonen week; standaard deze week
     weekStart?: Date;
     weekNavigation?: WeekNavigation;
@@ -498,6 +503,13 @@ export default function WeekView({
                                 const jobs = weekJobCount(user.id);
                                 const { voornaam, achternaam } =
                                     monteurNameLines(user.name);
+                                const kind = parseStaffKind(
+                                    (user as { staffKind?: string }).staffKind
+                                );
+                                const kindLabel =
+                                    kind === "monteur"
+                                        ? null
+                                        : STAFF_KIND_LABELS[kind as StaffKind];
 
                                 return (
                                     <div
@@ -513,6 +525,13 @@ export default function WeekView({
                                                 </>
                                             ) : null}
                                         </p>
+                                        {kindLabel ? (
+                                            <p className="text-[10px] font-semibold text-amber-700 mt-0.5">
+                                                {kind === "inlener"
+                                                    ? "Inlener"
+                                                    : "Stagiaire"}
+                                            </p>
+                                        ) : null}
                                         <p className="text-[11px] text-slate-400 mt-0.5">
                                             {jobs === 0
                                                 ? "Niets gepland"

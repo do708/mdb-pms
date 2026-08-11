@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 
 import { useParams, useRouter } from "next/navigation";
 
+import {
+    STAFF_KIND_LABELS,
+    STAFF_KINDS,
+    parseStaffKind,
+    type StaffKind,
+} from "@/constants/staffKind";
+
 
 
 export default function EditUserPage(){
@@ -37,6 +44,9 @@ export default function EditUserPage(){
 
     const [role,setRole] =
         useState("engineer");
+
+    const [staffKind,setStaffKind] =
+        useState<StaffKind>("monteur");
 
 
     const [active,setActive] =
@@ -81,6 +91,8 @@ export default function EditUserPage(){
                 setEmail(user.email ?? "");
 
                 setRole(user.role ?? "engineer");
+
+                setStaffKind(parseStaffKind(user.staffKind));
 
                 setActive(user.active ?? true);
 
@@ -139,6 +151,11 @@ export default function EditUserPage(){
                             email,
 
                             role,
+
+                            staffKind:
+                                role === "engineer"
+                                    ? staffKind
+                                    : "monteur",
 
                             active,
 
@@ -415,6 +432,38 @@ export default function EditUserPage(){
                     </select>
 
                 </label>
+
+                {role === "engineer" ? (
+                    <label className="block">
+                        <span className="text-sm text-gray-600">
+                            Type monteur
+                        </span>
+                        <select
+                            value={staffKind}
+                            onChange={(e) =>
+                                setStaffKind(e.target.value as StaffKind)
+                            }
+                            className="
+                                w-full
+                                border
+                                rounded-xl
+                                p-3
+                                mt-1
+                                bg-white
+                            "
+                        >
+                            {STAFF_KINDS.map((kind) => (
+                                <option key={kind} value={kind}>
+                                    {STAFF_KIND_LABELS[kind]}
+                                </option>
+                            ))}
+                        </select>
+                        <span className="block text-xs text-gray-400 mt-1">
+                            Inlener en stagiaire tellen niet mee in de
+                            bezettingsuren op de planning.
+                        </span>
+                    </label>
+                ) : null}
 
 
                 <label className="

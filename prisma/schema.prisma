@@ -13,6 +13,8 @@ model User {
   email       String           @unique
   password    String
   role        String           @default("user")
+  /// monteur | inlener | stagiaire — alleen relevant bij role=engineer
+  staffKind   String           @default("monteur")
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   active      Boolean          @default(true)

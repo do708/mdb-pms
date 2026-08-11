@@ -3468,6 +3468,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     role: string | null
+    staffKind: string | null
     createdAt: Date | null
     updatedAt: Date | null
     active: boolean | null
@@ -3479,6 +3480,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     role: string | null
+    staffKind: string | null
     createdAt: Date | null
     updatedAt: Date | null
     active: boolean | null
@@ -3490,6 +3492,7 @@ export namespace Prisma {
     email: number
     password: number
     role: number
+    staffKind: number
     createdAt: number
     updatedAt: number
     active: number
@@ -3503,6 +3506,7 @@ export namespace Prisma {
     email?: true
     password?: true
     role?: true
+    staffKind?: true
     createdAt?: true
     updatedAt?: true
     active?: true
@@ -3514,6 +3518,7 @@ export namespace Prisma {
     email?: true
     password?: true
     role?: true
+    staffKind?: true
     createdAt?: true
     updatedAt?: true
     active?: true
@@ -3525,6 +3530,7 @@ export namespace Prisma {
     email?: true
     password?: true
     role?: true
+    staffKind?: true
     createdAt?: true
     updatedAt?: true
     active?: true
@@ -3609,6 +3615,7 @@ export namespace Prisma {
     email: string
     password: string
     role: string
+    staffKind: string
     createdAt: Date
     updatedAt: Date
     active: boolean
@@ -3637,6 +3644,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    staffKind?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
@@ -3657,6 +3665,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    staffKind?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
@@ -3668,6 +3677,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    staffKind?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
@@ -3679,12 +3689,13 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    staffKind?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "active", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "staffKind" | "createdAt" | "updatedAt" | "active", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | User$assignmentsArgs<ExtArgs>
     workorders?: boolean | User$workordersArgs<ExtArgs>
@@ -3717,6 +3728,10 @@ export namespace Prisma {
       email: string
       password: string
       role: string
+      /**
+       * monteur | inlener | stagiaire — alleen relevant bij role=engineer
+       */
+      staffKind: string
       createdAt: Date
       updatedAt: Date
       active: boolean
@@ -4156,6 +4171,7 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
+    readonly staffKind: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly active: FieldRef<"User", 'Boolean'>
@@ -32787,6 +32803,7 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     role: 'role',
+    staffKind: 'staffKind',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     active: 'active'
@@ -33339,6 +33356,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
+    staffKind?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     active?: BoolFilter<"User"> | boolean
@@ -33358,6 +33376,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    staffKind?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
@@ -33380,6 +33399,7 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
+    staffKind?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     active?: BoolFilter<"User"> | boolean
@@ -33399,6 +33419,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    staffKind?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
@@ -33416,6 +33437,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     role?: StringWithAggregatesFilter<"User"> | string
+    staffKind?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     active?: BoolWithAggregatesFilter<"User"> | boolean
@@ -35397,6 +35419,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -35416,6 +35439,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -35435,6 +35459,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -35454,6 +35479,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -35473,6 +35499,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -35484,6 +35511,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -35495,6 +35523,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -37783,6 +37812,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    staffKind?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
@@ -37794,6 +37824,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    staffKind?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
@@ -37805,6 +37836,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    staffKind?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
@@ -42755,6 +42787,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -42773,6 +42806,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -42796,6 +42830,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -42814,6 +42849,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -42911,6 +42947,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -42929,6 +42966,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -42958,6 +42996,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -42976,6 +43015,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -43140,6 +43180,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -43158,6 +43199,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -43566,6 +43608,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -43584,6 +43627,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -45892,6 +45936,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -45910,6 +45955,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -45989,6 +46035,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46007,6 +46054,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46109,6 +46157,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46127,6 +46176,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46161,6 +46211,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46179,6 +46230,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46197,6 +46249,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46215,6 +46268,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46238,6 +46292,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46256,6 +46311,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46290,6 +46346,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46308,6 +46365,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46337,6 +46395,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46355,6 +46414,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46464,6 +46524,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46482,6 +46543,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    staffKind?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
@@ -46613,6 +46675,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
@@ -46631,6 +46694,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
