@@ -37,25 +37,9 @@ function formatNlMonthYear(date: Date): string {
         .replace(/^./, (c) => c.toUpperCase());
 }
 
-function eachIsoInRange(
-    startIso: string,
-    endIso: string
-): string[] {
-    const out: string[] = [];
-    const cur = new Date(startIso + "T12:00:00");
-    const end = new Date(endIso + "T12:00:00");
-    while (cur <= end) {
-        out.push(toIsoDate(cur));
-        cur.setDate(cur.getDate() + 1);
-    }
-    return out;
-}
-
-type DayMarks = { job: boolean; agenda: boolean };
-
 /**
  * Mini-maandkalender voor in de sidebar op /planning (Outlook/Google-stijl).
- * Weeknummers links; stippels voor klussen (blauw) en agenda (geel).
+ * Weeknummers links; klik op een dag springt naar die week.
  */
 export default function PlanningMiniMonth() {
     const router = useRouter();
@@ -77,8 +61,6 @@ export default function PlanningMiniMonth() {
         return new Date(today.getFullYear(), today.getMonth(), 1);
     });
 
-    const [marks, setMarks] = useState<Record<string, DayMarks>>({});
-
     useEffect(() => {
         if (!selectedIso || !/^\d{4}-\d{2}-\d{2}$/.test(selectedIso)) return;
         const [y, m] = selectedIso.split("-").map(Number);
@@ -92,65 +74,6 @@ export default function PlanningMiniMonth() {
 
     const year = cursor.getFullYear();
     const month = cursor.getMonth();
-
-    useEffect(() => {
-        let cancelled = false;
-
-        async function loadMarks() {
-            try {
-                const res = await fetch("/api/planning", {
-                    cache: "no-store",
-                });
-                if (!res.ok) return;
-                const data = await res.json();
-                const workorders = Array.isArray(data)
-                    ? data
-                    : Array.isArray(data?.workorders)
-                      ? data.workorders
-                      : [];
-                const events = Array.isArray(data?.events)
-                    ? data.events
-                    : [];
-
-                const next: Record<string, DayMarks> = {};
-                const touch = (iso: string, kind: "job" | "agenda") => {
-                    if (!next[iso]) next[iso] = { job: false, agenda: false };
-                    next[iso][kind] = true;
-                };
-
-                for (const item of workorders) {
-                    if (!item?.plannedDate) continue;
-                    const start = toIsoDate(new Date(item.plannedDate));
-                    const end = item.plannedEndDate
-                        ? toIsoDate(new Date(item.plannedEndDate))
-                        : start;
-                    for (const iso of eachIsoInRange(start, end)) {
-                        touch(iso, "job");
-                    }
-                }
-
-                for (const ev of events) {
-                    if (!ev?.startAt) continue;
-                    const start = toIsoDate(new Date(ev.startAt));
-                    const end = ev.endAt
-                        ? toIsoDate(new Date(ev.endAt))
-                        : start;
-                    for (const iso of eachIsoInRange(start, end)) {
-                        touch(iso, "agenda");
-                    }
-                }
-
-                if (!cancelled) setMarks(next);
-            } catch {
-                if (!cancelled) setMarks({});
-            }
-        }
-
-        void loadMarks();
-        return () => {
-            cancelled = true;
-        };
-    }, [year, month]);
 
     const weeks = useMemo(() => {
         const first = new Date(year, month, 1);
@@ -169,6 +92,7 @@ export default function PlanningMiniMonth() {
                 }
                 cursorDay.setDate(cursorDay.getDate() + 1);
             }
+            // Stop als de hele rij buiten de maand valt (na de eerste week)
             if (w > 0 && days.every((d) => d === null)) break;
             result.push({ week: weekNum, days });
         }
@@ -187,7 +111,7 @@ export default function PlanningMiniMonth() {
     const weekdayLabels = ["M", "D", "W", "D", "V", "Z", "Z"];
 
     return (
-        <div className="px-2 pb-3 border-b border-gray-100">
+        <div className="px-1 py-3 border-t border-gray-100 mt-2">
             <div className="flex items-center justify-between gap-1 mb-2 px-1">
                 <button
                     type="button"
@@ -239,11 +163,8 @@ export default function PlanningMiniMonth() {
                 ))}
 
                 {weeks.map((row) => (
-                    <div
-                        key={`w-${row.week}-${row.days[0]?.toISOString() ?? row.week}`}
-                        className="contents"
-                    >
-                        <span className="text-[9px] font-semibold text-[#0066FF] tabular-nums self-center">
+                    <div key={`w-${row.week}-${row.days[0]?.toISOString() ?? row.week}`} className="contents">
+                        <span className="text-[9px] font-semibold text-[#0066FF]/70 tabular-nums self-center">
                             {row.week}
                         </span>
                         {row.days.map((day, i) => {
@@ -251,7 +172,7 @@ export default function PlanningMiniMonth() {
                                 return (
                                     <span
                                         key={`e-${row.week}-${i}`}
-                                        className="h-8"
+                                        className="h-7"
                                     />
                                 );
                             }
@@ -259,67 +180,28 @@ export default function PlanningMiniMonth() {
                             const isToday = iso === todayIso;
                             const isSelected = selectedIso === iso;
                             const isWeekend = i >= 5;
-                            const dayMarks = marks[iso];
-                            const hasJob = !!dayMarks?.job;
-                            const hasAgenda = !!dayMarks?.agenda;
 
                             return (
                                 <button
                                     key={iso}
                                     type="button"
                                     onClick={() => selectDay(day)}
-                                    title={
-                                        hasAgenda || hasJob
-                                            ? `${iso}${hasJob ? " · klus" : ""}${hasAgenda ? " · agenda" : ""}`
-                                            : iso
-                                    }
+                                    title={iso}
                                     className={`
-                                        relative h-8 w-full rounded-lg text-[11px] tabular-nums
-                                        font-semibold transition flex flex-col items-center justify-center
+                                        h-7 w-full rounded-full text-[11px] tabular-nums
+                                        font-medium transition
                                         ${
                                             isSelected
                                                 ? "bg-[#0066FF] text-white"
                                                 : isToday
-                                                  ? "bg-[#D6007E] text-white"
+                                                  ? "bg-[#d6007e] text-white"
                                                   : isWeekend
                                                     ? "text-slate-400 hover:bg-slate-100"
-                                                    : "text-slate-800 hover:bg-[#e8f0ff]"
+                                                    : "text-slate-700 hover:bg-[#e8f0ff]"
                                         }
                                     `}
                                 >
-                                    <span className="leading-none">
-                                        {day.getDate()}
-                                    </span>
-                                    {(hasJob || hasAgenda) && (
-                                        <span className="flex items-center gap-0.5 mt-0.5 h-1.5">
-                                            {hasJob ? (
-                                                <span
-                                                    className={`
-                                                        h-1.5 w-1.5 rounded-full
-                                                        ${
-                                                            isSelected ||
-                                                            isToday
-                                                                ? "bg-white"
-                                                                : "bg-[#0066FF]"
-                                                        }
-                                                    `}
-                                                />
-                                            ) : null}
-                                            {hasAgenda ? (
-                                                <span
-                                                    className={`
-                                                        h-1.5 w-1.5 rounded-full
-                                                        ${
-                                                            isSelected ||
-                                                            isToday
-                                                                ? "bg-[#FFCC00]"
-                                                                : "bg-[#e6b800]"
-                                                        }
-                                                    `}
-                                                />
-                                            ) : null}
-                                        </span>
-                                    )}
+                                    {day.getDate()}
                                 </button>
                             );
                         })}
@@ -327,30 +209,21 @@ export default function PlanningMiniMonth() {
                 ))}
             </div>
 
-            <div className="mt-2 flex items-center justify-between gap-2 px-1">
-                <div className="flex items-center gap-2 text-[10px] text-slate-500">
-                    <span className="inline-flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#0066FF]" />
-                        Klus
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#e6b800]" />
-                        Agenda
-                    </span>
-                </div>
-                <button
-                    type="button"
-                    onClick={() => {
-                        setCursor(
-                            new Date(today.getFullYear(), today.getMonth(), 1)
-                        );
-                        selectDay(today);
-                    }}
-                    className="text-[11px] font-semibold text-[#0066FF] hover:underline"
-                >
-                    Vandaag
-                </button>
-            </div>
+            <button
+                type="button"
+                onClick={() => {
+                    setCursor(
+                        new Date(today.getFullYear(), today.getMonth(), 1)
+                    );
+                    selectDay(today);
+                }}
+                className="
+                    mt-2 w-full text-center text-[11px] font-semibold
+                    text-[#0066FF] hover:underline py-1
+                "
+            >
+                Vandaag
+            </button>
         </div>
     );
 }

@@ -554,12 +554,12 @@ export default function WeekView({
 
                             <div className="divide-y divide-slate-100 bg-white">
                                 {/* Algemeen: notities / terugkerend zonder monteur */}
-                                <div className="flex gap-3 px-3 sm:px-4 py-2.5 bg-[#FFF8E0] border-b border-[#FFCC00]/40">
+                                <div className="flex gap-3 px-3 sm:px-4 py-2.5 bg-amber-50/40">
                                     <div className="w-28 sm:w-36 shrink-0 pt-0.5">
-                                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-800">
+                                        <p className="text-xs font-semibold uppercase tracking-wide text-amber-800/80">
                                             Algemeen
                                         </p>
-                                        <p className="text-[11px] text-slate-600">
+                                        <p className="text-[11px] text-amber-700/70">
                                             Notities &amp; terugkeer
                                         </p>
                                     </div>
@@ -575,9 +575,9 @@ export default function WeekView({
                                                         })
                                                     }
                                                     className="
-                                                        w-full text-left text-xs text-slate-600
-                                                        rounded-lg border border-dashed border-[#FFCC00]
-                                                        px-3 py-2 hover:bg-[#FFCC00]/25 hover:text-slate-900 transition
+                                                        w-full text-left text-xs text-amber-800/60
+                                                        rounded-lg border border-dashed border-amber-300/60
+                                                        px-3 py-2 hover:bg-amber-50 hover:text-amber-900 transition
                                                     "
                                                 >
                                                     + Notitie of terugkerend item
@@ -858,13 +858,12 @@ export default function WeekView({
                     </strong>{" "}
                     = opdrachtgever
                 </span>
-                <span className="inline-flex items-center gap-1.5">
-                    <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#FFCC00] ring-1 ring-[#e6b800]" />
-                    Agenda / notitie
-                </span>
                 <span>
                     Per dag een rij per monteur — klussen onder elkaar, geen
                     overlap
+                </span>
+                <span className="text-slate-500">
+                    Algemeen = notities &amp; terugkerende items zonder monteur
                 </span>
             </div>
         </section>
@@ -956,33 +955,26 @@ function AgendaCard({
     const inner = (
         <div className="flex items-start gap-2 min-w-0">
             <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-900">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-900/80">
                     <span className="tabular-nums">{timeLabel}</span>
                     {recurring ? (
                         <Repeat2
-                            className="h-3.5 w-3.5 shrink-0 text-[#D6007E]"
+                            className="h-3 w-3 shrink-0"
                             aria-label="Terugkerend"
                         />
                     ) : null}
                 </div>
-                <div className="text-xs font-bold text-slate-900 truncate mt-0.5">
+                <div className="text-xs font-semibold text-amber-950 truncate mt-0.5">
                     {event.title}
                 </div>
                 {event.notes ? (
-                    <div className="text-[11px] text-slate-700 line-clamp-2 mt-0.5">
+                    <div className="text-[11px] text-amber-900/70 line-clamp-2 mt-0.5">
                         {event.notes}
                     </div>
                 ) : null}
             </div>
         </div>
     );
-
-    const cardClass = `
-        w-full text-left rounded-lg px-2.5 py-1.5
-        bg-[#FFCC00] border-2 border-[#e6b800]
-        shadow-sm ring-1 ring-black/10
-        hover:brightness-95 transition
-    `;
 
     if (onEdit) {
         return (
@@ -992,7 +984,11 @@ function AgendaCard({
                     e.stopPropagation();
                     onEdit(event);
                 }}
-                className={cardClass}
+                className="
+                    w-full text-left rounded-lg px-2.5 py-1.5
+                    bg-amber-50 border border-amber-200/80
+                    hover:bg-amber-100/80 hover:border-amber-300 transition
+                "
                 title={event.title}
             >
                 {inner}
@@ -1001,7 +997,13 @@ function AgendaCard({
     }
 
     return (
-        <div className={cardClass} title={event.title}>
+        <div
+            className="
+                rounded-lg px-2.5 py-1.5
+                bg-amber-50 border border-amber-200/80
+            "
+            title={event.title}
+        >
             {inner}
         </div>
     );

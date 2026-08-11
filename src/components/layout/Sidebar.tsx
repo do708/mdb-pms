@@ -251,14 +251,9 @@ export default function Sidebar({
 
             </div>
 
-            {pathname === "/planning" ||
-            pathname.startsWith("/planning/") ? (
-                <div className="shrink-0 px-2 pt-2">
-                    <Suspense fallback={null}>
-                        <PlanningMiniMonth />
-                    </Suspense>
-                </div>
-            ) : null}
+
+
+
 
             <nav className="
                 flex-1
@@ -266,7 +261,7 @@ export default function Sidebar({
                 flex
                 flex-col
                 px-4
-                py-4
+                py-6
             ">
 
                 <div className="flex-1 min-h-0 overflow-y-auto space-y-1">
@@ -370,6 +365,13 @@ export default function Sidebar({
                 </div>
 
                 <div className="shrink-0 mt-auto">
+                    {pathname === "/planning" ||
+                    pathname.startsWith("/planning/") ? (
+                        <Suspense fallback={null}>
+                            <PlanningMiniMonth />
+                        </Suspense>
+                    ) : null}
+
                     {role !== "engineer" ? (
                         <div className="pt-3 border-t border-gray-100 space-y-1">
                             <p className="
