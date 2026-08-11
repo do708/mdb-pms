@@ -140,15 +140,15 @@ export default function WeekView({
     const startOfWeek = weekStart
         ? new Date(weekStart)
         : (() => {
-              const d = new Date(today);
+            const d = new Date(today);
               d.setDate(today.getDate() - today.getDay() + 1);
-              return d;
-          })();
+            return d;
+        })();
 
     const days = Array.from({ length: 6 }, (_, index) => {
-        const date = new Date(startOfWeek);
+            const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + index);
-        return date;
+            return date;
     });
 
     function isoDate(d: Date): string {
@@ -339,7 +339,7 @@ export default function WeekView({
                       id: string;
                       name: string | null;
                       staffKind?: string;
-                  }[]);
+        }[]);
 
         const byName = (
             a: { name: string | null },
@@ -416,8 +416,8 @@ export default function WeekView({
                         Weekoverzicht
                     </h2>
                     <span className="inline-flex items-center rounded-full bg-[#0066FF]/10 text-[#0066FF] text-xs font-semibold px-2.5 py-0.5">
-                        Week {isoWeek(startOfWeek)}
-                    </span>
+                    Week {isoWeek(startOfWeek)}
+                </span>
                     {onViewChange ? (
                         <div className="inline-flex rounded-lg border border-slate-200 bg-white/80 p-0.5 shrink-0">
                             <button
@@ -577,7 +577,7 @@ export default function WeekView({
                                     </div>
                                 );
                             })}
-                        </div>
+                    </div>
 
                         {/* Rijen: dagen */}
                         <div className="space-y-2">
@@ -593,7 +593,7 @@ export default function WeekView({
 
                                 return (
                                     <div
-                                        key={day.toISOString()}
+                                key={day.toISOString()}
                                         className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50/40 p-2 hover:border-slate-200 hover:bg-white transition"
                                         style={{
                                             gridTemplateColumns: gridCols,
@@ -690,7 +690,7 @@ export default function WeekView({
                                                     ? "Geen klussen"
                                                     : `${jobsDay} klus${jobsDay === 1 ? "" : "sen"}`}
                                             </span>
-                                        </Link>
+                            </Link>
 
                                         {unassignedEventsOnDay(day).map((ev) => (
                                             <button
@@ -732,7 +732,7 @@ export default function WeekView({
                                                     : ""}
                                             </button>
                                         ))}
-                                        </div>
+                </div>
 
                                         {users.map((user) => {
                                             const verlof = leaveOn(
@@ -752,7 +752,7 @@ export default function WeekView({
 
                                             return (
                                                 <div
-                                                    key={user.id}
+                            key={user.id}
                                                     className="flex flex-col gap-1.5 min-w-0"
                                                 >
                                                     <div
@@ -779,7 +779,7 @@ export default function WeekView({
                                                                     : ""
                                                             }
                                                         `}
-                                                        style={{
+                            style={{
                                                             minHeight: `${DAG_HOOGTE}px`,
                                                         }}
                                                         onClick={
@@ -973,11 +973,11 @@ export default function WeekView({
                                                     >
                                                         {dragPreview?.cellKey ===
                                                         `${iso}:${user.id}` ? (
-                                                            <div
-                                                                className="
+                                      <div
+                                        className="
                                                                     pointer-events-none absolute left-0 right-0 z-20
-                                                                "
-                                                                style={{
+                                        "
+                                        style={{
                                                                     top: `${
                                                                         (dragPreview.hour -
                                                                             DAG_START_UUR) *
@@ -1009,14 +1009,14 @@ export default function WeekView({
                                                                         uur ===
                                                                         DAG_EIND_UUR
                                                                     ) {
-                                                                        return null;
-                                                                    }
+                                                    return null;
+                                                }
                                                                     const top =
                                                                         (uur -
                                                                             DAG_START_UUR) *
                                                                             PX_PER_UUR +
                                                                         DAG_PADDING_TOP;
-                                                                    return (
+                                                return (
                                                                         <div
                                                                             key={
                                                                                 uur
@@ -1034,8 +1034,8 @@ export default function WeekView({
                                                                                     "0"
                                                                                 )}
                                                                             </span>
-                                                                        </div>
-                                                                    );
+                                                    </div>
+                                                );
                                                                 }
                                                             )}
 
@@ -1080,7 +1080,7 @@ export default function WeekView({
 
                                                                 const timeLabel = `${formatUurLabel(pos.beginUur)}–${formatUurLabel(pos.eindUur)}`;
 
-                                                                return (
+                                                return (
                                                                     <div
                                                                         key={
                                                                             item.id
@@ -1114,8 +1114,8 @@ export default function WeekView({
                                                                             }
                                                                         `}
                                                                         data-planning-job
-                                                                        style={{
-                                                                            backgroundColor:
+                                                    style={{
+                                                        backgroundColor:
                                                                                 color,
                                                                             top: `${pos.top}px`,
                                                                             height: `${pos.height}px`,
@@ -1142,7 +1142,7 @@ export default function WeekView({
                                                                             <div className="flex items-start justify-between gap-1">
                                                                                 <span className="text-[11px] font-bold opacity-95 tabular-nums leading-none pt-0.5 min-w-0 truncate">
                                                                                     {timeLabel}
-                                                                                </span>
+                                                                </span>
                                                                                 {
                                                                                     showStatusIcons && (
                                                                                         <PlanningStatusIcon
@@ -1163,15 +1163,15 @@ export default function WeekView({
                                                                                         ?.customer
                                                                                         ?.name) ??
                                                                                     "Onbekende klant"}
-                                                                            </span>
+                                                    </span>
 
                                                                             <strong className="text-[11px] block truncate font-medium opacity-90">
                                                                                 {item
                                                                                     .project
                                                                                     ?.name ??
                                                                                     item.title}
-                                                                            </strong>
-                                                                        </Link>
+                                                    </strong>
+                                                </Link>
                                                                     </div>
                                                                 );
                                                             }
@@ -1255,7 +1255,7 @@ export default function WeekView({
                                                                 </button>
                                                             );
                                                         })}
-                                                    </div>
+                                      </div>
 
                                                     {onMovePlan || onSchedulePending || onCreateAgenda ? (
                                                         pendingSchedule && onSchedulePending && !verlof ? (
@@ -1317,10 +1317,10 @@ export default function WeekView({
                                                             Plannen
                                                         </button>
                                                         ) : onMovePlan ? (
-                                                        <Link
+                                        <Link
                                                             href={`/workorders/new?date=${iso}&engineer=${user.id}`}
                                                             title="Opdracht inplannen voor deze monteur op deze dag"
-                                                            className="
+                                            className="
                                                                 group/plan flex items-center justify-center gap-1
                                                                 rounded-lg py-1.5 text-[11px] font-medium
                                                                 text-slate-400 bg-white border border-transparent
@@ -1339,16 +1339,16 @@ export default function WeekView({
                                                                 +
                                                             </span>
                                                             Plannen
-                                                        </Link>
+                                        </Link>
                                                         ) : null
                                                     ) : null}
-                                                </div>
+                                    </div>
                                             );
                                         })}
-                                    </div>
+                        </div>
                                 );
                             })}
-                        </div>
+            </div>
                     </div>
                 </div>
             )}
