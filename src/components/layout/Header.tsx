@@ -5,7 +5,6 @@ import { Menu } from "lucide-react";
 import SearchBox from "./SearchBox";
 import UserMenu from "./UserMenu";
 import DateTime from "./DateTime";
-import HeaderWeather from "./HeaderWeather";
 import NotificationBell from "./NotificationBell";
 
 export default function Header({
