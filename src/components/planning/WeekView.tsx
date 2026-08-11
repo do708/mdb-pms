@@ -109,8 +109,14 @@ interface WeekViewProps {
         hour?: number;
         engineerId?: string | null;
     }) => void;
-    /** Klik op bestaand agenda-item → bewerken */
-    onEditAgenda?: (event: any) => void;
+    /** Enkele klik op opdracht/agenda → actiemenu (open/wijzig/verwijder) */
+    onActivityMenu?: (args: {
+        target:
+            | { kind: "agenda"; event: any }
+            | { kind: "workorder"; workorder: any };
+        x: number;
+        y: number;
+    }) => void;
     /** IDs van opdrachten in een planningsconflict */
     conflictWorkorderIds?: string[];
     /** IDs van agenda-items in een planningsconflict */
@@ -142,7 +148,7 @@ export default function WeekView({
     onSchedulePending,
     showStatusIcons = true,
     onCreateAgenda,
-    onEditAgenda,
+    onActivityMenu,
     conflictWorkorderIds = [],
     conflictEventIds = [],
 }: WeekViewProps) {
@@ -957,7 +963,17 @@ export default function WeekView({
                                                           }
                                                         : undefined
                                                 }
-                                                onClick={() => onEditAgenda?.(ev)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onActivityMenu?.({
+                                                        target: {
+                                                            kind: "agenda",
+                                                            event: ev,
+                                                        },
+                                                        x: e.clientX,
+                                                        y: e.clientY,
+                                                    });
+                                                }}
                                                 className={`
                                                     w-full text-left rounded-lg px-1.5 py-1
                                                     bg-[#FFCC00] border-2 border-[#e6b800]
@@ -968,7 +984,7 @@ export default function WeekView({
                                                     ${
                                                         onMoveAgenda
                                                             ? "cursor-grab active:cursor-grabbing"
-                                                            : ""
+                                                            : "cursor-pointer"
                                                     }
                                                 `}
                                             >
@@ -1594,23 +1610,29 @@ export default function WeekView({
                                                                             </>
                                                                         ) : null}
 
-                                                                        <Link
-                                                                            href={`/workorders/${item.id}`}
-                                                                            draggable={
-                                                                                false
-                                                                            }
-                                                                            className="block h-full overflow-hidden"
-                                                                            onClick={(
-                                                                                e
-                                                                            ) => {
+                                                                        <div
+                                                                            role="button"
+                                                                            tabIndex={0}
+                                                                            className="block h-full overflow-hidden cursor-pointer"
+                                                                            onClick={(e) => {
                                                                                 if (
                                                                                     Date.now() <
                                                                                         suppressClickUntilRef.current ||
-                                                                                    e.defaultPrevented ||
                                                                                     resizeOverride
                                                                                 ) {
                                                                                     e.preventDefault();
+                                                                                    e.stopPropagation();
+                                                                                    return;
                                                                                 }
+                                                                                e.stopPropagation();
+                                                                                onActivityMenu?.({
+                                                                                    target: {
+                                                                                        kind: "workorder",
+                                                                                        workorder: item,
+                                                                                    },
+                                                                                    x: e.clientX,
+                                                                                    y: e.clientY,
+                                                                                });
                                                                             }}
                                                                         >
                                                                             <div className="flex items-start justify-between gap-1">
@@ -1679,7 +1701,7 @@ export default function WeekView({
                                                                                     }
                                                                                 </span>
                                                                             ) : null}
-                                                                        </Link>
+                                                                        </div>
                                                                     </div>
                                                                 );
                                                             }
@@ -1794,9 +1816,15 @@ export default function WeekView({
                                                                             e.stopPropagation();
                                                                             return;
                                                                         }
-                                                                        onEditAgenda?.(
-                                                                            ev
-                                                                        );
+                                                                        e.stopPropagation();
+                                                                        onActivityMenu?.({
+                                                                            target: {
+                                                                                kind: "agenda",
+                                                                                event: ev,
+                                                                            },
+                                                                            x: e.clientX,
+                                                                            y: e.clientY,
+                                                                        });
                                                                     }}
                                                                     title={
                                                                         hasConflict
@@ -1811,7 +1839,7 @@ export default function WeekView({
                                                                         border-2
                                                                         shadow-sm
                                                                         hover:brightness-95 hover:shadow-md
-                                                                        transition z-[5]
+                                                                        transition z-[5] cursor-pointer
                                                                         ${
                                                                             hasConflict
                                                                                 ? "border-[#d6007e] ring-2 ring-[#d6007e] z-[6]"

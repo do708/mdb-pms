@@ -14,6 +14,11 @@ import AgendaEventDialog, {
     type AgendaEventPrefill,
     type PlanningAgendaEvent,
 } from "@/components/planning/AgendaEventDialog";
+import PlanningActivityMenu, {
+    type PlanningMenuAction,
+    type PlanningMenuState,
+    type PlanningMenuTarget,
+} from "@/components/planning/PlanningActivityMenu";
 import { WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
 import {
     PageShell,
@@ -25,6 +30,7 @@ import {
     getPendingSchedule,
     type PendingSchedule,
 } from "@/lib/planning/pendingSchedule";
+import { parseMasterId } from "@/lib/planning/expandPlanningEvents";
 import { amsterdamLocalToDate, formatAmsterdamDateIso } from "@/lib/datetime/amsterdam";
 
 
@@ -181,6 +187,9 @@ function PlanningPageContent(){
 
     const [agendaEdit,setAgendaEdit] =
         useState<PlanningAgendaEvent | null>(null);
+
+    const [activityMenu, setActivityMenu] =
+        useState<PlanningMenuState | null>(null);
 
 
     const [engineers,setEngineers] =
@@ -417,6 +426,102 @@ function PlanningPageContent(){
         setAgendaPrefill(null);
         setAgendaEdit(event);
         setAgendaOpen(true);
+    }
+
+    function openActivityMenu(args: {
+        target: PlanningMenuTarget;
+        x: number;
+        y: number;
+    }) {
+        setActivityMenu({
+            target: args.target,
+            x: args.x,
+            y: args.y,
+        });
+    }
+
+    async function deleteAgendaEvent(event: PlanningAgendaEvent) {
+        const isSeries =
+            event.recurrenceFreq && event.recurrenceFreq !== "none";
+        if (
+            !window.confirm(
+                isSeries
+                    ? "Hele reeks verwijderen (alle herhalingen)?"
+                    : "Agenda-item verwijderen?"
+            )
+        ) {
+            return;
+        }
+
+        const id = parseMasterId(event.id);
+        const response = await fetch(`/api/planning/events/${id}`, {
+            method: "DELETE",
+        });
+        if (!response.ok) {
+            alert("Verwijderen mislukt");
+            return;
+        }
+        await loadPlanning();
+    }
+
+    async function deleteWorkorder(workorder: {
+        id: string;
+        number?: string;
+        title?: string;
+    }) {
+        const label =
+            workorder.number
+                ? `Opdracht ${workorder.number}`
+                : workorder.title || "opdracht";
+        if (!window.confirm(`Verwijderen: ${label}?`)) {
+            return;
+        }
+
+        const response = await fetch(`/api/workorders/${workorder.id}`, {
+            method: "DELETE",
+        });
+        if (!response.ok) {
+            alert("Verwijderen mislukt");
+            return;
+        }
+        await loadPlanning();
+    }
+
+    function handleActivityAction(
+        action: PlanningMenuAction,
+        target: PlanningMenuTarget
+    ) {
+        setActivityMenu(null);
+
+        if (target.kind === "agenda") {
+            const event = target.event as PlanningAgendaEvent;
+            if (action === "open" || action === "edit") {
+                if (!canEdit && action === "edit") {
+                    return;
+                }
+                openEditAgenda(event);
+                return;
+            }
+            if (action === "delete") {
+                if (!canEdit) return;
+                void deleteAgendaEvent(event);
+            }
+            return;
+        }
+
+        const wo = target.workorder;
+        if (action === "open") {
+            router.push(`/workorders/${wo.id}`);
+            return;
+        }
+        if (action === "edit") {
+            router.push(`/workorders/${wo.id}/edit`);
+            return;
+        }
+        if (action === "delete") {
+            if (!canEdit) return;
+            void deleteWorkorder(wo);
+        }
     }
 
 
@@ -1315,9 +1420,7 @@ function PlanningPageContent(){
                     onCreateAgenda={
                         canEdit ? openCreateAgenda : undefined
                     }
-                    onEditAgenda={
-                        canEdit ? openEditAgenda : undefined
-                    }
+                    onActivityMenu={openActivityMenu}
                 />
             ) : (
                 <WeekView
@@ -1374,29 +1477,32 @@ function PlanningPageContent(){
                     onCreateAgenda={
                         canEdit ? openCreateAgenda : undefined
                     }
-                    onEditAgenda={
-                        canEdit ? openEditAgenda : undefined
-                    }
+                    onActivityMenu={openActivityMenu}
                 />
             )}
             </div>
 
-            {canEdit && (
-                <AgendaEventDialog
-                    open={agendaOpen}
-                    onClose={() => {
-                        setAgendaOpen(false);
-                        setAgendaEdit(null);
-                        setAgendaPrefill(null);
-                    }}
-                    engineers={engineers}
-                    prefill={agendaPrefill}
-                    event={agendaEdit}
-                    onSaved={() => {
-                        void loadPlanning();
-                    }}
-                />
-            )}
+            <PlanningActivityMenu
+                menu={activityMenu}
+                allowMutate={canEdit}
+                onClose={() => setActivityMenu(null)}
+                onAction={handleActivityAction}
+            />
+
+            <AgendaEventDialog
+                open={agendaOpen}
+                onClose={() => {
+                    setAgendaOpen(false);
+                    setAgendaEdit(null);
+                    setAgendaPrefill(null);
+                }}
+                engineers={engineers}
+                prefill={agendaPrefill}
+                event={agendaEdit}
+                onSaved={() => {
+                    void loadPlanning();
+                }}
+            />
 
             {
                 canEdit && (

@@ -42,7 +42,13 @@ interface CalendarProps {
     onViewChange?: (view: "week" | "month") => void;
     showStatusIcons?: boolean;
     onCreateAgenda?: (args: { dateIso: string }) => void;
-    onEditAgenda?: (event: any) => void;
+    onActivityMenu?: (args: {
+        target:
+            | { kind: "agenda"; event: any }
+            | { kind: "workorder"; workorder: any };
+        x: number;
+        y: number;
+    }) => void;
 }
 
 export default function Calendar({
@@ -54,7 +60,7 @@ export default function Calendar({
     onViewChange,
     showStatusIcons = true,
     onCreateAgenda,
-    onEditAgenda,
+    onActivityMenu,
 }: CalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -447,6 +453,26 @@ export default function Calendar({
                                                                     showStatusIcon={
                                                                         showStatusIcons
                                                                     }
+                                                                    onMenu={
+                                                                        onActivityMenu
+                                                                            ? ({
+                                                                                  item: wo,
+                                                                                  x,
+                                                                                  y,
+                                                                              }) =>
+                                                                                  onActivityMenu(
+                                                                                      {
+                                                                                          target: {
+                                                                                              kind: "workorder",
+                                                                                              workorder:
+                                                                                                  wo,
+                                                                                          },
+                                                                                          x,
+                                                                                          y,
+                                                                                      }
+                                                                                  )
+                                                                            : undefined
+                                                                    }
                                                                 />
                                                             )
                                                         )}
@@ -471,7 +497,14 @@ export default function Calendar({
                                                                 data-planning-agenda
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
-                                                                    onEditAgenda?.(ev);
+                                                                    onActivityMenu?.({
+                                                                        target: {
+                                                                            kind: "agenda",
+                                                                            event: ev,
+                                                                        },
+                                                                        x: e.clientX,
+                                                                        y: e.clientY,
+                                                                    });
                                                                 }}
                                                                 className="
                                                                     w-full text-left
@@ -480,6 +513,7 @@ export default function Calendar({
                                                                     rounded-md px-1.5 py-1
                                                                     truncate leading-tight font-semibold
                                                                     hover:bg-amber-200 transition
+                                                                    cursor-pointer
                                                                 "
                                                                 title={label}
                                                             >
