@@ -549,11 +549,13 @@ export default function WeekView({
                     Geen opdrachten met monteur ingepland deze week.
                 </p>
             ) : (
-                <div
-                    className="p-3 sm:p-4 overflow-x-auto"
-                    style={{ minWidth: 0 }}
-                >
-                    <div style={{ minWidth: `${minGridWidth}px` }}>
+                <div className="p-3 sm:p-4">
+                    <div
+                        className="w-full"
+                        style={{
+                            minWidth: `${minGridWidth}px`,
+                        }}
+                    >
                         {/* Koprij: monteurs */}
                         <div
                             className={`
