@@ -1386,6 +1386,15 @@ export default function WeekView({
 
                                                                 const timeLabel = `${formatUurLabel(pos.beginUur)}–${formatUurLabel(pos.eindUur)}`;
                                                                 const cellKey = `${iso}:${user.id}`;
+                                                                const plaatsnaam =
+                                                                    String(
+                                                                        item.city ||
+                                                                            item
+                                                                                .project
+                                                                                ?.plaats ||
+                                                                            ""
+                                                                    ).trim() ||
+                                                                    null;
 
                                                                 return (
                                                                     <div
@@ -1437,7 +1446,7 @@ export default function WeekView({
                                                                         className={`
                                                                             group/job absolute text-white
                                                                             rounded-lg px-2 py-1
-                                                                            leading-tight
+                                                                            leading-tight overflow-hidden
                                                                             shadow-sm ring-1 ring-black/10
                                                                             hover:brightness-110 hover:shadow-md
                                                                             transition z-[5]
@@ -1618,19 +1627,16 @@ export default function WeekView({
                                                                                 </span>
                                                                             ) : null}
 
-                                                                            {(item.city ||
-                                                                                item.location) ? (
-                                                                                <span className="text-[10px] block truncate opacity-90 mt-0.5">
-                                                                                    {[
-                                                                                        item.location,
-                                                                                        item.city,
-                                                                                    ]
-                                                                                        .filter(
-                                                                                            Boolean
-                                                                                        )
-                                                                                        .join(
-                                                                                            ", "
-                                                                                        )}
+                                                                            {plaatsnaam ? (
+                                                                                <span
+                                                                                    className="text-[10px] block break-words line-clamp-2 leading-snug opacity-90 mt-0.5 min-w-0"
+                                                                                    title={
+                                                                                        plaatsnaam
+                                                                                    }
+                                                                                >
+                                                                                    {
+                                                                                        plaatsnaam
+                                                                                    }
                                                                                 </span>
                                                                             ) : null}
                                                                         </Link>
