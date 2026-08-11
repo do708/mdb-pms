@@ -1,8 +1,6 @@
 "use client";
 
-import type { DragEvent } from "react";
 import Link from "next/link";
-import { Repeat2 } from "lucide-react";
 
 import { PlanningStatusIcon } from "./PlanningStatusIcon";
 
@@ -11,19 +9,33 @@ function isoWeek(date: Date) {
     const d = new Date(
         Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
     );
+
     const day = d.getUTCDay() || 7;
+
     d.setUTCDate(d.getUTCDate() + 4 - day);
+
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+
     return Math.ceil(
         ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
     );
 }
 
-function shortMonteur(name: string | null | undefined): string {
+function monteurNameLines(name: string | null | undefined): {
+    voornaam: string;
+    achternaam: string | null;
+} {
     const parts = (name || "").trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return "Monteur";
-    if (parts.length === 1) return parts[0];
-    return `${parts[0]} ${parts[1][0]}.`;
+    if (parts.length === 0) {
+        return { voornaam: "Monteur", achternaam: null };
+    }
+    if (parts.length === 1) {
+        return { voornaam: parts[0], achternaam: null };
+    }
+    return {
+        voornaam: parts[0],
+        achternaam: parts.slice(1).join(" "),
+    };
 }
 
 interface WeekNavigation {
@@ -38,29 +50,37 @@ interface WeekViewProps {
     leave?: any[];
     /** Vrije agenda-items (geen werkbon) */
     events?: any[];
+    // Alle monteurs (zodat ook lege monteurs een rij krijgen)
     engineers?: { id: string; name: string | null }[];
+    // Maandag van de te tonen week; standaard deze week
     weekStart?: Date;
     weekNavigation?: WeekNavigation;
     view?: "week" | "month";
     onViewChange?: (view: "week" | "month") => void;
+    /** Sleep een klus naar een andere dag/tijd/monteur */
     onMovePlan?: (args: {
         workorderId: string;
         dateIso: string;
         hour: number;
         engineerId: string;
     }) => void;
+    /** Pending klus om in te plannen (banner + klik op slot) */
     pendingSchedule?: { workorderId: string; label: string } | null;
     onSchedulePending?: (args: {
         dateIso: string;
+        /** Indien gezet (klik op tijdlijn): starttijd. Anders starttijd uit het voorstel. */
         hour?: number;
         engineerId: string;
     }) => void;
+    /** Statusiconen (klok/mail/vink/€) — alleen voor kantoor/admin. */
     showStatusIcons?: boolean;
+    /** Klik op leeg dag/tijd-vak → agenda-dialoog (office) */
     onCreateAgenda?: (args: {
         dateIso: string;
         hour?: number;
         engineerId?: string | null;
     }) => void;
+    /** Klik op bestaand agenda-item → bewerken */
     onEditAgenda?: (event: any) => void;
 }
 
@@ -71,28 +91,6 @@ function toIsoDate(d: Date): string {
     return `${y}-${m}-${day}`;
 }
 
-function formatTime(iso: string | null | undefined): string | null {
-    if (!iso) return null;
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return null;
-    if (d.getHours() === 0 && d.getMinutes() === 0) return null;
-    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-}
-
-function formatUurLabel(uur: number): string {
-    const h = Math.floor(uur);
-    const m = Math.round((uur - h) * 60);
-    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-}
-
-type RowEntry =
-    | { kind: "job"; sort: number; item: any }
-    | { kind: "event"; sort: number; event: any };
-
-/**
- * Weekplanning: gestapelde dagblokken (ma–za), per monteur een rij
- * met niet-overlappende lijstkaarten + Algemeen voor notities.
- */
 export default function WeekView({
     items,
     leave = [],
@@ -123,12 +121,25 @@ export default function WeekView({
     const days = Array.from({ length: 6 }, (_, index) => {
         const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + index);
-        date.setHours(0, 0, 0, 0);
         return date;
     });
 
+    function isoDate(d: Date): string {
+        return toIsoDate(d);
+    }
+
+    // De dag loopt van 07:00 tot 18:00. Elk uur is PX_PER_UUR hoog.
     const DAG_START_UUR = 7;
     const DAG_EIND_UUR = 18;
+    const PX_PER_UUR = 26;
+    const DAG_PADDING_TOP = 10;
+    const DAG_HOOGTE =
+        (DAG_EIND_UUR - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
+
+    const uurLijnen = Array.from(
+        { length: DAG_EIND_UUR - DAG_START_UUR + 1 },
+        (_, i) => DAG_START_UUR + i
+    );
 
     function heeftKloktijd(d: Date): boolean {
         return d.getHours() !== 0 || d.getMinutes() !== 0;
@@ -139,26 +150,33 @@ export default function WeekView({
         return Math.min(DAG_EIND_UUR, Math.max(DAG_START_UUR, u));
     }
 
+    function formatUurLabel(uur: number): string {
+        const h = Math.floor(uur);
+        const m = Math.round((uur - h) * 60);
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    }
+
+    /**
+     * Meerdaagse klus: elke dag dezelfde dagelijkse van-/tot-tijd
+     * (starttijd uit plannedDate, eindtijd uit plannedEndDate).
+     * Zo begint dag 2 niet stiekem om 08:00.
+     */
     function blokUren(
         item: any,
         day: Date
-    ): { beginUur: number; eindUur: number; heleDag: boolean } {
-        const cellIso = toIsoDate(day);
+    ): { beginUur: number; eindUur: number } {
+        const cellIso = isoDate(day);
         const start = item.plannedDate ? new Date(item.plannedDate) : null;
         const eind = item.plannedEndDate
             ? new Date(item.plannedEndDate)
             : null;
 
         if (!start) {
-            return {
-                beginUur: DAG_START_UUR,
-                eindUur: DAG_EIND_UUR,
-                heleDag: true,
-            };
+            return { beginUur: DAG_START_UUR, eindUur: DAG_EIND_UUR };
         }
 
-        const startIso = toIsoDate(start);
-        const endIso = eind ? toIsoDate(eind) : startIso;
+        const startIso = isoDate(start);
+        const endIso = eind ? isoDate(eind) : startIso;
         const meerdaags = startIso !== endIso;
 
         if (meerdaags) {
@@ -169,47 +187,75 @@ export default function WeekView({
                 eind && heeftKloktijd(eind)
                     ? uurVan(eind)
                     : DAG_EIND_UUR;
+
             if (eindUur <= beginUur) {
                 eindUur = Math.min(DAG_EIND_UUR, beginUur + 2);
             }
-            return {
-                beginUur,
-                eindUur,
-                heleDag: !heeftKloktijd(start) && !(eind && heeftKloktijd(eind)),
-            };
+
+            return { beginUur, eindUur };
         }
 
+        // Één dag
         const startIsDezeDag = startIso === cellIso;
         let beginUur = DAG_START_UUR;
         let eindUur = DAG_EIND_UUR;
-        let heleDag = true;
 
         if (startIsDezeDag && heeftKloktijd(start)) {
             beginUur = uurVan(start);
-            heleDag = false;
         }
 
-        if (eind && toIsoDate(eind) === cellIso && heeftKloktijd(eind)) {
+        if (eind && isoDate(eind) === cellIso && heeftKloktijd(eind)) {
             eindUur = uurVan(eind);
-            heleDag = false;
         } else if (startIsDezeDag && !eind && heeftKloktijd(start)) {
             eindUur = Math.min(DAG_EIND_UUR, uurVan(start) + 2);
-            heleDag = false;
         }
 
         if (eindUur <= beginUur) {
             eindUur = Math.min(DAG_EIND_UUR, beginUur + 1);
         }
 
-        return { beginUur, eindUur, heleDag };
+        return { beginUur, eindUur };
+    }
+
+    function blokPositie(
+        item: any,
+        day: Date
+    ): { top: number; height: number; beginUur: number; eindUur: number } {
+        const { beginUur, eindUur } = blokUren(item, day);
+
+        const top =
+            (beginUur - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
+
+        const height = Math.max(40, (eindUur - beginUur) * PX_PER_UUR);
+
+        return { top, height, beginUur, eindUur };
+    }
+
+    function hourFromClientY(
+        clientY: number,
+        cellEl: HTMLElement
+    ): number {
+        const rect = cellEl.getBoundingClientRect();
+        const y = clientY - rect.top - DAG_PADDING_TOP;
+        const raw = DAG_START_UUR + y / PX_PER_UUR;
+        const snapped = Math.round(raw * 4) / 4;
+        return Math.min(
+            DAG_EIND_UUR - 0.25,
+            Math.max(DAG_START_UUR, snapped)
+        );
     }
 
     function leaveOn(userId: string, day: Date) {
-        const iso = toIsoDate(day);
+        const iso = isoDate(day);
+
         return leave.find((l) => {
-            if (l.userId !== userId) return false;
+            if (l.userId !== userId) {
+                return false;
+            }
+
             const from = l.from;
             const to = l.to || l.from;
+
             return from <= iso && iso <= to;
         });
     }
@@ -217,21 +263,36 @@ export default function WeekView({
     function itemsForUserDay(userId: string, day: Date) {
         return items.filter((item) => {
             const isPrimary = item.assignedUser?.id === userId;
+
             const isExtra =
                 Array.isArray(item.extraEngineers) &&
                 item.extraEngineers.some(
                     (e: any) => e.user?.id === userId
                 );
-            if (!isPrimary && !isExtra) return false;
-            if (!item.plannedDate) return false;
 
-            const cellIso = toIsoDate(day);
-            const startIso = toIsoDate(new Date(item.plannedDate));
+            if (!isPrimary && !isExtra) {
+                return false;
+            }
+
+            if (!item.plannedDate) {
+                return false;
+            }
+
+            const cellIso = isoDate(day);
+            const startIso = isoDate(new Date(item.plannedDate));
             const endIso = item.plannedEndDate
-                ? toIsoDate(new Date(item.plannedEndDate))
+                ? isoDate(new Date(item.plannedEndDate))
                 : startIso;
+
             return startIso <= cellIso && cellIso <= endIso;
         });
+    }
+
+    function weekJobCount(userId: string): number {
+        return days.reduce(
+            (sum, day) => sum + itemsForUserDay(userId, day).length,
+            0
+        );
     }
 
     const users =
@@ -250,10 +311,10 @@ export default function WeekView({
 
     function eventOnDay(ev: any, day: Date): boolean {
         if (!ev?.startAt) return false;
-        const cellIso = toIsoDate(day);
-        const startIso = toIsoDate(new Date(ev.startAt));
+        const cellIso = isoDate(day);
+        const startIso = isoDate(new Date(ev.startAt));
         const endIso = ev.endAt
-            ? toIsoDate(new Date(ev.endAt))
+            ? isoDate(new Date(ev.endAt))
             : startIso;
         return startIso <= cellIso && cellIso <= endIso;
     }
@@ -271,6 +332,13 @@ export default function WeekView({
         );
     }
 
+    function eventAsBlock(ev: any) {
+        return {
+            plannedDate: ev.startAt,
+            plannedEndDate: ev.endAt ?? (ev.allDay ? ev.startAt : null),
+        };
+    }
+
     function dayJobCount(day: Date): number {
         const jobs = users.reduce(
             (sum, user) => sum + itemsForUserDay(user.id, day).length,
@@ -284,67 +352,11 @@ export default function WeekView({
         return jobs + assignedEvents + unassignedEventsOnDay(day).length;
     }
 
-    function entriesForUserDay(userId: string, day: Date): RowEntry[] {
-        const jobs: RowEntry[] = itemsForUserDay(userId, day).map(
-            (item) => ({
-                kind: "job",
-                sort: item.plannedDate
-                    ? new Date(item.plannedDate).getTime()
-                    : 0,
-                item,
-            })
-        );
-        const evs: RowEntry[] = eventsForUserDay(userId, day).map(
-            (event) => ({
-                kind: "event",
-                sort: event.startAt
-                    ? new Date(event.startAt).getTime()
-                    : 0,
-                event,
-            })
-        );
-        return [...jobs, ...evs].sort((a, b) => a.sort - b.sort);
-    }
+    const gridCols =
+        `120px repeat(${Math.max(users.length, 1)}, minmax(110px, 1fr))`;
 
-    function jobTimeLabel(item: any, day: Date): string {
-        const { beginUur, eindUur, heleDag } = blokUren(item, day);
-        if (heleDag) return "Hele dag";
-        return `${formatUurLabel(beginUur)}–${formatUurLabel(eindUur)}`;
-    }
-
-    function eventTimeLabel(ev: any): string {
-        if (ev.allDay) return "Hele dag";
-        const start = formatTime(ev.startAt);
-        const end = formatTime(ev.endAt ?? null);
-        if (start && end) return `${start}–${end}`;
-        if (start) return `vanaf ${start}`;
-        return "Hele dag";
-    }
-
-    function customerColor(item: any): string {
-        return (
-            item.customer?.color ??
-            item.project?.customer?.color ??
-            "#2563eb"
-        );
-    }
-
-    function handleDropOnMonteur(
-        e: DragEvent,
-        dateIso: string,
-        engineerId: string
-    ) {
-        e.preventDefault();
-        if (!onMovePlan) return;
-        const workorderId = e.dataTransfer.getData("workorderId");
-        if (!workorderId) return;
-        onMovePlan({
-            workorderId,
-            dateIso,
-            hour: DAG_START_UUR + 1,
-            engineerId,
-        });
-    }
+    const minGridWidth =
+        120 + Math.max(users.length, 1) * 110;
 
     return (
         <section className="bg-white border border-gray-200 rounded-2xl">
@@ -442,569 +454,665 @@ export default function WeekView({
                 </div>
             ) : null}
 
-            {pendingSchedule ? (
-                <div className="mx-3 sm:mx-4 mt-3 rounded-xl border border-[#0066FF]/25 bg-[#e8f0ff] px-3 py-2 text-sm text-[#0047b3]">
-                    Klik op een monteurrij of op{" "}
-                    <strong className="font-semibold">Inplannen</strong> om{" "}
-                    <strong className="font-semibold">
-                        {pendingSchedule.label}
-                    </strong>{" "}
-                    te plaatsen.
-                </div>
-            ) : null}
-
-            <div className="max-h-[min(72vh,calc(100dvh-14rem))] overflow-auto p-3 sm:p-4 space-y-3">
-                {days.map((day) => {
-                    const iso = toIsoDate(day);
-                    const isToday = iso === todayIso;
-                    const weekday = day.toLocaleDateString("nl-NL", {
-                        weekday: "long",
-                    });
-                    const dayLabel = day.toLocaleDateString("nl-NL", {
-                        day: "numeric",
-                        month: "long",
-                    });
-                    const count = dayJobCount(day);
-                    const generalEvents = unassignedEventsOnDay(day).sort(
-                        (a, b) =>
-                            new Date(a.startAt).getTime() -
-                            new Date(b.startAt).getTime()
-                    );
-
-                    return (
-                        <section
-                            key={iso}
-                            className={`
-                                rounded-2xl border overflow-hidden
-                                ${
-                                    isToday
-                                        ? "border-[#D6007E]/35 shadow-sm ring-1 ring-[#D6007E]/15"
-                                        : "border-slate-200"
-                                }
-                            `}
+            {users.length === 0 ? (
+                <p className="text-slate-500 p-6">
+                    Geen opdrachten met monteur ingepland deze week.
+                </p>
+            ) : (
+                <div
+                    className="
+                        max-h-[min(72vh,calc(100dvh-14rem))]
+                        overflow-auto
+                    "
+                >
+                    <div
+                        className="p-3 sm:p-4 min-h-0"
+                        style={{ minWidth: `${minGridWidth}px` }}
+                    >
+                        {/* Koprij: monteurs (blijft zichtbaar bij verticaal scrollen) */}
+                        <div
+                            className="
+                                grid gap-2 mb-2 sticky top-0 z-30
+                                bg-white
+                                border-b border-slate-200
+                                shadow-sm
+                                px-1 pb-2 pt-1
+                            "
+                            style={{ gridTemplateColumns: gridCols }}
                         >
-                            <header
-                                className={`
-                                    sticky top-0 z-20 flex flex-wrap items-center justify-between gap-2
-                                    px-3 sm:px-4 py-2.5 border-b
-                                    ${
-                                        isToday
-                                            ? "bg-[#fff5fa] border-[#D6007E]/20"
-                                            : "bg-slate-50/90 border-slate-100 backdrop-blur-sm"
-                                    }
-                                `}
-                            >
-                                <div className="flex items-baseline gap-2 min-w-0">
-                                    <h3
-                                        className={`
-                                            text-base font-bold capitalize
-                                            ${isToday ? "text-[#D6007E]" : "text-slate-900"}
-                                        `}
+                            <div className="flex items-end px-2 pb-1">
+                                <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                                    Dag
+                                </span>
+                            </div>
+
+                            {users.map((user) => {
+                                const jobs = weekJobCount(user.id);
+                                const { voornaam, achternaam } =
+                                    monteurNameLines(user.name);
+
+                                return (
+                                    <div
+                                        key={user.id}
+                                        className="px-1.5 py-1 min-w-0 text-center"
                                     >
-                                        {weekday}
-                                    </h3>
-                                    <span className="text-sm text-slate-500 tabular-nums">
-                                        {dayLabel}
-                                    </span>
-                                    {isToday ? (
-                                        <span className="text-[10px] font-semibold uppercase tracking-wide text-[#D6007E] bg-white/80 px-1.5 py-0.5 rounded">
-                                            Vandaag
-                                        </span>
-                                    ) : null}
-                                </div>
+                                        <p className="text-sm font-semibold text-slate-800 leading-snug">
+                                            {voornaam}
+                                            {achternaam ? (
+                                                <>
+                                                    <br />
+                                                    {achternaam}
+                                                </>
+                                            ) : null}
+                                        </p>
+                                        <p className="text-[11px] text-slate-400 mt-0.5">
+                                            {jobs === 0
+                                                ? "Niets gepland"
+                                                : `${jobs}× deze week`}
+                                        </p>
+                                    </div>
+                                );
+                            })}
+                        </div>
 
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <span className="text-xs text-slate-500">
-                                        {count === 0
-                                            ? "Leeg"
-                                            : `${count} item${count === 1 ? "" : "s"}`}
-                                    </span>
-                                    {onCreateAgenda ? (
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                onCreateAgenda({
-                                                    dateIso: iso,
-                                                    engineerId: null,
-                                                })
-                                            }
-                                            className="
-                                                text-xs font-semibold text-[#0066FF]
-                                                rounded-lg border border-[#0066FF]/25 bg-white
-                                                px-2.5 py-1 hover:bg-[#e8f0ff] transition
-                                            "
-                                        >
-                                            + Agenda
-                                        </button>
-                                    ) : null}
-                                    {!pendingSchedule ? (
+                        {/* Rijen: dagen */}
+                        <div className="space-y-2">
+                            {days.map((day) => {
+                                const iso = isoDate(day);
+                                const isToday = iso === todayIso;
+                                const weekday = day.toLocaleDateString(
+                                    "nl-NL",
+                                    { weekday: "short" }
+                                );
+                                const dayNum = day.getDate();
+                                const jobsDay = dayJobCount(day);
+
+                                return (
+                                    <div
+                                        key={day.toISOString()}
+                                        className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50/40 p-2 hover:border-slate-200 hover:bg-white transition"
+                                        style={{
+                                            gridTemplateColumns: gridCols,
+                                        }}
+                                    >
+                                        <div className="flex flex-col gap-1 min-w-0">
                                         <Link
-                                            href={`/workorders/new?date=${iso}`}
-                                            className="
-                                                text-xs font-semibold text-slate-600
-                                                rounded-lg border border-slate-200 bg-white
-                                                px-2.5 py-1 hover:bg-slate-50 transition
-                                            "
+                                            href={
+                                                pendingSchedule
+                                                ? "#"
+                                                : `/workorders/new?date=${iso}`
+                                            }
+                                            onClick={(e)=>{
+                                                if(pendingSchedule){
+                                                    e.preventDefault();
+                                                    return;
+                                                }
+                                                if(onCreateAgenda){
+                                                    e.preventDefault();
+                                                    onCreateAgenda({ dateIso: iso });
+                                                }
+                                            }}
+                                            title={
+                                                pendingSchedule
+                                                ? "Kies een monteurkolom hiernaast om in te plannen"
+                                                : onCreateAgenda
+                                                ? "Agenda-item of opdracht op deze dag"
+                                                : "Opdracht inplannen op deze dag"
+                                            }
+                                            className={`
+                                                group flex flex-col items-center justify-center
+                                                rounded-xl px-2 py-2.5 transition min-h-[4rem]
+                                                ${
+                                                    isToday
+                                                        ? "bg-[#d6007e] text-white shadow-sm shadow-[#d6007e]/25"
+                                                        : "bg-[#e8f0ff]/70 text-slate-700 hover:bg-[#e8f0ff]"
+                                                }
+                                                ${
+                                                    pendingSchedule
+                                                        ? "opacity-80 cursor-default"
+                                                        : ""
+                                                }
+                                            `}
                                         >
-                                            + Opdracht
-                                        </Link>
-                                    ) : null}
-                                </div>
-                            </header>
-
-                            <div className="divide-y divide-slate-100 bg-white">
-                                {/* Algemeen: notities / terugkerend zonder monteur */}
-                                <div className="flex gap-3 px-3 sm:px-4 py-2.5 bg-amber-50/40">
-                                    <div className="w-28 sm:w-36 shrink-0 pt-0.5">
-                                        <p className="text-xs font-semibold uppercase tracking-wide text-amber-800/80">
-                                            Algemeen
-                                        </p>
-                                        <p className="text-[11px] text-amber-700/70">
-                                            Notities &amp; terugkeer
-                                        </p>
-                                    </div>
-                                    <div className="flex-1 min-w-0 space-y-1.5">
-                                        {generalEvents.length === 0 ? (
-                                            onCreateAgenda ? (
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        onCreateAgenda({
-                                                            dateIso: iso,
-                                                            engineerId: null,
-                                                        })
-                                                    }
-                                                    className="
-                                                        w-full text-left text-xs text-amber-800/60
-                                                        rounded-lg border border-dashed border-amber-300/60
-                                                        px-3 py-2 hover:bg-amber-50 hover:text-amber-900 transition
-                                                    "
-                                                >
-                                                    + Notitie of terugkerend item
-                                                </button>
-                                            ) : (
-                                                <p className="text-xs text-slate-400 py-1">
-                                                    Geen algemene items
-                                                </p>
-                                            )
-                                        ) : (
-                                            generalEvents.map((ev) => (
-                                                <AgendaCard
-                                                    key={ev.id}
-                                                    event={ev}
-                                                    timeLabel={eventTimeLabel(
-                                                        ev
-                                                    )}
-                                                    onEdit={onEditAgenda}
-                                                />
-                                            ))
-                                        )}
-                                    </div>
-                                </div>
-
-                                {users.length === 0 ? (
-                                    <p className="px-4 py-6 text-sm text-slate-500">
-                                        Geen monteurs om te tonen.
-                                    </p>
-                                ) : (
-                                    users.map((user) => {
-                                        const verlof = leaveOn(user.id, day);
-                                        const entries = entriesForUserDay(
-                                            user.id,
-                                            day
-                                        );
-                                        const name = shortMonteur(user.name);
-
-                                        return (
-                                            <div
-                                                key={user.id}
-                                                className={`
-                                                    flex gap-3 px-3 sm:px-4 py-2.5
-                                                    ${
-                                                        pendingSchedule
-                                                            ? "cursor-pointer hover:bg-[#e8f0ff]/50"
-                                                            : ""
-                                                    }
-                                                `}
-                                                onDragOver={
-                                                    onMovePlan
-                                                        ? (e) => {
-                                                              e.preventDefault();
-                                                              e.dataTransfer.dropEffect =
-                                                                  "move";
-                                                          }
-                                                        : undefined
-                                                }
-                                                onDrop={
-                                                    onMovePlan
-                                                        ? (e) =>
-                                                              handleDropOnMonteur(
-                                                                  e,
-                                                                  iso,
-                                                                  user.id
-                                                              )
-                                                        : undefined
-                                                }
-                                                onClick={
-                                                    pendingSchedule &&
-                                                    onSchedulePending
-                                                        ? () =>
-                                                              onSchedulePending(
-                                                                  {
-                                                                      dateIso:
-                                                                          iso,
-                                                                      engineerId:
-                                                                          user.id,
-                                                                  }
-                                                              )
-                                                        : undefined
-                                                }
+                                            <span
+                                                className={`text-[11px] font-medium uppercase tracking-wide ${
+                                                    isToday
+                                                        ? "text-white/80"
+                                                        : "text-[#0066FF]/70"
+                                                }`}
                                             >
-                                                <div className="w-28 sm:w-36 shrink-0 pt-0.5">
-                                                    <p className="text-sm font-semibold text-slate-800 leading-snug">
-                                                        {name}
-                                                    </p>
-                                                    <p className="text-[11px] text-slate-400 mt-0.5">
-                                                        {verlof
-                                                            ? verlof.type ||
-                                                              "Verlof"
-                                                            : entries.length ===
-                                                                0
-                                                              ? "Vrij"
-                                                              : `${entries.length}×`}
-                                                    </p>
-                                                </div>
+                                                {weekday}
+                                            </span>
+                                            <span className="text-lg font-bold leading-none mt-0.5 tabular-nums">
+                                                {dayNum}
+                                            </span>
+                                            <span
+                                                className={`text-[10px] mt-1 ${
+                                                    isToday
+                                                        ? "text-white/75"
+                                                        : "text-slate-400"
+                                                }`}
+                                            >
+                                                {jobsDay === 0
+                                                    ? "Geen klussen"
+                                                    : `${jobsDay} klus${jobsDay === 1 ? "" : "sen"}`}
+                                            </span>
+                                        </Link>
 
-                                                <div className="flex-1 min-w-0 space-y-1.5">
-                                                    {verlof ? (
-                                                        <div
-                                                            className="
-                                                                rounded-lg px-3 py-2 text-xs font-medium
-                                                                bg-gradient-to-r from-orange-50 to-orange-100/80
-                                                                text-orange-800 border border-orange-200/60
-                                                            "
-                                                        >
-                                                            🌴{" "}
-                                                            {verlof.type ||
-                                                                "Verlof"}
-                                                        </div>
-                                                    ) : null}
+                                        {unassignedEventsOnDay(day).map((ev) => (
+                                            <button
+                                                key={ev.id}
+                                                type="button"
+                                                data-planning-agenda
+                                                onClick={() => onEditAgenda?.(ev)}
+                                                className="
+                                                    w-full text-left rounded-lg px-1.5 py-1
+                                                    bg-amber-100 border border-amber-200
+                                                    text-amber-950 text-[10px] font-semibold
+                                                    hover:bg-amber-200 transition truncate
+                                                "
+                                                title={ev.title}
+                                            >
+                                                {ev.title}
+                                                {ev.recurrenceFreq &&
+                                                ev.recurrenceFreq !== "none"
+                                                    ? " ↻"
+                                                    : ""}
+                                            </button>
+                                        ))}
+                                        </div>
 
-                                                    {entries.map((entry) =>
-                                                        entry.kind ===
-                                                        "job" ? (
-                                                            <JobCard
-                                                                key={
-                                                                    entry.item
-                                                                        .id
-                                                                }
-                                                                item={
-                                                                    entry.item
-                                                                }
-                                                                timeLabel={jobTimeLabel(
-                                                                    entry.item,
-                                                                    day
-                                                                )}
-                                                                color={customerColor(
-                                                                    entry.item
-                                                                )}
-                                                                showStatusIcons={
-                                                                    showStatusIcons
-                                                                }
-                                                                draggable={
-                                                                    !!onMovePlan
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <AgendaCard
-                                                                key={
-                                                                    entry
-                                                                        .event
-                                                                        .id
-                                                                }
-                                                                event={
-                                                                    entry.event
-                                                                }
-                                                                timeLabel={eventTimeLabel(
-                                                                    entry.event
-                                                                )}
-                                                                onEdit={
-                                                                    onEditAgenda
-                                                                }
-                                                            />
-                                                        )
-                                                    )}
+                                        {users.map((user) => {
+                                            const verlof = leaveOn(
+                                                user.id,
+                                                day
+                                            );
+                                            const dayItems =
+                                                itemsForUserDay(
+                                                    user.id,
+                                                    day
+                                                );
+                                            const dayEvents =
+                                                eventsForUserDay(
+                                                    user.id,
+                                                    day
+                                                );
 
-                                                    {!verlof &&
-                                                    entries.length ===
-                                                        0 ? (
-                                                        <div className="flex flex-wrap gap-1.5">
-                                                            {pendingSchedule &&
-                                                            onSchedulePending ? (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={(
-                                                                        e
-                                                                    ) => {
-                                                                        e.stopPropagation();
-                                                                        onSchedulePending(
-                                                                            {
-                                                                                dateIso:
-                                                                                    iso,
-                                                                                engineerId:
-                                                                                    user.id,
-                                                                            }
-                                                                        );
-                                                                    }}
-                                                                    className="
-                                                                        text-xs font-semibold text-white
-                                                                        rounded-lg bg-[#0066FF] px-2.5 py-1.5
-                                                                        hover:bg-[#0052cc] transition
-                                                                    "
-                                                                >
-                                                                    Inplannen:{" "}
-                                                                    {
-                                                                        pendingSchedule.label
+                                            return (
+                                                <div
+                                                    key={user.id}
+                                                    className="flex flex-col gap-1.5 min-w-0"
+                                                >
+                                                    <div
+                                                        className={`
+                                                            relative rounded-xl overflow-hidden
+                                                            border transition
+                                                            ${
+                                                                isToday
+                                                                    ? "border-[#d6007e]/35 bg-[#fff5fa]"
+                                                                    : "border-slate-200/80 bg-white"
+                                                            }
+                                                            ${
+                                                                verlof
+                                                                    ? "border-orange-200"
+                                                                    : ""
+                                                            }
+                                                            ${
+                                                                pendingSchedule
+                                                                && onSchedulePending
+                                                                && !verlof
+                                                                    ? "cursor-pointer ring-1 ring-[#0066FF]/20 hover:ring-[#0066FF]/45"
+                                                                    : onCreateAgenda && !verlof
+                                                                    ? "cursor-pointer"
+                                                                    : ""
+                                                            }
+                                                        `}
+                                                        style={{
+                                                            minHeight: `${DAG_HOOGTE}px`,
+                                                        }}
+                                                        onClick={
+                                                            pendingSchedule
+                                                            && onSchedulePending
+                                                            && !verlof
+                                                                ? (e) => {
+                                                                      const target =
+                                                                          e.target as HTMLElement;
+                                                                      if (
+                                                                          target.closest(
+                                                                              "[data-planning-job]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "[data-planning-agenda]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "a"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "button"
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
+                                                                      const hour =
+                                                                          hourFromClientY(
+                                                                              e.clientY,
+                                                                              e.currentTarget
+                                                                          );
+                                                                      onSchedulePending(
+                                                                          {
+                                                                              dateIso:
+                                                                                  iso,
+                                                                              hour,
+                                                                              engineerId:
+                                                                                  user.id,
+                                                                          }
+                                                                      );
+                                                                  }
+                                                                : onCreateAgenda && !verlof
+                                                                ? (e) => {
+                                                                      const target =
+                                                                          e.target as HTMLElement;
+                                                                      if (
+                                                                          target.closest(
+                                                                              "[data-planning-job]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "[data-planning-agenda]"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "a"
+                                                                          )
+                                                                          || target.closest(
+                                                                              "button"
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
+                                                                      const hour =
+                                                                          hourFromClientY(
+                                                                              e.clientY,
+                                                                              e.currentTarget
+                                                                          );
+                                                                      onCreateAgenda({
+                                                                          dateIso: iso,
+                                                                          hour,
+                                                                          engineerId: user.id,
+                                                                      });
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onDragOver={
+                                                            onMovePlan &&
+                                                            !verlof
+                                                                ? (e) => {
+                                                                      e.preventDefault();
+                                                                      e.dataTransfer.dropEffect =
+                                                                          "move";
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onDrop={
+                                                            onMovePlan &&
+                                                            !verlof
+                                                                ? (e) => {
+                                                                      e.preventDefault();
+                                                                      const workorderId =
+                                                                          e.dataTransfer.getData(
+                                                                              "workorderId"
+                                                                          );
+                                                                      if (
+                                                                          !workorderId
+                                                                      ) {
+                                                                          return;
+                                                                      }
+                                                                      const hour =
+                                                                          hourFromClientY(
+                                                                              e.clientY,
+                                                                              e.currentTarget
+                                                                          );
+                                                                      onMovePlan(
+                                                                          {
+                                                                              workorderId,
+                                                                              dateIso:
+                                                                                  iso,
+                                                                              hour,
+                                                                              engineerId:
+                                                                                  user.id,
+                                                                          }
+                                                                      );
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                    >
+                                                        {!verlof &&
+                                                            uurLijnen.map(
+                                                                (uur) => {
+                                                                    if (
+                                                                        uur ===
+                                                                        DAG_EIND_UUR
+                                                                    ) {
+                                                                        return null;
                                                                     }
-                                                                </button>
-                                                            ) : null}
-                                                            {onCreateAgenda ? (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={(
-                                                                        e
-                                                                    ) => {
-                                                                        e.stopPropagation();
-                                                                        onCreateAgenda(
-                                                                            {
-                                                                                dateIso:
-                                                                                    iso,
-                                                                                engineerId:
-                                                                                    user.id,
+                                                                    const top =
+                                                                        (uur -
+                                                                            DAG_START_UUR) *
+                                                                            PX_PER_UUR +
+                                                                        DAG_PADDING_TOP;
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                uur
                                                                             }
-                                                                        );
-                                                                    }}
-                                                                    className="
-                                                                        text-xs font-medium text-slate-500
-                                                                        rounded-lg border border-dashed border-slate-200
-                                                                        px-2.5 py-1.5 hover:border-[#0066FF]/40
-                                                                        hover:text-[#0066FF] hover:bg-[#e8f0ff]/50
-                                                                        transition
-                                                                    "
-                                                                >
-                                                                    + Plannen
-                                                                </button>
-                                                            ) : onMovePlan ? (
-                                                                <Link
-                                                                    href={`/workorders/new?date=${iso}&engineer=${user.id}`}
-                                                                    onClick={(
-                                                                        e
-                                                                    ) =>
-                                                                        e.stopPropagation()
-                                                                    }
-                                                                    className="
-                                                                        text-xs font-medium text-slate-500
-                                                                        rounded-lg border border-dashed border-slate-200
-                                                                        px-2.5 py-1.5 hover:border-[#0066FF]/40
-                                                                        hover:text-[#0066FF] hover:bg-[#e8f0ff]/50
-                                                                        transition
-                                                                    "
-                                                                >
-                                                                    + Plannen
-                                                                </Link>
-                                                            ) : (
-                                                                <p className="text-xs text-slate-400 py-1">
-                                                                    Niets
-                                                                    gepland
-                                                                </p>
+                                                                            className="absolute left-0 right-0 border-t border-dashed border-slate-100 pointer-events-none"
+                                                                            style={{
+                                                                                top: `${top}px`,
+                                                                            }}
+                                                                        >
+                                                                            <span className="absolute left-1 -top-2 text-[9px] text-slate-300 tabular-nums select-none">
+                                                                                {String(
+                                                                                    uur
+                                                                                ).padStart(
+                                                                                    2,
+                                                                                    "0"
+                                                                                )}
+                                                                            </span>
+                                                                        </div>
+                                                                    );
+                                                                }
                                                             )}
-                                                        </div>
-                                                    ) : !verlof &&
-                                                      onCreateAgenda ? (
+
+                                                        {verlof ? (
+                                                            <div
+                                                                className="
+                                                                    absolute inset-1
+                                                                    bg-gradient-to-b from-orange-50 to-orange-100/80
+                                                                    text-orange-800 text-xs
+                                                                    rounded-lg px-2
+                                                                    text-center font-medium
+                                                                    flex flex-col items-center justify-center gap-0.5
+                                                                    z-10
+                                                                "
+                                                            >
+                                                                <span className="text-base leading-none">
+                                                                    🌴
+                                                                </span>
+                                                                <span>
+                                                                    {verlof.type ||
+                                                                        "Verlof"}
+                                                                </span>
+                                                            </div>
+                                                        ) : null}
+
+                                                        {dayItems.map(
+                                                            (item) => {
+                                                                const pos =
+                                                                    blokPositie(
+                                                                        item,
+                                                                        day
+                                                                    );
+                                                                const color =
+                                                                    (item
+                                                                        .customer
+                                                                        ?.color ??
+                                                                        item
+                                                                            .project
+                                                                            ?.customer
+                                                                            ?.color) ??
+                                                                    "#2563eb";
+
+                                                                const timeLabel = `${formatUurLabel(pos.beginUur)}–${formatUurLabel(pos.eindUur)}`;
+
+                                                                return (
+                                                                    <div
+                                                                        key={
+                                                                            item.id
+                                                                        }
+                                                                        draggable={
+                                                                            !!onMovePlan
+                                                                        }
+                                                                        onDragStart={
+                                                                            onMovePlan
+                                                                                ? (e) => {
+                                                                                      e.dataTransfer.setData(
+                                                                                          "workorderId",
+                                                                                          item.id
+                                                                                      );
+                                                                                      e.dataTransfer.effectAllowed =
+                                                                                          "move";
+                                                                                  }
+                                                                                : undefined
+                                                                        }
+                                                                        className={`
+                                                                            absolute text-white
+                                                                            rounded-lg px-2 py-1
+                                                                            leading-tight overflow-hidden
+                                                                            shadow-sm ring-1 ring-black/10
+                                                                            hover:brightness-110 hover:shadow-md
+                                                                            transition z-[5]
+                                                                            ${
+                                                                                onMovePlan
+                                                                                    ? "cursor-grab active:cursor-grabbing"
+                                                                                    : ""
+                                                                            }
+                                                                        `}
+                                                                        data-planning-job
+                                                                        style={{
+                                                                            backgroundColor:
+                                                                                color,
+                                                                            top: `${pos.top}px`,
+                                                                            height: `${pos.height}px`,
+                                                                            left: "4px",
+                                                                            right: "4px",
+                                                                        }}
+                                                                    >
+                                                                        <Link
+                                                                            href={`/workorders/${item.id}`}
+                                                                            draggable={
+                                                                                false
+                                                                            }
+                                                                            className="block h-full"
+                                                                            onClick={(
+                                                                                e
+                                                                            ) => {
+                                                                                if (
+                                                                                    e.defaultPrevented
+                                                                                ) {
+                                                                                    e.preventDefault();
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            <div className="flex items-start justify-between gap-1">
+                                                                                <span className="text-[11px] font-bold opacity-95 tabular-nums leading-none pt-0.5 min-w-0 truncate">
+                                                                                    {timeLabel}
+                                                                                </span>
+                                                                                {
+                                                                                    showStatusIcons && (
+                                                                                        <PlanningStatusIcon
+                                                                                            status={
+                                                                                                item.status
+                                                                                            }
+                                                                                        />
+                                                                                    )
+                                                                                }
+                                                                            </div>
+
+                                                                            <span className="text-[12px] block truncate font-semibold">
+                                                                                {(item
+                                                                                    .customer
+                                                                                    ?.name ??
+                                                                                    item
+                                                                                        .project
+                                                                                        ?.customer
+                                                                                        ?.name) ??
+                                                                                    "Onbekende klant"}
+                                                                            </span>
+
+                                                                            <strong className="text-[11px] block truncate font-medium opacity-90">
+                                                                                {item
+                                                                                    .project
+                                                                                    ?.name ??
+                                                                                    item.title}
+                                                                            </strong>
+                                                                        </Link>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        )}
+
+                                                        {dayEvents.map((ev) => {
+                                                            const pos = blokPositie(
+                                                                eventAsBlock(ev),
+                                                                day
+                                                            );
+                                                            const timeLabel = ev.allDay
+                                                                ? "Hele dag"
+                                                                : `${formatUurLabel(pos.beginUur)}${
+                                                                      ev.endAt
+                                                                          ? `–${formatUurLabel(pos.eindUur)}`
+                                                                          : ""
+                                                                  }`;
+
+                                                            return (
+                                                                <button
+                                                                    key={ev.id}
+                                                                    type="button"
+                                                                    data-planning-agenda
+                                                                    onClick={() =>
+                                                                        onEditAgenda?.(ev)
+                                                                    }
+                                                                    className="
+                                                                        absolute text-left
+                                                                        rounded-lg px-2 py-1
+                                                                        leading-tight overflow-hidden
+                                                                        bg-amber-500 text-white
+                                                                        shadow-sm ring-1 ring-amber-700/20
+                                                                        hover:brightness-110 hover:shadow-md
+                                                                        transition z-[5] cursor-pointer
+                                                                    "
+                                                                    style={{
+                                                                        top: `${pos.top}px`,
+                                                                        height: `${pos.height}px`,
+                                                                        left: "4px",
+                                                                        right: "4px",
+                                                                    }}
+                                                                    title={ev.title}
+                                                                >
+                                                                    <span className="text-[11px] font-bold tabular-nums leading-none block truncate">
+                                                                        {timeLabel}
+                                                                        {ev.recurrenceFreq &&
+                                                                        ev.recurrenceFreq !==
+                                                                            "none"
+                                                                            ? " ↻"
+                                                                            : ""}
+                                                                    </span>
+                                                                    <strong className="text-[12px] block truncate font-semibold mt-0.5">
+                                                                        {ev.title}
+                                                                    </strong>
+                                                                    {ev.notes ? (
+                                                                        <span className="text-[10px] block truncate opacity-90">
+                                                                            {ev.notes}
+                                                                        </span>
+                                                                    ) : null}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+
+                                                    {onMovePlan || onSchedulePending || onCreateAgenda ? (
+                                                        pendingSchedule && onSchedulePending && !verlof ? (
+                                                            <button
+                                                                type="button"
+                                                                title={`Inplannen: ${pendingSchedule.label}`}
+                                                                onClick={() =>
+                                                                    onSchedulePending({
+                                                                        dateIso: iso,
+                                                                        engineerId: user.id,
+                                                                    })
+                                                                }
+                                                                className="
+                                                                    group/plan flex items-center justify-center gap-1
+                                                                    rounded-lg py-1.5 text-[11px] font-semibold
+                                                                    text-white bg-[#0066FF] border border-[#0066FF]
+                                                                    hover:bg-[#0052cc] transition
+                                                                "
+                                                            >
+                                                                <span
+                                                                    className="
+                                                                        inline-flex h-4 w-4 items-center justify-center
+                                                                        rounded-full bg-white/20 text-white
+                                                                        text-[10px] font-bold leading-none
+                                                                    "
+                                                                >
+                                                                    ✓
+                                                                </span>
+                                                                Hier inplannen
+                                                            </button>
+                                                        ) : onCreateAgenda ? (
                                                         <button
                                                             type="button"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
+                                                            title="Agenda-item of opdracht plannen"
+                                                            onClick={() =>
                                                                 onCreateAgenda({
-                                                                    dateIso:
-                                                                        iso,
-                                                                    engineerId:
-                                                                        user.id,
-                                                                });
-                                                            }}
+                                                                    dateIso: iso,
+                                                                    engineerId: user.id,
+                                                                })
+                                                            }
                                                             className="
-                                                                text-[11px] font-medium text-slate-400
+                                                                group/plan flex items-center justify-center gap-1
+                                                                rounded-lg py-1.5 text-[11px] font-medium
+                                                                text-slate-400 bg-white border border-transparent
+                                                                hover:border-[#0066FF]/30 hover:bg-[#e8f0ff]
                                                                 hover:text-[#0066FF] transition
                                                             "
                                                         >
-                                                            + Item toevoegen
+                                                            <span
+                                                                className="
+                                                                    inline-flex h-4 w-4 items-center justify-center
+                                                                    rounded-full bg-slate-100 text-slate-500
+                                                                    group-hover/plan:bg-[#0066FF] group-hover/plan:text-white
+                                                                    text-[10px] font-bold leading-none transition
+                                                                "
+                                                            >
+                                                                +
+                                                            </span>
+                                                            Plannen
                                                         </button>
+                                                        ) : onMovePlan ? (
+                                                        <Link
+                                                            href={`/workorders/new?date=${iso}&engineer=${user.id}`}
+                                                            title="Opdracht inplannen voor deze monteur op deze dag"
+                                                            className="
+                                                                group/plan flex items-center justify-center gap-1
+                                                                rounded-lg py-1.5 text-[11px] font-medium
+                                                                text-slate-400 bg-white border border-transparent
+                                                                hover:border-[#0066FF]/30 hover:bg-[#e8f0ff]
+                                                                hover:text-[#0066FF] transition
+                                                            "
+                                                        >
+                                                            <span
+                                                                className="
+                                                                    inline-flex h-4 w-4 items-center justify-center
+                                                                    rounded-full bg-slate-100 text-slate-500
+                                                                    group-hover/plan:bg-[#0066FF] group-hover/plan:text-white
+                                                                    text-[10px] font-bold leading-none transition
+                                                                "
+                                                            >
+                                                                +
+                                                            </span>
+                                                            Plannen
+                                                        </Link>
+                                                        ) : null
                                                     ) : null}
                                                 </div>
-                                            </div>
-                                        );
-                                    })
-                                )}
-                            </div>
-                        </section>
-                    );
-                })}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-4 py-2.5 border-t border-slate-100 bg-slate-50/60 text-[11px] text-slate-600">
-                <span>
-                    <strong className="font-semibold text-slate-700">
-                        Kleur
-                    </strong>{" "}
-                    = opdrachtgever
-                </span>
-                <span>
-                    Per dag een rij per monteur — klussen onder elkaar, geen
-                    overlap
-                </span>
-                <span className="text-slate-500">
-                    Algemeen = notities &amp; terugkerende items zonder monteur
-                </span>
-            </div>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
-    );
-}
-
-function JobCard({
-    item,
-    timeLabel,
-    color,
-    showStatusIcons,
-    draggable,
-}: {
-    item: any;
-    timeLabel: string;
-    color: string;
-    showStatusIcons: boolean;
-    draggable: boolean;
-}) {
-    const number =
-        item.workorderNumber || item.number || item.code || item.id;
-    const customer =
-        item.customer?.name ||
-        item.project?.customer?.name ||
-        item.title ||
-        "Opdracht";
-
-    return (
-        <div
-            draggable={draggable}
-            onDragStart={
-                draggable
-                    ? (e) => {
-                          e.dataTransfer.setData("workorderId", item.id);
-                          e.dataTransfer.effectAllowed = "move";
-                      }
-                    : undefined
-            }
-            className={`
-                rounded-lg px-2.5 py-1.5 text-white shadow-sm ring-1 ring-black/10
-                hover:brightness-110 transition
-                ${draggable ? "cursor-grab active:cursor-grabbing" : ""}
-            `}
-            style={{ backgroundColor: color }}
-            data-planning-job
-        >
-            <Link
-                href={`/workorders/${item.id}`}
-                draggable={false}
-                className="block min-w-0"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="flex items-start gap-2">
-                    <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5 text-[11px] font-semibold opacity-95">
-                            <span className="tabular-nums">{timeLabel}</span>
-                            {showStatusIcons ? (
-                                <PlanningStatusIcon
-                                    status={item.status}
-                                    className="h-3 w-3"
-                                />
-                            ) : null}
-                        </div>
-                        <div className="text-xs font-bold truncate leading-snug mt-0.5">
-                            {number}
-                        </div>
-                        <div className="text-[11px] opacity-90 truncate">
-                            {customer}
-                        </div>
-                    </div>
-                </div>
-            </Link>
-        </div>
-    );
-}
-
-function AgendaCard({
-    event,
-    timeLabel,
-    onEdit,
-}: {
-    event: any;
-    timeLabel: string;
-    onEdit?: (event: any) => void;
-}) {
-    const recurring =
-        event.recurrenceFreq && event.recurrenceFreq !== "none";
-
-    const inner = (
-        <div className="flex items-start gap-2 min-w-0">
-            <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-900/80">
-                    <span className="tabular-nums">{timeLabel}</span>
-                    {recurring ? (
-                        <Repeat2
-                            className="h-3 w-3 shrink-0"
-                            aria-label="Terugkerend"
-                        />
-                    ) : null}
-                </div>
-                <div className="text-xs font-semibold text-amber-950 truncate mt-0.5">
-                    {event.title}
-                </div>
-                {event.notes ? (
-                    <div className="text-[11px] text-amber-900/70 line-clamp-2 mt-0.5">
-                        {event.notes}
-                    </div>
-                ) : null}
-            </div>
-        </div>
-    );
-
-    if (onEdit) {
-        return (
-            <button
-                type="button"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(event);
-                }}
-                className="
-                    w-full text-left rounded-lg px-2.5 py-1.5
-                    bg-amber-50 border border-amber-200/80
-                    hover:bg-amber-100/80 hover:border-amber-300 transition
-                "
-                title={event.title}
-            >
-                {inner}
-            </button>
-        );
-    }
-
-    return (
-        <div
-            className="
-                rounded-lg px-2.5 py-1.5
-                bg-amber-50 border border-amber-200/80
-            "
-            title={event.title}
-        >
-            {inner}
-        </div>
     );
 }
