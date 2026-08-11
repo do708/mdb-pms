@@ -163,6 +163,8 @@ export default function WeekView({
         beginUur: number;
         eindUur: number;
     } | null>(null);
+    /** Na resize: blokkeer nagekomen click die dialoog/navigatie opent */
+    const suppressClickUntilRef = useRef(0);
     const headerScrollRef = useRef<HTMLDivElement>(null);
     const bodyScrollRef = useRef<HTMLDivElement>(null);
     const syncingScroll = useRef(false);
@@ -232,24 +234,45 @@ export default function WeekView({
             const override = resizeOverrideRef.current;
             resizingRef.current = null;
             if (active && override) {
-                if (
-                    active.kind === "workorder" &&
-                    onResizePlan
-                ) {
-                    onResizePlan({
-                        workorderId: active.id,
-                        beginHour: override.beginUur,
-                        endHour: override.eindUur,
-                    });
-                } else if (
-                    active.kind === "agenda" &&
-                    onResizeAgenda
-                ) {
-                    onResizeAgenda({
-                        eventId: active.id,
-                        beginHour: override.beginUur,
-                        endHour: override.eindUur,
-                    });
+                const changed =
+                    override.beginUur !== active.beginUur ||
+                    override.eindUur !== active.eindUur;
+                if (changed) {
+                    suppressClickUntilRef.current = Date.now() + 500;
+                    const blockClick = (e: MouseEvent) => {
+                        if (Date.now() < suppressClickUntilRef.current) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    };
+                    window.addEventListener("click", blockClick, true);
+                    window.setTimeout(() => {
+                        window.removeEventListener(
+                            "click",
+                            blockClick,
+                            true
+                        );
+                    }, 500);
+
+                    if (
+                        active.kind === "workorder" &&
+                        onResizePlan
+                    ) {
+                        onResizePlan({
+                            workorderId: active.id,
+                            beginHour: override.beginUur,
+                            endHour: override.eindUur,
+                        });
+                    } else if (
+                        active.kind === "agenda" &&
+                        onResizeAgenda
+                    ) {
+                        onResizeAgenda({
+                            eventId: active.id,
+                            beginHour: override.beginUur,
+                            endHour: override.eindUur,
+                        });
+                    }
                 }
             }
             setResizeOverride(null);
@@ -1528,6 +1551,8 @@ export default function WeekView({
                                                                                 e
                                                                             ) => {
                                                                                 if (
+                                                                                    Date.now() <
+                                                                                        suppressClickUntilRef.current ||
                                                                                     e.defaultPrevented ||
                                                                                     resizeOverride
                                                                                 ) {
@@ -1661,11 +1686,16 @@ export default function WeekView({
                                                                               }
                                                                             : undefined
                                                                     }
-                                                                    onClick={() => {
+                                                                    onClick={(e) => {
                                                                         if (
+                                                                            Date.now() <
+                                                                                suppressClickUntilRef.current ||
                                                                             resizeOverride
-                                                                        )
+                                                                        ) {
+                                                                            e.preventDefault();
+                                                                            e.stopPropagation();
                                                                             return;
+                                                                        }
                                                                         onEditAgenda?.(
                                                                             ev
                                                                         );
