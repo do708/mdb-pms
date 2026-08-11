@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
+import { amsterdamLocalToDate } from "@/lib/datetime/amsterdam";
 import {
     alignDateToWeekday,
     nthWeekdayInMonth,
@@ -14,12 +15,9 @@ function parseDateTime(
     allDay: boolean
 ): Date {
     if (allDay || !time) {
-        const [y, m, d] = dateIso.split("-").map(Number);
-        return new Date(y, m - 1, d, 0, 0, 0, 0);
+        return amsterdamLocalToDate(dateIso, "00:00");
     }
-    const [hh, mm] = time.split(":").map(Number);
-    const [y, m, d] = dateIso.split("-").map(Number);
-    return new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
+    return amsterdamLocalToDate(dateIso, time);
 }
 
 function applyRecurrenceStart(

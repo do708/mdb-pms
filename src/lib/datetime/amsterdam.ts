@@ -78,6 +78,22 @@ export function amsterdamLocalToDate(
 }
 
 /**
+ * Formatteer een Date als HH:mm in Europe/Amsterdam.
+ */
+export function formatAmsterdamHHmm(date: Date): string {
+    const p = amsterdamParts(date);
+    return `${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`;
+}
+
+/**
+ * Formatteer een Date als YYYY-MM-DD in Europe/Amsterdam.
+ */
+export function formatAmsterdamDateIso(date: Date): string {
+    const p = amsterdamParts(date);
+    return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
+}
+
+/**
  * Parseer API-input voor plannedDate / plannedEndDate.
  * - Met Z of ±offset: normale ISO
  * - `YYYY-MM-DDTHH:mm` zonder zone: Europe/Amsterdam

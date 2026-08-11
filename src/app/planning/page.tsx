@@ -715,17 +715,9 @@ function PlanningPageContent(){
             body.plannedEndDate = newEnd.toISOString();
         }
 
-        // Extra monteurs: nieuwe hoofdmonteur eruit; oude hoofdmonteur niet
-        // automatisch als extra houden — sleep = monteur van de opdracht wijzigen.
-        const prevExtras = Array.isArray(item.extraEngineers)
-            ? item.extraEngineers
-                  .map((e: any) => e?.user?.id)
-                  .filter(
-                      (id: string | undefined): id is string =>
-                          !!id && id !== args.engineerId
-                  )
-            : [];
-        body.extraEngineerIds = prevExtras;
+        // Sleep naar andere monteur = nieuwe hoofdmonteur; extra's leegmaken
+        // (anders blijft de vorige monteur soms als extra aangevinkt).
+        body.extraEngineerIds = [];
 
         const response = await fetch(
             `/api/workorders/${args.workorderId}`,
