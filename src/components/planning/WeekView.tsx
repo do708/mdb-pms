@@ -71,6 +71,8 @@ interface WeekViewProps {
         dateIso: string;
         hour: number;
         engineerId: string;
+        /** Kolom waarvandaan gesleept (bij multi-monteur: alleen díe slot vervangen) */
+        fromEngineerId?: string;
     }) => void;
     /** Sleep boven-/onderkant van een klus om duur te wijzigen */
     onResizePlan?: (args: {
@@ -1203,6 +1205,11 @@ export default function WeekView({
                                                                       ) {
                                                                           return;
                                                                       }
+                                                                      const fromEngineerId =
+                                                                          e.dataTransfer.getData(
+                                                                              "fromEngineerId"
+                                                                          ) ||
+                                                                          undefined;
                                                                       onMovePlan(
                                                                           {
                                                                               workorderId,
@@ -1211,6 +1218,7 @@ export default function WeekView({
                                                                               hour,
                                                                               engineerId:
                                                                                   user.id,
+                                                                              fromEngineerId,
                                                                           }
                                                                       );
                                                                   }
@@ -1407,6 +1415,10 @@ export default function WeekView({
                                                                                       e.dataTransfer.setData(
                                                                                           "workorderId",
                                                                                           item.id
+                                                                                      );
+                                                                                      e.dataTransfer.setData(
+                                                                                          "fromEngineerId",
+                                                                                          user.id
                                                                                       );
                                                                                       e.dataTransfer.setData(
                                                                                           "text/plain",

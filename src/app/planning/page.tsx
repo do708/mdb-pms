@@ -633,8 +633,14 @@ function PlanningPageContent(){
         dateIso: string;
         hour: number;
         engineerId: string;
+        fromEngineerId?: string;
     }) {
-        const item = items.find((w) => w.id === args.workorderId);
+        const item = items.find((w) => w.id === args.workorderId) as
+            | (PlanningItem & {
+                  assignedUserId?: string | null;
+                  extraEngineers?: { user?: { id: string } | null }[];
+              })
+            | undefined;
         if (!item?.plannedDate) {
             return;
         }
@@ -713,16 +719,44 @@ function PlanningPageContent(){
 
         const body: Record<string, unknown> = {
             plannedDate: newStart.toISOString(),
-            assignedUserId: args.engineerId,
         };
 
         if (newEnd) {
             body.plannedEndDate = newEnd.toISOString();
         }
 
-        // Sleep naar andere monteur = nieuwe hoofdmonteur; extra's leegmaken
-        // (anders blijft de vorige monteur soms als extra aangevinkt).
-        body.extraEngineerIds = [];
+        const primaryId =
+            item.assignedUser?.id || item.assignedUserId || null;
+        const extraIds = Array.isArray(item.extraEngineers)
+            ? item.extraEngineers
+                  .map((e) => e?.user?.id)
+                  .filter((id): id is string => !!id && id !== primaryId)
+            : [];
+        const fromId = args.fromEngineerId || primaryId || "";
+        const toId = args.engineerId;
+
+        // Zelfde monteur: alleen datum/tijd, monteurs ongemoeid laten
+        if (fromId && fromId === toId) {
+            // body heeft alleen planningstijden
+        } else if (fromId && toId && fromId !== toId) {
+            // Vervang alleen de gesleepte monteur; overige blijven staan
+            const remaining = [primaryId, ...extraIds].filter(
+                (id): id is string => !!id && id !== fromId
+            );
+            if (!remaining.includes(toId)) {
+                remaining.push(toId);
+            }
+            const newPrimary =
+                primaryId === fromId ? toId : primaryId || toId;
+            body.assignedUserId = newPrimary;
+            body.extraEngineerIds = remaining.filter(
+                (id) => id !== newPrimary
+            );
+        } else {
+            // Geen bronmonteur bekend: volledig naar doelmonteur
+            body.assignedUserId = toId;
+            body.extraEngineerIds = [];
+        }
 
         const response = await fetch(
             `/api/workorders/${args.workorderId}`,
