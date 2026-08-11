@@ -177,12 +177,17 @@ export default function Sidebar({
 
 
     const items =
-        menu.filter(
-
-            item =>
-                item.roles.includes(role)
-
-        );
+        menu
+            .filter((item) => item.roles.includes(role))
+            .map((item) => {
+                if (item.href !== "/planning") return item;
+                const t = new Date();
+                const iso = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+                return {
+                    ...item,
+                    href: `/planning?date=${iso}`,
+                };
+            });
 
 
 
@@ -280,7 +285,10 @@ export default function Sidebar({
 
 
                         const active =
-                            item.href === "/engineer"
+                            item.href.startsWith("/planning")
+                                ? pathname === "/planning" ||
+                                  pathname.startsWith("/planning/")
+                                : item.href === "/engineer"
                                 ? pathname === "/engineer" ||
                                   pathname.startsWith("/engineer/")
                                 : item.href === "/workorders"
