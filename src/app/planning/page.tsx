@@ -1061,7 +1061,7 @@ function PlanningPageContent(){
                             month: "long",
                         })} – ${(() => {
                             const end = new Date(weekStart);
-                            end.setDate(end.getDate() + 4);
+                            end.setDate(end.getDate() + 5);
                             return formatNlDate(end, {
                                 day: "numeric",
                                 month: "long",
