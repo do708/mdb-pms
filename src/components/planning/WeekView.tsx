@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { PlanningStatusIcon } from "./PlanningStatusIcon";
@@ -129,6 +129,25 @@ export default function WeekView({
         hour: number;
     } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const headerScrollRef = useRef<HTMLDivElement>(null);
+    const bodyScrollRef = useRef<HTMLDivElement>(null);
+    const syncingScroll = useRef(false);
+
+    function syncHorizontalScroll(source: "header" | "body") {
+        if (syncingScroll.current) return;
+        const from =
+            source === "header"
+                ? headerScrollRef.current
+                : bodyScrollRef.current;
+        const to =
+            source === "header"
+                ? bodyScrollRef.current
+                : headerScrollRef.current;
+        if (!from || !to) return;
+        syncingScroll.current = true;
+        to.scrollLeft = from.scrollLeft;
+        syncingScroll.current = false;
+    }
 
     useEffect(() => {
         function clearPreview() {
@@ -550,75 +569,97 @@ export default function WeekView({
                 </p>
             ) : (
                 <div className="p-3 sm:p-4">
+                    {/* Sticky namen t.o.v. main-scroll; overflow-x alleen op kind */}
                     <div
-                        className="w-full"
-                        style={{
-                            minWidth: `${minGridWidth}px`,
-                        }}
+                        className={`
+                            sticky top-0 z-30
+                            -mx-3 sm:-mx-4 px-3 sm:px-4
+                            bg-white border-b border-slate-200 shadow-sm
+                            ${isDragging ? "pointer-events-none" : ""}
+                        `}
+                        data-planning-sticky-header
                     >
-                        {/* Koprij: monteurs */}
                         <div
-                            className={`
-                                grid gap-2 mb-2
-                                bg-white
-                                border-b border-slate-200
-                                px-1 pb-2 pt-1
-                                ${isDragging ? "pointer-events-none" : ""}
-                            `}
-                            data-planning-sticky-header
-                            style={{ gridTemplateColumns: gridCols }}
+                            ref={headerScrollRef}
+                            className="
+                                overflow-x-auto
+                                [scrollbar-width:none]
+                                [-ms-overflow-style:none]
+                                [&::-webkit-scrollbar]:hidden
+                            "
+                            onScroll={() => syncHorizontalScroll("header")}
                         >
-                            <div className="flex items-end px-2 pb-1">
-                                <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                                    Dag
-                                </span>
-                            </div>
+                            <div
+                                className="grid gap-2 px-1 pb-2 pt-1"
+                                style={{
+                                    gridTemplateColumns: gridCols,
+                                    minWidth: `${minGridWidth}px`,
+                                }}
+                            >
+                                <div className="flex items-end px-2 pb-1">
+                                    <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                                        Dag
+                                    </span>
+                                </div>
 
-                            {users.map((user) => {
-                                const jobs = weekJobCount(user.id);
-                                const { voornaam, achternaam } =
-                                    monteurNameLines(user.name);
-                                const kind = parseStaffKind(
-                                    (user as { staffKind?: string }).staffKind
-                                );
-                                const kindLabel =
-                                    kind === "monteur"
-                                        ? null
-                                        : STAFF_KIND_LABELS[kind as StaffKind];
+                                {users.map((user) => {
+                                    const jobs = weekJobCount(user.id);
+                                    const { voornaam, achternaam } =
+                                        monteurNameLines(user.name);
+                                    const kind = parseStaffKind(
+                                        (user as { staffKind?: string })
+                                            .staffKind
+                                    );
+                                    const kindLabel =
+                                        kind === "monteur"
+                                            ? null
+                                            : STAFF_KIND_LABELS[
+                                                  kind as StaffKind
+                                              ];
 
-                                return (
-                                    <div
-                                        key={user.id}
-                                        className="px-1.5 py-1 min-w-0 text-center"
-                                    >
-                                        <p className="text-sm font-semibold text-slate-800 leading-snug">
-                                            {voornaam}
-                                            {achternaam ? (
-                                                <>
-                                                    <br />
-                                                    {achternaam}
-                                                </>
-                                            ) : null}
-                                        </p>
-                                        {kindLabel ? (
-                                            <p className="text-[10px] font-semibold text-amber-700 mt-0.5">
-                                                {kind === "inlener"
-                                                    ? "Inlener"
-                                                    : "Stagiaire"}
+                                    return (
+                                        <div
+                                            key={user.id}
+                                            className="px-1.5 py-1 min-w-0 text-center"
+                                        >
+                                            <p className="text-sm font-semibold text-slate-800 leading-snug">
+                                                {voornaam}
+                                                {achternaam ? (
+                                                    <>
+                                                        <br />
+                                                        {achternaam}
+                                                    </>
+                                                ) : null}
                                             </p>
-                                        ) : null}
-                                        <p className="text-[11px] text-slate-400 mt-0.5">
-                                            {jobs === 0
-                                                ? "Niets gepland"
-                                                : `${jobs}× deze week`}
-                                        </p>
-                                    </div>
-                                );
-                            })}
+                                            {kindLabel ? (
+                                                <p className="text-[10px] font-semibold text-amber-700 mt-0.5">
+                                                    {kind === "inlener"
+                                                        ? "Inlener"
+                                                        : "Stagiaire"}
+                                                </p>
+                                            ) : null}
+                                            <p className="text-[11px] text-slate-400 mt-0.5">
+                                                {jobs === 0
+                                                    ? "Niets gepland"
+                                                    : `${jobs}× deze week`}
+                                            </p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
 
-                        {/* Rijen: dagen */}
-                        <div className="space-y-2">
+                    {/* Dagen: horizontaal scrollen synchroon met kop */}
+                    <div
+                        ref={bodyScrollRef}
+                        className="overflow-x-auto mt-2"
+                        onScroll={() => syncHorizontalScroll("body")}
+                    >
+                        <div
+                            className="space-y-2"
+                            style={{ minWidth: `${minGridWidth}px` }}
+                        >
                             {days.map((day) => {
                                 const iso = isoDate(day);
                                 const isToday = iso === todayIso;
@@ -637,7 +678,7 @@ export default function WeekView({
                                         data-planning-day={iso}
                                         className={`
                                             grid gap-2 rounded-2xl border p-2 transition
-                                            scroll-mt-16
+                                            scroll-mt-24
                                             ${
                                                 isFocused
                                                     ? "border-[#0066FF] bg-[#e8f0ff]/70 ring-2 ring-[#0066FF]/25"

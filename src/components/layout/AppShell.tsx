@@ -46,8 +46,7 @@ export default function AppShell({
         <div
             className="
                 bg-[#f8fafc] flex
-                max-lg:h-dvh max-lg:overflow-hidden
-                lg:min-h-dvh
+                h-dvh overflow-hidden
             "
         >
             {menuOpen ? (
