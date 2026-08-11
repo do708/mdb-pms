@@ -1029,11 +1029,11 @@ export default function WeekView({
                                                     >
                                                         {dragPreview?.cellKey ===
                                                         `${iso}:${user.id}` ? (
-                                      <div
-                                        className="
-                                                                    pointer-events-none absolute left-0 right-0 z-20
-                                        "
-                                        style={{
+                                                            <div
+                                                                className="
+                                                                    pointer-events-none absolute left-0 right-0 z-[60]
+                                                                "
+                                                                style={{
                                                                     top: `${
                                                                         (dragPreview.hour -
                                                                             DAG_START_UUR) *
@@ -1042,13 +1042,13 @@ export default function WeekView({
                                                                     }px`,
                                                                 }}
                                                             >
-                                                                <div className="relative border-t-2 border-[#0066FF]">
+                                                                <div className="relative border-t-2 border-[#0066FF] shadow-[0_0_0_1px_rgba(0,102,255,0.25)]">
                                                                     <span
                                                                         className="
-                                                                            absolute -top-3 left-1
-                                                                            rounded bg-[#0066FF] text-white
-                                                                            text-[10px] font-bold tabular-nums
-                                                                            px-1.5 py-0.5 shadow-sm
+                                                                            absolute -top-3.5 left-1 z-[61]
+                                                                            rounded-md bg-[#0066FF] text-white
+                                                                            text-[11px] font-bold tabular-nums
+                                                                            px-2 py-0.5 shadow-md ring-1 ring-white/40
                                                                         "
                                                                     >
                                                                         {formatUurLabel(
