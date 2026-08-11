@@ -64,6 +64,13 @@ interface WeekViewProps {
         hour: number;
         engineerId: string;
     }) => void;
+    /** Sleep een agenda-item naar een andere dag/tijd/monteur (null = Algemeen) */
+    onMoveAgenda?: (args: {
+        eventId: string;
+        dateIso: string;
+        hour?: number;
+        engineerId: string | null;
+    }) => void;
     /** Pending klus om in te plannen (banner + klik op slot) */
     pendingSchedule?: { workorderId: string; label: string } | null;
     onSchedulePending?: (args: {
@@ -101,6 +108,7 @@ export default function WeekView({
     view = "week",
     onViewChange,
     onMovePlan,
+    onMoveAgenda,
     pendingSchedule = null,
     onSchedulePending,
     showStatusIcons = true,
@@ -535,7 +543,36 @@ export default function WeekView({
                                             gridTemplateColumns: gridCols,
                                         }}
                                     >
-                                        <div className="flex flex-col gap-1 min-w-0">
+                                        <div
+                                            className="flex flex-col gap-1 min-w-0"
+                                            onDragOver={
+                                                onMoveAgenda
+                                                    ? (e) => {
+                                                          e.preventDefault();
+                                                          e.dataTransfer.dropEffect =
+                                                              "move";
+                                                      }
+                                                    : undefined
+                                            }
+                                            onDrop={
+                                                onMoveAgenda
+                                                    ? (e) => {
+                                                          e.preventDefault();
+                                                          const eventId =
+                                                              e.dataTransfer.getData(
+                                                                  "agendaEventId"
+                                                              );
+                                                          if (!eventId)
+                                                              return;
+                                                          onMoveAgenda({
+                                                              eventId,
+                                                              dateIso: iso,
+                                                              engineerId: null,
+                                                          });
+                                                      }
+                                                    : undefined
+                                            }
+                                        >
                                         <Link
                                             href={
                                                 pendingSchedule
@@ -604,14 +641,32 @@ export default function WeekView({
                                                 key={ev.id}
                                                 type="button"
                                                 data-planning-agenda
+                                                draggable={!!onMoveAgenda}
+                                                onDragStart={
+                                                    onMoveAgenda
+                                                        ? (e) => {
+                                                              e.dataTransfer.setData(
+                                                                  "agendaEventId",
+                                                                  ev.id
+                                                              );
+                                                              e.dataTransfer.effectAllowed =
+                                                                  "move";
+                                                          }
+                                                        : undefined
+                                                }
                                                 onClick={() => onEditAgenda?.(ev)}
-                                                className="
+                                                className={`
                                                     w-full text-left rounded-lg px-1.5 py-1
                                                     bg-[#FFCC00] border-2 border-[#e6b800]
                                                     text-slate-900 text-[10px] font-bold
                                                     shadow-sm ring-1 ring-black/10
                                                     hover:brightness-95 transition truncate
-                                                "
+                                                    ${
+                                                        onMoveAgenda
+                                                            ? "cursor-grab active:cursor-grabbing"
+                                                            : ""
+                                                    }
+                                                `}
                                                 title={ev.title}
                                             >
                                                 {ev.title}
@@ -743,7 +798,8 @@ export default function WeekView({
                                                                 : undefined
                                                         }
                                                         onDragOver={
-                                                            onMovePlan &&
+                                                            (onMovePlan ||
+                                                                onMoveAgenda) &&
                                                             !verlof
                                                                 ? (e) => {
                                                                       e.preventDefault();
@@ -753,24 +809,47 @@ export default function WeekView({
                                                                 : undefined
                                                         }
                                                         onDrop={
-                                                            onMovePlan &&
+                                                            (onMovePlan ||
+                                                                onMoveAgenda) &&
                                                             !verlof
                                                                 ? (e) => {
                                                                       e.preventDefault();
-                                                                      const workorderId =
-                                                                          e.dataTransfer.getData(
-                                                                              "workorderId"
-                                                                          );
-                                                                      if (
-                                                                          !workorderId
-                                                                      ) {
-                                                                          return;
-                                                                      }
                                                                       const hour =
                                                                           hourFromClientY(
                                                                               e.clientY,
                                                                               e.currentTarget
                                                                           );
+                                                                      const agendaEventId =
+                                                                          e.dataTransfer.getData(
+                                                                              "agendaEventId"
+                                                                          );
+                                                                      if (
+                                                                          agendaEventId &&
+                                                                          onMoveAgenda
+                                                                      ) {
+                                                                          onMoveAgenda(
+                                                                              {
+                                                                                  eventId:
+                                                                                      agendaEventId,
+                                                                                  dateIso:
+                                                                                      iso,
+                                                                                  hour,
+                                                                                  engineerId:
+                                                                                      user.id,
+                                                                              }
+                                                                          );
+                                                                          return;
+                                                                      }
+                                                                      const workorderId =
+                                                                          e.dataTransfer.getData(
+                                                                              "workorderId"
+                                                                          );
+                                                                      if (
+                                                                          !workorderId ||
+                                                                          !onMovePlan
+                                                                      ) {
+                                                                          return;
+                                                                      }
                                                                       onMovePlan(
                                                                           {
                                                                               workorderId,
@@ -978,10 +1057,25 @@ export default function WeekView({
                                                                     key={ev.id}
                                                                     type="button"
                                                                     data-planning-agenda
+                                                                    draggable={
+                                                                        !!onMoveAgenda
+                                                                    }
+                                                                    onDragStart={
+                                                                        onMoveAgenda
+                                                                            ? (e) => {
+                                                                                  e.dataTransfer.setData(
+                                                                                      "agendaEventId",
+                                                                                      ev.id
+                                                                                  );
+                                                                                  e.dataTransfer.effectAllowed =
+                                                                                      "move";
+                                                                              }
+                                                                            : undefined
+                                                                    }
                                                                     onClick={() =>
                                                                         onEditAgenda?.(ev)
                                                                     }
-                                                                    className="
+                                                                    className={`
                                                                         absolute text-left
                                                                         rounded-lg px-2 py-1
                                                                         leading-tight overflow-hidden
@@ -989,8 +1083,13 @@ export default function WeekView({
                                                                         border-2 border-[#e6b800]
                                                                         shadow-sm ring-1 ring-black/10
                                                                         hover:brightness-95 hover:shadow-md
-                                                                        transition z-[5] cursor-pointer
-                                                                    "
+                                                                        transition z-[5]
+                                                                        ${
+                                                                            onMoveAgenda
+                                                                                ? "cursor-grab active:cursor-grabbing"
+                                                                                : "cursor-pointer"
+                                                                        }
+                                                                    `}
                                                                     style={{
                                                                         top: `${pos.top}px`,
                                                                         height: `${pos.height}px`,

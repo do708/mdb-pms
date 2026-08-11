@@ -733,8 +733,81 @@ function PlanningPageContent(){
         await loadPlanning();
     }
 
+    /** Weekview: sleep agenda-item naar andere dag/tijd/monteur (null = Algemeen). */
+    async function moveAgenda(args: {
+        eventId: string;
+        dateIso: string;
+        hour?: number;
+        engineerId: string | null;
+    }) {
+        const event = events.find((ev) => ev.id === args.eventId);
+        if (!event?.startAt) {
+            return;
+        }
 
+        const body: Record<string, unknown> = {
+            date: args.dateIso,
+            assignedUserId: args.engineerId,
+        };
 
+        if (typeof args.hour === "number") {
+            if (event.allDay) {
+                // Hele-dag item blijft hele dag; alleen datum + monteur wijzigen
+                body.allDay = true;
+            } else {
+                const start = new Date(event.startAt);
+                const end = event.endAt ? new Date(event.endAt) : null;
+                const durationMin =
+                    end && !Number.isNaN(end.getTime())
+                        ? Math.max(
+                              15,
+                              Math.round(
+                                  (end.getTime() - start.getTime()) / 60000
+                              )
+                          )
+                        : 60;
+
+                const startMin = Math.round(args.hour * 60);
+                const endMin = Math.min(23 * 60 + 45, startMin + durationMin);
+                const sh = Math.floor(startMin / 60);
+                const sm = startMin % 60;
+                const eh = Math.floor(endMin / 60);
+                const em = endMin % 60;
+
+                body.allDay = false;
+                body.startTime = `${String(sh).padStart(2, "0")}:${String(sm).padStart(2, "0")}`;
+                body.endTime = `${String(eh).padStart(2, "0")}:${String(em).padStart(2, "0")}`;
+            }
+        } else if (event.allDay) {
+            body.allDay = true;
+        }
+
+        const response = await fetch(
+            `/api/planning/events/${encodeURIComponent(args.eventId)}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            }
+        );
+
+        if (!response.ok) {
+            let message = "Agenda-item verplaatsen mislukt";
+            try {
+                const data = await response.json();
+                if (typeof data?.error === "string") {
+                    message = data.error;
+                }
+            } catch {
+                /* ignore */
+            }
+            alert(message);
+        }
+
+        await loadPlanning();
+    }
 
 
 
@@ -1074,6 +1147,9 @@ function PlanningPageContent(){
                     }}
                     onMovePlan={
                         canEdit ? moveWeekPlan : undefined
+                    }
+                    onMoveAgenda={
+                        canEdit ? moveAgenda : undefined
                     }
                     pendingSchedule={
                         canEdit && pending && !scheduling
