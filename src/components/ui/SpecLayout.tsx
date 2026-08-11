@@ -176,9 +176,19 @@ export function SpecStat({
     hint?: ReactNode;
 }) {
     return (
-        <div className="rounded-xl border border-gray-200 bg-white p-3 space-y-1">
-            <p className="text-xs text-gray-500">{label}</p>
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <div
+            className="
+                h-full min-h-[5.75rem]
+                rounded-xl border border-gray-200 bg-white p-3
+                flex flex-col gap-1
+            "
+        >
+            <p className="text-xs text-gray-500 leading-snug line-clamp-2 min-h-[2.5rem]">
+                {label}
+            </p>
+            <p className="mt-auto text-2xl font-bold text-gray-900 leading-none">
+                {value}
+            </p>
             {hint ? (
                 <p className="text-xs text-gray-400 leading-snug">{hint}</p>
             ) : null}
