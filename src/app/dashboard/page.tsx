@@ -406,16 +406,6 @@ export default function DashboardPage() {
                     }
                 />
                 <SpecStat
-                    label="Te laat invullen"
-                    value={
-                        teLaatCount > 0 ? (
-                            <span className="text-red-600">{teLaatCount}</span>
-                        ) : (
-                            teLaatCount
-                        )
-                    }
-                />
-                <SpecStat
                     label="Materiaal klaarzetten"
                     value={
                         materiaalCount > 0 ? (
@@ -427,7 +417,57 @@ export default function DashboardPage() {
                         )
                     }
                 />
+                <SpecStat
+                    label="Te laat invullen"
+                    value={
+                        teLaatCount > 0 ? (
+                            <span className="text-red-600">{teLaatCount}</span>
+                        ) : (
+                            teLaatCount
+                        )
+                    }
+                />
             </div>
+
+            {(data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
+                <SpecPanel
+                    title={`Materiaal klaarzetten (${data?.materiaalWaarschuwing?.length})`}
+                    hint="Installatie is morgen (of de eerstvolgende werkdag). Controleer of materiaal geleverd/klaargezet of op locatie is."
+                    tone="amber"
+                >
+                    <div className="space-y-2">
+                        {data?.materiaalWaarschuwing?.map((workorder) => (
+                            <a
+                                key={workorder.id}
+                                href={`/workorders/${workorder.id}/edit`}
+                            >
+                                <SpecListRow
+                                    className="
+                                        flex justify-between items-center gap-3
+                                        hover:bg-gray-50
+                                    "
+                                >
+                                    <div className="min-w-0">
+                                        <p className="font-semibold text-sm text-gray-900 truncate">
+                                            {workorder.number} —{" "}
+                                            {workorder.title}
+                                        </p>
+                                        <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                            {workorder.customer ?? "—"}
+                                            {workorder.engineer
+                                                ? ` · ${workorder.engineer}`
+                                                : ""}
+                                        </p>
+                                    </div>
+                                    <span className="text-xs font-medium text-amber-800 shrink-0">
+                                        Controleer materiaal →
+                                    </span>
+                                </SpecListRow>
+                            </a>
+                        ))}
+                    </div>
+                </SpecPanel>
+            )}
 
             {(data?.teLaat?.length ?? 0) > 0 && (
                 <SpecPanel
@@ -469,46 +509,6 @@ export default function DashboardPage() {
                                                   workorder.plannedDate
                                               ).toLocaleDateString("nl-NL")
                                             : "—"}
-                                    </span>
-                                </SpecListRow>
-                            </a>
-                        ))}
-                    </div>
-                </SpecPanel>
-            )}
-
-            {(data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
-                <SpecPanel
-                    title={`Materiaal klaarzetten (${data?.materiaalWaarschuwing?.length})`}
-                    hint="Installatie is morgen (of de eerstvolgende werkdag). Controleer of materiaal geleverd/klaargezet of op locatie is."
-                    tone="amber"
-                >
-                    <div className="space-y-2">
-                        {data?.materiaalWaarschuwing?.map((workorder) => (
-                            <a
-                                key={workorder.id}
-                                href={`/workorders/${workorder.id}/edit`}
-                            >
-                                <SpecListRow
-                                    className="
-                                        flex justify-between items-center gap-3
-                                        hover:bg-gray-50
-                                    "
-                                >
-                                    <div className="min-w-0">
-                                        <p className="font-semibold text-sm text-gray-900 truncate">
-                                            {workorder.number} —{" "}
-                                            {workorder.title}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-0.5 truncate">
-                                            {workorder.customer ?? "—"}
-                                            {workorder.engineer
-                                                ? ` · ${workorder.engineer}`
-                                                : ""}
-                                        </p>
-                                    </div>
-                                    <span className="text-xs font-medium text-amber-800 shrink-0">
-                                        Controleer materiaal →
                                     </span>
                                 </SpecListRow>
                             </a>
