@@ -369,14 +369,6 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-stretch">
                 <SpecStat
-                    label="Ingepland"
-                    value={data?.counters.ingepland ?? 0}
-                />
-                <SpecStat
-                    label="Uitgevoerd"
-                    value={data?.counters.uitgevoerd ?? 0}
-                />
-                <SpecStat
                     label="Open aanvragen"
                     value={
                         openAanvragenCount > 0 ? (
@@ -389,16 +381,8 @@ export default function DashboardPage() {
                     }
                 />
                 <SpecStat
-                    label="Formulieren te behandelen"
-                    value={
-                        openFormsCount > 0 ? (
-                            <span className="text-sky-700">
-                                {openFormsCount}
-                            </span>
-                        ) : (
-                            openFormsCount
-                        )
-                    }
+                    label="Ingepland"
+                    value={data?.counters.ingepland ?? 0}
                 />
                 <Link
                     href="/dashboard/materiaal-controle"
@@ -437,6 +421,31 @@ export default function DashboardPage() {
                         )
                     }
                 />
+                <SpecStat
+                    label="Uitgevoerd"
+                    value={data?.counters.uitgevoerd ?? 0}
+                />
+                <div
+                    className="
+                        col-span-2 md:col-span-1 h-full
+                        mt-1 md:mt-0
+                        xl:mt-0 xl:ml-3 xl:pl-3
+                        xl:border-l xl:border-gray-200
+                    "
+                >
+                    <SpecStat
+                        label="Formulieren te behandelen"
+                        value={
+                            openFormsCount > 0 ? (
+                                <span className="text-sky-700">
+                                    {openFormsCount}
+                                </span>
+                            ) : (
+                                openFormsCount
+                            )
+                        }
+                    />
+                </div>
             </div>
 
             {(data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
