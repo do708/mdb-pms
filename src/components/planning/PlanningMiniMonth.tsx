@@ -112,20 +112,20 @@ function urenOpDag(
 type LoadLevel = "free" | "busy" | "full";
 
 function loadLevel(ratio: number): LoadLevel {
-    if (ratio >= 0.9) return "full";
+    if (ratio >= 0.85) return "full";
     if (ratio >= 0.6) return "busy";
     return "free";
 }
 
 function loadColor(level: LoadLevel): string {
     if (level === "full") return "bg-red-500 ring-1 ring-white/80";
-    if (level === "busy") return "bg-orange-500 ring-1 ring-white/80";
+    if (level === "busy") return "bg-[#FFCC00] ring-1 ring-white/80";
     return "bg-emerald-500 ring-1 ring-white/80";
 }
 
 /**
  * Mini-maandkalender voor in de sidebar op /planning.
- * Weeknummers links; bezettingsbolletje: groen / oranje (≥60%) / rood (≥90%).
+ * Weeknummers links; bezettingsbolletje: groen / geel (≥60%) / rood (≥85%).
  */
 export default function PlanningMiniMonth() {
     const router = useRouter();
