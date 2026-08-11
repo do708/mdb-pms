@@ -12,6 +12,7 @@ import {
     SCHERM_FORMATEN,
     berekendInstallatieType,
     isHoofdType,
+    isPlayerAansturing,
     patchRaaktVoorzieningen,
     legeVoorzieningen,
     syncSchermItems,
@@ -467,7 +468,14 @@ export default function SchermenSpecificatie({
                                         </span>
                                     </span>
                                     <div className="flex flex-wrap gap-2">
-                                        {AANSTURING_OPTIES.map((a) => (
+                                        {AANSTURING_OPTIES.map((a) => {
+                                            const geselecteerd =
+                                                a === "Player"
+                                                    ? isPlayerAansturing(
+                                                          scherm.aansturing
+                                                      )
+                                                    : scherm.aansturing === a;
+                                            return (
                                             <button
                                                 key={a}
                                                 type="button"
@@ -478,8 +486,7 @@ export default function SchermenSpecificatie({
                                                     }
                                                     updateItem(scherm.id, {
                                                         aansturing:
-                                                            scherm.aansturing ===
-                                                            a
+                                                            geselecteerd
                                                                 ? ""
                                                                 : a,
                                                         aansturingAnders: "",
@@ -488,14 +495,15 @@ export default function SchermenSpecificatie({
                                                 className={
                                                     "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
                                                     +
-                                                    (scherm.aansturing === a
+                                                    (geselecteerd
                                                         ? "bg-amber-100 text-amber-900 border-amber-300"
                                                         : "bg-white text-gray-700 border-gray-200")
                                                 }
                                             >
                                                 {a}
                                             </button>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                     {scherm.aansturing === "Anders" ? (
                                         <input

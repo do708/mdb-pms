@@ -11,6 +11,7 @@ import {
     klaarzetVanAanvraagSpecificaties,
     mergeKlaarzetPrefill,
 } from "@/lib/aanvraag/klaarzetVanSpecificaties";
+import { aansturingWeergave } from "@/lib/aanvraag/installatieTypes";
 
 export interface KlaarzetMateriaal {
     schermenAantal?:string;
@@ -37,7 +38,7 @@ export interface KlaarzetMateriaal {
     versterkersOpLocatie?:boolean;
 }
 
-/** Aansturing waarbij schermen zelf geprepareerd moeten worden (geen DMV player). */
+/** Aansturing waarbij schermen zelf geprepareerd moeten worden (geen Player). */
 export const NATIVE_OS_AANSTURING = [
     "Tizen",
     "webOS",
@@ -310,7 +311,7 @@ export function leesSchermAansturing(
             const label =
                 aansturing === "Anders"
                 ? (str(r.aansturingAnders) || "Anders")
-                : aansturing;
+                : aansturingWeergave(aansturing);
 
             if(!labels.includes(label)){
                 labels.push(label);

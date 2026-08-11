@@ -2,6 +2,8 @@
  * Prefill klaarzet-materiaalvelden vanuit aanvraag-specificaties.
  */
 
+import { isPlayerAansturing } from "@/lib/aanvraag/installatieTypes";
+
 export type KlaarzetPrefill = {
     schermenAantal?: string;
     playersAantal?: string;
@@ -63,13 +65,14 @@ export function klaarzetVanAanvraagSpecificaties(
         const tekst = groepeerTeksten(formaten);
         if (tekst) {
             out.schermenAantal = tekst;
-            // Alleen aparte players bij DMV player (niet bij Tizen/webOS/Android).
-            const dmvPlayers = schermen.items.filter((item) => {
+            // Alleen aparte players bij Player (niet bij Tizen/webOS/Android).
+            // Legacy "DMV player" telt mee.
+            const playerCount = schermen.items.filter((item) => {
                 const r = asRecord(item);
-                return r ? str(r.aansturing) === "DMV player" : false;
+                return r ? isPlayerAansturing(str(r.aansturing)) : false;
             }).length;
-            if (dmvPlayers > 0) {
-                out.playersAantal = String(dmvPlayers);
+            if (playerCount > 0) {
+                out.playersAantal = String(playerCount);
             }
         }
 

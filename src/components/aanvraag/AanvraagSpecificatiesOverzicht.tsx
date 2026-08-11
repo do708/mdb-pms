@@ -11,6 +11,7 @@ import {
     TYPE_AANVRAAG_LABELS,
     VELD_LABELS,
 } from "@/lib/aanvraag/overzichtLabels";
+import { aansturingWeergave } from "@/lib/aanvraag/installatieTypes";
 
 export interface AanvraagOverzichtSnapshot {
     specificaties?: unknown;
@@ -285,7 +286,9 @@ function SchermenBlok({
                                         str(s.aansturing) === "Anders"
                                             ? str(s.aansturingAnders) ||
                                               "Anders"
-                                            : s.aansturing
+                                            : aansturingWeergave(
+                                                  str(s.aansturing)
+                                              )
                                     }
                                 />
                                 <Field

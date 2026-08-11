@@ -68,7 +68,7 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
 
 /** Aansturing van het scherm (onder bevestiging). */
 export const AANSTURING_OPTIES = [
-    "DMV player",
+    "Player",
     "Tizen",
     "webOS",
     "Android",
@@ -76,6 +76,19 @@ export const AANSTURING_OPTIES = [
 ] as const;
 
 export type AansturingSoort = (typeof AANSTURING_OPTIES)[number];
+
+/** Oude opgeslagen waarde; gelijk aan "Player". */
+export const AANSTURING_PLAYER_LEGACY = "DMV player";
+
+/** Player-aansturing, inclusief legacy "DMV player". */
+export function isPlayerAansturing(value: string): boolean {
+    return value === "Player" || value === AANSTURING_PLAYER_LEGACY;
+}
+
+/** Weergavelabel; normaliseert legacy "DMV player" → "Player". */
+export function aansturingWeergave(value: string): string {
+    return isPlayerAansturing(value) ? "Player" : value;
+}
 
 /** Hoogte-opties bij plafondbeugel. */
 export const PLAFOND_HOOGTE_OPTIES = [
@@ -193,7 +206,7 @@ export interface AanvraagSchermItem {
     bevestigingAnders: string;
     /** Alleen bij Plafondbeugel: 80cm / 150cm / 300cm */
     plafondHoogte: string;
-    /** Aansturing: DMV player / Tizen / webOS / Android / Anders */
+    /** Aansturing: Player / Tizen / webOS / Android / Anders */
     aansturing: string;
     /** Toelichting bij aansturing = Anders */
     aansturingAnders: string;
