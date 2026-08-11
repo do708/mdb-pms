@@ -227,11 +227,13 @@ export default function AgendaEventDialog({
 
             if (!response.ok) {
                 const data = await response.json().catch(() => ({}));
-                setError(
+                const base =
                     typeof data.error === "string"
                         ? data.error
-                        : "Opslaan mislukt"
-                );
+                        : "Opslaan mislukt";
+                const detail =
+                    typeof data.detail === "string" ? data.detail : "";
+                setError(detail ? `${base}\n${detail}` : base);
                 return;
             }
 
@@ -576,7 +578,9 @@ export default function AgendaEventDialog({
                     </label>
 
                     {error && (
-                        <p className="text-sm text-red-600">{error}</p>
+                        <p className="text-sm text-red-600 whitespace-pre-wrap">
+                            {error}
+                        </p>
                     )}
                 </div>
 

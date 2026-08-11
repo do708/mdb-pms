@@ -117,6 +117,13 @@ export async function POST(req: Request) {
             }
         }
 
+        if (!guard.user.id) {
+            return NextResponse.json(
+                { error: "Sessie ongeldig — log opnieuw in" },
+                { status: 401 }
+            );
+        }
+
         const recurrence = parseRecurrenceBody(body);
         if ("error" in recurrence) {
             return NextResponse.json(
@@ -126,12 +133,19 @@ export async function POST(req: Request) {
         }
 
         let startAt = parseDateTime(dateIso, startTime, allDay);
+        if (Number.isNaN(startAt.getTime())) {
+            return NextResponse.json(
+                { error: "Ongeldige datum" },
+                { status: 400 }
+            );
+        }
         startAt = applyRecurrenceStart(startAt, recurrence);
 
         let endAt: Date | null = null;
         if (!allDay && endTime) {
             const rawEnd = parseDateTime(dateIso, endTime, false);
-            const duration = rawEnd.getTime() - parseDateTime(dateIso, startTime, false).getTime();
+            const rawStart = parseDateTime(dateIso, startTime, false);
+            const duration = rawEnd.getTime() - rawStart.getTime();
             if (duration <= 0) {
                 return NextResponse.json(
                     { error: "Eindtijd moet na starttijd liggen" },
@@ -169,8 +183,27 @@ export async function POST(req: Request) {
         return NextResponse.json(event, { status: 201 });
     } catch (error) {
         console.error("PLANNING EVENT POST ERROR", error);
+        const message =
+            error &&
+            typeof error === "object" &&
+            "message" in error &&
+            typeof (error as { message: unknown }).message === "string"
+                ? (error as { message: string }).message
+                : "";
+        const hint =
+            /column .* does not exist|Unknown argument/i.test(message)
+                ? "Database mist nieuwe velden — voer migraties uit (prisma migrate deploy)."
+                : /Foreign key|P2003/i.test(message)
+                  ? "Gebruiker of monteur niet gevonden — log opnieuw in."
+                  : null;
         return NextResponse.json(
-            { error: "Agenda-item opslaan mislukt" },
+            {
+                error: hint || "Agenda-item opslaan mislukt",
+                detail:
+                    process.env.NODE_ENV !== "production" && message
+                        ? message.slice(0, 400)
+                        : undefined,
+            },
             { status: 500 }
         );
     }
