@@ -7264,6 +7264,10 @@ export namespace Prisma {
     termijn2GefactureerdOp: Date | null
     termijn3GefactureerdOp: Date | null
     termijn4GefactureerdOp: Date | null
+    termijn1Factuurnummer: string | null
+    termijn2Factuurnummer: string | null
+    termijn3Factuurnummer: string | null
+    termijn4Factuurnummer: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7288,6 +7292,10 @@ export namespace Prisma {
     termijn2GefactureerdOp: Date | null
     termijn3GefactureerdOp: Date | null
     termijn4GefactureerdOp: Date | null
+    termijn1Factuurnummer: string | null
+    termijn2Factuurnummer: string | null
+    termijn3Factuurnummer: string | null
+    termijn4Factuurnummer: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7312,6 +7320,10 @@ export namespace Prisma {
     termijn2GefactureerdOp: number
     termijn3GefactureerdOp: number
     termijn4GefactureerdOp: number
+    termijn1Factuurnummer: number
+    termijn2Factuurnummer: number
+    termijn3Factuurnummer: number
+    termijn4Factuurnummer: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7348,6 +7360,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: true
     termijn3GefactureerdOp?: true
     termijn4GefactureerdOp?: true
+    termijn1Factuurnummer?: true
+    termijn2Factuurnummer?: true
+    termijn3Factuurnummer?: true
+    termijn4Factuurnummer?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7372,6 +7388,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: true
     termijn3GefactureerdOp?: true
     termijn4GefactureerdOp?: true
+    termijn1Factuurnummer?: true
+    termijn2Factuurnummer?: true
+    termijn3Factuurnummer?: true
+    termijn4Factuurnummer?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7396,6 +7416,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: true
     termijn3GefactureerdOp?: true
     termijn4GefactureerdOp?: true
+    termijn1Factuurnummer?: true
+    termijn2Factuurnummer?: true
+    termijn3Factuurnummer?: true
+    termijn4Factuurnummer?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7507,6 +7531,10 @@ export namespace Prisma {
     termijn2GefactureerdOp: Date | null
     termijn3GefactureerdOp: Date | null
     termijn4GefactureerdOp: Date | null
+    termijn1Factuurnummer: string | null
+    termijn2Factuurnummer: string | null
+    termijn3Factuurnummer: string | null
+    termijn4Factuurnummer: string | null
     createdAt: Date
     updatedAt: Date
     _count: ProjectCountAggregateOutputType | null
@@ -7550,6 +7578,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: boolean
     termijn3GefactureerdOp?: boolean
     termijn4GefactureerdOp?: boolean
+    termijn1Factuurnummer?: boolean
+    termijn2Factuurnummer?: boolean
+    termijn3Factuurnummer?: boolean
+    termijn4Factuurnummer?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -7579,6 +7611,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: boolean
     termijn3GefactureerdOp?: boolean
     termijn4GefactureerdOp?: boolean
+    termijn1Factuurnummer?: boolean
+    termijn2Factuurnummer?: boolean
+    termijn3Factuurnummer?: boolean
+    termijn4Factuurnummer?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -7604,6 +7640,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: boolean
     termijn3GefactureerdOp?: boolean
     termijn4GefactureerdOp?: boolean
+    termijn1Factuurnummer?: boolean
+    termijn2Factuurnummer?: boolean
+    termijn3Factuurnummer?: boolean
+    termijn4Factuurnummer?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -7629,11 +7669,15 @@ export namespace Prisma {
     termijn2GefactureerdOp?: boolean
     termijn3GefactureerdOp?: boolean
     termijn4GefactureerdOp?: boolean
+    termijn1Factuurnummer?: boolean
+    termijn2Factuurnummer?: boolean
+    termijn3Factuurnummer?: boolean
+    termijn4Factuurnummer?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "location" | "plaats" | "customerId" | "geoffreerdeUren" | "geoffreerdBedrag" | "offerteUrl" | "offerteFilename" | "status" | "termijn1Gefactureerd" | "termijn2Gefactureerd" | "termijn3Gefactureerd" | "termijn4Gefactureerd" | "termijn1GefactureerdOp" | "termijn2GefactureerdOp" | "termijn3GefactureerdOp" | "termijn4GefactureerdOp" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "location" | "plaats" | "customerId" | "geoffreerdeUren" | "geoffreerdBedrag" | "offerteUrl" | "offerteFilename" | "status" | "termijn1Gefactureerd" | "termijn2Gefactureerd" | "termijn3Gefactureerd" | "termijn4Gefactureerd" | "termijn1GefactureerdOp" | "termijn2GefactureerdOp" | "termijn3GefactureerdOp" | "termijn4GefactureerdOp" | "termijn1Factuurnummer" | "termijn2Factuurnummer" | "termijn3Factuurnummer" | "termijn4Factuurnummer" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     workorders?: boolean | Project$workordersArgs<ExtArgs>
@@ -7685,6 +7729,13 @@ export namespace Prisma {
       termijn2GefactureerdOp: Date | null
       termijn3GefactureerdOp: Date | null
       termijn4GefactureerdOp: Date | null
+      /**
+       * Factuurnummer per termijn (vrij tekstveld)
+       */
+      termijn1Factuurnummer: string | null
+      termijn2Factuurnummer: string | null
+      termijn3Factuurnummer: string | null
+      termijn4Factuurnummer: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["project"]>
@@ -8133,6 +8184,10 @@ export namespace Prisma {
     readonly termijn2GefactureerdOp: FieldRef<"Project", 'DateTime'>
     readonly termijn3GefactureerdOp: FieldRef<"Project", 'DateTime'>
     readonly termijn4GefactureerdOp: FieldRef<"Project", 'DateTime'>
+    readonly termijn1Factuurnummer: FieldRef<"Project", 'String'>
+    readonly termijn2Factuurnummer: FieldRef<"Project", 'String'>
+    readonly termijn3Factuurnummer: FieldRef<"Project", 'String'>
+    readonly termijn4Factuurnummer: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
   }
@@ -32888,6 +32943,10 @@ export namespace Prisma {
     termijn2GefactureerdOp: 'termijn2GefactureerdOp',
     termijn3GefactureerdOp: 'termijn3GefactureerdOp',
     termijn4GefactureerdOp: 'termijn4GefactureerdOp',
+    termijn1Factuurnummer: 'termijn1Factuurnummer',
+    termijn2Factuurnummer: 'termijn2Factuurnummer',
+    termijn3Factuurnummer: 'termijn3Factuurnummer',
+    termijn4Factuurnummer: 'termijn4Factuurnummer',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -33692,6 +33751,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
     termijn3GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
     termijn4GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
+    termijn1Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn2Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn3Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn4Factuurnummer?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
@@ -33720,6 +33783,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: SortOrderInput | SortOrder
     termijn3GefactureerdOp?: SortOrderInput | SortOrder
     termijn4GefactureerdOp?: SortOrderInput | SortOrder
+    termijn1Factuurnummer?: SortOrderInput | SortOrder
+    termijn2Factuurnummer?: SortOrderInput | SortOrder
+    termijn3Factuurnummer?: SortOrderInput | SortOrder
+    termijn4Factuurnummer?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     customer?: CustomerOrderByWithRelationInput
@@ -33751,6 +33818,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
     termijn3GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
     termijn4GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
+    termijn1Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn2Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn3Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn4Factuurnummer?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
@@ -33779,6 +33850,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: SortOrderInput | SortOrder
     termijn3GefactureerdOp?: SortOrderInput | SortOrder
     termijn4GefactureerdOp?: SortOrderInput | SortOrder
+    termijn1Factuurnummer?: SortOrderInput | SortOrder
+    termijn2Factuurnummer?: SortOrderInput | SortOrder
+    termijn3Factuurnummer?: SortOrderInput | SortOrder
+    termijn4Factuurnummer?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
@@ -33811,6 +33886,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
     termijn3GefactureerdOp?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
     termijn4GefactureerdOp?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    termijn1Factuurnummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    termijn2Factuurnummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    termijn3Factuurnummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    termijn4Factuurnummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
   }
@@ -35823,6 +35902,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
@@ -35851,6 +35934,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
@@ -35877,6 +35964,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
@@ -35905,6 +35996,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
@@ -35932,6 +36027,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -35955,6 +36054,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35979,6 +36082,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -38161,6 +38268,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: SortOrder
     termijn3GefactureerdOp?: SortOrder
     termijn4GefactureerdOp?: SortOrder
+    termijn1Factuurnummer?: SortOrder
+    termijn2Factuurnummer?: SortOrder
+    termijn3Factuurnummer?: SortOrder
+    termijn4Factuurnummer?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -38190,6 +38301,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: SortOrder
     termijn3GefactureerdOp?: SortOrder
     termijn4GefactureerdOp?: SortOrder
+    termijn1Factuurnummer?: SortOrder
+    termijn2Factuurnummer?: SortOrder
+    termijn3Factuurnummer?: SortOrder
+    termijn4Factuurnummer?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -38214,6 +38329,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: SortOrder
     termijn3GefactureerdOp?: SortOrder
     termijn4GefactureerdOp?: SortOrder
+    termijn1Factuurnummer?: SortOrder
+    termijn2Factuurnummer?: SortOrder
+    termijn3Factuurnummer?: SortOrder
+    termijn4Factuurnummer?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -42057,6 +42176,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderCreateNestedManyWithoutProjectInput
@@ -42083,6 +42206,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
@@ -42321,6 +42448,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
     termijn3GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
     termijn4GefactureerdOp?: DateTimeNullableFilter<"Project"> | Date | string | null
+    termijn1Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn2Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn3Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    termijn4Factuurnummer?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
   }
@@ -42782,6 +42913,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
@@ -42809,6 +42944,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
@@ -42936,6 +43075,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
@@ -42963,6 +43106,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
@@ -43086,6 +43233,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
@@ -43113,6 +43264,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
@@ -43154,6 +43309,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
@@ -43181,6 +43340,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
@@ -43314,6 +43477,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
@@ -43341,6 +43508,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
@@ -43754,6 +43925,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
@@ -43781,6 +43956,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
@@ -47283,6 +47462,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: Date | string | null
     termijn3GefactureerdOp?: Date | string | null
     termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -47409,6 +47592,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUpdateManyWithoutProjectNestedInput
@@ -47435,6 +47622,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
@@ -47461,6 +47652,10 @@ export namespace Prisma {
     termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

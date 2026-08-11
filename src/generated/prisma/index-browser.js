@@ -186,6 +186,10 @@ exports.Prisma.ProjectScalarFieldEnum = {
   termijn2GefactureerdOp: 'termijn2GefactureerdOp',
   termijn3GefactureerdOp: 'termijn3GefactureerdOp',
   termijn4GefactureerdOp: 'termijn4GefactureerdOp',
+  termijn1Factuurnummer: 'termijn1Factuurnummer',
+  termijn2Factuurnummer: 'termijn2Factuurnummer',
+  termijn3Factuurnummer: 'termijn3Factuurnummer',
+  termijn4Factuurnummer: 'termijn4Factuurnummer',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

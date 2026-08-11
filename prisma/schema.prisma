@@ -94,6 +94,11 @@ model Project {
   termijn2GefactureerdOp DateTime?
   termijn3GefactureerdOp DateTime?
   termijn4GefactureerdOp DateTime?
+  /// Factuurnummer per termijn (vrij tekstveld)
+  termijn1Factuurnummer String?
+  termijn2Factuurnummer String?
+  termijn3Factuurnummer String?
+  termijn4Factuurnummer String?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   customer         Customer           @relation(fields: [customerId], references: [id])

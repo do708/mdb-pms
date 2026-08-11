@@ -33,6 +33,10 @@ interface ProjectDetail {
     termijn2GefactureerdOp: string | null;
     termijn3GefactureerdOp: string | null;
     termijn4GefactureerdOp: string | null;
+    termijn1Factuurnummer: string | null;
+    termijn2Factuurnummer: string | null;
+    termijn3Factuurnummer: string | null;
+    termijn4Factuurnummer: string | null;
     gebruikteUren: number;
     materiaalKosten: number;
     uren: {
@@ -537,6 +541,63 @@ export default function ProjectDetailPage() {
         }
     }
 
+    async function setTermijnFactuurnummer(
+        numKey:
+            | "termijn1Factuurnummer"
+            | "termijn2Factuurnummer"
+            | "termijn3Factuurnummer"
+            | "termijn4Factuurnummer",
+        value: string
+    ) {
+        if (!project) {
+            return;
+        }
+
+        const next = value.trim() || null;
+        const previous = project[numKey];
+        if (next === previous) {
+            return;
+        }
+
+        setProject({
+            ...project,
+            [numKey]: next,
+        });
+        setSaving(true);
+
+        try {
+            const response = await fetch(`/api/projects/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    [numKey]: next,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setProject({
+                    ...project,
+                    [numKey]: previous,
+                });
+                alert(data.error || "Opslaan mislukt");
+                return;
+            }
+
+            setProject(data);
+        } catch (error) {
+            console.error(error);
+            setProject({
+                ...project,
+                [numKey]: previous,
+            });
+            alert("Opslaan mislukt");
+        } finally {
+            setSaving(false);
+        }
+    }
+
     function termijnDatumIso(
         value: string | null | undefined
     ): string {
@@ -970,21 +1031,25 @@ export default function ProjectDetailPage() {
                             {
                                 key: "termijn1Gefactureerd",
                                 dateKey: "termijn1GefactureerdOp",
+                                numKey: "termijn1Factuurnummer",
                                 label: "Termijn 1 — akkoord opdracht (inkoop)",
                             },
                             {
                                 key: "termijn2Gefactureerd",
                                 dateKey: "termijn2GefactureerdOp",
+                                numKey: "termijn2Factuurnummer",
                                 label: "Termijn 2 — start opdracht",
                             },
                             {
                                 key: "termijn3Gefactureerd",
                                 dateKey: "termijn3GefactureerdOp",
+                                numKey: "termijn3Factuurnummer",
                                 label: "Termijn 3 — 50%",
                             },
                             {
                                 key: "termijn4Gefactureerd",
                                 dateKey: "termijn4GefactureerdOp",
+                                numKey: "termijn4Factuurnummer",
                                 label: "Termijn 4 — 100%",
                             },
                         ] as const
@@ -1020,22 +1085,45 @@ export default function ProjectDetailPage() {
                                     {termijn.label}
                                 </span>
                             </label>
-                            <div className="pl-6">
-                                <label className="block text-xs text-gray-500 mb-1">
-                                    Factuurdatum
-                                </label>
-                                <input
-                                    type="date"
-                                    value={factuurdatum}
-                                    disabled={saving}
-                                    onChange={(e) =>
-                                        setTermijnGefactureerdDatum(
-                                            termijn.dateKey,
-                                            e.target.value
-                                        )
-                                    }
-                                    className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
-                                />
+                            <div className="pl-6 space-y-2">
+                                <div>
+                                    <label className="block text-xs text-gray-500 mb-1">
+                                        Factuurdatum
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={factuurdatum}
+                                        disabled={saving}
+                                        onChange={(e) =>
+                                            setTermijnGefactureerdDatum(
+                                                termijn.dateKey,
+                                                e.target.value
+                                            )
+                                        }
+                                        className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-gray-500 mb-1">
+                                        Factuurnummer
+                                    </label>
+                                    <input
+                                        type="text"
+                                        defaultValue={
+                                            project[termijn.numKey] || ""
+                                        }
+                                        key={`${termijn.numKey}-${project[termijn.numKey] || ""}`}
+                                        disabled={saving}
+                                        onBlur={(e) =>
+                                            setTermijnFactuurnummer(
+                                                termijn.numKey,
+                                                e.target.value
+                                            )
+                                        }
+                                        placeholder="Bijv. F2026-001"
+                                        className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
+                                    />
+                                </div>
                             </div>
                         </div>
                         );

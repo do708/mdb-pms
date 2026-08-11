@@ -184,6 +184,21 @@ export async function PATCH(
             }
         }
 
+        for (const numKey of [
+            "termijn1Factuurnummer",
+            "termijn2Factuurnummer",
+            "termijn3Factuurnummer",
+            "termijn4Factuurnummer",
+        ] as const) {
+            if (body[numKey] !== undefined) {
+                const raw = body[numKey];
+                data[numKey] =
+                    typeof raw === "string" && raw.trim()
+                        ? raw.trim()
+                        : null;
+            }
+        }
+
         const existing = await prisma.project.findUnique({
             where: { id },
             select: { id: true },
