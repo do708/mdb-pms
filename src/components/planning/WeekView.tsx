@@ -128,10 +128,12 @@ export default function WeekView({
         cellKey: string;
         hour: number;
     } | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
 
     useEffect(() => {
         function clearPreview() {
             setDragPreview(null);
+            setIsDragging(false);
         }
         window.addEventListener("dragend", clearPreview);
         return () => window.removeEventListener("dragend", clearPreview);
@@ -559,13 +561,15 @@ export default function WeekView({
                     >
                         {/* Koprij: monteurs (blijft zichtbaar bij verticaal scrollen) */}
                         <div
-                            className="
+                            className={`
                                 grid gap-2 mb-2 sticky top-0 z-30
                                 bg-white
                                 border-b border-slate-200
                                 shadow-sm
                                 px-1 pb-2 pt-1
-                            "
+                                ${isDragging ? "pointer-events-none" : ""}
+                            `}
+                            data-planning-sticky-header
                             style={{ gridTemplateColumns: gridCols }}
                         >
                             <div className="flex items-end px-2 pb-1">
@@ -752,9 +756,14 @@ export default function WeekView({
                                                 onDragStart={
                                                     onMoveAgenda
                                                         ? (e) => {
+                                                              setIsDragging(true);
                                                               e.dataTransfer.setData(
                                                                   "agendaEventId",
                                                                   ev.id
+                                                              );
+                                                              e.dataTransfer.setData(
+                                                                  "text/plain",
+                                                                  `agenda:${ev.id}`
                                                               );
                                                               e.dataTransfer.effectAllowed =
                                                                   "move";
@@ -1142,9 +1151,16 @@ export default function WeekView({
                                                                         onDragStart={
                                                                             onMovePlan
                                                                                 ? (e) => {
+                                                                                      setIsDragging(
+                                                                                          true
+                                                                                      );
                                                                                       e.dataTransfer.setData(
                                                                                           "workorderId",
                                                                                           item.id
+                                                                                      );
+                                                                                      e.dataTransfer.setData(
+                                                                                          "text/plain",
+                                                                                          `workorder:${item.id}`
                                                                                       );
                                                                                       e.dataTransfer.effectAllowed =
                                                                                           "move";
@@ -1252,9 +1268,16 @@ export default function WeekView({
                                                                     onDragStart={
                                                                         onMoveAgenda
                                                                             ? (e) => {
+                                                                                  setIsDragging(
+                                                                                      true
+                                                                                  );
                                                                                   e.dataTransfer.setData(
                                                                                       "agendaEventId",
                                                                                       ev.id
+                                                                                  );
+                                                                                  e.dataTransfer.setData(
+                                                                                      "text/plain",
+                                                                                      `agenda:${ev.id}`
                                                                                   );
                                                                                   e.dataTransfer.effectAllowed =
                                                                                       "move";

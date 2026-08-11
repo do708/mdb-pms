@@ -223,14 +223,23 @@ export async function PATCH(
                       : `${String(current.endAt.getHours()).padStart(2, "0")}:${String(current.endAt.getMinutes()).padStart(2, "0")}`;
 
             let startAt = parseDateTime(dateIso, startTime, allDay);
-            const align =
-                recurrenceForAlign ||
-                ({
-                    recurrenceFreq: current.recurrenceFreq,
-                    recurrenceWeekday: current.recurrenceWeekday,
-                    recurrenceNth: current.recurrenceNth,
-                } as const);
-            startAt = applyRecurrenceStart(startAt, align);
+            // Alleen herhaling uitlijnen als de datum niet expliciet is gezet
+            // (anders blokkeert drag-and-drop naar een andere dag/tijd).
+            const dateExplicit =
+                typeof body.date === "string" &&
+                /^\d{4}-\d{2}-\d{2}$/.test(body.date.trim());
+            if (!dateExplicit) {
+                const align =
+                    recurrenceForAlign ||
+                    ({
+                        recurrenceFreq: current.recurrenceFreq,
+                        recurrenceWeekday: current.recurrenceWeekday,
+                        recurrenceNth: current.recurrenceNth,
+                    } as const);
+                startAt = applyRecurrenceStart(startAt, align);
+            } else if (recurrenceForAlign) {
+                startAt = applyRecurrenceStart(startAt, recurrenceForAlign);
+            }
 
             let endAt: Date | null = null;
             if (!allDay && endTime) {

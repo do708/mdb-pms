@@ -715,6 +715,18 @@ function PlanningPageContent(){
             body.plannedEndDate = newEnd.toISOString();
         }
 
+        // Extra monteurs: nieuwe hoofdmonteur eruit; oude hoofdmonteur niet
+        // automatisch als extra houden — sleep = monteur van de opdracht wijzigen.
+        const prevExtras = Array.isArray(item.extraEngineers)
+            ? item.extraEngineers
+                  .map((e: any) => e?.user?.id)
+                  .filter(
+                      (id: string | undefined): id is string =>
+                          !!id && id !== args.engineerId
+                  )
+            : [];
+        body.extraEngineerIds = prevExtras;
+
         const response = await fetch(
             `/api/workorders/${args.workorderId}`,
             {
@@ -727,7 +739,16 @@ function PlanningPageContent(){
         );
 
         if (!response.ok) {
-            alert("Verplaatsen mislukt");
+            let message = "Verplaatsen mislukt";
+            try {
+                const data = await response.json();
+                if (typeof data?.error === "string") {
+                    message = data.error;
+                }
+            } catch {
+                /* ignore */
+            }
+            alert(message);
         }
 
         await loadPlanning();
@@ -751,33 +772,31 @@ function PlanningPageContent(){
         };
 
         if (typeof args.hour === "number") {
-            if (event.allDay) {
-                // Hele-dag item blijft hele dag; alleen datum + monteur wijzigen
-                body.allDay = true;
-            } else {
-                const start = new Date(event.startAt);
-                const end = event.endAt ? new Date(event.endAt) : null;
-                const durationMin =
-                    end && !Number.isNaN(end.getTime())
-                        ? Math.max(
-                              15,
-                              Math.round(
-                                  (end.getTime() - start.getTime()) / 60000
-                              )
+            // Sleep naar tijdlijn: altijd timed (ook als het eerder hele dag was)
+            const start = new Date(event.startAt);
+            const end = event.endAt ? new Date(event.endAt) : null;
+            const durationMin =
+                !event.allDay &&
+                end &&
+                !Number.isNaN(end.getTime())
+                    ? Math.max(
+                          15,
+                          Math.round(
+                              (end.getTime() - start.getTime()) / 60000
                           )
-                        : 60;
+                      )
+                    : 60;
 
-                const startMin = Math.round(args.hour * 60);
-                const endMin = Math.min(23 * 60 + 45, startMin + durationMin);
-                const sh = Math.floor(startMin / 60);
-                const sm = startMin % 60;
-                const eh = Math.floor(endMin / 60);
-                const em = endMin % 60;
+            const startMin = Math.round(args.hour * 60);
+            const endMin = Math.min(23 * 60 + 45, startMin + durationMin);
+            const sh = Math.floor(startMin / 60);
+            const sm = startMin % 60;
+            const eh = Math.floor(endMin / 60);
+            const em = endMin % 60;
 
-                body.allDay = false;
-                body.startTime = `${String(sh).padStart(2, "0")}:${String(sm).padStart(2, "0")}`;
-                body.endTime = `${String(eh).padStart(2, "0")}:${String(em).padStart(2, "0")}`;
-            }
+            body.allDay = false;
+            body.startTime = `${String(sh).padStart(2, "0")}:${String(sm).padStart(2, "0")}`;
+            body.endTime = `${String(eh).padStart(2, "0")}:${String(em).padStart(2, "0")}`;
         } else if (event.allDay) {
             body.allDay = true;
         }
