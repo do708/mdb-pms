@@ -26,6 +26,7 @@ export async function GET(request: NextRequest, context: Ctx) {
                 email: true,
                 role: true,
                 staffKind: true,
+                stagiaireUntil: true,
                 active: true,
             },
         });
@@ -66,6 +67,7 @@ export async function PUT(request: NextRequest, context: Ctx) {
             email?: string;
             role?: string;
             staffKind?: string;
+            stagiaireUntil?: Date | null;
             active?: boolean;
             password?: string;
         } = {};
@@ -115,7 +117,7 @@ export async function PUT(request: NextRequest, context: Ctx) {
 
         const existing = await prisma.user.findUnique({
             where: { id },
-            select: { role: true },
+            select: { role: true, staffKind: true },
         });
         if (!existing) {
             return NextResponse.json(
@@ -129,8 +131,31 @@ export async function PUT(request: NextRequest, context: Ctx) {
             if (body.staffKind !== undefined || data.role !== undefined) {
                 data.staffKind = parseStaffKind(body.staffKind);
             }
+            const effectiveKind =
+                data.staffKind !== undefined
+                    ? parseStaffKind(data.staffKind)
+                    : parseStaffKind(existing.staffKind);
+
+            if (effectiveKind === "stagiaire") {
+                const raw =
+                    typeof body.stagiaireUntil === "string"
+                        ? body.stagiaireUntil.trim().slice(0, 10)
+                        : "";
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+                    return NextResponse.json(
+                        {
+                            error: "Vul de einddatum van de stageperiode in",
+                        },
+                        { status: 400 }
+                    );
+                }
+                data.stagiaireUntil = new Date(`${raw}T12:00:00`);
+            } else {
+                data.stagiaireUntil = null;
+            }
         } else {
             data.staffKind = "monteur";
+            data.stagiaireUntil = null;
         }
 
         const user = await prisma.user.update({
@@ -142,6 +167,7 @@ export async function PUT(request: NextRequest, context: Ctx) {
                 email: true,
                 role: true,
                 staffKind: true,
+                stagiaireUntil: true,
                 active: true,
             },
         });

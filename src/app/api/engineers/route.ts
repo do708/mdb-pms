@@ -49,6 +49,8 @@ export async function GET(){
 
                     staffKind:true,
 
+                    stagiaireUntil:true,
+
                 },
 
                 orderBy:{

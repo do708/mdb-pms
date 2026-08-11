@@ -56,6 +56,21 @@ export async function POST(request: Request) {
                 ? parseStaffKind(body.staffKind)
                 : "monteur";
 
+        let stagiaireUntil: Date | null = null;
+        if (role === "engineer" && staffKind === "stagiaire") {
+            const raw =
+                typeof body.stagiaireUntil === "string"
+                    ? body.stagiaireUntil.trim().slice(0, 10)
+                    : "";
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+                return NextResponse.json(
+                    { error: "Vul de einddatum van de stageperiode in" },
+                    { status: 400 }
+                );
+            }
+            stagiaireUntil = new Date(`${raw}T12:00:00`);
+        }
+
         if (!email || !password) {
             return NextResponse.json(
                 { error: "E-mail en wachtwoord zijn verplicht" },
@@ -95,6 +110,7 @@ export async function POST(request: Request) {
                 password: passwordHash,
                 role,
                 staffKind,
+                stagiaireUntil,
                 active: true,
             },
             select: {
@@ -103,6 +119,7 @@ export async function POST(request: Request) {
                 email: true,
                 role: true,
                 staffKind: true,
+                stagiaireUntil: true,
                 active: true,
             },
         });

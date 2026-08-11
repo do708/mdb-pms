@@ -48,6 +48,9 @@ export default function EditUserPage(){
     const [staffKind,setStaffKind] =
         useState<StaffKind>("monteur");
 
+    const [stagiaireUntil,setStagiaireUntil] =
+        useState("");
+
 
     const [active,setActive] =
         useState(true);
@@ -93,6 +96,12 @@ export default function EditUserPage(){
                 setRole(user.role ?? "engineer");
 
                 setStaffKind(parseStaffKind(user.staffKind));
+
+                setStagiaireUntil(
+                    user.stagiaireUntil
+                        ? String(user.stagiaireUntil).slice(0, 10)
+                        : ""
+                );
 
                 setActive(user.active ?? true);
 
@@ -156,6 +165,12 @@ export default function EditUserPage(){
                                 role === "engineer"
                                     ? staffKind
                                     : "monteur",
+
+                            stagiaireUntil:
+                                role === "engineer"
+                                && staffKind === "stagiaire"
+                                    ? stagiaireUntil
+                                    : null,
 
                             active,
 
@@ -434,6 +449,7 @@ export default function EditUserPage(){
                 </label>
 
                 {role === "engineer" ? (
+                    <>
                     <label className="block">
                         <span className="text-sm text-gray-600">
                             Type monteur
@@ -463,6 +479,34 @@ export default function EditUserPage(){
                             bezettingsuren op de planning.
                         </span>
                     </label>
+                    {staffKind === "stagiaire" ? (
+                        <label className="block">
+                            <span className="text-sm text-gray-600">
+                                Stage tot en met *
+                            </span>
+                            <input
+                                type="date"
+                                value={stagiaireUntil}
+                                onChange={(e) =>
+                                    setStagiaireUntil(e.target.value)
+                                }
+                                className="
+                                    w-full
+                                    border
+                                    rounded-xl
+                                    p-3
+                                    mt-1
+                                    bg-white
+                                "
+                                required
+                            />
+                            <span className="block text-xs text-gray-400 mt-1">
+                                Tot deze datum zichtbaar en inplanbaar in de
+                                planning; daarna niet meer.
+                            </span>
+                        </label>
+                    ) : null}
+                    </>
                 ) : null}
 
 

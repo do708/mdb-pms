@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -32,6 +32,7 @@ import {
 } from "@/lib/planning/pendingSchedule";
 import { parseMasterId } from "@/lib/planning/expandPlanningEvents";
 import { amsterdamLocalToDate, formatAmsterdamDateIso } from "@/lib/datetime/amsterdam";
+import { isSchedulableInWeek, isSchedulableOnDay } from "@/constants/staffKind";
 
 
 
@@ -192,7 +193,7 @@ function PlanningPageContent(){
         useState<PlanningMenuState | null>(null);
 
 
-    const [engineers,setEngineers] =
+    const [allEngineers,setAllEngineers] =
         useState<any[]>([]);
 
 
@@ -252,6 +253,31 @@ function PlanningPageContent(){
             d.setHours(0,0,0,0);
             return d;
         });
+
+    const weekIso = formatAmsterdamDateIso(weekStart);
+
+    const engineers = useMemo(() => {
+        const visible = allEngineers.filter(
+            (e: {
+                id: string;
+                staffKind?: string;
+                stagiaireUntil?: string | null;
+            }) =>
+                isSchedulableInWeek(
+                    e.staffKind,
+                    e.stagiaireUntil,
+                    weekIso
+                )
+        );
+
+        if (isEngineer && session?.user?.id) {
+            return visible.filter(
+                (e: { id: string }) => e.id === session.user.id
+            );
+        }
+
+        return visible;
+    }, [allEngineers, weekIso, isEngineer, session?.user?.id]);
 
 
     function shiftWeek(deltaWeeks:number){
@@ -358,24 +384,14 @@ function PlanningPageContent(){
         const engineersData =
             await engineersResponse.json();
 
-        const allEngineers =
+        const allEngineersList =
             Array.isArray(engineersData)
             ?
             engineersData
             :
             [];
 
-        // API filtert al voor monteurs; client-side extra zekerheid
-        // (ook als sessie net geladen is).
-        setEngineers(
-            isEngineer && session?.user?.id
-            ?
-            allEngineers.filter(
-                (e: { id: string }) => e.id === session.user.id
-            )
-            :
-            allEngineers
-        );
+        setAllEngineers(allEngineersList);
 
 
         setConflicts(
@@ -764,6 +780,23 @@ function PlanningPageContent(){
         engineerId: string;
         fromEngineerId?: string;
     }) {
+        const targetEngineer = allEngineers.find(
+            (e: { id: string }) => e.id === args.engineerId
+        );
+        if (
+            targetEngineer
+            && !isSchedulableOnDay(
+                targetEngineer.staffKind,
+                targetEngineer.stagiaireUntil,
+                args.dateIso
+            )
+        ) {
+            alert(
+                "Deze stagiair is na de stage-einddatum niet meer inplanbaar."
+            );
+            return;
+        }
+
         const item = items.find((w) => w.id === args.workorderId) as
             | (PlanningItem & {
                   assignedUserId?: string | null;
@@ -1042,6 +1075,25 @@ function PlanningPageContent(){
         hour?: number;
         engineerId: string | null;
     }) {
+        if (args.engineerId) {
+            const targetEngineer = allEngineers.find(
+                (e: { id: string }) => e.id === args.engineerId
+            );
+            if (
+                targetEngineer
+                && !isSchedulableOnDay(
+                    targetEngineer.staffKind,
+                    targetEngineer.stagiaireUntil,
+                    args.dateIso
+                )
+            ) {
+                alert(
+                    "Deze stagiair is na de stage-einddatum niet meer inplanbaar."
+                );
+                return;
+            }
+        }
+
         const event = events.find((ev) => ev.id === args.eventId);
         if (!event?.startAt) {
             return;
