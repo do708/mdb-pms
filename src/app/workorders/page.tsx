@@ -225,19 +225,17 @@ export default function WorkordersPage() {
 
                                     {(role === "admin" || role === "office") && (
                                         <>
-                                            {(workorder._count?.photos ?? 0) > 0 && (
-                                                <a
-                                                    href={`/api/workorders/${workorder.id}/photos/zip`}
-                                                    title="ZIP download met alle foto's"
-                                                    className="
-                                                        border border-gray-200
-                                                        px-3 py-1.5 rounded-lg text-sm
-                                                        text-gray-700 hover:bg-gray-50
-                                                    "
-                                                >
-                                                    ZIP foto&apos;s
-                                                </a>
-                                            )}
+                                            <a
+                                                href={`/api/workorders/${workorder.id}/photos/zip`}
+                                                title="Download alle foto's van de werkbon (.zip)"
+                                                className="
+                                                    border border-gray-200
+                                                    px-3 py-1.5 rounded-lg text-sm
+                                                    text-gray-700 hover:bg-gray-50
+                                                "
+                                            >
+                                                .zip
+                                            </a>
 
                                             <DeleteButton
                                                 url={`/api/workorders/${workorder.id}`}
