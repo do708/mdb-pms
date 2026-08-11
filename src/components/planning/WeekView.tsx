@@ -278,30 +278,12 @@ export default function WeekView({
         );
     }
 
-    function engineerColor(userId: string | null | undefined): string {
-        if (!userId) return "#64748b";
-        const palette = [
-            "#0066FF",
-            "#d6007e",
-            "#7c3aed",
-            "#059669",
-            "#ea580c",
-            "#0891b2",
-            "#4f46e5",
-            "#ca8a04",
-        ];
-        let hash = 0;
-        for (let i = 0; i < userId.length; i++) {
-            hash = (hash + userId.charCodeAt(i) * (i + 1)) % 997;
-        }
-        return palette[hash % palette.length];
-    }
-
     function jobColor(item: any): string {
+        // Kleur = opdrachtgever (klant), niet monteur
         return (
             item.customer?.color ??
             item.project?.customer?.color ??
-            engineerColor(item.assignedUser?.id)
+            "#0066FF"
         );
     }
 
@@ -885,28 +867,29 @@ export default function WeekView({
             </div>
 
             {users.length > 0 ? (
-                <div className="flex flex-wrap gap-3 px-4 py-2.5 border-t border-slate-100 bg-slate-50/60">
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 self-center">
-                        Monteurs
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-4 py-2.5 border-t border-slate-100 bg-slate-50/60 text-[11px] text-slate-600">
+                    <span>
+                        <strong className="font-semibold text-slate-700">
+                            Kleur
+                        </strong>{" "}
+                        = opdrachtgever
                     </span>
-                    {users.map((u) => (
-                        <span
-                            key={u.id}
-                            className="inline-flex items-center gap-1.5 text-xs text-slate-700"
-                        >
-                            <span
-                                className="h-2.5 w-2.5 rounded-full shrink-0"
-                                style={{
-                                    backgroundColor: engineerColor(u.id),
-                                }}
-                            />
-                            {u.name || "Monteur"}
-                        </span>
-                    ))}
-                    <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 ml-auto">
+                    <span>
+                        <strong className="font-semibold text-slate-700">
+                            (naam)
+                        </strong>{" "}
+                        = monteur op het blokje
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-slate-500">
                         <Check className="h-3 w-3 text-emerald-600" />
                         = alle monteurs die dag ingepland
                     </span>
+                    {pendingSchedule ? (
+                        <span className="text-slate-500">
+                            Tip: kies een monteur via de chips onderaan de
+                            dagkolom
+                        </span>
+                    ) : null}
                 </div>
             ) : null}
         </section>

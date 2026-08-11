@@ -9,11 +9,12 @@ import {
 
 import { getStatus, migrateStatus } from "@/constants/workorderStatus";
 
-/** Vier kernstatussen met icoon (overzicht + planning). */
+/** Kernstatussen met icoon (overzicht + planning). */
 export const WORKORDER_STATUS_ICON_LEGEND = [
     { key: "ontvangen", shortLabel: "Opdracht ontvangen" },
     { key: "afspraak", shortLabel: "Afspraak verstuurd" },
     { key: "ingepland", shortLabel: "Ingepland" },
+    { key: "uitgevoerd", shortLabel: "Uitgevoerd" },
     { key: "gefactureerd", shortLabel: "Gefactureerd" },
 ] as const;
 
@@ -58,7 +59,7 @@ export function PlanningStatusIcon({
     );
 }
 
-/** Compacte legenda: Opdracht ontvangen · Afspraak · Ingepland · Gefactureerd */
+/** Compacte legenda: statusiconen op planning/opdrachten. */
 export function WorkorderStatusIconLegend({
     className = "",
 }: {
