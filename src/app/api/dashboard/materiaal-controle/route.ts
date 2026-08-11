@@ -86,11 +86,33 @@ export async function GET() {
                 continue;
             }
 
-            const locatieDelen = [
-                w.location,
-                [w.straat, w.huisnummer].filter(Boolean).join(" ").trim(),
-                [w.postcode, w.city].filter(Boolean).join(" ").trim(),
-            ].filter((x) => typeof x === "string" && x.trim());
+            const straatHuis = [w.straat, w.huisnummer]
+                .filter(Boolean)
+                .join(" ")
+                .trim();
+            const postcodePlaats = [w.postcode, w.city]
+                .filter(Boolean)
+                .join(" ")
+                .trim();
+            const location =
+                typeof w.location === "string" ? w.location.trim() : "";
+
+            // location is vaak gelijk aan straat+huisnummer — geen dubbele regel.
+            const locatieDelen: string[] = [];
+            if (straatHuis) {
+                locatieDelen.push(straatHuis);
+                if (
+                    location
+                    && location.toLowerCase() !== straatHuis.toLowerCase()
+                ) {
+                    locatieDelen.unshift(location);
+                }
+            } else if (location) {
+                locatieDelen.push(location);
+            }
+            if (postcodePlaats) {
+                locatieDelen.push(postcodePlaats);
+            }
 
             items.push({
                 id: w.id,
