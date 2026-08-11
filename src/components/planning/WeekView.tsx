@@ -607,9 +607,10 @@ export default function WeekView({
                                                 onClick={() => onEditAgenda?.(ev)}
                                                 className="
                                                     w-full text-left rounded-lg px-1.5 py-1
-                                                    bg-amber-100 border border-amber-200
-                                                    text-amber-950 text-[10px] font-semibold
-                                                    hover:bg-amber-200 transition truncate
+                                                    bg-[#FFCC00] border-2 border-[#e6b800]
+                                                    text-slate-900 text-[10px] font-bold
+                                                    shadow-sm ring-1 ring-black/10
+                                                    hover:brightness-95 transition truncate
                                                 "
                                                 title={ev.title}
                                             >
@@ -984,9 +985,10 @@ export default function WeekView({
                                                                         absolute text-left
                                                                         rounded-lg px-2 py-1
                                                                         leading-tight overflow-hidden
-                                                                        bg-amber-500 text-white
-                                                                        shadow-sm ring-1 ring-amber-700/20
-                                                                        hover:brightness-110 hover:shadow-md
+                                                                        bg-[#FFCC00] text-slate-900
+                                                                        border-2 border-[#e6b800]
+                                                                        shadow-sm ring-1 ring-black/10
+                                                                        hover:brightness-95 hover:shadow-md
                                                                         transition z-[5] cursor-pointer
                                                                     "
                                                                     style={{
