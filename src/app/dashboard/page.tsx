@@ -8,7 +8,6 @@ import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 import AanvraagSpecificatiesOverzicht from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
 import Link from "next/link";
 import {
-    PageHeader,
     PageShell,
     SpecListRow,
     SpecPageCard,
@@ -346,7 +345,6 @@ export default function DashboardPage() {
     if (!data?.counters) {
         return (
             <PageShell>
-                <PageHeader title="Dashboard" />
                 <p className="text-sm text-red-600">
                     Dashboardgegevens konden niet worden geladen. Vernieuw de
                     pagina of controleer of de database-migraties zijn
@@ -363,8 +361,6 @@ export default function DashboardPage() {
 
     return (
         <PageShell>
-            <PageHeader title="Dashboard" />
-
             <AanvragenSectie />
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-stretch">
