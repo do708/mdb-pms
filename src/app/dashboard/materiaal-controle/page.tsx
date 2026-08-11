@@ -506,13 +506,7 @@ export default function MateriaalControlePage() {
                                 title="Schermen (Tizen / webOS / Android)"
                                 hint="Deze schermen moeten binnengekomen, geprepareerd en klaargezet zijn vóór de klus."
                                 className="print:bg-white print:border-gray-400"
-                            >
-                                <div className="flex flex-wrap gap-x-4 gap-y-2">
-                                    <PrintTick label="Binnengekomen" />
-                                    <PrintTick label="Geprepareerd" />
-                                    <PrintTick label="Klaargezet" />
-                                </div>
-                            </SpecPanel>
+                            />
                         ) : null}
                     </article>
                 ))}
