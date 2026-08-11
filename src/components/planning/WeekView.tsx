@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { PlanningStatusIcon } from "./PlanningStatusIcon";
@@ -120,6 +121,19 @@ export default function WeekView({
     onCreateAgenda,
     onEditAgenda,
 }: WeekViewProps) {
+    const [dragPreview, setDragPreview] = useState<{
+        cellKey: string;
+        hour: number;
+    } | null>(null);
+
+    useEffect(() => {
+        function clearPreview() {
+            setDragPreview(null);
+        }
+        window.addEventListener("dragend", clearPreview);
+        return () => window.removeEventListener("dragend", clearPreview);
+    }, []);
+
     const today = new Date();
     const todayIso = toIsoDate(today);
 
@@ -847,6 +861,54 @@ export default function WeekView({
                                                                       e.preventDefault();
                                                                       e.dataTransfer.dropEffect =
                                                                           "move";
+                                                                      const hour =
+                                                                          hourFromClientY(
+                                                                              e.clientY,
+                                                                              e.currentTarget
+                                                                          );
+                                                                      const cellKey = `${iso}:${user.id}`;
+                                                                      setDragPreview(
+                                                                          (
+                                                                              prev
+                                                                          ) =>
+                                                                              prev &&
+                                                                              prev.cellKey ===
+                                                                                  cellKey &&
+                                                                              prev.hour ===
+                                                                                  hour
+                                                                                  ? prev
+                                                                                  : {
+                                                                                        cellKey,
+                                                                                        hour,
+                                                                                    }
+                                                                      );
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onDragLeave={
+                                                            (onMovePlan ||
+                                                                onMoveAgenda) &&
+                                                            !verlof
+                                                                ? (e) => {
+                                                                      const related =
+                                                                          e.relatedTarget as Node | null;
+                                                                      if (
+                                                                          related &&
+                                                                          e.currentTarget.contains(
+                                                                              related
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
+                                                                      setDragPreview(
+                                                                          (
+                                                                              prev
+                                                                          ) =>
+                                                                              prev?.cellKey ===
+                                                                              `${iso}:${user.id}`
+                                                                                  ? null
+                                                                                  : prev
+                                                                      );
                                                                   }
                                                                 : undefined
                                                         }
@@ -856,6 +918,9 @@ export default function WeekView({
                                                             !verlof
                                                                 ? (e) => {
                                                                       e.preventDefault();
+                                                                      setDragPreview(
+                                                                          null
+                                                                      );
                                                                       const hour =
                                                                           hourFromClientY(
                                                                               e.clientY,
@@ -906,6 +971,37 @@ export default function WeekView({
                                                                 : undefined
                                                         }
                                                     >
+                                                        {dragPreview?.cellKey ===
+                                                        `${iso}:${user.id}` ? (
+                                                            <div
+                                                                className="
+                                                                    pointer-events-none absolute left-0 right-0 z-20
+                                                                "
+                                                                style={{
+                                                                    top: `${
+                                                                        (dragPreview.hour -
+                                                                            DAG_START_UUR) *
+                                                                            PX_PER_UUR +
+                                                                        DAG_PADDING_TOP
+                                                                    }px`,
+                                                                }}
+                                                            >
+                                                                <div className="relative border-t-2 border-[#0066FF]">
+                                                                    <span
+                                                                        className="
+                                                                            absolute -top-3 left-1
+                                                                            rounded bg-[#0066FF] text-white
+                                                                            text-[10px] font-bold tabular-nums
+                                                                            px-1.5 py-0.5 shadow-sm
+                                                                        "
+                                                                    >
+                                                                        {formatUurLabel(
+                                                                            dragPreview.hour
+                                                                        )}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        ) : null}
                                                         {!verlof &&
                                                             uurLijnen.map(
                                                                 (uur) => {
