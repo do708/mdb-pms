@@ -206,3 +206,15 @@ input[type="time"]::-webkit-date-and-time-value {
     transform: translateX(-3.5%);
   }
 }
+
+/* Print: materiaalcontrole e.d. — chrome verbergen, pagina-breaks netjes */
+@media print {
+  body {
+    background: white !important;
+  }
+
+  .break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

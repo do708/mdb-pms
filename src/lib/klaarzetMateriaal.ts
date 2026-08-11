@@ -7,10 +7,16 @@
 //
 // De klus is "compleet gecontroleerd" als alle ingevulde soorten in orde zijn.
 
+import {
+    klaarzetVanAanvraagSpecificaties,
+    mergeKlaarzetPrefill,
+} from "@/lib/aanvraag/klaarzetVanSpecificaties";
 
-interface KlaarzetMateriaal {
+export interface KlaarzetMateriaal {
     schermenAantal?:string;
     schermenGeleverd?:boolean;
+    /** Alleen relevant bij Tizen / webOS / Android. */
+    schermenGeprepareerd?:boolean;
     schermenKlaargezet?:boolean;
     schermenOpLocatie?:boolean;
     playersAantal?:string;
@@ -29,6 +35,47 @@ interface KlaarzetMateriaal {
     versterkersGeleverd?:boolean;
     versterkersKlaargezet?:boolean;
     versterkersOpLocatie?:boolean;
+}
+
+/** Aansturing waarbij schermen zelf geprepareerd moeten worden (geen DMV player). */
+export const NATIVE_OS_AANSTURING = [
+    "Tizen",
+    "webOS",
+    "Android",
+] as const;
+
+export type NativeOsAansturing = (typeof NATIVE_OS_AANSTURING)[number];
+
+export type MateriaalSoortKey =
+    | "schermen"
+    | "players"
+    | "beugels"
+    | "kiosk"
+    | "versterkers";
+
+export interface MateriaalRegelStatus {
+    key:MateriaalSoortKey;
+    label:string;
+    aantal:string;
+    geleverd:boolean;
+    geprepareerd:boolean | null;
+    klaargezet:boolean;
+    opLocatie:boolean;
+    inOrde:boolean;
+    /** Schermen met native OS: binnengekomen → geprepareerd → klaargezet. */
+    nativeOsFlow:boolean;
+}
+
+export interface MateriaalCheckOpties {
+    /** True als minstens één scherm Tizen / webOS / Android heeft. */
+    heeftNativeOs?:boolean;
+}
+
+export interface SchermAansturingInfo {
+    /** Unieke aansturing-labels (incl. Anders-toelichting). */
+    labels:string[];
+    /** True als minstens één scherm Tizen / webOS / Android heeft. */
+    heeftNativeOs:boolean;
 }
 
 
@@ -122,4 +169,140 @@ export function materiaalCompleet(
         regelInOrde(km.versterkersAantal, km.versterkersGeleverd, km.versterkersKlaargezet, km.versterkersOpLocatie)
     );
 
+}
+
+
+const SOORT_DEFS:[
+    MateriaalSoortKey,
+    string,
+    keyof KlaarzetMateriaal,
+    keyof KlaarzetMateriaal,
+    keyof KlaarzetMateriaal,
+    keyof KlaarzetMateriaal
+][] = [
+    ["schermen", "Schermen", "schermenAantal", "schermenGeleverd", "schermenKlaargezet", "schermenOpLocatie"],
+    ["players", "Players", "playersAantal", "playersGeleverd", "playersKlaargezet", "playersOpLocatie"],
+    ["beugels", "Beugels", "beugelsAantal", "beugelsGeleverd", "beugelsKlaargezet", "beugelsOpLocatie"],
+    ["kiosk", "Kiosk", "kioskAantal", "kioskGeleverd", "kioskKlaargezet", "kioskOpLocatie"],
+    ["versterkers", "Versterker/speakers", "versterkersAantal", "versterkersGeleverd", "versterkersKlaargezet", "versterkersOpLocatie"],
+];
+
+
+/** Alle ingevulde materiaalregels met status (voor controle/print). */
+export function materiaalRegels(
+    km:KlaarzetMateriaal | null
+):MateriaalRegelStatus[] {
+
+    if(!km){
+        return [];
+    }
+
+    const regels:MateriaalRegelStatus[] = [];
+
+    for(const [key, label, aantalKey, gelKey, klaarKey, locKey] of SOORT_DEFS){
+        const aantalRaw = km[aantalKey];
+        const aantal =
+            typeof aantalRaw === "string" ? aantalRaw.trim() : "";
+
+        if(!aantal){
+            continue;
+        }
+
+        const geleverd = Boolean(km[gelKey]);
+        const klaargezet = Boolean(km[klaarKey]);
+        const opLocatie = Boolean(km[locKey]);
+
+        regels.push({
+            key,
+            label,
+            aantal,
+            geleverd,
+            klaargezet,
+            opLocatie,
+            inOrde:regelInOrde(aantal, geleverd, klaargezet, opLocatie),
+        });
+    }
+
+    return regels;
+}
+
+
+function asRecord(value:unknown):Record<string, unknown> | null {
+    if(!value || typeof value !== "object" || Array.isArray(value)){
+        return null;
+    }
+    return value as Record<string, unknown>;
+}
+
+
+function str(value:unknown):string {
+    return typeof value === "string" ? value.trim() : "";
+}
+
+
+export function isNativeOsAansturing(value:string):boolean {
+    return (NATIVE_OS_AANSTURING as readonly string[]).includes(value);
+}
+
+
+/** Lees aansturing uit aanvraag-snapshot/specificaties. */
+export function leesSchermAansturing(
+    snapshotOrSpecs:unknown
+):SchermAansturingInfo {
+
+    const envelope = asRecord(snapshotOrSpecs);
+    const specs =
+        asRecord(envelope?.specificaties) || envelope || {};
+    const schermen = asRecord(specs.schermen);
+
+    const labels:string[] = [];
+    let heeftNativeOs = false;
+
+    if(schermen?.aan && Array.isArray(schermen.items)){
+        for(const item of schermen.items){
+            const r = asRecord(item);
+            if(!r) continue;
+
+            const aansturing = str(r.aansturing);
+            if(!aansturing) continue;
+
+            const label =
+                aansturing === "Anders"
+                ? (str(r.aansturingAnders) || "Anders")
+                : aansturing;
+
+            if(!labels.includes(label)){
+                labels.push(label);
+            }
+
+            if(isNativeOsAansturing(aansturing)){
+                heeftNativeOs = true;
+            }
+        }
+    }
+
+    return { labels, heeftNativeOs };
+}
+
+
+/**
+ * Effectief klaarzet-materiaal: opgeslagen waarden + prefill uit aanvraag
+ * (alleen lege tekstvakken). Zo verschijnen ook klussen die nog niet
+ * handmatig zijn voorgevuld op het controle-overzicht.
+ */
+export function effectiefKlaarzetMateriaal(
+    formData:unknown,
+    aanvraagSpecificaties:unknown
+):KlaarzetMateriaal | null {
+
+    const bestaand = leesKlaarzetMateriaal(formData) || {};
+    const prefill =
+        klaarzetVanAanvraagSpecificaties(aanvraagSpecificaties);
+
+    const merged = mergeKlaarzetPrefill(
+        { ...bestaand } as Record<string, unknown>,
+        prefill
+    ) as KlaarzetMateriaal;
+
+    return heeftMateriaal(merged) ? merged : null;
 }

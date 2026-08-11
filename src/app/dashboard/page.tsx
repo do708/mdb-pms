@@ -6,6 +6,7 @@ import { canAccessOffice } from "@/lib/auth/checkRole";
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 import AanvraagSpecificatiesOverzicht from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
+import Link from "next/link";
 import {
     PageHeader,
     PageShell,
@@ -468,6 +469,24 @@ export default function DashboardPage() {
                     </div>
                 </SpecPanel>
             )}
+
+            <div>
+                <Link
+                    href="/dashboard/materiaal-controle"
+                    className="
+                        inline-flex items-center justify-center
+                        rounded-lg bg-[#0066FF] px-4 py-2.5
+                        text-sm font-semibold text-white
+                        hover:bg-[#0052cc] transition
+                    "
+                >
+                    Controleren
+                </Link>
+                <p className="mt-1.5 text-xs text-gray-500">
+                    Overzicht van alle ingeplande klussen met openstaand
+                    materiaal — printbaar om door te lopen.
+                </p>
+            </div>
 
             {(data?.teLaat?.length ?? 0) > 0 && (
                 <SpecPanel

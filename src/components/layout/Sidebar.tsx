@@ -206,6 +206,7 @@ export default function Sidebar({
             flex
             flex-col
             shrink-0
+            print:hidden
             max-lg:fixed
             max-lg:inset-y-0
             max-lg:left-0

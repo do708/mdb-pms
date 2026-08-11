@@ -48,12 +48,13 @@ export default function AppShell({
             className="
                 bg-[#f8fafc] flex
                 h-dvh overflow-hidden
+                print:h-auto print:overflow-visible print:bg-white
             "
         >
             {menuOpen ? (
                 <button
                     type="button"
-                    className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+                    className="fixed inset-0 z-40 bg-black/50 lg:hidden print:hidden"
                     aria-label="Menu sluiten"
                     onClick={() => setMenuOpen(false)}
                 />
@@ -64,7 +65,7 @@ export default function AppShell({
                 onNavigate={() => setMenuOpen(false)}
             />
 
-            <div className="flex-1 flex flex-col min-w-0 min-h-0 w-full">
+            <div className="flex-1 flex flex-col min-w-0 min-h-0 w-full print:min-h-0 print:overflow-visible">
                 <Header onMenuOpen={() => setMenuOpen(true)} />
 
                 <main
@@ -74,6 +75,7 @@ export default function AppShell({
                         px-4 sm:px-6 lg:px-8
                         pb-4 sm:pb-6 lg:pb-8
                         max-w-full
+                        print:overflow-visible print:px-0 print:pb-0 print:pt-0
                         ${isPlanning ? "pt-0" : "pt-4 sm:pt-6 lg:pt-8"}
                     `}
                 >

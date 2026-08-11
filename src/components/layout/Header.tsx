@@ -13,7 +13,7 @@ export default function Header({
     onMenuOpen?: () => void;
 }) {
     return (
-        <header className="min-h-[3.5rem] sm:h-20 bg-white border-b border-gray-200 flex items-center justify-between gap-2 px-3 sm:px-6 lg:px-8 shrink-0">
+        <header className="min-h-[3.5rem] sm:h-20 bg-white border-b border-gray-200 flex items-center justify-between gap-2 px-3 sm:px-6 lg:px-8 shrink-0 print:hidden">
             <div className="flex items-center gap-2 sm:gap-6 min-w-0 flex-1">
                 <button
                     type="button"

@@ -30,6 +30,7 @@ export default function EngineerMobileNav() {
                 bg-white
                 border-t
                 border-gray-200
+                print:hidden
             "
             aria-label="Hoofdnavigatie"
         >
