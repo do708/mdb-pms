@@ -25,17 +25,28 @@ export async function GET() {
                 ? { assignedUserId: guard.user.id }
                 : {};
 
+        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
+
         const workorders = await prisma.workorder.findMany({
             where: {
                 ...engineerFilter,
-                plannedDate: { not: null },
+                plannedDate: {
+                    gte: rangeStart,
+                    lte: rangeEnd,
+                },
                 assignedUserId: { not: null },
                 status: {
                     notIn: ["gefactureerd"],
                 },
             },
-            include: {
-                assignedUser: true,
+            select: {
+                id: true,
+                number: true,
+                title: true,
+                plannedDate: true,
+                plannedEndDate: true,
+                assignedUserId: true,
+                assignedUser: { select: { name: true } },
             },
         });
 
@@ -53,7 +64,6 @@ export async function GET() {
             },
         });
 
-        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
         const events = expandPlanningEvents(
             eventMasters,
             rangeStart,

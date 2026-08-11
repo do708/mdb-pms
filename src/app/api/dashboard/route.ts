@@ -121,6 +121,12 @@ export async function GET(){
 
                 },
 
+                omit: {
+                    formData: true,
+                    aanvraagSpecificaties: true,
+                    pdfData: true,
+                },
+
                 include:{
 
                     customer:true,
@@ -161,6 +167,11 @@ export async function GET(){
 
                 },
 
+                omit: {
+                    formData: true,
+                    aanvraagSpecificaties: true,
+                    pdfData: true,
+                },
 
                 include:{
 
@@ -295,6 +306,11 @@ export async function GET(){
                     plannedDate:"asc"
                 },
 
+                // formData wél nodig voor klaarzet-materiaal; pdfData niet
+                omit: {
+                    pdfData: true,
+                },
+
                 include:{
                     customer:true,
                     project:{
@@ -332,10 +348,15 @@ export async function GET(){
             }));
 
 
-        // Planningsconflicten (agenda ↔ opdracht / opdrachten onderling)
+        // Planningsconflicten: zelfde ±3 mnd-venster als agenda-expansie
+        // (niet alle historische plannedDate-rijen).
+        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
         const conflictWorkorders = await prisma.workorder.findMany({
             where: {
-                plannedDate: { not: null },
+                plannedDate: {
+                    gte: rangeStart,
+                    lte: rangeEnd,
+                },
                 assignedUserId: { not: null },
                 status: { notIn: ["gefactureerd"] },
             },
@@ -360,7 +381,6 @@ export async function GET(){
                 },
             });
 
-        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
         const expandedEvents = expandPlanningEvents(
             conflictEventMasters,
             rangeStart,

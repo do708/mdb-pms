@@ -25,6 +25,10 @@ export async function GET() {
                 { plannedDate: "asc" },
                 { number: "asc" },
             ],
+            // formData + specificaties nodig voor controle; pdfData niet
+            omit: {
+                pdfData: true,
+            },
             include: {
                 customer: { select: { name: true } },
                 project: {

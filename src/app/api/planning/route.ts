@@ -57,6 +57,10 @@ export async function GET(){
 
 
 
+        // Zelfde ±3 mnd-venster als agenda-expansie; geen formData/pdfData
+        // (PDF-bytes zouden de response met elke afgeronde werkbon exploderen).
+        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
+
         const workorders =
 
             await prisma.workorder.findMany({
@@ -66,7 +70,8 @@ export async function GET(){
                     ...engineerFilter,
 
                     plannedDate:{
-                        not:null
+                        gte: rangeStart,
+                        lte: rangeEnd,
                     }
 
                 },
@@ -76,6 +81,11 @@ export async function GET(){
                     plannedDate:"asc"
                 },
 
+                omit: {
+                    formData: true,
+                    aanvraagSpecificaties: true,
+                    pdfData: true,
+                },
 
                 include:{
 
@@ -177,7 +187,6 @@ export async function GET(){
                 },
             });
 
-        const { rangeStart, rangeEnd } = defaultPlanningEventRange();
         const events = expandPlanningEvents(
             eventMasters,
             rangeStart,

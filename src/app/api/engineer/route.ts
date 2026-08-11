@@ -81,6 +81,11 @@ export async function GET(){
 
                 },
 
+                omit: {
+                    formData: true,
+                    aanvraagSpecificaties: true,
+                    pdfData: true,
+                },
 
                 include:{
 

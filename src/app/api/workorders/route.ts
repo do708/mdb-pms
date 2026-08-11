@@ -111,6 +111,7 @@ export async function GET(){
 
 
 
+        // Lijst: geen oplever-JSON of PDF-bytes (detail via /[id]).
         const workorders =
 
             await prisma.workorder.findMany({
@@ -118,7 +119,11 @@ export async function GET(){
 
                 where,
 
-
+                omit: {
+                    formData: true,
+                    aanvraagSpecificaties: true,
+                    pdfData: true,
+                },
 
                 include:{
 
