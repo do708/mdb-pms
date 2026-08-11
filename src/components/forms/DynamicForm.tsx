@@ -18,18 +18,6 @@ export type FormValues =
     Record<string,string>;
 
 
-// Zachte pastelkleuren voor keuze-opties. Elke optie krijgt op volgorde een
-// eigen kleur; geselecteerd wat voller, niet-geselecteerd heel licht.
-const KEUZE_PASTELS:{ actief:string; rust:string }[] = [
-    { actief:"bg-sky-100 border-sky-300 text-sky-800",         rust:"bg-sky-50 border-sky-200 text-sky-700" },
-    { actief:"bg-emerald-100 border-emerald-300 text-emerald-800", rust:"bg-emerald-50 border-emerald-200 text-emerald-700" },
-    { actief:"bg-amber-100 border-amber-300 text-amber-800",   rust:"bg-amber-50 border-amber-200 text-amber-700" },
-    { actief:"bg-violet-100 border-violet-300 text-violet-800", rust:"bg-violet-50 border-violet-200 text-violet-700" },
-    { actief:"bg-rose-100 border-rose-300 text-rose-800",      rust:"bg-rose-50 border-rose-200 text-rose-700" },
-    { actief:"bg-teal-100 border-teal-300 text-teal-800",      rust:"bg-teal-50 border-teal-200 text-teal-700" }
-];
-
-
 
 interface Props {
 
@@ -703,19 +691,11 @@ export default function DynamicForm({
 
                 return (
 
-                    <label className="block">
+                    <label className="block space-y-1">
 
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             {field.label}
-
-                        </span>
+                        </SpecFieldLabel>
 
                         <textarea
 
@@ -725,14 +705,7 @@ export default function DynamicForm({
                                 set(field.id,e.target.value)
                             }
 
-                            className="
-                                w-full
-                                border
-                                rounded-xl
-                                p-3
-                                mt-1
-                                min-h-20
-                            "
+                            className={`${specInputClassName} min-h-20`}
 
                         />
 
@@ -745,20 +718,12 @@ export default function DynamicForm({
 
                 return (
 
-                    <label className="block min-w-0 w-full overflow-hidden">
+                    <label className="block min-w-0 w-full overflow-hidden space-y-1">
 
-                        <span className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             {field.label}
                             {field.required ? " *" : ""}
-
-                        </span>
+                        </SpecFieldLabel>
 
                         <input
 
@@ -770,17 +735,7 @@ export default function DynamicForm({
                                 set(field.id,e.target.value)
                             }
 
-                            className="
-                                block
-                                w-full
-                                max-w-full
-                                min-w-0
-                                border
-                                rounded-xl
-                                p-3
-                                mt-1
-                                box-border
-                            "
+                            className={specInputClassName}
 
                         />
 
@@ -913,30 +868,21 @@ export default function DynamicForm({
 
                     <div className="space-y-2">
 
-                        <p className="
-                            block
-                            text-sm
-                            font-medium
-                            text-slate-700
-                            mb-1.5
-                        ">
-
+                        <SpecFieldLabel>
                             {field.label}
                             {field.required ? " *" : ""}
-
-                        </p>
+                        </SpecFieldLabel>
 
                         <div className="
                             flex
-                            flex-wrap
+                            flex-col
+                            sm:flex-row
+                            sm:flex-wrap
                             gap-2
                         ">
 
                             {
-                                (field.options ?? []).map((option,optieIndex)=>{
-
-                                    const pastel =
-                                        KEUZE_PASTELS[optieIndex % KEUZE_PASTELS.length];
+                                (field.options ?? []).map((option)=>{
 
                                     const gekozen =
                                         value === option;
@@ -954,18 +900,19 @@ export default function DynamicForm({
                                         }
 
                                         className={`
-                                            px-4
-                                            py-1.5
-                                            rounded-full
+                                            px-3
+                                            py-2
+                                            rounded-lg
                                             border
                                             text-sm
+                                            text-left
                                             transition
                                             ${
                                                 gekozen
                                                 ?
-                                                `${pastel.actief} ring-2 ring-offset-1 ring-slate-300 font-medium`
+                                                "bg-[#0066FF] border-[#0066FF] text-white font-medium"
                                                 :
-                                                `${pastel.rust} opacity-70`
+                                                "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
                                             }
                                         `}
 
