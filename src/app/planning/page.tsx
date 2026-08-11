@@ -1125,6 +1125,7 @@ function PlanningPageContent(){
                     events={events}
                     engineers={engineers}
                     weekStart={weekStart}
+                    focusDateIso={searchParams.get("date")}
                     view={view}
                     onViewChange={setView}
                     showStatusIcons={canEdit}

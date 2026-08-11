@@ -314,6 +314,10 @@ export default function PlanningMiniMonth() {
     function selectDay(day: Date) {
         const iso = toIsoDate(day);
         router.push(`/planning?date=${iso}`);
+        // Ook bij dezelfde datum opnieuw scrollen naar die dag
+        window.dispatchEvent(
+            new CustomEvent("planning-focus-day", { detail: iso })
+        );
     }
 
     const weekdayLabels = ["M", "D", "W", "D", "V", "Z", "Z"];

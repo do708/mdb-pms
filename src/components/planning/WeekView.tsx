@@ -60,6 +60,8 @@ interface WeekViewProps {
     engineers?: { id: string; name: string | null; staffKind?: string }[];
     // Maandag van de te tonen week; standaard deze week
     weekStart?: Date;
+    /** Dag om te markeren/scrollen (sidebar mini-maand ?date=) */
+    focusDateIso?: string | null;
     weekNavigation?: WeekNavigation;
     view?: "week" | "month";
     onViewChange?: (view: "week" | "month") => void;
@@ -110,6 +112,7 @@ export default function WeekView({
     events = [],
     engineers = [],
     weekStart,
+    focusDateIso = null,
     weekNavigation,
     view = "week",
     onViewChange,
@@ -133,6 +136,41 @@ export default function WeekView({
         window.addEventListener("dragend", clearPreview);
         return () => window.removeEventListener("dragend", clearPreview);
     }, []);
+
+    useEffect(() => {
+        function scrollToDay(iso: string) {
+            if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+            const el = document.querySelector(`[data-planning-day="${iso}"]`);
+            if (el instanceof HTMLElement) {
+                el.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        }
+
+        function onFocusDay(e: Event) {
+            const iso = (e as CustomEvent<string>).detail;
+            window.setTimeout(() => scrollToDay(iso), 80);
+        }
+
+        window.addEventListener("planning-focus-day", onFocusDay);
+
+        if (focusDateIso) {
+            const t = window.setTimeout(
+                () => scrollToDay(focusDateIso),
+                80
+            );
+            return () => {
+                window.clearTimeout(t);
+                window.removeEventListener("planning-focus-day", onFocusDay);
+            };
+        }
+
+        return () => {
+            window.removeEventListener("planning-focus-day", onFocusDay);
+        };
+    }, [focusDateIso, weekStart]);
 
     const today = new Date();
     const todayIso = toIsoDate(today);
@@ -584,6 +622,8 @@ export default function WeekView({
                             {days.map((day) => {
                                 const iso = isoDate(day);
                                 const isToday = iso === todayIso;
+                                const isFocused =
+                                    !!focusDateIso && iso === focusDateIso;
                                 const weekday = day.toLocaleDateString(
                                     "nl-NL",
                                     { weekday: "short" }
@@ -593,8 +633,19 @@ export default function WeekView({
 
                                 return (
                                     <div
-                                key={day.toISOString()}
-                                        className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50/40 p-2 hover:border-slate-200 hover:bg-white transition"
+                                        key={day.toISOString()}
+                                        data-planning-day={iso}
+                                        className={`
+                                            grid gap-2 rounded-2xl border p-2 transition
+                                            scroll-mt-16
+                                            ${
+                                                isFocused
+                                                    ? "border-[#0066FF] bg-[#e8f0ff]/70 ring-2 ring-[#0066FF]/25"
+                                                    : isToday
+                                                      ? "border-[#d6007e]/25 bg-slate-50/40"
+                                                      : "border-slate-100 bg-slate-50/40 hover:border-slate-200 hover:bg-white"
+                                            }
+                                        `}
                                         style={{
                                             gridTemplateColumns: gridCols,
                                         }}
