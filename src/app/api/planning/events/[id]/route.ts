@@ -195,11 +195,7 @@ export async function PATCH(
             ) {
                 dateIso = body.date.trim();
             } else {
-                const d = current.startAt;
-                const y = d.getFullYear();
-                const m = String(d.getMonth() + 1).padStart(2, "0");
-                const day = String(d.getDate()).padStart(2, "0");
-                dateIso = `${y}-${m}-${day}`;
+                dateIso = formatAmsterdamDateIso(current.startAt);
             }
 
             const startTime =
@@ -209,7 +205,7 @@ export async function PATCH(
                         : null
                     : allDay
                       ? null
-                      : `${String(current.startAt.getHours()).padStart(2, "0")}:${String(current.startAt.getMinutes()).padStart(2, "0")}`;
+                      : formatAmsterdamHHmm(current.startAt);
 
             const endTime =
                 "endTime" in body
@@ -218,7 +214,7 @@ export async function PATCH(
                         : null
                     : allDay || !current.endAt
                       ? null
-                      : `${String(current.endAt.getHours()).padStart(2, "0")}:${String(current.endAt.getMinutes()).padStart(2, "0")}`;
+                      : formatAmsterdamHHmm(current.endAt);
 
             let startAt = parseDateTime(dateIso, startTime, allDay);
             // Alleen herhaling uitlijnen als de datum niet expliciet is gezet
