@@ -550,22 +550,16 @@ export default function WeekView({
                 </p>
             ) : (
                 <div
-                    className="
-                        max-h-[min(72vh,calc(100dvh-14rem))]
-                        overflow-auto
-                    "
+                    className="p-3 sm:p-4 overflow-x-auto"
+                    style={{ minWidth: 0 }}
                 >
-                    <div
-                        className="p-3 sm:p-4 min-h-0"
-                        style={{ minWidth: `${minGridWidth}px` }}
-                    >
-                        {/* Koprij: monteurs (blijft zichtbaar bij verticaal scrollen) */}
+                    <div style={{ minWidth: `${minGridWidth}px` }}>
+                        {/* Koprij: monteurs */}
                         <div
                             className={`
-                                grid gap-2 mb-2 sticky top-0 z-30
+                                grid gap-2 mb-2
                                 bg-white
                                 border-b border-slate-200
-                                shadow-sm
                                 px-1 pb-2 pt-1
                                 ${isDragging ? "pointer-events-none" : ""}
                             `}
