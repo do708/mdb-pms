@@ -16,9 +16,11 @@ interface MateriaalRegel {
     label: string;
     aantal: string;
     geleverd: boolean;
+    geprepareerd: boolean | null;
     klaargezet: boolean;
     opLocatie: boolean;
     inOrde: boolean;
+    nativeOsFlow: boolean;
 }
 
 interface ControleItem {
@@ -283,8 +285,20 @@ export default function MateriaalControlePage() {
                                             <div className="flex flex-wrap gap-x-3 gap-y-1 print:hidden">
                                                 <CheckBox
                                                     checked={regel.geleverd}
-                                                    label="Geleverd"
+                                                    label={
+                                                        regel.nativeOsFlow
+                                                            ? "Binnengekomen"
+                                                            : "Geleverd"
+                                                    }
                                                 />
+                                                {regel.nativeOsFlow ? (
+                                                    <CheckBox
+                                                        checked={Boolean(
+                                                            regel.geprepareerd
+                                                        )}
+                                                        label="Geprepareerd"
+                                                    />
+                                                ) : null}
                                                 <CheckBox
                                                     checked={regel.klaargezet}
                                                     label="Klaargezet"
@@ -296,8 +310,18 @@ export default function MateriaalControlePage() {
                                             </div>
                                             {!regel.inOrde ? (
                                                 <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 print:mt-0">
-                                                    <PrintTick label="Geleverd" />
-                                                    <PrintTick label="Klaargezet" />
+                                                    {regel.nativeOsFlow ? (
+                                                        <>
+                                                            <PrintTick label="Binnengekomen" />
+                                                            <PrintTick label="Geprepareerd" />
+                                                            <PrintTick label="Klaargezet" />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <PrintTick label="Geleverd" />
+                                                            <PrintTick label="Klaargezet" />
+                                                        </>
+                                                    )}
                                                     <span className="text-[10px] text-gray-400 self-center">
                                                         of
                                                     </span>

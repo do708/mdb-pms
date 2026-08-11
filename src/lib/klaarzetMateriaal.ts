@@ -83,7 +83,11 @@ function regelInOrde(
     aantal:string | undefined,
     geleverd:boolean | undefined,
     klaargezet:boolean | undefined,
-    opLocatie?:boolean | undefined
+    opLocatie?:boolean | undefined,
+    opts?:{
+        requireGeprepareerd?:boolean;
+        geprepareerd?:boolean | undefined;
+    }
 ):boolean {
 
     const ingevuld =
@@ -94,9 +98,13 @@ function regelInOrde(
         return true;
     }
 
-    // Ingevuld => op locatie, of geleverd + klaargezet.
+    // Ingevuld => op locatie, of geleverd (+ geprepareerd) + klaargezet.
     if(opLocatie){
         return true;
+    }
+
+    if(opts?.requireGeprepareerd && !Boolean(opts.geprepareerd)){
+        return false;
     }
 
     return Boolean(geleverd) && Boolean(klaargezet);
@@ -153,7 +161,8 @@ export function heeftMateriaal(
 
 // Is het materiaal-blok compleet (alle ingevulde soorten in orde)?
 export function materiaalCompleet(
-    km:KlaarzetMateriaal | null
+    km:KlaarzetMateriaal | null,
+    opties:MateriaalCheckOpties = {}
 ):boolean {
 
     if(!km){
@@ -161,8 +170,21 @@ export function materiaalCompleet(
         return true;
     }
 
+    const nativeSchermen = Boolean(opties.heeftNativeOs);
+
     return (
-        regelInOrde(km.schermenAantal, km.schermenGeleverd, km.schermenKlaargezet, km.schermenOpLocatie) &&
+        regelInOrde(
+            km.schermenAantal,
+            km.schermenGeleverd,
+            km.schermenKlaargezet,
+            km.schermenOpLocatie,
+            nativeSchermen
+                ? {
+                    requireGeprepareerd:true,
+                    geprepareerd:km.schermenGeprepareerd,
+                }
+                : undefined
+        ) &&
         regelInOrde(km.playersAantal, km.playersGeleverd, km.playersKlaargezet, km.playersOpLocatie) &&
         regelInOrde(km.beugelsAantal, km.beugelsGeleverd, km.beugelsKlaargezet, km.beugelsOpLocatie) &&
         regelInOrde(km.kioskAantal, km.kioskGeleverd, km.kioskKlaargezet, km.kioskOpLocatie) &&
@@ -190,7 +212,8 @@ const SOORT_DEFS:[
 
 /** Alle ingevulde materiaalregels met status (voor controle/print). */
 export function materiaalRegels(
-    km:KlaarzetMateriaal | null
+    km:KlaarzetMateriaal | null,
+    opties:MateriaalCheckOpties = {}
 ):MateriaalRegelStatus[] {
 
     if(!km){
@@ -198,6 +221,7 @@ export function materiaalRegels(
     }
 
     const regels:MateriaalRegelStatus[] = [];
+    const nativeSchermen = Boolean(opties.heeftNativeOs);
 
     for(const [key, label, aantalKey, gelKey, klaarKey, locKey] of SOORT_DEFS){
         const aantalRaw = km[aantalKey];
@@ -211,15 +235,32 @@ export function materiaalRegels(
         const geleverd = Boolean(km[gelKey]);
         const klaargezet = Boolean(km[klaarKey]);
         const opLocatie = Boolean(km[locKey]);
+        const nativeOsFlow = key === "schermen" && nativeSchermen;
+        const geprepareerd = nativeOsFlow
+            ? Boolean(km.schermenGeprepareerd)
+            : null;
 
         regels.push({
             key,
             label,
             aantal,
             geleverd,
+            geprepareerd,
             klaargezet,
             opLocatie,
-            inOrde:regelInOrde(aantal, geleverd, klaargezet, opLocatie),
+            nativeOsFlow,
+            inOrde:regelInOrde(
+                aantal,
+                geleverd,
+                klaargezet,
+                opLocatie,
+                nativeOsFlow
+                    ? {
+                        requireGeprepareerd:true,
+                        geprepareerd:km.schermenGeprepareerd,
+                    }
+                    : undefined
+            ),
         });
     }
 

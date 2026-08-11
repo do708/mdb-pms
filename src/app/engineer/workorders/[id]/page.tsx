@@ -124,16 +124,22 @@ interface Workorder {
 
 
 // Eén materiaalregel: compact — label + input + chips.
-// Leeg tekstvak = n.v.t. Ingevuld = (Geleverd én Klaargezet) óf Op locatie.
+// Leeg tekstvak = n.v.t.
+// Standaard: (Geleverd én Klaargezet) óf Op locatie.
+// Native OS (Tizen/webOS/Android): Binnengekomen → Geprepareerd → Klaargezet
+// (óf Op locatie).
 function MateriaalRij({
     label,
     plh,
     aantal,
     geleverd,
+    geprepareerd,
     klaargezet,
     opLocatie,
+    nativeOsFlow,
     onAantal,
     onGeleverd,
+    onGeprepareerd,
     onKlaargezet,
     onOpLocatie,
 }:{
@@ -141,10 +147,13 @@ function MateriaalRij({
     plh:string;
     aantal:string;
     geleverd:boolean;
+    geprepareerd?:boolean;
     klaargezet:boolean;
     opLocatie:boolean;
+    nativeOsFlow?:boolean;
     onAantal:(v:string)=>void;
     onGeleverd:(v:boolean)=>void;
+    onGeprepareerd?:(v:boolean)=>void;
     onKlaargezet:(v:boolean)=>void;
     onOpLocatie:(v:boolean)=>void;
 }){
@@ -153,7 +162,12 @@ function MateriaalRij({
         aantal.trim() !== "";
 
     const statusOk =
-        opLocatie || (geleverd && klaargezet);
+        opLocatie
+        || (
+            geleverd
+            && klaargezet
+            && (!nativeOsFlow || Boolean(geprepareerd))
+        );
 
     const nietInOrde =
         ingevuld && !statusOk;
@@ -236,8 +250,24 @@ function MateriaalRij({
                     warn={nietInOrde && !geleverd && !opLocatie}
                     onToggle={()=>onGeleverd(!geleverd)}
                 >
-                    Geleverd
+                    {nativeOsFlow ? "Binnengekomen" : "Geleverd"}
                 </Chip>
+                {nativeOsFlow && onGeprepareerd ? (
+                    <Chip
+                        active={Boolean(geprepareerd)}
+                        disabled={!ingevuld}
+                        warn={
+                            nietInOrde
+                            && !geprepareerd
+                            && !opLocatie
+                        }
+                        onToggle={()=>
+                            onGeprepareerd(!geprepareerd)
+                        }
+                    >
+                        Geprepareerd
+                    </Chip>
+                ) : null}
                 <Chip
                     active={klaargezet}
                     disabled={!ingevuld}
@@ -308,6 +338,7 @@ export default function EngineerWorkorderPage(){
             pakbonUrl:"",
             schermenAantal:"",
             schermenGeleverd:false,
+            schermenGeprepareerd:false,
             schermenKlaargezet:false,
             schermenOpLocatie:false,
             playersAantal:"",
@@ -408,6 +439,7 @@ export default function EngineerWorkorderPage(){
                 pakbonUrl:"",
                 schermenAantal:"",
                 schermenGeleverd:false,
+                schermenGeprepareerd:false,
                 schermenKlaargezet:false,
                 schermenOpLocatie:false,
                 playersAantal:"",
@@ -858,6 +890,11 @@ async function completeWorkorder(){
         );
 
     }
+
+    const schermAansturing = leesSchermAansturing(
+        workorder.aanvraagSpecificaties
+    );
+    const heeftNativeOsAansturing = schermAansturing.heeftNativeOs;
 
 
 
@@ -1658,16 +1695,15 @@ async function completeWorkorder(){
                             )
                         }
 
-                        {leesSchermAansturing(
-                            workorder.aanvraagSpecificaties
-                        ).heeftNativeOs ? (
+                        {heeftNativeOsAansturing ? (
                             <p className="
                                 text-[11px] leading-snug
                                 text-amber-900 bg-amber-50
                                 border border-amber-200 rounded-lg px-2 py-1.5
                             ">
-                                Schermen met Tizen / webOS / Android: controleer
-                                binnengekomen → geprepareerd → klaargezet.
+                                Schermen met Tizen / webOS / Android: vink
+                                binnengekomen → geprepareerd → klaargezet
+                                (of op locatie).
                             </p>
                         ) : null}
 
@@ -1678,10 +1714,13 @@ async function completeWorkorder(){
                             plh={"bijv. 2x 55\" en 1x 32\""}
                             aantal={materiaal.schermenAantal}
                             geleverd={materiaal.schermenGeleverd}
+                            geprepareerd={materiaal.schermenGeprepareerd}
                             klaargezet={materiaal.schermenKlaargezet}
                             opLocatie={materiaal.schermenOpLocatie}
+                            nativeOsFlow={heeftNativeOsAansturing}
                             onAantal={(v)=>setMateriaal(m=>({...m,schermenAantal:v}))}
                             onGeleverd={(v)=>setMateriaal(m=>({...m,schermenGeleverd:v}))}
+                            onGeprepareerd={(v)=>setMateriaal(m=>({...m,schermenGeprepareerd:v}))}
                             onKlaargezet={(v)=>setMateriaal(m=>({...m,schermenKlaargezet:v}))}
                             onOpLocatie={(v)=>setMateriaal(m=>({...m,schermenOpLocatie:v}))}
                         />

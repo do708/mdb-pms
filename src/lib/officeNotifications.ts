@@ -4,6 +4,7 @@ import {
     leesKlaarzetMateriaal,
     heeftMateriaal,
     materiaalCompleet,
+    leesSchermAansturing,
 } from "@/lib/klaarzetMateriaal";
 import type { OfficeNotification } from "@/lib/officeNotificationTypes";
 
@@ -134,7 +135,8 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
     for (const w of morgenKlussen) {
         try {
             const km = leesKlaarzetMateriaal(w.formData);
-            if (!(heeftMateriaal(km) && !materiaalCompleet(km))) {
+            const aansturing = leesSchermAansturing(w.aanvraagSpecificaties);
+            if (!(heeftMateriaal(km) && !materiaalCompleet(km, { heeftNativeOs: aansturing.heeftNativeOs }))) {
                 continue;
             }
             const klant =

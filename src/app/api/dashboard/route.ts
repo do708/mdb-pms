@@ -8,7 +8,8 @@ import { excludeArchivedWorkorders, excludeArchivedForms } from "@/lib/archive";
 import {
     leesKlaarzetMateriaal,
     heeftMateriaal,
-    materiaalCompleet
+    materiaalCompleet,
+    leesSchermAansturing,
 } from "@/lib/klaarzetMateriaal";
 
 import { volgendeWerkdag } from "@/lib/holidays";
@@ -302,8 +303,11 @@ export async function GET(){
             morgenKlussen
             .filter(w=>{
                 const km = leesKlaarzetMateriaal(w.formData);
+                const aansturing = leesSchermAansturing(w.aanvraagSpecificaties);
                 // Waarschuwen zodra er materiaal is dat nog niet compleet is.
-                return heeftMateriaal(km) && !materiaalCompleet(km);
+                return heeftMateriaal(km) && !materiaalCompleet(km, {
+                    heeftNativeOs: aansturing.heeftNativeOs,
+                });
             })
             .map(w=>({
                 id:w.id,

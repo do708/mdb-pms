@@ -291,6 +291,7 @@ export interface OpleverData {
         pakbonUrl:string;
         schermenAantal:string;
         schermenGeleverd:boolean;
+        schermenGeprepareerd:boolean;
         schermenKlaargezet:boolean;
         schermenOpLocatie:boolean;
         playersAantal:string;
@@ -548,6 +549,7 @@ export function emptyOpleverData():OpleverData {
             pakbonUrl:"",
             schermenAantal:"",
             schermenGeleverd:false,
+            schermenGeprepareerd:false,
             schermenKlaargezet:false,
             schermenOpLocatie:false,
             playersAantal:"",

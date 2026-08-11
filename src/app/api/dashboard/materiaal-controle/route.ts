@@ -39,22 +39,24 @@ export async function GET() {
         const items = [];
 
         for (const w of workorders) {
+            const aansturing = leesSchermAansturing(w.aanvraagSpecificaties);
             const km = effectiefKlaarzetMateriaal(
                 w.formData,
                 w.aanvraagSpecificaties
             );
 
-            if (!km || materiaalCompleet(km)) {
+            if (!km || materiaalCompleet(km, { heeftNativeOs: aansturing.heeftNativeOs })) {
                 continue;
             }
 
-            const regels = materiaalRegels(km);
+            const regels = materiaalRegels(km, {
+                heeftNativeOs: aansturing.heeftNativeOs,
+            });
             const openRegels = regels.filter((r) => !r.inOrde);
             if (openRegels.length === 0) {
                 continue;
             }
 
-            const aansturing = leesSchermAansturing(w.aanvraagSpecificaties);
             const locatieDelen = [
                 w.location,
                 [w.straat, w.huisnummer].filter(Boolean).join(" ").trim(),

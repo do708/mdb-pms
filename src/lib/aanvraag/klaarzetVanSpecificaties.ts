@@ -63,8 +63,14 @@ export function klaarzetVanAanvraagSpecificaties(
         const tekst = groepeerTeksten(formaten);
         if (tekst) {
             out.schermenAantal = tekst;
-            // Per scherm standaard één player.
-            out.playersAantal = String(formaten.length);
+            // Alleen aparte players bij DMV player (niet bij Tizen/webOS/Android).
+            const dmvPlayers = schermen.items.filter((item) => {
+                const r = asRecord(item);
+                return r ? str(r.aansturing) === "DMV player" : false;
+            }).length;
+            if (dmvPlayers > 0) {
+                out.playersAantal = String(dmvPlayers);
+            }
         }
 
         const beugels = schermen.items
