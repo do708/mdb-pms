@@ -522,20 +522,6 @@ export default function SchermenSpecificatie({
                                             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-60"
                                         />
                                     ) : null}
-                                    {scherm.aansturing === "Tizen"
-                                    || scherm.aansturing === "webOS"
-                                    || scherm.aansturing === "Android" ? (
-                                        <p className="
-                                            text-xs leading-snug
-                                            text-amber-900 bg-amber-50
-                                            border border-amber-200
-                                            rounded-lg px-3 py-2
-                                        ">
-                                            Materiaal klaarzetten: schermen
-                                            binnengekomen → geprepareerd →
-                                            klaargezet.
-                                        </p>
-                                    ) : null}
                                 </div>
 
                                 <div className="space-y-1.5">
