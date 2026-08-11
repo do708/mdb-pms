@@ -46,6 +46,8 @@ interface PlanningItem {
 
     location:string | null;
 
+    city:string | null;
+
     customer:{
 
         name:string;

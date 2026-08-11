@@ -969,6 +969,11 @@ export default function WeekView({
                                                 ev.recurrenceFreq !== "none"
                                                     ? " ↻"
                                                     : ""}
+                                                {ev.notes ? (
+                                                    <span className="block font-medium opacity-90 mt-0.5">
+                                                        {ev.notes}
+                                                    </span>
+                                                ) : null}
                                             </button>
                                         ))}
                 </div>
@@ -1602,6 +1607,32 @@ export default function WeekView({
                                                                                     ?.name ??
                                                                                     item.title}
                                                                             </strong>
+
+                                                                            {item.project
+                                                                                ?.name &&
+                                                                            item.title ? (
+                                                                                <span className="text-[10px] block truncate opacity-90 mt-0.5">
+                                                                                    {
+                                                                                        item.title
+                                                                                    }
+                                                                                </span>
+                                                                            ) : null}
+
+                                                                            {(item.city ||
+                                                                                item.location) ? (
+                                                                                <span className="text-[10px] block truncate opacity-90 mt-0.5">
+                                                                                    {[
+                                                                                        item.location,
+                                                                                        item.city,
+                                                                                    ]
+                                                                                        .filter(
+                                                                                            Boolean
+                                                                                        )
+                                                                                        .join(
+                                                                                            ", "
+                                                                                        )}
+                                                                                </span>
+                                                                            ) : null}
                                                                         </Link>
                                                                     </div>
                                                                 );
