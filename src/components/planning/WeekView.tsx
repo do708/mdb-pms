@@ -308,19 +308,42 @@ export default function WeekView({
         );
     }
 
-    const users =
-        engineers.length > 0
-            ? engineers
-            : (Array.from(
-                  new Map(
-                      items
-                          .filter((item) => item.assignedUser)
-                          .map((item) => [
-                              item.assignedUser.id,
-                              item.assignedUser,
-                          ])
-                  ).values()
-              ) as { id: string; name: string | null }[]);
+    const users = (() => {
+        const list =
+            engineers.length > 0
+                ? engineers
+                : (Array.from(
+                      new Map(
+                          items
+                              .filter((item) => item.assignedUser)
+                              .map((item) => [
+                                  item.assignedUser.id,
+                                  item.assignedUser,
+                              ])
+                      ).values()
+                  ) as {
+                      id: string;
+                      name: string | null;
+                      staffKind?: string;
+                  }[]);
+
+        const byName = (
+            a: { name: string | null },
+            b: { name: string | null }
+        ) =>
+            (a.name || "").localeCompare(b.name || "", "nl", {
+                sensitivity: "base",
+            });
+
+        const eigen = list
+            .filter((u) => parseStaffKind(u.staffKind) === "monteur")
+            .sort(byName);
+        const extern = list
+            .filter((u) => parseStaffKind(u.staffKind) !== "monteur")
+            .sort(byName);
+
+        return [...eigen, ...extern];
+    })();
 
     function eventOnDay(ev: any, day: Date): boolean {
         if (!ev?.startAt) return false;
