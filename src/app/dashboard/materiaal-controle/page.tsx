@@ -146,7 +146,7 @@ export default function MateriaalControlePage() {
             <div className="print:hidden">
                 <PageHeader
                     title="Materiaal controleren"
-                    subtitle="Ingeplande klussen waarbij materiaal nog geleverd of klaargezet moet worden"
+                    subtitle="Ingeplande klussen waarbij materiaal nog ontbreekt, geleverd of klaargezet moet worden"
                     actions={
                         <>
                             <Link
@@ -270,71 +270,84 @@ export default function MateriaalControlePage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {item.alleRegels.map((regel) => (
-                                    <tr
-                                        key={regel.key}
-                                        className="border-b border-gray-100 last:border-0 align-top"
-                                    >
-                                        <td className="py-2 pr-2 font-semibold text-gray-800 whitespace-nowrap">
-                                            {regel.label}
-                                        </td>
-                                        <td className="py-2 pr-2 text-gray-700">
-                                            {regel.aantal}
-                                        </td>
-                                        <td className="py-2">
-                                            <div className="flex flex-wrap gap-x-3 gap-y-1 print:hidden">
-                                                <CheckBox
-                                                    checked={regel.geleverd}
-                                                    label={
-                                                        regel.nativeOsFlow
-                                                            ? "Binnengekomen"
-                                                            : "Geleverd"
-                                                    }
-                                                />
-                                                {regel.nativeOsFlow ? (
-                                                    <CheckBox
-                                                        checked={Boolean(
-                                                            regel.geprepareerd
-                                                        )}
-                                                        label="Geprepareerd"
-                                                    />
-                                                ) : null}
-                                                <CheckBox
-                                                    checked={regel.klaargezet}
-                                                    label="Klaargezet"
-                                                />
-                                                <CheckBox
-                                                    checked={regel.opLocatie}
-                                                    label="Op locatie"
-                                                />
-                                            </div>
-                                            {!regel.inOrde ? (
-                                                <div className="mt-1.5 hidden print:flex flex-wrap gap-x-3 gap-y-1 print:mt-0">
-                                                    {regel.nativeOsFlow ? (
-                                                        <>
-                                                            <PrintTick label="Binnengekomen" />
-                                                            <PrintTick label="Geprepareerd" />
-                                                            <PrintTick label="Klaargezet" />
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <PrintTick label="Geleverd" />
-                                                            <PrintTick label="Klaargezet" />
-                                                        </>
-                                                    )}
-                                                    <span className="text-[10px] text-gray-400 self-center">
-                                                        of
-                                                    </span>
-                                                    <PrintTick label="Op locatie" />
-                                                </div>
-                                            ) : (
-                                                <span className="hidden print:inline text-xs text-emerald-800">
-                                                    Compleet
-                                                </span>
-                                            )}
+                                {item.alleRegels.length === 0 ? (
+                                    <tr className="border-b border-gray-100">
+                                        <td
+                                            colSpan={3}
+                                            className="py-2 text-gray-600"
+                                        >
+                                            Nog geen materiaal ingevuld — open
+                                            de werkbon om materiaal te
+                                            controleren of klaar te zetten.
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    item.alleRegels.map((regel) => (
+                                        <tr
+                                            key={regel.key}
+                                            className="border-b border-gray-100 last:border-0 align-top"
+                                        >
+                                            <td className="py-2 pr-2 font-semibold text-gray-800 whitespace-nowrap">
+                                                {regel.label}
+                                            </td>
+                                            <td className="py-2 pr-2 text-gray-700">
+                                                {regel.aantal}
+                                            </td>
+                                            <td className="py-2">
+                                                <div className="flex flex-wrap gap-x-3 gap-y-1 print:hidden">
+                                                    <CheckBox
+                                                        checked={regel.geleverd}
+                                                        label={
+                                                            regel.nativeOsFlow
+                                                                ? "Binnengekomen"
+                                                                : "Geleverd"
+                                                        }
+                                                    />
+                                                    {regel.nativeOsFlow ? (
+                                                        <CheckBox
+                                                            checked={Boolean(
+                                                                regel.geprepareerd
+                                                            )}
+                                                            label="Geprepareerd"
+                                                        />
+                                                    ) : null}
+                                                    <CheckBox
+                                                        checked={regel.klaargezet}
+                                                        label="Klaargezet"
+                                                    />
+                                                    <CheckBox
+                                                        checked={regel.opLocatie}
+                                                        label="Op locatie"
+                                                    />
+                                                </div>
+                                                {!regel.inOrde ? (
+                                                    <div className="mt-1.5 hidden print:flex flex-wrap gap-x-3 gap-y-1 print:mt-0">
+                                                        {regel.nativeOsFlow ? (
+                                                            <>
+                                                                <PrintTick label="Binnengekomen" />
+                                                                <PrintTick label="Geprepareerd" />
+                                                                <PrintTick label="Klaargezet" />
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <PrintTick label="Geleverd" />
+                                                                <PrintTick label="Klaargezet" />
+                                                            </>
+                                                        )}
+                                                        <span className="text-[10px] text-gray-400 self-center">
+                                                            of
+                                                        </span>
+                                                        <PrintTick label="Op locatie" />
+                                                    </div>
+                                                ) : (
+                                                    <span className="hidden print:inline text-xs text-emerald-800">
+                                                        Compleet
+                                                    </span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
 

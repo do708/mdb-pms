@@ -49,7 +49,13 @@ export async function GET() {
                 w.aanvraagSpecificaties
             );
 
-            if (!km || materiaalCompleet(km, { heeftNativeOs: aansturing.heeftNativeOs })) {
+            // Compleet klaargezet → niet tonen.
+            // Geen/leeg materiaal → wél tonen: nieuw ingeplande klussen
+            // zonder prefill moeten ook gecontroleerd kunnen worden.
+            if (
+                km &&
+                materiaalCompleet(km, { heeftNativeOs: aansturing.heeftNativeOs })
+            ) {
                 continue;
             }
 
@@ -57,7 +63,7 @@ export async function GET() {
                 heeftNativeOs: aansturing.heeftNativeOs,
             });
             const openRegels = regels.filter((r) => !r.inOrde);
-            if (openRegels.length === 0) {
+            if (km && openRegels.length === 0) {
                 continue;
             }
 

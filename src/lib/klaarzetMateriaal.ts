@@ -161,6 +161,9 @@ export function heeftMateriaal(
 
 
 // Is het materiaal-blok compleet (alle ingevulde soorten in orde)?
+// Let op: null/leeg telt hier als "compleet" voor waarschuwingen (niets
+// te checken). Materiaal-controle toont lege ingeplande klussen wél —
+// daar is leeg juist "nog te controleren".
 export function materiaalCompleet(
     km:KlaarzetMateriaal | null,
     opties:MateriaalCheckOpties = {}

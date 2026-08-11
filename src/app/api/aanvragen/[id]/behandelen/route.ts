@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 import { bouwKlantWerkzaamheden } from "@/lib/aanvraag/klantWerkzaamheden";
+import { klaarzetVanAanvraagSpecificaties } from "@/lib/aanvraag/klaarzetVanSpecificaties";
 
 
 
@@ -91,6 +92,20 @@ export async function POST(
             ? (aanvraag.bijlagen as unknown as { url?:string; name?:string }[])
             : [];
 
+        const aanvraagSpecificaties = {
+            specificaties:specs,
+            aanvragerNaam:aanvraag.aanvragerNaam,
+            opmerkingen:aanvraag.opmerkingen,
+            schermen:aanvraag.schermen,
+            beugel:aanvraag.beugel,
+            stroom:aanvraag.stroom,
+            internet:aanvraag.internet,
+        };
+
+        // Prefill klaarzet-materiaal uit specs, zodat controle/dashboard
+        // meteen regels ziet (niet pas na openen van de werkbon).
+        const klaarzetPrefill =
+            klaarzetVanAanvraagSpecificaties(aanvraagSpecificaties);
 
         const werkorder =
             await prisma.workorder.create({
@@ -109,14 +124,10 @@ export async function POST(
                     internalNotes:
                         null,
                     // Snapshot voor gestructureerde admin-weergave (niet in klantmail).
-                    aanvraagSpecificaties:{
-                        specificaties:specs,
-                        aanvragerNaam:aanvraag.aanvragerNaam,
-                        opmerkingen:aanvraag.opmerkingen,
-                        schermen:aanvraag.schermen,
-                        beugel:aanvraag.beugel,
-                        stroom:aanvraag.stroom,
-                        internet:aanvraag.internet,
+                    aanvraagSpecificaties:
+                        aanvraagSpecificaties as object,
+                    formData:{
+                        klaarzetMateriaal:klaarzetPrefill,
                     } as object,
                     customerId:
                         aanvraag.customerId,
