@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
-import { parseMasterId, jsDayToIso } from "@/lib/planning/expandPlanningEvents";
+import {
+    parseMasterId,
+    jsDayToIso,
+    WEEKDAY_LABELS_NL,
+    NTH_LABELS_NL,
+} from "@/lib/planning/expandPlanningEvents";
 
 export interface PlanningAgendaEvent {
     id: string;
@@ -69,6 +74,39 @@ function weekdayFromDateIso(dateIso: string): number {
     return jsDayToIso(new Date(y, m - 1, d).getDay());
 }
 
+/** Welke "N-de" weekdag is deze datum in de maand (1–4 of -1 = laatste). */
+function nthOfMonthFromDateIso(dateIso: string): number {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateIso)) return 1;
+    const [y, m, d] = dateIso.split("-").map(Number);
+    const date = new Date(y, m - 1, d);
+    const weekday = date.getDay();
+    let nth = 0;
+    for (let day = 1; day <= d; day++) {
+        if (new Date(y, m - 1, day).getDay() === weekday) nth += 1;
+    }
+    const lastDay = new Date(y, m, 0).getDate();
+    let isLast = true;
+    for (let day = d + 1; day <= lastDay; day++) {
+        if (new Date(y, m - 1, day).getDay() === weekday) {
+            isLast = false;
+            break;
+        }
+    }
+    if (isLast) return -1;
+    return Math.min(4, Math.max(1, nth));
+}
+
+type RecurrencePreset =
+    | "none"
+    | "weekly"
+    | "monthly_weekday"
+    | "monthly"
+    | "custom";
+
+function capitalize(s: string): string {
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+}
+
 export default function AgendaEventDialog({
     open,
     onClose,
@@ -93,6 +131,7 @@ export default function AgendaEventDialog({
     const [recurrenceWeekday, setRecurrenceWeekday] = useState("4");
     const [recurrenceNth, setRecurrenceNth] = useState("2");
     const [recurrenceUntil, setRecurrenceUntil] = useState("");
+    const [customRecurrence, setCustomRecurrence] = useState(false);
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -144,6 +183,21 @@ export default function AgendaEventDialog({
                     ? toDateInput(event.recurrenceUntil)
                     : ""
             );
+            const isSimpleWeekly =
+                freq === "weekly" &&
+                Math.max(1, event.recurrenceInterval || 1) === 1;
+            const isSimpleMonthly =
+                freq === "monthly" &&
+                Math.max(1, event.recurrenceInterval || 1) === 1;
+            setCustomRecurrence(
+                freq !== "none" &&
+                    !isSimpleWeekly &&
+                    !isSimpleMonthly &&
+                    freq !== "monthly_weekday"
+                    ? true
+                    : freq === "weekly" &&
+                          Math.max(1, event.recurrenceInterval || 1) > 1
+            );
         } else {
             const prefDate = prefill?.date || "";
             setTitle("");
@@ -158,6 +212,7 @@ export default function AgendaEventDialog({
             setRecurrenceWeekday(String(weekdayFromDateIso(prefDate) || 4));
             setRecurrenceNth("2");
             setRecurrenceUntil("");
+            setCustomRecurrence(false);
         }
     }, [open, event, prefill]);
 
@@ -405,163 +460,320 @@ export default function AgendaEventDialog({
                     </label>
 
                     <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
-                        <label className="block">
-                            <span className="text-xs font-medium text-slate-600">
-                                Herhaling
-                            </span>
-                            <select
-                                value={recurrenceFreq}
-                                onChange={(e) => {
-                                    const v = e.target.value as
-                                        | "none"
-                                        | "weekly"
-                                        | "monthly"
-                                        | "monthly_weekday";
-                                    setRecurrenceFreq(v);
-                                    if (
-                                        (v === "weekly" ||
-                                            v === "monthly_weekday") &&
-                                        date
-                                    ) {
-                                        setRecurrenceWeekday(
-                                            String(weekdayFromDateIso(date))
-                                        );
-                                    }
-                                }}
-                                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                            >
-                                <option value="none">Geen</option>
-                                <option value="weekly">
-                                    Elke week(dag) — bijv. elke donderdag
-                                </option>
-                                <option value="monthly_weekday">
-                                    N-de weekdag van de maand — bijv. 2e woensdag
-                                </option>
-                                <option value="monthly">
-                                    Elke maand (zelfde datum)
-                                </option>
-                            </select>
-                        </label>
+                        {(() => {
+                            const wd = weekdayFromDateIso(date || "");
+                            const wdLabel = capitalize(
+                                WEEKDAY_LABELS_NL[wd] || "dag"
+                            );
+                            const nth = nthOfMonthFromDateIso(date || "");
+                            const nthLabel =
+                                NTH_LABELS_NL[nth] || "1e";
+                            const dayNum = date
+                                ? Number(date.split("-")[2])
+                                : 0;
 
-                        {recurrenceFreq === "weekly" && (
-                            <>
-                                <label className="block">
-                                    <span className="text-xs font-medium text-slate-600">
-                                        Weekdag
-                                    </span>
-                                    <select
-                                        value={recurrenceWeekday}
-                                        onChange={(e) =>
-                                            setRecurrenceWeekday(e.target.value)
-                                        }
-                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                                    >
-                                        <option value="1">Maandag</option>
-                                        <option value="2">Dinsdag</option>
-                                        <option value="3">Woensdag</option>
-                                        <option value="4">Donderdag</option>
-                                        <option value="5">Vrijdag</option>
-                                        <option value="6">Zaterdag</option>
-                                        <option value="7">Zondag</option>
-                                    </select>
-                                </label>
-                                <label className="block">
-                                    <span className="text-xs font-medium text-slate-600">
-                                        Elke N weken
-                                    </span>
-                                    <input
-                                        type="number"
-                                        min={1}
-                                        max={52}
-                                        value={recurrenceInterval}
-                                        onChange={(e) =>
-                                            setRecurrenceInterval(e.target.value)
-                                        }
-                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                                    />
-                                    <span className="text-[11px] text-slate-500">
-                                        1 = elke week, 2 = om de week
-                                    </span>
-                                </label>
-                            </>
-                        )}
+                            const selectValue: RecurrencePreset =
+                                customRecurrence
+                                    ? "custom"
+                                    : recurrenceFreq === "none"
+                                      ? "none"
+                                      : recurrenceFreq === "weekly"
+                                        ? "weekly"
+                                        : recurrenceFreq ===
+                                            "monthly_weekday"
+                                          ? "monthly_weekday"
+                                          : recurrenceFreq === "monthly"
+                                            ? "monthly"
+                                            : "custom";
 
-                        {recurrenceFreq === "monthly_weekday" && (
-                            <div className="grid grid-cols-2 gap-3">
-                                <label className="block">
-                                    <span className="text-xs font-medium text-slate-600">
-                                        Welke
-                                    </span>
-                                    <select
-                                        value={recurrenceNth}
-                                        onChange={(e) =>
-                                            setRecurrenceNth(e.target.value)
-                                        }
-                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                                    >
-                                        <option value="1">1e</option>
-                                        <option value="2">2e</option>
-                                        <option value="3">3e</option>
-                                        <option value="4">4e</option>
-                                        <option value="-1">Laatste</option>
-                                    </select>
-                                </label>
-                                <label className="block">
-                                    <span className="text-xs font-medium text-slate-600">
-                                        Weekdag
-                                    </span>
-                                    <select
-                                        value={recurrenceWeekday}
-                                        onChange={(e) =>
-                                            setRecurrenceWeekday(e.target.value)
-                                        }
-                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                                    >
-                                        <option value="1">Maandag</option>
-                                        <option value="2">Dinsdag</option>
-                                        <option value="3">Woensdag</option>
-                                        <option value="4">Donderdag</option>
-                                        <option value="5">Vrijdag</option>
-                                        <option value="6">Zaterdag</option>
-                                        <option value="7">Zondag</option>
-                                    </select>
-                                </label>
-                            </div>
-                        )}
+                            return (
+                                <>
+                                    <label className="block">
+                                        <span className="text-xs font-medium text-slate-600">
+                                            Herhaling
+                                        </span>
+                                        <select
+                                            value={selectValue}
+                                            onChange={(e) => {
+                                                const v = e.target
+                                                    .value as RecurrencePreset;
+                                                const w =
+                                                    weekdayFromDateIso(
+                                                        date
+                                                    ) || 1;
+                                                const n =
+                                                    nthOfMonthFromDateIso(
+                                                        date
+                                                    );
+                                                if (v === "none") {
+                                                    setCustomRecurrence(
+                                                        false
+                                                    );
+                                                    setRecurrenceFreq(
+                                                        "none"
+                                                    );
+                                                    setRecurrenceInterval(
+                                                        "1"
+                                                    );
+                                                } else if (v === "weekly") {
+                                                    setCustomRecurrence(
+                                                        false
+                                                    );
+                                                    setRecurrenceFreq(
+                                                        "weekly"
+                                                    );
+                                                    setRecurrenceWeekday(
+                                                        String(w)
+                                                    );
+                                                    setRecurrenceInterval(
+                                                        "1"
+                                                    );
+                                                } else if (
+                                                    v === "monthly_weekday"
+                                                ) {
+                                                    setCustomRecurrence(
+                                                        false
+                                                    );
+                                                    setRecurrenceFreq(
+                                                        "monthly_weekday"
+                                                    );
+                                                    setRecurrenceWeekday(
+                                                        String(w)
+                                                    );
+                                                    setRecurrenceNth(
+                                                        String(n)
+                                                    );
+                                                    setRecurrenceInterval(
+                                                        "1"
+                                                    );
+                                                } else if (v === "monthly") {
+                                                    setCustomRecurrence(
+                                                        false
+                                                    );
+                                                    setRecurrenceFreq(
+                                                        "monthly"
+                                                    );
+                                                    setRecurrenceInterval(
+                                                        "1"
+                                                    );
+                                                } else {
+                                                    setCustomRecurrence(
+                                                        true
+                                                    );
+                                                    if (
+                                                        recurrenceFreq ===
+                                                        "none"
+                                                    ) {
+                                                        setRecurrenceFreq(
+                                                            "weekly"
+                                                        );
+                                                        setRecurrenceWeekday(
+                                                            String(w)
+                                                        );
+                                                        setRecurrenceInterval(
+                                                            "2"
+                                                        );
+                                                    }
+                                                }
+                                            }}
+                                            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                        >
+                                            <option value="none">
+                                                Niet herhaald
+                                            </option>
+                                            <option value="weekly">
+                                                Wekelijks op{" "}
+                                                {wdLabel.toLowerCase()}
+                                            </option>
+                                            <option value="monthly_weekday">
+                                                Maandelijks op de {nthLabel}{" "}
+                                                {wdLabel.toLowerCase()}
+                                            </option>
+                                            <option value="monthly">
+                                                Maandelijks op dag{" "}
+                                                {dayNum || "…"}
+                                            </option>
+                                            <option value="custom">
+                                                Aangepast…
+                                            </option>
+                                        </select>
+                                    </label>
 
-                        {recurrenceFreq === "monthly" && (
-                            <label className="block">
-                                <span className="text-xs font-medium text-slate-600">
-                                    Elke N maanden
-                                </span>
-                                <input
-                                    type="number"
-                                    min={1}
-                                    max={52}
-                                    value={recurrenceInterval}
-                                    onChange={(e) =>
-                                        setRecurrenceInterval(e.target.value)
-                                    }
-                                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                                />
-                            </label>
-                        )}
+                                    {customRecurrence && (
+                                        <>
+                                            <label className="block">
+                                                <span className="text-xs font-medium text-slate-600">
+                                                    Type
+                                                </span>
+                                                <select
+                                                    value={
+                                                        recurrenceFreq ===
+                                                        "none"
+                                                            ? "weekly"
+                                                            : recurrenceFreq
+                                                    }
+                                                    onChange={(e) =>
+                                                        setRecurrenceFreq(
+                                                            e.target
+                                                                .value as
+                                                                | "weekly"
+                                                                | "monthly"
+                                                                | "monthly_weekday"
+                                                        )
+                                                    }
+                                                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                                >
+                                                    <option value="weekly">
+                                                        Wekelijks
+                                                    </option>
+                                                    <option value="monthly_weekday">
+                                                        N-de weekdag / maand
+                                                    </option>
+                                                    <option value="monthly">
+                                                        Maandelijks (datum)
+                                                    </option>
+                                                </select>
+                                            </label>
 
-                        {recurrenceFreq !== "none" && (
-                            <label className="block">
-                                <span className="text-xs font-medium text-slate-600">
-                                    Einddatum (optioneel)
-                                </span>
-                                <input
-                                    type="date"
-                                    value={recurrenceUntil}
-                                    onChange={(e) =>
-                                        setRecurrenceUntil(e.target.value)
-                                    }
-                                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
-                                />
-                            </label>
-                        )}
+                                            {(recurrenceFreq === "weekly" ||
+                                                recurrenceFreq ===
+                                                    "monthly_weekday") && (
+                                                <label className="block">
+                                                    <span className="text-xs font-medium text-slate-600">
+                                                        Weekdag
+                                                    </span>
+                                                    <select
+                                                        value={
+                                                            recurrenceWeekday
+                                                        }
+                                                        onChange={(e) =>
+                                                            setRecurrenceWeekday(
+                                                                e.target
+                                                                    .value
+                                                            )
+                                                        }
+                                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                                    >
+                                                        <option value="1">
+                                                            Maandag
+                                                        </option>
+                                                        <option value="2">
+                                                            Dinsdag
+                                                        </option>
+                                                        <option value="3">
+                                                            Woensdag
+                                                        </option>
+                                                        <option value="4">
+                                                            Donderdag
+                                                        </option>
+                                                        <option value="5">
+                                                            Vrijdag
+                                                        </option>
+                                                        <option value="6">
+                                                            Zaterdag
+                                                        </option>
+                                                        <option value="7">
+                                                            Zondag
+                                                        </option>
+                                                    </select>
+                                                </label>
+                                            )}
+
+                                            {recurrenceFreq ===
+                                                "monthly_weekday" && (
+                                                <label className="block">
+                                                    <span className="text-xs font-medium text-slate-600">
+                                                        Welke in de maand
+                                                    </span>
+                                                    <select
+                                                        value={
+                                                            recurrenceNth
+                                                        }
+                                                        onChange={(e) =>
+                                                            setRecurrenceNth(
+                                                                e.target
+                                                                    .value
+                                                            )
+                                                        }
+                                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                                    >
+                                                        <option value="1">
+                                                            1e
+                                                        </option>
+                                                        <option value="2">
+                                                            2e
+                                                        </option>
+                                                        <option value="3">
+                                                            3e
+                                                        </option>
+                                                        <option value="4">
+                                                            4e
+                                                        </option>
+                                                        <option value="-1">
+                                                            Laatste
+                                                        </option>
+                                                    </select>
+                                                </label>
+                                            )}
+
+                                            {(recurrenceFreq === "weekly" ||
+                                                recurrenceFreq ===
+                                                    "monthly") && (
+                                                <label className="block">
+                                                    <span className="text-xs font-medium text-slate-600">
+                                                        Elke N{" "}
+                                                        {recurrenceFreq ===
+                                                        "weekly"
+                                                            ? "weken"
+                                                            : "maanden"}
+                                                    </span>
+                                                    <input
+                                                        type="number"
+                                                        min={1}
+                                                        max={52}
+                                                        value={
+                                                            recurrenceInterval
+                                                        }
+                                                        onChange={(e) =>
+                                                            setRecurrenceInterval(
+                                                                e.target
+                                                                    .value
+                                                            )
+                                                        }
+                                                        className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                                    />
+                                                    <span className="text-[11px] text-slate-500">
+                                                        Bijv. 2 = om de{" "}
+                                                        {recurrenceFreq ===
+                                                        "weekly"
+                                                            ? "week"
+                                                            : "maand"}
+                                                    </span>
+                                                </label>
+                                            )}
+                                        </>
+                                    )}
+
+                                    {recurrenceFreq !== "none" && (
+                                        <label className="block">
+                                            <span className="text-xs font-medium text-slate-600">
+                                                Einddatum (optioneel)
+                                            </span>
+                                            <input
+                                                type="date"
+                                                value={recurrenceUntil}
+                                                onChange={(e) =>
+                                                    setRecurrenceUntil(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                                            />
+                                        </label>
+                                    )}
+                                </>
+                            );
+                        })()}
                     </div>
 
                     <label className="block">
