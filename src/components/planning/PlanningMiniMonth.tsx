@@ -238,9 +238,8 @@ export default function PlanningMiniMonth() {
                 }
 
                 for (const ev of events) {
-                    if (!ev?.startAt || !countsId(ev.assignedUserId)) {
-                        continue;
-                    }
+                    if (!ev?.startAt) continue;
+                    // Agenda telt altijd als bezet (ook Algemeen / inlener / stagiaire)
                     const start = toIsoDate(new Date(ev.startAt));
                     const end = ev.endAt
                         ? toIsoDate(new Date(ev.endAt))
