@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import SearchBox from "./SearchBox";
 import UserMenu from "./UserMenu";
 import DateTime from "./DateTime";
+import HeaderWeather from "./HeaderWeather";
 import NotificationBell from "./NotificationBell";
 
 export default function Header({
@@ -40,6 +41,8 @@ export default function Header({
                 <div className="hidden sm:block">
                     <DateTime />
                 </div>
+
+                <HeaderWeather />
 
                 <NotificationBell />
 
