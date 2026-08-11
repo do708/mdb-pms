@@ -596,7 +596,7 @@ export default function WeekView({
                                     minWidth: `${minGridWidth}px`,
                                 }}
                             >
-                                <div className="flex items-end px-2 pb-1">
+                                <div className="flex items-center justify-center px-2 pb-1 text-center">
                                     <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                                         Dag
                                     </span>

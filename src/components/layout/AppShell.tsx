@@ -37,6 +37,7 @@ export default function AppShell({
     }, [menuOpen]);
 
     const bare = pathname === "/login" || pathname === "/aanvraag";
+    const isPlanning = pathname.startsWith("/planning");
 
     if (bare) {
         return <>{children}</>;
@@ -67,12 +68,14 @@ export default function AppShell({
                 <Header onMenuOpen={() => setMenuOpen(true)} />
 
                 <main
-                    className="
+                    className={`
                         flex-1 min-h-0
                         overflow-y-auto overflow-x-hidden
-                        p-4 sm:p-6 lg:p-8
+                        px-4 sm:px-6 lg:px-8
+                        pb-4 sm:pb-6 lg:pb-8
                         max-w-full
-                    "
+                        ${isPlanning ? "pt-0" : "pt-4 sm:pt-6 lg:pt-8"}
+                    `}
                 >
                     {children}
                 </main>

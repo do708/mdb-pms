@@ -848,7 +848,7 @@ function PlanningPageContent(){
 
     return (
 
-        <PageShell className="!space-y-4">
+        <PageShell className="!space-y-4 pt-4 sm:pt-6 lg:pt-8">
 
 
             {/* Pagina-titel "Planning" weggelaten; weekkop staat in WeekView. */}
