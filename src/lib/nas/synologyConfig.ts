@@ -5,7 +5,7 @@ export function isNasArchiveEnabled(): boolean {
 export function synologyBaseUrl(): string {
     return (
         process.env.SYNO_BASE_URL?.replace(/\/$/, "")
-        || "https://mdbnetworks.de7.quickconnect.to:5001"
+        || "https://mdbnetworks.de7.quickconnect.to"
     );
 }
 
