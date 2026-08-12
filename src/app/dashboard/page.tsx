@@ -5,6 +5,10 @@ import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
+import {
+    buildVerlofTitle,
+    verlofSubtitle,
+} from "@/lib/forms/formDisplay";
 import AanvraagSpecificatiesOverzicht from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
 import Link from "next/link";
 import {
@@ -220,24 +224,18 @@ function nlDate(value: unknown): string {
     return d.toLocaleDateString("nl-NL");
 }
 
-// Korte samenvatting per formulier: bij verlof de van-tot datums
+// Korte samenvatting per formulier
 function formSummary(form: {
     type: string;
-    data?: { eersteDag?: string; laatsteDag?: string; datum?: string };
+    data?: {
+        typeVerlof?: string;
+        eersteDag?: string;
+        laatsteDag?: string;
+        datum?: string;
+    };
 }): string {
     if (form.type === "verlof") {
-        const from = nlDate(form.data?.eersteDag);
-        const to = nlDate(form.data?.laatsteDag);
-
-        if (from && to) {
-            return `Verlof · ${from} t/m ${to}`;
-        }
-
-        if (from) {
-            return `Verlof · ${from}`;
-        }
-
-        return "Verlof";
+        return verlofSubtitle(form.data) || "Verlof";
     }
 
     if (form.type === "declaratie") {
@@ -281,7 +279,12 @@ interface DashboardData {
         status: string;
         createdAt: string;
         user?: { name: string | null } | null;
-        data?: { eersteDag?: string; laatsteDag?: string; datum?: string };
+        data?: {
+            typeVerlof?: string;
+            eersteDag?: string;
+            laatsteDag?: string;
+            datum?: string;
+        };
     }>;
     recent: Array<{
         id: string;
@@ -296,7 +299,12 @@ interface DashboardData {
         type: string;
         status: string;
         user?: { name: string | null } | null;
-        data?: { eersteDag?: string; laatsteDag?: string; datum?: string };
+        data?: {
+            typeVerlof?: string;
+            eersteDag?: string;
+            laatsteDag?: string;
+            datum?: string;
+        };
     }>;
 }
 
@@ -549,16 +557,32 @@ export default function DashboardPage() {
                                 >
                                     <div className="min-w-0">
                                         <p className="font-semibold text-sm text-gray-900 truncate">
-                                            {form.title}
+                                            {form.type === "verlof" ? (
+                                                <>
+                                                    {formIcon(form.type)}{" "}
+                                                    {buildVerlofTitle(
+                                                        form.data,
+                                                        form.user?.name
+                                                    )}
+                                                </>
+                                            ) : (
+                                                form.title
+                                            )}
                                         </p>
                                         <p className="text-xs text-gray-500 mt-0.5 truncate">
-                                            {form.user?.name ?? "Onbekend"}
-                                            {" · "}
-                                            {formSummary(form)}
-                                            {" · "}
-                                            {new Date(
-                                                form.createdAt
-                                            ).toLocaleDateString("nl-NL")}
+                                            {form.type === "verlof"
+                                                ? formSummary(form)
+                                                : (
+                                                    <>
+                                                        {form.user?.name ?? "Onbekend"}
+                                                        {" · "}
+                                                        {formSummary(form)}
+                                                        {" · "}
+                                                        {new Date(
+                                                            form.createdAt
+                                                        ).toLocaleDateString("nl-NL")}
+                                                    </>
+                                                )}
                                         </p>
                                     </div>
                                     <span className="text-xs font-medium text-indigo-700 shrink-0">
@@ -646,8 +670,20 @@ export default function DashboardPage() {
                                     >
                                         <div className="min-w-0">
                                             <p className="font-medium text-sm text-gray-900 truncate">
-                                                {formIcon(form.type)}{" "}
-                                                {form.user?.name ?? "Onbekend"}
+                                                {form.type === "verlof" ? (
+                                                    <>
+                                                        {formIcon(form.type)}{" "}
+                                                        {buildVerlofTitle(
+                                                            form.data,
+                                                            form.user?.name
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {formIcon(form.type)}{" "}
+                                                        {form.user?.name ?? "Onbekend"}
+                                                    </>
+                                                )}
                                             </p>
                                             <p className="text-xs text-gray-500 mt-0.5 truncate">
                                                 {formSummary(form)}

@@ -7,6 +7,7 @@ import { requireApiUser } from "@/lib/auth/guard";
 import { getFormDefinition } from "@/constants/formDefinitions";
 
 import { excludeArchivedForms } from "@/lib/archive";
+import { buildFormTitle } from "@/lib/forms/formDisplay";
 import { sendFormSubmissionMail } from "@/lib/email/sendFormSubmissionMail";
 
 
@@ -69,6 +70,8 @@ export async function GET(){
                     status:true,
 
                     createdAt:true,
+
+                    data:true,
 
                     user:{
 
@@ -170,8 +173,17 @@ export async function POST(
 
 
 
-        const title =
-            `${definition.label} ${guard.user.name ?? ""}`.trim();
+        const formData =
+            (body.data && typeof body.data === "object"
+                ? body.data
+                : {}) as Record<string, unknown>;
+
+        const title = buildFormTitle(
+            body.type,
+            formData,
+            guard.user.name,
+            definition.label
+        );
 
 
 
@@ -187,7 +199,7 @@ export async function POST(
                     title,
 
                     data:
-                        body.data ?? {},
+                    formData,
 
                     userId:
                         guard.user.id
@@ -205,10 +217,7 @@ export async function POST(
                     guard.user.name?.trim() ||
                     guard.user.email ||
                     "Onbekend",
-                data:
-                    (body.data && typeof body.data === "object"
-                        ? body.data
-                        : {}) as Record<string, unknown>,
+                data: formData,
             });
         } catch (mailError) {
             console.error(

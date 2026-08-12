@@ -11,6 +11,11 @@ import {
     getFormDefinition
 } from "@/constants/formDefinitions";
 
+import {
+    buildVerlofTitle,
+    verlofSubtitle,
+} from "@/lib/forms/formDisplay";
+
 
 
 interface FormDetail {
@@ -336,10 +341,12 @@ export default function FormDetailPage(){
                 ">
 
                     {definition?.icon}{" "}
-                    {form.title.replace(
-                        /,\s*\d{2}-\d{2}-\d{4}\s*$/,
-                        ""
-                    )}
+                    {form.type === "verlof"
+                        ? buildVerlofTitle(form.data, form.user.name)
+                        : form.title.replace(
+                            /,\s*\d{2}-\d{2}-\d{4}\s*$/,
+                            ""
+                        )}
 
                 </h1>
 
@@ -348,21 +355,30 @@ export default function FormDetailPage(){
                     text-gray-500
                 ">
 
-                    {
-                        new Date(form.createdAt)
-                        .toLocaleDateString("nl-NL",{
-                            weekday:"long",
-                            day:"numeric",
-                            month:"long",
-                            year:"numeric"
-                        })
-                    }
+                    {form.type === "verlof" ? (
+                        <>
+                            {verlofSubtitle(form.data)}
+                            {" · "}
+                        </>
+                    ) : (
+                        <>
+                            {
+                                new Date(form.createdAt)
+                                .toLocaleDateString("nl-NL",{
+                                    weekday:"long",
+                                    day:"numeric",
+                                    month:"long",
+                                    year:"numeric"
+                                })
+                            }
 
-                    {" · "}
+                            {" · "}
 
-                    {form.user.name}
+                            {form.user.name}
 
-                    {" · "}
+                            {" · "}
+                        </>
+                    )}
 
                     <span className={`
                         px-2

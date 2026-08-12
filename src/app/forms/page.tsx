@@ -11,6 +11,10 @@ import {
     SpecPageCard,
     SpecPanel,
 } from "@/components/ui/SpecLayout";
+import {
+    buildVerlofTitle,
+    verlofSubtitle,
+} from "@/lib/forms/formDisplay";
 
 interface FormItem {
     id: string;
@@ -18,6 +22,7 @@ interface FormItem {
     title: string;
     status: string;
     createdAt: string;
+    data?: Record<string, unknown>;
     user: {
         name: string | null;
     };
@@ -88,7 +93,23 @@ export default function FormsPage() {
                 )}
 
                 <div className="space-y-2">
-                    {forms.map((form) => (
+                    {forms.map((form) => {
+                        const definition = FORM_DEFINITIONS.find(
+                            (d) => d.type === form.type
+                        );
+                        const title =
+                            form.type === "verlof"
+                                ? buildVerlofTitle(
+                                      form.data,
+                                      form.user.name
+                                  )
+                                : form.title;
+                        const subtitle =
+                            form.type === "verlof"
+                                ? verlofSubtitle(form.data)
+                                : `${new Date(form.createdAt).toLocaleDateString("nl-NL")} · ${form.user.name ?? "Onbekend"}`;
+
+                        return (
                         <div
                             key={form.id}
                             className="flex items-center gap-2"
@@ -100,14 +121,15 @@ export default function FormsPage() {
                                 <SpecListRow className="flex justify-between items-center hover:bg-gray-50">
                                     <div className="min-w-0">
                                         <p className="font-semibold text-sm text-gray-900">
-                                            {form.title}
+                                            {definition?.icon && (
+                                                <span aria-hidden>
+                                                    {definition.icon}{" "}
+                                                </span>
+                                            )}
+                                            {title}
                                         </p>
                                         <p className="text-xs text-gray-500 mt-0.5">
-                                            {new Date(
-                                                form.createdAt
-                                            ).toLocaleDateString("nl-NL")}
-                                            {" · "}
-                                            {form.user.name}
+                                            {subtitle}
                                         </p>
                                     </div>
 
@@ -119,12 +141,13 @@ export default function FormsPage() {
 
                             <DeleteButton
                                 url={`/api/forms/${form.id}`}
-                                label={`formulier "${form.title}"`}
+                                label={`formulier "${title}"`}
                                 onDeleted={load}
                                 compact
                             />
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </SpecPageCard>
         </PageShell>

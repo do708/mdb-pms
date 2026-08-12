@@ -281,7 +281,7 @@ export async function POST(
         }
 
 
-        // Altijd mailen naar projects@ (+ info@) na succesvolle afronding,
+        // Altijd mailen naar projects@ na succesvolle afronding,
         // ook als de PDF niet lukte. Mail mag afronden niet blokkeren.
         try {
             const locatie =
