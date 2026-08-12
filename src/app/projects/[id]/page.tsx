@@ -1021,10 +1021,6 @@ export default function ProjectDetailPage() {
             <>
             <section className="bg-white border rounded-2xl p-5 space-y-3">
                 <h2 className="font-bold">Termijnen gefactureerd</h2>
-                <p className="text-xs text-gray-500">
-                    Vul de factuurdatum in: het vinkje gaat dan
-                    automatisch aan. Wis de datum om uit te vinken.
-                </p>
                 <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
                     {(
                         [
