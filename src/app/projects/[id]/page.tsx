@@ -1018,10 +1018,7 @@ export default function ProjectDetailPage() {
             {isOffice ? (
                 <>
                     <SpecPageCard>
-                        <SpecPanel
-                            title="Termijnen gefactureerd"
-                            hint="Vul de factuurdatum in: het vinkje gaat dan automatisch aan. Wis de datum om uit te vinken."
-                        >
+                        <SpecPanel title="Termijnen gefactureerd">
                             <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
                     {(
                         [
