@@ -5,6 +5,7 @@ import {
     synologyArchiveRoot,
     synologyBaseUrl,
     synologyCredentials,
+    synologyQuickConnectReferer,
 } from "@/lib/nas/synologyConfig";
 
 type SynoResponse = {
@@ -20,21 +21,64 @@ function verifySsl(): boolean {
     return process.env.SYNO_VERIFY_SSL !== "false";
 }
 
+function synoRequestHeaders(init?: RequestInit): Headers {
+    const headers = new Headers(init?.headers);
+    const referer = synologyQuickConnectReferer();
+
+    if (referer && !headers.has("Referer")) {
+        headers.set("Referer", referer);
+    }
+
+    if (!headers.has("User-Agent")) {
+        headers.set("User-Agent", "mdb-pms/1.0");
+    }
+
+    return headers;
+}
+
 async function synoFetch(
     url: string,
     init?: RequestInit
 ): Promise<Response> {
+    const requestInit: RequestInit = {
+        ...init,
+        headers: synoRequestHeaders(init),
+    };
+
     if (verifySsl()) {
-        return fetch(url, init);
+        return fetch(url, requestInit);
     }
 
     const agent = new https.Agent({ rejectUnauthorized: false });
 
     return fetch(url, {
-        ...init,
+        ...requestInit,
         // @ts-expect-error Node fetch agent
         agent,
     });
+}
+
+async function parseSynoResponse(response: Response): Promise<SynoResponse> {
+    const text = await response.text();
+
+    if (!text.trimStart().startsWith("{")) {
+        const titleMatch = text.match(/<title>([^<]+)/i);
+        const title = titleMatch?.[1]?.trim();
+
+        if (title?.includes("Unable to connect QuickConnect")) {
+            throw new Error(
+                "QuickConnect-relay bereikt de NAS niet (NAS offline of relay niet beschikbaar)"
+            );
+        }
+
+        if (title) {
+            throw new Error(`Synology gaf HTML terug (${title})`);
+        }
+
+        throw new Error("Synology gaf geen JSON terug (QuickConnect-portaal?)");
+    }
+
+    return JSON.parse(text) as SynoResponse;
 }
 
 async function synoApi(
@@ -51,7 +95,7 @@ async function synoApi(
         throw new Error(`Synology HTTP ${response.status}`);
     }
 
-    const json = (await response.json()) as SynoResponse;
+    const json = await parseSynoResponse(response);
 
     if (!json.success) {
         const code = json.error?.code ?? "unknown";
@@ -75,7 +119,7 @@ async function login(): Promise<string> {
     const base = synologyBaseUrl();
     const query = new URLSearchParams({
         api: "SYNO.API.Auth",
-        version: "7",
+        version: "6",
         method: "login",
         account: creds.username,
         passwd: creds.password,
@@ -83,16 +127,28 @@ async function login(): Promise<string> {
         format: "sid",
     }).toString();
 
-    const response = await synoFetch(`${base}/webapi/auth.cgi?${query}`);
+    const response = await synoFetch(`${base}/webapi/entry.cgi?${query}`);
 
     if (!response.ok) {
         throw new Error(`Synology login HTTP ${response.status}`);
     }
 
-    const json = (await response.json()) as SynoResponse;
+    const json = await parseSynoResponse(response);
 
     if (!json.success || typeof json.data?.sid !== "string") {
-        throw new Error("Synology login mislukt");
+        const code = json.error?.code;
+
+        if (code === 407) {
+            throw new Error(
+                "Synology login geblokkeerd (407): IP deblokkeren in DSM → Beveiliging → Auto Block"
+            );
+        }
+
+        throw new Error(
+            code
+                ? `Synology login mislukt (${code})`
+                : "Synology login mislukt"
+        );
     }
 
     cachedSid = json.data.sid;
@@ -192,7 +248,7 @@ export async function synologyUploadFile(
         throw new Error(`Synology upload HTTP ${response.status}`);
     }
 
-    const json = (await response.json()) as SynoResponse;
+    const json = await parseSynoResponse(response);
 
     if (!json.success) {
         const code = json.error?.code ?? "unknown";
