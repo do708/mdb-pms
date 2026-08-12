@@ -1025,7 +1025,7 @@ export default function ProjectDetailPage() {
                     Vul de factuurdatum in: het vinkje gaat dan
                     automatisch aan. Wis de datum om uit te vinken.
                 </p>
-                <div className="grid grid-cols-4 gap-2 min-w-0 overflow-x-auto">
+                <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
                     {(
                         [
                             {
@@ -1064,8 +1064,9 @@ export default function ProjectDetailPage() {
                         <div
                             key={termijn.key}
                             className="
+                                grid grid-rows-subgrid row-span-3 gap-y-2
                                 rounded-xl border border-gray-200
-                                px-3 py-2 space-y-2 min-w-0
+                                px-3 py-2 min-w-0
                             "
                         >
                             <label className="flex items-start gap-2 text-sm cursor-pointer">
@@ -1085,45 +1086,43 @@ export default function ProjectDetailPage() {
                                     {termijn.label}
                                 </span>
                             </label>
-                            <div className="pl-6 space-y-2">
-                                <div>
-                                    <label className="block text-xs text-gray-500 mb-1">
-                                        Factuurdatum
-                                    </label>
-                                    <input
-                                        type="date"
-                                        value={factuurdatum}
-                                        disabled={saving}
-                                        onChange={(e) =>
-                                            setTermijnGefactureerdDatum(
-                                                termijn.dateKey,
-                                                e.target.value
-                                            )
-                                        }
-                                        className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs text-gray-500 mb-1">
-                                        Factuurnummer
-                                    </label>
-                                    <input
-                                        type="text"
-                                        defaultValue={
-                                            project[termijn.numKey] || ""
-                                        }
-                                        key={`${termijn.numKey}-${project[termijn.numKey] || ""}`}
-                                        disabled={saving}
-                                        onBlur={(e) =>
-                                            setTermijnFactuurnummer(
-                                                termijn.numKey,
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="Bijv. F2026-001"
-                                        className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
-                                    />
-                                </div>
+                            <div className="pl-6">
+                                <label className="block text-xs text-gray-500 mb-1">
+                                    Factuurdatum
+                                </label>
+                                <input
+                                    type="date"
+                                    value={factuurdatum}
+                                    disabled={saving}
+                                    onChange={(e) =>
+                                        setTermijnGefactureerdDatum(
+                                            termijn.dateKey,
+                                            e.target.value
+                                        )
+                                    }
+                                    className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
+                                />
+                            </div>
+                            <div className="pl-6">
+                                <label className="block text-xs text-gray-500 mb-1">
+                                    Factuurnummer
+                                </label>
+                                <input
+                                    type="text"
+                                    defaultValue={
+                                        project[termijn.numKey] || ""
+                                    }
+                                    key={`${termijn.numKey}-${project[termijn.numKey] || ""}`}
+                                    disabled={saving}
+                                    onBlur={(e) =>
+                                        setTermijnFactuurnummer(
+                                            termijn.numKey,
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Bijv. F2026-001"
+                                    className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
+                                />
                             </div>
                         </div>
                         );
