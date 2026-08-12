@@ -1,10 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 
 import { auth } from "@/auth";
 
 import { prisma } from "@/lib/prisma";
 
 import { requireApiRole } from "@/lib/auth/guard";
+
+import { migrateStatus } from "@/constants/workorderStatus";
+import { archiveWorkorderToNas } from "@/lib/archive/archiveWorkorderToNas";
+import { isNasArchiveEnabled } from "@/lib/nas/synologyConfig";
 
 import { mergeOpleverData, applyPlannedTravelToFormData } from "@/types/oplever";
 
@@ -822,6 +826,32 @@ export async function PUT(
                 }
             }
 
+        }
+
+
+
+
+        if (
+            isNasArchiveEnabled()
+            && session.user.role !== "engineer"
+            && migrateStatus(workorder.status) === "gefactureerd"
+            && migrateStatus(existingWorkorder.status) !== "gefactureerd"
+        ) {
+            await prisma.workorder.update({
+                where: { id },
+                data: {
+                    archiveStatus: "pending",
+                    archiveError: null,
+                },
+            });
+
+            after(async () => {
+                try {
+                    await archiveWorkorderToNas(id);
+                } catch (error) {
+                    console.error("NAS ARCHIVE ERROR", id, error);
+                }
+            });
         }
 
 

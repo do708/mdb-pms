@@ -45,6 +45,7 @@ model Customer {
   projects    Project[]
   workorders  Workorder[]
   aanvragen   Aanvraag[]
+  archiveFolders ArchiveFolder[]
 }
 
 
@@ -195,6 +196,40 @@ model Workorder {
   signature      WorkorderSignature?
   extraEngineers WorkorderEngineer[]
   forms          WorkorderForm[]
+  archiveFolder  ArchiveFolder?
+  /// NAS-pad na archivering (gefactureerd)
+  archiveNasPath       String?
+  /// Weergavenaam locatiemap, bv. "Appeltje Eitje, Amsterdam"
+  archiveLocationLabel String?
+  archivedAt           DateTime?
+  /// pending | completed | failed
+  archiveStatus        String?
+  archiveError         String?
+}
+
+model ArchiveFolder {
+  id           String          @id @default(cuid())
+  /// customer | location | workorder
+  kind         String
+  name         String
+  nasPath      String          @unique
+  slug         String
+  parentId     String?
+  parent       ArchiveFolder?  @relation("ArchiveTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children     ArchiveFolder[] @relation("ArchiveTree")
+  customerId   String?
+  customer     Customer?       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  /// Unieke sleutel per opdrachtgever voor locatiemappen
+  locationKey  String?
+  workorderId  String?         @unique
+  workorder    Workorder?      @relation(fields: [workorderId], references: [id], onDelete: SetNull)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@unique([parentId, slug])
+  @@unique([customerId, locationKey])
+  @@index([kind])
+  @@index([customerId])
 }
 
 model WorkorderHour {
