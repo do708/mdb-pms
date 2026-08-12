@@ -199,7 +199,7 @@ export async function POST(
                     title,
 
                     data:
-                    formData,
+                    formData as object,
 
                     userId:
                         guard.user.id
