@@ -12,13 +12,21 @@ import {
     synologyUploadFile,
     defaultArchiveRoot,
 } from "../src/lib/nas/synologyClient";
+import { synologyBaseUrl, synologyCredentials } from "../src/lib/nas/synologyConfig";
 
 async function main() {
+    const creds = synologyCredentials();
+
+    if (!creds) {
+        throw new Error("SYNO_USERNAME / SYNO_PASSWORD ontbreken in .env.local");
+    }
+
     const root = defaultArchiveRoot();
     const probeDir = `${root}/.pms-probe`;
     const probeFile = `probe-${Date.now()}.txt`;
 
-    console.log("NAS-probe: login + map + upload…");
+    console.log("NAS-probe:", synologyBaseUrl(), "als", creds.username);
+    console.log("Login + map + upload…");
 
     await synologyEnsureFolder(probeDir);
 

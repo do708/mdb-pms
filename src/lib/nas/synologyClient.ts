@@ -222,33 +222,43 @@ export async function synologyUploadFile(
 ): Promise<string> {
     await synologyEnsureFolder(destFolder);
 
-    const sid = await login();
     const base = synologyBaseUrl();
-    const form = new FormData();
+    const blob = new Blob([new Uint8Array(buffer)], { type: contentType });
 
-    form.append("api", "SYNO.FileStation.Upload");
-    form.append("version", "2");
-    form.append("method", "upload");
-    form.append("path", destFolder);
-    form.append("create_parents", "true");
-    form.append("overwrite", "true");
-    form.append("_sid", sid);
-    form.append(
-        "file",
-        new Blob([new Uint8Array(buffer)], { type: contentType }),
-        filename
-    );
+    async function doUpload(sid: string): Promise<SynoResponse> {
+        const form = new FormData();
 
-    const response = await synoFetch(`${base}/webapi/entry.cgi`, {
-        method: "POST",
-        body: form,
-    });
+        form.append("api", "SYNO.FileStation.Upload");
+        form.append("version", "2");
+        form.append("method", "upload");
+        form.append("path", destFolder);
+        form.append("create_parents", "true");
+        form.append("overwrite", "true");
+        form.append("file", blob, filename);
 
-    if (!response.ok) {
-        throw new Error(`Synology upload HTTP ${response.status}`);
+        // QuickConnect: _sid in multipart-body wordt genegeerd → query-string
+        const response = await synoFetch(
+            `${base}/webapi/entry.cgi?_sid=${encodeURIComponent(sid)}`,
+            {
+                method: "POST",
+                body: form,
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`Synology upload HTTP ${response.status}`);
+        }
+
+        return parseSynoResponse(response);
     }
 
-    const json = await parseSynoResponse(response);
+    let json = await doUpload(await login());
+
+    if (!json.success && (json.error?.code === 119 || json.error?.code === 106)) {
+        cachedSid = null;
+        sidExpiresAt = 0;
+        json = await doUpload(await login());
+    }
 
     if (!json.success) {
         const code = json.error?.code ?? "unknown";
