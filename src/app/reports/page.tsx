@@ -195,7 +195,6 @@ export default function ReportsPage(){
                 <SpecStat
                     label="Kilometers deze maand"
                     value={data.totals.kilometersThisMonth}
-                    hint="Dagroute vanaf Monitorweg 10 (zaak → klussen → zaak)"
                 />
             </div>
 
@@ -227,10 +226,7 @@ export default function ReportsPage(){
                 </SpecPanel>
 
 
-                <SpecPanel
-                    title="Uren per monteur"
-                    hint="Kilometers = automatisch berekende dagroute bij inplannen (Monitorweg 10 → alle klussen die dag → Monitorweg 10). Op project-urenlog telt alleen kantoor ↔ projectlocatie. Uren/reistijd als klok: 1.15, 1.30, 1.45, 2."
-                >
+                <SpecPanel title="Uren per monteur">
                     <label className="block max-w-xs">
                         <SpecFieldLabel>Filter monteur</SpecFieldLabel>
                         <select
