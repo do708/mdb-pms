@@ -301,20 +301,9 @@ export default function ArchivePage() {
 
     return (
         <PageShell>
-            <PageHeader
-                title="Archief"
-                subtitle="Opdrachtgevers, locaties en gearchiveerde opdrachten op NAS"
-            />
+            <PageHeader title="Archief" />
 
             <SpecPageCard>
-                <h2 className="font-semibold text-sm text-gray-800">
-                    Mappenstructuur
-                </h2>
-                <p className="text-xs text-gray-500">
-                    Standaard één map per opdrachtgever; locaties als{" "}
-                    <span className="font-medium">Locatienaam, Plaats</span>.
-                </p>
-
                 {foldersLoading ? (
                     <p className="text-sm text-gray-500">Mappen laden…</p>
                 ) : folders.length === 0 ? (
