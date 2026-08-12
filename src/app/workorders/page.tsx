@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import DeleteButton from "@/components/DeleteButton";
 import { PlanningStatusIcon, WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
-import { getStatus, migrateStatus, WORKORDER_STATUSES } from "@/constants/workorderStatus";
+import {
+    getStatus,
+    migrateStatus,
+    WORKORDER_STATUSES,
+    WORKORDER_STATUS_KEYS,
+} from "@/constants/workorderStatus";
+import { isTeLaatInvullen } from "@/lib/workorders/teLaatFilter";
 import {
     PageHeader,
     PageShell,
@@ -22,6 +29,7 @@ interface Workorder {
     number: string;
     title: string;
     status: string;
+    plannedDate: string | null;
     location: string | null;
     customer: {
         name: string;
@@ -41,6 +49,21 @@ interface Workorder {
 }
 
 export default function WorkordersPage() {
+    return (
+        <Suspense
+            fallback={
+                <PageShell>
+                    <p className="text-sm text-gray-500">Opdrachten laden...</p>
+                </PageShell>
+            }
+        >
+            <WorkordersPageContent />
+        </Suspense>
+    );
+}
+
+function WorkordersPageContent() {
+    const searchParams = useSearchParams();
     const { data: session } = useSession();
 
     const role = session?.user?.role || "";
@@ -51,6 +74,7 @@ export default function WorkordersPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("alle");
+    const [teLaatFilter, setTeLaatFilter] = useState(false);
 
     async function load() {
         const response = await fetch("/api/workorders");
@@ -62,6 +86,20 @@ export default function WorkordersPage() {
     useEffect(() => {
         load();
     }, []);
+
+    useEffect(() => {
+        const statusParam = searchParams.get("status");
+        const filterParam = searchParams.get("filter");
+
+        if (
+            statusParam &&
+            WORKORDER_STATUS_KEYS.includes(statusParam)
+        ) {
+            setStatus(statusParam);
+        }
+
+        setTeLaatFilter(filterParam === "teLaat");
+    }, [searchParams]);
 
     if (loading) {
         return (
@@ -83,7 +121,10 @@ export default function WorkordersPage() {
             status === "alle"
             || migrateStatus(workorder.status) === status;
 
-        return matchesSearch && matchesStatus;
+        const matchesTeLaat =
+            !teLaatFilter || isTeLaatInvullen(workorder);
+
+        return matchesSearch && matchesStatus && matchesTeLaat;
     });
 
     return (
@@ -106,6 +147,13 @@ export default function WorkordersPage() {
             />
 
             <SpecPanel title="Filters" tone="slate">
+                {teLaatFilter && (
+                    <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                        Filter: te laat invullen (geplande datum verstreken,
+                        nog niet ingevuld).
+                    </p>
+                )}
+
                 <label className="block">
                     <SpecFieldLabel>Zoeken</SpecFieldLabel>
                     <input

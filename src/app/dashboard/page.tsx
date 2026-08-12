@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
 import { getStatus } from "@/constants/workorderStatus";
@@ -18,6 +18,43 @@ import {
     SpecPanel,
     SpecStat,
 } from "@/components/ui/SpecLayout";
+
+function DashboardStatLink({
+    href,
+    title,
+    label,
+    value,
+    className = "",
+}: {
+    href: string;
+    title: string;
+    label: string;
+    value: ReactNode;
+    className?: string;
+}) {
+    return (
+        <Link
+            href={href}
+            className="
+                block h-full rounded-xl
+                cursor-pointer
+                focus-visible:outline-none focus-visible:ring-2
+                focus-visible:ring-[#0066FF]/40
+            "
+            title={title}
+        >
+            <SpecStat
+                label={label}
+                value={value}
+                className={`
+                    transition h-full
+                    hover:border-[#0066FF]/40 hover:bg-sky-50/60
+                    ${className}
+                `.trim()}
+            />
+        </Link>
+    );
+}
 
 interface OpenAanvraag {
     id: string;
@@ -90,7 +127,7 @@ function AanvragenSectie() {
     }
 
     return (
-        <SpecPageCard>
+        <SpecPageCard id="open-aanvragen">
             <div className="flex items-center justify-between gap-2">
                 <h2 className="font-semibold text-sm text-gray-800">
                     Openstaande aanvragen
@@ -372,7 +409,9 @@ export default function DashboardPage() {
             <AanvragenSectie />
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-stretch">
-                <SpecStat
+                <DashboardStatLink
+                    href="/dashboard#open-aanvragen"
+                    title="Openstaande aanvragen bekijken"
                     label="Open aanvragen"
                     value={
                         openAanvragenCount > 0 ? (
@@ -384,38 +423,29 @@ export default function DashboardPage() {
                         )
                     }
                 />
-                <SpecStat
+                <DashboardStatLink
+                    href="/workorders?status=ingepland"
+                    title="Opdrachten met status ingepland"
                     label="Ingepland"
                     value={data?.counters.ingepland ?? 0}
                 />
-                <Link
+                <DashboardStatLink
                     href="/dashboard/materiaal-controle"
-                    className="
-                        block h-full rounded-xl
-                        cursor-pointer
-                        focus-visible:outline-none focus-visible:ring-2
-                        focus-visible:ring-[#0066FF]/40
-                    "
                     title="Materiaal controleren"
-                >
-                    <SpecStat
-                        label="Materiaal klaarzetten"
-                        value={
-                            materiaalCount > 0 ? (
-                                <span className="text-orange-700">
-                                    {materiaalCount}
-                                </span>
-                            ) : (
-                                materiaalCount
-                            )
-                        }
-                        className="
-                            transition
-                            hover:border-[#0066FF]/40 hover:bg-sky-50/60
-                        "
-                    />
-                </Link>
-                <SpecStat
+                    label="Materiaal klaarzetten"
+                    value={
+                        materiaalCount > 0 ? (
+                            <span className="text-orange-700">
+                                {materiaalCount}
+                            </span>
+                        ) : (
+                            materiaalCount
+                        )
+                    }
+                />
+                <DashboardStatLink
+                    href="/workorders?filter=teLaat"
+                    title="Opdrachten te laat invullen"
                     label="Te laat invullen"
                     value={
                         teLaatCount > 0 ? (
@@ -425,7 +455,9 @@ export default function DashboardPage() {
                         )
                     }
                 />
-                <SpecStat
+                <DashboardStatLink
+                    href="/workorders?status=uitgevoerd"
+                    title="Opdrachten met status uitgevoerd"
                     label="Uitgevoerd"
                     value={data?.counters.uitgevoerd ?? 0}
                 />
@@ -437,7 +469,9 @@ export default function DashboardPage() {
                         xl:border-l xl:border-gray-200
                     "
                 >
-                    <SpecStat
+                    <DashboardStatLink
+                        href="/forms?status=ingediend"
+                        title="Formulieren te behandelen"
                         label="Formulieren te behandelen"
                         value={
                             openFormsCount > 0 ? (

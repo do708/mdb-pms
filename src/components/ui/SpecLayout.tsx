@@ -69,12 +69,15 @@ export function PageHeader({
 export function SpecPageCard({
     children,
     className = "",
+    id,
 }: {
     children: ReactNode;
     className?: string;
+    id?: string;
 }) {
     return (
         <section
+            id={id}
             className={`
                 bg-white border rounded-2xl p-5 space-y-3
                 ${className}

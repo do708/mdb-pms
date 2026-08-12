@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import DeleteButton from "@/components/DeleteButton";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 import {
@@ -29,8 +30,24 @@ interface FormItem {
 }
 
 export default function FormsPage() {
+    return (
+        <Suspense
+            fallback={
+                <PageShell>
+                    <p className="text-sm text-gray-500">Formulieren laden...</p>
+                </PageShell>
+            }
+        >
+            <FormsPageContent />
+        </Suspense>
+    );
+}
+
+function FormsPageContent() {
+    const searchParams = useSearchParams();
     const [forms, setForms] = useState<FormItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [statusFilter, setStatusFilter] = useState("alle");
 
     async function load() {
         const response = await fetch("/api/forms");
@@ -43,6 +60,16 @@ export default function FormsPage() {
     useEffect(() => {
         load();
     }, []);
+
+    useEffect(() => {
+        const statusParam = searchParams.get("status");
+        setStatusFilter(statusParam === "ingediend" ? "ingediend" : "alle");
+    }, [searchParams]);
+
+    const visibleForms =
+        statusFilter === "alle"
+            ? forms
+            : forms.filter((form) => form.status === statusFilter);
 
     return (
         <PageShell>
@@ -78,6 +105,12 @@ export default function FormsPage() {
             </div>
 
             <SpecPageCard>
+                {statusFilter === "ingediend" && (
+                    <p className="text-sm text-sky-800 bg-sky-50 border border-sky-100 rounded-lg px-3 py-2 mb-3">
+                        Filter: formulieren te behandelen (status ingediend).
+                    </p>
+                )}
+
                 <h2 className="font-semibold text-sm text-gray-800">
                     Ingediende formulieren
                 </h2>
@@ -86,14 +119,16 @@ export default function FormsPage() {
                     <p className="text-sm text-gray-500">Laden...</p>
                 )}
 
-                {!loading && forms.length === 0 && (
+                {!loading && visibleForms.length === 0 && (
                     <p className="text-sm text-gray-500">
-                        Nog geen formulieren ingediend.
+                        {statusFilter === "ingediend"
+                            ? "Geen formulieren te behandelen."
+                            : "Nog geen formulieren ingediend."}
                     </p>
                 )}
 
                 <div className="space-y-2">
-                    {forms.map((form) => {
+                    {visibleForms.map((form) => {
                         const definition = FORM_DEFINITIONS.find(
                             (d) => d.type === form.type
                         );
