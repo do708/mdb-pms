@@ -10,6 +10,16 @@ import {
     BudgetBadge,
     ProgressBar,
 } from "@/components/projects/ProjectBudget";
+import {
+    PageHeader,
+    PageShell,
+    SpecFieldLabel,
+    SpecListRow,
+    SpecPageCard,
+    SpecPanel,
+    specInputClassName,
+    specSelectClassName,
+} from "@/components/ui/SpecLayout";
 import { formatHoursDisplay } from "@/lib/hours";
 
 interface ProjectDetail {
@@ -720,24 +730,33 @@ export default function ProjectDetailPage() {
     }
 
     if (loading) {
-        return <p>Project laden…</p>;
+        return (
+            <PageShell>
+                <p className="text-sm text-gray-500">Project laden…</p>
+            </PageShell>
+        );
     }
 
     if (!project) {
-        return <p>Project niet gevonden.</p>;
+        return (
+            <PageShell>
+                <p className="text-sm text-gray-500">Project niet gevonden.</p>
+            </PageShell>
+        );
     }
 
     return (
-        <div className="space-y-6 -m-2">
-            <header className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                <div>
-                    <Link
-                        href="/projects"
-                        className="text-sm text-[#d6007e] font-medium"
-                    >
-                        ← Alle projecten
-                    </Link>
-                    <h1 className="text-2xl font-bold mt-2">
+        <PageShell>
+            <Link
+                href="/projects"
+                className="text-sm text-[#d6007e] font-medium -mt-2"
+            >
+                ← Alle projecten
+            </Link>
+
+            <PageHeader
+                title={
+                    <>
                         {project.name}
                         {project.location || project.plaats ? (
                             <span className="text-gray-600 font-normal">
@@ -748,21 +767,18 @@ export default function ProjectDetailPage() {
                                     .join(", ")}
                             </span>
                         ) : null}
-                    </h1>
-                    <p className="text-gray-500">
-                        {project.number} · {project.customer.name}
-                    </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 lg:justify-end w-full lg:w-auto">
-                    {isOffice ? (
+                    </>
+                }
+                subtitle={`${project.number} · ${project.customer.name}`}
+                actions={
+                    isOffice ? (
                         <>
-                    <a
-                        href={`/api/projects/${id}/export`}
-                        className="border rounded-xl px-4 py-3 min-h-[48px] text-sm font-bold hover:bg-gray-50 flex items-center justify-center text-center"
-                    >
-                        Export Excel
-                    </a>
+                            <a
+                                href={`/api/projects/${id}/export`}
+                                className="border rounded-xl px-4 py-3 min-h-[48px] text-sm font-bold hover:bg-gray-50 flex items-center justify-center text-center"
+                            >
+                                Export Excel
+                            </a>
                             {!editingBasics ? (
                                 <button
                                     type="button"
@@ -781,247 +797,232 @@ export default function ProjectDetailPage() {
                                 }}
                             />
                         </>
-                    ) : null}
-                </div>
-            </header>
+                    ) : null
+                }
+            />
 
             {!editingBasics ? (
-                <section className="bg-white border rounded-2xl p-6">
-                    <h2 className="font-bold text-lg mb-4">Projectgegevens</h2>
-                    <dl className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-sm">
-                    <div>
-                        <dt className="font-semibold text-gray-900">
-                            Projectnaam
-                        </dt>
-                        <dd className="mt-1 text-gray-700">{project.name}</dd>
-                    </div>
-                    <div>
-                        <dt className="font-semibold text-gray-900">
-                            Adres
-                        </dt>
-                        <dd className="mt-1 text-gray-700">
-                            {project.location || "—"}
-                        </dd>
-                    </div>
-                    <div>
-                        <dt className="font-semibold text-gray-900">
-                            Plaats
-                        </dt>
-                        <dd className="mt-1 text-gray-700">
-                            {project.plaats || "—"}
-                        </dd>
-                    </div>
-                    <div>
-                        <dt className="font-semibold text-gray-900">
-                            Opdrachtgever
-                        </dt>
-                        <dd className="mt-1 text-gray-700">
-                            {project.customer.name}
-                        </dd>
-                    </div>
-                    <div>
-                        <dt className="font-semibold text-gray-900">
-                            Status
-                        </dt>
-                        <dd className="mt-1 text-gray-700">
-                            {project.status === "afgerond"
-                                ? "Afgerond"
-                                : "Actief"}
-                        </dd>
-                    </div>
-                    {isOffice ? (
-                        <>
-                    <div>
-                        <dt className="font-semibold text-gray-900">
-                            Geoffreerde uren
-                        </dt>
-                        <dd className="mt-1 text-gray-700">
-                            {project.geoffreerdeUren > 0
-                                ? `${project.geoffreerdeUren} uur`
-                                : "—"}
-                        </dd>
-                    </div>
-                    <div>
-                        <dt className="font-semibold text-gray-900">
-                            Geoffreerd bedrag
-                        </dt>
-                        <dd className="mt-1 text-gray-700">
-                            {project.geoffreerdBedrag > 0
-                                ? formatEuro(project.geoffreerdBedrag)
-                                : "—"}
-                        </dd>
-                    </div>
-                        </>
-                    ) : (
-                        <div>
-                            <dt className="font-semibold text-gray-900">
-                                Uren geboekt
-                            </dt>
-                            <dd className="mt-1 text-gray-700">
-                                {project.gebruikteUren.toFixed(1)} uur
-                            </dd>
-                        </div>
-                    )}
-                </dl>
-            </section>
+                <SpecPageCard>
+                    <SpecPanel title="Projectgegevens">
+                        <dl className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-sm">
+                            <div>
+                                <dt>
+                                    <SpecFieldLabel>Projectnaam</SpecFieldLabel>
+                                </dt>
+                                <dd className="mt-0.5 text-gray-800 font-medium">
+                                    {project.name}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>
+                                    <SpecFieldLabel>Adres</SpecFieldLabel>
+                                </dt>
+                                <dd className="mt-0.5 text-gray-800">
+                                    {project.location || "—"}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>
+                                    <SpecFieldLabel>Plaats</SpecFieldLabel>
+                                </dt>
+                                <dd className="mt-0.5 text-gray-800">
+                                    {project.plaats || "—"}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>
+                                    <SpecFieldLabel>Opdrachtgever</SpecFieldLabel>
+                                </dt>
+                                <dd className="mt-0.5 text-gray-800">
+                                    {project.customer.name}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>
+                                    <SpecFieldLabel>Status</SpecFieldLabel>
+                                </dt>
+                                <dd className="mt-0.5 text-gray-800">
+                                    {project.status === "afgerond"
+                                        ? "Afgerond"
+                                        : "Actief"}
+                                </dd>
+                            </div>
+                            {isOffice ? (
+                                <>
+                                    <div>
+                                        <dt>
+                                            <SpecFieldLabel>
+                                                Geoffreerde uren
+                                            </SpecFieldLabel>
+                                        </dt>
+                                        <dd className="mt-0.5 text-gray-800">
+                                            {project.geoffreerdeUren > 0
+                                                ? `${project.geoffreerdeUren} uur`
+                                                : "—"}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>
+                                            <SpecFieldLabel>
+                                                Geoffreerd bedrag
+                                            </SpecFieldLabel>
+                                        </dt>
+                                        <dd className="mt-0.5 text-gray-800">
+                                            {project.geoffreerdBedrag > 0
+                                                ? formatEuro(
+                                                      project.geoffreerdBedrag
+                                                  )
+                                                : "—"}
+                                        </dd>
+                                    </div>
+                                </>
+                            ) : (
+                                <div>
+                                    <dt>
+                                        <SpecFieldLabel>
+                                            Uren geboekt
+                                        </SpecFieldLabel>
+                                    </dt>
+                                    <dd className="mt-0.5 text-gray-800">
+                                        {project.gebruikteUren.toFixed(1)} uur
+                                    </dd>
+                                </div>
+                            )}
+                        </dl>
+                    </SpecPanel>
+                </SpecPageCard>
             ) : null}
 
             {isOffice && editingBasics ? (
-                <section className="bg-white border rounded-2xl p-6 space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <h2 className="font-bold text-lg">Gegevens wijzigen</h2>
+                <SpecPageCard>
+                    <SpecPanel
+                        title="Gegevens wijzigen"
+                        hint="Pas naam, locatie, opdrachtgever of budget aan en klik opslaan."
+                        actions={
+                            <button
+                                type="button"
+                                onClick={cancelEditingBasics}
+                                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                            >
+                                Annuleren
+                            </button>
+                        }
+                    >
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <label className="block">
+                                <SpecFieldLabel>Projectnaam</SpecFieldLabel>
+                                <input
+                                    id="project-naam"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className={specInputClassName}
+                                    placeholder="Bijv. Rosa Spier"
+                                />
+                            </label>
+                            <label className="block">
+                                <SpecFieldLabel>Adres</SpecFieldLabel>
+                                <input
+                                    id="project-adres"
+                                    value={location}
+                                    onChange={(e) =>
+                                        setLocation(e.target.value)
+                                    }
+                                    className={specInputClassName}
+                                    placeholder="Bijv. Brink 12"
+                                />
+                            </label>
+                            <label className="block">
+                                <SpecFieldLabel>Plaats</SpecFieldLabel>
+                                <input
+                                    id="project-plaats"
+                                    value={plaats}
+                                    onChange={(e) => setPlaats(e.target.value)}
+                                    className={specInputClassName}
+                                    placeholder="Bijv. Laren"
+                                />
+                            </label>
+                            <label className="block">
+                                <SpecFieldLabel>Opdrachtgever</SpecFieldLabel>
+                                <select
+                                    id="project-opdrachtgever"
+                                    value={customerId}
+                                    onChange={(e) =>
+                                        setCustomerId(e.target.value)
+                                    }
+                                    className={specSelectClassName}
+                                >
+                                    {customers.map((c) => (
+                                        <option key={c.id} value={c.id}>
+                                            {c.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label className="block">
+                                <SpecFieldLabel>Status</SpecFieldLabel>
+                                <select
+                                    id="project-status"
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}
+                                    className={specSelectClassName}
+                                >
+                                    <option value="actief">Actief</option>
+                                    <option value="afgerond">Afgerond</option>
+                                </select>
+                            </label>
+                            <label className="block">
+                                <SpecFieldLabel>Geoffreerde uren</SpecFieldLabel>
+                                <input
+                                    id="project-uren"
+                                    type="number"
+                                    min={0}
+                                    step={0.5}
+                                    value={geoffreerdeUren}
+                                    onChange={(e) =>
+                                        setGeoffreerdeUren(e.target.value)
+                                    }
+                                    className={specInputClassName}
+                                    placeholder="Bijv. 320"
+                                />
+                            </label>
+                            <label className="block">
+                                <SpecFieldLabel>
+                                    Geoffreerd bedrag (€)
+                                </SpecFieldLabel>
+                                <input
+                                    id="project-bedrag"
+                                    type="number"
+                                    min={0}
+                                    step={0.01}
+                                    value={geoffreerdBedrag}
+                                    onChange={(e) =>
+                                        setGeoffreerdBedrag(e.target.value)
+                                    }
+                                    className={specInputClassName}
+                                    placeholder="Bijv. 20000"
+                                />
+                            </label>
+                        </div>
                         <button
                             type="button"
-                            onClick={cancelEditingBasics}
-                            className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                            onClick={saveBasics}
+                            disabled={saving}
+                            className="bg-[#d6007e] text-white rounded-xl px-6 py-3 font-bold disabled:opacity-60"
                         >
-                            Annuleren
+                            {saving ? "Opslaan…" : "Gegevens opslaan"}
                         </button>
-                    </div>
-                    <p className="text-sm text-gray-500">
-                        Pas naam, locatie, opdrachtgever of budget aan en klik
-                        opslaan.
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <div>
-                            <label
-                                htmlFor="project-naam"
-                                className="block text-sm font-semibold text-gray-900 mb-1.5"
-                            >
-                                Projectnaam
-                            </label>
-                            <input
-                                id="project-naam"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="border rounded-xl p-3 w-full"
-                                placeholder="Bijv. Rosa Spier"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="project-adres"
-                                className="block text-sm font-semibold text-gray-900 mb-1.5"
-                            >
-                                Adres
-                            </label>
-                            <input
-                                id="project-adres"
-                                value={location}
-                                onChange={(e) => setLocation(e.target.value)}
-                                className="border rounded-xl p-3 w-full"
-                                placeholder="Bijv. Brink 12"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="project-plaats"
-                                className="block text-sm font-semibold text-gray-900 mb-1.5"
-                            >
-                                Plaats
-                            </label>
-                            <input
-                                id="project-plaats"
-                                value={plaats}
-                                onChange={(e) => setPlaats(e.target.value)}
-                                className="border rounded-xl p-3 w-full"
-                                placeholder="Bijv. Laren"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="project-opdrachtgever"
-                                className="block text-sm font-semibold text-gray-900 mb-1.5"
-                            >
-                                Opdrachtgever
-                            </label>
-                            <select
-                                id="project-opdrachtgever"
-                                value={customerId}
-                                onChange={(e) => setCustomerId(e.target.value)}
-                                className="border rounded-xl p-3 w-full"
-                            >
-                                {customers.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="project-status"
-                                className="block text-sm font-semibold text-gray-900 mb-1.5"
-                            >
-                                Status
-                            </label>
-                            <select
-                                id="project-status"
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                                className="border rounded-xl p-3 w-full"
-                            >
-                                <option value="actief">Actief</option>
-                                <option value="afgerond">Afgerond</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="project-uren"
-                                className="block text-sm font-semibold text-gray-900 mb-1.5"
-                            >
-                                Geoffreerde uren
-                            </label>
-                            <input
-                                id="project-uren"
-                                type="number"
-                                min={0}
-                                step={0.5}
-                                value={geoffreerdeUren}
-                                onChange={(e) =>
-                                    setGeoffreerdeUren(e.target.value)
-                                }
-                                className="border rounded-xl p-3 w-full"
-                                placeholder="Bijv. 320"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="project-bedrag"
-                                className="block text-sm font-semibold text-gray-900 mb-1.5"
-                            >
-                                Geoffreerd bedrag (€)
-                            </label>
-                            <input
-                                id="project-bedrag"
-                                type="number"
-                                min={0}
-                                step={0.01}
-                                value={geoffreerdBedrag}
-                                onChange={(e) =>
-                                    setGeoffreerdBedrag(e.target.value)
-                                }
-                                className="border rounded-xl p-3 w-full"
-                                placeholder="Bijv. 20000"
-                            />
-                        </div>
-                    </div>
-                    <button
-                        type="button"
-                        onClick={saveBasics}
-                        disabled={saving}
-                        className="bg-[#d6007e] text-white rounded-xl px-6 py-3 font-bold disabled:opacity-60"
-                    >
-                        {saving ? "Opslaan…" : "Gegevens opslaan"}
-                    </button>
-                </section>
+                    </SpecPanel>
+                </SpecPageCard>
             ) : null}
 
             {isOffice ? (
-            <>
-            <section className="bg-white border rounded-2xl p-5 space-y-3">
-                <h2 className="font-bold">Termijnen gefactureerd</h2>
-                <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
+                <>
+                    <SpecPageCard>
+                        <SpecPanel
+                            title="Termijnen gefactureerd"
+                            hint="Vul de factuurdatum in: het vinkje gaat dan automatisch aan. Wis de datum om uit te vinken."
+                        >
+                            <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
                     {(
                         [
                             {
@@ -1083,8 +1084,10 @@ export default function ProjectDetailPage() {
                                 </span>
                             </label>
                             <div className="pl-6">
-                                <label className="block text-xs text-gray-500 mb-1">
-                                    Factuurdatum
+                                <label className="block mb-1">
+                                    <SpecFieldLabel>
+                                        Factuurdatum
+                                    </SpecFieldLabel>
                                 </label>
                                 <input
                                     type="date"
@@ -1100,8 +1103,10 @@ export default function ProjectDetailPage() {
                                 />
                             </div>
                             <div className="pl-6">
-                                <label className="block text-xs text-gray-500 mb-1">
-                                    Factuurnummer
+                                <label className="block mb-1">
+                                    <SpecFieldLabel>
+                                        Factuurnummer
+                                    </SpecFieldLabel>
                                 </label>
                                 <input
                                     type="text"
@@ -1123,172 +1128,173 @@ export default function ProjectDetailPage() {
                         </div>
                         );
                     })}
-                </div>
-            </section>
+                            </div>
+                        </SpecPanel>
+                    </SpecPageCard>
 
-            <section className="grid lg:grid-cols-2 gap-4">
-                <div className="bg-white border rounded-2xl p-5 space-y-4">
-                    <h2 className="font-bold">Uren</h2>
-                    <ProgressBar
-                        label="Gebruikt vs. geoffreerd"
-                        gebruikt={project.gebruikteUren}
-                        geoffreerd={
-                            project.geoffreerdeUren > 0
-                                ? project.geoffreerdeUren
-                                : null
-                        }
-                    />
-                    <BudgetBadge
-                        gebruikt={project.gebruikteUren}
-                        geoffreerd={
-                            project.geoffreerdeUren > 0
-                                ? project.geoffreerdeUren
-                                : null
-                        }
-                        eenheid="uur"
-                    />
-                </div>
+                    <div className="grid lg:grid-cols-2 gap-4">
+                        <SpecPageCard>
+                            <SpecPanel title="Uren / budget">
+                                <ProgressBar
+                                    label="Gebruikt vs. geoffreerd"
+                                    gebruikt={project.gebruikteUren}
+                                    geoffreerd={
+                                        project.geoffreerdeUren > 0
+                                            ? project.geoffreerdeUren
+                                            : null
+                                    }
+                                />
+                                <BudgetBadge
+                                    gebruikt={project.gebruikteUren}
+                                    geoffreerd={
+                                        project.geoffreerdeUren > 0
+                                            ? project.geoffreerdeUren
+                                            : null
+                                    }
+                                    eenheid="uur"
+                                />
+                            </SpecPanel>
+                        </SpecPageCard>
 
-                <div className="bg-white border rounded-2xl p-5 space-y-4">
-                    <h2 className="font-bold">Materiaal & budget</h2>
-                    <p className="text-sm text-gray-600">
-                        Ingekocht materiaal:{" "}
-                        <strong>
-                            {formatEuro(project.materiaalKosten)}
-                        </strong>
-                    </p>
-                    {project.geoffreerdBedrag > 0 ? (
-                        <>
-                            <ProgressBar
-                                label="Materiaalkosten vs. geoffreerd bedrag"
-                                gebruikt={project.materiaalKosten}
-                                geoffreerd={project.geoffreerdBedrag}
-                            />
-                            <BudgetBadge
-                                gebruikt={project.materiaalKosten}
-                                geoffreerd={project.geoffreerdBedrag}
-                                eenheid="€"
-                            />
-                        </>
-                    ) : (
-                        <p className="text-xs text-gray-500">
-                            Vul een geoffreerd bedrag in om groen/rood op
-                            materiaal te zien.
-                        </p>
-                    )}
-                </div>
-            </section>
-            </>
+                        <SpecPageCard>
+                            <SpecPanel title="Materiaal & budget">
+                                <p className="text-sm text-gray-600">
+                                    Ingekocht materiaal:{" "}
+                                    <strong>
+                                        {formatEuro(project.materiaalKosten)}
+                                    </strong>
+                                </p>
+                                {project.geoffreerdBedrag > 0 ? (
+                                    <>
+                                        <ProgressBar
+                                            label="Materiaalkosten vs. geoffreerd bedrag"
+                                            gebruikt={project.materiaalKosten}
+                                            geoffreerd={
+                                                project.geoffreerdBedrag
+                                            }
+                                        />
+                                        <BudgetBadge
+                                            gebruikt={
+                                                project.materiaalKosten
+                                            }
+                                            geoffreerd={
+                                                project.geoffreerdBedrag
+                                            }
+                                            eenheid="€"
+                                        />
+                                    </>
+                                ) : (
+                                    <p className="text-xs text-gray-500">
+                                        Vul een geoffreerd bedrag in om
+                                        groen/rood op materiaal te zien.
+                                    </p>
+                                )}
+                            </SpecPanel>
+                        </SpecPageCard>
+                    </div>
+                </>
             ) : (
-                <section className="bg-white border rounded-2xl p-5">
-                    <h2 className="font-bold mb-2">Uren geboekt</h2>
-                    <p className="text-3xl font-bold text-[#d6007e]">
-                        {project.gebruikteUren.toFixed(1)}
-                        <span className="text-base font-medium text-gray-500 ml-2">
-                            uur totaal
-                        </span>
-                    </p>
-                </section>
+                <SpecPageCard>
+                    <SpecPanel title="Uren geboekt">
+                        <p className="text-3xl font-bold text-[#d6007e]">
+                            {project.gebruikteUren.toFixed(1)}
+                            <span className="text-base font-medium text-gray-500 ml-2">
+                                uur totaal
+                            </span>
+                        </p>
+                    </SpecPanel>
+                </SpecPageCard>
             )}
 
             {isOffice ? (
-            <section className="bg-white border rounded-2xl p-6 space-y-4">
-                <h2 className="font-bold text-lg">Offerte (PDF)</h2>
-                {project.offerteUrl ? (
-                    <a
-                        href={project.offerteUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[#d6007e] font-medium underline"
-                    >
-                        {project.offerteFilename || "Offerte bekijken"}
-                    </a>
-                ) : (
-                    <p className="text-sm text-gray-500">
-                        Nog geen offerte geüpload.
-                    </p>
-                )}
-                {isOffice ? (
-                    <label className="inline-block">
-                        <span className="bg-gray-100 rounded-xl px-4 py-2 text-sm font-medium cursor-pointer hover:bg-gray-200">
-                            {offerteUploading
-                                ? "Uploaden…"
-                                : "PDF uploaden"}
-                        </span>
-                        <input
-                            type="file"
-                            accept="application/pdf,.pdf"
-                            className="hidden"
-                            disabled={offerteUploading}
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    uploadOfferte(file);
-                                }
-                            }}
-                        />
-                    </label>
-                ) : null}
-            </section>
+                <SpecPageCard>
+                    <SpecPanel title="Offerte (PDF)">
+                        {project.offerteUrl ? (
+                            <a
+                                href={project.offerteUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[#d6007e] font-medium underline"
+                            >
+                                {project.offerteFilename ||
+                                    "Offerte bekijken"}
+                            </a>
+                        ) : (
+                            <p className="text-sm text-gray-500">
+                                Nog geen offerte geüpload.
+                            </p>
+                        )}
+                        <label className="inline-block">
+                            <span className="bg-gray-100 rounded-xl px-4 py-2 text-sm font-medium cursor-pointer hover:bg-gray-200">
+                                {offerteUploading
+                                    ? "Uploaden…"
+                                    : "PDF uploaden"}
+                            </span>
+                            <input
+                                type="file"
+                                accept="application/pdf,.pdf"
+                                className="hidden"
+                                disabled={offerteUploading}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        uploadOfferte(file);
+                                    }
+                                }}
+                            />
+                        </label>
+                    </SpecPanel>
+                </SpecPageCard>
             ) : null}
 
-            <section className="bg-white border rounded-2xl p-6 space-y-4">
-                <h2 className="font-bold text-lg">Urenlog</h2>
-
+            <SpecPageCard>
+                <SpecPanel title="Urenlog">
                 {urenPerMonteur.length > 0 ? (
-                    <div className="p-4 bg-gray-50 rounded-xl space-y-2">
-                        <h3 className="text-sm font-semibold text-gray-700">
-                            Overzicht per monteur
-                        </h3>
+                    <SpecPanel title="Overzicht per monteur" tone="slate">
                         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
                             {urenPerMonteur.map((row) => (
-                                <li
-                                    key={row.naam}
-                                    className="bg-white border rounded-lg px-3 py-2 text-sm flex justify-between gap-2"
-                                >
-                                    <span className="font-medium">
-                                        {row.naam}
-                                    </span>
-                                    <span className="text-gray-600">
-                                        {row.totaal.toFixed(1)} uur
-                                        {row.km > 0 ? (
-                                            <span className="text-gray-500">
-                                                {" "}
-                                                · {row.km.toFixed(1)} km
-                                            </span>
-                                        ) : null}
-                                        <span className="text-gray-400 text-xs ml-1">
-                                            ({row.regels}×)
+                                <li key={row.naam}>
+                                    <SpecListRow className="text-sm flex justify-between gap-2">
+                                        <span className="font-medium">
+                                            {row.naam}
                                         </span>
-                                    </span>
+                                        <span className="text-gray-600">
+                                            {row.totaal.toFixed(1)} uur
+                                            {row.km > 0 ? (
+                                                <span className="text-gray-500">
+                                                    {" "}
+                                                    · {row.km.toFixed(1)} km
+                                                </span>
+                                            ) : null}
+                                            <span className="text-gray-400 text-xs ml-1">
+                                                ({row.regels}×)
+                                            </span>
+                                        </span>
+                                    </SpecListRow>
                                 </li>
                             ))}
                         </ul>
-                    </div>
+                    </SpecPanel>
                 ) : null}
 
                 {(isOffice || role === "engineer") &&
                 (project.status === "actief" ||
                     project.status === "new") ? (
-                    <div className="p-4 bg-gray-50 rounded-xl space-y-3">
+                    <SpecPanel title="Uren boeken" tone="indigo">
                         <div className="grid sm:grid-cols-2 gap-3">
-                            <div>
-                                <label className="text-xs font-medium text-gray-600 block mb-1">
-                                    Datum
-                                </label>
+                            <label className="block">
+                                <SpecFieldLabel>Datum</SpecFieldLabel>
                                 <input
                                     type="date"
                                     value={urenDatum}
                                     onChange={(e) =>
                                         setUrenDatum(e.target.value)
                                     }
-                                    className="border rounded-xl p-3 min-h-[48px] w-full bg-white"
+                                    className={`${specInputClassName} min-h-[48px]`}
                                 />
-                            </div>
-                            <div>
-                                <label className="text-xs font-medium text-gray-600 block mb-1">
-                                    Aantal uren
-                                </label>
+                            </label>
+                            <label className="block">
+                                <SpecFieldLabel>Aantal uren</SpecFieldLabel>
                                 <input
                                     type="text"
                                     inputMode="decimal"
@@ -1297,16 +1303,16 @@ export default function ProjectDetailPage() {
                                         setUrenAantal(e.target.value)
                                     }
                                     placeholder="Bijv. 8 of 1.30"
-                                    className="border rounded-xl p-3 min-h-[48px] w-full bg-white"
+                                    className={`${specInputClassName} min-h-[48px]`}
                                 />
-                            </div>
+                            </label>
                         </div>
 
                         <div>
                             <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                                <label className="text-xs font-medium text-gray-600">
+                                <SpecFieldLabel>
                                     Monteurs (meerdere mogelijk)
-                                </label>
+                                </SpecFieldLabel>
                                 <button
                                     type="button"
                                     onClick={selecteerAlleMonteurs}
@@ -1370,19 +1376,19 @@ export default function ProjectDetailPage() {
                             </div>
                         </div>
 
-                        <div>
-                            <label className="text-xs font-medium text-gray-600 block mb-1">
+                        <label className="block">
+                            <SpecFieldLabel>
                                 Omschrijving (optioneel)
-                            </label>
+                            </SpecFieldLabel>
                             <input
                                 value={urenOmschrijving}
                                 onChange={(e) =>
                                     setUrenOmschrijving(e.target.value)
                                 }
                                 placeholder="Bijv. installatie schermen hal 2"
-                                className="border rounded-xl p-3 min-h-[48px] w-full bg-white"
+                                className={`${specInputClassName} min-h-[48px]`}
                             />
-                        </div>
+                        </label>
 
                         <button
                             type="button"
@@ -1391,7 +1397,7 @@ export default function ProjectDetailPage() {
                         >
                             Uren toevoegen
                         </button>
-                    </div>
+                    </SpecPanel>
                 ) : null}
 
                 {project.uren.length === 0 ? (
@@ -1471,153 +1477,161 @@ export default function ProjectDetailPage() {
                         </table>
                     </div>
                 )}
-            </section>
+                </SpecPanel>
+            </SpecPageCard>
 
-{isOffice ? (
-            <section className="bg-white border rounded-2xl p-6 space-y-4">
-                <h2 className="font-bold text-lg">
-                    In te kopen / ingekocht materiaal
-                </h2>
+            {isOffice ? (
+                <SpecPageCard>
+                    <SpecPanel title="Materiaal lijst">
+                        <SpecPanel tone="slate" className="!p-3">
+                            <div className="grid sm:grid-cols-2 gap-3">
+                                <input
+                                    value={matOmschrijving}
+                                    onChange={(e) =>
+                                        setMatOmschrijving(e.target.value)
+                                    }
+                                    placeholder="Omschrijving"
+                                    className={`${specInputClassName} min-h-[48px] sm:col-span-2`}
+                                />
+                                <input
+                                    value={matFactuurnummer}
+                                    onChange={(e) =>
+                                        setMatFactuurnummer(e.target.value)
+                                    }
+                                    placeholder="Factuurnummer (optioneel)"
+                                    className={`${specInputClassName} min-h-[48px]`}
+                                />
+                                <input
+                                    value={matLeverancier}
+                                    onChange={(e) =>
+                                        setMatLeverancier(e.target.value)
+                                    }
+                                    placeholder="Leverancier (optioneel)"
+                                    className={`${specInputClassName} min-h-[48px]`}
+                                />
+                                <input
+                                    type="number"
+                                    step={0.01}
+                                    min={0}
+                                    value={matKosten}
+                                    onChange={(e) =>
+                                        setMatKosten(e.target.value)
+                                    }
+                                    placeholder="Kosten €"
+                                    className={`${specInputClassName} min-h-[48px]`}
+                                />
+                                <input
+                                    type="date"
+                                    value={matDatum}
+                                    onChange={(e) =>
+                                        setMatDatum(e.target.value)
+                                    }
+                                    className={`${specInputClassName} min-h-[48px]`}
+                                    title="Datum ingekocht (optioneel)"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={voegMateriaalToe}
+                                    className="bg-[#d6007e] text-white rounded-xl py-2 font-bold min-h-[48px]"
+                                >
+                                    Materiaal toevoegen
+                                </button>
+                            </div>
+                        </SpecPanel>
 
-                <div className="grid sm:grid-cols-2 gap-3 p-4 bg-gray-50 rounded-xl">
-                        <input
-                            value={matOmschrijving}
-                            onChange={(e) =>
-                                setMatOmschrijving(e.target.value)
-                            }
-                            placeholder="Omschrijving"
-                            className="border rounded-xl p-3 min-h-[48px] sm:col-span-2"
-                        />
-                        <input
-                            value={matFactuurnummer}
-                            onChange={(e) =>
-                                setMatFactuurnummer(e.target.value)
-                            }
-                            placeholder="Factuurnummer (optioneel)"
-                            className="border rounded-xl p-3 min-h-[48px]"
-                        />
-                        <input
-                            value={matLeverancier}
-                            onChange={(e) =>
-                                setMatLeverancier(e.target.value)
-                            }
-                            placeholder="Leverancier (optioneel)"
-                            className="border rounded-xl p-3 min-h-[48px]"
-                        />
-                        <input
-                            type="number"
-                            step={0.01}
-                            min={0}
-                            value={matKosten}
-                            onChange={(e) => setMatKosten(e.target.value)}
-                            placeholder="Kosten €"
-                            className="border rounded-xl p-3 min-h-[48px]"
-                        />
-                        <input
-                            type="date"
-                            value={matDatum}
-                            onChange={(e) => setMatDatum(e.target.value)}
-                            className="border rounded-xl p-3 min-h-[48px]"
-                            title="Datum ingekocht (optioneel)"
-                        />
-                        <button
-                            type="button"
-                            onClick={voegMateriaalToe}
-                            className="bg-[#d6007e] text-white rounded-xl py-2 font-bold"
-                        >
-                            Materiaal toevoegen
-                        </button>
-                    </div>
-
-                {project.materialen.length === 0 ? (
-                    <p className="text-sm text-gray-500">
-                        Nog geen materialen geregistreerd.
-                    </p>
-                ) : (
-                    <ul className="divide-y">
-                        {project.materialen.map((m) => (
-                            <li
-                                key={m.id}
-                                className="py-3 flex justify-between gap-4 items-start"
-                            >
-                                <div>
-                                    <div className="font-medium">
-                                        {m.omschrijving}
-                                    </div>
-                                    <div className="text-xs text-gray-500">
-                                        {m.factuurnummer
-                                            ? `Factuur: ${m.factuurnummer} · `
-                                            : ""}
-                                        {m.leverancier
-                                            ? `${m.leverancier} · `
-                                            : ""}
-                                        {m.ingekochtOp
-                                            ? formatDate(m.ingekochtOp)
-                                            : "Nog niet ingekocht"}
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <span className="font-semibold">
-                                        {formatEuro(m.kosten)}
-                                    </span>
-                                    {isOffice ? (
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                verwijderMateriaal(m.id)
-                                            }
-                                            className="text-red-600 text-xs"
-                                        >
-                                            Verwijder
-                                        </button>
-                                    ) : null}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </section>
+                        {project.materialen.length === 0 ? (
+                            <p className="text-sm text-gray-500">
+                                Nog geen materialen geregistreerd.
+                            </p>
+                        ) : (
+                            <ul className="space-y-2">
+                                {project.materialen.map((m) => (
+                                    <li key={m.id}>
+                                        <SpecListRow className="flex justify-between gap-4 items-start">
+                                            <div>
+                                                <div className="font-medium">
+                                                    {m.omschrijving}
+                                                </div>
+                                                <div className="text-xs text-gray-500">
+                                                    {m.factuurnummer
+                                                        ? `Factuur: ${m.factuurnummer} · `
+                                                        : ""}
+                                                    {m.leverancier
+                                                        ? `${m.leverancier} · `
+                                                        : ""}
+                                                    {m.ingekochtOp
+                                                        ? formatDate(
+                                                              m.ingekochtOp
+                                                          )
+                                                        : "Nog niet ingekocht"}
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3 shrink-0">
+                                                <span className="font-semibold">
+                                                    {formatEuro(m.kosten)}
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        verwijderMateriaal(
+                                                            m.id
+                                                        )
+                                                    }
+                                                    className="text-red-600 text-xs"
+                                                >
+                                                    Verwijder
+                                                </button>
+                                            </div>
+                                        </SpecListRow>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </SpecPanel>
+                </SpecPageCard>
             ) : null}
 
             {project.workorders.length > 0 ? (
-                <section className="bg-white border rounded-2xl p-6 space-y-3">
-                    <h2 className="font-bold text-lg">Gekoppelde opdrachten</h2>
-                    <ul className="divide-y">
-                        {project.workorders.map((w) => (
-                            <li key={w.id} className="py-2">
-                                <Link
-                                    href={`/workorders/${w.id}`}
-                                    className="text-[#d6007e] font-medium"
-                                >
-                                    {w.number} — {w.title}
-                                </Link>
-                                <span className="text-xs text-gray-500 ml-2">
-                                    {w.status}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
+                <SpecPageCard>
+                    <SpecPanel title="Gekoppelde opdrachten">
+                        <ul className="space-y-2">
+                            {project.workorders.map((w) => (
+                                <li key={w.id}>
+                                    <SpecListRow>
+                                        <Link
+                                            href={`/workorders/${w.id}`}
+                                            className="text-[#d6007e] font-medium"
+                                        >
+                                            {w.number} — {w.title}
+                                        </Link>
+                                        <span className="text-xs text-gray-500 ml-2">
+                                            {w.status}
+                                        </span>
+                                    </SpecListRow>
+                                </li>
+                            ))}
+                        </ul>
+                    </SpecPanel>
+                </SpecPageCard>
             ) : null}
 
             {isOffice && projectIsActive ? (
-                <section className="bg-white border rounded-2xl p-6">
-                    <button
-                        type="button"
-                        onClick={markeerProjectAfgerond}
-                        disabled={completing}
-                        className="w-full bg-gray-900 text-white rounded-xl py-4 min-h-[52px] font-bold text-base disabled:opacity-60"
+                <SpecPageCard>
+                    <SpecPanel
+                        title="Project afgerond"
+                        hint="Het project verplaatst naar de map Afgeronde projecten. Uren en gegevens blijven bewaard."
                     >
-                        {completing
-                            ? "Bezig…"
-                            : "Project afgerond"}
-                    </button>
-                    <p className="text-xs text-gray-500 text-center mt-3">
-                        Het project verplaatst naar de map Afgeronde projecten.
-                        Uren en gegevens blijven bewaard.
-                    </p>
-                </section>
+                        <button
+                            type="button"
+                            onClick={markeerProjectAfgerond}
+                            disabled={completing}
+                            className="w-full bg-gray-900 text-white rounded-xl py-4 min-h-[52px] font-bold text-base disabled:opacity-60"
+                        >
+                            {completing ? "Bezig…" : "Project afgerond"}
+                        </button>
+                    </SpecPanel>
+                </SpecPageCard>
             ) : null}
-        </div>
+        </PageShell>
     );
 }
