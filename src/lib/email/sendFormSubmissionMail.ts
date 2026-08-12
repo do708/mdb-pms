@@ -5,7 +5,8 @@ import {
     summarizeFormData,
 } from "@/lib/email/formDataSummary";
 import {
-    internalNotificationRecipients,
+    infoMailbox,
+    projectMailbox,
     sendResendEmail,
 } from "@/lib/email/resendClient";
 
@@ -60,7 +61,8 @@ Team MDB Networks
 
     await sendResendEmail({
         from: "MDB Networks <noreply@mdb-networks.nl>",
-        to: internalNotificationRecipients(),
+        to: [projectMailbox()],
+        cc: [infoMailbox()],
         subject: `Nieuw formulier: ${label} — ${data.submitterName}`,
         text: tekst,
         html,
