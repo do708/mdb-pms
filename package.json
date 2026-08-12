@@ -32,7 +32,8 @@
     "react": "latest",
     "react-dom": "latest",
     "react-signature-canvas": "^1.1.0-alpha.2",
-    "resend": "^6.18.0"
+    "resend": "^6.18.0",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

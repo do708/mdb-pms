@@ -1,0 +1,111 @@
+import sharp from "sharp";
+
+/** Max. lange zijde in px — scherp genoeg voor PDF/rapportage, veel kleiner dan camerorigineel. */
+const MAX_EDGE_PX = 2048;
+
+/** JPEG-kwaliteit: goede balans tussen bestandsgrootte en detail. */
+const JPEG_QUALITY = 85;
+
+export interface CompressedPhoto {
+    buffer: Buffer;
+    contentType: string;
+    /** Extensie met punt, bv. `.jpg` */
+    extension: string;
+    compressed: boolean;
+}
+
+function extensionFromMime(mimeType: string): string {
+    if (mimeType === "image/jpeg") {
+        return ".jpg";
+    }
+
+    if (mimeType === "image/png") {
+        return ".png";
+    }
+
+    if (mimeType === "image/webp") {
+        return ".webp";
+    }
+
+    return "";
+}
+
+/**
+ * Comprimeert foto's server-side vóór opslag (Supabase/NAS).
+ * PDF's en niet-afbeeldingen worden ongewijzigd doorgegeven.
+ */
+export async function compressPhoto(
+    input: Buffer,
+    mimeType: string
+): Promise<CompressedPhoto> {
+    const type = (mimeType || "").toLowerCase();
+
+    if (!type.startsWith("image/") || type === "image/gif") {
+        return {
+            buffer: input,
+            contentType: mimeType,
+            extension: extensionFromMime(type),
+            compressed: false,
+        };
+    }
+
+    try {
+        const image = sharp(input, { failOn: "none" }).rotate();
+        const meta = await image.metadata();
+
+        const resize = {
+            width: MAX_EDGE_PX,
+            height: MAX_EDGE_PX,
+            fit: "inside" as const,
+            withoutEnlargement: true,
+        };
+
+        // PNG met transparantie: behoud formaat, wel verkleinen
+        if (type === "image/png" && meta.hasAlpha) {
+            const buffer = await image
+                .resize(resize)
+                .png({ compressionLevel: 9, palette: true })
+                .toBuffer();
+
+            return {
+                buffer,
+                contentType: "image/png",
+                extension: ".png",
+                compressed: true,
+            };
+        }
+
+        // Telefoonfoto's / JPEG / WEBP / HEIC → JPEG
+        const buffer = await image
+            .resize(resize)
+            .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
+            .toBuffer();
+
+        return {
+            buffer,
+            contentType: "image/jpeg",
+            extension: ".jpg",
+            compressed: true,
+        };
+    } catch (error) {
+        console.warn("Foto-compressie overgeslagen, origineel behouden:", error);
+
+        return {
+            buffer: input,
+            contentType: mimeType,
+            extension: extensionFromMime(type),
+            compressed: false,
+        };
+    }
+}
+
+/** Vervang extensie wanneer compressie het formaat wijzigt (bv. HEIC → JPG). */
+export function photoStorageName(originalName: string, extension: string): string {
+    const base = originalName.replace(/\.[^.]+$/, "") || "foto";
+
+    if (!extension) {
+        return originalName;
+    }
+
+    return `${base}${extension}`;
+}

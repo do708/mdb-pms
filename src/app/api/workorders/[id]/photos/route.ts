@@ -4,6 +4,10 @@ import { prisma } from "@/lib/prisma";
 
 import { createClient } from "@supabase/supabase-js";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import {
+    compressPhoto,
+    photoStorageName,
+} from "@/lib/images/compressPhoto";
 
 
 
@@ -144,16 +148,19 @@ export async function POST(
 
 
 
-            const buffer =
+            const rawBuffer =
                 Buffer.from(
                     await file.arrayBuffer()
                 );
 
-
+            const compressed = await compressPhoto(
+                rawBuffer,
+                file.type || "image/jpeg"
+            );
 
             const filename =
 
-                `${id}/${Date.now()}-${file.name}`;
+                `${id}/${Date.now()}-${photoStorageName(file.name, compressed.extension)}`;
 
 
 
@@ -168,12 +175,12 @@ export async function POST(
 
                     filename,
 
-                    buffer,
+                    compressed.buffer,
 
                     {
 
                         contentType:
-                        file.type,
+                            compressed.contentType,
 
                         upsert:true
 

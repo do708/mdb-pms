@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 import { prisma } from "@/lib/prisma";
+import {
+    compressPhoto,
+    photoStorageName,
+} from "@/lib/images/compressPhoto";
 
 
 
@@ -80,12 +84,22 @@ export async function POST(
         const bytes =
             await file.arrayBuffer();
 
-        const buffer =
+        const rawBuffer =
             Buffer.from(bytes);
 
+        const isImage = file.type.startsWith("image/");
+
+        const payload = isImage
+            ? await compressPhoto(rawBuffer, file.type)
+            : {
+                buffer: rawBuffer,
+                contentType: file.type,
+                extension: "",
+                compressed: false,
+            };
 
         const filename =
-            `aanvragen/${Date.now()}-${file.name}`;
+            `aanvragen/${Date.now()}-${photoStorageName(file.name, payload.extension)}`;
 
 
         const { data, error } =
@@ -93,9 +107,9 @@ export async function POST(
                 .from("workorder-files")
                 .upload(
                     filename,
-                    buffer,
+                    payload.buffer,
                     {
-                        contentType:file.type,
+                        contentType: payload.contentType,
                         upsert:false
                     }
                 );

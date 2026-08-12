@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createClient } from "@supabase/supabase-js";
 import { requireApiUser } from "@/lib/auth/guard";
+import {
+    compressPhoto,
+    photoStorageName,
+} from "@/lib/images/compressPhoto";
 
 
 
@@ -76,18 +80,16 @@ export async function POST(
         const bytes =
             await file.arrayBuffer();
 
-
-
-        const buffer =
+        const rawBuffer =
             Buffer.from(bytes);
 
-
-
-
+        const compressed = await compressPhoto(
+            rawBuffer,
+            file.type || "application/octet-stream"
+        );
 
         const filename =
-
-            `${Date.now()}-${file.name}`;
+            `${Date.now()}-${photoStorageName(file.name, compressed.extension)}`;
 
 
 
@@ -105,12 +107,12 @@ export async function POST(
 
                     filename,
 
-                    buffer,
+                    compressed.buffer,
 
                     {
 
                         contentType:
-                            file.type,
+                            compressed.contentType,
 
                         upsert:false
 
