@@ -7,7 +7,6 @@ import { ChevronDown, ChevronRight, Folder } from "lucide-react";
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 import {
-    PageHeader,
     PageShell,
     SpecFieldLabel,
     SpecListRow,
@@ -176,7 +175,7 @@ export default function ArchivePage() {
         location: ArchiveFolderNode
     ) {
         const key = folderKey(["loc", customerId, location.id]);
-        const open = openFolders[key] !== false;
+        const open = openFolders[key] === true;
         const workorderFolders = location.children ?? [];
 
         return (
@@ -248,7 +247,7 @@ export default function ArchivePage() {
 
     function renderCustomerFolder(customerFolder: ArchiveFolderNode) {
         const key = folderKey(["cust", customerFolder.id]);
-        const open = openFolders[key] !== false;
+        const open = openFolders[key] === true;
         const locations = customerFolder.children ?? [];
 
         return (
@@ -301,25 +300,6 @@ export default function ArchivePage() {
 
     return (
         <PageShell>
-            <PageHeader title="Archief" />
-
-            <SpecPageCard>
-                {foldersLoading ? (
-                    <p className="text-sm text-gray-500">Mappen laden…</p>
-                ) : folders.length === 0 ? (
-                    <p className="text-sm text-gray-500">
-                        Nog geen archiefmappen. Zorg dat opdrachtgevers in PMS
-                        staan.
-                    </p>
-                ) : (
-                    <div className="space-y-2">
-                        {folders.map((folder) =>
-                            renderCustomerFolder(folder)
-                        )}
-                    </div>
-                )}
-            </SpecPageCard>
-
             <SpecPanel title="Filters" tone="slate">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <input
@@ -509,6 +489,22 @@ export default function ArchivePage() {
                     </div>
                 </SpecPageCard>
             )}
+
+            <SpecPageCard>
+                {foldersLoading ? (
+                    <p className="text-sm text-gray-500">Mappen laden…</p>
+                ) : folders.length === 0 ? (
+                    <p className="text-sm text-gray-500">
+                        Nog geen archiefmappen.
+                    </p>
+                ) : (
+                    <div className="space-y-2">
+                        {folders.map((folder) =>
+                            renderCustomerFolder(folder)
+                        )}
+                    </div>
+                )}
+            </SpecPageCard>
         </PageShell>
     );
 }
