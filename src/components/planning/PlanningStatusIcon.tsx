@@ -9,13 +9,12 @@ import {
 
 import { getStatus, migrateStatus } from "@/constants/workorderStatus";
 
-/** Kernstatussen met icoon (overzicht + planning). */
+/** Kernstatussen met icoon (overzicht + planning). Gefactureerd zit in Archief. */
 export const WORKORDER_STATUS_ICON_LEGEND = [
     { key: "ontvangen", shortLabel: "Opdracht ontvangen" },
     { key: "afspraak", shortLabel: "Afspraak verstuurd" },
     { key: "ingepland", shortLabel: "Ingepland" },
     { key: "uitgevoerd", shortLabel: "Uitgevoerd" },
-    { key: "gefactureerd", shortLabel: "Gefactureerd" },
     { key: "on_hold", shortLabel: "On Hold" },
 ] as const;
 

@@ -9,8 +9,8 @@ import { PlanningStatusIcon, WorkorderStatusIconLegend } from "@/components/plan
 import {
     getStatus,
     migrateStatus,
-    WORKORDER_STATUSES,
-    WORKORDER_STATUS_KEYS,
+    WORKORDER_ACTIVE_STATUSES,
+    WORKORDER_ACTIVE_STATUS_KEYS,
 } from "@/constants/workorderStatus";
 import { isTeLaatInvullen } from "@/lib/workorders/teLaatFilter";
 import {
@@ -93,7 +93,7 @@ function WorkordersPageContent() {
 
         if (
             statusParam &&
-            WORKORDER_STATUS_KEYS.includes(statusParam)
+            WORKORDER_ACTIVE_STATUS_KEYS.includes(statusParam)
         ) {
             setStatus(statusParam);
         }
@@ -174,7 +174,7 @@ function WorkordersPageContent() {
                         className={specSelectClassName}
                     >
                         <option value="alle">Alle statussen</option>
-                        {WORKORDER_STATUSES.map((item) => (
+                        {WORKORDER_ACTIVE_STATUSES.map((item) => (
                             <option key={item.key} value={item.key}>
                                 {item.label}
                             </option>

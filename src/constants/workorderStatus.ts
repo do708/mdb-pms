@@ -73,8 +73,20 @@ export const WORKORDER_FLOW_STATUSES =
 
 
 
+/** Actieve opdrachten (niet in archief). Gefactureerd valt onder Archief. */
+export const WORKORDER_ACTIVE_STATUSES =
+    WORKORDER_STATUSES.filter(s=>s.key !== "gefactureerd");
+
+
+
 export const WORKORDER_STATUS_KEYS =
     WORKORDER_STATUSES.map(
+        status=>status.key
+    );
+
+
+export const WORKORDER_ACTIVE_STATUS_KEYS =
+    WORKORDER_ACTIVE_STATUSES.map(
         status=>status.key
     );
 
