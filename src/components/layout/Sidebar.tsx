@@ -364,7 +364,12 @@ export default function Sidebar({
 
                         );
 
-                        if (item.href.startsWith("/planning") && role !== "engineer") {
+                        if (
+                            item.href.startsWith("/planning") &&
+                            role !== "engineer" &&
+                            (pathname === "/planning" ||
+                                pathname.startsWith("/planning/"))
+                        ) {
                             return (
                                 <div key={item.href}>
                                     {link}
