@@ -566,45 +566,6 @@ function NewWorkorderInner(){
         ">
 
 
-            <header>
-
-
-                <h1 className="
-                    text-2xl
-                    font-bold
-                ">
-
-                    {
-                        isEngineer
-                        ?
-                        "Opdracht invullen"
-                        :
-                        "Opdracht inplannen"
-                    }
-
-                </h1>
-
-
-                <p className="
-                    text-gray-500
-                ">
-
-                    {
-                        isEngineer
-                        ?
-                        "Vul de gegevens in en verstuur onderaan"
-                        :
-                        "Vul de gegevens in en plan in via de weekplanning"
-                    }
-
-                </p>
-
-
-            </header>
-
-
-
-
             {
                 error && (
 
