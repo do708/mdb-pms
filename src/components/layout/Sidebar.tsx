@@ -257,16 +257,6 @@ export default function Sidebar({
 
             </div>
 
-            {role !== "engineer" &&
-            (pathname === "/planning" ||
-                pathname.startsWith("/planning/")) ? (
-                <div className="shrink-0 px-2 pt-2">
-                    <Suspense fallback={null}>
-                        <PlanningMiniMonth />
-                    </Suspense>
-                </div>
-            ) : null}
-
             <nav className="
                 flex-1
                 min-h-0
@@ -307,7 +297,7 @@ export default function Sidebar({
 
 
 
-                        return (
+                        const link = (
 
                             <Link
 
@@ -373,6 +363,21 @@ export default function Sidebar({
                             </Link>
 
                         );
+
+                        if (item.href.startsWith("/planning") && role !== "engineer") {
+                            return (
+                                <div key={item.href}>
+                                    {link}
+                                    <div className="py-4">
+                                        <Suspense fallback={null}>
+                                            <PlanningMiniMonth />
+                                        </Suspense>
+                                    </div>
+                                </div>
+                            );
+                        }
+
+                        return link;
 
 
                     })
