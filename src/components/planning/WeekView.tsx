@@ -1256,54 +1256,74 @@ export default function WeekView({
                                                     >
                                                         {dragPreview?.cellKey ===
                                                         `${iso}:${user.id}` ? (
-                                                            <div
-                                                                className="
-                                                                    pointer-events-none absolute left-1 right-1 z-[60]
-                                                                "
-                                                                style={{
-                                                                    top: `${
-                                                                        (dragPreview.hour -
-                                                                            DAG_START_UUR) *
-                                                                            PX_PER_UUR +
-                                                                        DAG_PADDING_TOP
-                                                                    }px`,
-                                                                    height: `${Math.max(
+                                                            (() => {
+                                                                const startUur =
+                                                                    dragPreview.hour;
+                                                                const eindUur =
+                                                                    Math.min(
+                                                                        DAG_EIND_UUR,
+                                                                        dragPreview.hour +
+                                                                            dragPreview.durationHours
+                                                                    );
+                                                                const tijdLabel = `${formatUurLabel(startUur)}–${formatUurLabel(eindUur)}`;
+                                                                const boxTop =
+                                                                    (startUur -
+                                                                        DAG_START_UUR) *
+                                                                        PX_PER_UUR +
+                                                                    DAG_PADDING_TOP;
+                                                                const boxHeight =
+                                                                    Math.max(
                                                                         40,
                                                                         dragPreview.durationHours *
                                                                             PX_PER_UUR
-                                                                    )}px`,
-                                                                }}
-                                                            >
-                                                                <span
-                                                                    className="
-                                                                        absolute -top-5 left-1/2 -translate-x-1/2 z-[61]
-                                                                        rounded-md bg-[#0066FF] text-white
-                                                                        text-[11px] font-bold tabular-nums
-                                                                        px-2 py-0.5 shadow-md ring-1 ring-white/40
-                                                                        whitespace-nowrap
-                                                                    "
-                                                                >
-                                                                    {formatUurLabel(
-                                                                        dragPreview.hour
-                                                                    )}
-                                                                    –
-                                                                    {formatUurLabel(
-                                                                        Math.min(
-                                                                            DAG_EIND_UUR,
-                                                                            dragPreview.hour +
-                                                                                dragPreview.durationHours
-                                                                        )
-                                                                    )}
-                                                                </span>
-                                                                <div
-                                                                    className="
-                                                                        h-full w-full rounded-lg
-                                                                        border-2 border-[#0066FF]
-                                                                        bg-[#0066FF]/20
-                                                                        shadow-[0_0_0_1px_rgba(0,102,255,0.25)]
-                                                                    "
-                                                                />
-                                                            </div>
+                                                                    );
+                                                                const labelH = 22;
+                                                                const labelBoven =
+                                                                    boxTop >=
+                                                                    labelH;
+
+                                                                return (
+                                                                    <div
+                                                                        className="
+                                                                            pointer-events-none absolute left-1 right-1 z-[80]
+                                                                            flex flex-col items-center
+                                                                        "
+                                                                        style={{
+                                                                            top: `${
+                                                                                labelBoven
+                                                                                    ? boxTop -
+                                                                                      labelH
+                                                                                    : boxTop
+                                                                            }px`,
+                                                                            height: `${
+                                                                                boxHeight +
+                                                                                (labelBoven
+                                                                                    ? labelH
+                                                                                    : 0)
+                                                                            }px`,
+                                                                        }}
+                                                                    >
+                                                                        <span
+                                                                            className="
+                                                                                shrink-0 rounded-md bg-[#0066FF] text-white
+                                                                                text-[11px] font-bold tabular-nums leading-none
+                                                                                px-2 py-1 shadow-md ring-1 ring-white
+                                                                                whitespace-nowrap
+                                                                            "
+                                                                        >
+                                                                            {tijdLabel}
+                                                                        </span>
+                                                                        <div
+                                                                            className="
+                                                                                mt-0.5 w-full min-h-0 flex-1 rounded-lg
+                                                                                border-2 border-[#0066FF]
+                                                                                bg-[#0066FF]/25
+                                                                                shadow-[0_0_0_1px_rgba(0,102,255,0.25)]
+                                                                            "
+                                                                        />
+                                                                    </div>
+                                                                );
+                                                            })()
                                                         ) : null}
                                                         {!verlof &&
                                                             uurLijnen.map(
