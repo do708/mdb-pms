@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiUser } from "@/lib/auth/guard";
+import { assignedToEngineer } from "@/lib/archive";
 import { syncAllCustomerArchiveFolders } from "@/lib/archive/ensureArchiveFolders";
 
 export async function GET() {
@@ -14,6 +15,11 @@ export async function GET() {
     try {
         await syncAllCustomerArchiveFolders();
 
+        const isEngineer = guard.user.role === "engineer";
+        const assignedWhere = isEngineer
+            ? assignedToEngineer(guard.user.id)
+            : undefined;
+
         const customers = await prisma.archiveFolder.findMany({
             where: { kind: "customer" },
             orderBy: { name: "asc" },
@@ -23,7 +29,12 @@ export async function GET() {
                     orderBy: { name: "asc" },
                     include: {
                         children: {
-                            where: { kind: "workorder" },
+                            where: {
+                                kind: "workorder",
+                                ...(assignedWhere
+                                    ? { workorder: assignedWhere }
+                                    : {}),
+                            },
                             orderBy: { name: "desc" },
                             include: {
                                 workorder: {
@@ -48,7 +59,18 @@ export async function GET() {
             },
         });
 
-        return NextResponse.json({ folders: customers });
+        const folders = isEngineer
+            ? customers
+                  .map((customer) => ({
+                      ...customer,
+                      children: customer.children.filter(
+                          (location) => location.children.length > 0
+                      ),
+                  }))
+                  .filter((customer) => customer.children.length > 0)
+            : customers;
+
+        return NextResponse.json({ folders });
     } catch (error) {
         console.error("ARCHIVE FOLDERS ERROR", error);
 

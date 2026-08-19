@@ -158,13 +158,20 @@ customer:true,
 
 
 
+        const isAssignedEngineer =
+            workorder.assignedUserId === session.user.id
+            ||
+            workorder.extraEngineers.some(
+                (extra) => extra.userId === session.user.id
+            );
+
         if(
 
             session.user.role === "engineer"
 
             &&
 
-            workorder.assignedUserId !== session.user.id
+            !isAssignedEngineer
 
         ){
 

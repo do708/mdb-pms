@@ -5,7 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { requireApiUser } from "@/lib/auth/guard";
 
 import {
+    assignedToEngineer,
     onlyArchivedWorkorders,
+    onlyEngineerArchivedWorkorders,
     onlyArchivedForms
 } from "@/lib/archive";
 
@@ -65,14 +67,18 @@ export async function GET(
         // ---------- Opdrachten ----------
 
         const workorderFilters:object[] = [
+            isEngineer
+            ?
+            onlyEngineerArchivedWorkorders()
+            :
             onlyArchivedWorkorders()
         ];
 
 
         if(isEngineer){
-            workorderFilters.push({
-                assignedUserId:guard.user.id
-            });
+            workorderFilters.push(
+                assignedToEngineer(guard.user.id)
+            );
         }
 
 
@@ -96,7 +102,9 @@ export async function GET(
         }
 
 
-        if(engineer){
+        // Monteur-filter: alleen kantoor/admin. Monteurs zien altijd
+        // uitsluitend hun eigen opdrachten (zie assignedToEngineer).
+        if(engineer && !isEngineer){
             workorderFilters.push({
                 assignedUser:{
                     name:{ contains:engineer, mode:"insensitive" }
@@ -172,8 +180,8 @@ export async function GET(
         }
 
 
-        // Monteur-filter op formulieren: op de indiener
-        if(engineer){
+        // Monteur-filter op formulieren: alleen kantoor/admin
+        if(engineer && !isEngineer){
             formFilters.push({
                 user:{
                     name:{ contains:engineer, mode:"insensitive" }

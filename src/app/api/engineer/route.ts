@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 import { prisma } from "@/lib/prisma";
+import { assignedToEngineer } from "@/lib/archive";
+import { ENGINEER_OPDRACHT_STATUS_KEYS } from "@/constants/workorderStatus";
 
 
 
@@ -45,9 +47,15 @@ export async function GET(){
 
         const workorders = await prisma.workorder.findMany({
                 where: {
-                    assignedUserId: session.user.id,
-                    plannedDate: { lt: tomorrow },
-                    status: { notIn: ["uitgevoerd", "gefactureerd"] },
+                    AND: [
+                        assignedToEngineer(session.user.id),
+                        {
+                            plannedDate: { lt: tomorrow },
+                            status: {
+                                in: [...ENGINEER_OPDRACHT_STATUS_KEYS],
+                            },
+                        },
+                    ],
                 },
 
                 omit: {

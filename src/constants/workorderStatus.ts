@@ -92,6 +92,14 @@ export const WORKORDER_ACTIVE_STATUS_KEYS =
 
 
 
+/** Monteur-Opdrachten: alleen ingepland (plus legacy-waarde). */
+export const ENGINEER_OPDRACHT_STATUS_KEYS = [
+    "ingepland",
+    "in_uitvoering",
+] as const;
+
+
+
 export function getStatus(
     key:string
 ):WorkorderStatus {

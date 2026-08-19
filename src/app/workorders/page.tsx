@@ -64,10 +64,10 @@ export default function WorkordersPage() {
 
 function WorkordersPageContent() {
     const searchParams = useSearchParams();
-    const { data: session } = useSession();
+    const { data: session, status: sessionStatus } = useSession();
 
     const role = session?.user?.role || "";
-
+    const isEngineer = role === "engineer";
     const canCreateWorkorder = role === "admin" || role === "office";
 
     const [workorders, setWorkorders] = useState<Workorder[]>([]);
@@ -101,7 +101,7 @@ function WorkordersPageContent() {
         setTeLaatFilter(filterParam === "teLaat");
     }, [searchParams]);
 
-    if (loading) {
+    if (loading || sessionStatus === "loading") {
         return (
             <PageShell>
                 <p className="text-sm text-gray-500">Opdrachten laden...</p>
@@ -110,6 +110,10 @@ function WorkordersPageContent() {
     }
 
     const filtered = workorders.filter((workorder) => {
+        if (isEngineer) {
+            return true;
+        }
+
         const matchesSearch =
             workorder.number.toLowerCase().includes(search.toLowerCase()) ||
             workorder.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -146,6 +150,7 @@ function WorkordersPageContent() {
                 }
             />
 
+            {!isEngineer && (
             <SpecPanel title="Filters" tone="slate">
                 {teLaatFilter && (
                     <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
@@ -182,11 +187,14 @@ function WorkordersPageContent() {
                     </select>
                 </label>
             </SpecPanel>
+            )}
 
             <SpecPageCard>
                 {filtered.length === 0 ? (
                     <p className="text-sm text-gray-500">
-                        Geen opdrachten gevonden.
+                        {isEngineer
+                            ? "Geen ingeplande opdrachten."
+                            : "Geen opdrachten gevonden."}
                     </p>
                 ) : (
                     <div className="space-y-2">

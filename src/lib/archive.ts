@@ -1,12 +1,21 @@
 // Wanneer telt een werkbon/formulier als "gearchiveerd"?
-// Opdrachten: status gefactureerd → direct uit de
-// gewone overzichten, alleen nog via het Archief te vinden.
+// Office/admin: status gefactureerd → uit de gewone overzichten.
+// Monteurs: uitgevoerd (ingevulde werkbon) óf gefactureerd → Archief.
 // Formulieren: ouder dan ARCHIVE_WEEKS.
 
 export const ARCHIVE_WEEKS = 2;
 
-/** Statussen waarmee een werkbon in het archief hoort. */
+/** Statussen waarmee een werkbon in het archief hoort (office/admin). */
 export const ARCHIVED_WORKORDER_STATUSES = [
+    "gefactureerd",
+] as const;
+
+/**
+ * Voor monteurs: ingevulde werkbonnen (uitgevoerd) staan in Archief.
+ * Gefactureerd blijft ook in Archief.
+ */
+export const ENGINEER_ARCHIVED_WORKORDER_STATUSES = [
+    "uitgevoerd",
     "gefactureerd",
 ] as const;
 
@@ -48,6 +57,28 @@ export function onlyArchivedWorkorders() {
         status: {
             in: [...ARCHIVED_WORKORDER_STATUSES],
         },
+    };
+}
+
+export function onlyEngineerArchivedWorkorders() {
+    return {
+        status: {
+            in: [...ENGINEER_ARCHIVED_WORKORDER_STATUSES],
+        },
+    };
+}
+
+/** Toegewezen als hoofdmonteur of extra monteur (zelfde als planning). */
+export function assignedToEngineer(userId: string) {
+    return {
+        OR: [
+            { assignedUserId: userId },
+            {
+                extraEngineers: {
+                    some: { userId },
+                },
+            },
+        ],
     };
 }
 

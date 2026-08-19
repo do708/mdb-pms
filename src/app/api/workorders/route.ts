@@ -5,7 +5,11 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 import { mergeOpleverData } from "@/types/oplever";
-import { excludeArchivedWorkorders } from "@/lib/archive";
+import {
+    assignedToEngineer,
+    excludeArchivedWorkorders,
+} from "@/lib/archive";
+import { ENGINEER_OPDRACHT_STATUS_KEYS } from "@/constants/workorderStatus";
 
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
@@ -89,10 +93,14 @@ export async function GET(){
 
             {
 
-                assignedUserId:
-                    session.user.id,
-
-                ...excludeArchivedWorkorders()
+                AND: [
+                    assignedToEngineer(session.user.id),
+                    {
+                        status: {
+                            in: [...ENGINEER_OPDRACHT_STATUS_KEYS],
+                        },
+                    },
+                ],
 
             }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { ChevronDown, ChevronRight, Folder } from "lucide-react";
 
 import { getStatus } from "@/constants/workorderStatus";
@@ -64,6 +65,10 @@ interface ArchiveFolderNode {
 }
 
 export default function ArchivePage() {
+    const { data: session } = useSession();
+    const role = session?.user?.role ?? "";
+    const showMonteurFilter = role === "admin" || role === "office";
+
     const [q, setQ] = useState("");
     const [customer, setCustomer] = useState("");
     const [engineer, setEngineer] = useState("");
@@ -109,7 +114,7 @@ export default function ArchivePage() {
 
         if (q) params.set("q", q);
         if (customer) params.set("customer", customer);
-        if (engineer) params.set("engineer", engineer);
+        if (showMonteurFilter && engineer) params.set("engineer", engineer);
         if (from) params.set("from", from);
         if (to) params.set("to", to);
         if (type) params.set("type", type);
@@ -134,21 +139,23 @@ export default function ArchivePage() {
     useEffect(() => {
         (async () => {
             try {
-                const [c, e] = await Promise.all([
-                    fetch("/api/customers"),
-                    fetch("/api/engineers"),
-                ]);
-
-                const cData = await c.json();
-                const eData = await e.json();
-
+                const customerRes = await fetch("/api/customers");
+                const cData = await customerRes.json();
                 setCustomerOptions(Array.isArray(cData) ? cData : []);
+
+                if (!showMonteurFilter) {
+                    setEngineerOptions([]);
+                    return;
+                }
+
+                const engineerRes = await fetch("/api/engineers");
+                const eData = await engineerRes.json();
                 setEngineerOptions(Array.isArray(eData) ? eData : []);
             } catch {
                 // stil
             }
         })();
-    }, []);
+    }, [showMonteurFilter]);
 
     function reset() {
         setQ("");
@@ -301,7 +308,13 @@ export default function ArchivePage() {
     return (
         <PageShell>
             <SpecPanel title="Filters" tone="slate">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div
+                    className={`grid grid-cols-1 gap-3 ${
+                        showMonteurFilter
+                            ? "md:grid-cols-3"
+                            : "md:grid-cols-2"
+                    }`}
+                >
                     <input
                         value={q}
                         onChange={(e) => setQ(e.target.value)}
@@ -322,18 +335,20 @@ export default function ArchivePage() {
                         ))}
                     </select>
 
-                    <select
-                        value={engineer}
-                        onChange={(e) => setEngineer(e.target.value)}
-                        className={specSelectClassName}
-                    >
-                        <option value="">Alle monteurs</option>
-                        {engineerOptions.map((e) => (
-                            <option key={e.id} value={e.name ?? ""}>
-                                {e.name}
-                            </option>
-                        ))}
-                    </select>
+                    {showMonteurFilter ? (
+                        <select
+                            value={engineer}
+                            onChange={(e) => setEngineer(e.target.value)}
+                            className={specSelectClassName}
+                        >
+                            <option value="">Alle monteurs</option>
+                            {engineerOptions.map((e) => (
+                                <option key={e.id} value={e.name ?? ""}>
+                                    {e.name}
+                                </option>
+                            ))}
+                        </select>
+                    ) : null}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
