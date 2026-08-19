@@ -1234,41 +1234,43 @@ function ExtraKostenDetails({
             py-2
             bg-gray-50
             space-y-2
-            min-w-[9.5rem]
-            flex-1
+            w-full
+            min-w-0
         ">
             <p className="text-xs font-medium text-slate-600">
                 {label}
             </p>
-            <div className="flex items-center gap-1.5">
-                <span className="text-sm text-gray-500">€</span>
-                <input
-                    inputMode="decimal"
-                    value={value.kosten}
-                    placeholder="0,00"
-                    onChange={(e)=>
-                        onChange({
-                            ...value,
-                            kosten:e.target.value
-                        })
-                    }
-                    className="w-24 border rounded-lg p-1.5 text-sm"
-                />
-            </div>
-            <div className="flex items-center gap-1.5">
-                <span className="text-xs text-gray-500">
-                    Voorgeschoten?
-                </span>
-                <JaNee
-                    compact
-                    value={value.voorgeschoten}
-                    onChange={(v)=>
-                        onChange({
-                            ...value,
-                            voorgeschoten:v
-                        })
-                    }
-                />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <div className="flex items-center gap-1.5">
+                    <span className="text-sm text-gray-500">€</span>
+                    <input
+                        inputMode="decimal"
+                        value={value.kosten}
+                        placeholder="0,00"
+                        onChange={(e)=>
+                            onChange({
+                                ...value,
+                                kosten:e.target.value
+                            })
+                        }
+                        className="w-24 max-w-full border rounded-lg p-1.5 text-sm"
+                    />
+                </div>
+                <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="text-xs text-gray-500 shrink-0">
+                        Voorgeschoten?
+                    </span>
+                    <JaNee
+                        compact
+                        value={value.voorgeschoten}
+                        onChange={(v)=>
+                            onChange({
+                                ...value,
+                                voorgeschoten:v
+                            })
+                        }
+                    />
+                </div>
             </div>
             {
                 value.voorgeschoten === true && (
@@ -2569,7 +2571,7 @@ export default function OpleverForm({
 
                     {
                         (t.parkeerkosten.actief || t.materiaalkosten.actief || t.sejour.actief) && (
-                            <div className="flex flex-wrap gap-2">
+                            <div className="space-y-2 min-w-0">
                                 {
                                     t.parkeerkosten.actief && (
                                         <ExtraKostenDetails
