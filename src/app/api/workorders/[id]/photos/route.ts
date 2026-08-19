@@ -10,437 +10,253 @@ import {
 } from "@/lib/images/compressPhoto";
 
 export const maxDuration = 60;
+export const runtime = "nodejs";
 
 const supabase = createClient(
-
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
 );
 
-
-
-
-
-
+function isUploadFile(value: FormDataEntryValue): value is File {
+    return (
+        typeof value !== "string"
+        && typeof (value as File).arrayBuffer === "function"
+        && (value as File).size > 0
+    );
+}
 
 export async function POST(
-
     request: NextRequest,
-
-    context:{
-        params:Promise<{
-            id:string;
-        }>
+    context: {
+        params: Promise<{
+            id: string;
+        }>;
     }
-
-){
-
-
+) {
     try {
+        const { id } = await context.params;
 
+        const guard = await requireWorkorderAccess(id);
 
-        const { id } =
-            await context.params;
-
-        const guard =
-            await requireWorkorderAccess(id);
-
-        if(!guard.ok){
+        if (!guard.ok) {
             return guard.response;
         }
 
+        const workorder = await prisma.workorder.findUnique({
+            where: { id },
+            select: { id: true },
+        });
 
-
-
-
-
-        const workorder =
-            await prisma.workorder.findUnique({
-
-                where:{
-                    id
-                }
-
-            });
-
-
-
-
-
-        if(!workorder){
-
-
+        if (!workorder) {
             return NextResponse.json(
-
-                {
-                    error:
-                    "Opdracht niet gevonden"
-                },
-
-                {
-                    status:404
-                }
-
+                { error: "Opdracht niet gevonden" },
+                { status: 404 }
             );
-
         }
 
-
-
-
-
-
-
-        const formData =
-            await request.formData();
-
-
-
-
-
-        const files =
-            formData.getAll(
-                "photos"
-            ) as File[];
-
-
-
-
-
-
-        if(files.length === 0){
-
-
+        if (
+            !process.env.NEXT_PUBLIC_SUPABASE_URL
+            || !process.env.SUPABASE_SERVICE_ROLE_KEY
+        ) {
+            console.error("PHOTO UPLOAD: Supabase env ontbreekt");
             return NextResponse.json(
-
-                {
-                    error:
-                    "Geen foto's ontvangen"
-                },
-
-                {
-                    status:400
-                }
-
+                { error: "Foto-opslag is niet geconfigureerd" },
+                { status: 500 }
             );
-
         }
 
+        const formData = await request.formData();
+        const files = formData.getAll("photos").filter(isUploadFile);
 
-
-
-
-
-
+        if (files.length === 0) {
+            return NextResponse.json(
+                { error: "Geen foto's ontvangen" },
+                { status: 400 }
+            );
+        }
 
         const uploadedPhotos = [];
 
+        for (const file of files) {
+            const rawBuffer = Buffer.from(await file.arrayBuffer());
 
-
-
-
-
-        for(const file of files){
-
-
-
-            const rawBuffer =
-                Buffer.from(
-                    await file.arrayBuffer()
-                );
-
-            const compressed = await compressPhoto(
-                rawBuffer,
-                file.type || "image/jpeg"
-            );
-
-            const filename =
-
-                `${id}/${Date.now()}-${photoStorageName(file.name, compressed.extension)}`;
-
-
-
-
-
-            const upload =
-                await supabase.storage
-
-                .from("workorder-files")
-
-                .upload(
-
-                    filename,
-
-                    compressed.buffer,
-
-                    {
-
-                        contentType:
-                            compressed.contentType,
-
-                        upsert:true
-
-                    }
-
-                );
-
-
-
-
-
-            if(upload.error){
-
-                throw new Error(
-                    upload.error.message
-                    || "Opslag van de foto is mislukt"
-                );
-
+            if (rawBuffer.length === 0) {
+                continue;
             }
 
+            let payload = rawBuffer;
+            let contentType = file.type || "image/jpeg";
+            let extension = ".jpg";
 
+            try {
+                const compressed = await compressPhoto(
+                    rawBuffer,
+                    file.type || "image/jpeg"
+                );
+                payload = compressed.buffer;
+                contentType = compressed.contentType;
+                extension = compressed.extension || ".jpg";
+            } catch (compressError) {
+                console.warn("PHOTO COMPRESS FAILED", compressError);
+            }
 
+            const filename = `${id}/${Date.now()}-${photoStorageName(
+                file.name || "foto",
+                extension
+            )}`;
 
-
-
-            const url =
-
-                supabase.storage
-
+            const upload = await supabase.storage
                 .from("workorder-files")
-
-                .getPublicUrl(
-
-                    filename
-
-                )
-
-                .data
-
-                .publicUrl;
-
-
-
-
-
-
-            const photo =
-
-                await prisma.workorderPhoto.create({
-
-                    data:{
-
-                        workorderId:id,
-
-                        url,
-
-                        filename:
-                            file.name || null
-
-                    }
-
+                .upload(filename, payload, {
+                    contentType,
+                    upsert: true,
                 });
 
-
-
-
-
-            uploadedPhotos.push(photo);
-
-
-
-        }
-
-
-
-
-
-
-
-
-        return NextResponse.json({
-
-            success:true,
-
-            photos:uploadedPhotos
-
-        });
-
-
-
-
-
-
-    } catch(error){
-
-
-        console.error(
-
-            "PHOTO UPLOAD ERROR",
-
-            error
-
-        );
-
-
-
-        return NextResponse.json(
-
-            {
-
-                error:
-                    error instanceof Error
-                    ? error.message
-                    : "Foto upload mislukt"
-
-            },
-
-            {
-
-                status:500
-
+            if (upload.error) {
+                console.error("PHOTO STORAGE ERROR", upload.error);
+                throw new Error(
+                    upload.error.message || "Opslag van de foto is mislukt"
+                );
             }
 
+            const url = supabase.storage
+                .from("workorder-files")
+                .getPublicUrl(filename).data.publicUrl;
+
+            const photo = await prisma.workorderPhoto.create({
+                data: {
+                    workorderId: id,
+                    url,
+                    filename: file.name || null,
+                },
+            });
+
+            uploadedPhotos.push(photo);
+        }
+
+        if (uploadedPhotos.length === 0) {
+            return NextResponse.json(
+                { error: "Geen geldige foto ontvangen" },
+                { status: 400 }
+            );
+        }
+
+        return NextResponse.json({
+            success: true,
+            photos: uploadedPhotos,
+        });
+    } catch (error) {
+        console.error("PHOTO UPLOAD ERROR", error);
+
+        return NextResponse.json(
+            {
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : "Foto upload mislukt",
+            },
+            { status: 500 }
         );
-
-
     }
-
-
 }
 
-
 export async function GET(
-
-    _request:NextRequest,
-
-    context:{
-        params:Promise<{
-            id:string;
-        }>
+    _request: NextRequest,
+    context: {
+        params: Promise<{
+            id: string;
+        }>;
     }
-
-){
-
+) {
     try {
+        const { id } = await context.params;
 
-        const { id } =
-            await context.params;
+        const guard = await requireWorkorderAccess(id);
 
-        const guard =
-            await requireWorkorderAccess(id);
-
-        if(!guard.ok){
+        if (!guard.ok) {
             return guard.response;
         }
 
-        const photos =
-            await prisma.workorderPhoto.findMany({
-                where:{
-                    workorderId:id
-                },
-                orderBy:{
-                    createdAt:"asc"
-                }
-            });
-
-        return NextResponse.json({
-            photos
+        const photos = await prisma.workorderPhoto.findMany({
+            where: { workorderId: id },
+            orderBy: { createdAt: "asc" },
         });
 
-    } catch(error){
-
+        return NextResponse.json({
+            photos,
+        });
+    } catch (error) {
         console.error("PHOTO LIST ERROR", error);
 
         return NextResponse.json(
-            { error:"Foto's ophalen mislukt" },
-            { status:500 }
+            { error: "Foto's ophalen mislukt" },
+            { status: 500 }
         );
-
     }
-
 }
 
-
 export async function PATCH(
-
-    request:NextRequest,
-
-    context:{
-        params:Promise<{
-            id:string;
-        }>
+    request: NextRequest,
+    context: {
+        params: Promise<{
+            id: string;
+        }>;
     }
-
-){
-
+) {
     try {
+        const { id } = await context.params;
 
-        const { id } =
-            await context.params;
+        const guard = await requireWorkorderAccess(id);
 
-        const guard =
-            await requireWorkorderAccess(id);
-
-        if(!guard.ok){
+        if (!guard.ok) {
             return guard.response;
         }
 
-        const body =
-            await request.json() as {
-                photoId?:string;
-                caption?:string;
-            };
+        const body = (await request.json()) as {
+            photoId?: string;
+            caption?: string;
+        };
 
-        if(!body.photoId){
+        if (!body.photoId) {
             return NextResponse.json(
-                { error:"photoId ontbreekt" },
-                { status:400 }
+                { error: "photoId ontbreekt" },
+                { status: 400 }
             );
         }
 
-        const photo =
-            await prisma.workorderPhoto.findFirst({
-                where:{
-                    id: body.photoId,
-                    workorderId: id
-                }
-            });
-
-        if(!photo){
-            return NextResponse.json(
-                { error:"Foto niet gevonden" },
-                { status:404 }
-            );
-        }
-
-        const updated =
-            await prisma.workorderPhoto.update({
-                where:{
-                    id: photo.id
-                },
-                data:{
-                    caption:
-                        typeof body.caption === "string"
-                        ? body.caption
-                        : photo.caption
-                }
-            });
-
-        return NextResponse.json({
-            photo: updated
+        const photo = await prisma.workorderPhoto.findFirst({
+            where: {
+                id: body.photoId,
+                workorderId: id,
+            },
         });
 
-    } catch(error){
+        if (!photo) {
+            return NextResponse.json(
+                { error: "Foto niet gevonden" },
+                { status: 404 }
+            );
+        }
 
+        const updated = await prisma.workorderPhoto.update({
+            where: { id: photo.id },
+            data: {
+                caption:
+                    typeof body.caption === "string"
+                        ? body.caption
+                        : photo.caption,
+            },
+        });
+
+        return NextResponse.json({
+            photo: updated,
+        });
+    } catch (error) {
         console.error("PHOTO PATCH ERROR", error);
 
         return NextResponse.json(
-            { error:"Foto bijwerken mislukt" },
-            { status:500 }
+            { error: "Foto bijwerken mislukt" },
+            { status: 500 }
         );
-
     }
-
 }

@@ -1,5 +1,3 @@
-import sharp from "sharp";
-
 /** Max. lange zijde in px — scherp genoeg voor PDF/rapportage, veel kleiner dan camerorigineel. */
 const MAX_EDGE_PX = 2048;
 
@@ -27,12 +25,24 @@ function extensionFromMime(mimeType: string): string {
         return ".webp";
     }
 
-    return "";
+    return ".jpg";
+}
+
+function asOriginal(
+    input: Buffer,
+    mimeType: string
+): CompressedPhoto {
+    return {
+        buffer: input,
+        contentType: mimeType || "image/jpeg",
+        extension: extensionFromMime(mimeType),
+        compressed: false,
+    };
 }
 
 /**
  * Comprimeert foto's server-side vóór opslag (Supabase/NAS).
- * PDF's en niet-afbeeldingen worden ongewijzigd doorgegeven.
+ * Als sharp niet beschikbaar is (Vercel/native), blijft het origineel.
  */
 export async function compressPhoto(
     input: Buffer,
@@ -41,15 +51,12 @@ export async function compressPhoto(
     const type = (mimeType || "").toLowerCase();
 
     if (!type.startsWith("image/") || type === "image/gif") {
-        return {
-            buffer: input,
-            contentType: mimeType,
-            extension: extensionFromMime(type),
-            compressed: false,
-        };
+        return asOriginal(input, mimeType);
     }
 
     try {
+        const sharpMod = await import("sharp");
+        const sharp = sharpMod.default;
         const image = sharp(input, { failOn: "none" }).rotate();
         const meta = await image.metadata();
 
@@ -60,7 +67,6 @@ export async function compressPhoto(
             withoutEnlargement: true,
         };
 
-        // PNG met transparantie: behoud formaat, wel verkleinen
         if (type === "image/png" && meta.hasAlpha) {
             const buffer = await image
                 .resize(resize)
@@ -75,7 +81,6 @@ export async function compressPhoto(
             };
         }
 
-        // Telefoonfoto's / JPEG / WEBP / HEIC → JPEG
         const buffer = await image
             .resize(resize)
             .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
@@ -89,23 +94,19 @@ export async function compressPhoto(
         };
     } catch (error) {
         console.warn("Foto-compressie overgeslagen, origineel behouden:", error);
-
-        return {
-            buffer: input,
-            contentType: mimeType,
-            extension: extensionFromMime(type),
-            compressed: false,
-        };
+        return asOriginal(input, mimeType);
     }
 }
 
 /** Vervang extensie wanneer compressie het formaat wijzigt (bv. HEIC → JPG). */
 export function photoStorageName(originalName: string, extension: string): string {
-    const base = originalName.replace(/\.[^.]+$/, "") || "foto";
+    const base =
+        (originalName || "foto")
+            .replace(/\.[^.]+$/, "")
+            .replace(/[^a-zA-Z0-9._-]+/g, "_")
+        || "foto";
 
-    if (!extension) {
-        return originalName;
-    }
+    const ext = extension || ".jpg";
 
-    return `${base}${extension}`;
+    return `${base}${ext.startsWith(".") ? ext : `.${ext}`}`;
 }

@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
         "@sparticuz/chromium",
         "puppeteer-core",
         "puppeteer",
+        "sharp",
     ],
 };
 
