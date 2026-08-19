@@ -499,7 +499,26 @@ export async function PUT(
 
                         body.formData !== undefined
                         ?
-                        mergeOpleverData(body.formData) as object
+                        mergeOpleverData({
+                            ...(
+                                existingWorkorder.formData
+                                &&
+                                typeof existingWorkorder.formData === "object"
+                                ?
+                                existingWorkorder.formData as object
+                                :
+                                {}
+                            ),
+                            ...(
+                                body.formData
+                                &&
+                                typeof body.formData === "object"
+                                ?
+                                body.formData as object
+                                :
+                                {}
+                            )
+                        }) as object
                         :
                         (existingWorkorder.formData ?? undefined),
 

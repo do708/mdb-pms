@@ -15,6 +15,7 @@ import AanvraagSpecificatiesOverzicht, {
 import { parseCustomerSchema } from "@/types/customerForms";
 
 import {
+    mergeOpleverData,
     ontbrekendeMateriaalSerienummers,
     type OpleverData
 } from "@/types/oplever";
@@ -381,6 +382,8 @@ export default function EngineerWorkorderPage(){
     // eerste (geladen) waarde al is gezet, zodat we niet meteen opslaan.
     const materiaalGeladen = useRef(false);
     const materiaalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const opleverGeladen = useRef(false);
+    const opleverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 
 
@@ -424,6 +427,8 @@ export default function EngineerWorkorderPage(){
 
         async function load(){
 
+            materiaalGeladen.current = false;
+            opleverGeladen.current = false;
 
             const response =
                 await fetch(
@@ -499,6 +504,13 @@ export default function EngineerWorkorderPage(){
 
             setMateriaal(startMateriaal);
 
+            setOpleverData(
+                data.formData
+                ?
+                mergeOpleverData(data.formData)
+                :
+                null
+            );
 
             setStatus(
                 data.status
@@ -521,6 +533,10 @@ export default function EngineerWorkorderPage(){
     // vertraging). Zo wordt ingetypte tekst onthouden zonder dat er iets
     // aangevinkt of op een knop geklikt hoeft te worden.
     useEffect(()=>{
+
+        if(loading){
+            return;
+        }
 
         if(!materiaalGeladen.current){
             materiaalGeladen.current = true;
@@ -559,7 +575,57 @@ export default function EngineerWorkorderPage(){
         };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[materiaal]);
+    },[materiaal, loading]);
+
+
+    useEffect(()=>{
+
+        if(loading){
+            return;
+        }
+
+        if(!opleverGeladen.current){
+            opleverGeladen.current = true;
+            return;
+        }
+
+        if(!opleverData){
+            return;
+        }
+
+        if(opleverTimer.current){
+            clearTimeout(opleverTimer.current);
+        }
+
+        opleverTimer.current =
+            setTimeout(()=>{
+
+                fetch(
+                    `/api/workorders/${id}`,
+                    {
+                        method:"PUT",
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
+                        body:JSON.stringify({
+                            formData:{
+                                ...opleverData,
+                                klaarzetMateriaal:materiaal
+                            }
+                        })
+                    }
+                ).catch(()=>{});
+
+            },800);
+
+        return ()=>{
+            if(opleverTimer.current){
+                clearTimeout(opleverTimer.current);
+            }
+        };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[opleverData, loading]);
 
 
 

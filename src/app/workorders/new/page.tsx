@@ -1,17 +1,11 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { useSession } from "next-auth/react";
-
-import OpleverForm from "@/components/workorders/OpleverForm";
-
-import {
-    ontbrekendeMateriaalSerienummers,
-    type OpleverData
-} from "@/types/oplever";
+import { filterEngineersForDay } from "@/constants/staffKind";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 
 
@@ -33,6 +27,10 @@ interface Engineer {
     id:string;
 
     name:string | null;
+
+    staffKind?:string | null;
+
+    stagiaireUntil?:string | Date | null;
 
 }
 
@@ -123,22 +121,6 @@ function NewWorkorderInner(){
 
     const [selectedFormTypeId,setSelectedFormTypeId] =
         useState<string>("");
-
-
-    // De sleutel van het gekozen formuliertype (bijv. "digital_signage").
-    const selectedFormKey =
-        formTypes.find(ft=>ft.id === selectedFormTypeId)?.key ?? "";
-
-
-    // Ingevulde opleverdata (voor de monteur, inline bij Digital Signage).
-    const [opleverData,setOpleverData] =
-        useState<OpleverData | null>(null);
-
-
-    // Foto's die de monteur kiest vóór het eerste opslaan; ze worden pas
-    // geüpload zodra de werkbon bestaat.
-    const [opleverFotos,setOpleverFotos] =
-        useState<File[]>([]);
 
 
     const searchParams =
@@ -306,6 +288,24 @@ function NewWorkorderInner(){
     },[]);
 
 
+    useEffect(()=>{
+
+        if(!isEngineer || !session?.user?.id){
+            return;
+        }
+
+        setAssignedUserId((prev)=>prev || session.user.id);
+
+    },[isEngineer, session?.user?.id]);
+
+
+    const boekbareMonteurs =
+        useMemo(
+            ()=>filterEngineersForDay(engineers, plannedDate),
+            [engineers, plannedDate]
+        );
+
+
 
 
     async function save(
@@ -338,6 +338,28 @@ function NewWorkorderInner(){
         }
 
 
+        if(isEngineer && !selectedFormTypeId){
+
+            setError("Kies welk formulier er ingevuld moet worden");
+
+            window.scrollTo({ top:0, behavior:"smooth" });
+
+            return;
+
+        }
+
+
+        if(isEngineer && !plannedDate){
+
+            setError("Kies een datum");
+
+            window.scrollTo({ top:0, behavior:"smooth" });
+
+            return;
+
+        }
+
+
         // Bij inplannen via planning: geen losse datum/tijd hier valideren.
         if(
             !options?.goToPlanning
@@ -355,26 +377,6 @@ function NewWorkorderInner(){
             return;
 
         }
-
-
-        if(opleverData){
-
-            const snFout =
-                ontbrekendeMateriaalSerienummers(opleverData);
-
-            if(snFout){
-
-                setError(snFout);
-
-                window.scrollTo({ top:0, behavior:"smooth" });
-
-                return;
-
-            }
-
-        }
-
-
 
 
         setSaving(true);
@@ -433,12 +435,14 @@ function NewWorkorderInner(){
                             assignedUserId:
                                 options?.goToPlanning
                                 ? ""
+                                : isEngineer
+                                ? (session?.user?.id || assignedUserId)
                                 : assignedUserId,
 
                             extraEngineerIds:
                                 options?.goToPlanning
                                 ? []
-                                : extraEngineerIds,
+                                : extraEngineerIds.filter(Boolean),
 
                             plannedDate:
                                 options?.goToPlanning
@@ -470,25 +474,6 @@ function NewWorkorderInner(){
                                 :
                                 null,
 
-                            // Voor de monteur bij Digital Signage sturen we de
-                            // inline ingevulde opleverdata direct mee.
-                            formData:
-                                (
-                                    isEngineer
-                                    &&
-                                    (
-                                        selectedFormKey === "digital_signage"
-                                        ||
-                                        selectedFormKey === "uren"
-                                        ||
-                                        selectedFormKey === "evalue8"
-                                    )
-                                )
-                                ?
-                                (opleverData ?? undefined)
-                                :
-                                undefined,
-
                             formTypeIds:
                                 selectedFormTypeId
                                 ?
@@ -496,7 +481,12 @@ function NewWorkorderInner(){
                                 :
                                 [],
 
-                            status:"ontvangen"
+                            status:
+                                isEngineer
+                                ?
+                                "ingepland"
+                                :
+                                "ontvangen"
 
                         })
 
@@ -527,27 +517,6 @@ function NewWorkorderInner(){
                         {
                             method:"POST",
                             body:fileBody
-                        }
-                    );
-
-                }
-
-
-                // Inline gekozen foto's nu uploaden en koppelen aan de werkbon.
-                if(opleverFotos.length > 0){
-
-                    const fotoBody =
-                        new FormData();
-
-                    opleverFotos.forEach(foto=>{
-                        fotoBody.append("photos", foto);
-                    });
-
-                    await fetch(
-                        `/api/workorders/${created.id}/photos`,
-                        {
-                            method:"POST",
-                            body:fotoBody
                         }
                     );
 
@@ -823,6 +792,154 @@ function NewWorkorderInner(){
                     </div>
 
                 </div>
+
+
+
+                {
+                    isEngineer && (
+                        <div className="
+                            rounded-xl border border-gray-200
+                            bg-slate-50 p-3 space-y-3
+                            min-w-0
+                        ">
+                            <div>
+                                <h2 className="font-semibold text-sm text-gray-800">
+                                    Datum en monteur
+                                </h2>
+                                <p className="text-xs text-gray-500 mt-0.5 leading-snug">
+                                    Standaard jijzelf. Extra monteurs voeg je erbij met +.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <label className="min-w-0 block">
+                                    <span className="text-xs text-gray-500">
+                                        Datum
+                                    </span>
+                                    <input
+                                        type="date"
+                                        value={plannedDate}
+                                        onChange={(e)=>
+                                            setPlannedDate(e.target.value)
+                                        }
+                                        className="
+                                            mt-0.5 w-full border border-gray-200
+                                            rounded-lg p-2.5 text-sm bg-white
+                                            text-gray-900
+                                        "
+                                    />
+                                </label>
+
+                                <label className="min-w-0 block">
+                                    <span className="text-xs text-gray-500">
+                                        Monteur
+                                    </span>
+                                    <input
+                                        readOnly
+                                        value={
+                                            session?.user?.name
+                                            ||
+                                            engineers.find((e)=>e.id === assignedUserId)?.name
+                                            ||
+                                            "Jijzelf"
+                                        }
+                                        className="
+                                            mt-0.5 w-full border border-gray-200
+                                            rounded-lg p-2.5 text-sm bg-gray-50
+                                            text-gray-900
+                                        "
+                                    />
+                                </label>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs text-gray-500">
+                                        Extra monteurs (optioneel)
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={addExtraEngineer}
+                                        className="
+                                            text-xs font-medium text-[#0066FF]
+                                            hover:underline
+                                        "
+                                    >
+                                        + Extra monteur
+                                    </button>
+                                </div>
+                                {
+                                    extraEngineerIds.map((extraId, index)=>(
+                                        <div
+                                            key={index}
+                                            className="flex items-center gap-1.5"
+                                        >
+                                            <select
+                                                value={extraId}
+                                                onChange={(e)=>
+                                                    setExtraEngineerAt(
+                                                        index,
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="
+                                                    min-w-0 flex-1 border border-gray-200
+                                                    rounded-lg p-2.5 text-sm bg-white
+                                                    text-gray-900
+                                                "
+                                            >
+                                                <option value="">
+                                                    Kies extra monteur
+                                                </option>
+                                                {
+                                                    boekbareMonteurs
+                                                    .filter((engineer)=>
+                                                        engineer.id !== assignedUserId
+                                                        &&
+                                                        (
+                                                            engineer.id === extraId
+                                                            ||
+                                                            !extraEngineerIds.includes(
+                                                                engineer.id
+                                                            )
+                                                        )
+                                                    )
+                                                    .map((engineer)=>(
+                                                        <option
+                                                            key={engineer.id}
+                                                            value={engineer.id}
+                                                        >
+                                                            {engineer.name}
+                                                        </option>
+                                                    ))
+                                                }
+                                            </select>
+                                            <button
+                                                type="button"
+                                                title="Extra monteur verwijderen"
+                                                onClick={()=>
+                                                    removeExtraEngineer(index)
+                                                }
+                                                className="
+                                                    shrink-0 h-[42px] w-[42px]
+                                                    inline-flex items-center justify-center
+                                                    rounded-lg border border-gray-200
+                                                    bg-white text-lg leading-none
+                                                    text-slate-500
+                                                    hover:border-red-200
+                                                    hover:bg-red-50
+                                                    hover:text-red-600
+                                                "
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    )
+                }
 
 
                 {
@@ -1316,6 +1433,14 @@ function NewWorkorderInner(){
                             ">
                                 Welke formulier moet er ingevuld worden?
                             </span>
+                            {
+                                isEngineer && (
+                                    <p className="text-xs text-gray-500 leading-snug">
+                                        Kies het formulier en sla op. Daarna vul je de werkbon in,
+                                        hetzelfde scherm als bij een klaargezette opdracht.
+                                    </p>
+                                )
+                            }
 
                             <div className="
                                 flex
@@ -1365,179 +1490,6 @@ function NewWorkorderInner(){
 
                     )
                 }
-
-
-                {/* Inline invulformulier voor de monteur, direct onder de keuze */}
-                {
-                    isEngineer
-                    &&
-                    (
-                        selectedFormKey === "digital_signage"
-                        ||
-                        selectedFormKey === "uren"
-                        ||
-                        selectedFormKey === "evalue8"
-                    )
-                    && (
-
-                        <div className="pt-2">
-
-                            <OpleverForm
-                                initial={opleverData}
-                                embedded
-                                onChange={setOpleverData}
-                                monteur1Name={session?.user?.name ?? null}
-                                variant={
-                                    selectedFormKey === "uren"
-                                    ?
-                                    "uren"
-                                    :
-                                    selectedFormKey === "evalue8"
-                                    ?
-                                    "evalue8"
-                                    :
-                                    "volledig"
-                                }
-                            />
-
-
-                            {/* Foto's; worden pas bij het eerste opslaan geüpload */}
-                            <div className="
-                                bg-white
-                                border
-                                rounded-2xl
-                                p-5
-                                mt-4
-                                space-y-3
-                            ">
-
-                                <h2 className="font-bold text-lg">
-                                    📷 Foto&apos;s
-                                </h2>
-
-                                <label className="
-                                    block
-                                    w-full
-                                    border-2
-                                    border-dashed
-                                    border-gray-300
-                                    rounded-xl
-                                    p-4
-                                    text-center
-                                    text-gray-600
-                                    cursor-pointer
-                                    hover:bg-gray-50
-                                ">
-                                    📷 Foto's toevoegen
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={(e)=>{
-                                            if(e.target.files){
-                                                setOpleverFotos(prev=>[
-                                                    ...prev,
-                                                    ...Array.from(e.target.files!)
-                                                ]);
-                                            }
-                                        }}
-                                        className="hidden"
-                                    />
-                                </label>
-
-                                {
-                                    opleverFotos.length > 0 && (
-                                        <div className="
-                                            grid
-                                            grid-cols-2
-                                            sm:grid-cols-3
-                                            gap-3
-                                        ">
-                                            {
-                                                opleverFotos.map((foto,index)=>(
-                                                    <div
-                                                        key={index}
-                                                        className="
-                                                            border
-                                                            rounded-xl
-                                                            overflow-hidden
-                                                            bg-gray-50
-                                                            relative
-                                                        "
-                                                    >
-                                                        <img
-                                                            src={URL.createObjectURL(foto)}
-                                                            alt={`Foto ${index + 1}`}
-                                                            className="w-full h-28 object-cover"
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={()=>
-                                                                setOpleverFotos(prev=>
-                                                                    prev.filter((_,i)=>i !== index)
-                                                                )
-                                                            }
-                                                            className="
-                                                                absolute
-                                                                top-1
-                                                                right-1
-                                                                bg-white/80
-                                                                rounded-full
-                                                                w-6
-                                                                h-6
-                                                                text-red-500
-                                                            "
-                                                        >
-                                                            ✕
-                                                        </button>
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                    )
-                                }
-
-                                <p className="text-xs text-gray-400">
-                                    De foto's worden opgeslagen zodra je de opdracht opslaat.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    )
-                }
-
-
-                {/* Nog niet gebouwde formulieren */}
-                {
-                    isEngineer
-                    &&
-                    selectedFormKey
-                    &&
-                    selectedFormKey !== "digital_signage"
-                    &&
-                    selectedFormKey !== "uren"
-                    &&
-                    selectedFormKey !== "evalue8"
-                    && (
-
-                        <div className="
-                            bg-amber-50
-                            border
-                            border-amber-200
-                            rounded-2xl
-                            p-5
-                            text-amber-800
-                            text-sm
-                        ">
-                            Dit formulier wordt binnenkort toegevoegd.
-                        </div>
-
-                    )
-                }
-
-
 
 
             </section>
