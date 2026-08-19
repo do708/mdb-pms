@@ -1593,6 +1593,7 @@ async function completeWorkorder(){
                         />
                     </div>
 
+                    {isOffice && (
                     <div className="
                         rounded-xl border border-gray-200
                         bg-white p-2.5 space-y-1.5
@@ -1786,6 +1787,7 @@ async function completeWorkorder(){
                         </div>
 
                     </div>
+                    )}
 
                 </div>
 
