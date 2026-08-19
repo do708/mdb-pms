@@ -363,6 +363,7 @@ export default function ProjectsPage() {
         <PageShell>
             <PageHeader
                 title="Projecten"
+                hideOnMobile={!isOffice}
                 subtitle={
                     isOffice
                         ? "Grotere klussen met uren, offerte en materialen per opdrachtgever"

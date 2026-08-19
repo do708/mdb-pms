@@ -83,6 +83,7 @@ export default function EngineerPage() {
             <PageHeader
                 title="Mijn opdrachten"
                 subtitle="Werkbonnen die nog ingevuld moeten worden"
+                hideOnMobile
             />
 
             {workorders.length === 0 ? (

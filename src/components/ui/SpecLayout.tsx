@@ -41,13 +41,15 @@ export function PageHeader({
     title,
     subtitle,
     actions,
+    hideOnMobile = false,
 }: {
     title: ReactNode;
     subtitle?: ReactNode;
     actions?: ReactNode;
+    hideOnMobile?: boolean;
 }) {
     return (
-        <header className="flex flex-wrap items-start justify-between gap-3">
+        <header className={`flex flex-wrap items-start justify-between gap-3 ${hideOnMobile ? "hidden lg:flex" : ""}`.trim()}>
             <div className="min-w-0">
                 <h1 className="text-2xl font-bold text-gray-900">
                     {title}

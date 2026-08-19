@@ -135,6 +135,7 @@ function WorkordersPageContent() {
         <PageShell>
             <PageHeader
                 title="Opdrachten"
+                hideOnMobile={isEngineer}
                 actions={
                     canCreateWorkorder ? (
                         <Link
