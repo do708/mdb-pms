@@ -84,7 +84,7 @@ export async function POST(
                 continue;
             }
 
-            let payload = rawBuffer;
+            let payload: Buffer = Buffer.from(rawBuffer);
             let contentType = file.type || "image/jpeg";
             let extension = ".jpg";
 
@@ -93,7 +93,7 @@ export async function POST(
                     rawBuffer,
                     file.type || "image/jpeg"
                 );
-                payload = compressed.buffer;
+                payload = Buffer.from(compressed.buffer);
                 contentType = compressed.contentType;
                 extension = compressed.extension || ".jpg";
             } catch (compressError) {
