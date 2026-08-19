@@ -53,6 +53,10 @@ interface PlanningItem {
 
     location:string | null;
 
+    straat:string | null;
+
+    huisnummer:string | null;
+
     city:string | null;
 
     customer:{

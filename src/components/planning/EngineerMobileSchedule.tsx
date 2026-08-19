@@ -13,6 +13,8 @@ interface PlanningItem {
     plannedDate: string | null;
     plannedEndDate: string | null;
     location: string | null;
+    straat?: string | null;
+    huisnummer?: string | null;
     city: string | null;
     customer?: { name: string; color?: string } | null;
     project?: {
@@ -95,6 +97,35 @@ function itemOnDay(item: PlanningItem, dayIso: string): boolean {
         ? toIsoDate(new Date(item.plannedEndDate))
         : start;
     return start <= dayIso && dayIso <= end;
+}
+
+function streetParts(item: PlanningItem): {
+    straat: string;
+    huisnummer: string;
+} {
+    let straat = (item.straat || "").trim();
+    let huisnummer = (item.huisnummer || "").trim();
+    const loc = (item.location || "").trim();
+
+    if (!straat && loc) {
+        if (huisnummer && loc.endsWith(huisnummer)) {
+            straat = loc.slice(0, loc.length - huisnummer.length).trim();
+        } else if (!huisnummer) {
+            const match = loc.match(/^(.*?)\s+(\d[\d\s\-\/]*[a-zA-Z]?)$/);
+            if (match) {
+                straat = match[1].trim();
+                huisnummer = match[2].replace(/\s+/g, "");
+            } else {
+                straat = loc;
+            }
+        } else {
+            straat = loc;
+        }
+    } else if (straat && huisnummer && straat.endsWith(huisnummer)) {
+        straat = straat.slice(0, straat.length - huisnummer.length).trim();
+    }
+
+    return { straat, huisnummer };
 }
 
 function timeLabel(item: PlanningItem): string {
@@ -229,10 +260,8 @@ export default function EngineerMobileSchedule({
             item.project?.customer?.name ||
             "—";
         const locatieNaam = item.title?.trim() || "—";
-        const adres = [item.location, item.city]
-            .map((v) => (v || "").trim())
-            .filter(Boolean)
-            .join(", ");
+        const { straat, huisnummer } = streetParts(item);
+        const plaats = (item.city || "").trim();
         const status = getStatus(migrateStatus(item.status));
 
         return (
@@ -252,9 +281,23 @@ export default function EngineerMobileSchedule({
                             <p className="font-bold text-sm text-gray-900 mt-0.5 leading-snug">
                                 {locatieNaam}
                             </p>
-                            {adres ? (
-                                <p className="text-sm text-gray-700 leading-snug mt-0.5">
-                                    {adres}
+                            {straat || huisnummer ? (
+                                <p className="text-sm text-gray-700 leading-snug mt-0.5 flex items-start gap-1 min-w-0">
+                                    {straat ? (
+                                        <span className="min-w-0">
+                                            {straat}
+                                        </span>
+                                    ) : null}
+                                    {huisnummer ? (
+                                        <span className="shrink-0">
+                                            {huisnummer}
+                                        </span>
+                                    ) : null}
+                                </p>
+                            ) : null}
+                            {plaats ? (
+                                <p className="text-sm text-gray-700 leading-snug">
+                                    {plaats}
                                 </p>
                             ) : null}
                             <p className="text-xs text-gray-500 leading-snug mt-0.5">
