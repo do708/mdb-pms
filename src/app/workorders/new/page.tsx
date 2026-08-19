@@ -142,6 +142,16 @@ function NewWorkorderInner(){
         useSearchParams();
 
 
+    // plannedDate is altijd gevuld (default vandaag). Of we vanaf
+    // planning komen, blijkt alleen uit de querystring.
+    const cameFromPlanning =
+        Boolean(
+            searchParams.get("date")
+            ||
+            searchParams.get("engineer")
+        );
+
+
     const [assignedUserId,setAssignedUserId] =
         useState(searchParams.get("engineer") ?? "");
 
@@ -526,6 +536,19 @@ function NewWorkorderInner(){
                 }
 
 
+                // Vanuit planning: terug zodat de klus in de week zichtbaar is.
+                if(cameFromPlanning){
+                    const dateQuery =
+                        plannedDate
+                        ?
+                        `?date=${plannedDate}`
+                        :
+                        "";
+                    router.push(`/planning${dateQuery}`);
+                    return;
+                }
+
+
                 // Iedereen komt na het aanmaken op de uitvoerpagina.
                 router.push(
                     `/engineer/workorders/${created.id}`
@@ -833,29 +856,139 @@ function NewWorkorderInner(){
                                 min-w-0
                             ">
 
-                                <div>
-                                    <h2 className="font-semibold text-sm text-gray-800">
-                                        Planning
-                                    </h2>
-                                    <p className="text-xs text-gray-500 mt-0.5 leading-snug">
-                                        Kies een vrij moment in de weekplanning.
-                                        Datum, tijd en monteur(s) zet je daar.
-                                    </p>
-                                </div>
+                                {
+                                    cameFromPlanning
+                                    ?
+                                    (
+                                        <>
+                                            <div>
+                                                <h2 className="font-semibold text-sm text-gray-800">
+                                                    Planning
+                                                </h2>
+                                                <p className="text-xs text-gray-500 mt-0.5 leading-snug">
+                                                    Deze opdracht wordt op deze dag bij deze monteur ingepland.
+                                                </p>
+                                            </div>
 
-                                <button
-                                    type="button"
-                                    onClick={()=>void save({ goToPlanning:true })}
-                                    disabled={saving}
-                                    className="
-                                        bg-[#0066FF] text-white
-                                        rounded-lg px-4 py-2
-                                        text-sm font-semibold
-                                        disabled:opacity-50
-                                    "
-                                >
-                                    {saving ? "Bezig..." : "Inplannen"}
-                                </button>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+
+                                                <label className="min-w-0 block">
+                                                    <span className="text-xs text-gray-500">
+                                                        Datum
+                                                    </span>
+                                                    <input
+                                                        type="date"
+                                                        value={plannedDate}
+                                                        onChange={(e)=>
+                                                            setPlannedDate(e.target.value)
+                                                        }
+                                                        className="
+                                                            mt-0.5 w-full border border-gray-200
+                                                            rounded-lg p-2.5 text-sm bg-white
+                                                            text-gray-900
+                                                        "
+                                                    />
+                                                </label>
+
+                                                <label className="min-w-0 block">
+                                                    <span className="text-xs text-gray-500">
+                                                        Monteur
+                                                    </span>
+                                                    <select
+                                                        value={assignedUserId}
+                                                        onChange={(e)=>
+                                                            setAssignedUserId(e.target.value)
+                                                        }
+                                                        className="
+                                                            mt-0.5 w-full border border-gray-200
+                                                            rounded-lg p-2.5 text-sm bg-white
+                                                            text-gray-900
+                                                        "
+                                                    >
+                                                        <option value="">
+                                                            Kies monteur
+                                                        </option>
+                                                        {
+                                                            engineers.map(engineer=>(
+                                                                <option
+                                                                    key={engineer.id}
+                                                                    value={engineer.id}
+                                                                >
+                                                                    {engineer.name}
+                                                                </option>
+                                                            ))
+                                                        }
+                                                    </select>
+                                                </label>
+
+                                                <label className="min-w-0 block">
+                                                    <span className="text-xs text-gray-500">
+                                                        Van (optioneel)
+                                                    </span>
+                                                    <input
+                                                        type="time"
+                                                        value={startTime}
+                                                        onChange={(e)=>
+                                                            setStartTime(e.target.value)
+                                                        }
+                                                        className="
+                                                            mt-0.5 w-full border border-gray-200
+                                                            rounded-lg p-2.5 text-sm bg-white
+                                                            text-gray-900
+                                                        "
+                                                    />
+                                                </label>
+
+                                                <label className="min-w-0 block">
+                                                    <span className="text-xs text-gray-500">
+                                                        Tot (optioneel)
+                                                    </span>
+                                                    <input
+                                                        type="time"
+                                                        value={endTime}
+                                                        onChange={(e)=>
+                                                            setEndTime(e.target.value)
+                                                        }
+                                                        className="
+                                                            mt-0.5 w-full border border-gray-200
+                                                            rounded-lg p-2.5 text-sm bg-white
+                                                            text-gray-900
+                                                        "
+                                                    />
+                                                </label>
+
+                                            </div>
+                                        </>
+                                    )
+                                    :
+                                    (
+                                        <>
+                                            <div>
+                                                <h2 className="font-semibold text-sm text-gray-800">
+                                                    Planning
+                                                </h2>
+                                                <p className="text-xs text-gray-500 mt-0.5 leading-snug">
+                                                    Kies een vrij moment in de weekplanning.
+                                                    Datum, tijd en monteur(s) zet je daar.
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={()=>void save({ goToPlanning:true })}
+                                                disabled={saving}
+                                                className="
+                                                    bg-[#0066FF] text-white
+                                                    rounded-lg px-4 py-2
+                                                    text-sm font-semibold
+                                                    disabled:opacity-50
+                                                "
+                                            >
+                                                {saving ? "Bezig..." : "Inplannen"}
+                                            </button>
+                                        </>
+                                    )
+                                }
 
                             </div>
 
@@ -1282,6 +1415,10 @@ function NewWorkorderInner(){
                     saving
                     ?
                     "Bezig met opslaan..."
+                    :
+                    cameFromPlanning
+                    ?
+                    "Opdracht inplannen"
                     :
                     "Opslaan"
                 }
