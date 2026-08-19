@@ -1,8 +1,8 @@
 /** Opties voor hardware-status op de installatie-aanvraag (opgeslagen = label of array van labels). */
 export const PROJECT_HARDWARE_STATUS_OPTIONS = [
     "Besteld / Onderweg",
-    "Op voorraad MDB Networks",
-    "Verzorgd door MDB Networks",
+    "Op voorraad bij MDB Networks",
+    "Wordt verzorgd door MDB Networks",
 ] as const;
 
 export type ProjectHardwareStatus =
@@ -14,8 +14,10 @@ export const PROJECT_HARDWARE_STATUS_BESTELD =
 /** Oude opgeslagen waarden → nieuwe labels (alleen weergave / normalisatie). */
 const LEGACY_HARDWARE_STATUS: Record<string, string> = {
     "Al besteld / verstuurd": PROJECT_HARDWARE_STATUS_BESTELD,
-    "Op voorraad bij MDB Networks": "Op voorraad MDB Networks",
-    "Regelt MDB Networks": "Verzorgd door MDB Networks",
+    "Op voorraad MDB Networks": "Op voorraad bij MDB Networks",
+    "Op voorraad bij MDB Networks": "Op voorraad bij MDB Networks",
+    "Regelt MDB Networks": "Wordt verzorgd door MDB Networks",
+    "Verzorgd door MDB Networks": "Wordt verzorgd door MDB Networks",
 };
 
 export function formatProjectHardwareStatus(

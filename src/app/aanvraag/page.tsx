@@ -1129,89 +1129,99 @@ function AanvraagFormulier(){
                                 <span className="text-red-500">*</span>
                             </span>
 
-                            <div>
-                                <span className="text-xs text-gray-500 block mb-1.5">
-                                    Status hardware{" "}
-                                    <span className="text-red-500">*</span>{" "}
-                                    <span className="text-gray-400 font-normal">
-                                        (meerdere mogelijk)
+                            <div className="space-y-3">
+                                <div>
+                                    <span className="text-xs text-gray-500 block mb-1.5">
+                                        Status hardware{" "}
+                                        <span className="text-red-500">*</span>{" "}
+                                        <span className="text-gray-400 font-normal">
+                                            (meerdere mogelijk)
+                                        </span>
                                     </span>
-                                </span>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie)=>{
-                                        const selected =
-                                            projectHardwareStatus.includes(optie);
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie, idx)=>{
+                                            const selected =
+                                                projectHardwareStatus.includes(optie);
 
-                                        return (
-                                            <button
-                                                key={optie}
-                                                type="button"
-                                                aria-pressed={selected}
-                                                onClick={()=>{
-                                                    const next =
-                                                        toggleProjectHardwareStatus(
-                                                            projectHardwareStatus,
-                                                            optie
-                                                        );
-                                                    setProjectHardwareStatus(
-                                                        next as ProjectHardwareStatus[]
-                                                    );
-                                                    if(
-                                                        !isProjectHardwareBesteld(
-                                                            next
-                                                        )
-                                                    ){
-                                                        setProjectHardwareLevering(
-                                                            ""
-                                                        );
-                                                    }
-                                                }}
-                                                className={
-                                                    "rounded-md border px-2.5 py-1 text-xs font-medium "
-                                                    +
-                                                    (selected
-                                                        ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
-                                                }
-                                            >
-                                                {optie}
-                                            </button>
-                                        );
-                                    })}
+                                            return (
+                                                <span key={optie} className="inline-flex items-center gap-1.5">
+                                                    {idx > 0 && (
+                                                        <span className="text-xs text-gray-400 font-normal">
+                                                            en/of
+                                                        </span>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        aria-pressed={selected}
+                                                        onClick={()=>{
+                                                            const next =
+                                                                toggleProjectHardwareStatus(
+                                                                    projectHardwareStatus,
+                                                                    optie
+                                                                );
+                                                            setProjectHardwareStatus(
+                                                                next as ProjectHardwareStatus[]
+                                                            );
+                                                            if(
+                                                                !isProjectHardwareBesteld(
+                                                                    next
+                                                                )
+                                                            ){
+                                                                setProjectHardwareLevering(
+                                                                    ""
+                                                                );
+                                                            }
+                                                        }}
+                                                        className={
+                                                            "rounded-md border px-2.5 py-1 text-xs font-medium "
+                                                            +
+                                                            (selected
+                                                                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                                                                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
+                                                        }
+                                                    >
+                                                        {optie}
+                                                    </button>
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
 
                                 {isProjectHardwareBesteld(projectHardwareStatus) ? (
-                                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                                        <span className="text-xs text-gray-500">
-                                            Levering{" "}
+                                    <div className="rounded-lg border border-sky-100 bg-sky-50/50 p-2.5 space-y-1.5">
+                                        <span className="text-xs text-gray-600 font-medium block">
+                                            Waar wordt de hardware geleverd?{" "}
                                             <span className="text-red-500">*</span>
                                         </span>
-                                        {[
-                                            "MDB Networks",
-                                            "Op locatie",
-                                        ].map((lev)=>(
-                                            <button
-                                                key={lev}
-                                                type="button"
-                                                onClick={()=>
-                                                    setProjectHardwareLevering(
-                                                        (h)=>
-                                                            h === lev
-                                                                ? ""
-                                                                : lev
-                                                    )
-                                                }
-                                                className={
-                                                    "rounded-md border px-2.5 py-1 text-xs font-medium "
-                                                    +
-                                                    (projectHardwareLevering === lev
-                                                        ? "bg-sky-100 text-sky-800 border-sky-300"
-                                                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
-                                                }
-                                            >
-                                                {lev}
-                                            </button>
-                                        ))}
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {[
+                                                "MDB Networks",
+                                                "Op locatie",
+                                            ].map((lev)=>(
+                                                <button
+                                                    key={lev}
+                                                    type="button"
+                                                    onClick={()=>
+                                                        setProjectHardwareLevering(
+                                                            (h)=>
+                                                                h === lev
+                                                                    ? ""
+                                                                    : lev
+                                                        )
+                                                    }
+                                                    className={
+                                                        "rounded-md border px-2.5 py-1 text-xs font-medium "
+                                                        +
+                                                        (projectHardwareLevering === lev
+                                                            ? "bg-sky-100 text-sky-800 border-sky-300"
+                                                            : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
+                                                    }
+                                                >
+                                                    {lev}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                 ) : null}
                             </div>
