@@ -189,18 +189,9 @@ export default function InstallatieRuimtesSectie({
     return (
         <div className="space-y-8">
             <div className="space-y-4">
-                <div className="flex items-center justify-between gap-3 border-b pb-1">
-                    <h2 className="text-sm font-semibold text-gray-800">
-                        Schermen &amp; installatie
-                    </h2>
-                    <button
-                        type="button"
-                        onClick={addScherm}
-                        className="text-sm font-semibold text-[#0066FF] hover:underline"
-                    >
-                        + Scherm toevoegen
-                    </button>
-                </div>
+                <h2 className="text-sm font-semibold text-gray-800 whitespace-nowrap">
+                    Schermen &amp; installatie
+                </h2>
 
                 {schermKaarten.map(({ ruimteId, scherm }, index) => {
                     const detailOpties =
@@ -750,6 +741,18 @@ export default function InstallatieRuimtesSectie({
                         </div>
                     );
                 })}
+
+                <button
+                    type="button"
+                    onClick={addScherm}
+                    className="
+                        w-full rounded-xl border-2 border-dashed border-[#0066FF]/40
+                        py-3 text-sm font-semibold text-[#0066FF]
+                        hover:bg-[#0066FF]/5
+                    "
+                >
+                    + Scherm toevoegen
+                </button>
             </div>
 
             {showOpmerkingen && onOpmerkingenChange ? (

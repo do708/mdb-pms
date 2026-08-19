@@ -1,8 +1,6 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
 import { launchBrowserForPdf } from "@/lib/pdf/launchBrowserForPdf";
 import { generateOpleverPdf } from "@/lib/pdf/opleverPdf";
+import { mdbLogoDataUrl } from "@/lib/pdf/mdbBrand";
 
 
 import {
@@ -1200,17 +1198,7 @@ async function renderWorkorderPdfWithBrowser(
 ):Promise<Buffer> {
 
 
-    // MDB-logo als data-URL inlezen (voor in de PDF-header)
-    let logoDataUrl = "";
-    try {
-        const logoPath =
-            join(process.cwd(), "public", "images", "MDB-Logo.png");
-        const logoBuffer = readFileSync(logoPath);
-        logoDataUrl =
-            `data:image/png;base64,${logoBuffer.toString("base64")}`;
-    } catch {
-        logoDataUrl = "";
-    }
+    const logoDataUrl = mdbLogoDataUrl();
 
 
     const html =

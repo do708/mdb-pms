@@ -7,10 +7,6 @@ import {
     rgb
 } from "pdf-lib";
 
-import { readFileSync } from "node:fs";
-
-import { join } from "node:path";
-
 import {
     OpleverData,
     mergeOpleverData
@@ -19,24 +15,28 @@ import {
     summarizeRuimtes,
     summarizeVoorziening,
 } from "@/types/installatieRuimtes";
+import {
+    MDB_BLUE,
+    MDB_NAVY,
+    MDB_PINK,
+    MDB_SECTION_BG,
+    MDB_YELLOW,
+    loadMdbLogoPng,
+} from "@/lib/pdf/mdbBrand";
 
 
 
 // ---------- kleuren uit het opleverdocument ----------
-
-const TEAL = rgb(0.16,0.72,0.68);
-
-const GREEN = rgb(0.42,0.72,0.42);
-
-const BLUE = rgb(0.35,0.71,0.92);
-
-const GRAY_BG = rgb(0.93,0.93,0.93);
 
 const GRAY_TEXT = rgb(0.55,0.55,0.55);
 
 const GRAY_LINE = rgb(0.8,0.8,0.8);
 
 const BLACK = rgb(0.15,0.15,0.15);
+
+const YES_GREEN = rgb(0.08,0.5,0.24);
+
+const NO_BLUE = rgb(0.01,0.41,0.63);
 
 
 
@@ -124,16 +124,8 @@ export async function generateOpleverPdf(
 
     try {
 
-        const bytes =
-            readFileSync(
-                join(
-                    process.cwd(),
-                    "public/images/MDB-Logo.png"
-                )
-            );
-
         logo =
-            await pdf.embedPng(bytes);
+            await pdf.embedPng(loadMdbLogoPng());
 
     } catch {
 
@@ -156,15 +148,6 @@ export async function generateOpleverPdf(
         "-";
 
 
-    const headerTitle =
-        `${input.customerName} Opleverdocument`;
-
-
-    const headerSub =
-        `${input.number} ${input.title}, ${dateText}`;
-
-
-
 
     let page!:PDFPage;
 
@@ -180,45 +163,59 @@ export async function generateOpleverPdf(
             ]);
 
 
-        // kopregel
+        const headerBottom = PAGE_HEIGHT - 78;
 
-        page.drawText(headerTitle,{
-            x:MARGIN,
-            y:PAGE_HEIGHT - 55,
-            size:11,
+        if(logo){
+            const h = 36;
+            const scale = h / logo.height;
+            page.drawImage(logo,{
+                x:MARGIN,
+                y:PAGE_HEIGHT - 22 - h,
+                width:logo.width * scale,
+                height:h
+            });
+        } else {
+            page.drawText("MDB Networks",{
+                x:MARGIN,
+                y:PAGE_HEIGHT - 42,
+                size:13,
+                font:bold,
+                color:MDB_NAVY
+            });
+            page.drawText("Data- Telecom- en Narrowcasting Installaties",{
+                x:MARGIN,
+                y:PAGE_HEIGHT - 56,
+                size:7,
+                font,
+                color:GRAY_TEXT
+            });
+        }
+
+        const docLabel = "OPLEVERDOCUMENT";
+        page.drawText(docLabel,{
+            x:PAGE_WIDTH - MARGIN - bold.widthOfTextAtSize(docLabel,8),
+            y:PAGE_HEIGHT - 36,
+            size:8,
             font:bold,
-            color:BLACK
-        });
-
-
-        page.drawText(dateText,{
-            x:PAGE_WIDTH - MARGIN -
-                font.widthOfTextAtSize(dateText,10),
-            y:PAGE_HEIGHT - 55,
-            size:10,
-            font,
-            color:BLACK
-        });
-
-
-        page.drawText(headerSub,{
-            x:MARGIN,
-            y:PAGE_HEIGHT - 70,
-            size:9,
-            font,
             color:GRAY_TEXT
         });
 
-
-        page.drawLine({
-            start:{ x:MARGIN, y:PAGE_HEIGHT - 85 },
-            end:{ x:PAGE_WIDTH - MARGIN, y:PAGE_HEIGHT - 85 },
-            thickness:1,
-            color:TEAL
+        page.drawText(input.number,{
+            x:PAGE_WIDTH - MARGIN - bold.widthOfTextAtSize(input.number,16),
+            y:PAGE_HEIGHT - 56,
+            size:16,
+            font:bold,
+            color:MDB_PINK
         });
 
+        page.drawLine({
+            start:{ x:MARGIN, y:headerBottom },
+            end:{ x:PAGE_WIDTH - MARGIN, y:headerBottom },
+            thickness:3,
+            color:MDB_BLUE
+        });
 
-        y = PAGE_HEIGHT - 105;
+        y = headerBottom - 18;
 
     }
 
@@ -339,15 +336,23 @@ export async function generateOpleverPdf(
             y:y - 5,
             width:CONTENT_WIDTH,
             height:17,
-            color:GRAY_BG
+            color:MDB_SECTION_BG
+        });
+
+        page.drawRectangle({
+            x:MARGIN,
+            y:y - 5,
+            width:4,
+            height:17,
+            color:MDB_PINK
         });
 
         page.drawText(label,{
-            x:MARGIN + 6,
+            x:MARGIN + 10,
             y,
             size:9,
             font:bold,
-            color:BLACK
+            color:MDB_NAVY
         });
 
         y -= 22;
@@ -459,12 +464,12 @@ export async function generateOpleverPdf(
             {
                 label:labels[0],
                 active:value === true,
-                color:GREEN
+                color:YES_GREEN
             },
             {
                 label:labels[1],
                 active:value === false,
-                color:BLUE
+                color:NO_BLUE
             }
         ]);
 
@@ -491,9 +496,9 @@ export async function generateOpleverPdf(
                     option === "Nee" ||
                     option === "n.v.t."
                     ?
-                    BLUE
+                    NO_BLUE
                     :
-                    GREEN
+                    YES_GREEN
             }))
         );
 
@@ -545,7 +550,7 @@ export async function generateOpleverPdf(
         y:y - 6,
         width:CONTENT_WIDTH,
         height:20,
-        color:GRAY_BG
+        color:MDB_SECTION_BG
     });
 
     page.drawText(input.title,{
@@ -1293,38 +1298,23 @@ export async function generateOpleverPdf(
             start:{ x:MARGIN, y:45 },
             end:{ x:PAGE_WIDTH - MARGIN, y:45 },
             thickness:1,
-            color:TEAL
+            color:MDB_YELLOW
         });
 
 
-        if(logo){
-
-            const scale =
-                26 / logo.height;
-
-            current.drawImage(logo,{
-                x:MARGIN,
-                y:12,
-                width:logo.width * scale,
-                height:26
-            });
-
-        }
-
-
-        current.drawText("MDB Networks",{
-            x:MARGIN + 34,
+        current.drawText("MDB Networks B.V.",{
+            x:MARGIN,
             y:24,
-            size:10,
+            size:9,
             font:bold,
-            color:BLACK
+            color:MDB_NAVY
         });
 
 
         current.drawText(
             "Data- Telecom- en Narrowcasting Installaties",
             {
-                x:MARGIN + 34,
+                x:MARGIN,
                 y:14,
                 size:6,
                 font,

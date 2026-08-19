@@ -132,14 +132,6 @@ customer:true,
 
 
 
-        if (workorder.pdfData && workorder.pdfData.length > 0) {
-            return pdfDownloadResponse(
-                workorder.pdfData,
-                workorder.number
-            );
-        }
-
-
         const pdf =
 
             await generateWorkorderHtmlPdf({
