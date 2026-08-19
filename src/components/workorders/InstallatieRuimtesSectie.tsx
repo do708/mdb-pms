@@ -15,6 +15,9 @@ import {
     InstallatieScherm,
     StroomInternetBlok,
     emptyRuimte,
+    normalizeMac,
+    schermHeeftGegevens,
+    specsVanScherm,
     syncSchermen,
 } from "@/types/installatieRuimtes";
 
@@ -88,7 +91,7 @@ function JaNeeKleur({
     );
 }
 
-const KABEL_TRAJECT_P25 = ["P25 wand", "Systeemplafond"] as const;
+const KABEL_TRAJECT_P25 = ["P25 Wand", "Systeemplafond"] as const;
 
 function schermSpecsGevuld(s: InstallatieScherm): boolean {
     const formaatOk =
@@ -193,7 +196,7 @@ export default function InstallatieRuimtesSectie({
         <div className="space-y-8">
             <div className="space-y-4">
                 <div className="flex items-center justify-between gap-3 border-b pb-1">
-                    <h2 className="font-semibold text-gray-800">
+                    <h2 className="text-sm font-semibold text-gray-800">
                         Schermen &amp; installatie
                     </h2>
                     <button
@@ -214,6 +217,18 @@ export default function InstallatieRuimtesSectie({
                             : [];
                     const specsOk = schermSpecsGevuld(scherm);
                     const toonPlayer = isPlayerAansturing(scherm.aansturing);
+                    const bronnen =
+                        index > 0
+                            ? schermKaarten
+                                  .slice(0, index)
+                                  .map((kaart, bronIndex) => ({
+                                      ...kaart,
+                                      bronIndex,
+                                  }))
+                                  .filter((kaart) =>
+                                      schermHeeftGegevens(kaart.scherm)
+                                  )
+                            : [];
 
                     return (
                         <div
@@ -236,6 +251,29 @@ export default function InstallatieRuimtesSectie({
                                     </button>
                                 ) : null}
                             </div>
+                            {bronnen.length > 0 ? (
+                                    <div className="flex flex-wrap gap-x-3 gap-y-1">
+                                        {bronnen.map((bron) => (
+                                            <button
+                                                key={bron.scherm.id}
+                                                type="button"
+                                                onClick={() =>
+                                                    updateScherm(
+                                                        ruimteId,
+                                                        scherm.id,
+                                                        specsVanScherm(
+                                                            bron.scherm
+                                                        )
+                                                    )
+                                                }
+                                                className="text-xs font-medium text-[#0066FF] hover:underline"
+                                            >
+                                                Neem over van scherm{" "}
+                                                {bron.bronIndex + 1}
+                                            </button>
+                                        ))}
+                                    </div>
+                            ) : null}
                             <div className="space-y-1.5">
                                 <span className="text-xs text-gray-600">
                                     Formaat / inch{" "}
@@ -359,21 +397,27 @@ export default function InstallatieRuimtesSectie({
                                     Aansturing{" "}
                                     <span className="text-red-500">*</span>
                                 </span>
-                                <Chips
-                                    options={AANSTURING_OPTIES}
+                                <select
                                     value={
                                         isPlayerAansturing(scherm.aansturing)
                                             ? "Player"
                                             : scherm.aansturing || ""
                                     }
-                                    onChange={(v) =>
+                                    onChange={(e) =>
                                         updateScherm(ruimteId, scherm.id, {
-                                            aansturing: v,
+                                            aansturing: e.target.value,
                                             aansturingAnders: "",
                                         })
                                     }
-                                    selectedClass="bg-amber-100 text-amber-900 border-amber-300"
-                                />
+                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                >
+                                    <option value="">Kies aansturing</option>
+                                    {AANSTURING_OPTIES.map((a) => (
+                                        <option key={a} value={a}>
+                                            {a}
+                                        </option>
+                                    ))}
+                                </select>
                                 {scherm.aansturing === "Anders" ? (
                                     <input
                                         type="text"
@@ -629,8 +673,17 @@ export default function InstallatieRuimtesSectie({
                                                     mac: e.target.value,
                                                 })
                                             }
+                                            onBlur={(e) =>
+                                                updateScherm(ruimteId, scherm.id, {
+                                                    mac: normalizeMac(
+                                                        e.target.value
+                                                    ),
+                                                })
+                                            }
                                             className="w-full border rounded-xl p-2.5 mt-1"
                                             placeholder="Typ of plak MAC-adres"
+                                            autoCapitalize="characters"
+                                            spellCheck={false}
                                         />
                                     </label>
                                 </div>
@@ -685,8 +738,17 @@ export default function InstallatieRuimtesSectie({
                                                     playerMac: e.target.value,
                                                 })
                                             }
+                                            onBlur={(e) =>
+                                                updateScherm(ruimteId, scherm.id, {
+                                                    playerMac: normalizeMac(
+                                                        e.target.value
+                                                    ),
+                                                })
+                                            }
                                             className="w-full border rounded-xl p-2.5 mt-1 bg-white"
                                             placeholder="Typ of plak MAC-adres"
+                                            autoCapitalize="characters"
+                                            spellCheck={false}
                                         />
                                     </label>
                                 </div>
@@ -725,25 +787,6 @@ export default function InstallatieRuimtesSectie({
                         <span className="text-sm text-gray-800">{label}</span>
                     </label>
                 ))}
-
-                <div className="border-t pt-3">
-                    <label className="flex items-center gap-3 rounded-xl border px-3 py-2.5 bg-white cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={extra.project}
-                            onChange={(e) =>
-                                onExtraChange({
-                                    ...extra,
-                                    project: e.target.checked,
-                                })
-                            }
-                            className="h-4 w-4 accent-[#0066FF]"
-                        />
-                        <span className="text-sm font-medium text-gray-800">
-                            Project
-                        </span>
-                    </label>
-                </div>
             </div>
 
             {showOpmerkingen && onOpmerkingenChange ? (

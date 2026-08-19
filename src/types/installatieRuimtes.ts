@@ -145,6 +145,73 @@ function uid(): string {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+/** Letters A–F (en overige letters) naar hoofdletters; spaties/kolons blijven. */
+export function normalizeMac(value: string): string {
+    return (value || "").toUpperCase();
+}
+
+/** Of een scherm al specificaties heeft om over te nemen. */
+export function schermHeeftGegevens(s: InstallatieScherm): boolean {
+    return Boolean(
+        s.formaat
+        || (s.formaatAnders || "").trim()
+        || s.beugel
+        || s.bevestigingDetail
+        || (s.bevestigingAnders || "").trim()
+        || s.plafondHoogte
+        || s.aansturing
+        || (s.aansturingAnders || "").trim()
+        || s.orientatie
+        || (s.locatie || "").trim()
+        || s.stroom
+        || s.stroomGerealiseerd
+        || (s.stroomMeter || "").trim()
+        || s.stroomTraject
+        || s.internet
+        || s.internetGerealiseerd
+        || (s.internetMeter || "").trim()
+        || s.internetTraject
+        || (s.merkType || "").trim()
+        || (s.serienummer || "").trim()
+        || (s.mac || "").trim()
+        || (s.playerMerkType || "").trim()
+        || (s.playerSerienummer || "").trim()
+        || (s.playerMac || "").trim()
+    );
+}
+
+/** Specificaties van een scherm, zonder identiteit/foto. */
+export function specsVanScherm(
+    s: InstallatieScherm
+): Omit<InstallatieScherm, "id" | "label" | "fotoUrl" | "playerFotoUrl"> {
+    return {
+        formaat: s.formaat,
+        formaatAnders: s.formaatAnders,
+        beugel: s.beugel,
+        bevestigingDetail: s.bevestigingDetail,
+        bevestigingAnders: s.bevestigingAnders,
+        plafondHoogte: s.plafondHoogte,
+        aansturing: s.aansturing,
+        aansturingAnders: s.aansturingAnders,
+        orientatie: s.orientatie,
+        locatie: s.locatie,
+        stroom: s.stroom,
+        stroomGerealiseerd: s.stroomGerealiseerd,
+        stroomMeter: s.stroomMeter,
+        stroomTraject: s.stroomTraject,
+        internet: s.internet,
+        internetGerealiseerd: s.internetGerealiseerd,
+        internetMeter: s.internetMeter,
+        internetTraject: s.internetTraject,
+        merkType: s.merkType,
+        serienummer: s.serienummer,
+        mac: normalizeMac(s.mac),
+        playerMerkType: s.playerMerkType,
+        playerSerienummer: s.playerSerienummer,
+        playerMac: normalizeMac(s.playerMac),
+    };
+}
+
 export function emptyScherm(
     index: number,
     label = ""

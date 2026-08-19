@@ -14,7 +14,10 @@ import {
     emptyKioskBlok,
     KioskBlok,
     mergeOpleverData,
-    enforceVoorrijtariefTravelRules
+    enforceVoorrijtariefTravelRules,
+    normalizeOpleverMacs,
+    parseAantal,
+    resizeSnArray
 } from "@/types/oplever";
 
 import {
@@ -24,6 +27,7 @@ import {
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
+import { normalizeMac } from "@/types/installatieRuimtes";
 
 
 
@@ -620,6 +624,60 @@ function AudioRegel({
     );
 }
 
+
+function SerienummersOnderAantal({
+    aantal,
+    values,
+    onChange,
+    label
+}:{
+    aantal:string;
+    values:string[] | undefined;
+    onChange:(next:string[])=>void;
+    label:string;
+}){
+    const n = parseAantal(aantal);
+
+    if(n <= 0){
+        return null;
+    }
+
+    const fields = resizeSnArray(values, n);
+
+    return (
+        <div className="pl-2 ml-1 border-l-2 border-slate-200 space-y-1.5 pb-2">
+            {fields.map((sn, i)=>(
+                <label key={i} className="block">
+                    <span className="text-xs text-gray-600">
+                        {n === 1 ? label : `${label} ${i + 1}`}
+                    </span>
+                    <input
+                        value={sn}
+                        onChange={(e)=>{
+                            const next = [...fields];
+                            next[i] = e.target.value;
+                            onChange(next);
+                        }}
+                        placeholder="Serienummer"
+                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                    />
+                </label>
+            ))}
+        </div>
+    );
+}
+
+
+
+function eersteSwitchSn(d:OpleverData):string {
+    return (
+        [
+            ...(d.materialen.switch5portSn || []),
+            ...(d.materialen.switch8portSn || []),
+            ...(d.materialen.switch5portPoeSn || [])
+        ].find((s)=>s.trim()) || ""
+    );
+}
 
 
 function Veld({
@@ -1484,7 +1542,7 @@ export default function OpleverForm({
     useEffect(()=>{
 
         if(onChange){
-            onChange(data);
+            onChange(normalizeOpleverMacs(structuredClone(data)));
         }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1545,7 +1603,7 @@ export default function OpleverForm({
                         },
 
                         body:JSON.stringify({
-                            formData:data
+                            formData:normalizeOpleverMacs(structuredClone(data))
                         })
 
                     }
@@ -2619,6 +2677,17 @@ export default function OpleverForm({
                                                 ].macAddress = e.target.value;
                                             })
                                         }
+                                        onBlur={(e) =>
+                                            update((draft) => {
+                                                draft.hardware[
+                                                    index
+                                                ].macAddress = normalizeMac(
+                                                    e.target.value
+                                                );
+                                            })
+                                        }
+                                        autoCapitalize="characters"
+                                        spellCheck={false}
                                         className="w-full max-w-full min-w-0 p-2 mt-0.5 rounded-lg bg-white border"
                                     />
                                 </label>
@@ -2735,6 +2804,13 @@ export default function OpleverForm({
                                                 onChange={(e)=>update(draft=>{
                                                     draft.hardware[index].macAddress = e.target.value;
                                                 })}
+                                                onBlur={(e)=>update(draft=>{
+                                                    draft.hardware[index].macAddress = normalizeMac(
+                                                        e.target.value
+                                                    );
+                                                })}
+                                                autoCapitalize="characters"
+                                                spellCheck={false}
                                                 className="w-full p-1.5 rounded-lg bg-white"
                                             />
                                         </td>
@@ -2838,8 +2914,44 @@ export default function OpleverForm({
                     <AudioRegel label="10 meter" value={m.hdmi10m} onChange={(v)=>update(d=>{d.materialen.hdmi10m=v;})} />
 
                     <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">HDMI splitters (aantal)</p>
-                    <AudioRegel label="1x2 (1 ingang, 2 uitgangen)" value={m.hdmiSplitter1x2} onChange={(v)=>update(d=>{d.materialen.hdmiSplitter1x2=v;})} />
-                    <AudioRegel label="1x4 (1 ingang, 4 uitgangen)" value={m.hdmiSplitter1x4} onChange={(v)=>update(d=>{d.materialen.hdmiSplitter1x4=v;})} />
+                    <AudioRegel
+                        label="1x2 (1 ingang, 2 uitgangen)"
+                        value={m.hdmiSplitter1x2}
+                        onChange={(v)=>update(d=>{
+                            d.materialen.hdmiSplitter1x2=v;
+                            d.materialen.hdmiSplitter1x2Sn=resizeSnArray(
+                                d.materialen.hdmiSplitter1x2Sn,
+                                parseAantal(v)
+                            );
+                        })}
+                    />
+                    <SerienummersOnderAantal
+                        aantal={m.hdmiSplitter1x2}
+                        values={m.hdmiSplitter1x2Sn}
+                        onChange={(sns)=>update(d=>{
+                            d.materialen.hdmiSplitter1x2Sn=sns;
+                        })}
+                        label="s/n"
+                    />
+                    <AudioRegel
+                        label="1x4 (1 ingang, 4 uitgangen)"
+                        value={m.hdmiSplitter1x4}
+                        onChange={(v)=>update(d=>{
+                            d.materialen.hdmiSplitter1x4=v;
+                            d.materialen.hdmiSplitter1x4Sn=resizeSnArray(
+                                d.materialen.hdmiSplitter1x4Sn,
+                                parseAantal(v)
+                            );
+                        })}
+                    />
+                    <SerienummersOnderAantal
+                        aantal={m.hdmiSplitter1x4}
+                        values={m.hdmiSplitter1x4Sn}
+                        onChange={(sns)=>update(d=>{
+                            d.materialen.hdmiSplitter1x4Sn=sns;
+                        })}
+                        label="s/n"
+                    />
                 </UitklapVraag>
 
 
@@ -2872,29 +2984,69 @@ export default function OpleverForm({
                     }
                 >
                     <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">Switches (aantal per type)</p>
-                    <AudioRegel label="5 poorten, gigabit" value={m.switch5port} onChange={(v)=>update(d=>{d.materialen.switch5port=v;})} />
-                    <AudioRegel label="8 poorten, gigabit" value={m.switch8port} onChange={(v)=>update(d=>{d.materialen.switch8port=v;})} />
-                    <AudioRegel label="5 poorten, PoE gigabit" value={m.switch5portPoe} onChange={(v)=>update(d=>{d.materialen.switch5portPoe=v;})} />
-                    {([m.switch5port, m.switch8port, m.switch5portPoe]
-                        .map((v) => parseInt(v, 10) || 0)
-                        .reduce((a, b) => a + b, 0) === 1) ? (
-                        <label className="block pt-1">
-                            <span className="text-sm text-gray-600">
-                                Serienummer
-                            </span>
-                            <input
-                                value={m.switchSerienummer}
-                                onChange={(e)=>
-                                    update((d)=>{
-                                        d.materialen.switchSerienummer =
-                                            e.target.value;
-                                    })
-                                }
-                                placeholder="Serienummer switch"
-                                className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
-                            />
-                        </label>
-                    ) : null}
+                    <AudioRegel
+                        label="5 poorten, gigabit"
+                        value={m.switch5port}
+                        onChange={(v)=>update(d=>{
+                            d.materialen.switch5port=v;
+                            d.materialen.switch5portSn=resizeSnArray(
+                                d.materialen.switch5portSn,
+                                parseAantal(v)
+                            );
+                            d.materialen.switchSerienummer=eersteSwitchSn(d);
+                        })}
+                    />
+                    <SerienummersOnderAantal
+                        aantal={m.switch5port}
+                        values={m.switch5portSn}
+                        onChange={(sns)=>update(d=>{
+                            d.materialen.switch5portSn=sns;
+                            d.materialen.switchSerienummer=eersteSwitchSn(d);
+                        })}
+                        label="s/n"
+                    />
+                    <AudioRegel
+                        label="8 poorten, gigabit"
+                        value={m.switch8port}
+                        onChange={(v)=>update(d=>{
+                            d.materialen.switch8port=v;
+                            d.materialen.switch8portSn=resizeSnArray(
+                                d.materialen.switch8portSn,
+                                parseAantal(v)
+                            );
+                            d.materialen.switchSerienummer=eersteSwitchSn(d);
+                        })}
+                    />
+                    <SerienummersOnderAantal
+                        aantal={m.switch8port}
+                        values={m.switch8portSn}
+                        onChange={(sns)=>update(d=>{
+                            d.materialen.switch8portSn=sns;
+                            d.materialen.switchSerienummer=eersteSwitchSn(d);
+                        })}
+                        label="s/n"
+                    />
+                    <AudioRegel
+                        label="5 poorten, PoE gigabit"
+                        value={m.switch5portPoe}
+                        onChange={(v)=>update(d=>{
+                            d.materialen.switch5portPoe=v;
+                            d.materialen.switch5portPoeSn=resizeSnArray(
+                                d.materialen.switch5portPoeSn,
+                                parseAantal(v)
+                            );
+                            d.materialen.switchSerienummer=eersteSwitchSn(d);
+                        })}
+                    />
+                    <SerienummersOnderAantal
+                        aantal={m.switch5portPoe}
+                        values={m.switch5portPoeSn}
+                        onChange={(sns)=>update(d=>{
+                            d.materialen.switch5portPoeSn=sns;
+                            d.materialen.switchSerienummer=eersteSwitchSn(d);
+                        })}
+                        label="s/n"
+                    />
                 </UitklapVraag>
 
 
@@ -2979,44 +3131,52 @@ export default function OpleverForm({
                 {
                     m.multicast === true && (
                         <div className="mt-2 space-y-2">
-                            <AudioRegel label="Zenders" value={m.multicastZenders} onChange={(v)=>update(draft=>{draft.materialen.multicastZenders=v;})} />
-                            {(parseInt(m.multicastZenders, 10) || 0) === 1 ? (
-                                <label className="block">
-                                    <span className="text-sm text-gray-600">
-                                        Zender s/n
-                                    </span>
-                                    <input
-                                        value={m.multicastZenderSn}
-                                        onChange={(e)=>
-                                            update((d)=>{
-                                                d.materialen.multicastZenderSn =
-                                                    e.target.value;
-                                            })
-                                        }
-                                        placeholder="Serienummer zender"
-                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
-                                    />
-                                </label>
-                            ) : null}
-                            <AudioRegel label="Ontvangers" value={m.multicastOntvangers} onChange={(v)=>update(draft=>{draft.materialen.multicastOntvangers=v;})} />
-                            {(parseInt(m.multicastOntvangers, 10) || 0) === 1 ? (
-                                <label className="block">
-                                    <span className="text-sm text-gray-600">
-                                        Ontvanger s/n
-                                    </span>
-                                    <input
-                                        value={m.multicastOntvangerSn}
-                                        onChange={(e)=>
-                                            update((d)=>{
-                                                d.materialen.multicastOntvangerSn =
-                                                    e.target.value;
-                                            })
-                                        }
-                                        placeholder="Serienummer ontvanger"
-                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
-                                    />
-                                </label>
-                            ) : null}
+                            <AudioRegel
+                                label="Zenders"
+                                value={m.multicastZenders}
+                                onChange={(v)=>update(draft=>{
+                                    draft.materialen.multicastZenders=v;
+                                    draft.materialen.multicastZenderSns=resizeSnArray(
+                                        draft.materialen.multicastZenderSns,
+                                        parseAantal(v)
+                                    );
+                                    draft.materialen.multicastZenderSn=
+                                        draft.materialen.multicastZenderSns.find((s)=>s.trim()) || "";
+                                })}
+                            />
+                            <SerienummersOnderAantal
+                                aantal={m.multicastZenders}
+                                values={m.multicastZenderSns}
+                                onChange={(sns)=>update((d)=>{
+                                    d.materialen.multicastZenderSns=sns;
+                                    d.materialen.multicastZenderSn=
+                                        sns.find((s)=>s.trim()) || "";
+                                })}
+                                label="Zender s/n"
+                            />
+                            <AudioRegel
+                                label="Ontvangers"
+                                value={m.multicastOntvangers}
+                                onChange={(v)=>update(draft=>{
+                                    draft.materialen.multicastOntvangers=v;
+                                    draft.materialen.multicastOntvangerSns=resizeSnArray(
+                                        draft.materialen.multicastOntvangerSns,
+                                        parseAantal(v)
+                                    );
+                                    draft.materialen.multicastOntvangerSn=
+                                        draft.materialen.multicastOntvangerSns.find((s)=>s.trim()) || "";
+                                })}
+                            />
+                            <SerienummersOnderAantal
+                                aantal={m.multicastOntvangers}
+                                values={m.multicastOntvangerSns}
+                                onChange={(sns)=>update((d)=>{
+                                    d.materialen.multicastOntvangerSns=sns;
+                                    d.materialen.multicastOntvangerSn=
+                                        sns.find((s)=>s.trim()) || "";
+                                })}
+                                label="Ontvanger s/n"
+                            />
                         </div>
                     )
                 }

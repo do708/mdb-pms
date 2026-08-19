@@ -393,22 +393,28 @@ function opleverSections(
 
     const hdmiSplitters =
         [
-            ["1x2",m.hdmiSplitter1x2],
-            ["1x4",m.hdmiSplitter1x4]
+            ["1x2",m.hdmiSplitter1x2,m.hdmiSplitter1x2Sn],
+            ["1x4",m.hdmiSplitter1x4,m.hdmiSplitter1x4Sn]
         ]
         .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
+        .map(([name,amount,sns])=>{
+            const nummers = Array.isArray(sns) ? sns.filter((s)=>s && String(s).trim()) : [];
+            return `${name}: ${amount}${nummers.length ? ` (s/n ${nummers.join(", ")})` : ""}`;
+        })
         .join(" · ");
 
 
     const switches =
         [
-            ["5 poorten gigabit",m.switch5port],
-            ["8 poorten gigabit",m.switch8port],
-            ["5 poorten PoE gigabit",m.switch5portPoe]
+            ["5 poorten gigabit",m.switch5port,m.switch5portSn],
+            ["8 poorten gigabit",m.switch8port,m.switch8portSn],
+            ["5 poorten PoE gigabit",m.switch5portPoe,m.switch5portPoeSn]
         ]
         .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
+        .map(([name,amount,sns])=>{
+            const nummers = Array.isArray(sns) ? sns.filter((s)=>s && String(s).trim()) : [];
+            return `${name}: ${amount}${nummers.length ? ` (s/n ${nummers.join(", ")})` : ""}`;
+        })
         .join(" · ");
 
 
@@ -659,8 +665,30 @@ function opleverSections(
       ${m.extraSpeakers === true && m.usbSpeakers ? row("7. USB Speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
       ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
       ${m.multicast !== null ? row("8. Multicast set gebruikt?",pill(m.multicast)) : ""}
-      ${m.multicast === true && m.multicastZenders ? row("Zenders (aantal)",textAnswer(m.multicastZenders)) : ""}
-      ${m.multicast === true && m.multicastOntvangers ? row("Ontvangers (aantal)",textAnswer(m.multicastOntvangers)) : ""}
+      ${m.multicast === true && m.multicastZenders ? row("Zenders (aantal)",textAnswer(
+          m.multicastZenders + (
+              (Array.isArray(m.multicastZenderSns) && m.multicastZenderSns.some((s)=>s.trim()))
+              || m.multicastZenderSn
+              ? ` · s/n ${(
+                    Array.isArray(m.multicastZenderSns) && m.multicastZenderSns.some((s)=>s.trim())
+                    ? m.multicastZenderSns.filter((s)=>s.trim()).join(", ")
+                    : m.multicastZenderSn
+                )}`
+              : ""
+          )
+      )) : ""}
+      ${m.multicast === true && m.multicastOntvangers ? row("Ontvangers (aantal)",textAnswer(
+          m.multicastOntvangers + (
+              (Array.isArray(m.multicastOntvangerSns) && m.multicastOntvangerSns.some((s)=>s.trim()))
+              || m.multicastOntvangerSn
+              ? ` · s/n ${(
+                    Array.isArray(m.multicastOntvangerSns) && m.multicastOntvangerSns.some((s)=>s.trim())
+                    ? m.multicastOntvangerSns.filter((s)=>s.trim()).join(", ")
+                    : m.multicastOntvangerSn
+                )}`
+              : ""
+          )
+      )) : ""}
     </table>
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>` : ""}

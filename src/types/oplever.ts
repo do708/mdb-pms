@@ -12,6 +12,7 @@ import {
     emptyRuimte,
     emptyScherm,
     emptyStroomInternet,
+    normalizeMac,
 } from "@/types/installatieRuimtes";
 
 export const OPDRACHTGEVERS = [
@@ -202,12 +203,17 @@ export interface OpleverData {
         hdmi10m:string;
         hdmiSplitter1x2:string;
         hdmiSplitter1x4:string;
+        hdmiSplitter1x2Sn:string[];
+        hdmiSplitter1x4Sn:string[];
         extraSwitches:boolean | null;
         switchesAantal:string;
         switch5port:string;
         switch8port:string;
         switch5portPoe:string;
         switchSerienummer:string;
+        switch5portSn:string[];
+        switch8portSn:string[];
+        switch5portPoeSn:string[];
         utpGetrokken:boolean | null;
         utpAantal:string;
         utpType2:string;
@@ -236,6 +242,8 @@ export interface OpleverData {
         multicastOntvangers:string;
         multicastZenderSn:string;
         multicastOntvangerSn:string;
+        multicastZenderSns:string[];
+        multicastOntvangerSns:string[];
         opmerkingen:string;
     };
 
@@ -477,12 +485,17 @@ export function emptyOpleverData():OpleverData {
             hdmi10m:"",
             hdmiSplitter1x2:"",
             hdmiSplitter1x4:"",
+            hdmiSplitter1x2Sn:[],
+            hdmiSplitter1x4Sn:[],
             extraSwitches:null,
             switchesAantal:"",
             switch5port:"",
             switch8port:"",
             switch5portPoe:"",
             switchSerienummer:"",
+            switch5portSn:[],
+            switch8portSn:[],
+            switch5portPoeSn:[],
             utpGetrokken:null,
             utpAantal:"",
             utpType2:"",
@@ -511,6 +524,8 @@ export function emptyOpleverData():OpleverData {
             multicastOntvangers:"",
             multicastZenderSn:"",
             multicastOntvangerSn:"",
+            multicastZenderSns:[],
+            multicastOntvangerSns:[],
             opmerkingen:""
         },
 
@@ -668,6 +683,14 @@ export function mergeOpleverData(
                                     const ori = String(merged.orientatie || "");
                                     if(ori === "landscape") merged.orientatie = "Landscape";
                                     if(ori === "portrait") merged.orientatie = "Portrait";
+                                    if(merged.stroomTraject === "P25 wand"){
+                                        merged.stroomTraject = "P25 Wand";
+                                    }
+                                    if(merged.internetTraject === "P25 wand"){
+                                        merged.internetTraject = "P25 Wand";
+                                    }
+                                    merged.mac = normalizeMac(merged.mac || "");
+                                    merged.playerMac = normalizeMac(merged.playerMac || "");
                                     if(!merged.locatie && r.naam){
                                         merged.locatie = r.naam;
                                     }
@@ -746,7 +769,8 @@ export function mergeOpleverData(
 
         materialen:{
             ...empty.materialen,
-            ...data.materialen
+            ...data.materialen,
+            ...mergeMateriaalSerienummers(data.materialen)
         },
 
         checklist:{
@@ -781,7 +805,9 @@ export function mergeOpleverData(
                 serienummer:
                     typeof h.serienummer === "string" ? h.serienummer : "",
                 macAddress:
-                    typeof h.macAddress === "string" ? h.macAddress : ""
+                    typeof h.macAddress === "string"
+                    ? normalizeMac(h.macAddress)
+                    : ""
             }))
             :
             [],
@@ -998,10 +1024,215 @@ export function mergeOpleverData(
 
 
 
+    normalizeOpleverMacs(merged);
+
     return merged;
 
 }
 
+
+
+const MAX_SN_VELDEN = 20;
+
+
+/** Positief aantal uit een vrije tekst (max. 20 velden). */
+export function parseAantal(value:unknown):number {
+
+    const n = parseInt(String(value ?? ""), 10);
+
+    if(!Number.isFinite(n) || n <= 0){
+        return 0;
+    }
+
+    return Math.min(n, MAX_SN_VELDEN);
+
+}
+
+
+function asSnArray(value:unknown):string[] {
+
+    if(!Array.isArray(value)){
+        return [];
+    }
+
+    return value.map((x)=>typeof x === "string" ? x : "");
+
+}
+
+
+/** N serienummer-slots; oude enkele string komt in het eerste veld. */
+export function normalizeSnArray(
+    stored:unknown,
+    count:number,
+    legacy?:unknown
+):string[] {
+
+    const fromArr = asSnArray(stored);
+
+    const base =
+        fromArr.length > 0
+        ? fromArr
+        : (
+            typeof legacy === "string" && legacy.trim()
+            ? [legacy]
+            : []
+        );
+
+    if(count <= 0){
+        return [];
+    }
+
+    const next = base.slice(0, count);
+
+    while(next.length < count){
+        next.push("");
+    }
+
+    return next;
+
+}
+
+
+export function resizeSnArray(
+    arr:string[] | undefined,
+    n:number
+):string[] {
+
+    return normalizeSnArray(arr, n);
+
+}
+
+
+function firstFilledSn(arrs:string[][]):string {
+
+    for(const arr of arrs){
+        for(const s of arr){
+            if(s.trim()){
+                return s;
+            }
+        }
+    }
+
+    return "";
+
+}
+
+
+function mergeMateriaalSerienummers(
+    stored:unknown
+):Pick<
+    OpleverData["materialen"],
+    | "hdmiSplitter1x2Sn"
+    | "hdmiSplitter1x4Sn"
+    | "switch5portSn"
+    | "switch8portSn"
+    | "switch5portPoeSn"
+    | "switchSerienummer"
+    | "multicastZenderSns"
+    | "multicastOntvangerSns"
+    | "multicastZenderSn"
+    | "multicastOntvangerSn"
+> {
+
+    const raw =
+        stored && typeof stored === "object"
+        ? stored as Record<string,unknown>
+        : {};
+
+    const n1x2 = parseAantal(raw.hdmiSplitter1x2);
+    const n1x4 = parseAantal(raw.hdmiSplitter1x4);
+    const n5 = parseAantal(raw.switch5port);
+    const n8 = parseAantal(raw.switch8port);
+    const nPoe = parseAantal(raw.switch5portPoe);
+    const nZender = parseAantal(raw.multicastZenders);
+    const nOntvanger = parseAantal(raw.multicastOntvangers);
+
+    const storedSwitchArrs = {
+        switch5portSn: asSnArray(raw.switch5portSn),
+        switch8portSn: asSnArray(raw.switch8portSn),
+        switch5portPoeSn: asSnArray(raw.switch5portPoeSn)
+    };
+
+    const heeftSwitchArrs =
+        storedSwitchArrs.switch5portSn.some((s)=>s.trim())
+        || storedSwitchArrs.switch8portSn.some((s)=>s.trim())
+        || storedSwitchArrs.switch5portPoeSn.some((s)=>s.trim());
+
+    const legacySwitch =
+        typeof raw.switchSerienummer === "string"
+        ? raw.switchSerienummer
+        : "";
+
+    let switch5portSn = normalizeSnArray(raw.switch5portSn, n5);
+    let switch8portSn = normalizeSnArray(raw.switch8portSn, n8);
+    let switch5portPoeSn = normalizeSnArray(raw.switch5portPoeSn, nPoe);
+
+    if(!heeftSwitchArrs && legacySwitch.trim()){
+        if(n5 > 0){
+            switch5portSn = normalizeSnArray([], n5, legacySwitch);
+        } else if(n8 > 0){
+            switch8portSn = normalizeSnArray([], n8, legacySwitch);
+        } else if(nPoe > 0){
+            switch5portPoeSn = normalizeSnArray([], nPoe, legacySwitch);
+        }
+    }
+
+    const multicastZenderSns = normalizeSnArray(
+        raw.multicastZenderSns,
+        nZender,
+        raw.multicastZenderSn
+    );
+    const multicastOntvangerSns = normalizeSnArray(
+        raw.multicastOntvangerSns,
+        nOntvanger,
+        raw.multicastOntvangerSn
+    );
+
+    return {
+        hdmiSplitter1x2Sn: normalizeSnArray(raw.hdmiSplitter1x2Sn, n1x2),
+        hdmiSplitter1x4Sn: normalizeSnArray(raw.hdmiSplitter1x4Sn, n1x4),
+        switch5portSn,
+        switch8portSn,
+        switch5portPoeSn,
+        switchSerienummer:
+            firstFilledSn([switch5portSn, switch8portSn, switch5portPoeSn])
+            || legacySwitch,
+        multicastZenderSns,
+        multicastOntvangerSns,
+        multicastZenderSn:
+            multicastZenderSns.find((s)=>s.trim()) || (
+                typeof raw.multicastZenderSn === "string"
+                ? raw.multicastZenderSn
+                : ""
+            ),
+        multicastOntvangerSn:
+            multicastOntvangerSns.find((s)=>s.trim()) || (
+                typeof raw.multicastOntvangerSn === "string"
+                ? raw.multicastOntvangerSn
+                : ""
+            )
+    };
+
+}
+
+
+/** MAC-adressen in het hele opleverformulier naar hoofdletters. */
+export function normalizeOpleverMacs(data:OpleverData):OpleverData {
+
+    for(const ruimte of data.installatie.ruimtes){
+        for(const scherm of ruimte.schermen){
+            scherm.mac = normalizeMac(scherm.mac || "");
+            scherm.playerMac = normalizeMac(scherm.playerMac || "");
+        }
+    }
+
+    for(const h of data.hardware){
+        h.macAddress = normalizeMac(h.macAddress || "");
+    }
+
+    return data;
+
+}
 
 
 function tariefFieldEmpty(
