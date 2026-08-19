@@ -274,36 +274,9 @@ export default function EngineerMobileSchedule({
             >
                 <div className="p-3 space-y-2">
                     <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                            <p className="text-xs font-semibold text-[#0066FF] tabular-nums">
-                                {timeLabel(item)}
-                            </p>
-                            <p className="font-bold text-sm text-gray-900 mt-0.5 leading-snug">
-                                {locatieNaam}
-                            </p>
-                            {straat || huisnummer ? (
-                                <p className="text-sm text-gray-700 leading-snug mt-0.5 flex items-start gap-1 min-w-0">
-                                    {straat ? (
-                                        <span className="min-w-0">
-                                            {straat}
-                                        </span>
-                                    ) : null}
-                                    {huisnummer ? (
-                                        <span className="shrink-0">
-                                            {huisnummer}
-                                        </span>
-                                    ) : null}
-                                </p>
-                            ) : null}
-                            {plaats ? (
-                                <p className="text-sm text-gray-700 leading-snug">
-                                    {plaats}
-                                </p>
-                            ) : null}
-                            <p className="text-xs text-gray-500 leading-snug mt-0.5">
-                                {klant}
-                            </p>
-                        </div>
+                        <p className="text-xs font-semibold text-[#0066FF] tabular-nums">
+                            {timeLabel(item)}
+                        </p>
                         <span
                             className={`
                                 shrink-0 px-2 py-0.5 rounded-full text-[10px] font-medium
@@ -313,6 +286,28 @@ export default function EngineerMobileSchedule({
                             {status.label}
                         </span>
                     </div>
+                    <p className="font-bold text-sm text-gray-900 leading-snug">
+                        {locatieNaam}
+                    </p>
+                    {straat || huisnummer ? (
+                        <p className="text-sm text-gray-700 leading-snug break-words">
+                            {straat}
+                            {straat && huisnummer ? " " : ""}
+                            {huisnummer ? (
+                                <span className="whitespace-nowrap">
+                                    {huisnummer}
+                                </span>
+                            ) : null}
+                        </p>
+                    ) : null}
+                    {plaats ? (
+                        <p className="text-sm text-gray-700 leading-snug">
+                            {plaats}
+                        </p>
+                    ) : null}
+                    <p className="text-xs text-gray-500 leading-snug">
+                        {klant}
+                    </p>
 
                     <Link
                         href={`/engineer/workorders/${item.id}`}
