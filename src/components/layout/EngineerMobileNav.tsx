@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, Folder, LayoutDashboard } from "lucide-react";
+import { CalendarDays, ClipboardList, Folder, LayoutDashboard } from "lucide-react";
 
 const links = [
     { href: "/engineer", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/planning", label: "Planning", icon: CalendarDays },
     { href: "/workorders", label: "Opdrachten", icon: ClipboardList },
     { href: "/projects", label: "Projecten", icon: Folder },
 ];
@@ -34,7 +35,7 @@ export default function EngineerMobileNav() {
             "
             aria-label="Hoofdnavigatie"
         >
-            <div className="grid grid-cols-3 h-14">
+            <div className="grid grid-cols-4 h-14">
                 {links.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(pathname, item.href);
