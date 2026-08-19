@@ -580,7 +580,7 @@ function opleverSections(
             i.extra.audio ? "Audio" : ""
           ].filter(Boolean).join(", ")))
         : ""}
-      ${i.isProject === true ? row("3. Project (offertebasis)?",pill(i.isProject)) : ""}
+      ${i.isProject === true ? row("6. Project (offertebasis)?",pill(i.isProject)) : ""}
       ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
     </table>
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}

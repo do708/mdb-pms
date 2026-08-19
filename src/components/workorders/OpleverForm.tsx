@@ -30,7 +30,7 @@ import {
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
-import { normalizeMac, emptyExtra } from "@/types/installatieRuimtes";
+import { normalizeMac, emptyExtra, schermHeeftGegevens } from "@/types/installatieRuimtes";
 
 
 
@@ -918,6 +918,45 @@ function UitklapVraag({
 }
 
 
+function SpecUitklap({
+    titel,
+    kleur,
+    open,
+    onToggle,
+    children
+}:{
+    titel:string;
+    kleur:string;
+    open:boolean;
+    onToggle:(open:boolean)=>void;
+    children:React.ReactNode;
+}){
+    return (
+        <div className={`rounded-xl border ${kleur}`}>
+            <button
+                type="button"
+                onClick={()=>onToggle(!open)}
+                className="w-full flex items-center justify-between p-3 text-left"
+            >
+                <span className="font-medium text-gray-800">
+                    {titel}
+                </span>
+                <span className="text-xl text-gray-500 leading-none w-7 text-center">
+                    {open ? "−" : "+"}
+                </span>
+            </button>
+            {
+                open && (
+                    <div className="px-3 pb-3 space-y-3">
+                        {children}
+                    </div>
+                )
+            }
+        </div>
+    );
+}
+
+
 
 // Checklist-vraag: label boven, antwoord (en eventuele reden/sub-vraag) eronder.
 function ChecklistVraag({
@@ -965,30 +1004,6 @@ function RedenVeld({
     );
 }
 
-
-
-function SectieTitel({
-    children
-}:{
-    children:React.ReactNode;
-}){
-    return (
-        <p className="
-            text-[13px]
-            font-semibold
-            text-slate-700
-            bg-slate-50
-            border-l-2
-            border-blue-500
-            px-3
-            py-1.5
-            rounded-r
-            mb-3
-        ">
-            {children}
-        </p>
-    );
-}
 
 
 function ExtraDienstenKeuzes({
@@ -1094,149 +1109,200 @@ function Kop({
 
 
 
-// ---------- extra kosten (Parkeerkosten / Materiaal / Sejour) ----------
+// ---------- extra kosten (Parkeren / Materiaal / Sejour) ----------
 
-function ExtraKostenBlok({
-
+function ExtraKostenChip({
     label,
-
     value,
-
     onChange
-
 }:{
-
     label:string;
-
     value:ExtraKosten;
-
     onChange:(value:ExtraKosten)=>void;
-
 }){
-
     return (
-
-        <div>
-
-
-            <button
-
-                type="button"
-
-                onClick={()=>
-                    onChange(
-                        value.actief
-                        ?
-                        emptyExtraKosten()
-                        :
-                        { ...value, actief:true }
-                    )
-                }
-
-                className={`
-                    px-4
-                    py-1.5
-                    rounded-full
-                    border
-                    text-sm
-                    ${
-                        value.actief
-                        ?
-                        "bg-amber-100 border-amber-300 text-amber-800"
-                        :
-                        "text-gray-400"
-                    }
-                `}
-
-            >
-
-                {label}
-
-            </button>
-
-
-            {
-                value.actief && (
-
-                    <div className="
-                        border
-                        rounded-lg
-                        px-3
-                        py-2
-                        mt-2
-                        bg-gray-50
-                        w-56
-                        space-y-2
-                    ">
-
-                        <div className="
-                            flex
-                            items-center
-                            gap-1.5
-                        ">
-                            <span className="text-sm text-gray-500">€</span>
-                            <input
-                                inputMode="decimal"
-                                value={value.kosten}
-                                placeholder="0,00"
-                                onChange={(e)=>
-                                    onChange({
-                                        ...value,
-                                        kosten:e.target.value
-                                    })
-                                }
-                                className="
-                                    w-24
-                                    border
-                                    rounded-lg
-                                    p-1.5
-                                    text-sm
-                                "
-                            />
-                        </div>
-
-                        <div className="
-                            flex
-                            items-center
-                            gap-1.5
-                        ">
-                            <span className="text-xs text-gray-500">
-                                Voorgeschoten?
-                            </span>
-                            <JaNee
-                                compact
-                                value={value.voorgeschoten}
-                                onChange={(v)=>
-                                    onChange({
-                                        ...value,
-                                        voorgeschoten:v
-                                    })
-                                }
-                            />
-                        </div>
-
-                        {
-                            value.voorgeschoten === true && (
-                                <p className="
-                                    text-[11px]
-                                    leading-snug
-                                    text-orange-600
-                                ">
-                                    * Vergeet het formulier &apos;Bon declareren&apos; niet.
-                                </p>
-                            )
-                        }
-
-                    </div>
-
+        <button
+            type="button"
+            onClick={()=>
+                onChange(
+                    value.actief
+                    ?
+                    emptyExtraKosten()
+                    :
+                    { ...value, actief:true }
                 )
             }
-
-
-        </div>
-
+            className={`
+                px-2.5
+                py-1
+                rounded-full
+                border
+                text-xs
+                whitespace-nowrap
+                ${
+                    value.actief
+                    ?
+                    "bg-amber-100 border-amber-300 text-amber-800"
+                    :
+                    "text-gray-400"
+                }
+            `}
+        >
+            {label}
+        </button>
     );
+}
 
+function ExtraKostenDetails({
+    label,
+    value,
+    onChange
+}:{
+    label:string;
+    value:ExtraKosten;
+    onChange:(value:ExtraKosten)=>void;
+}){
+    return (
+        <div className="
+            border
+            rounded-lg
+            px-3
+            py-2
+            bg-gray-50
+            space-y-2
+            min-w-[9.5rem]
+            flex-1
+        ">
+            <p className="text-xs font-medium text-slate-600">
+                {label}
+            </p>
+            <div className="flex items-center gap-1.5">
+                <span className="text-sm text-gray-500">€</span>
+                <input
+                    inputMode="decimal"
+                    value={value.kosten}
+                    placeholder="0,00"
+                    onChange={(e)=>
+                        onChange({
+                            ...value,
+                            kosten:e.target.value
+                        })
+                    }
+                    className="w-24 border rounded-lg p-1.5 text-sm"
+                />
+            </div>
+            <div className="flex items-center gap-1.5">
+                <span className="text-xs text-gray-500">
+                    Voorgeschoten?
+                </span>
+                <JaNee
+                    compact
+                    value={value.voorgeschoten}
+                    onChange={(v)=>
+                        onChange({
+                            ...value,
+                            voorgeschoten:v
+                        })
+                    }
+                />
+            </div>
+            {
+                value.voorgeschoten === true && (
+                    <p className="text-[11px] leading-snug text-orange-600">
+                        * Vergeet het formulier &apos;Bon declareren&apos; niet.
+                    </p>
+                )
+            }
+        </div>
+    );
+}
+
+
+function KioskBlokken({
+    blokken,
+    onChange
+}:{
+    blokken:KioskBlok[];
+    onChange:(blokken:KioskBlok[])=>void;
+}){
+    function patch(index:number, next:Partial<KioskBlok>){
+        onChange(
+            blokken.map((blok, i)=>
+                i === index ? { ...blok, ...next } : blok
+            )
+        );
+    }
+
+    return (
+        <div className="space-y-3">
+            {
+                blokken.map((blok, index)=>(
+                    <div
+                        key={index}
+                        className="rounded-xl border border-amber-200 bg-white p-3 space-y-2"
+                    >
+                        <div className="flex items-center justify-between gap-2">
+                            <p className="font-semibold text-sm text-gray-800">
+                                Kiosk {index + 1}
+                            </p>
+                            {
+                                blokken.length > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={()=>
+                                            onChange(
+                                                blokken.filter((_, i)=>i !== index)
+                                            )
+                                        }
+                                        className="text-xs text-red-500"
+                                    >
+                                        Verwijderen
+                                    </button>
+                                )
+                            }
+                        </div>
+                        <Keuze
+                            value={blok.status}
+                            options={["Geïnstalleerd", "Gedemonteerd"]}
+                            onChange={(v)=>
+                                patch(index, {
+                                    status:v as KioskBlok["status"]
+                                })
+                            }
+                        />
+                        <div className="flex items-center gap-2">
+                            <input
+                                value={blok.omschrijving}
+                                placeholder="Omschrijving / locatie"
+                                onChange={(e)=>
+                                    patch(index, {
+                                        omschrijving:e.target.value
+                                    })
+                                }
+                                className="flex-1 min-w-0 border rounded-lg p-2 text-sm"
+                            />
+                            <input
+                                inputMode="numeric"
+                                value={blok.aantal}
+                                placeholder="Aantal"
+                                onChange={(e)=>
+                                    patch(index, { aantal:e.target.value })
+                                }
+                                className="w-20 shrink-0 border rounded-lg p-2 text-sm"
+                            />
+                        </div>
+                    </div>
+                ))
+            }
+            <button
+                type="button"
+                onClick={()=>onChange([...blokken, emptyKioskBlok()])}
+                className="text-sm font-semibold text-[#0066FF]"
+            >
+                + Kiosk toevoegen
+            </button>
+        </div>
+    );
 }
 
 
@@ -1789,6 +1855,14 @@ export default function OpleverForm({
     const t = data.tarief;
 
     const i = data.installatie;
+
+    const heeftSchermenData = i.ruimtes.some((r)=>
+        (r.schermen || []).some((s)=>schermHeeftGegevens(s))
+    );
+    const schermenOpen =
+        i.nieuweSchermen === true
+        ||
+        (i.nieuweSchermen !== false && heeftSchermenData);
 
     async function uploadSchermFoto(file:File):Promise<{ url:string; name:string } | null>{
         if(!workorderId){
@@ -2394,62 +2468,86 @@ export default function OpleverForm({
                     space-y-2
                 ">
 
-                    <p className="text-sm">
-
-                        Heb je extra kosten gemaakt?
-
-                    </p>
-
-                    <div className="
-                        flex
-                        flex-wrap
-                        items-start
-                        gap-3
-                    ">
-
-                        <ExtraKostenBlok
-
-                            label="Parkeerkosten"
-
-                            value={t.parkeerkosten}
-
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.tarief.parkeerkosten = v;
-                                })
-                            }
-
-                        />
-
-                        <ExtraKostenBlok
-
-                            label="Materiaal"
-
-                            value={t.materiaalkosten}
-
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.tarief.materiaalkosten = v;
-                                })
-                            }
-
-                        />
-
-                        <ExtraKostenBlok
-
-                            label="Sejour"
-
-                            value={t.sejour}
-
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.tarief.sejour = v;
-                                })
-                            }
-
-                        />
-
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm text-slate-700 flex-1 min-w-0 leading-snug">
+                            Heb je extra kosten gemaakt?
+                        </p>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                            <ExtraKostenChip
+                                label="Parkeren"
+                                value={t.parkeerkosten}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.tarief.parkeerkosten = v;
+                                    })
+                                }
+                            />
+                            <ExtraKostenChip
+                                label="Materiaal"
+                                value={t.materiaalkosten}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.tarief.materiaalkosten = v;
+                                    })
+                                }
+                            />
+                            <ExtraKostenChip
+                                label="Sejour"
+                                value={t.sejour}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.tarief.sejour = v;
+                                    })
+                                }
+                            />
+                        </div>
                     </div>
+
+                    {
+                        (t.parkeerkosten.actief || t.materiaalkosten.actief || t.sejour.actief) && (
+                            <div className="flex flex-wrap gap-2">
+                                {
+                                    t.parkeerkosten.actief && (
+                                        <ExtraKostenDetails
+                                            label="Parkeren"
+                                            value={t.parkeerkosten}
+                                            onChange={(v)=>
+                                                update(draft=>{
+                                                    draft.tarief.parkeerkosten = v;
+                                                })
+                                            }
+                                        />
+                                    )
+                                }
+                                {
+                                    t.materiaalkosten.actief && (
+                                        <ExtraKostenDetails
+                                            label="Materiaal"
+                                            value={t.materiaalkosten}
+                                            onChange={(v)=>
+                                                update(draft=>{
+                                                    draft.tarief.materiaalkosten = v;
+                                                })
+                                            }
+                                        />
+                                    )
+                                }
+                                {
+                                    t.sejour.actief && (
+                                        <ExtraKostenDetails
+                                            label="Sejour"
+                                            value={t.sejour}
+                                            onChange={(v)=>
+                                                update(draft=>{
+                                                    draft.tarief.sejour = v;
+                                                })
+                                            }
+                                        />
+                                    )
+                                }
+                            </div>
+                        )
+                    }
 
                 </div>
 
@@ -2470,82 +2568,307 @@ export default function OpleverForm({
                     rounded-r
                     mb-3
                 ">
-
                     2. Installatie werkzaamheden
-
                 </p>
 
+                <div className="space-y-3 mb-3">
 
-                <InstallatieRuimtesSectie
-                    ruimtes={i.ruimtes}
-                    onRuimtesChange={(ruimtes)=>
-                        update(draft=>{
-                            draft.installatie.ruimtes = ruimtes;
-                        })
-                    }
-                    stroom={i.stroomBlok}
-                    onStroomChange={(v)=>
-                        update(draft=>{
-                            draft.installatie.stroomBlok = v;
-                        })
-                    }
-                    internet={i.internetBlok}
-                    onInternetChange={(v)=>
-                        update(draft=>{
-                            draft.installatie.internetBlok = v;
-                        })
-                    }
-                    uploadFile={uploadSchermFoto}
-                />
+                    <SpecUitklap
+                        titel="1. Schermen"
+                        kleur="bg-sky-50 border-sky-200"
+                        open={schermenOpen}
+                        onToggle={(open)=>
+                            update(draft=>{
+                                draft.installatie.nieuweSchermen = open;
+                            })
+                        }
+                    >
+                        <InstallatieRuimtesSectie
+                            ruimtes={i.ruimtes}
+                            onRuimtesChange={(ruimtes)=>
+                                update(draft=>{
+                                    draft.installatie.ruimtes = ruimtes;
+                                })
+                            }
+                            stroom={i.stroomBlok}
+                            onStroomChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.stroomBlok = v;
+                                })
+                            }
+                            internet={i.internetBlok}
+                            onInternetChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.internetBlok = v;
+                                })
+                            }
+                            uploadFile={uploadSchermFoto}
+                        />
+                    </SpecUitklap>
 
-
-                <div className="mt-6 space-y-3">
-
-                    <SectieTitel>3. Project</SectieTitel>
-
-                    <div className="
-                        flex
-                        flex-col
-                        sm:flex-row
-                        sm:items-center
-                        sm:justify-between
-                        gap-2
-                        sm:gap-4
-                    ">
-                        <p className="text-sm text-slate-700 sm:flex-1">
-                            Is het een project? (offerte basis)
-                        </p>
-                        <div className="sm:flex-shrink-0">
-                            <JaNee
-                                value={i.isProject}
+                    <SpecUitklap
+                        titel="2. Videowall"
+                        kleur="bg-emerald-50 border-emerald-200"
+                        open={i.videowall === true}
+                        onToggle={(open)=>
+                            update(draft=>{
+                                draft.installatie.videowall = open ? true : false;
+                            })
+                        }
+                    >
+                        <Keuze
+                            value={i.videowallStatus}
+                            options={["Geïnstalleerd", "Gedemonteerd"]}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.videowallStatus =
+                                        v as typeof i.videowallStatus;
+                                })
+                            }
+                        />
+                        <div className="flex items-end gap-2">
+                            <label className="flex-1 min-w-0">
+                                <span className="text-xs text-gray-600">
+                                    Horizontaal
+                                </span>
+                                <input
+                                    inputMode="numeric"
+                                    value={i.videowallHorizontaal}
+                                    placeholder="bijv. 3"
+                                    onChange={(e)=>
+                                        update(draft=>{
+                                            draft.installatie.videowallHorizontaal =
+                                                e.target.value;
+                                        })
+                                    }
+                                    className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white"
+                                />
+                            </label>
+                            <span className="pb-2 text-sm text-gray-400">×</span>
+                            <label className="flex-1 min-w-0">
+                                <span className="text-xs text-gray-600">
+                                    Verticaal
+                                </span>
+                                <input
+                                    inputMode="numeric"
+                                    value={i.videowallVerticaal}
+                                    placeholder="bijv. 3"
+                                    onChange={(e)=>
+                                        update(draft=>{
+                                            draft.installatie.videowallVerticaal =
+                                                e.target.value;
+                                        })
+                                    }
+                                    className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white"
+                                />
+                            </label>
+                        </div>
+                        <div>
+                            <span className="text-xs text-gray-600 block mb-1">
+                                Formaat
+                            </span>
+                            <Keuze
+                                value={i.videowallFormaat}
+                                options={SCHERM_FORMATEN}
                                 onChange={(v)=>
                                     update(draft=>{
-                                        draft.installatie.isProject = v;
+                                        draft.installatie.videowallFormaat = v;
                                     })
                                 }
                             />
                         </div>
-                    </div>
-
-                    {
-                        i.isProject === true && (
-                            <div className="sm:w-72">
-                                <span className="block text-sm text-gray-600 mb-1">
-                                    Projectnummer
-                                </span>
+                        {
+                            i.videowallFormaat === "Anders" && (
                                 <input
-                                    value={i.projectNummer}
-                                    placeholder="Projectnummer"
+                                    value={i.videowallFormaatAnders}
+                                    placeholder="Ander formaat"
                                     onChange={(e)=>
                                         update(draft=>{
-                                            draft.installatie.projectNummer = e.target.value;
+                                            draft.installatie.videowallFormaatAnders =
+                                                e.target.value;
                                         })
                                     }
-                                    className="w-full border rounded-xl p-2"
+                                    className="w-full border rounded-lg p-2 text-sm bg-white"
+                                />
+                            )
+                        }
+                        <div>
+                            <span className="text-xs text-gray-600 block mb-1">
+                                Oriëntatie
+                            </span>
+                            <Keuze
+                                value={i.videowallOrientatie}
+                                options={["Landscape", "Portrait"]}
+                                onChange={(v)=>
+                                    update(draft=>{
+                                        draft.installatie.videowallOrientatie =
+                                            v as typeof i.videowallOrientatie;
+                                    })
+                                }
+                            />
+                        </div>
+                    </SpecUitklap>
+
+                    <SpecUitklap
+                        titel="3. Kiosk"
+                        kleur="bg-amber-50 border-amber-200"
+                        open={i.kiosk === true}
+                        onToggle={(open)=>
+                            update(draft=>{
+                                draft.installatie.kiosk = open ? true : false;
+                                if(
+                                    open
+                                    &&
+                                    draft.installatie.kioskBlokken.length === 0
+                                ){
+                                    draft.installatie.kioskBlokken = [
+                                        emptyKioskBlok()
+                                    ];
+                                }
+                            })
+                        }
+                    >
+                        <KioskBlokken
+                            blokken={i.kioskBlokken}
+                            onChange={(blokken)=>
+                                update(draft=>{
+                                    draft.installatie.kioskBlokken = blokken;
+                                })
+                            }
+                        />
+                    </SpecUitklap>
+
+                    <SpecUitklap
+                        titel="4. Mediaplayers"
+                        kleur="bg-violet-50 border-violet-200"
+                        open={!!i.mediaplayers}
+                        onToggle={(open)=>
+                            update(draft=>{
+                                draft.installatie.mediaplayers = open
+                                    ? (draft.installatie.mediaplayers || "Geïnstalleerd")
+                                    : "";
+                            })
+                        }
+                    >
+                        <div className="flex items-center gap-2">
+                            <div className="flex-1 min-w-0">
+                                <Keuze
+                                    value={i.mediaplayers}
+                                    options={["Geïnstalleerd", "Gedemonteerd"]}
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.mediaplayers =
+                                                v as typeof i.mediaplayers;
+                                        })
+                                    }
                                 />
                             </div>
-                        )
-                    }
+                            <input
+                                inputMode="numeric"
+                                value={i.aantalMediaplayers}
+                                placeholder="Aantal"
+                                onChange={(e)=>
+                                    update(draft=>{
+                                        draft.installatie.aantalMediaplayers =
+                                            e.target.value;
+                                    })
+                                }
+                                className="w-20 shrink-0 border rounded-lg p-2 text-sm bg-white"
+                            />
+                        </div>
+                    </SpecUitklap>
+
+                    <SpecUitklap
+                        titel="5. Audio"
+                        kleur="bg-rose-50 border-rose-200"
+                        open={i.audio === true}
+                        onToggle={(open)=>
+                            update(draft=>{
+                                draft.installatie.audio = open ? true : false;
+                            })
+                        }
+                    >
+                        <Keuze
+                            value={i.audioStatus}
+                            options={["Geïnstalleerd", "Gedemonteerd"]}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.audioStatus =
+                                        v as typeof i.audioStatus;
+                                })
+                            }
+                        />
+                        <AudioRegel
+                            label="Audiospeler"
+                            value={i.audioSpeler}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.audioSpeler = v;
+                                })
+                            }
+                        />
+                        <AudioRegel
+                            label="Versterker"
+                            value={i.audioVersterker}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.audioVersterker = v;
+                                })
+                            }
+                        />
+                        <AudioRegel
+                            label="Volumeregelaar"
+                            value={i.audioVolumeregelaar}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.audioVolumeregelaar = v;
+                                })
+                            }
+                        />
+                        <AudioRegel
+                            label="Speakers"
+                            value={i.audioSpeakers}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.audioSpeakers = v;
+                                })
+                            }
+                        />
+                    </SpecUitklap>
+
+                    <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">
+                        <span className="text-sm font-medium text-gray-800 block">
+                            6. Project (offerte-basis) — is het een project?
+                        </span>
+                        <JaNee
+                            value={i.isProject}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.installatie.isProject = v;
+                                })
+                            }
+                        />
+                        {
+                            i.isProject === true && (
+                                <label className="block">
+                                    <span className="text-xs text-gray-600">
+                                        Projectnummer
+                                    </span>
+                                    <input
+                                        value={i.projectNummer}
+                                        placeholder="Projectnummer"
+                                        onChange={(e)=>
+                                            update(draft=>{
+                                                draft.installatie.projectNummer =
+                                                    e.target.value;
+                                            })
+                                        }
+                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                    />
+                                </label>
+                            )
+                        }
+                    </div>
 
                 </div>
 

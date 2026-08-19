@@ -187,12 +187,8 @@ export default function InstallatieRuimtesSectie({
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4">
             <div className="space-y-4">
-                <h2 className="text-sm font-semibold text-gray-800 whitespace-nowrap">
-                    Schermen &amp; installatie
-                </h2>
-
                 {schermKaarten.map(({ ruimteId, scherm }, index) => {
                     const detailOpties =
                         scherm.beugel && scherm.beugel in BEVESTIGING_DETAIL
