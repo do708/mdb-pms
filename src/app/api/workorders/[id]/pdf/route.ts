@@ -8,6 +8,21 @@ import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 export const maxDuration = 60;
+export const runtime = "nodejs";
+
+function pdfDownloadResponse(
+    bytes: Buffer | Uint8Array,
+    filename: string
+) {
+    return new NextResponse(new Uint8Array(bytes), {
+        status: 200,
+        headers: {
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename="${filename}.pdf"`,
+            "Cache-Control": "no-store",
+        },
+    });
+}
 
 export async function GET(
 
@@ -117,7 +132,12 @@ customer:true,
 
 
 
-
+        if (workorder.pdfData && workorder.pdfData.length > 0) {
+            return pdfDownloadResponse(
+                workorder.pdfData,
+                workorder.number
+            );
+        }
 
 
         const pdf =
@@ -225,30 +245,7 @@ customer:true,
 
 
 
-const pdfBuffer =
-    Buffer.from(pdf);
-
-
-
-return new NextResponse(
-
-    pdfBuffer,
-
-    {
-
-        headers:{
-
-            "Content-Type":
-            "application/pdf",
-
-            "Content-Disposition":
-            `attachment; filename=${workorder.number}.pdf`
-
-        }
-
-    }
-
-);
+        return pdfDownloadResponse(pdf, workorder.number);
 
 
 

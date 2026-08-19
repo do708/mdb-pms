@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { launchBrowserForPdf } from "@/lib/pdf/launchBrowserForPdf";
+import { generateOpleverPdf } from "@/lib/pdf/opleverPdf";
 
 
 import {
@@ -558,7 +559,7 @@ function opleverSections(
       ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat === "Anders" ? (i.videowallFormaatAnders || "Anders") : i.videowallFormaat)) : ""}
       ${i.videowall === true && i.videowallOrientatie ? row("Videowall oriëntatie",textAnswer(i.videowallOrientatie)) : ""}
       ${i.kiosk === true ? row("3. Kiosk",pill(i.kiosk)) : ""}
-      ${i.kiosk === true ? i.kioskBlokken.filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
+      ${i.kiosk === true ? (i.kioskBlokken || []).filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
           row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
         ).join("") : ""}
       ${i.mediaplayers ? row("4. Mediaplayers",choicePill(i.mediaplayers)) : ""}
@@ -1150,6 +1151,52 @@ function generateHtml(
 export async function generateWorkorderHtmlPdf(
     data:WorkorderHtmlPdfInput,
     appUrl:string
+):Promise<Buffer> {
+
+
+    try {
+        return await renderWorkorderPdfWithBrowser(data);
+    } catch (error) {
+        console.error("HTML PDF (puppeteer) mislukt, fallback pdf-lib:", error);
+        return await renderWorkorderPdfWithPdfLib(data);
+    }
+
+}
+
+
+async function renderWorkorderPdfWithPdfLib(
+    data:WorkorderHtmlPdfInput
+):Promise<Buffer> {
+
+    const bytes = await generateOpleverPdf({
+        number: data.number,
+        title: data.title,
+        customerName: data.customer.name,
+        customerAddress: data.customer.address,
+        projectName: data.projectName,
+        date: data.plannedDate || data.workDate,
+        engineers: [data.engineerName],
+        hoursTotal: data.hours.reduce(
+            (sum, item) => sum + Number(item.hours),
+            0
+        ),
+        materials: (data.hardware ?? []).map((item) => ({
+            name: item.name,
+            quantity: item.quantity,
+            unit: null,
+        })),
+        photoUrls: data.photos.map((foto) => foto.url),
+        signatureUrl: data.signatureUrl,
+        signedBy: data.signedBy,
+        formData: data.formData,
+    });
+
+    return Buffer.from(bytes);
+}
+
+
+async function renderWorkorderPdfWithBrowser(
+    data:WorkorderHtmlPdfInput
 ):Promise<Buffer> {
 
 

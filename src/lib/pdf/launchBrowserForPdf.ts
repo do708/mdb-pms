@@ -12,11 +12,13 @@ export async function launchBrowserForPdf() {
         const chromium = (await import("@sparticuz/chromium")).default;
         const puppeteer = await import("puppeteer-core");
 
+        chromium.setGraphicsMode = false;
+
         return puppeteer.default.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
+            headless: true,
         });
     }
 
