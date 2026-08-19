@@ -1878,6 +1878,18 @@ async function completeWorkorder(){
                 workorder.plannedReisuren
             }
 
+            onVerstuur={
+                !isOffice
+                && !workorder.sentAt
+                && (status || workorder.status) === "ingepland"
+                ?
+                completeWorkorder
+                :
+                undefined
+            }
+
+            versturenBusy={saving}
+
         />
     )
 }
@@ -1894,7 +1906,7 @@ async function completeWorkorder(){
 
 
             {
-                /* Alleen monteur rondt af ná inplannen. Kantoor ziet de
+                /* Alleen monteur verstuurt ná inplannen. Kantoor ziet de
                    opdracht via Opdrachten (openen / PDF / ZIP). */
                 !isOffice
                 && !workorder.sentAt
@@ -1913,7 +1925,7 @@ async function completeWorkorder(){
                             disabled:opacity-50
                         "
                     >
-                        {saving ? "Bezig..." : "Afronden — status wordt Uitgevoerd"}
+                        {saving ? "Bezig..." : "Verstuur"}
                     </button>
 
                 )

@@ -30,7 +30,7 @@ import {
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
-import { normalizeMac } from "@/types/installatieRuimtes";
+import { normalizeMac, emptyExtra } from "@/types/installatieRuimtes";
 
 
 
@@ -73,6 +73,11 @@ interface Props {
 
     /** Foutmelding van de parent (bijv. bij afronden). */
     error?:string;
+
+    /** Verstuur de werkbon naar kantoor (alleen monteur, ingepland). */
+    onVerstuur?:()=>void;
+
+    versturenBusy?:boolean;
 
 }
 
@@ -967,6 +972,90 @@ function RedenVeld({
 
 
 
+function SectieTitel({
+    children
+}:{
+    children:React.ReactNode;
+}){
+    return (
+        <p className="
+            text-[13px]
+            font-semibold
+            text-slate-700
+            bg-slate-50
+            border-l-2
+            border-blue-500
+            px-3
+            py-1.5
+            rounded-r
+            mb-3
+        ">
+            {children}
+        </p>
+    );
+}
+
+
+function ExtraDienstenKeuzes({
+    extra,
+    onChange
+}:{
+    extra:OpleverData["installatie"]["extra"];
+    onChange:(next:OpleverData["installatie"]["extra"])=>void;
+}){
+    return (
+        <div className="space-y-3">
+            {(
+                [
+                    ["afval", "afvalAantal", "Afval/verpakking afvoeren"],
+                    ["afvoerTm50", "afvoerTm50Aantal", 'Oud scherm afvoeren (t/m 50")'],
+                    ["afvoerVanaf50", "afvoerVanaf50Aantal", 'Oud scherm afvoeren (vanaf 50")'],
+                ] as const
+            ).map(([key, aantalKey, label]) => (
+                <div
+                    key={key}
+                    className="flex items-center gap-3 rounded-xl border px-3 py-2.5 bg-white"
+                >
+                    <label className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={extra[key]}
+                            onChange={(e) =>
+                                onChange({
+                                    ...extra,
+                                    [key]: e.target.checked,
+                                    [aantalKey]: e.target.checked
+                                        ? extra[aantalKey]
+                                        : "",
+                                })
+                            }
+                            className="h-4 w-4 accent-[#0066FF] shrink-0"
+                        />
+                        <span className="text-sm text-gray-800">
+                            {label}
+                        </span>
+                    </label>
+                    {extra[key] ? (
+                        <input
+                            inputMode="numeric"
+                            value={extra[aantalKey]}
+                            placeholder="Aantal"
+                            onChange={(e) =>
+                                onChange({
+                                    ...extra,
+                                    [aantalKey]: e.target.value,
+                                })
+                            }
+                            className="w-20 shrink-0 border rounded-lg p-1.5 text-sm"
+                        />
+                    ) : null}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+
 function Kop({
 
     children
@@ -1476,7 +1565,11 @@ export default function OpleverForm({
 
     aanvraagSpecificaties,
 
-    error
+    error,
+
+    onVerstuur,
+
+    versturenBusy = false
 
 }:Props){
 
@@ -2411,17 +2504,13 @@ export default function OpleverForm({
                             draft.installatie.internetBlok = v;
                         })
                     }
-                    extra={i.extra}
-                    onExtraChange={(v)=>
-                        update(draft=>{
-                            draft.installatie.extra = v;
-                        })
-                    }
                     uploadFile={uploadSchermFoto}
                 />
 
 
-                <div className="border-b border-slate-100 py-2.5 mt-6 space-y-3">
+                <div className="mt-6 space-y-3">
+
+                    <SectieTitel>4. Project</SectieTitel>
 
                     <div className="
                         flex
@@ -2433,7 +2522,7 @@ export default function OpleverForm({
                         sm:gap-4
                     ">
                         <p className="text-sm text-slate-700 sm:flex-1">
-                            4. Project (offerte basis) — is het een project?
+                            Is het een project? (offerte basis)
                         </p>
                         <div className="sm:flex-shrink-0">
                             <JaNee
@@ -3476,16 +3565,7 @@ export default function OpleverForm({
                                 return (
                                     <div
                                         key={locatie}
-                                        className="
-                                            flex
-                                            flex-col
-                                            gap-2
-                                            min-w-0
-                                            sm:grid
-                                            sm:grid-cols-[minmax(0,13rem)_auto]
-                                            sm:items-center
-                                            sm:gap-3
-                                        "
+                                        className="flex items-center gap-2 min-w-0"
                                     >
                                         <button
                                             type="button"
@@ -3508,8 +3588,8 @@ export default function OpleverForm({
                                                 border
                                                 text-sm
                                                 text-left
-                                                w-full
                                                 min-w-0
+                                                flex-1
                                                 transition
                                                 ${
                                                     actief
@@ -3524,14 +3604,7 @@ export default function OpleverForm({
                                             <span className="truncate">{locatie}</span>
                                         </button>
 
-                                        <div className={`
-                                            flex
-                                            items-center
-                                            gap-2
-                                            min-w-0
-                                            ${actief ? "flex" : "hidden sm:flex sm:invisible"}
-                                        `}>
-                                            <span className="text-sm text-slate-500 shrink-0">Aantal:</span>
+                                        {actief ? (
                                             <input
                                                 inputMode="numeric"
                                                 value={c.mediaplayerLocaties[locatie] ?? ""}
@@ -3542,9 +3615,9 @@ export default function OpleverForm({
                                                         [locatie]:e.target.value
                                                     };
                                                 })}
-                                                className="w-20 max-w-full min-w-0 border rounded-lg p-1.5 text-sm"
+                                                className="w-20 shrink-0 border rounded-lg p-1.5 text-sm"
                                             />
-                                        </div>
+                                        ) : null}
                                     </div>
                                 );
 
@@ -3562,8 +3635,24 @@ export default function OpleverForm({
                         neeKleur="green"
                         onChange={(v)=>update(draft=>{
                             draft.checklist.afvalverwijdering = v;
+                            if(v === false){
+                                draft.installatie.extra = emptyExtra();
+                            }
                         })}
                     />
+                    {
+                        c.afvalverwijdering === true && (
+                            <div className="space-y-3 pt-1">
+                                <SectieTitel>3. Extra diensten</SectieTitel>
+                                <ExtraDienstenKeuzes
+                                    extra={i.extra}
+                                    onChange={(next)=>update(draft=>{
+                                        draft.installatie.extra = next;
+                                    })}
+                                />
+                            </div>
+                        )
+                    }
                 </ChecklistVraag>
 
             </div>
@@ -3700,59 +3789,19 @@ export default function OpleverForm({
                     <label className="block">
 
                         <span className="text-sm font-medium text-gray-700 mb-1 block">
-                            Meerwerk- en materiaal geleverd
+                            Netwerkverbinding mediaspelers gecontroleerd door
                         </span>
 
-                        <textarea
-                            rows={3}
-                            value={data.afronding.meerwerkMateriaal}
+                        <input
+                            value={data.afronding.netwerkGecontroleerdDoor}
+                            placeholder="Naam"
                             onChange={(e)=>update(draft=>{
-                                draft.afronding.meerwerkMateriaal = e.target.value;
+                                draft.afronding.netwerkGecontroleerdDoor = e.target.value;
                             })}
                             className="w-full border rounded-xl p-3"
                         />
 
                     </label>
-
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                        <label className="block">
-
-                            <span className="text-sm font-medium text-gray-700 mb-1 block">
-                                Meerarbeid en -materialen geleverd in opdracht van
-                            </span>
-
-                            <input
-                                value={data.afronding.meerwerkInOpdrachtVan}
-                                placeholder="Naam contactpersoon"
-                                onChange={(e)=>update(draft=>{
-                                    draft.afronding.meerwerkInOpdrachtVan = e.target.value;
-                                })}
-                                className="w-full border rounded-xl p-3"
-                            />
-
-                        </label>
-
-
-                        <label className="block">
-
-                            <span className="text-sm font-medium text-gray-700 mb-1 block">
-                                Netwerkverbinding mediaspelers gecontroleerd door
-                            </span>
-
-                            <input
-                                value={data.afronding.netwerkGecontroleerdDoor}
-                                placeholder="Naam"
-                                onChange={(e)=>update(draft=>{
-                                    draft.afronding.netwerkGecontroleerdDoor = e.target.value;
-                                })}
-                                className="w-full border rounded-xl p-3"
-                            />
-
-                        </label>
-
-                    </div>
 
                 </div>
 
@@ -3861,6 +3910,30 @@ export default function OpleverForm({
 
                     </button>
 
+                )
+            }
+
+            {
+                onVerstuur && (
+                    <div className="pt-1 space-y-1.5">
+                        <button
+                            type="button"
+                            onClick={onVerstuur}
+                            disabled={versturenBusy}
+                            className="
+                                w-full
+                                bg-[#d6007e] text-white
+                                rounded-lg px-4 py-2.5
+                                text-sm font-semibold
+                                disabled:opacity-50
+                            "
+                        >
+                            {versturenBusy ? "Bezig..." : "Verstuur"}
+                        </button>
+                        <p className="text-xs text-slate-500">
+                            Verstuurt de werkbon naar kantoor.
+                        </p>
+                    </div>
                 )
             }
 

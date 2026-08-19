@@ -10,7 +10,6 @@ import {
     isPlayerAansturing,
 } from "@/lib/aanvraag/installatieTypes";
 import {
-    ExtraDiensten,
     InstallatieRuimte,
     InstallatieScherm,
     KABEL_TRAJECT_P25,
@@ -114,8 +113,6 @@ interface Props {
     onStroomChange: (v: StroomInternetBlok) => void;
     internet: StroomInternetBlok;
     onInternetChange: (v: StroomInternetBlok) => void;
-    extra: ExtraDiensten;
-    onExtraChange: (v: ExtraDiensten) => void;
     opmerkingen?: string;
     onOpmerkingenChange?: (v: string) => void;
     showOpmerkingen?: boolean;
@@ -125,8 +122,6 @@ interface Props {
 export default function InstallatieRuimtesSectie({
     ruimtes,
     onRuimtesChange,
-    extra,
-    onExtraChange,
     opmerkingen = "",
     onOpmerkingenChange,
     showOpmerkingen = false,
@@ -755,68 +750,6 @@ export default function InstallatieRuimtesSectie({
                         </div>
                     );
                 })}
-            </div>
-
-            <div className="space-y-3">
-                <p className="
-                    text-[13px]
-                    font-semibold
-                    text-slate-700
-                    bg-slate-50
-                    border-l-2
-                    border-blue-500
-                    px-3
-                    py-1.5
-                    rounded-r
-                ">
-                    3. Extra diensten
-                </p>
-                {(
-                    [
-                        ["afval", "afvalAantal", "Afval/verpakking afvoeren"],
-                        ["afvoerTm50", "afvoerTm50Aantal", 'Oud scherm afvoeren (t/m 50")'],
-                        ["afvoerVanaf50", "afvoerVanaf50Aantal", 'Oud scherm afvoeren (vanaf 50")'],
-                    ] as const
-                ).map(([key, aantalKey, label]) => (
-                    <div
-                        key={key}
-                        className="flex items-center gap-3 rounded-xl border px-3 py-2.5 bg-white"
-                    >
-                        <label className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={extra[key]}
-                                onChange={(e) =>
-                                    onExtraChange({
-                                        ...extra,
-                                        [key]: e.target.checked,
-                                        [aantalKey]: e.target.checked
-                                            ? extra[aantalKey]
-                                            : "",
-                                    })
-                                }
-                                className="h-4 w-4 accent-[#0066FF] shrink-0"
-                            />
-                            <span className="text-sm text-gray-800">
-                                {label}
-                            </span>
-                        </label>
-                        {extra[key] ? (
-                            <input
-                                inputMode="numeric"
-                                value={extra[aantalKey]}
-                                placeholder="Aantal"
-                                onChange={(e) =>
-                                    onExtraChange({
-                                        ...extra,
-                                        [aantalKey]: e.target.value,
-                                    })
-                                }
-                                className="w-20 shrink-0 border rounded-lg p-1.5 text-sm"
-                            />
-                        ) : null}
-                    </div>
-                ))}
             </div>
 
             {showOpmerkingen && onOpmerkingenChange ? (
