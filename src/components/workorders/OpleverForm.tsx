@@ -2697,6 +2697,7 @@ export default function OpleverForm({
                                     });
                                 })
                             }
+                            formaatAlsSelect
                         />
                         </div>
                     </SpecUitklap>

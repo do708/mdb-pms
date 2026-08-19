@@ -23,6 +23,7 @@ interface Props {
     onChange: (veld: string, waarde: string) => void;
     onPatch: (patch: Record<string, string>) => void;
     onToggleFormaat: (optie: string) => void;
+    formaatAlsSelect?: boolean;
 }
 
 export default function VideowallSpecificatie({
@@ -30,6 +31,7 @@ export default function VideowallSpecificatie({
     onChange,
     onPatch,
     onToggleFormaat,
+    formaatAlsSelect = false,
 }: Props) {
     const type = velden.type || "";
     const gekozenFormaten = parseGekozenOpties(velden.formaat || "");
@@ -88,8 +90,49 @@ export default function VideowallSpecificatie({
 
                     <div className="space-y-2">
                         <span className="text-xs text-gray-600 block">
-                            Formaat / inch (meerdere mogelijk)
+                            Formaat / inch
+                            {formaatAlsSelect ? "" : " (meerdere mogelijk)"}
                         </span>
+                        {formaatAlsSelect ? (
+                            <>
+                                <select
+                                    value={
+                                        VIDEOWALL_FORMATEN.includes(
+                                            gekozenFormaten[0] as (typeof VIDEOWALL_FORMATEN)[number]
+                                        )
+                                            ? gekozenFormaten[0]
+                                            : ""
+                                    }
+                                    onChange={(e) =>
+                                        onChange("formaat", e.target.value)
+                                    }
+                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                >
+                                    <option value="">
+                                        Kies formaat
+                                    </option>
+                                    {VIDEOWALL_FORMATEN.map((optie) => (
+                                        <option key={optie} value={optie}>
+                                            {optie}
+                                        </option>
+                                    ))}
+                                </select>
+                                {gekozenFormaten[0] === "Anders" ? (
+                                    <input
+                                        value={velden.formaatAnders || ""}
+                                        onChange={(e) =>
+                                            onChange(
+                                                "formaatAnders",
+                                                e.target.value
+                                            )
+                                        }
+                                        placeholder="Anders formaat (inch)"
+                                        className="w-full border rounded-lg p-2 bg-white"
+                                    />
+                                ) : null}
+                            </>
+                        ) : (
+                            <>
                         <div className="flex flex-wrap gap-2">
                             {VIDEOWALL_FORMATEN.map((optie) => {
                                 const pastel = FORMAAT_PASTEL[optie];
@@ -130,6 +173,8 @@ export default function VideowallSpecificatie({
                                 className="w-full border rounded-lg p-2 bg-white"
                             />
                         ) : null}
+                            </>
+                        )}
                     </div>
 
                     <div className="space-y-1.5">
