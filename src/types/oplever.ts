@@ -13,6 +13,7 @@ import {
     emptyScherm,
     emptyStroomInternet,
     normalizeMac,
+    normalizeP25WandTraject,
 } from "@/types/installatieRuimtes";
 
 export const OPDRACHTGEVERS = [
@@ -683,12 +684,12 @@ export function mergeOpleverData(
                                     const ori = String(merged.orientatie || "");
                                     if(ori === "landscape") merged.orientatie = "Landscape";
                                     if(ori === "portrait") merged.orientatie = "Portrait";
-                                    if(merged.stroomTraject === "P25 wand"){
-                                        merged.stroomTraject = "P25 Wand";
-                                    }
-                                    if(merged.internetTraject === "P25 wand"){
-                                        merged.internetTraject = "P25 Wand";
-                                    }
+                                    merged.stroomTraject = normalizeP25WandTraject(
+                                        merged.stroomTraject || ""
+                                    );
+                                    merged.internetTraject = normalizeP25WandTraject(
+                                        merged.internetTraject || ""
+                                    );
                                     merged.mac = normalizeMac(merged.mac || "");
                                     merged.playerMac = normalizeMac(merged.playerMac || "");
                                     if(!merged.locatie && r.naam){

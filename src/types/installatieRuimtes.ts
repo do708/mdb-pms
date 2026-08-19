@@ -141,6 +141,19 @@ export const KABEL_TRAJECT_INTERNET = [
     "Wi-Fi gewenst",
 ];
 
+/** Kabeltraject-keuzes op de werkbon (stroom/internet per scherm). */
+export const KABEL_TRAJECT_P25 = ["P25 - Wand", "Systeemplafond"] as const;
+
+const P25_WAND_OUD = new Set(["P25 wand", "P25 Wand"]);
+
+/** Oude opgeslagen labels naar de huidige naam. */
+export function normalizeP25WandTraject(value: string): string {
+    if (P25_WAND_OUD.has(value)) {
+        return "P25 - Wand";
+    }
+    return value;
+}
+
 function uid(): string {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -198,11 +211,11 @@ export function specsVanScherm(
         stroom: s.stroom,
         stroomGerealiseerd: s.stroomGerealiseerd,
         stroomMeter: s.stroomMeter,
-        stroomTraject: s.stroomTraject,
+        stroomTraject: normalizeP25WandTraject(s.stroomTraject),
         internet: s.internet,
         internetGerealiseerd: s.internetGerealiseerd,
         internetMeter: s.internetMeter,
-        internetTraject: s.internetTraject,
+        internetTraject: normalizeP25WandTraject(s.internetTraject),
         merkType: s.merkType,
         serienummer: s.serienummer,
         mac: normalizeMac(s.mac),

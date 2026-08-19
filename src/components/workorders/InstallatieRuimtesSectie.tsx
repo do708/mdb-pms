@@ -13,6 +13,7 @@ import {
     ExtraDiensten,
     InstallatieRuimte,
     InstallatieScherm,
+    KABEL_TRAJECT_P25,
     StroomInternetBlok,
     emptyRuimte,
     normalizeMac,
@@ -90,8 +91,6 @@ function JaNeeKleur({
         </div>
     );
 }
-
-const KABEL_TRAJECT_P25 = ["P25 Wand", "Systeemplafond"] as const;
 
 function schermSpecsGevuld(s: InstallatieScherm): boolean {
     const formaatOk =
