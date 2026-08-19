@@ -20,6 +20,7 @@ import {
     specsVanScherm,
     syncSchermen,
 } from "@/types/installatieRuimtes";
+import { ActieKeuze } from "@/components/workorders/WerkzaamheidActies";
 
 function Chips({
     options,
@@ -188,6 +189,11 @@ export default function InstallatieRuimtesSectie({
 
     return (
         <div className="space-y-4">
+            <p className="text-xs text-gray-500 leading-snug">
+                Per scherm kies je monteren, herplaatsen of demonteren.
+                Meerdere schermen mogelijk — bijvoorbeeld 2 demonteren en
+                4 nieuwe monteren, of 2 demonteren en elders herplaatsen.
+            </p>
             <div className="space-y-4">
                 {schermKaarten.map(({ ruimteId, scherm }, index) => {
                     const detailOpties =
@@ -219,6 +225,7 @@ export default function InstallatieRuimtesSectie({
                             <div className="flex items-center justify-between gap-2">
                                 <p className="font-semibold text-sm text-gray-800">
                                     Scherm {index + 1}
+                                    {scherm.actie ? ` · ${scherm.actie}` : ""}
                                 </p>
                                 {schermKaarten.length > 1 ? (
                                     <button
@@ -232,6 +239,15 @@ export default function InstallatieRuimtesSectie({
                                     </button>
                                 ) : null}
                             </div>
+                            <ActieKeuze
+                                value={scherm.actie || ""}
+                                label="Wat is er met dit scherm gedaan?"
+                                onChange={(v) =>
+                                    updateScherm(ruimteId, scherm.id, {
+                                        actie: v,
+                                    })
+                                }
+                            />
                             {bronnen.length > 0 ? (
                                     <div className="flex flex-wrap gap-x-3 gap-y-1">
                                         {bronnen.map((bron) => (
