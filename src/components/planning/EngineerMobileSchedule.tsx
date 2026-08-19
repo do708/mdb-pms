@@ -12,6 +12,7 @@ interface PlanningItem {
     plannedDate: string | null;
     plannedEndDate: string | null;
     location: string | null;
+    city: string | null;
     customer?: { name: string; color?: string } | null;
     project?: {
         name: string;
@@ -214,6 +215,11 @@ export default function EngineerMobileSchedule({
             item.customer?.name ||
             item.project?.customer?.name ||
             "—";
+        const locatieNaam = item.title?.trim() || "—";
+        const adres = [item.location, item.city]
+            .map((v) => (v || "").trim())
+            .filter(Boolean)
+            .join(", ");
         const status = getStatus(migrateStatus(item.status));
 
         return (
@@ -230,11 +236,16 @@ export default function EngineerMobileSchedule({
                             <p className="text-xs font-semibold text-[#0066FF] tabular-nums">
                                 {timeLabel(item)}
                             </p>
-                            <p className="font-bold text-sm text-gray-900 mt-0.5">
-                                {item.number}
+                            <p className="font-bold text-sm text-gray-900 mt-0.5 leading-snug">
+                                {locatieNaam}
                             </p>
-                            <p className="text-sm text-gray-800 leading-snug">
-                                {item.title}
+                            {adres ? (
+                                <p className="text-sm text-gray-700 leading-snug mt-0.5">
+                                    {adres}
+                                </p>
+                            ) : null}
+                            <p className="text-xs text-gray-500 leading-snug mt-0.5">
+                                {klant}
                             </p>
                         </div>
                         <span
@@ -246,12 +257,6 @@ export default function EngineerMobileSchedule({
                             {status.label}
                         </span>
                     </div>
-
-                    <p className="text-xs text-gray-500 leading-snug">
-                        {klant}
-                        {item.location ? ` · ${item.location}` : ""}
-                        {item.project?.name ? ` · ${item.project.name}` : ""}
-                    </p>
 
                     <Link
                         href={`/engineer/workorders/${item.id}`}
