@@ -315,6 +315,34 @@ export default function EngineerMobileSchedule({
             );
         }
 
+        const timeline = [
+            ...jobs.map((item) => ({
+                kind: "job" as const,
+                id: item.id,
+                sort: item.plannedDate
+                    ? new Date(item.plannedDate).getTime()
+                    : 0,
+                item,
+            })),
+            ...dayEvents.map((event) => {
+                const start = event.startAt
+                    ? new Date(event.startAt)
+                    : null;
+                const startedEarlier =
+                    start && toIsoDate(start) < dayIso;
+                const sort =
+                    event.allDay || !start || startedEarlier
+                        ? 0
+                        : start.getTime();
+                return {
+                    kind: "event" as const,
+                    id: event.id,
+                    sort,
+                    event,
+                };
+            }),
+        ].sort((a, b) => a.sort - b.sort);
+
         return (
             <div className="space-y-2">
                 {hasLeave && (
@@ -325,12 +353,13 @@ export default function EngineerMobileSchedule({
                         Verlof
                     </div>
                 )}
-                {dayEvents.map((ev) => (
-                    <EventCard key={ev.id} event={ev} />
-                ))}
-                {jobs.map((item) => (
-                    <JobCard key={item.id} item={item} />
-                ))}
+                {timeline.map((entry) =>
+                    entry.kind === "event" ? (
+                        <EventCard key={entry.id} event={entry.event} />
+                    ) : (
+                        <JobCard key={entry.id} item={entry.item} />
+                    )
+                )}
             </div>
         );
     }
