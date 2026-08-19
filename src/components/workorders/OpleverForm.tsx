@@ -29,7 +29,6 @@ import {
 
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
-import { ActieAantallen, ActieKeuze } from "@/components/workorders/WerkzaamheidActies";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
 import { normalizeMac, emptyExtra, schermHeeftGegevens } from "@/types/installatieRuimtes";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
@@ -1311,7 +1310,6 @@ function KioskBlokken({
                         <div className="flex items-center justify-between gap-2">
                             <p className="font-semibold text-sm text-gray-800">
                                 Kiosk {index + 1}
-                                {blok.status ? ` · ${blok.status}` : ""}
                             </p>
                             {
                                 blokken.length > 1 && (
@@ -1329,12 +1327,12 @@ function KioskBlokken({
                                 )
                             }
                         </div>
-                        <ActieKeuze
+                        <Keuze
                             value={blok.status}
-                            label="Wat is er met deze kiosk gedaan?"
+                            options={["Geïnstalleerd", "Gedemonteerd"]}
                             onChange={(v)=>
                                 patch(index, {
-                                    status:v
+                                    status:v as KioskBlok["status"]
                                 })
                             }
                         />
@@ -2674,23 +2672,6 @@ export default function OpleverForm({
                         }
                     >
                         <div className="rounded-xl bg-white p-3 space-y-3 border border-emerald-100">
-                        <p className="text-xs text-gray-500 leading-snug">
-                            Meerdere acties mogelijk — bijvoorbeeld 1 videowall
-                            demonteren en 1 nieuwe monteren, of herplaatsen.
-                        </p>
-                        <ActieAantallen
-                            label="Wat is er met de videowall(s) gedaan?"
-                            value={{
-                                Monteren: videowallVeldenVan(i).Monteren || "",
-                                Herplaatsen: videowallVeldenVan(i).Herplaatsen || "",
-                                Demonteren: videowallVeldenVan(i).Demonteren || ""
-                            }}
-                            onChange={(next)=>
-                                update(draft=>{
-                                    patchVideowallVelden(draft, next);
-                                })
-                            }
-                        />
                         <VideowallSpecificatie
                             velden={videowallVeldenVan(i)}
                             onChange={(veld, waarde)=>
@@ -2740,10 +2721,6 @@ export default function OpleverForm({
                             })
                         }
                     >
-                        <p className="text-xs text-gray-500 leading-snug mb-3">
-                            Per kiosk: monteren, herplaatsen of demonteren.
-                            Meerdere kiosks mogelijk.
-                        </p>
                         <KioskBlokken
                             blokken={i.kioskBlokken}
                             onChange={(blokken)=>
@@ -2766,39 +2743,32 @@ export default function OpleverForm({
                             })
                         }
                     >
-                        <p className="text-xs text-gray-500 leading-snug">
-                            Meerdere acties mogelijk — bijvoorbeeld 2
-                            demonteren en 4 nieuwe monteren, of herplaatsen.
-                        </p>
-                        <ActieAantallen
-                            label="Wat is er met de mediaplayer(s) gedaan?"
-                            value={{
-                                Monteren: i.mediaplayersMonteren || "",
-                                Herplaatsen: i.mediaplayersHerplaatsen || "",
-                                Demonteren: i.mediaplayersDemonteren || ""
-                            }}
-                            onChange={(next)=>
-                                update(draft=>{
-                                    draft.installatie.mediaplayersMonteren =
-                                        next.Monteren;
-                                    draft.installatie.mediaplayersHerplaatsen =
-                                        next.Herplaatsen;
-                                    draft.installatie.mediaplayersDemonteren =
-                                        next.Demonteren;
-                                    const totaal =
-                                        [next.Monteren, next.Herplaatsen, next.Demonteren]
-                                            .map((v)=>{
-                                                const n = parseInt(String(v || ""), 10);
-                                                return Number.isFinite(n) && n > 0 ? n : 0;
-                                            })
-                                            .reduce((a, b)=>a + b, 0);
-                                    if(totaal > 0){
-                                        draft.installatie.aantalMediaplayers =
-                                            String(totaal);
+                        <div className="flex items-center gap-2">
+                            <div className="flex-1 min-w-0">
+                                <Keuze
+                                    value={i.mediaplayers}
+                                    options={["Geïnstalleerd", "Gedemonteerd"]}
+                                    onChange={(v)=>
+                                        update(draft=>{
+                                            draft.installatie.mediaplayers =
+                                                v as typeof i.mediaplayers;
+                                        })
                                     }
-                                })
-                            }
-                        />
+                                />
+                            </div>
+                            <input
+                                inputMode="numeric"
+                                value={i.aantalMediaplayers}
+                                placeholder="Aantal"
+                                onChange={(e)=>
+                                    update(draft=>{
+                                        draft.installatie.aantalMediaplayers =
+                                            e.target.value;
+                                    })
+                                }
+                                className="w-20 shrink-0 border rounded-lg p-2 text-sm bg-white"
+                            />
+                        </div>
                     </SpecUitklap>
 
                     <SpecUitklap
@@ -2812,25 +2782,13 @@ export default function OpleverForm({
                         }
                     >
                         <div className="rounded-xl bg-white p-3 space-y-3 border border-rose-100">
-                        <p className="text-xs text-gray-500 leading-snug">
-                            Meerdere acties mogelijk — bijvoorbeeld apparatuur
-                            demonteren en elders herplaatsen, of nieuw monteren.
-                        </p>
-                        <ActieAantallen
-                            label="Wat is er met de audio gedaan?"
-                            value={{
-                                Monteren: i.audioMonteren || "",
-                                Herplaatsen: i.audioHerplaatsen || "",
-                                Demonteren: i.audioDemonteren || ""
-                            }}
-                            onChange={(next)=>
+                        <Keuze
+                            value={i.audioStatus}
+                            options={["Geïnstalleerd", "Gedemonteerd"]}
+                            onChange={(v)=>
                                 update(draft=>{
-                                    draft.installatie.audioMonteren =
-                                        next.Monteren;
-                                    draft.installatie.audioHerplaatsen =
-                                        next.Herplaatsen;
-                                    draft.installatie.audioDemonteren =
-                                        next.Demonteren;
+                                    draft.installatie.audioStatus =
+                                        v as typeof i.audioStatus;
                                 })
                             }
                         />

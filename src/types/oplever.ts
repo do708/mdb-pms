@@ -169,9 +169,6 @@ export interface OpleverData {
 
         mediaplayers:"" | "Geïnstalleerd" | "Gedemonteerd";
         aantalMediaplayers:string;
-        mediaplayersMonteren:string;
-        mediaplayersHerplaatsen:string;
-        mediaplayersDemonteren:string;
 
         audio:boolean | null;
         audioStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
@@ -183,9 +180,6 @@ export interface OpleverData {
         audioAndersAantal:string;
         audioOmschrijving:string;
         audioAantal:string;
-        audioMonteren:string;
-        audioHerplaatsen:string;
-        audioDemonteren:string;
         audioSpelerItems:MateriaalStuk[];
         audioVersterkerItems:MateriaalStuk[];
         audioVolumeregelaarItems:MateriaalStuk[];
@@ -377,7 +371,7 @@ export interface HardwareRegel {
 
 
 export interface KioskBlok {
-    status:"" | "Monteren" | "Herplaatsen" | "Demonteren" | "Geïnstalleerd" | "Gedemonteerd";
+    status:"" | "Geïnstalleerd" | "Gedemonteerd";
     omschrijving:string;
     aantal:string;
 }
@@ -389,53 +383,6 @@ export function emptyKioskBlok():KioskBlok {
         omschrijving:"",
         aantal:""
     };
-}
-
-
-export type InstallatieActie = "Monteren" | "Herplaatsen" | "Demonteren";
-
-
-/** Oude Geïnstalleerd/Gedemonteerd-waarden naar Monteren/Herplaatsen/Demonteren. */
-export function normalizeInstallatieActie(
-    value:string
-):InstallatieActie | "" {
-    if(
-        value === "Monteren"
-        ||
-        value === "Geïnstalleerd"
-        ||
-        value === "Nieuw gemonteerd"
-    ){
-        return "Monteren";
-    }
-    if(
-        value === "Herplaatsen"
-        ||
-        value === "Hergebruikt gemonteerd"
-    ){
-        return "Herplaatsen";
-    }
-    if(
-        value === "Demonteren"
-        ||
-        value === "Gedemonteerd"
-    ){
-        return "Demonteren";
-    }
-    return "";
-}
-
-
-export function formatActieAantallenTekst(
-    monteren:string,
-    herplaatsen:string,
-    demonteren:string
-):string {
-    return [
-        (monteren || "").trim() ? `Monteren: ${(monteren || "").trim()}` : "",
-        (herplaatsen || "").trim() ? `Herplaatsen: ${(herplaatsen || "").trim()}` : "",
-        (demonteren || "").trim() ? `Demonteren: ${(demonteren || "").trim()}` : ""
-    ].filter(Boolean).join(" · ");
 }
 
 
@@ -518,9 +465,6 @@ export function emptyOpleverData():OpleverData {
             kioskBlokken:[],
             mediaplayers:"",
             aantalMediaplayers:"",
-            mediaplayersMonteren:"",
-            mediaplayersHerplaatsen:"",
-            mediaplayersDemonteren:"",
             audio:null,
             audioStatus:"",
             audioSpeler:"",
@@ -531,9 +475,6 @@ export function emptyOpleverData():OpleverData {
             audioAndersAantal:"",
             audioOmschrijving:"",
             audioAantal:"",
-            audioMonteren:"",
-            audioHerplaatsen:"",
-            audioDemonteren:"",
             audioSpelerItems:[],
             audioVersterkerItems:[],
             audioVolumeregelaarItems:[],
@@ -1141,75 +1082,6 @@ export function mergeOpleverData(
     }
 
 
-    // Monteren / herplaatsen / demonteren naast elkaar (oude Ja-status migreren)
-    merged.installatie.kioskBlokken =
-        merged.installatie.kioskBlokken.map((blok)=>({
-            ...blok,
-            status:
-                normalizeInstallatieActie(blok.status)
-                ||
-                blok.status
-        }));
-
-    {
-        const vw = merged.installatie.videowallVelden;
-        if(!(vw.Monteren || vw.Herplaatsen || vw.Demonteren)){
-            if(merged.installatie.videowallStatus === "Geïnstalleerd"){
-                vw.Monteren = merged.installatie.videowallAantal || "1";
-            } else if(merged.installatie.videowallStatus === "Gedemonteerd"){
-                vw.Demonteren = merged.installatie.videowallAantal || "1";
-            }
-        }
-    }
-
-    if(
-        !(
-            merged.installatie.mediaplayersMonteren
-            ||
-            merged.installatie.mediaplayersHerplaatsen
-            ||
-            merged.installatie.mediaplayersDemonteren
-        )
-    ){
-        if(merged.installatie.mediaplayers === "Geïnstalleerd"){
-            merged.installatie.mediaplayersMonteren =
-                merged.installatie.aantalMediaplayers || "";
-        } else if(merged.installatie.mediaplayers === "Gedemonteerd"){
-            merged.installatie.mediaplayersDemonteren =
-                merged.installatie.aantalMediaplayers || "";
-        }
-    }
-
-    if(
-        !(
-            merged.installatie.audioMonteren
-            ||
-            merged.installatie.audioHerplaatsen
-            ||
-            merged.installatie.audioDemonteren
-        )
-    ){
-        if(merged.installatie.audioStatus === "Geïnstalleerd"){
-            merged.installatie.audioMonteren =
-                merged.installatie.audioAantal || "1";
-        } else if(merged.installatie.audioStatus === "Gedemonteerd"){
-            merged.installatie.audioDemonteren =
-                merged.installatie.audioAantal || "1";
-        }
-    }
-
-    for(const ruimte of merged.installatie.ruimtes){
-        for(const scherm of ruimte.schermen){
-            const genormaliseerd = normalizeInstallatieActie(scherm.actie);
-            if(genormaliseerd){
-                scherm.actie = genormaliseerd;
-            } else if(!scherm.actie && ruimte.actie){
-                if(ruimte.actie === "nieuw") scherm.actie = "Monteren";
-                else if(ruimte.actie === "hergebruikt") scherm.actie = "Herplaatsen";
-                else if(ruimte.actie === "gedemonteerd") scherm.actie = "Demonteren";
-            }
-        }
-    }
 
 
     normalizeOpleverMacs(merged);

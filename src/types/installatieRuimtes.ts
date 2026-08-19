@@ -37,7 +37,6 @@ export interface InstallatieScherm {
     aansturingAnders: string;
     orientatie: string;
     locatie: string;
-    actie: string;
     stroom: "" | "Ja" | "Nee";
     stroomGerealiseerd: "" | "Ja" | "Nee";
     stroomMeter: string;
@@ -180,7 +179,6 @@ export function schermHeeftGegevens(s: InstallatieScherm): boolean {
         || (s.aansturingAnders || "").trim()
         || s.orientatie
         || (s.locatie || "").trim()
-        || s.actie
         || s.stroom
         || s.stroomGerealiseerd
         || (s.stroomMeter || "").trim()
@@ -201,7 +199,7 @@ export function schermHeeftGegevens(s: InstallatieScherm): boolean {
 /** Specificaties van een scherm, zonder identiteit/foto. */
 export function specsVanScherm(
     s: InstallatieScherm
-): Omit<InstallatieScherm, "id" | "label" | "fotoUrl" | "playerFotoUrl" | "actie"> {
+): Omit<InstallatieScherm, "id" | "label" | "fotoUrl" | "playerFotoUrl"> {
     return {
         formaat: s.formaat,
         formaatAnders: s.formaatAnders,
@@ -250,7 +248,6 @@ export function emptyScherm(
         aansturingAnders: "",
         orientatie: "",
         locatie: "",
-        actie: "",
         stroom: "",
         stroomGerealiseerd: "",
         stroomMeter: "",
