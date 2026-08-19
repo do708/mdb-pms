@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type DragEvent } from "react";
 import Link from "next/link";
 
 import { PlanningStatusIcon } from "./PlanningStatusIcon";
@@ -130,6 +130,17 @@ function toIsoDate(d: Date): string {
     return `${y}-${m}-${day}`;
 }
 
+/** Voorkom dat het OS-sleepbeeld de drop-preview bedekt. */
+function hideNativeDragGhost(e: DragEvent) {
+    const ghost = document.createElement("div");
+    ghost.setAttribute("aria-hidden", "true");
+    ghost.style.cssText =
+        "position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none";
+    document.body.appendChild(ghost);
+    e.dataTransfer.setDragImage(ghost, 0, 0);
+    window.setTimeout(() => ghost.remove(), 0);
+}
+
 export default function WeekView({
     items,
     leave = [],
@@ -160,6 +171,14 @@ export default function WeekView({
         durationHours: number;
     } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [dragItem, setDragItem] = useState<{
+        kind: "workorder" | "agenda";
+        id: string;
+        durationHours: number;
+        color: string;
+        title: string;
+        subtitle?: string | null;
+    } | null>(null);
     const dragMetaRef = useRef<{
         durationHours: number;
     } | null>(null);
@@ -205,6 +224,7 @@ export default function WeekView({
         function clearPreview() {
             setDragPreview(null);
             setIsDragging(false);
+            setDragItem(null);
             dragMetaRef.current = null;
         }
         window.addEventListener("dragend", clearPreview);
@@ -1254,77 +1274,6 @@ export default function WeekView({
                                                                 : undefined
                                                         }
                                                     >
-                                                        {dragPreview?.cellKey ===
-                                                        `${iso}:${user.id}` ? (
-                                                            (() => {
-                                                                const startUur =
-                                                                    dragPreview.hour;
-                                                                const eindUur =
-                                                                    Math.min(
-                                                                        DAG_EIND_UUR,
-                                                                        dragPreview.hour +
-                                                                            dragPreview.durationHours
-                                                                    );
-                                                                const tijdLabel = `${formatUurLabel(startUur)}–${formatUurLabel(eindUur)}`;
-                                                                const boxTop =
-                                                                    (startUur -
-                                                                        DAG_START_UUR) *
-                                                                        PX_PER_UUR +
-                                                                    DAG_PADDING_TOP;
-                                                                const boxHeight =
-                                                                    Math.max(
-                                                                        40,
-                                                                        dragPreview.durationHours *
-                                                                            PX_PER_UUR
-                                                                    );
-                                                                const labelH = 22;
-                                                                const labelBoven =
-                                                                    boxTop >=
-                                                                    labelH;
-
-                                                                return (
-                                                                    <div
-                                                                        className="
-                                                                            pointer-events-none absolute left-1 right-1 z-[80]
-                                                                            flex flex-col items-center
-                                                                        "
-                                                                        style={{
-                                                                            top: `${
-                                                                                labelBoven
-                                                                                    ? boxTop -
-                                                                                      labelH
-                                                                                    : boxTop
-                                                                            }px`,
-                                                                            height: `${
-                                                                                boxHeight +
-                                                                                (labelBoven
-                                                                                    ? labelH
-                                                                                    : 0)
-                                                                            }px`,
-                                                                        }}
-                                                                    >
-                                                                        <span
-                                                                            className="
-                                                                                shrink-0 rounded-md bg-[#0066FF] text-white
-                                                                                text-[11px] font-bold tabular-nums leading-none
-                                                                                px-2 py-1 shadow-md ring-1 ring-white
-                                                                                whitespace-nowrap
-                                                                            "
-                                                                        >
-                                                                            {tijdLabel}
-                                                                        </span>
-                                                                        <div
-                                                                            className="
-                                                                                mt-0.5 w-full min-h-0 flex-1 rounded-lg
-                                                                                border-2 border-[#0066FF]
-                                                                                bg-[#0066FF]/25
-                                                                                shadow-[0_0_0_1px_rgba(0,102,255,0.25)]
-                                                                            "
-                                                                        />
-                                                                    </div>
-                                                                );
-                                                            })()
-                                                        ) : null}
                                                         {!verlof &&
                                                             uurLijnen.map(
                                                                 (uur) => {
@@ -1462,18 +1411,44 @@ export default function WeekView({
                                                                                           e.preventDefault();
                                                                                           return;
                                                                                       }
+                                                                                      hideNativeDragGhost(
+                                                                                          e
+                                                                                      );
                                                                                       setIsDragging(
                                                                                           true
                                                                                       );
+                                                                                      const durationHours =
+                                                                                          Math.max(
+                                                                                              0.25,
+                                                                                              pos.eindUur -
+                                                                                                  pos.beginUur
+                                                                                          );
                                                                                       dragMetaRef.current =
                                                                                           {
-                                                                                              durationHours:
-                                                                                                  Math.max(
-                                                                                                      0.25,
-                                                                                                      pos.eindUur -
-                                                                                                          pos.beginUur
-                                                                                                  ),
+                                                                                              durationHours,
                                                                                           };
+                                                                                      setDragItem(
+                                                                                          {
+                                                                                              kind: "workorder",
+                                                                                              id: item.id,
+                                                                                              durationHours,
+                                                                                              color,
+                                                                                              title:
+                                                                                                  (item
+                                                                                                      .customer
+                                                                                                      ?.name ??
+                                                                                                      item
+                                                                                                          .project
+                                                                                                          ?.customer
+                                                                                                          ?.name) ??
+                                                                                                  "Onbekende klant",
+                                                                                              subtitle:
+                                                                                                  item
+                                                                                                      .project
+                                                                                                      ?.name ??
+                                                                                                  item.title,
+                                                                                          }
+                                                                                      );
                                                                                       e.dataTransfer.setData(
                                                                                           "workorderId",
                                                                                           item.id
@@ -1511,6 +1486,14 @@ export default function WeekView({
                                                                             ${
                                                                                 onMovePlan
                                                                                     ? "cursor-grab active:cursor-grabbing"
+                                                                                    : ""
+                                                                            }
+                                                                            ${
+                                                                                dragItem?.kind ===
+                                                                                    "workorder" &&
+                                                                                dragItem.id ===
+                                                                                    item.id
+                                                                                    ? "opacity-30"
                                                                                     : ""
                                                                             }
                                                                         `}
@@ -1801,18 +1784,34 @@ export default function WeekView({
                                                                                       e.preventDefault();
                                                                                       return;
                                                                                   }
+                                                                                  hideNativeDragGhost(
+                                                                                      e
+                                                                                  );
                                                                                   setIsDragging(
                                                                                       true
                                                                                   );
+                                                                                  const durationHours =
+                                                                                      Math.max(
+                                                                                          0.25,
+                                                                                          pos.eindUur -
+                                                                                              pos.beginUur
+                                                                                      );
                                                                                   dragMetaRef.current =
                                                                                       {
-                                                                                          durationHours:
-                                                                                              Math.max(
-                                                                                                  0.25,
-                                                                                                  pos.eindUur -
-                                                                                                      pos.beginUur
-                                                                                              ),
+                                                                                          durationHours,
                                                                                       };
+                                                                                  setDragItem(
+                                                                                      {
+                                                                                          kind: "agenda",
+                                                                                          id: ev.id,
+                                                                                          durationHours,
+                                                                                          color: "#FFCC00",
+                                                                                          title: ev.title,
+                                                                                          subtitle:
+                                                                                              ev.notes ||
+                                                                                              null,
+                                                                                      }
+                                                                                  );
                                                                                   e.dataTransfer.setData(
                                                                                       "agendaEventId",
                                                                                       ev.id
@@ -1869,6 +1868,14 @@ export default function WeekView({
                                                                             onMoveAgenda
                                                                                 ? "cursor-grab active:cursor-grabbing"
                                                                                 : "cursor-pointer"
+                                                                        }
+                                                                        ${
+                                                                            dragItem?.kind ===
+                                                                                "agenda" &&
+                                                                            dragItem.id ===
+                                                                                ev.id
+                                                                                ? "opacity-30"
+                                                                                : ""
                                                                         }
                                                                     `}
                                                                     style={{
@@ -2013,6 +2020,75 @@ export default function WeekView({
                                                                 </div>
                                                             );
                                                         })}
+                                                        {dragPreview?.cellKey ===
+                                                        `${iso}:${user.id}` ? (
+                                                            (() => {
+                                                                const startUur =
+                                                                    dragPreview.hour;
+                                                                const eindUur =
+                                                                    Math.min(
+                                                                        DAG_EIND_UUR,
+                                                                        dragPreview.hour +
+                                                                            dragPreview.durationHours
+                                                                    );
+                                                                const tijdLabel = `${formatUurLabel(startUur)}–${formatUurLabel(eindUur)}`;
+                                                                const isAgenda =
+                                                                    dragItem?.kind ===
+                                                                    "agenda";
+                                                                const bg =
+                                                                    dragItem?.color ||
+                                                                    "#0066FF";
+
+                                                                return (
+                                                                    <div
+                                                                        className="
+                                                                            pointer-events-none absolute left-1 right-1 z-[80]
+                                                                            overflow-hidden rounded-lg px-2 py-1
+                                                                            shadow-lg ring-2 ring-white
+                                                                            leading-tight
+                                                                        "
+                                                                        style={{
+                                                                            top: `${
+                                                                                (startUur -
+                                                                                    DAG_START_UUR) *
+                                                                                    PX_PER_UUR +
+                                                                                DAG_PADDING_TOP
+                                                                            }px`,
+                                                                            height: `${Math.max(
+                                                                                40,
+                                                                                dragPreview.durationHours *
+                                                                                    PX_PER_UUR
+                                                                            )}px`,
+                                                                            backgroundColor:
+                                                                                bg,
+                                                                            color: isAgenda
+                                                                                ? "#0f172a"
+                                                                                : "#ffffff",
+                                                                        }}
+                                                                    >
+                                                                        <span className="text-[11px] font-bold tabular-nums leading-none block">
+                                                                            {
+                                                                                tijdLabel
+                                                                            }
+                                                                        </span>
+                                                                        {dragItem?.title ? (
+                                                                            <strong className="text-[12px] block truncate font-semibold mt-0.5">
+                                                                                {
+                                                                                    dragItem.title
+                                                                                }
+                                                                            </strong>
+                                                                        ) : null}
+                                                                        {dragItem?.subtitle ? (
+                                                                            <span className="text-[10px] block truncate opacity-90">
+                                                                                {
+                                                                                    dragItem.subtitle
+                                                                                }
+                                                                            </span>
+                                                                        ) : null}
+                                                                    </div>
+                                                                );
+                                                            })()
+                                                        ) : null}
                                       </div>
 
                                                     {onMovePlan || onSchedulePending || onCreateAgenda ? (
