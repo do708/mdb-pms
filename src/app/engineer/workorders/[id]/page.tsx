@@ -1802,6 +1802,8 @@ async function completeWorkorder(){
 
             initial={workorder.formData}
 
+            aanvraagSpecificaties={workorder.aanvraagSpecificaties}
+
             monteur1Name={workorder.assignedUser?.name ?? null}
 
             extraEngineerNames={

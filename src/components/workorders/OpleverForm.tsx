@@ -23,6 +23,7 @@ import {
 
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
+import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
 
 
 
@@ -59,6 +60,9 @@ interface Props {
     plannedRoundTripKm?:number | null;
 
     plannedReisuren?:number | null;
+
+    /** Aanvraag-specificaties voor prefill van ruimtes/schermen */
+    aanvraagSpecificaties?:unknown;
 
 }
 
@@ -1364,7 +1368,9 @@ export default function OpleverForm({
 
     plannedRoundTripKm = null,
 
-    plannedReisuren = null
+    plannedReisuren = null,
+
+    aanvraagSpecificaties
 
 }:Props){
 
@@ -1383,6 +1389,25 @@ export default function OpleverForm({
             }
             if(extraEngineerNames[2] && !merged.tarief.monteur4){
                 merged.tarief.monteur4 = extraEngineerNames[2];
+            }
+
+            // Prefill ruimtes/schermen vanuit aanvraag als er nog niets is ingevuld
+            const ruimtesLeeg =
+                merged.installatie.ruimtes.length <= 1
+                && !merged.installatie.ruimtes[0]?.naam
+                && !merged.installatie.ruimtes[0]?.werkzaamheid;
+
+            if(ruimtesLeeg && aanvraagSpecificaties){
+                const prefill = prefillRuimtesVanAanvraag(aanvraagSpecificaties);
+                if(prefill){
+                    merged.installatie.ruimtes = prefill.ruimtes;
+                    if(!merged.installatie.stroomBlok.aanwezig){
+                        merged.installatie.stroomBlok = prefill.stroomBlok;
+                    }
+                    if(!merged.installatie.internetBlok.aanwezig){
+                        merged.installatie.internetBlok = prefill.internetBlok;
+                    }
+                }
             }
 
             return merged;
