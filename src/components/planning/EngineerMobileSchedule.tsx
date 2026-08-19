@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { getStatus, migrateStatus } from "@/constants/workorderStatus";
+import { formatAmsterdamHHmm } from "@/lib/datetime/amsterdam";
 
 interface PlanningItem {
     id: string;
@@ -68,11 +69,23 @@ function formatTime(iso: string | null): string | null {
     if (!iso) return null;
     const d = new Date(iso);
     if (isNaN(d.getTime())) return null;
-    if (d.getHours() === 0 && d.getMinutes() === 0) return null;
-    return d.toLocaleTimeString("nl-NL", {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+    const label = formatAmsterdamHHmm(d);
+    if (label === "00:00") return null;
+    return label;
+}
+
+/** Minuten vanaf middernacht (Amsterdam) om klussen en agenda op tijd te sorteren. */
+function clockMinutes(
+    iso: string | null | undefined,
+    allDay = false
+): number {
+    if (allDay || !iso) return -1;
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return -1;
+    const label = formatAmsterdamHHmm(d);
+    if (label === "00:00") return -1;
+    const [h, m] = label.split(":").map(Number);
+    return h * 60 + m;
 }
 
 function itemOnDay(item: PlanningItem, dayIso: string): boolean {
@@ -319,29 +332,16 @@ export default function EngineerMobileSchedule({
             ...jobs.map((item) => ({
                 kind: "job" as const,
                 id: item.id,
-                sort: item.plannedDate
-                    ? new Date(item.plannedDate).getTime()
-                    : 0,
+                sort: clockMinutes(item.plannedDate),
                 item,
             })),
-            ...dayEvents.map((event) => {
-                const start = event.startAt
-                    ? new Date(event.startAt)
-                    : null;
-                const startedEarlier =
-                    start && toIsoDate(start) < dayIso;
-                const sort =
-                    event.allDay || !start || startedEarlier
-                        ? 0
-                        : start.getTime();
-                return {
-                    kind: "event" as const,
-                    id: event.id,
-                    sort,
-                    event,
-                };
-            }),
-        ].sort((a, b) => a.sort - b.sort);
+            ...dayEvents.map((event) => ({
+                kind: "event" as const,
+                id: event.id,
+                sort: clockMinutes(event.startAt, Boolean(event.allDay)),
+                event,
+            })),
+        ].sort((a, b) => a.sort - b.sort || a.id.localeCompare(b.id));
 
         return (
             <div className="space-y-2">
