@@ -574,14 +574,14 @@ function opleverSections(
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
       ${summarizeVoorziening("Internet", i.internetBlok) ? row("Internet", textAnswer(summarizeVoorziening("Internet", i.internetBlok).replace(/^Internet:\s*/,""))) : ""}
       ${i.extra && (i.extra.afvoerTm50 || i.extra.afvoerVanaf50 || i.extra.afval || i.extra.audio)
-        ? row("3. Extra diensten", textAnswer([
+        ? row("Extra diensten", textAnswer([
             extraDienstRegel(i.extra.afval, "Afval/verpakking", i.extra.afvalAantal),
             extraDienstRegel(i.extra.afvoerTm50, 'Afvoer t/m 50"', i.extra.afvoerTm50Aantal),
             extraDienstRegel(i.extra.afvoerVanaf50, 'Afvoer vanaf 50"', i.extra.afvoerVanaf50Aantal),
             i.extra.audio ? "Audio" : ""
           ].filter(Boolean).join(", ")))
         : ""}
-      ${i.isProject === true ? row("4. Project (offertebasis)?",pill(i.isProject)) : ""}
+      ${i.isProject === true ? row("3. Project (offertebasis)?",pill(i.isProject)) : ""}
       ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
     </table>
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
@@ -706,7 +706,7 @@ function opleverSections(
     <table class="qa">
       ${m.nieuweBeugels === true ? row("1. TV beugels gemonteerd",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
       ${m.nieuweBeugels === true && beugels ? row("Beugels",textAnswer(beugels)) : ""}
-      ${m.extraHdmiKabels === true && hdmiKabels ? row("2. HDMI kabels",textAnswer(hdmiKabels)) : ""}
+      ${m.extraHdmiKabels === true && hdmiKabels ? row("HDMI kabels/splitters",textAnswer(hdmiKabels)) : ""}
       ${m.extraHdmiKabels === true && hdmiSplitters ? row("HDMI splitters",textAnswer(hdmiSplitters)) : ""}
       ${m.extraPatchkabels === true && patch ? row("3. Patchkabels",textAnswer(patch)) : ""}
       ${m.extraSwitches === true && switches ? row("Switches",textAnswer(switches)) : ""}

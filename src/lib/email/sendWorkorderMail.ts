@@ -13,6 +13,7 @@ interface WorkorderMailData {
     /** Deep link naar de werkbon in PMS (kantoor). */
     workorderUrl?: string | null;
     pdfBuffer?: Buffer | null;
+    zipBuffer?: Buffer | null;
 }
 
 export async function sendWorkorderMail(data: WorkorderMailData) {
@@ -36,6 +37,7 @@ Opdracht openen:
 ${werkbonUrl}
 
 ${data.pdfBuffer ? "De opdracht-PDF is als bijlage toegevoegd." : "De PDF-bijlage kon niet worden gegenereerd; open de opdracht in PMS."}
+${data.zipBuffer ? "De foto's staan in een aparte ZIP-bijlage, elk bestand met de naam die de monteur gaf." : ""}
 
 Team MDB Networks
 `;
@@ -66,11 +68,35 @@ Team MDB Networks
             ? "De opdracht-PDF is als bijlage toegevoegd."
             : "De PDF-bijlage kon niet worden gegenereerd; open de opdracht in PMS."
     }
+    ${
+        data.zipBuffer
+            ? "<br>De foto's staan in een aparte ZIP-bijlage, elk bestand met de naam die de monteur gaf."
+            : ""
+    }
   </p>
 
   <p>Team MDB Networks</p>
 
 </div>`;
+
+    const attachments = [
+        ...(data.pdfBuffer
+            ? [
+                  {
+                      filename: `${data.workorderNumber}.pdf`,
+                      content: data.pdfBuffer.toString("base64"),
+                  },
+              ]
+            : []),
+        ...(data.zipBuffer
+            ? [
+                  {
+                      filename: `${data.workorderNumber}-fotos.zip`,
+                      content: data.zipBuffer.toString("base64"),
+                  },
+              ]
+            : []),
+    ];
 
     await sendResendEmail({
         from: "MDB Networks <noreply@mdb-networks.nl>",
@@ -78,13 +104,6 @@ Team MDB Networks
         subject: `Opdracht afgerond — ${data.project} (${data.workorderNumber})`,
         text: tekst,
         html,
-        attachments: data.pdfBuffer
-            ? [
-                  {
-                      filename: `${data.workorderNumber}.pdf`,
-                      content: data.pdfBuffer.toString("base64"),
-                  },
-              ]
-            : undefined,
+        attachments: attachments.length > 0 ? attachments : undefined,
     });
 }

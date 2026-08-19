@@ -10,6 +10,7 @@ import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 import { sendNietGereedMail } from "@/lib/email/sendNietGereedMail";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
 
 export const maxDuration = 60;
 
@@ -71,7 +72,11 @@ export async function POST(
 
                     hardware:true,
 
-                    photos:true,
+                    photos:{
+                        orderBy:{
+                            createdAt:"asc"
+                        }
+                    },
 
                     signature:true,
 
@@ -281,8 +286,27 @@ export async function POST(
         }
 
 
+        // Foto-ZIP voor kantoor: losse foto's met de naam die de monteur gaf.
+        let zipBuffer: Buffer | null = null;
+        try {
+            zipBuffer = await buildWorkorderPhotosZip(
+                (workorder.photos ?? []).map((photo)=>({
+                    id: photo.id,
+                    url: photo.url,
+                    filename: photo.filename,
+                    caption: photo.caption
+                }))
+            );
+        } catch(zipError){
+            console.error(
+                "WERKBON FOTO-ZIP MISLUKT (afronden gaat door)",
+                zipError
+            );
+        }
+
+
         // Altijd mailen naar projects@ na succesvolle afronding,
-        // ook als de PDF niet lukte. Mail mag afronden niet blokkeren.
+        // ook als de PDF of ZIP niet lukte. Mail mag afronden niet blokkeren.
         try {
             const locatie =
                 workorderLocation(workorder)
@@ -315,7 +339,8 @@ export async function POST(
                     })(),
                 workorderUrl:
                     `${appUrl}/workorders/${workorder.id}`,
-                pdfBuffer
+                pdfBuffer,
+                zipBuffer
             });
         } catch(mailOnlyError){
             console.error("WERKBON MAIL MISLUKT (afronden gaat door)", mailOnlyError);

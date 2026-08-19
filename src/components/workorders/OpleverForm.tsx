@@ -74,11 +74,6 @@ interface Props {
     /** Foutmelding van de parent (bijv. bij afronden). */
     error?:string;
 
-    /** Verstuur de werkbon naar kantoor (alleen monteur, ingepland). */
-    onVerstuur?:()=>void;
-
-    versturenBusy?:boolean;
-
 }
 
 
@@ -1565,11 +1560,7 @@ export default function OpleverForm({
 
     aanvraagSpecificaties,
 
-    error,
-
-    onVerstuur,
-
-    versturenBusy = false
+    error
 
 }:Props){
 
@@ -2510,7 +2501,7 @@ export default function OpleverForm({
 
                 <div className="mt-6 space-y-3">
 
-                    <SectieTitel>4. Project</SectieTitel>
+                    <SectieTitel>3. Project</SectieTitel>
 
                     <div className="
                         flex
@@ -3075,7 +3066,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="1. Extra HDMI kabels gebruikt"
+                    label="1. Extra HDMI kabels/splitters gebruikt?"
                     actief={m.extraHdmiKabels === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -3642,15 +3633,12 @@ export default function OpleverForm({
                     />
                     {
                         c.afvalverwijdering === true && (
-                            <div className="space-y-3 pt-1">
-                                <SectieTitel>3. Extra diensten</SectieTitel>
-                                <ExtraDienstenKeuzes
-                                    extra={i.extra}
-                                    onChange={(next)=>update(draft=>{
-                                        draft.installatie.extra = next;
-                                    })}
-                                />
-                            </div>
+                            <ExtraDienstenKeuzes
+                                extra={i.extra}
+                                onChange={(next)=>update(draft=>{
+                                    draft.installatie.extra = next;
+                                })}
+                            />
                         )
                     }
                 </ChecklistVraag>
@@ -3910,30 +3898,6 @@ export default function OpleverForm({
 
                     </button>
 
-                )
-            }
-
-            {
-                onVerstuur && (
-                    <div className="pt-1 space-y-1.5">
-                        <button
-                            type="button"
-                            onClick={onVerstuur}
-                            disabled={versturenBusy}
-                            className="
-                                w-full
-                                bg-[#d6007e] text-white
-                                rounded-lg px-4 py-2.5
-                                text-sm font-semibold
-                                disabled:opacity-50
-                            "
-                        >
-                            {versturenBusy ? "Bezig..." : "Verstuur"}
-                        </button>
-                        <p className="text-xs text-slate-500">
-                            Verstuurt de werkbon naar kantoor.
-                        </p>
-                    </div>
                 )
             }
 

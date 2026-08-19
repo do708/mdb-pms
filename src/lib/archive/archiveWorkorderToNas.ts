@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import JSZip from "jszip";
 
 import { prisma } from "@/lib/prisma";
 import { formatArchiveLocationLabel } from "@/lib/archive/formatArchiveLocationName";
@@ -10,6 +9,7 @@ import {
 } from "@/lib/archive/ensureArchiveFolders";
 import { isNasArchiveEnabled } from "@/lib/nas/synologyConfig";
 import { synologyUploadFile } from "@/lib/nas/synologyClient";
+import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -48,77 +48,6 @@ async function fetchBuffer(url: string): Promise<Buffer | null> {
     } catch {
         return null;
     }
-}
-
-function extensionFromUrl(url: string, contentType: string | null): string {
-    try {
-        const path = new URL(url).pathname;
-        const match = path.match(/\.([a-zA-Z0-9]{2,5})$/);
-
-        if (match) {
-            return match[1].toLowerCase();
-        }
-    } catch {
-        // negeer
-    }
-
-    if (contentType?.includes("png")) {
-        return "png";
-    }
-
-    if (contentType?.includes("pdf")) {
-        return "pdf";
-    }
-
-    return "jpg";
-}
-
-async function buildPhotosZip(
-    photos: Array<{
-        id: string;
-        url: string;
-        filename: string | null;
-        caption: string | null;
-    }>
-): Promise<Buffer | null> {
-    if (photos.length === 0) {
-        return null;
-    }
-
-    const zip = new JSZip();
-    let added = 0;
-
-    for (let index = 0; index < photos.length; index++) {
-        const photo = photos[index];
-        const buffer = await fetchBuffer(photo.url);
-
-        if (!buffer) {
-            continue;
-        }
-
-        const ext = extensionFromUrl(photo.url, null);
-        const base =
-            (photo.filename || photo.caption || `foto-${index + 1}`)
-                .replace(/[^a-zA-Z0-9._-]+/g, "_")
-                .replace(/\.[a-zA-Z0-9]+$/, "")
-            || `foto-${index + 1}`;
-
-        zip.file(
-            `${String(index + 1).padStart(2, "0")}-${base}.${ext}`,
-            buffer
-        );
-        added += 1;
-    }
-
-    if (added === 0) {
-        return null;
-    }
-
-    return zip.generateAsync({
-        type: "nodebuffer",
-        compression: "DEFLATE",
-        compressionOptions: { level: 6 },
-    });
 }
 
 async function resolveIntakePdf(
@@ -229,7 +158,7 @@ export async function archiveWorkorderToNas(workorderId: string) {
             );
         }
 
-        const zipBuffer = await buildPhotosZip(workorder.photos);
+        const zipBuffer = await buildWorkorderPhotosZip(workorder.photos);
 
         if (zipBuffer) {
             await synologyUploadFile(

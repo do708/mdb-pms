@@ -136,7 +136,8 @@ export default function PhotosForm({
 
 
 
-    // Bijschrift lokaal bijwerken.
+    // Bijschrift lokaal bijwerken en opslaan, zodat de naam in de ZIP
+    // staat ook zonder het veld te verlaten.
     function setCaption(id:string, caption:string){
         setPhotos(prev=>
             prev.map(p=>
@@ -147,6 +148,7 @@ export default function PhotosForm({
                 p
             )
         );
+        void saveCaption(id, caption);
     }
 
 
@@ -257,10 +259,13 @@ export default function PhotosForm({
                                             w-full h-28 object-cover
                                         "
                                     />
-                                    <div className="p-2">
+                                    <div className="p-2 space-y-1">
+                                        <span className="block text-[11px] text-gray-500">
+                                            Naam
+                                        </span>
                                         <input
                                             value={photo.caption ?? ""}
-                                            placeholder={readOnly ? "" : "Wat is dit?"}
+                                            placeholder={readOnly ? "" : "Naam van deze foto"}
                                             readOnly={readOnly}
                                             onChange={(e)=>
                                                 setCaption(photo.id, e.target.value)

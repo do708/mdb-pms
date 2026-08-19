@@ -773,7 +773,7 @@ async function completeWorkorder(){
 
     const confirmComplete =
         confirm(
-            "Opdracht afronden? Status wordt Uitgevoerd, er wordt een PDF gemaakt en kantoor krijgt een melding."
+            "Werkbon versturen naar kantoor? Er wordt een PDF gemaakt en een ZIP met de foto's (elk bestand met de naam die je gaf)."
         );
 
 
@@ -783,7 +783,7 @@ async function completeWorkorder(){
 
     }
 
-
+    setSaving(true);
 
     try {
 
@@ -895,6 +895,10 @@ async function completeWorkorder(){
 
         );
 
+
+    } finally {
+
+        setSaving(false);
 
     }
 
@@ -1480,7 +1484,7 @@ async function completeWorkorder(){
 
 
             {
-                workorder.documents?.length > 0 && (
+                isOffice && workorder.documents?.length > 0 && (
 
                     <section className="
                         bg-white
@@ -1878,18 +1882,6 @@ async function completeWorkorder(){
                 workorder.plannedReisuren
             }
 
-            onVerstuur={
-                !isOffice
-                && !workorder.sentAt
-                && (status || workorder.status) === "ingepland"
-                ?
-                completeWorkorder
-                :
-                undefined
-            }
-
-            versturenBusy={saving}
-
         />
     )
 }
@@ -1900,9 +1892,13 @@ async function completeWorkorder(){
                 readOnly={!!workorder.sentAt}
             />
 
-            <CorrespondentieBlok
-                workorderId={id}
-            />
+            {
+                isOffice && (
+                    <CorrespondentieBlok
+                        workorderId={id}
+                    />
+                )
+            }
 
 
             {
@@ -1925,7 +1921,7 @@ async function completeWorkorder(){
                             disabled:opacity-50
                         "
                     >
-                        {saving ? "Bezig..." : "Verstuur"}
+                        {saving ? "Bezig..." : "Verstuur werkbon"}
                     </button>
 
                 )
