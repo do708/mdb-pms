@@ -16,6 +16,7 @@ import {
     specInputClassName,
     specSelectClassName,
 } from "@/components/ui/SpecLayout";
+import { filterEngineersForDay } from "@/constants/staffKind";
 
 interface ProjectSummary {
     id: string;
@@ -93,7 +94,12 @@ export default function ProjectsPage() {
     const [urenOmschrijving, setUrenOmschrijving] = useState("");
     const [urenSaving, setUrenSaving] = useState(false);
     const [engineers, setEngineers] = useState<
-        { id: string; name: string | null }[]
+        {
+            id: string;
+            name: string | null;
+            staffKind?: string | null;
+            stagiaireUntil?: string | Date | null;
+        }[]
     >([]);
     const [geselecteerdeMonteurs, setGeselecteerdeMonteurs] = useState<
         string[]
@@ -124,15 +130,32 @@ export default function ProjectsPage() {
             .catch(console.error);
     }, [role]);
 
-    useEffect(() => {
-        if (role !== "engineer" || !session?.user?.id) {
-            return;
-        }
+    const boekbareMonteurs = useMemo(
+        () => filterEngineersForDay(engineers, urenDatum),
+        [engineers, urenDatum]
+    );
 
-        if (geselecteerdeMonteurs.length === 0) {
-            setGeselecteerdeMonteurs([session.user.id]);
-        }
-    }, [role, session?.user?.id, engineers]);
+    useEffect(() => {
+        const allowed = new Set(boekbareMonteurs.map((e) => e.id));
+
+        setGeselecteerdeMonteurs((prev) => {
+            const next = prev.filter((id) => allowed.has(id));
+
+            if (next.length > 0) {
+                return next.length === prev.length ? prev : next;
+            }
+
+            if (
+                role === "engineer"
+                && session?.user?.id
+                && allowed.has(session.user.id)
+            ) {
+                return [session.user.id];
+            }
+
+            return next;
+        });
+    }, [boekbareMonteurs, role, session?.user?.id]);
 
     const filtered = useMemo(() => {
         const q = search.toLowerCase().trim();
@@ -441,7 +464,7 @@ export default function ProjectsPage() {
                                         type="button"
                                         onClick={() =>
                                             setGeselecteerdeMonteurs(
-                                                engineers.map((e) => e.id)
+                                                boekbareMonteurs.map((e) => e.id)
                                             )
                                         }
                                         className="text-xs text-[#d6007e] font-medium"
@@ -458,7 +481,7 @@ export default function ProjectsPage() {
                                     .
                                 </p>
                                 <div className="flex flex-wrap gap-2">
-                                    {engineers.map((eng) => {
+                                    {boekbareMonteurs.map((eng) => {
                                         const checked =
                                             geselecteerdeMonteurs.includes(
                                                 eng.id

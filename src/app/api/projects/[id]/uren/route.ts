@@ -8,6 +8,10 @@ import {
     serializeProjectDetail,
 } from "@/lib/projects/serialize";
 import { parseHoursInput } from "@/lib/hours";
+import {
+    isSchedulableOnDay,
+    toIsoDay,
+} from "@/constants/staffKind";
 
 export async function GET(
     request: Request,
@@ -179,12 +183,41 @@ export async function POST(
                 role: "engineer",
                 active: true,
             },
-            select: { id: true },
+            select: {
+                id: true,
+                staffKind: true,
+                stagiaireUntil: true,
+            },
         });
 
         if (engineers.length !== userIds.length) {
             return NextResponse.json(
                 { error: "Ongeldige monteur(s) geselecteerd" },
+                { status: 400 }
+            );
+        }
+
+        const dayIso =
+            toIsoDay(
+                typeof body.datum === "string" ? body.datum : datum
+            ) || toIsoDay(datum);
+
+        if (
+            dayIso
+            && engineers.some(
+                (eng) =>
+                    !isSchedulableOnDay(
+                        eng.staffKind,
+                        eng.stagiaireUntil,
+                        dayIso
+                    )
+            )
+        ) {
+            return NextResponse.json(
+                {
+                    error:
+                        "Deze stagiair is na de stage-einddatum niet meer te kiezen.",
+                },
                 { status: 400 }
             );
         }

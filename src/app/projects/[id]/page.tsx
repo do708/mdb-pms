@@ -21,6 +21,7 @@ import {
     specSelectClassName,
 } from "@/components/ui/SpecLayout";
 import { formatHoursDisplay } from "@/lib/hours";
+import { filterEngineersForDay } from "@/constants/staffKind";
 
 interface ProjectDetail {
     id: string;
@@ -87,6 +88,8 @@ interface Customer {
 interface EngineerOption {
     id: string;
     name: string | null;
+    staffKind?: string | null;
+    stagiaireUntil?: string | Date | null;
 }
 
 function monteurLabel(user: {
@@ -240,15 +243,32 @@ export default function ProjectDetailPage() {
             .catch(console.error);
     }, [role]);
 
-    useEffect(() => {
-        if (role !== "engineer" || !session?.user?.id) {
-            return;
-        }
+    const boekbareMonteurs = useMemo(
+        () => filterEngineersForDay(engineers, urenDatum),
+        [engineers, urenDatum]
+    );
 
-        if (geselecteerdeMonteurs.length === 0) {
-            setGeselecteerdeMonteurs([session.user.id]);
-        }
-    }, [role, session?.user?.id, engineers]);
+    useEffect(() => {
+        const allowed = new Set(boekbareMonteurs.map((e) => e.id));
+
+        setGeselecteerdeMonteurs((prev) => {
+            const next = prev.filter((id) => allowed.has(id));
+
+            if (next.length > 0) {
+                return next.length === prev.length ? prev : next;
+            }
+
+            if (
+                role === "engineer"
+                && session?.user?.id
+                && allowed.has(session.user.id)
+            ) {
+                return [session.user.id];
+            }
+
+            return next;
+        });
+    }, [boekbareMonteurs, role, session?.user?.id]);
 
     const urenPerMonteur = useMemo(() => {
         if (!project) {
@@ -289,7 +309,7 @@ export default function ProjectDetailPage() {
     }
 
     function selecteerAlleMonteurs() {
-        setGeselecteerdeMonteurs(engineers.map((e) => e.id));
+        setGeselecteerdeMonteurs(boekbareMonteurs.map((e) => e.id));
     }
 
     async function saveBasics() {
@@ -1327,12 +1347,12 @@ export default function ProjectDetailPage() {
                                 .
                             </p>
                             <div className="flex flex-wrap gap-2">
-                                {engineers.length === 0 ? (
+                                {boekbareMonteurs.length === 0 ? (
                                     <p className="text-sm text-gray-500">
                                         Geen actieve monteurs gevonden.
                                     </p>
                                 ) : (
-                                    engineers.map((eng) => {
+                                    boekbareMonteurs.map((eng) => {
                                         const checked =
                                             geselecteerdeMonteurs.includes(
                                                 eng.id

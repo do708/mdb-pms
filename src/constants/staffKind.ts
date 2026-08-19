@@ -74,3 +74,15 @@ export function isSchedulableInWeek(
 ): boolean {
     return isSchedulableOnDay(staffKind, stagiaireUntil, weekStartIso);
 }
+
+/** Monteurskeuze: stagiair na stage-einddatum weglaten. */
+export function filterEngineersForDay<
+    T extends {
+        staffKind?: string | null;
+        stagiaireUntil?: string | Date | null;
+    },
+>(engineers: T[], dayIso: string): T[] {
+    return engineers.filter((e) =>
+        isSchedulableOnDay(e.staffKind, e.stagiaireUntil, dayIso)
+    );
+}
