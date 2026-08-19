@@ -8,7 +8,10 @@ import { useSession } from "next-auth/react";
 
 import OpleverForm from "@/components/workorders/OpleverForm";
 
-import type { OpleverData } from "@/types/oplever";
+import {
+    ontbrekendeMateriaalSerienummers,
+    type OpleverData
+} from "@/types/oplever";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 
 
@@ -334,6 +337,24 @@ function NewWorkorderInner(){
             window.scrollTo({ top:0, behavior:"smooth" });
 
             return;
+
+        }
+
+
+        if(opleverData){
+
+            const snFout =
+                ontbrekendeMateriaalSerienummers(opleverData);
+
+            if(snFout){
+
+                setError(snFout);
+
+                window.scrollTo({ top:0, behavior:"smooth" });
+
+                return;
+
+            }
 
         }
 

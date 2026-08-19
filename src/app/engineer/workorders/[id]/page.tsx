@@ -14,7 +14,10 @@ import AanvraagSpecificatiesOverzicht, {
 
 import { parseCustomerSchema } from "@/types/customerForms";
 
-import type { OpleverData } from "@/types/oplever";
+import {
+    ontbrekendeMateriaalSerienummers,
+    type OpleverData
+} from "@/types/oplever";
 import {
     klaarzetVanAanvraagSpecificaties,
     mergeKlaarzetPrefill,
@@ -391,6 +394,10 @@ export default function EngineerWorkorderPage(){
         useState<OpleverData | null>(null);
 
 
+    const [formError,setFormError] =
+        useState("");
+
+
 
     const [saving,setSaving] =
         useState(false);
@@ -736,6 +743,15 @@ async function completeWorkorder(){
 
     if(formKey !== "uren" && opleverData){
 
+        const snFout =
+            ontbrekendeMateriaalSerienummers(opleverData);
+
+        if(snFout){
+            setFormError(snFout);
+            window.scrollTo({ top:0, behavior:"smooth" });
+            return;
+        }
+
         const cl = opleverData.checklist;
 
         const ontbreekt =
@@ -936,6 +952,21 @@ async function completeWorkorder(){
 
     return (
         <div className="space-y-5 -m-2 sm:-m-0">
+
+            {
+                formError && (
+                    <p className="
+                        bg-red-100
+                        border
+                        border-red-300
+                        text-red-700
+                        rounded-xl
+                        p-3
+                    ">
+                        {formError}
+                    </p>
+                )
+            }
 
 
             <header>
@@ -1820,7 +1851,12 @@ async function completeWorkorder(){
 
             embedded
 
-            onChange={setOpleverData}
+            error={formError}
+
+            onChange={(next)=>{
+                setFormError("");
+                setOpleverData(next);
+            }}
 
             variant={
                 (workorder.forms ?? [])[0]?.formType?.key === "uren"

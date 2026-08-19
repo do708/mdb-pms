@@ -17,7 +17,8 @@ import {
     enforceVoorrijtariefTravelRules,
     normalizeOpleverMacs,
     parseAantal,
-    resizeSnArray
+    resizeSnArray,
+    ontbrekendeMateriaalSerienummers
 } from "@/types/oplever";
 
 import {
@@ -67,6 +68,9 @@ interface Props {
 
     /** Aanvraag-specificaties voor prefill van ruimtes/schermen */
     aanvraagSpecificaties?:unknown;
+
+    /** Foutmelding van de parent (bijv. bij afronden). */
+    error?:string;
 
 }
 
@@ -629,12 +633,16 @@ function SerienummersOnderAantal({
     aantal,
     values,
     onChange,
-    label
+    label,
+    numbered = false,
+    required = false
 }:{
     aantal:string;
     values:string[] | undefined;
     onChange:(next:string[])=>void;
     label:string;
+    numbered?:boolean;
+    required?:boolean;
 }){
     const n = parseAantal(aantal);
 
@@ -649,7 +657,13 @@ function SerienummersOnderAantal({
             {fields.map((sn, i)=>(
                 <label key={i} className="block">
                     <span className="text-xs text-gray-600">
-                        {n === 1 ? label : `${label} ${i + 1}`}
+                        {numbered ? `S/N ${i + 1}:` : (n === 1 ? label : `${label} ${i + 1}`)}
+                        {required ? (
+                            <>
+                                {" "}
+                                <span className="text-red-500">*</span>
+                            </>
+                        ) : null}
                     </span>
                     <input
                         value={sn}
@@ -1428,7 +1442,9 @@ export default function OpleverForm({
 
     plannedReisuren = null,
 
-    aanvraagSpecificaties
+    aanvraagSpecificaties,
+
+    error
 
 }:Props){
 
@@ -1501,6 +1517,10 @@ export default function OpleverForm({
         useState("");
 
 
+    const [formError,setFormError] =
+        useState("");
+
+
 
 
     useEffect(()=>{
@@ -1568,6 +1588,8 @@ export default function OpleverForm({
 
         setMessage("");
 
+        setFormError("");
+
     }
 
 
@@ -1581,9 +1603,25 @@ export default function OpleverForm({
         }
 
 
+        const snFout =
+            ontbrekendeMateriaalSerienummers(data);
+
+        if(snFout){
+
+            setFormError(snFout);
+
+            window.scrollTo({ top:0, behavior:"smooth" });
+
+            return;
+
+        }
+
+
         setSaving(true);
 
         setMessage("");
+
+        setFormError("");
 
 
         try {
@@ -1864,6 +1902,10 @@ export default function OpleverForm({
 
 
 
+    const getoondeFout =
+        error || formError;
+
+
     return (
 
         <section className="
@@ -1876,6 +1918,21 @@ export default function OpleverForm({
             sm:p-8
             space-y-8
         ">
+
+            {
+                getoondeFout && (
+                    <p className="
+                        bg-red-100
+                        border
+                        border-red-300
+                        text-red-700
+                        rounded-xl
+                        p-3
+                    ">
+                        {getoondeFout}
+                    </p>
+                )
+            }
 
 
             <div className="
@@ -3004,6 +3061,8 @@ export default function OpleverForm({
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
                         label="s/n"
+                        numbered
+                        required
                     />
                     <AudioRegel
                         label="8 poorten, gigabit"
@@ -3025,6 +3084,8 @@ export default function OpleverForm({
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
                         label="s/n"
+                        numbered
+                        required
                     />
                     <AudioRegel
                         label="5 poorten, PoE gigabit"
@@ -3046,6 +3107,8 @@ export default function OpleverForm({
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
                         label="s/n"
+                        numbered
+                        required
                     />
                 </UitklapVraag>
 
@@ -3152,7 +3215,9 @@ export default function OpleverForm({
                                     d.materialen.multicastZenderSn=
                                         sns.find((s)=>s.trim()) || "";
                                 })}
-                                label="Zender s/n"
+                                label="s/n"
+                                numbered
+                                required
                             />
                             <AudioRegel
                                 label="Ontvangers"
@@ -3175,7 +3240,9 @@ export default function OpleverForm({
                                     d.materialen.multicastOntvangerSn=
                                         sns.find((s)=>s.trim()) || "";
                                 })}
-                                label="Ontvanger s/n"
+                                label="s/n"
+                                numbered
+                                required
                             />
                         </div>
                     )

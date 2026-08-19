@@ -1104,6 +1104,63 @@ export function resizeSnArray(
 }
 
 
+function alleSnVeldenIngevuld(
+    aantal:unknown,
+    sns:string[] | undefined
+):boolean {
+
+    const n = parseAantal(aantal);
+
+    if(n <= 0){
+        return true;
+    }
+
+    return normalizeSnArray(sns, n).every((s)=>s.trim() !== "");
+
+}
+
+
+/** Fouttekst als verplichte switch/multicast-serienummers ontbreken. */
+export function ontbrekendeMateriaalSerienummers(
+    data:OpleverData
+):string | null {
+
+    const m = data.materialen;
+    const onderdelen:string[] = [];
+
+    if(m.extraSwitches === true){
+        if(!alleSnVeldenIngevuld(m.switch5port, m.switch5portSn)){
+            onderdelen.push("switch 5 poorten gigabit");
+        }
+
+        if(!alleSnVeldenIngevuld(m.switch8port, m.switch8portSn)){
+            onderdelen.push("switch 8 poorten gigabit");
+        }
+
+        if(!alleSnVeldenIngevuld(m.switch5portPoe, m.switch5portPoeSn)){
+            onderdelen.push("switch 5 poorten PoE gigabit");
+        }
+    }
+
+    if(m.multicast === true){
+        if(!alleSnVeldenIngevuld(m.multicastZenders, m.multicastZenderSns)){
+            onderdelen.push("multicast zenders");
+        }
+
+        if(!alleSnVeldenIngevuld(m.multicastOntvangers, m.multicastOntvangerSns)){
+            onderdelen.push("multicast ontvangers");
+        }
+    }
+
+    if(onderdelen.length === 0){
+        return null;
+    }
+
+    return `Vul alle serienummers in bij: ${onderdelen.join(", ")}. Elk S/N-veld is verplicht.`;
+
+}
+
+
 function firstFilledSn(arrs:string[][]):string {
 
     for(const arr of arrs){
