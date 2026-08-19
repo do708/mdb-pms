@@ -1902,11 +1902,12 @@ async function completeWorkorder(){
 
 
             {
-                /* Alleen monteur verstuurt ná inplannen. Kantoor ziet de
-                   opdracht via Opdrachten (openen / PDF / ZIP). */
+                /* Monteur verstuurt zolang de werkbon nog niet is afgerond. */
                 !isOffice
                 && !workorder.sentAt
-                && (status || workorder.status) === "ingepland"
+                && !["uitgevoerd", "gefactureerd"].includes(
+                    status || workorder.status
+                )
                 && (
 
                     <button

@@ -27,6 +27,70 @@ interface Photo {
 }
 
 
+/** Verklein telefoonfoto's in de browser zodat de upload niet stukloopt. */
+async function compressForUpload(file:File):Promise<File>{
+
+    if(!file.type.startsWith("image/") || file.type === "image/gif"){
+        return file;
+    }
+
+    try {
+
+        const bitmap =
+            await createImageBitmap(file);
+
+        const maxEdge = 1920;
+        const scale =
+            Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+
+        const width =
+            Math.max(1, Math.round(bitmap.width * scale));
+        const height =
+            Math.max(1, Math.round(bitmap.height * scale));
+
+        const canvas =
+            document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx =
+            canvas.getContext("2d");
+
+        if(!ctx){
+            bitmap.close();
+            return file;
+        }
+
+        ctx.drawImage(bitmap, 0, 0, width, height);
+        bitmap.close();
+
+        const blob =
+            await new Promise<Blob | null>((resolve)=>
+                canvas.toBlob(resolve, "image/jpeg", 0.82)
+            );
+
+        if(!blob){
+            return file;
+        }
+
+        const naam =
+            file.name.replace(/\.[^.]+$/, "") || "foto";
+
+        return new File(
+            [blob],
+            `${naam}.jpg`,
+            { type:"image/jpeg" }
+        );
+
+    } catch {
+
+        return file;
+
+    }
+
+}
+
+
 
 
 export default function PhotosForm({
@@ -95,9 +159,11 @@ export default function PhotosForm({
             const formData =
                 new FormData();
 
-            gekozen.forEach(photo=>{
-                formData.append("photos", photo);
-            });
+            for(const photo of gekozen){
+                const compressed =
+                    await compressForUpload(photo);
+                formData.append("photos", compressed);
+            }
 
             const response =
                 await fetch(
@@ -109,12 +175,16 @@ export default function PhotosForm({
                 );
 
             const data =
-                await response.json();
+                await response.json().catch(()=>({}));
 
             if(response.ok && Array.isArray(data.photos)){
                 setPhotos(prev=>[...prev, ...data.photos]);
             } else {
-                alert("Foto upload mislukt");
+                const reden =
+                    typeof data.error === "string" && data.error.trim()
+                    ? data.error
+                    : `Foto upload mislukt (${response.status})`;
+                alert(reden);
             }
 
         } catch(error){

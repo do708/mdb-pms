@@ -68,7 +68,12 @@ export async function requireWorkorderAccess(
 
     const workorder = await prisma.workorder.findUnique({
         where: { id: workorderId },
-        select: { assignedUserId: true },
+        select: {
+            assignedUserId: true,
+            extraEngineers: {
+                select: { userId: true },
+            },
+        },
     });
 
     if (!workorder) {
@@ -81,7 +86,13 @@ export async function requireWorkorderAccess(
         };
     }
 
-    if (workorder.assignedUserId !== guard.user.id) {
+    const magBij =
+        workorder.assignedUserId === guard.user.id
+        || workorder.extraEngineers.some(
+            (extra) => extra.userId === guard.user.id
+        );
+
+    if (!magBij) {
         return {
             ok: false,
             response: NextResponse.json(

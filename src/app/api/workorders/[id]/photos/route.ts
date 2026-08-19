@@ -9,9 +9,7 @@ import {
     photoStorageName,
 } from "@/lib/images/compressPhoto";
 
-
-
-
+export const maxDuration = 60;
 
 const supabase = createClient(
 
@@ -194,8 +192,10 @@ export async function POST(
 
             if(upload.error){
 
-
-                throw upload.error;
+                throw new Error(
+                    upload.error.message
+                    || "Opslag van de foto is mislukt"
+                );
 
             }
 
@@ -233,7 +233,10 @@ export async function POST(
 
                         workorderId:id,
 
-                        url
+                        url,
+
+                        filename:
+                            file.name || null
 
                     }
 
@@ -287,7 +290,9 @@ export async function POST(
             {
 
                 error:
-                "Foto upload mislukt"
+                    error instanceof Error
+                    ? error.message
+                    : "Foto upload mislukt"
 
             },
 
@@ -302,5 +307,140 @@ export async function POST(
 
     }
 
+
+}
+
+
+export async function GET(
+
+    _request:NextRequest,
+
+    context:{
+        params:Promise<{
+            id:string;
+        }>
+    }
+
+){
+
+    try {
+
+        const { id } =
+            await context.params;
+
+        const guard =
+            await requireWorkorderAccess(id);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
+        const photos =
+            await prisma.workorderPhoto.findMany({
+                where:{
+                    workorderId:id
+                },
+                orderBy:{
+                    createdAt:"asc"
+                }
+            });
+
+        return NextResponse.json({
+            photos
+        });
+
+    } catch(error){
+
+        console.error("PHOTO LIST ERROR", error);
+
+        return NextResponse.json(
+            { error:"Foto's ophalen mislukt" },
+            { status:500 }
+        );
+
+    }
+
+}
+
+
+export async function PATCH(
+
+    request:NextRequest,
+
+    context:{
+        params:Promise<{
+            id:string;
+        }>
+    }
+
+){
+
+    try {
+
+        const { id } =
+            await context.params;
+
+        const guard =
+            await requireWorkorderAccess(id);
+
+        if(!guard.ok){
+            return guard.response;
+        }
+
+        const body =
+            await request.json() as {
+                photoId?:string;
+                caption?:string;
+            };
+
+        if(!body.photoId){
+            return NextResponse.json(
+                { error:"photoId ontbreekt" },
+                { status:400 }
+            );
+        }
+
+        const photo =
+            await prisma.workorderPhoto.findFirst({
+                where:{
+                    id: body.photoId,
+                    workorderId: id
+                }
+            });
+
+        if(!photo){
+            return NextResponse.json(
+                { error:"Foto niet gevonden" },
+                { status:404 }
+            );
+        }
+
+        const updated =
+            await prisma.workorderPhoto.update({
+                where:{
+                    id: photo.id
+                },
+                data:{
+                    caption:
+                        typeof body.caption === "string"
+                        ? body.caption
+                        : photo.caption
+                }
+            });
+
+        return NextResponse.json({
+            photo: updated
+        });
+
+    } catch(error){
+
+        console.error("PHOTO PATCH ERROR", error);
+
+        return NextResponse.json(
+            { error:"Foto bijwerken mislukt" },
+            { status:500 }
+        );
+
+    }
 
 }
