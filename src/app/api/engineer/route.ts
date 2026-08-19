@@ -39,46 +39,15 @@ export async function GET(){
 
 
 
-        const today =
-            new Date();
+        const tomorrow = new Date();
+        tomorrow.setHours(0, 0, 0, 0);
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
-
-        today.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-
-
-
-
-        const workorders =
-
-            await prisma.workorder.findMany({
-
-                where:{
-
-
-                    assignedUserId:
-                        session.user.id,
-
-
-                    plannedDate:{
-
-                        gte:today
-
-                    },
-
-
-                    status:{
-
-                        notIn:["uitgevoerd","gefactureerd"]
-
-                    }
-
+        const workorders = await prisma.workorder.findMany({
+                where: {
+                    assignedUserId: session.user.id,
+                    plannedDate: { lt: tomorrow },
+                    status: { notIn: ["uitgevoerd", "gefactureerd"] },
                 },
 
                 omit: {
