@@ -14,6 +14,7 @@ import {
     summarizeVoorziening,
     werkzaamheidLabel,
     beugelLabel,
+    schermHeeftGegevens,
 } from "@/types/installatieRuimtes";
 
 
@@ -195,19 +196,48 @@ export interface WorkorderHtmlPdfInput {
 
 // ---------- oplever-bouwstenen ----------
 
+function chipSvg(
+    label:string,
+    kind:"yes" | "no" | "empty"
+):string {
+
+    const fill =
+        kind === "yes"
+        ? "#dcf5e4"
+        : kind === "no"
+        ? "#ddf1fd"
+        : "#f1f5f9";
+    const color =
+        kind === "yes"
+        ? "#15803d"
+        : kind === "no"
+        ? "#0369a1"
+        : "#94a3b8";
+    const width = Math.max(32, Math.round(label.length * 5.6 + 18));
+    const height = 16;
+    const r = 8;
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="display:inline-block;vertical-align:middle">
+        <rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="${r}" ry="${r}" fill="${fill}"/>
+        <text x="${width / 2}" y="${height / 2 + 3.4}" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="700" fill="${color}">${esc(label)}</text>
+    </svg>`;
+
+}
+
+
 function pill(
     value:boolean | null
 ):string {
 
     if(value === true){
-        return `<span class="pill pill-yes">Ja</span>`;
+        return chipSvg("Ja","yes");
     }
 
     if(value === false){
-        return `<span class="pill pill-no">Nee</span>`;
+        return chipSvg("Nee","no");
     }
 
-    return `<span class="pill pill-empty">—</span>`;
+    return chipSvg("—","empty");
 
 }
 
@@ -217,7 +247,7 @@ function choicePill(
 ):string {
 
     if(!value){
-        return `<span class="pill pill-empty">—</span>`;
+        return chipSvg("—","empty");
     }
 
     const negative =
@@ -225,7 +255,7 @@ function choicePill(
         value === "n.v.t." ||
         value === "Slecht";
 
-    return `<span class="pill ${negative ? "pill-no" : "pill-yes"}">${esc(value)}</span>`;
+    return chipSvg(value, negative ? "no" : "yes");
 
 }
 
@@ -243,6 +273,26 @@ function row(
 }
 
 
+function qaBlock(
+    title:string,
+    rowsHtml:string
+):string {
+
+    if(!rowsHtml.includes("<tr>")){
+        return "";
+    }
+
+    return `
+  <div class="section">
+    <div class="section-title">${title}</div>
+    <table class="qa">
+      ${rowsHtml}
+    </table>
+  </div>`;
+
+}
+
+
 function textAnswer(
     value:string
 ):string {
@@ -251,7 +301,7 @@ function textAnswer(
     ?
     `<span class="txt">${esc(value)}</span>`
     :
-    `<span class="pill pill-empty">—</span>`;
+    chipSvg("—","empty");
 
 }
 
@@ -504,23 +554,32 @@ function opleverSections(
         .join(" · ");
 
 
+    const filledRuimtes =
+        Array.isArray(i.ruimtes)
+        ?
+        i.ruimtes.filter((r)=>
+            r.werkzaamheid
+            ||
+            (r.naam || "").trim()
+            ||
+            (r.schermen || []).some((s)=>schermHeeftGegevens(s))
+        )
+        :
+        [];
+
+
     return `
-  <div class="section">
-    <div class="section-title">1. Tarief &amp; Uren</div>
-    <table class="qa">
-      ${t.voorrijtarief !== null ? row("Voorrijtarief?",t.voorrijtarief ? `<span class="pill pill-yes">Vast</span>` : `<span class="pill pill-no">KM's + Uren</span>`) : ""}
+  ${qaBlock("1. Tarief &amp; Uren", `
+      ${t.voorrijtarief !== null ? row("Voorrijtarief?", t.voorrijtarief ? chipSvg("Vast","yes") : chipSvg("KM's + Uren","no")) : ""}
       ${t.voorrijtarief === false && t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
       ${t.voorrijtarief === false && t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
       ${urenRows}
       ${kostenRows}
-    </table>
-  </div>
+  `)}
 
-  <div class="section">
-    <div class="section-title">2. Installatie werkzaamheden</div>
-    <table class="qa">
-      ${Array.isArray(i.ruimtes) && i.ruimtes.some((r)=>r.werkzaamheid || r.naam || (r.schermen && r.schermen.length))
-        ? i.ruimtes.map((r, ri)=>{
+  ${qaBlock("2. Installatie werkzaamheden", `
+      ${filledRuimtes.length > 0
+        ? filledRuimtes.map((r, ri)=>{
             const naam = (r.naam || `Ruimte ${ri + 1}`).trim();
             const parts = [
               r.werkzaamheid ? werkzaamheidLabel(r.werkzaamheid) : "",
@@ -530,6 +589,7 @@ function opleverSections(
               r.aantalSchermen ? `${r.aantalSchermen} scherm(en)` : ""
             ].filter(Boolean);
             const schermen = (r.schermen || [])
+              .filter((s)=>schermHeeftGegevens(s))
               .map((s, si)=>{
                 const sParts = [
                   s.label || `Scherm ${si + 1}`,
@@ -540,11 +600,10 @@ function opleverSections(
                 ].filter(Boolean);
                 return sParts.join(" · ");
               })
-              .filter(Boolean)
               .join("<br/>");
             return row(
-              esc(naam),
-              textAnswer(parts.join(" · ")) + (schermen ? `<div style="margin-top:4px;font-size:11px">${schermen}</div>` : "")
+              naam,
+              (parts.join(" · ") ? textAnswer(parts.join(" · ")) : "") + (schermen ? `<div style="margin-top:4px;font-size:11px">${schermen}</div>` : "")
             );
           }).join("")
         : `
@@ -568,7 +627,7 @@ function opleverSections(
       ${i.audio === true && i.audioVersterker ? row("Versterker (aantal)",textAnswer(i.audioVersterker)) : ""}
       ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar (aantal)",textAnswer(i.audioVolumeregelaar)) : ""}
       ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
-      ${i.audio === true && i.audioAndersTekst ? row(esc(i.audioAndersTekst) + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
+      ${i.audio === true && i.audioAndersTekst ? row(i.audioAndersTekst + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
       `}
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
       ${summarizeVoorziening("Internet", i.internetBlok) ? row("Internet", textAnswer(summarizeVoorziening("Internet", i.internetBlok).replace(/^Internet:\s*/,""))) : ""}
@@ -580,11 +639,10 @@ function opleverSections(
             i.extra.audio ? "Audio" : ""
           ].filter(Boolean).join(", ")))
         : ""}
-      ${i.isProject === true ? row("6. Project (offertebasis)?",pill(i.isProject)) : ""}
+      ${i.isProject !== null ? row("6. Project (offertebasis)?",pill(i.isProject)) : ""}
       ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
-    </table>
-    ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
-  </div>
+  `)}
+  ${i.opmerkingen ? `<div class="section"><div class="description-box">${esc(i.opmerkingen)}</div></div>` : ""}
 
   ${(()=>{
       const ev = data.evalue8 && typeof data.evalue8 === "object" ? data.evalue8 : {};
@@ -779,11 +837,11 @@ function customFieldsSection(
         return "";
     }
 
-    const sections =
+        const sections =
         (schemaRaw as { sections:Array<{
             id:string;
             title:string;
-            fields:Array<{ id:string; label:string; type:string }>;
+            fields:Array<{ id:string; label:string; type:string; required?:boolean }>;
         }> }).sections;
 
 
@@ -794,24 +852,33 @@ function customFieldsSection(
                 section.fields.map(field=>{
 
                     const raw = custom[field.id];
-
-                    let value:string;
+                    const required = Boolean(field.required);
 
                     if(field.type === "checkbox"){
-                        value = raw ? "Ja" : "Nee";
-                    } else {
-                        value =
-                            raw === undefined || raw === null || raw === ""
-                            ?
-                            "—"
-                            :
-                            String(raw);
+                        const checked = Boolean(raw);
+                        if(!required && !checked){
+                            return "";
+                        }
+                        return row(field.label, chipSvg(checked ? "Ja" : "Nee", checked ? "yes" : "no"));
                     }
 
-                    return row(field.label, textAnswer(value));
+                    const empty =
+                        raw === undefined || raw === null || String(raw).trim() === "";
+
+                    if(empty && !required){
+                        return "";
+                    }
+
+                    return row(
+                        field.label,
+                        empty ? chipSvg("—","empty") : textAnswer(String(raw))
+                    );
 
                 }).join("");
 
+            if(!rows.includes("<tr>")){
+                return "";
+            }
 
             return `
               <div class="section-title">${esc(section.title)}</div>
@@ -819,7 +886,11 @@ function customFieldsSection(
                 ${rows}
               </table>`;
 
-        }).join("");
+        }).filter(Boolean).join("");
+
+    if(!blocks){
+        return "";
+    }
 
 
     return `
@@ -916,7 +987,7 @@ function generateHtml(
   .info-label { font-size: 8px; font-weight: 700; color: #8a97a8; text-transform: uppercase; letter-spacing: 0.6px; }
   .info-value { font-size: 10px; color: #1f2937; margin-top: 3px; font-weight: 500; }
   /* Tables */
-  table { width: 100%; border-collapse: collapse; font-size: 9px; border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 9px; border-radius: 8px; }
   thead tr { background: #0a2540; color: #fff; }
   thead th { padding: 7px 9px; text-align: left; font-weight: 600; letter-spacing: 0.3px; }
   tbody tr:nth-child(even) { background: #f4f7fb; }
@@ -932,7 +1003,7 @@ function generateHtml(
   .hardware-table th { background: #eef3f9; text-align: left; padding: 6px 9px; font-weight: 700; color: #334155; border: 1px solid #e6ebf2; }
   .hardware-table td { padding: 6px 9px; border: 1px solid #e6ebf2; color: #1f2937; }
   .txt { font-weight: 600; color: #1f2937; }
-  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 8.5px; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 8px; font-size: 8.5px; font-weight: 600; }
   .pill-yes { background: #dcf5e4; color: #15803d; }
   .pill-no { background: #ddf1fd; color: #0369a1; }
   .pill-empty { background: #f1f5f9; color: #94a3b8; }
@@ -944,7 +1015,9 @@ function generateHtml(
   .photo-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e6ebf2; border-radius: 8px; background: #f8fafc; }
   .photo-caption { font-size: 9px; color: #475569; margin-top: 4px; padding: 3px 6px; background: #f4f7fb; border-radius: 4px; }
   /* Handtekeningen */
-  .sig-box { border: 1px solid #e6ebf2; border-radius: 8px; padding: 9px; min-height: 90px; width: 100%; background:#fff; }
+  .sig-box { position: relative; min-height: 90px; width: 100%; background: transparent; border: none; padding: 0; }
+  .sig-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .sig-inner { position: relative; padding: 10px 12px; min-height: 90px; }
   .sig-img { width: 100%; max-height: 120px; object-fit: contain; }
   .sig-line { border-top: 1px dashed #cbd5e1; margin-top: 40px; padding-top: 4px; font-size: 8px; color: #94a3b8; }
   /* Footer */
@@ -1122,8 +1195,13 @@ function generateHtml(
     <div>
       <div class="info-label" style="margin-bottom:4px">Handtekening klant</div>
       <div class="sig-box">
+        <svg class="sig-frame" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" preserveAspectRatio="none">
+          <rect x="1" y="1" width="398" height="98" rx="12" ry="12" fill="#ffffff" stroke="#e6ebf2" stroke-width="1.5"/>
+        </svg>
+        <div class="sig-inner">
         ${data.signatureUrl ? `<img src="${esc(data.signatureUrl)}" class="sig-img" alt="Handtekening klant" />` : (oplever.afronding.handtekening ? `<img src="${oplever.afronding.handtekening}" class="sig-img" alt="Handtekening klant" />` : "")}
         <div class="sig-line">Naam: ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "_________________________________"}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1131,7 +1209,7 @@ function generateHtml(
   <!-- FOOTER -->
   <div class="footer">
     <div class="footer-meta">
-      <div style="font-weight:700;color:#1e293b;margin-bottom:2px">MDB Networks B.V.</div>
+      <div style="font-weight:700;color:#1e293b;margin-bottom:2px">MDB Networks</div>
       <div>Opdrachtnummer: ${esc(data.number)}</div>
       <div>Gegenereerd: ${formatDateTime(new Date())}</div>
     </div>

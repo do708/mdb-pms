@@ -39,6 +39,32 @@ const YES_GREEN = rgb(0.08,0.5,0.24);
 const NO_BLUE = rgb(0.01,0.41,0.63);
 
 
+function roundedRectPath(
+    x:number,
+    y:number,
+    w:number,
+    h:number,
+    r:number
+):string {
+
+    const radius = Math.min(r, w / 2, h / 2);
+
+    return [
+        `M ${x + radius} ${y}`,
+        `H ${x + w - radius}`,
+        `Q ${x + w} ${y} ${x + w} ${y + radius}`,
+        `V ${y + h - radius}`,
+        `Q ${x + w} ${y + h} ${x + w - radius} ${y + h}`,
+        `H ${x + radius}`,
+        `Q ${x} ${y + h} ${x} ${y + h - radius}`,
+        `V ${y + radius}`,
+        `Q ${x} ${y} ${x + radius} ${y}`,
+        "Z"
+    ].join(" ");
+
+}
+
+
 
 const PAGE_WIDTH = 595;
 
@@ -403,13 +429,10 @@ export async function generateOpleverPdf(
 
             if(option.active){
 
-                page.drawRectangle({
-                    x,
-                    y:y - 4,
-                    width,
-                    height:15,
-                    color:option.color
-                });
+                page.drawSvgPath(
+                    roundedRectPath(x, y - 4, width, 15, 7),
+                    { color:option.color }
+                );
 
                 page.drawText(option.label,{
                     x:x + 10,
@@ -421,14 +444,10 @@ export async function generateOpleverPdf(
 
             } else {
 
-                page.drawRectangle({
-                    x,
-                    y:y - 4,
-                    width,
-                    height:15,
-                    borderColor:GRAY_LINE,
-                    borderWidth:0.8
-                });
+                page.drawSvgPath(
+                    roundedRectPath(x, y - 4, width, 15, 7),
+                    { borderColor:GRAY_LINE, borderWidth:0.8 }
+                );
 
                 page.drawText(option.label,{
                     x:x + 10,
@@ -455,8 +474,13 @@ export async function generateOpleverPdf(
     function jaNee(
         label:string,
         value:boolean | null,
-        labels:[string,string] = ["Ja","Nee"]
+        labels:[string,string] = ["Ja","Nee"],
+        required = false
     ){
+
+        if(value === null && !required){
+            return;
+        }
 
         text(label);
 
@@ -483,8 +507,13 @@ export async function generateOpleverPdf(
     function keuze(
         label:string,
         value:string,
-        options:string[]
+        options:string[],
+        required = false
     ){
+
+        if(!value && !required){
+            return;
+        }
 
         text(label);
 
@@ -795,27 +824,23 @@ export async function generateOpleverPdf(
     );
 
 
-    text("3. Videowall",{ useBold:true, gap:2 });
-
     if(data.installatie.videowall){
-        text(data.installatie.videowall ? "Ja" : "Nee",{ gap:2 });
+        text("3. Videowall",{ useBold:true, gap:2 });
+        text("Ja",{ gap:2 });
+        dashedLine();
     }
 
-    dashedLine();
-
-
-    text("4. Kiosk",{ useBold:true, gap:2 });
 
     if(data.installatie.kiosk){
-        text(data.installatie.kiosk ? "Ja" : "Nee",{ gap:2 });
+        text("4. Kiosk",{ useBold:true, gap:2 });
+        text("Ja",{ gap:2 });
+        dashedLine();
     }
 
-    dashedLine();
-
-
-    text("5. Mediaplayers",{ useBold:true, gap:2 });
 
     if(data.installatie.mediaplayers){
+
+        text("5. Mediaplayers",{ useBold:true, gap:2 });
 
         keuze(
             "Heb je mediaplayers;",
@@ -828,20 +853,14 @@ export async function generateOpleverPdf(
             data.installatie.aantalMediaplayers
         );
 
-    } else {
-
-        dashedLine();
-
     }
 
-
-    text("6. Audio",{ useBold:true, gap:2 });
 
     if(data.installatie.audio){
-        text(data.installatie.audio ? "Ja" : "Nee",{ gap:2 });
+        text("6. Audio",{ useBold:true, gap:2 });
+        text("Ja",{ gap:2 });
+        dashedLine();
     }
-
-    dashedLine();
 
         } // end legacy else
     }
@@ -1023,17 +1042,23 @@ export async function generateOpleverPdf(
 
     jaNee(
         "1. Is de installatie werkend opgeleverd?",
-        data.checklist.werkendOpgeleverd
+        data.checklist.werkendOpgeleverd,
+        ["Ja","Nee"],
+        true
     );
 
     jaNee(
         "2. Is de hardware aangesloten op een schakelstroompunt dat handmatig uit te zetten is?",
-        data.checklist.lichtnetSchakelbaar
+        data.checklist.lichtnetSchakelbaar,
+        ["Ja","Nee"],
+        true
     );
 
     jaNee(
         "3. WiFi verbinding van toepassing?",
-        data.checklist.wifiVanToepassing
+        data.checklist.wifiVanToepassing,
+        ["Ja","Nee"],
+        true
     );
 
     if(data.checklist.wifiVanToepassing === true){
@@ -1049,7 +1074,8 @@ export async function generateOpleverPdf(
     keuze(
         "4. Zijn de schermen gekoppeld aan Remote Services?",
         data.checklist.remoteServices,
-        ["Ja","Nee","n.v.t."]
+        ["Ja","Nee","n.v.t."],
+        true
     );
 
     keuze(
@@ -1071,7 +1097,9 @@ export async function generateOpleverPdf(
 
     jaNee(
         "6. Afvalverwijdering?",
-        data.checklist.afvalverwijdering
+        data.checklist.afvalverwijdering,
+        ["Ja","Nee"],
+        true
     );
 
 
@@ -1225,14 +1253,13 @@ export async function generateOpleverPdf(
     y -= 14;
 
 
-    page.drawRectangle({
-        x:MARGIN,
-        y:y - 110,
-        width:200,
-        height:110,
-        borderColor:GRAY_LINE,
-        borderWidth:0.8
-    });
+    page.drawSvgPath(
+        roundedRectPath(MARGIN, y - 110, 200, 110, 12),
+        {
+            borderColor:GRAY_LINE,
+            borderWidth:0.8
+        }
+    );
 
 
     if(input.signatureUrl){
@@ -1302,7 +1329,7 @@ export async function generateOpleverPdf(
         });
 
 
-        current.drawText("MDB Networks B.V.",{
+        current.drawText("MDB Networks",{
             x:MARGIN,
             y:24,
             size:9,
