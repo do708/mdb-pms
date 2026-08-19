@@ -697,7 +697,7 @@ function opleverSections(
         m.stroomkabelGetrokken === true ||
         m.verlengsnoeren === true ||
         m.extraSpeakers === true ||
-        m.multicast !== null ||
+        m.multicast === true ||
         (m.opmerkingen && String(m.opmerkingen).trim())
     )
     ? `
@@ -715,8 +715,7 @@ function opleverSections(
       ${m.verlengsnoeren === true && verleng ? row("6. Verlengsnoeren",textAnswer(verleng)) : ""}
       ${m.extraSpeakers === true && m.usbSpeakers ? row("7. USB Speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
       ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
-      ${m.multicast !== null ? row("8. Multicast set gebruikt?",pill(m.multicast)) : ""}
-      ${m.multicast === true && m.multicastZenders ? row("Zenders (aantal)",textAnswer(
+      ${m.multicast === true && m.multicastZenders ? row("8. Multicast set — zenders",textAnswer(
           formatMateriaalStukken(
               m.multicastZenders,
               m.multicastZenderItems,

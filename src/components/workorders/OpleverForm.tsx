@@ -3303,73 +3303,68 @@ export default function OpleverForm({
                 </UitklapVraag>
 
 
-                <Vraag label="8. Gebruik gemaakt van een multicast set?">
-                    <JaNee
-                        value={m.multicast}
+                <UitklapVraag
+                    label="8. Multicast set"
+                    actief={m.multicast === true}
+                    onToggle={(v)=>
+                        update(draft=>{
+                            draft.materialen.multicast = v ? true : false;
+                        })
+                    }
+                >
+                    <AudioRegel
+                        label="Zenders"
+                        value={m.multicastZenders}
                         onChange={(v)=>update(draft=>{
-                            draft.materialen.multicast = v;
+                            draft.materialen.multicastZenders=v;
+                            draft.materialen.multicastZenderItems=resizeMateriaalItems(
+                                draft.materialen.multicastZenderItems,
+                                parseAantal(v)
+                            );
+                            draft.materialen.multicastZenderSns=snsVanItems(
+                                draft.materialen.multicastZenderItems
+                            );
+                            draft.materialen.multicastZenderSn=
+                                draft.materialen.multicastZenderSns.find((s)=>s.trim()) || "";
                         })}
                     />
-                </Vraag>
-
-                {
-                    m.multicast === true && (
-                        <div className="mt-2 space-y-2">
-                            <AudioRegel
-                                label="Zenders"
-                                value={m.multicastZenders}
-                                onChange={(v)=>update(draft=>{
-                                    draft.materialen.multicastZenders=v;
-                                    draft.materialen.multicastZenderItems=resizeMateriaalItems(
-                                        draft.materialen.multicastZenderItems,
-                                        parseAantal(v)
-                                    );
-                                    draft.materialen.multicastZenderSns=snsVanItems(
-                                        draft.materialen.multicastZenderItems
-                                    );
-                                    draft.materialen.multicastZenderSn=
-                                        draft.materialen.multicastZenderSns.find((s)=>s.trim()) || "";
-                                })}
-                            />
-                            <MateriaalStukkenOnderAantal
-                                aantal={m.multicastZenders}
-                                items={m.multicastZenderItems}
-                                onChange={(items)=>update((d)=>{
-                                    d.materialen.multicastZenderItems=items;
-                                    d.materialen.multicastZenderSns=snsVanItems(items);
-                                    d.materialen.multicastZenderSn=
-                                        items.find((s)=>s.sn.trim())?.sn || "";
-                                })}
-                            />
-                            <AudioRegel
-                                label="Ontvangers"
-                                value={m.multicastOntvangers}
-                                onChange={(v)=>update(draft=>{
-                                    draft.materialen.multicastOntvangers=v;
-                                    draft.materialen.multicastOntvangerItems=resizeMateriaalItems(
-                                        draft.materialen.multicastOntvangerItems,
-                                        parseAantal(v)
-                                    );
-                                    draft.materialen.multicastOntvangerSns=snsVanItems(
-                                        draft.materialen.multicastOntvangerItems
-                                    );
-                                    draft.materialen.multicastOntvangerSn=
-                                        draft.materialen.multicastOntvangerSns.find((s)=>s.trim()) || "";
-                                })}
-                            />
-                            <MateriaalStukkenOnderAantal
-                                aantal={m.multicastOntvangers}
-                                items={m.multicastOntvangerItems}
-                                onChange={(items)=>update((d)=>{
-                                    d.materialen.multicastOntvangerItems=items;
-                                    d.materialen.multicastOntvangerSns=snsVanItems(items);
-                                    d.materialen.multicastOntvangerSn=
-                                        items.find((s)=>s.sn.trim())?.sn || "";
-                                })}
-                            />
-                        </div>
-                    )
-                }
+                    <MateriaalStukkenOnderAantal
+                        aantal={m.multicastZenders}
+                        items={m.multicastZenderItems}
+                        onChange={(items)=>update((d)=>{
+                            d.materialen.multicastZenderItems=items;
+                            d.materialen.multicastZenderSns=snsVanItems(items);
+                            d.materialen.multicastZenderSn=
+                                items.find((s)=>s.sn.trim())?.sn || "";
+                        })}
+                    />
+                    <AudioRegel
+                        label="Ontvangers"
+                        value={m.multicastOntvangers}
+                        onChange={(v)=>update(draft=>{
+                            draft.materialen.multicastOntvangers=v;
+                            draft.materialen.multicastOntvangerItems=resizeMateriaalItems(
+                                draft.materialen.multicastOntvangerItems,
+                                parseAantal(v)
+                            );
+                            draft.materialen.multicastOntvangerSns=snsVanItems(
+                                draft.materialen.multicastOntvangerItems
+                            );
+                            draft.materialen.multicastOntvangerSn=
+                                draft.materialen.multicastOntvangerSns.find((s)=>s.trim()) || "";
+                        })}
+                    />
+                    <MateriaalStukkenOnderAantal
+                        aantal={m.multicastOntvangers}
+                        items={m.multicastOntvangerItems}
+                        onChange={(items)=>update((d)=>{
+                            d.materialen.multicastOntvangerItems=items;
+                            d.materialen.multicastOntvangerSns=snsVanItems(items);
+                            d.materialen.multicastOntvangerSn=
+                                items.find((s)=>s.sn.trim())?.sn || "";
+                        })}
+                    />
+                </UitklapVraag>
 
 
                 <div className="pt-3">
