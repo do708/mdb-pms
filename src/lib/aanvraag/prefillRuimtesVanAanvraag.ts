@@ -21,7 +21,7 @@ function uid(): string {
 
 function mapBeugelType(item: AanvraagSchermItem): {
     werkzaamheid: Werkzaamheid;
-    beugelType: BeugelType;
+    beugelType: BeugelType | "";
     beugelMaat: string;
 } {
     const detail = (item.bevestigingDetail || "").toLowerCase();
