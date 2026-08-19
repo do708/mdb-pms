@@ -2475,7 +2475,7 @@ export default function OpleverForm({
 
 
             {
-              variant === "volledig" && (
+              false && variant === "volledig" && (
                 <>
 
             {/* ================= Hardware geïnstalleerd/gedemonteerd ================= */}
@@ -2821,48 +2821,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="1. TV beugels gemonteerd"
-                    actief={m.nieuweBeugels === true}
-                    onToggle={(v)=>
-                        update(draft=>{
-                            draft.materialen.nieuweBeugels = v;
-                        })
-                    }
-                >
-
-                    <div className="space-y-2">
-
-                        <div className="space-y-2">
-                            <p className="text-sm text-gray-600">Nieuw of bestaand?</p>
-                            <Keuze
-                                value={m.bestaandeBeugels === true ? "Bestaand" : "Nieuw"}
-                                options={["Nieuw","Bestaand"]}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.materialen.bestaandeBeugels = v === "Bestaand";
-                                    })
-                                }
-                            />
-                        </div>
-
-                        <p className="text-sm text-gray-600 pt-1">
-                            Welke beugels? (vul het aantal in)
-                        </p>
-
-                        <AudioRegel label="Muurbeugel" value={m.muurbeugel} onChange={(v)=>update(d=>{d.materialen.muurbeugel=v;})} />
-                        <AudioRegel label="Zwenkbeugel" value={m.zwenkbeugel} onChange={(v)=>update(d=>{d.materialen.zwenkbeugel=v;})} />
-                        <AudioRegel label="Plafondbeugel 150cm" value={m.plafond150} onChange={(v)=>update(d=>{d.materialen.plafond150=v;})} />
-                        <AudioRegel label="Plafondbeugel 300cm" value={m.plafond300} onChange={(v)=>update(d=>{d.materialen.plafond300=v;})} />
-                        <AudioRegel label="Vloerstandaard" value={m.vloerstandaard} onChange={(v)=>update(d=>{d.materialen.vloerstandaard=v;})} />
-                        <AudioRegel label="Overig" value={m.overigBeugel} onChange={(v)=>update(d=>{d.materialen.overigBeugel=v;})} />
-
-                    </div>
-
-                </UitklapVraag>
-
-
-                <UitklapVraag
-                    label="2. Extra HDMI kabels gebruikt"
+                    label="1. Extra HDMI kabels gebruikt"
                     actief={m.extraHdmiKabels === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -2885,7 +2844,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="3. Extra patchkabels gebruikt"
+                    label="2. Extra patchkabels gebruikt"
                     actief={m.extraPatchkabels === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -2904,7 +2863,7 @@ export default function OpleverForm({
 
 
                 <UitklapVraag
-                    label="Extra switches gebruikt"
+                    label="3. Extra switches gebruikt"
                     actief={m.extraSwitches === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -2916,6 +2875,26 @@ export default function OpleverForm({
                     <AudioRegel label="5 poorten, gigabit" value={m.switch5port} onChange={(v)=>update(d=>{d.materialen.switch5port=v;})} />
                     <AudioRegel label="8 poorten, gigabit" value={m.switch8port} onChange={(v)=>update(d=>{d.materialen.switch8port=v;})} />
                     <AudioRegel label="5 poorten, PoE gigabit" value={m.switch5portPoe} onChange={(v)=>update(d=>{d.materialen.switch5portPoe=v;})} />
+                    {([m.switch5port, m.switch8port, m.switch5portPoe]
+                        .map((v) => parseInt(v, 10) || 0)
+                        .reduce((a, b) => a + b, 0) === 1) ? (
+                        <label className="block pt-1">
+                            <span className="text-sm text-gray-600">
+                                Serienummer
+                            </span>
+                            <input
+                                value={m.switchSerienummer}
+                                onChange={(e)=>
+                                    update((d)=>{
+                                        d.materialen.switchSerienummer =
+                                            e.target.value;
+                                    })
+                                }
+                                placeholder="Serienummer switch"
+                                className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                            />
+                        </label>
+                    ) : null}
                 </UitklapVraag>
 
 
@@ -3001,7 +2980,43 @@ export default function OpleverForm({
                     m.multicast === true && (
                         <div className="mt-2 space-y-2">
                             <AudioRegel label="Zenders" value={m.multicastZenders} onChange={(v)=>update(draft=>{draft.materialen.multicastZenders=v;})} />
+                            {(parseInt(m.multicastZenders, 10) || 0) === 1 ? (
+                                <label className="block">
+                                    <span className="text-sm text-gray-600">
+                                        Zender s/n
+                                    </span>
+                                    <input
+                                        value={m.multicastZenderSn}
+                                        onChange={(e)=>
+                                            update((d)=>{
+                                                d.materialen.multicastZenderSn =
+                                                    e.target.value;
+                                            })
+                                        }
+                                        placeholder="Serienummer zender"
+                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                    />
+                                </label>
+                            ) : null}
                             <AudioRegel label="Ontvangers" value={m.multicastOntvangers} onChange={(v)=>update(draft=>{draft.materialen.multicastOntvangers=v;})} />
+                            {(parseInt(m.multicastOntvangers, 10) || 0) === 1 ? (
+                                <label className="block">
+                                    <span className="text-sm text-gray-600">
+                                        Ontvanger s/n
+                                    </span>
+                                    <input
+                                        value={m.multicastOntvangerSn}
+                                        onChange={(e)=>
+                                            update((d)=>{
+                                                d.materialen.multicastOntvangerSn =
+                                                    e.target.value;
+                                            })
+                                        }
+                                        placeholder="Serienummer ontvanger"
+                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                    />
+                                </label>
+                            ) : null}
                         </div>
                     )
                 }

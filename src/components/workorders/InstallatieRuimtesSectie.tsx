@@ -5,7 +5,6 @@ import {
     BEVESTIGING_DETAIL,
     BEVESTIGING_OPTIES,
     BevestigingSoort,
-    FORMAAT_PASTEL,
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
     isPlayerAansturing,
@@ -52,6 +51,45 @@ function Chips({
     );
 }
 
+function JaNeeKleur({
+    value,
+    onChange,
+    options,
+}: {
+    value: string;
+    onChange: (v: string) => void;
+    options: { value: string; label: string; kleur: "green" | "orange" | "sky" }[];
+}) {
+    const klasse = (kleur: string, active: boolean) => {
+        if (!active) return "bg-white text-gray-600 border-gray-200";
+        if (kleur === "orange") return "bg-amber-100 text-amber-800 border-amber-300";
+        if (kleur === "sky") return "bg-sky-100 text-sky-800 border-sky-300";
+        return "bg-emerald-100 text-emerald-800 border-emerald-300";
+    };
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {options.map((opt) => (
+                <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() =>
+                        onChange(value === opt.value ? "" : opt.value)
+                    }
+                    className={
+                        "rounded-lg px-3 py-2 border-2 text-sm font-medium "
+                        + klasse(opt.kleur, value === opt.value)
+                    }
+                >
+                    {opt.label}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+const KABEL_TRAJECT_P25 = ["P25 wand", "Systeemplafond"] as const;
+
 function schermSpecsGevuld(s: InstallatieScherm): boolean {
     const formaatOk =
         Boolean(s.formaat)
@@ -90,7 +128,6 @@ export default function InstallatieRuimtesSectie({
     opmerkingen = "",
     onOpmerkingenChange,
     showOpmerkingen = false,
-    uploadFile,
 }: Props) {
     const schermKaarten = ruimtes.flatMap((ruimte) =>
         ruimte.schermen.map((scherm) => ({
@@ -152,18 +189,6 @@ export default function InstallatieRuimtesSectie({
         onRuimtesChange(next.length > 0 ? next : [emptyRuimte()]);
     }
 
-    async function uploadFoto(
-        ruimteId: string,
-        schermId: string,
-        file: File,
-        field: "fotoUrl" | "playerFotoUrl"
-    ) {
-        const result = await uploadFile(file);
-        if (result) {
-            updateScherm(ruimteId, schermId, { [field]: result.url });
-        }
-    }
-
     return (
         <div className="space-y-8">
             <div className="space-y-4">
@@ -181,12 +206,6 @@ export default function InstallatieRuimtesSectie({
                 </div>
 
                 {schermKaarten.map(({ ruimteId, scherm }, index) => {
-                    const pastel =
-                        FORMAAT_PASTEL[scherm.formaat] || {
-                            bg: "bg-slate-100",
-                            border: "border-slate-300",
-                            text: "text-slate-800",
-                        };
                     const detailOpties =
                         scherm.beugel && scherm.beugel in BEVESTIGING_DETAIL
                             ? BEVESTIGING_DETAIL[
@@ -217,67 +236,29 @@ export default function InstallatieRuimtesSectie({
                                     </button>
                                 ) : null}
                             </div>
-                            <p className="text-xs text-gray-400">
-                                Type — vul formaat + bevestiging
-                            </p>
-
                             <div className="space-y-1.5">
                                 <span className="text-xs text-gray-600">
                                     Formaat / inch{" "}
                                     <span className="text-red-500">*</span>
                                 </span>
-                                <div className="flex flex-wrap gap-2">
-                                    {SCHERM_FORMATEN.map((f) => {
-                                        const c = FORMAAT_PASTEL[f];
-                                        const selected = scherm.formaat === f;
-                                        return (
-                                            <button
-                                                key={f}
-                                                type="button"
-                                                onClick={() =>
-                                                    updateScherm(
-                                                        ruimteId,
-                                                        scherm.id,
-                                                        {
-                                                            formaat: selected ? "" : f,
-                                                            formaatAnders: "",
-                                                        }
-                                                    )
-                                                }
-                                                className={
-                                                    "rounded-lg px-3 py-2 border-2 text-sm font-medium "
-                                                    +
-                                                    (selected
-                                                        ? `${c.bg} ${c.border} ${c.text}`
-                                                        : "bg-white text-gray-600 border-gray-200")
-                                                }
-                                            >
-                                                {f}
-                                            </button>
-                                        );
-                                    })}
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            updateScherm(ruimteId, scherm.id, {
-                                                formaat:
-                                                    scherm.formaat === "Anders"
-                                                        ? ""
-                                                        : "Anders",
-                                                formaatAnders: "",
-                                            })
-                                        }
-                                        className={
-                                            "rounded-lg px-3 py-2 border-2 text-sm font-medium "
-                                            +
-                                            (scherm.formaat === "Anders"
-                                                ? "bg-slate-200 text-slate-900 border-slate-400"
-                                                : "bg-white text-gray-600 border-gray-200")
-                                        }
-                                    >
-                                        Anders
-                                    </button>
-                                </div>
+                                <select
+                                    value={scherm.formaat || ""}
+                                    onChange={(e) =>
+                                        updateScherm(ruimteId, scherm.id, {
+                                            formaat: e.target.value,
+                                            formaatAnders: "",
+                                        })
+                                    }
+                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                >
+                                    <option value="">Kies formaat</option>
+                                    {SCHERM_FORMATEN.map((f) => (
+                                        <option key={f} value={f}>
+                                            {f}
+                                        </option>
+                                    ))}
+                                    <option value="Anders">Anders</option>
+                                </select>
                                 {scherm.formaat === "Anders" ? (
                                     <input
                                         type="text"
@@ -290,10 +271,6 @@ export default function InstallatieRuimtesSectie({
                                         placeholder='Afwijkend formaat, bijv. 22"'
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
                                     />
-                                ) : scherm.formaat ? (
-                                    <p className={`text-xs ${pastel.text}`}>
-                                        Gekozen: {scherm.formaat}
-                                    </p>
                                 ) : null}
                             </div>
 
@@ -302,88 +279,78 @@ export default function InstallatieRuimtesSectie({
                                     Bevestiging{" "}
                                     <span className="text-red-500">*</span>
                                 </span>
-                                <Chips
-                                    options={BEVESTIGING_OPTIES}
+                                <select
                                     value={scherm.beugel || ""}
-                                    onChange={(v) =>
+                                    onChange={(e) =>
                                         updateScherm(ruimteId, scherm.id, {
-                                            beugel: v,
+                                            beugel: e.target.value,
                                             bevestigingDetail: "",
                                             bevestigingAnders: "",
                                             plafondHoogte: "",
                                         })
                                     }
-                                />
+                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                >
+                                    <option value="">Kies bevestiging</option>
+                                    {BEVESTIGING_OPTIES.map((b) => (
+                                        <option key={b} value={b}>
+                                            {b}
+                                        </option>
+                                    ))}
+                                </select>
                                 {detailOpties.length > 0 ? (
-                                    <div className="mt-2 pl-2 border-l-2 border-sky-200 space-y-1.5">
-                                        <span className="text-xs text-gray-600 block">
+                                    <select
+                                        value={scherm.bevestigingDetail || ""}
+                                        onChange={(e) =>
+                                            updateScherm(ruimteId, scherm.id, {
+                                                bevestigingDetail: e.target.value,
+                                                bevestigingAnders: "",
+                                            })
+                                        }
+                                        className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                    >
+                                        <option value="">
                                             Type {scherm.beugel.toLowerCase()}
-                                        </span>
-                                        <div className="flex flex-col gap-2">
-                                            {detailOpties.map((d) => (
-                                                <button
-                                                    key={d}
-                                                    type="button"
-                                                    onClick={() =>
-                                                        updateScherm(
-                                                            ruimteId,
-                                                            scherm.id,
-                                                            {
-                                                                bevestigingDetail:
-                                                                    scherm.bevestigingDetail === d
-                                                                        ? ""
-                                                                        : d,
-                                                                bevestigingAnders: "",
-                                                            }
-                                                        )
-                                                    }
-                                                    className={
-                                                        "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left "
-                                                        +
-                                                        (scherm.bevestigingDetail === d
-                                                            ? "bg-teal-100 text-teal-900 border-teal-300"
-                                                            : "bg-white text-gray-700 border-gray-200")
-                                                    }
-                                                >
-                                                    {d}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        {scherm.bevestigingDetail === "Anders" ? (
-                                            <input
-                                                type="text"
-                                                value={scherm.bevestigingAnders || ""}
-                                                onChange={(e) =>
-                                                    updateScherm(
-                                                        ruimteId,
-                                                        scherm.id,
-                                                        {
-                                                            bevestigingAnders:
-                                                                e.target.value,
-                                                        }
-                                                    )
-                                                }
-                                                placeholder="Welke bevestiging?"
-                                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                                            />
-                                        ) : null}
-                                    </div>
+                                        </option>
+                                        {detailOpties.map((d) => (
+                                            <option key={d} value={d}>
+                                                {d}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : null}
+                                {scherm.bevestigingDetail === "Anders" ? (
+                                    <input
+                                        type="text"
+                                        value={scherm.bevestigingAnders || ""}
+                                        onChange={(e) =>
+                                            updateScherm(ruimteId, scherm.id, {
+                                                bevestigingAnders: e.target.value,
+                                            })
+                                        }
+                                        placeholder="Welke bevestiging?"
+                                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                                    />
                                 ) : null}
                                 {scherm.beugel === "Plafondbeugel" ? (
-                                    <div className="space-y-1">
-                                        <span className="text-xs text-gray-600">
+                                    <select
+                                        value={scherm.plafondHoogte || ""}
+                                        onChange={(e) =>
+                                            updateScherm(ruimteId, scherm.id, {
+                                                plafondHoogte: e.target.value,
+                                            })
+                                        }
+                                        className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                    >
+                                        <option value="">
                                             Lengte plafondbeugel
-                                        </span>
-                                        <Chips
-                                            options={PLAFOND_HOOGTE_OPTIES}
-                                            value={scherm.plafondHoogte || ""}
-                                            onChange={(v) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    plafondHoogte: v,
-                                                })
-                                            }
-                                        />
-                                    </div>
+                                        </option>
+                                        {PLAFOND_HOOGTE_OPTIES.map((h) => (
+                                            <option key={h} value={h}>
+                                                {h}
+                                            </option>
+                                        ))}
+                                    </select>
                                 ) : null}
                             </div>
 
@@ -461,16 +428,77 @@ export default function InstallatieRuimtesSectie({
                                     Stroom aanwezig binnen 3 meter?{" "}
                                     <span className="text-red-500">*</span>
                                 </span>
-                                <Chips
-                                    options={["Ja", "Nee"]}
+                                <JaNeeKleur
                                     value={scherm.stroom || ""}
                                     onChange={(v) =>
                                         updateScherm(ruimteId, scherm.id, {
                                             stroom: v as InstallatieScherm["stroom"],
+                                            stroomGerealiseerd: "",
+                                            stroomMeter: "",
+                                            stroomTraject: "",
                                         })
                                     }
-                                    selectedClass="bg-emerald-100 text-emerald-800 border-emerald-300"
+                                    options={[
+                                        { value: "Ja", label: "Ja", kleur: "green" },
+                                        { value: "Nee", label: "Nee", kleur: "orange" },
+                                    ]}
                                 />
+                                {scherm.stroom === "Nee" ? (
+                                    <div className="pl-2 border-l-2 border-amber-200 space-y-2">
+                                        <span className="text-xs text-gray-600">
+                                            Heb je dit gerealiseerd?
+                                        </span>
+                                        <JaNeeKleur
+                                            value={scherm.stroomGerealiseerd || ""}
+                                            onChange={(v) =>
+                                                updateScherm(ruimteId, scherm.id, {
+                                                    stroomGerealiseerd:
+                                                        v as InstallatieScherm["stroomGerealiseerd"],
+                                                    stroomMeter: "",
+                                                    stroomTraject: "",
+                                                })
+                                            }
+                                            options={[
+                                                { value: "Ja", label: "Ja", kleur: "green" },
+                                                { value: "Nee", label: "Nee", kleur: "orange" },
+                                            ]}
+                                        />
+                                        {scherm.stroomGerealiseerd === "Ja" ? (
+                                            <>
+                                                <label className="block">
+                                                    <span className="text-xs text-gray-600">
+                                                        Hoeveel meter?
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        inputMode="decimal"
+                                                        value={scherm.stroomMeter || ""}
+                                                        onChange={(e) =>
+                                                            updateScherm(
+                                                                ruimteId,
+                                                                scherm.id,
+                                                                { stroomMeter: e.target.value }
+                                                            )
+                                                        }
+                                                        placeholder="Bijv. 8"
+                                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                                    />
+                                                </label>
+                                                <Chips
+                                                    options={KABEL_TRAJECT_P25}
+                                                    value={scherm.stroomTraject || ""}
+                                                    onChange={(v) =>
+                                                        updateScherm(
+                                                            ruimteId,
+                                                            scherm.id,
+                                                            { stroomTraject: v }
+                                                        )
+                                                    }
+                                                />
+                                            </>
+                                        ) : null}
+                                    </div>
+                                ) : null}
                             </div>
 
                             <div className="space-y-1.5">
@@ -478,16 +506,78 @@ export default function InstallatieRuimtesSectie({
                                     Internet aanwezig binnen 3 meter?{" "}
                                     <span className="text-red-500">*</span>
                                 </span>
-                                <Chips
-                                    options={["Ja", "Wifi", "Nee"]}
+                                <JaNeeKleur
                                     value={scherm.internet || ""}
                                     onChange={(v) =>
                                         updateScherm(ruimteId, scherm.id, {
                                             internet: v as InstallatieScherm["internet"],
+                                            internetGerealiseerd: "",
+                                            internetMeter: "",
+                                            internetTraject: "",
                                         })
                                     }
-                                    selectedClass="bg-emerald-100 text-emerald-800 border-emerald-300"
+                                    options={[
+                                        { value: "Ja", label: "Ja", kleur: "green" },
+                                        { value: "Wifi", label: "Wifi", kleur: "sky" },
+                                        { value: "Nee", label: "Nee", kleur: "orange" },
+                                    ]}
                                 />
+                                {scherm.internet === "Nee" ? (
+                                    <div className="pl-2 border-l-2 border-amber-200 space-y-2">
+                                        <span className="text-xs text-gray-600">
+                                            Heb je dit gerealiseerd?
+                                        </span>
+                                        <JaNeeKleur
+                                            value={scherm.internetGerealiseerd || ""}
+                                            onChange={(v) =>
+                                                updateScherm(ruimteId, scherm.id, {
+                                                    internetGerealiseerd:
+                                                        v as InstallatieScherm["internetGerealiseerd"],
+                                                    internetMeter: "",
+                                                    internetTraject: "",
+                                                })
+                                            }
+                                            options={[
+                                                { value: "Ja", label: "Ja", kleur: "green" },
+                                                { value: "Nee", label: "Nee", kleur: "orange" },
+                                            ]}
+                                        />
+                                        {scherm.internetGerealiseerd === "Ja" ? (
+                                            <>
+                                                <label className="block">
+                                                    <span className="text-xs text-gray-600">
+                                                        Hoeveel meter?
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        inputMode="decimal"
+                                                        value={scherm.internetMeter || ""}
+                                                        onChange={(e) =>
+                                                            updateScherm(
+                                                                ruimteId,
+                                                                scherm.id,
+                                                                { internetMeter: e.target.value }
+                                                            )
+                                                        }
+                                                        placeholder="Bijv. 8"
+                                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                                    />
+                                                </label>
+                                                <Chips
+                                                    options={KABEL_TRAJECT_P25}
+                                                    value={scherm.internetTraject || ""}
+                                                    onChange={(v) =>
+                                                        updateScherm(
+                                                            ruimteId,
+                                                            scherm.id,
+                                                            { internetTraject: v }
+                                                        )
+                                                    }
+                                                />
+                                            </>
+                                        ) : null}
+                                    </div>
+                                ) : null}
                             </div>
 
                             {specsOk ? (
@@ -495,42 +585,6 @@ export default function InstallatieRuimtesSectie({
                                     <p className="text-sm font-semibold text-gray-800">
                                         Schermregistratie
                                     </p>
-
-                                    <div className="space-y-1">
-                                        <span className="text-sm text-gray-600">
-                                            Foto van scherm / typeplaatje
-                                        </span>
-                                        {scherm.fotoUrl ? (
-                                            <a
-                                                href={scherm.fotoUrl}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="block text-sm text-sky-600 underline"
-                                            >
-                                                Foto bekijken
-                                            </a>
-                                        ) : null}
-                                        <label className="inline-block cursor-pointer text-sm font-medium text-[#0066FF] border border-dashed rounded-xl px-3 py-2">
-                                            Maak foto / Upload
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                capture="environment"
-                                                className="hidden"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (file) {
-                                                        void uploadFoto(
-                                                            ruimteId,
-                                                            scherm.id,
-                                                            file,
-                                                            "fotoUrl"
-                                                        );
-                                                    }
-                                                }}
-                                            />
-                                        </label>
-                                    </div>
 
                                     <label className="block">
                                         <span className="text-sm text-gray-600">
@@ -588,42 +642,6 @@ export default function InstallatieRuimtesSectie({
                                         Playerregistratie
                                     </p>
 
-                                    <div className="space-y-1">
-                                        <span className="text-sm text-gray-600">
-                                            Foto van de player
-                                        </span>
-                                        {scherm.playerFotoUrl ? (
-                                            <a
-                                                href={scherm.playerFotoUrl}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="block text-sm text-sky-600 underline"
-                                            >
-                                                Foto bekijken
-                                            </a>
-                                        ) : null}
-                                        <label className="inline-block cursor-pointer text-sm font-medium text-[#0066FF] border border-dashed rounded-xl px-3 py-2 bg-white">
-                                            Maak foto / Upload
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                capture="environment"
-                                                className="hidden"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (file) {
-                                                        void uploadFoto(
-                                                            ruimteId,
-                                                            scherm.id,
-                                                            file,
-                                                            "playerFotoUrl"
-                                                        );
-                                                    }
-                                                }}
-                                            />
-                                        </label>
-                                    </div>
-
                                     <label className="block">
                                         <span className="text-sm text-gray-600">
                                             Merk &amp; Type player
@@ -680,17 +698,13 @@ export default function InstallatieRuimtesSectie({
 
             <div className="space-y-3">
                 <h2 className="font-semibold text-gray-800 border-b pb-1">
-                    Extra diensten &amp; afvoeren
+                    Extra diensten
                 </h2>
                 {(
                     [
+                        ["afval", "Afval/verpakking afvoeren"],
                         ["afvoerTm50", 'Oud scherm afvoeren (t/m 50")'],
                         ["afvoerVanaf50", 'Oud scherm afvoeren (vanaf 50")'],
-                        ["afval", "Afval/verpakking afvoeren"],
-                        [
-                            "audio",
-                            "Radiospeler / Geluidsinstallatie aansluiten",
-                        ],
                     ] as const
                 ).map(([key, label]) => (
                     <label
@@ -711,6 +725,25 @@ export default function InstallatieRuimtesSectie({
                         <span className="text-sm text-gray-800">{label}</span>
                     </label>
                 ))}
+
+                <div className="border-t pt-3">
+                    <label className="flex items-center gap-3 rounded-xl border px-3 py-2.5 bg-white cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={extra.project}
+                            onChange={(e) =>
+                                onExtraChange({
+                                    ...extra,
+                                    project: e.target.checked,
+                                })
+                            }
+                            className="h-4 w-4 accent-[#0066FF]"
+                        />
+                        <span className="text-sm font-medium text-gray-800">
+                            Project
+                        </span>
+                    </label>
+                </div>
             </div>
 
             {showOpmerkingen && onOpmerkingenChange ? (

@@ -207,6 +207,7 @@ export interface OpleverData {
         switch5port:string;
         switch8port:string;
         switch5portPoe:string;
+        switchSerienummer:string;
         utpGetrokken:boolean | null;
         utpAantal:string;
         utpType2:string;
@@ -233,6 +234,8 @@ export interface OpleverData {
         multicast:boolean | null;
         multicastZenders:string;
         multicastOntvangers:string;
+        multicastZenderSn:string;
+        multicastOntvangerSn:string;
         opmerkingen:string;
     };
 
@@ -479,6 +482,7 @@ export function emptyOpleverData():OpleverData {
             switch5port:"",
             switch8port:"",
             switch5portPoe:"",
+            switchSerienummer:"",
             utpGetrokken:null,
             utpAantal:"",
             utpType2:"",
@@ -505,6 +509,8 @@ export function emptyOpleverData():OpleverData {
             multicast:null,
             multicastZenders:"",
             multicastOntvangers:"",
+            multicastZenderSn:"",
+            multicastOntvangerSn:"",
             opmerkingen:""
         },
 

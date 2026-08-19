@@ -38,7 +38,13 @@ export interface InstallatieScherm {
     orientatie: string;
     locatie: string;
     stroom: "" | "Ja" | "Nee";
+    stroomGerealiseerd: "" | "Ja" | "Nee";
+    stroomMeter: string;
+    stroomTraject: string;
     internet: "" | "Ja" | "Wifi" | "Nee";
+    internetGerealiseerd: "" | "Ja" | "Nee";
+    internetMeter: string;
+    internetTraject: string;
     merkType: string;
     serienummer: string;
     mac: string;
@@ -77,6 +83,7 @@ export interface ExtraDiensten {
     afvoerVanaf50: boolean;
     afval: boolean;
     audio: boolean;
+    project: boolean;
 }
 
 export const WERKZAAMHEID_OPTIES: {
@@ -159,7 +166,13 @@ export function emptyScherm(
         orientatie: "",
         locatie: "",
         stroom: "",
+        stroomGerealiseerd: "",
+        stroomMeter: "",
+        stroomTraject: "",
         internet: "",
+        internetGerealiseerd: "",
+        internetMeter: "",
+        internetTraject: "",
         merkType: "",
         serienummer: "",
         mac: "",
@@ -199,6 +212,7 @@ export function emptyExtra(): ExtraDiensten {
         afvoerVanaf50: false,
         afval: false,
         audio: false,
+        project: false,
     };
 }
 
