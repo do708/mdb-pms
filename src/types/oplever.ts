@@ -16,6 +16,16 @@ import {
     normalizeP25WandTraject,
 } from "@/types/installatieRuimtes";
 
+export interface MateriaalStuk {
+    merk:string;
+    type:string;
+    sn:string;
+}
+
+export function emptyMateriaalStuk():MateriaalStuk {
+    return { merk:"", type:"", sn:"" };
+}
+
 export const OPDRACHTGEVERS = [
     "Axians",
     "Comsysco",
@@ -206,6 +216,8 @@ export interface OpleverData {
         hdmiSplitter1x4:string;
         hdmiSplitter1x2Sn:string[];
         hdmiSplitter1x4Sn:string[];
+        hdmiSplitter1x2Items:MateriaalStuk[];
+        hdmiSplitter1x4Items:MateriaalStuk[];
         extraSwitches:boolean | null;
         switchesAantal:string;
         switch5port:string;
@@ -215,6 +227,9 @@ export interface OpleverData {
         switch5portSn:string[];
         switch8portSn:string[];
         switch5portPoeSn:string[];
+        switch5portItems:MateriaalStuk[];
+        switch8portItems:MateriaalStuk[];
+        switch5portPoeItems:MateriaalStuk[];
         utpGetrokken:boolean | null;
         utpAantal:string;
         utpType2:string;
@@ -245,6 +260,8 @@ export interface OpleverData {
         multicastOntvangerSn:string;
         multicastZenderSns:string[];
         multicastOntvangerSns:string[];
+        multicastZenderItems:MateriaalStuk[];
+        multicastOntvangerItems:MateriaalStuk[];
         opmerkingen:string;
     };
 
@@ -488,6 +505,8 @@ export function emptyOpleverData():OpleverData {
             hdmiSplitter1x4:"",
             hdmiSplitter1x2Sn:[],
             hdmiSplitter1x4Sn:[],
+            hdmiSplitter1x2Items:[],
+            hdmiSplitter1x4Items:[],
             extraSwitches:null,
             switchesAantal:"",
             switch5port:"",
@@ -497,6 +516,9 @@ export function emptyOpleverData():OpleverData {
             switch5portSn:[],
             switch8portSn:[],
             switch5portPoeSn:[],
+            switch5portItems:[],
+            switch8portItems:[],
+            switch5portPoeItems:[],
             utpGetrokken:null,
             utpAantal:"",
             utpType2:"",
@@ -527,6 +549,8 @@ export function emptyOpleverData():OpleverData {
             multicastOntvangerSn:"",
             multicastZenderSns:[],
             multicastOntvangerSns:[],
+            multicastZenderItems:[],
+            multicastOntvangerItems:[],
             opmerkingen:""
         },
 
@@ -1104,6 +1128,54 @@ export function resizeSnArray(
 }
 
 
+export function resizeMateriaalItems(
+    items:MateriaalStuk[] | undefined,
+    n:number,
+    legacySns?:string[]
+):MateriaalStuk[] {
+
+    if(n <= 0){
+        return [];
+    }
+
+    const base =
+        Array.isArray(items)
+        ? items.map((item)=>({
+            merk: typeof item?.merk === "string" ? item.merk : "",
+            type: typeof item?.type === "string" ? item.type : "",
+            sn: typeof item?.sn === "string" ? item.sn : ""
+        }))
+        : [];
+
+    const next = base.slice(0, n);
+
+    while(next.length < n){
+        const i = next.length;
+        next.push({
+            merk:"",
+            type:"",
+            sn: legacySns?.[i] || ""
+        });
+    }
+
+    if(legacySns){
+        for(let i = 0; i < next.length; i++){
+            if(!next[i].sn.trim() && legacySns[i]?.trim()){
+                next[i] = { ...next[i], sn: legacySns[i] };
+            }
+        }
+    }
+
+    return next;
+
+}
+
+
+export function snsVanItems(items:MateriaalStuk[]):string[] {
+    return items.map((item)=>item.sn);
+}
+
+
 function alleSnVeldenIngevuld(
     aantal:unknown,
     sns:string[] | undefined
@@ -1127,6 +1199,16 @@ export function ontbrekendeMateriaalSerienummers(
 
     const m = data.materialen;
     const onderdelen:string[] = [];
+
+    if(m.extraHdmiKabels === true){
+        if(!alleSnVeldenIngevuld(m.hdmiSplitter1x2, m.hdmiSplitter1x2Sn)){
+            onderdelen.push("HDMI splitter 1x2");
+        }
+
+        if(!alleSnVeldenIngevuld(m.hdmiSplitter1x4, m.hdmiSplitter1x4Sn)){
+            onderdelen.push("HDMI splitter 1x4");
+        }
+    }
 
     if(m.extraSwitches === true){
         if(!alleSnVeldenIngevuld(m.switch5port, m.switch5portSn)){
@@ -1176,18 +1258,59 @@ function firstFilledSn(arrs:string[][]):string {
 }
 
 
+function asMateriaalItems(value:unknown):MateriaalStuk[] {
+
+    if(!Array.isArray(value)){
+        return [];
+    }
+
+    return value.map((item)=>{
+        if(!item || typeof item !== "object"){
+            return emptyMateriaalStuk();
+        }
+
+        const row = item as Record<string,unknown>;
+
+        return {
+            merk: typeof row.merk === "string" ? row.merk : "",
+            type: typeof row.type === "string" ? row.type : "",
+            sn: typeof row.sn === "string" ? row.sn : ""
+        };
+    });
+
+}
+
+
+function mergeItemsMetSn(
+    rawItems:unknown,
+    n:number,
+    sns:string[]
+):MateriaalStuk[] {
+
+    return resizeMateriaalItems(asMateriaalItems(rawItems), n, sns);
+
+}
+
+
 function mergeMateriaalSerienummers(
     stored:unknown
 ):Pick<
     OpleverData["materialen"],
     | "hdmiSplitter1x2Sn"
     | "hdmiSplitter1x4Sn"
+    | "hdmiSplitter1x2Items"
+    | "hdmiSplitter1x4Items"
     | "switch5portSn"
     | "switch8portSn"
     | "switch5portPoeSn"
+    | "switch5portItems"
+    | "switch8portItems"
+    | "switch5portPoeItems"
     | "switchSerienummer"
     | "multicastZenderSns"
     | "multicastOntvangerSns"
+    | "multicastZenderItems"
+    | "multicastOntvangerItems"
     | "multicastZenderSn"
     | "multicastOntvangerSn"
 > {
@@ -1246,25 +1369,74 @@ function mergeMateriaalSerienummers(
         raw.multicastOntvangerSn
     );
 
+    const hdmiSplitter1x2Sn = normalizeSnArray(raw.hdmiSplitter1x2Sn, n1x2);
+    const hdmiSplitter1x4Sn = normalizeSnArray(raw.hdmiSplitter1x4Sn, n1x4);
+    const hdmiSplitter1x2Items = mergeItemsMetSn(
+        raw.hdmiSplitter1x2Items,
+        n1x2,
+        hdmiSplitter1x2Sn
+    );
+    const hdmiSplitter1x4Items = mergeItemsMetSn(
+        raw.hdmiSplitter1x4Items,
+        n1x4,
+        hdmiSplitter1x4Sn
+    );
+    const switch5portItems = mergeItemsMetSn(
+        raw.switch5portItems,
+        n5,
+        switch5portSn
+    );
+    const switch8portItems = mergeItemsMetSn(
+        raw.switch8portItems,
+        n8,
+        switch8portSn
+    );
+    const switch5portPoeItems = mergeItemsMetSn(
+        raw.switch5portPoeItems,
+        nPoe,
+        switch5portPoeSn
+    );
+    const multicastZenderItems = mergeItemsMetSn(
+        raw.multicastZenderItems,
+        nZender,
+        multicastZenderSns
+    );
+    const multicastOntvangerItems = mergeItemsMetSn(
+        raw.multicastOntvangerItems,
+        nOntvanger,
+        multicastOntvangerSns
+    );
+
     return {
-        hdmiSplitter1x2Sn: normalizeSnArray(raw.hdmiSplitter1x2Sn, n1x2),
-        hdmiSplitter1x4Sn: normalizeSnArray(raw.hdmiSplitter1x4Sn, n1x4),
-        switch5portSn,
-        switch8portSn,
-        switch5portPoeSn,
+        hdmiSplitter1x2Sn: snsVanItems(hdmiSplitter1x2Items),
+        hdmiSplitter1x4Sn: snsVanItems(hdmiSplitter1x4Items),
+        hdmiSplitter1x2Items,
+        hdmiSplitter1x4Items,
+        switch5portSn: snsVanItems(switch5portItems),
+        switch8portSn: snsVanItems(switch8portItems),
+        switch5portPoeSn: snsVanItems(switch5portPoeItems),
+        switch5portItems,
+        switch8portItems,
+        switch5portPoeItems,
         switchSerienummer:
-            firstFilledSn([switch5portSn, switch8portSn, switch5portPoeSn])
+            firstFilledSn([
+                snsVanItems(switch5portItems),
+                snsVanItems(switch8portItems),
+                snsVanItems(switch5portPoeItems)
+            ])
             || legacySwitch,
-        multicastZenderSns,
-        multicastOntvangerSns,
+        multicastZenderSns: snsVanItems(multicastZenderItems),
+        multicastOntvangerSns: snsVanItems(multicastOntvangerItems),
+        multicastZenderItems,
+        multicastOntvangerItems,
         multicastZenderSn:
-            multicastZenderSns.find((s)=>s.trim()) || (
+            snsVanItems(multicastZenderItems).find((s)=>s.trim()) || (
                 typeof raw.multicastZenderSn === "string"
                 ? raw.multicastZenderSn
                 : ""
             ),
         multicastOntvangerSn:
-            multicastOntvangerSns.find((s)=>s.trim()) || (
+            snsVanItems(multicastOntvangerItems).find((s)=>s.trim()) || (
                 typeof raw.multicastOntvangerSn === "string"
                 ? raw.multicastOntvangerSn
                 : ""

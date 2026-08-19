@@ -17,8 +17,10 @@ import {
     enforceVoorrijtariefTravelRules,
     normalizeOpleverMacs,
     parseAantal,
-    resizeSnArray,
-    ontbrekendeMateriaalSerienummers
+    resizeMateriaalItems,
+    snsVanItems,
+    ontbrekendeMateriaalSerienummers,
+    type MateriaalStuk
 } from "@/types/oplever";
 
 import {
@@ -629,20 +631,16 @@ function AudioRegel({
 }
 
 
-function SerienummersOnderAantal({
+function MateriaalStukkenOnderAantal({
     aantal,
-    values,
+    items,
     onChange,
-    label,
-    numbered = false,
-    required = false
+    requiredSn = true
 }:{
     aantal:string;
-    values:string[] | undefined;
-    onChange:(next:string[])=>void;
-    label:string;
-    numbered?:boolean;
-    required?:boolean;
+    items:MateriaalStuk[] | undefined;
+    onChange:(next:MateriaalStuk[])=>void;
+    requiredSn?:boolean;
 }){
     const n = parseAantal(aantal);
 
@@ -650,37 +648,71 @@ function SerienummersOnderAantal({
         return null;
     }
 
-    const fields = resizeSnArray(values, n);
+    const fields = resizeMateriaalItems(items, n);
 
     return (
-        <div className="pl-2 ml-1 border-l-2 border-slate-200 space-y-1.5 pb-2">
-            {fields.map((sn, i)=>(
-                <label key={i} className="block">
-                    <span className="text-xs text-gray-600">
-                        {numbered ? `S/N ${i + 1}:` : (n === 1 ? label : `${label} ${i + 1}`)}
-                        {required ? (
-                            <>
-                                {" "}
-                                <span className="text-red-500">*</span>
-                            </>
-                        ) : null}
-                    </span>
-                    <input
-                        value={sn}
-                        onChange={(e)=>{
-                            const next = [...fields];
-                            next[i] = e.target.value;
-                            onChange(next);
-                        }}
-                        placeholder="Serienummer"
-                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
-                    />
-                </label>
+        <div className="pl-2 ml-1 border-l-2 border-slate-200 space-y-2 pb-2">
+            {fields.map((stuk, i)=>(
+                <div
+                    key={i}
+                    className="flex items-end gap-1.5"
+                >
+                    <label className="flex-1 min-w-0">
+                        <span className="text-xs text-gray-600">
+                            Merk
+                        </span>
+                        <input
+                            value={stuk.merk}
+                            onChange={(e)=>{
+                                const next = [...fields];
+                                next[i] = { ...next[i], merk: e.target.value };
+                                onChange(next);
+                            }}
+                            placeholder="Merk"
+                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white text-sm"
+                        />
+                    </label>
+                    <label className="flex-1 min-w-0">
+                        <span className="text-xs text-gray-600">
+                            Type
+                        </span>
+                        <input
+                            value={stuk.type}
+                            onChange={(e)=>{
+                                const next = [...fields];
+                                next[i] = { ...next[i], type: e.target.value };
+                                onChange(next);
+                            }}
+                            placeholder="Type"
+                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white text-sm"
+                        />
+                    </label>
+                    <label className="flex-1 min-w-0">
+                        <span className="text-xs text-gray-600">
+                            S/N {i + 1}:
+                            {requiredSn ? (
+                                <>
+                                    {" "}
+                                    <span className="text-red-500">*</span>
+                                </>
+                            ) : null}
+                        </span>
+                        <input
+                            value={stuk.sn}
+                            onChange={(e)=>{
+                                const next = [...fields];
+                                next[i] = { ...next[i], sn: e.target.value };
+                                onChange(next);
+                            }}
+                            placeholder="Serienummer"
+                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white text-sm"
+                        />
+                    </label>
+                </div>
             ))}
         </div>
     );
 }
-
 
 
 function eersteSwitchSn(d:OpleverData):string {
@@ -2389,7 +2421,7 @@ export default function OpleverForm({
                 />
 
 
-                <div className="border-b border-slate-100 py-2.5 space-y-3">
+                <div className="border-b border-slate-100 py-2.5 mt-6 space-y-3">
 
                     <div className="
                         flex
@@ -2401,7 +2433,7 @@ export default function OpleverForm({
                         sm:gap-4
                     ">
                         <p className="text-sm text-slate-700 sm:flex-1">
-                            6. Project (offerte basis) — is het een project?
+                            4. Project (offerte basis) — is het een project?
                         </p>
                         <div className="sm:flex-shrink-0">
                             <JaNee
@@ -2976,38 +3008,44 @@ export default function OpleverForm({
                         value={m.hdmiSplitter1x2}
                         onChange={(v)=>update(d=>{
                             d.materialen.hdmiSplitter1x2=v;
-                            d.materialen.hdmiSplitter1x2Sn=resizeSnArray(
-                                d.materialen.hdmiSplitter1x2Sn,
+                            d.materialen.hdmiSplitter1x2Items=resizeMateriaalItems(
+                                d.materialen.hdmiSplitter1x2Items,
                                 parseAantal(v)
+                            );
+                            d.materialen.hdmiSplitter1x2Sn=snsVanItems(
+                                d.materialen.hdmiSplitter1x2Items
                             );
                         })}
                     />
-                    <SerienummersOnderAantal
+                    <MateriaalStukkenOnderAantal
                         aantal={m.hdmiSplitter1x2}
-                        values={m.hdmiSplitter1x2Sn}
-                        onChange={(sns)=>update(d=>{
-                            d.materialen.hdmiSplitter1x2Sn=sns;
+                        items={m.hdmiSplitter1x2Items}
+                        onChange={(items)=>update(d=>{
+                            d.materialen.hdmiSplitter1x2Items=items;
+                            d.materialen.hdmiSplitter1x2Sn=snsVanItems(items);
                         })}
-                        label="s/n"
                     />
                     <AudioRegel
                         label="1x4 (1 ingang, 4 uitgangen)"
                         value={m.hdmiSplitter1x4}
                         onChange={(v)=>update(d=>{
                             d.materialen.hdmiSplitter1x4=v;
-                            d.materialen.hdmiSplitter1x4Sn=resizeSnArray(
-                                d.materialen.hdmiSplitter1x4Sn,
+                            d.materialen.hdmiSplitter1x4Items=resizeMateriaalItems(
+                                d.materialen.hdmiSplitter1x4Items,
                                 parseAantal(v)
+                            );
+                            d.materialen.hdmiSplitter1x4Sn=snsVanItems(
+                                d.materialen.hdmiSplitter1x4Items
                             );
                         })}
                     />
-                    <SerienummersOnderAantal
+                    <MateriaalStukkenOnderAantal
                         aantal={m.hdmiSplitter1x4}
-                        values={m.hdmiSplitter1x4Sn}
-                        onChange={(sns)=>update(d=>{
-                            d.materialen.hdmiSplitter1x4Sn=sns;
+                        items={m.hdmiSplitter1x4Items}
+                        onChange={(items)=>update(d=>{
+                            d.materialen.hdmiSplitter1x4Items=items;
+                            d.materialen.hdmiSplitter1x4Sn=snsVanItems(items);
                         })}
-                        label="s/n"
                     />
                 </UitklapVraag>
 
@@ -3046,69 +3084,72 @@ export default function OpleverForm({
                         value={m.switch5port}
                         onChange={(v)=>update(d=>{
                             d.materialen.switch5port=v;
-                            d.materialen.switch5portSn=resizeSnArray(
-                                d.materialen.switch5portSn,
+                            d.materialen.switch5portItems=resizeMateriaalItems(
+                                d.materialen.switch5portItems,
                                 parseAantal(v)
+                            );
+                            d.materialen.switch5portSn=snsVanItems(
+                                d.materialen.switch5portItems
                             );
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
                     />
-                    <SerienummersOnderAantal
+                    <MateriaalStukkenOnderAantal
                         aantal={m.switch5port}
-                        values={m.switch5portSn}
-                        onChange={(sns)=>update(d=>{
-                            d.materialen.switch5portSn=sns;
+                        items={m.switch5portItems}
+                        onChange={(items)=>update(d=>{
+                            d.materialen.switch5portItems=items;
+                            d.materialen.switch5portSn=snsVanItems(items);
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
-                        label="s/n"
-                        numbered
-                        required
                     />
                     <AudioRegel
                         label="8 poorten, gigabit"
                         value={m.switch8port}
                         onChange={(v)=>update(d=>{
                             d.materialen.switch8port=v;
-                            d.materialen.switch8portSn=resizeSnArray(
-                                d.materialen.switch8portSn,
+                            d.materialen.switch8portItems=resizeMateriaalItems(
+                                d.materialen.switch8portItems,
                                 parseAantal(v)
+                            );
+                            d.materialen.switch8portSn=snsVanItems(
+                                d.materialen.switch8portItems
                             );
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
                     />
-                    <SerienummersOnderAantal
+                    <MateriaalStukkenOnderAantal
                         aantal={m.switch8port}
-                        values={m.switch8portSn}
-                        onChange={(sns)=>update(d=>{
-                            d.materialen.switch8portSn=sns;
+                        items={m.switch8portItems}
+                        onChange={(items)=>update(d=>{
+                            d.materialen.switch8portItems=items;
+                            d.materialen.switch8portSn=snsVanItems(items);
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
-                        label="s/n"
-                        numbered
-                        required
                     />
                     <AudioRegel
                         label="5 poorten, PoE gigabit"
                         value={m.switch5portPoe}
                         onChange={(v)=>update(d=>{
                             d.materialen.switch5portPoe=v;
-                            d.materialen.switch5portPoeSn=resizeSnArray(
-                                d.materialen.switch5portPoeSn,
+                            d.materialen.switch5portPoeItems=resizeMateriaalItems(
+                                d.materialen.switch5portPoeItems,
                                 parseAantal(v)
+                            );
+                            d.materialen.switch5portPoeSn=snsVanItems(
+                                d.materialen.switch5portPoeItems
                             );
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
                     />
-                    <SerienummersOnderAantal
+                    <MateriaalStukkenOnderAantal
                         aantal={m.switch5portPoe}
-                        values={m.switch5portPoeSn}
-                        onChange={(sns)=>update(d=>{
-                            d.materialen.switch5portPoeSn=sns;
+                        items={m.switch5portPoeItems}
+                        onChange={(items)=>update(d=>{
+                            d.materialen.switch5portPoeItems=items;
+                            d.materialen.switch5portPoeSn=snsVanItems(items);
                             d.materialen.switchSerienummer=eersteSwitchSn(d);
                         })}
-                        label="s/n"
-                        numbered
-                        required
                     />
                 </UitklapVraag>
 
@@ -3199,50 +3240,52 @@ export default function OpleverForm({
                                 value={m.multicastZenders}
                                 onChange={(v)=>update(draft=>{
                                     draft.materialen.multicastZenders=v;
-                                    draft.materialen.multicastZenderSns=resizeSnArray(
-                                        draft.materialen.multicastZenderSns,
+                                    draft.materialen.multicastZenderItems=resizeMateriaalItems(
+                                        draft.materialen.multicastZenderItems,
                                         parseAantal(v)
+                                    );
+                                    draft.materialen.multicastZenderSns=snsVanItems(
+                                        draft.materialen.multicastZenderItems
                                     );
                                     draft.materialen.multicastZenderSn=
                                         draft.materialen.multicastZenderSns.find((s)=>s.trim()) || "";
                                 })}
                             />
-                            <SerienummersOnderAantal
+                            <MateriaalStukkenOnderAantal
                                 aantal={m.multicastZenders}
-                                values={m.multicastZenderSns}
-                                onChange={(sns)=>update((d)=>{
-                                    d.materialen.multicastZenderSns=sns;
+                                items={m.multicastZenderItems}
+                                onChange={(items)=>update((d)=>{
+                                    d.materialen.multicastZenderItems=items;
+                                    d.materialen.multicastZenderSns=snsVanItems(items);
                                     d.materialen.multicastZenderSn=
-                                        sns.find((s)=>s.trim()) || "";
+                                        items.find((s)=>s.sn.trim())?.sn || "";
                                 })}
-                                label="s/n"
-                                numbered
-                                required
                             />
                             <AudioRegel
                                 label="Ontvangers"
                                 value={m.multicastOntvangers}
                                 onChange={(v)=>update(draft=>{
                                     draft.materialen.multicastOntvangers=v;
-                                    draft.materialen.multicastOntvangerSns=resizeSnArray(
-                                        draft.materialen.multicastOntvangerSns,
+                                    draft.materialen.multicastOntvangerItems=resizeMateriaalItems(
+                                        draft.materialen.multicastOntvangerItems,
                                         parseAantal(v)
+                                    );
+                                    draft.materialen.multicastOntvangerSns=snsVanItems(
+                                        draft.materialen.multicastOntvangerItems
                                     );
                                     draft.materialen.multicastOntvangerSn=
                                         draft.materialen.multicastOntvangerSns.find((s)=>s.trim()) || "";
                                 })}
                             />
-                            <SerienummersOnderAantal
+                            <MateriaalStukkenOnderAantal
                                 aantal={m.multicastOntvangers}
-                                values={m.multicastOntvangerSns}
-                                onChange={(sns)=>update((d)=>{
-                                    d.materialen.multicastOntvangerSns=sns;
+                                items={m.multicastOntvangerItems}
+                                onChange={(items)=>update((d)=>{
+                                    d.materialen.multicastOntvangerItems=items;
+                                    d.materialen.multicastOntvangerSns=snsVanItems(items);
                                     d.materialen.multicastOntvangerSn=
-                                        sns.find((s)=>s.trim()) || "";
+                                        items.find((s)=>s.sn.trim())?.sn || "";
                                 })}
-                                label="s/n"
-                                numbered
-                                required
                             />
                         </div>
                     )

@@ -80,8 +80,11 @@ export interface StroomInternetBlok {
 
 export interface ExtraDiensten {
     afvoerTm50: boolean;
+    afvoerTm50Aantal: string;
     afvoerVanaf50: boolean;
+    afvoerVanaf50Aantal: string;
     afval: boolean;
+    afvalAantal: string;
     audio: boolean;
     project: boolean;
 }
@@ -289,8 +292,11 @@ export function emptyStroomInternet(): StroomInternetBlok {
 export function emptyExtra(): ExtraDiensten {
     return {
         afvoerTm50: false,
+        afvoerTm50Aantal: "",
         afvoerVanaf50: false,
+        afvoerVanaf50Aantal: "",
         afval: false,
+        afvalAantal: "",
         audio: false,
         project: false,
     };

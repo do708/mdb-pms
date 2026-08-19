@@ -6,6 +6,7 @@ import { launchBrowserForPdf } from "@/lib/pdf/launchBrowserForPdf";
 
 import {
     ExtraKosten,
+    MateriaalStuk,
     OpleverData,
     SchermBlok,
     mergeOpleverData
@@ -78,6 +79,54 @@ function esc(
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;");
+
+}
+
+
+function extraDienstRegel(
+    aan:boolean | undefined,
+    label:string,
+    aantal:string | undefined
+):string {
+
+    if(!aan){
+        return "";
+    }
+
+    const n = (aantal || "").trim();
+
+    return n ? `${label} (${n})` : label;
+
+}
+
+
+function formatMateriaalStukken(
+    amount:string,
+    items:MateriaalStuk[] | undefined,
+    sns:unknown
+):string {
+
+    const snArr = Array.isArray(sns)
+        ? sns.map((s)=>typeof s === "string" ? s : "")
+        : [];
+
+    const rows =
+        Array.isArray(items) && items.length > 0
+        ? items
+        : snArr.map((sn)=>({ merk:"", type:"", sn }));
+
+    const details = rows
+        .map((row, i)=>{
+            const sn = (row.sn || snArr[i] || "").trim();
+            return [
+                row.merk?.trim(),
+                row.type?.trim(),
+                sn ? `S/N ${i + 1}: ${sn}` : ""
+            ].filter(Boolean).join(" · ");
+        })
+        .filter(Boolean);
+
+    return details.length ? `${amount} (${details.join("; ")})` : amount;
 
 }
 
@@ -392,29 +441,31 @@ function opleverSections(
 
 
     const hdmiSplitters =
-        [
-            ["1x2",m.hdmiSplitter1x2,m.hdmiSplitter1x2Sn],
-            ["1x4",m.hdmiSplitter1x4,m.hdmiSplitter1x4Sn]
-        ]
+        (
+            [
+                ["1x2", m.hdmiSplitter1x2, m.hdmiSplitter1x2Items, m.hdmiSplitter1x2Sn],
+                ["1x4", m.hdmiSplitter1x4, m.hdmiSplitter1x4Items, m.hdmiSplitter1x4Sn]
+            ] as [string, string, MateriaalStuk[] | undefined, string[] | undefined][]
+        )
         .filter(([,amount])=>amount)
-        .map(([name,amount,sns])=>{
-            const nummers = Array.isArray(sns) ? sns.filter((s)=>s && String(s).trim()) : [];
-            return `${name}: ${amount}${nummers.length ? ` (s/n ${nummers.join(", ")})` : ""}`;
-        })
+        .map(([name,amount,items,sns])=>
+            `${name}: ${formatMateriaalStukken(amount, items, sns)}`
+        )
         .join(" · ");
 
 
     const switches =
-        [
-            ["5 poorten gigabit",m.switch5port,m.switch5portSn],
-            ["8 poorten gigabit",m.switch8port,m.switch8portSn],
-            ["5 poorten PoE gigabit",m.switch5portPoe,m.switch5portPoeSn]
-        ]
+        (
+            [
+                ["5 poorten gigabit", m.switch5port, m.switch5portItems, m.switch5portSn],
+                ["8 poorten gigabit", m.switch8port, m.switch8portItems, m.switch8portSn],
+                ["5 poorten PoE gigabit", m.switch5portPoe, m.switch5portPoeItems, m.switch5portPoeSn]
+            ] as [string, string, MateriaalStuk[] | undefined, string[] | undefined][]
+        )
         .filter(([,amount])=>amount)
-        .map(([name,amount,sns])=>{
-            const nummers = Array.isArray(sns) ? sns.filter((s)=>s && String(s).trim()) : [];
-            return `${name}: ${amount}${nummers.length ? ` (s/n ${nummers.join(", ")})` : ""}`;
-        })
+        .map(([name,amount,items,sns])=>
+            `${name}: ${formatMateriaalStukken(amount, items, sns)}`
+        )
         .join(" · ");
 
 
@@ -523,14 +574,14 @@ function opleverSections(
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
       ${summarizeVoorziening("Internet", i.internetBlok) ? row("Internet", textAnswer(summarizeVoorziening("Internet", i.internetBlok).replace(/^Internet:\s*/,""))) : ""}
       ${i.extra && (i.extra.afvoerTm50 || i.extra.afvoerVanaf50 || i.extra.afval || i.extra.audio)
-        ? row("Extra diensten", textAnswer([
-            i.extra.afvoerTm50 ? 'Afvoer t/m 50"' : "",
-            i.extra.afvoerVanaf50 ? 'Afvoer vanaf 50"' : "",
-            i.extra.afval ? "Afval" : "",
+        ? row("3. Extra diensten", textAnswer([
+            extraDienstRegel(i.extra.afval, "Afval/verpakking", i.extra.afvalAantal),
+            extraDienstRegel(i.extra.afvoerTm50, 'Afvoer t/m 50"', i.extra.afvoerTm50Aantal),
+            extraDienstRegel(i.extra.afvoerVanaf50, 'Afvoer vanaf 50"', i.extra.afvoerVanaf50Aantal),
             i.extra.audio ? "Audio" : ""
           ].filter(Boolean).join(", ")))
         : ""}
-      ${i.isProject === true ? row("6. Project (offertebasis)?",pill(i.isProject)) : ""}
+      ${i.isProject === true ? row("4. Project (offertebasis)?",pill(i.isProject)) : ""}
       ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
     </table>
     ${i.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(i.opmerkingen)}</div>` : ""}
@@ -666,27 +717,17 @@ function opleverSections(
       ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
       ${m.multicast !== null ? row("8. Multicast set gebruikt?",pill(m.multicast)) : ""}
       ${m.multicast === true && m.multicastZenders ? row("Zenders (aantal)",textAnswer(
-          m.multicastZenders + (
-              (Array.isArray(m.multicastZenderSns) && m.multicastZenderSns.some((s)=>s.trim()))
-              || m.multicastZenderSn
-              ? ` · s/n ${(
-                    Array.isArray(m.multicastZenderSns) && m.multicastZenderSns.some((s)=>s.trim())
-                    ? m.multicastZenderSns.filter((s)=>s.trim()).join(", ")
-                    : m.multicastZenderSn
-                )}`
-              : ""
+          formatMateriaalStukken(
+              m.multicastZenders,
+              m.multicastZenderItems,
+              m.multicastZenderSns?.length ? m.multicastZenderSns : (m.multicastZenderSn ? [m.multicastZenderSn] : [])
           )
       )) : ""}
       ${m.multicast === true && m.multicastOntvangers ? row("Ontvangers (aantal)",textAnswer(
-          m.multicastOntvangers + (
-              (Array.isArray(m.multicastOntvangerSns) && m.multicastOntvangerSns.some((s)=>s.trim()))
-              || m.multicastOntvangerSn
-              ? ` · s/n ${(
-                    Array.isArray(m.multicastOntvangerSns) && m.multicastOntvangerSns.some((s)=>s.trim())
-                    ? m.multicastOntvangerSns.filter((s)=>s.trim()).join(", ")
-                    : m.multicastOntvangerSn
-                )}`
-              : ""
+          formatMateriaalStukken(
+              m.multicastOntvangers,
+              m.multicastOntvangerItems,
+              m.multicastOntvangerSns?.length ? m.multicastOntvangerSns : (m.multicastOntvangerSn ? [m.multicastOntvangerSn] : [])
           )
       )) : ""}
     </table>
