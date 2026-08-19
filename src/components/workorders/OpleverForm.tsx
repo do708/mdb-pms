@@ -2199,9 +2199,11 @@ export default function OpleverForm({
             ">
 
                 <h2 className="
-                    text-xl
+                    text-lg
                     font-bold
                     text-slate-900
+                    whitespace-nowrap
+                    tracking-tight
                 ">
 
                     {
@@ -2217,16 +2219,6 @@ export default function OpleverForm({
                     }
 
                 </h2>
-
-                <p className="
-                    text-sm
-                    text-slate-500
-                    mt-0.5
-                ">
-
-                    Vul de gegevens van de opgeleverde installatie in
-
-                </p>
 
             </div>
 
@@ -2505,9 +2497,6 @@ export default function OpleverForm({
                         )
                     }
 
-                </div>
-
-
                 {
                     zichtbareMonteurs < 4 && (
                         <button
@@ -2517,13 +2506,15 @@ export default function OpleverForm({
                                 text-sm
                                 text-blue-600
                                 hover:underline
-                                mb-3
+                                md:col-span-2
                             "
                         >
                             + Monteur toevoegen
                         </button>
                     )
                 }
+
+                </div>
 
 
                 <div className="
