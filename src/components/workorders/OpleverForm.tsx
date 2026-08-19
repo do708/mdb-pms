@@ -2525,39 +2525,37 @@ export default function OpleverForm({
                     space-y-2
                 ">
 
-                    <div className="flex items-center gap-2">
-                        <p className="text-sm text-slate-700 flex-1 min-w-0 leading-snug">
-                            Heb je extra kosten gemaakt?
-                        </p>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                            <ExtraKostenChip
-                                label="Parkeren"
-                                value={t.parkeerkosten}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.tarief.parkeerkosten = v;
-                                    })
-                                }
-                            />
-                            <ExtraKostenChip
-                                label="Materiaal"
-                                value={t.materiaalkosten}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.tarief.materiaalkosten = v;
-                                    })
-                                }
-                            />
-                            <ExtraKostenChip
-                                label="Sejour"
-                                value={t.sejour}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.tarief.sejour = v;
-                                    })
-                                }
-                            />
-                        </div>
+                    <p className="text-sm text-slate-700 whitespace-nowrap">
+                        Heb je extra kosten gemaakt?
+                    </p>
+                    <div className="flex items-center gap-1.5">
+                        <ExtraKostenChip
+                            label="Parkeren"
+                            value={t.parkeerkosten}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.tarief.parkeerkosten = v;
+                                })
+                            }
+                        />
+                        <ExtraKostenChip
+                            label="Materiaal"
+                            value={t.materiaalkosten}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.tarief.materiaalkosten = v;
+                                })
+                            }
+                        />
+                        <ExtraKostenChip
+                            label="Sejour"
+                            value={t.sejour}
+                            onChange={(v)=>
+                                update(draft=>{
+                                    draft.tarief.sejour = v;
+                                })
+                            }
+                        />
                     </div>
 
                     {
