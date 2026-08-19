@@ -163,13 +163,29 @@ function NewWorkorderInner(){
         useState<string[]>([]);
 
 
-    function toggleExtra(id:string){
-        setExtraEngineerIds(prev=>
-            prev.includes(id)
+    function addExtraEngineer(){
+        setExtraEngineerIds((prev)=>
+            prev.includes("")
             ?
-            prev.filter(x=>x !== id)
+            prev
             :
-            [...prev,id]
+            [...prev, ""]
+        );
+    }
+
+
+    function setExtraEngineerAt(index:number, id:string){
+        setExtraEngineerIds((prev)=>{
+            const next = [...prev];
+            next[index] = id;
+            return next;
+        });
+    }
+
+
+    function removeExtraEngineer(index:number){
+        setExtraEngineerIds((prev)=>
+            prev.filter((_, i)=>i !== index)
         );
     }
 
@@ -887,7 +903,7 @@ function NewWorkorderInner(){
                                                     Planning
                                                 </h2>
                                                 <p className="text-xs text-gray-500 mt-0.5 leading-snug">
-                                                    Deze opdracht wordt op deze dag bij deze monteur ingepland.
+                                                    Deze opdracht wordt op deze dag bij deze monteur(s) ingepland.
                                                 </p>
                                             </div>
 
@@ -911,36 +927,72 @@ function NewWorkorderInner(){
                                                     />
                                                 </label>
 
-                                                <label className="min-w-0 block">
+                                                <div className="min-w-0">
                                                     <span className="text-xs text-gray-500">
                                                         Monteur
                                                     </span>
-                                                    <select
-                                                        value={assignedUserId}
-                                                        onChange={(e)=>
-                                                            setAssignedUserId(e.target.value)
-                                                        }
-                                                        className="
-                                                            mt-0.5 w-full border border-gray-200
-                                                            rounded-lg p-2.5 text-sm bg-white
-                                                            text-gray-900
-                                                        "
-                                                    >
-                                                        <option value="">
-                                                            Kies monteur
-                                                        </option>
-                                                        {
-                                                            engineers.map(engineer=>(
-                                                                <option
-                                                                    key={engineer.id}
-                                                                    value={engineer.id}
-                                                                >
-                                                                    {engineer.name}
-                                                                </option>
-                                                            ))
-                                                        }
-                                                    </select>
-                                                </label>
+                                                    <div className="mt-0.5 flex items-center gap-1.5">
+                                                        <select
+                                                            value={assignedUserId}
+                                                            onChange={(e)=>{
+                                                                const nextId =
+                                                                    e.target.value;
+                                                                setAssignedUserId(nextId);
+                                                                setExtraEngineerIds((prev)=>
+                                                                    prev.filter((id)=>
+                                                                        id !== nextId
+                                                                    )
+                                                                );
+                                                            }}
+                                                            className="
+                                                                min-w-0 flex-1 border border-gray-200
+                                                                rounded-lg p-2.5 text-sm bg-white
+                                                                text-gray-900
+                                                            "
+                                                        >
+                                                            <option value="">
+                                                                Kies monteur
+                                                            </option>
+                                                            {
+                                                                engineers.map(engineer=>(
+                                                                    <option
+                                                                        key={engineer.id}
+                                                                        value={engineer.id}
+                                                                    >
+                                                                        {engineer.name}
+                                                                    </option>
+                                                                ))
+                                                            }
+                                                        </select>
+                                                        <button
+                                                            type="button"
+                                                            title="Extra monteur toevoegen"
+                                                            onClick={addExtraEngineer}
+                                                            disabled={
+                                                                engineers.filter((engineer)=>
+                                                                    engineer.id !== assignedUserId
+                                                                    &&
+                                                                    !extraEngineerIds.includes(
+                                                                        engineer.id
+                                                                    )
+                                                                ).length === 0
+                                                            }
+                                                            className="
+                                                                shrink-0 h-[42px] w-[42px]
+                                                                inline-flex items-center justify-center
+                                                                rounded-lg border border-gray-200
+                                                                bg-white text-lg font-semibold
+                                                                text-[#0066FF]
+                                                                hover:border-[#0066FF]/40
+                                                                hover:bg-[#e8f0ff]
+                                                                disabled:opacity-40
+                                                                disabled:hover:bg-white
+                                                            "
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                </div>
 
                                                 <label className="min-w-0 block">
                                                     <span className="text-xs text-gray-500">
@@ -979,6 +1031,80 @@ function NewWorkorderInner(){
                                                 </label>
 
                                             </div>
+
+                                            {
+                                                extraEngineerIds.map((extraId, index)=>(
+                                                    <div
+                                                        key={`extra-engineer-${index}`}
+                                                        className="min-w-0"
+                                                    >
+                                                        <span className="text-xs text-gray-500">
+                                                            Extra monteur
+                                                        </span>
+                                                        <div className="mt-0.5 flex items-center gap-1.5">
+                                                            <select
+                                                                value={extraId}
+                                                                onChange={(e)=>
+                                                                    setExtraEngineerAt(
+                                                                        index,
+                                                                        e.target.value
+                                                                    )
+                                                                }
+                                                                className="
+                                                                    min-w-0 flex-1 border border-gray-200
+                                                                    rounded-lg p-2.5 text-sm bg-white
+                                                                    text-gray-900
+                                                                "
+                                                            >
+                                                                <option value="">
+                                                                    Kies extra monteur
+                                                                </option>
+                                                                {
+                                                                    engineers
+                                                                    .filter((engineer)=>
+                                                                        engineer.id !== assignedUserId
+                                                                        &&
+                                                                        (
+                                                                            engineer.id === extraId
+                                                                            ||
+                                                                            !extraEngineerIds.includes(
+                                                                                engineer.id
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                    .map((engineer)=>(
+                                                                        <option
+                                                                            key={engineer.id}
+                                                                            value={engineer.id}
+                                                                        >
+                                                                            {engineer.name}
+                                                                        </option>
+                                                                    ))
+                                                                }
+                                                            </select>
+                                                            <button
+                                                                type="button"
+                                                                title="Extra monteur verwijderen"
+                                                                onClick={()=>
+                                                                    removeExtraEngineer(index)
+                                                                }
+                                                                className="
+                                                                    shrink-0 h-[42px] w-[42px]
+                                                                    inline-flex items-center justify-center
+                                                                    rounded-lg border border-gray-200
+                                                                    bg-white text-lg leading-none
+                                                                    text-slate-500
+                                                                    hover:border-red-200
+                                                                    hover:bg-red-50
+                                                                    hover:text-red-600
+                                                                "
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            }
                                         </>
                                     )
                                     :
