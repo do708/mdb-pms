@@ -119,7 +119,7 @@ export default function EngineerMobileSchedule({
 }: Props) {
     const todayIso = toIsoDate(new Date());
 
-    const [mode, setMode] = useState<"dag" | "week">("dag");
+    const [mode, setMode] = useState<"dag" | "week">("week");
     const [dayOffset, setDayOffset] = useState(() => {
         // Start op vandaag binnen de week (ma=0 … za=5), anders maandag.
         const today = new Date();
