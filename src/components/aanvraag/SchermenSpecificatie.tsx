@@ -269,8 +269,44 @@ export default function SchermenSpecificatie({
                                                 </button>
                                             );
                                         })}
+                                        <button
+                                            type="button"
+                                            disabled={gekoppeld}
+                                            onClick={() => {
+                                                if (gekoppeld) return;
+                                                updateItem(scherm.id, {
+                                                    formaat:
+                                                        scherm.formaat === "Anders"
+                                                            ? ""
+                                                            : "Anders",
+                                                    formaatAnders: "",
+                                                });
+                                            }}
+                                            className={
+                                                "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
+                                                +
+                                                (scherm.formaat === "Anders"
+                                                    ? "bg-slate-200 text-slate-900 border-slate-400"
+                                                    : "bg-white text-gray-600 border-gray-200")
+                                            }
+                                        >
+                                            Anders
+                                        </button>
                                     </div>
-                                    {scherm.formaat ? (
+                                    {scherm.formaat === "Anders" ? (
+                                        <input
+                                            type="text"
+                                            disabled={gekoppeld}
+                                            value={scherm.formaatAnders || ""}
+                                            onChange={(e) =>
+                                                updateItem(scherm.id, {
+                                                    formaatAnders: e.target.value,
+                                                })
+                                            }
+                                            placeholder='Afwijkend formaat, bijv. 22"'
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-60"
+                                        />
+                                    ) : scherm.formaat ? (
                                         <p
                                             className={`text-xs ${pastel.text}`}
                                         >

@@ -351,6 +351,13 @@ export function schermVeldenCompleet(
     }
 
     if (
+        scherm.formaat === "Anders"
+        && !scherm.formaatAnders.trim()
+    ) {
+        return false;
+    }
+
+    if (
         scherm.beugel in BEVESTIGING_DETAIL
         && !scherm.bevestigingDetail
     ) {

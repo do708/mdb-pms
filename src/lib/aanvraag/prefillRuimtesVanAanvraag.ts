@@ -78,20 +78,6 @@ function mapOrientatie(ori: string): Orientatie | "" {
     return "";
 }
 
-function mapFormaat(item: AanvraagSchermItem): string {
-    if (item.formaat === "Anders") return item.formaatAnders || "";
-    return item.formaat || "";
-}
-
-function beugelBeschrijving(item: AanvraagSchermItem): string {
-    const parts: string[] = [];
-    if (item.bevestigingDetail) parts.push(item.bevestigingDetail);
-    else if (item.beugel) parts.push(item.beugel);
-    if (item.bevestigingAnders) parts.push(item.bevestigingAnders);
-    if (item.plafondHoogte) parts.push(item.plafondHoogte);
-    return parts.join(" — ");
-}
-
 interface SchermGroup {
     locatie: string;
     items: AanvraagSchermItem[];
@@ -174,23 +160,41 @@ export function prefillRuimtesVanAanvraag(
         const beugel = mapBeugelType(firstItem);
 
         const schermen: InstallatieScherm[] = group.items.map((item, si) => {
-            const fm = mapFormaat(item);
-            const aansturingLabel = isPlayerAansturing(item.aansturing)
-                ? "Player"
-                : item.aansturing === "Anders"
-                  ? item.aansturingAnders || "Anders"
-                  : item.aansturing || "";
+            const ori = mapOrientatie(item.orientatie);
+            const stroom =
+                item.stroom === "Ja" || item.stroom === "Nee"
+                    ? item.stroom
+                    : "";
+            const internet =
+                item.internet === "Ja"
+                || item.internet === "Wifi"
+                || item.internet === "Nee"
+                    ? item.internet
+                    : "";
 
             return {
                 ...emptyScherm(si),
                 label: `Scherm ${si + 1}`,
-                formaat: fm,
-                merkType: [
-                    beugelBeschrijving(item),
-                    aansturingLabel ? `Aansturing: ${aansturingLabel}` : "",
-                ]
-                    .filter(Boolean)
-                    .join(" | "),
+                formaat: item.formaat || "",
+                formaatAnders: item.formaatAnders || "",
+                beugel: item.beugel || "",
+                bevestigingDetail: item.bevestigingDetail || "",
+                bevestigingAnders: item.bevestigingAnders || "",
+                plafondHoogte: item.plafondHoogte || "",
+                aansturing: isPlayerAansturing(item.aansturing)
+                    ? "Player"
+                    : item.aansturing || "",
+                aansturingAnders: item.aansturingAnders || "",
+                orientatie:
+                    ori === "portrait"
+                        ? "Portrait"
+                        : ori === "landscape"
+                          ? "Landscape"
+                          : item.orientatie || "",
+                locatie: item.locatie?.trim() || group.locatie,
+                stroom,
+                internet,
+                merkType: "",
                 serienummer: "",
                 mac: "",
             };

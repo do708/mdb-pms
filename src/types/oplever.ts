@@ -654,10 +654,30 @@ export function mergeOpleverData(
                             Array.isArray(r.schermen) && r.schermen.length > 0
                             ?
                             r.schermen.map(
-                                (s:Partial<InstallatieScherm>, i:number)=>({
-                                    ...emptyScherm(i),
-                                    ...s
-                                })
+                                (s:Partial<InstallatieScherm>, i:number)=>{
+                                    const merged = {
+                                        ...emptyScherm(i),
+                                        ...s
+                                    };
+                                    const ori = String(merged.orientatie || "");
+                                    if(ori === "landscape") merged.orientatie = "Landscape";
+                                    if(ori === "portrait") merged.orientatie = "Portrait";
+                                    if(!merged.locatie && r.naam){
+                                        merged.locatie = r.naam;
+                                    }
+                                    if(!merged.beugel && r.beugelType){
+                                        const map:{[k:string]:string} = {
+                                            wand_vast:"Muurbeugel",
+                                            wand_kantelbaar:"Muurbeugel",
+                                            zwenk:"Muurbeugel",
+                                            plafond:"Plafondbeugel",
+                                            vloerstandaard:"Vloerstandaard",
+                                            geen:"Specials"
+                                        };
+                                        merged.beugel = map[r.beugelType] || "";
+                                    }
+                                    return merged;
+                                }
                             )
                             :
                             [emptyScherm(0)]

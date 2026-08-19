@@ -28,9 +28,24 @@ export interface InstallatieScherm {
     label: string;
     fotoUrl: string;
     formaat: string;
+    formaatAnders: string;
+    beugel: string;
+    bevestigingDetail: string;
+    bevestigingAnders: string;
+    plafondHoogte: string;
+    aansturing: string;
+    aansturingAnders: string;
+    orientatie: string;
+    locatie: string;
+    stroom: "" | "Ja" | "Nee";
+    internet: "" | "Ja" | "Wifi" | "Nee";
     merkType: string;
     serienummer: string;
     mac: string;
+    playerFotoUrl: string;
+    playerMerkType: string;
+    playerSerienummer: string;
+    playerMac: string;
 }
 
 export interface InstallatieRuimte {
@@ -134,9 +149,24 @@ export function emptyScherm(
             (index === 0 ? "Scherm 1" : `Scherm ${index + 1}`),
         fotoUrl: "",
         formaat: "",
+        formaatAnders: "",
+        beugel: "",
+        bevestigingDetail: "",
+        bevestigingAnders: "",
+        plafondHoogte: "",
+        aansturing: "",
+        aansturingAnders: "",
+        orientatie: "",
+        locatie: "",
+        stroom: "",
+        internet: "",
         merkType: "",
         serienummer: "",
         mac: "",
+        playerFotoUrl: "",
+        playerMerkType: "",
+        playerSerienummer: "",
+        playerMac: "",
     };
 }
 
