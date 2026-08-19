@@ -31,6 +31,7 @@ import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
 import { normalizeMac, emptyExtra, schermHeeftGegevens } from "@/types/installatieRuimtes";
+import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 
 
 
@@ -917,6 +918,69 @@ function UitklapVraag({
 
 }
 
+
+function parseGekozenOpties(waarde:string):string[] {
+    if(!waarde.trim()){
+        return [];
+    }
+    return waarde.split(",").map((s)=>s.trim()).filter(Boolean);
+}
+
+function videowallVeldenVan(
+    i:OpleverData["installatie"]
+):Record<string,string> {
+    const v = { ...(i.videowallVelden || {}) };
+    if(!v.configuratie){
+        const h = (i.videowallHorizontaal || "").trim();
+        const vert = (i.videowallVerticaal || "").trim();
+        if(h || vert){
+            v.configuratie = [h, vert].filter(Boolean).join("x");
+        } else if(i.videowallConfiguratie){
+            v.configuratie = i.videowallConfiguratie;
+        }
+    }
+    if(!v.formaat && i.videowallFormaat){
+        v.formaat = i.videowallFormaat;
+    }
+    if(!v.formaatAnders && i.videowallFormaatAnders){
+        v.formaatAnders = i.videowallFormaatAnders;
+    }
+    if(!v.orientatie && i.videowallOrientatie){
+        v.orientatie = i.videowallOrientatie;
+    }
+    return v;
+}
+
+function patchVideowallVelden(
+    draft:OpleverData,
+    patch:Record<string,string>
+){
+    const next = {
+        ...(draft.installatie.videowallVelden || {}),
+        ...patch
+    };
+    draft.installatie.videowallVelden = next;
+    if(patch.configuratie !== undefined){
+        draft.installatie.videowallConfiguratie = patch.configuratie;
+        const match = patch.configuratie.match(/(\d+)\s*[x×]\s*(\d+)/i);
+        if(match){
+            draft.installatie.videowallHorizontaal = match[1];
+            draft.installatie.videowallVerticaal = match[2];
+        }
+    }
+    if(patch.formaat !== undefined){
+        draft.installatie.videowallFormaat = patch.formaat;
+    }
+    if(patch.formaatAnders !== undefined){
+        draft.installatie.videowallFormaatAnders = patch.formaatAnders;
+    }
+    if(patch.orientatie !== undefined){
+        draft.installatie.videowallOrientatie =
+            patch.orientatie === "Landscape" || patch.orientatie === "Portrait"
+            ? patch.orientatie
+            : "";
+    }
+}
 
 function SpecUitklap({
     titel,
@@ -2616,96 +2680,33 @@ export default function OpleverForm({
                             })
                         }
                     >
-                        <Keuze
-                            value={i.videowallStatus}
-                            options={["Geïnstalleerd", "Gedemonteerd"]}
-                            onChange={(v)=>
+                        <div className="rounded-xl bg-white p-3 space-y-3 border border-emerald-100">
+                        <VideowallSpecificatie
+                            velden={videowallVeldenVan(i)}
+                            onChange={(veld, waarde)=>
                                 update(draft=>{
-                                    draft.installatie.videowallStatus =
-                                        v as typeof i.videowallStatus;
+                                    patchVideowallVelden(draft, { [veld]: waarde });
+                                })
+                            }
+                            onPatch={(patch)=>
+                                update(draft=>{
+                                    patchVideowallVelden(draft, patch);
+                                })
+                            }
+                            onToggleFormaat={(optie)=>
+                                update(draft=>{
+                                    const huidige = parseGekozenOpties(
+                                        videowallVeldenVan(draft.installatie).formaat || ""
+                                    );
+                                    const volgende = huidige.includes(optie)
+                                        ? huidige.filter((o)=>o !== optie)
+                                        : [...huidige, optie];
+                                    patchVideowallVelden(draft, {
+                                        formaat: volgende.join(", ")
+                                    });
                                 })
                             }
                         />
-                        <div className="flex items-end gap-2">
-                            <label className="flex-1 min-w-0">
-                                <span className="text-xs text-gray-600">
-                                    Horizontaal
-                                </span>
-                                <input
-                                    inputMode="numeric"
-                                    value={i.videowallHorizontaal}
-                                    placeholder="bijv. 3"
-                                    onChange={(e)=>
-                                        update(draft=>{
-                                            draft.installatie.videowallHorizontaal =
-                                                e.target.value;
-                                        })
-                                    }
-                                    className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white"
-                                />
-                            </label>
-                            <span className="pb-2 text-sm text-gray-400">×</span>
-                            <label className="flex-1 min-w-0">
-                                <span className="text-xs text-gray-600">
-                                    Verticaal
-                                </span>
-                                <input
-                                    inputMode="numeric"
-                                    value={i.videowallVerticaal}
-                                    placeholder="bijv. 3"
-                                    onChange={(e)=>
-                                        update(draft=>{
-                                            draft.installatie.videowallVerticaal =
-                                                e.target.value;
-                                        })
-                                    }
-                                    className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white"
-                                />
-                            </label>
-                        </div>
-                        <div>
-                            <span className="text-xs text-gray-600 block mb-1">
-                                Formaat
-                            </span>
-                            <Keuze
-                                value={i.videowallFormaat}
-                                options={SCHERM_FORMATEN}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.installatie.videowallFormaat = v;
-                                    })
-                                }
-                            />
-                        </div>
-                        {
-                            i.videowallFormaat === "Anders" && (
-                                <input
-                                    value={i.videowallFormaatAnders}
-                                    placeholder="Ander formaat"
-                                    onChange={(e)=>
-                                        update(draft=>{
-                                            draft.installatie.videowallFormaatAnders =
-                                                e.target.value;
-                                        })
-                                    }
-                                    className="w-full border rounded-lg p-2 text-sm bg-white"
-                                />
-                            )
-                        }
-                        <div>
-                            <span className="text-xs text-gray-600 block mb-1">
-                                Oriëntatie
-                            </span>
-                            <Keuze
-                                value={i.videowallOrientatie}
-                                options={["Landscape", "Portrait"]}
-                                onChange={(v)=>
-                                    update(draft=>{
-                                        draft.installatie.videowallOrientatie =
-                                            v as typeof i.videowallOrientatie;
-                                    })
-                                }
-                            />
                         </div>
                     </SpecUitklap>
 
@@ -2788,6 +2789,7 @@ export default function OpleverForm({
                             })
                         }
                     >
+                        <div className="rounded-xl bg-white p-3 space-y-3 border border-rose-100">
                         <Keuze
                             value={i.audioStatus}
                             options={["Geïnstalleerd", "Gedemonteerd"]}
@@ -2804,6 +2806,20 @@ export default function OpleverForm({
                             onChange={(v)=>
                                 update(draft=>{
                                     draft.installatie.audioSpeler = v;
+                                    draft.installatie.audioSpelerItems =
+                                        resizeMateriaalItems(
+                                            draft.installatie.audioSpelerItems,
+                                            parseAantal(v)
+                                        );
+                                })
+                            }
+                        />
+                        <MateriaalStukkenOnderAantal
+                            aantal={i.audioSpeler}
+                            items={i.audioSpelerItems}
+                            onChange={(items)=>
+                                update(draft=>{
+                                    draft.installatie.audioSpelerItems = items;
                                 })
                             }
                         />
@@ -2813,6 +2829,20 @@ export default function OpleverForm({
                             onChange={(v)=>
                                 update(draft=>{
                                     draft.installatie.audioVersterker = v;
+                                    draft.installatie.audioVersterkerItems =
+                                        resizeMateriaalItems(
+                                            draft.installatie.audioVersterkerItems,
+                                            parseAantal(v)
+                                        );
+                                })
+                            }
+                        />
+                        <MateriaalStukkenOnderAantal
+                            aantal={i.audioVersterker}
+                            items={i.audioVersterkerItems}
+                            onChange={(items)=>
+                                update(draft=>{
+                                    draft.installatie.audioVersterkerItems = items;
                                 })
                             }
                         />
@@ -2822,6 +2852,20 @@ export default function OpleverForm({
                             onChange={(v)=>
                                 update(draft=>{
                                     draft.installatie.audioVolumeregelaar = v;
+                                    draft.installatie.audioVolumeregelaarItems =
+                                        resizeMateriaalItems(
+                                            draft.installatie.audioVolumeregelaarItems,
+                                            parseAantal(v)
+                                        );
+                                })
+                            }
+                        />
+                        <MateriaalStukkenOnderAantal
+                            aantal={i.audioVolumeregelaar}
+                            items={i.audioVolumeregelaarItems}
+                            onChange={(items)=>
+                                update(draft=>{
+                                    draft.installatie.audioVolumeregelaarItems = items;
                                 })
                             }
                         />
@@ -2834,6 +2878,7 @@ export default function OpleverForm({
                                 })
                             }
                         />
+                        </div>
                     </SpecUitklap>
 
                     <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">

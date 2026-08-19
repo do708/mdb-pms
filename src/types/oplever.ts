@@ -159,6 +159,7 @@ export interface OpleverData {
         videowallFormaatAnders:string;
         videowallAantal:string;
         videowallOrientatie:"" | "Landscape" | "Portrait";
+        videowallVelden:Record<string,string>;
 
         kiosk:boolean | null;
         kioskStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
@@ -179,6 +180,9 @@ export interface OpleverData {
         audioAndersAantal:string;
         audioOmschrijving:string;
         audioAantal:string;
+        audioSpelerItems:MateriaalStuk[];
+        audioVersterkerItems:MateriaalStuk[];
+        audioVolumeregelaarItems:MateriaalStuk[];
 
         isProject:boolean | null;
         projectNummer:string;
@@ -453,6 +457,7 @@ export function emptyOpleverData():OpleverData {
             videowallFormaatAnders:"",
             videowallAantal:"",
             videowallOrientatie:"",
+            videowallVelden:{},
             kiosk:null,
             kioskStatus:"",
             kioskOmschrijving:"",
@@ -470,6 +475,9 @@ export function emptyOpleverData():OpleverData {
             audioAndersAantal:"",
             audioOmschrijving:"",
             audioAantal:"",
+            audioSpelerItems:[],
+            audioVersterkerItems:[],
+            audioVolumeregelaarItems:[],
             isProject:null,
             projectNummer:"",
             opmerkingen:""
@@ -789,7 +797,34 @@ export function mergeOpleverData(
                     })
                 )
                 :
+                [],
+
+            videowallVelden:
+                data.installatie?.videowallVelden &&
+                typeof data.installatie.videowallVelden === "object"
+                ?
+                Object.fromEntries(
+                    Object.entries(data.installatie.videowallVelden)
+                        .filter(([, v])=>typeof v === "string")
+                ) as Record<string,string>
+                :
+                {},
+
+            audioSpelerItems: mergeItemsMetSn(
+                data.installatie?.audioSpelerItems,
+                parseAantal(data.installatie?.audioSpeler),
                 []
+            ),
+            audioVersterkerItems: mergeItemsMetSn(
+                data.installatie?.audioVersterkerItems,
+                parseAantal(data.installatie?.audioVersterker),
+                []
+            ),
+            audioVolumeregelaarItems: mergeItemsMetSn(
+                data.installatie?.audioVolumeregelaarItems,
+                parseAantal(data.installatie?.audioVolumeregelaar),
+                []
+            )
         },
 
         materialen:{

@@ -611,10 +611,30 @@ function opleverSections(
       ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
       ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
       ${i.videowall === true ? row("2. Videowall",pill(i.videowall)) : ""}
-      ${i.videowall === true && i.videowallStatus ? row("Videowall status",textAnswer(i.videowallStatus)) : ""}
-      ${i.videowall === true && (i.videowallHorizontaal || i.videowallVerticaal) ? row("Videowall configuratie",textAnswer(`${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"} schermen`)) : ""}
-      ${i.videowall === true && i.videowallFormaat ? row("Videowall formaat",textAnswer(i.videowallFormaat === "Anders" ? (i.videowallFormaatAnders || "Anders") : i.videowallFormaat)) : ""}
-      ${i.videowall === true && i.videowallOrientatie ? row("Videowall oriëntatie",textAnswer(i.videowallOrientatie)) : ""}
+      ${i.videowall === true ? (()=>{
+        const v = { ...(i.videowallVelden || {}) };
+        if(!v.configuratie && (i.videowallHorizontaal || i.videowallVerticaal)){
+            v.configuratie = `${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"}`;
+        }
+        if(!v.formaat && i.videowallFormaat){
+            v.formaat = i.videowallFormaat === "Anders" ? (i.videowallFormaatAnders || "Anders") : i.videowallFormaat;
+        }
+        if(!v.orientatie && i.videowallOrientatie){
+            v.orientatie = i.videowallOrientatie;
+        }
+        const typeLabel = v.type === "LED" ? "LED videowall" : v.type === "LCD" ? "LCD videowall" : "";
+        const formaat = v.formaat === "Anders" ? (v.formaatAnders || "Anders") : v.formaat;
+        return [
+            typeLabel ? row("Type videowall", textAnswer(typeLabel)) : "",
+            v.configuratie ? row("Configuratie", textAnswer(v.configuratie)) : "",
+            v.afmeting ? row("Afmeting", textAnswer(v.afmeting)) : "",
+            formaat ? row("Formaat", textAnswer(formaat)) : "",
+            v.orientatie ? row("Oriëntatie", textAnswer(v.orientatie)) : "",
+            (v.locatie || v.opmerking) ? row("Locatie", textAnswer(v.locatie || v.opmerking)) : "",
+            v.stroom ? row("Stroom binnen 3 meter?", textAnswer(v.stroom)) : "",
+            v.internet ? row("Internet binnen 3 meter?", textAnswer(v.internet)) : ""
+        ].join("");
+      })() : ""}
       ${i.kiosk === true ? row("3. Kiosk",pill(i.kiosk)) : ""}
       ${i.kiosk === true ? (i.kioskBlokken || []).filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
           row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
@@ -623,9 +643,9 @@ function opleverSections(
       ${i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
       ${i.audio === true ? row("5. Audio",pill(i.audio)) : ""}
       ${i.audio === true && i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : ""}
-      ${i.audio === true && i.audioSpeler ? row("Audiospeler (aantal)",textAnswer(i.audioSpeler)) : ""}
-      ${i.audio === true && i.audioVersterker ? row("Versterker (aantal)",textAnswer(i.audioVersterker)) : ""}
-      ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar (aantal)",textAnswer(i.audioVolumeregelaar)) : ""}
+      ${i.audio === true && i.audioSpeler ? row("Audiospeler",textAnswer(formatMateriaalStukken(i.audioSpeler, i.audioSpelerItems, []))) : ""}
+      ${i.audio === true && i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : ""}
+      ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : ""}
       ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
       ${i.audio === true && i.audioAndersTekst ? row(i.audioAndersTekst + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
       `}
