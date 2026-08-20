@@ -80,7 +80,17 @@ export async function POST(
 
                     signature:true,
 
-                    assignedUser:true
+                    assignedUser:true,
+
+                    extraEngineers:{
+                        include:{
+                            user:{
+                                select:{
+                                    name:true
+                                }
+                            }
+                        }
+                    }
 
                 }
 
@@ -209,6 +219,11 @@ export async function POST(
 
                     engineerName:
                         workorder.assignedUser?.name ?? null,
+
+                    extraEngineerNames:
+                        (workorder.extraEngineers ?? [])
+                        .map((extra)=>extra.user?.name)
+                        .filter((name):name is string => Boolean(name && name.trim())),
 
                     hours:
                         workorder.hours.map(item=>({

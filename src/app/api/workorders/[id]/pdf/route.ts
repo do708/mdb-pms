@@ -93,6 +93,16 @@ customer:true,
 
                     assignedUser:true,
 
+                    extraEngineers:{
+                        include:{
+                            user:{
+                                select:{
+                                    name:true
+                                }
+                            }
+                        }
+                    },
+
 
                 }
 
@@ -171,10 +181,15 @@ customer:true,
                         (resolveCustomer(workorder)?.email ?? null)
                 },
 
-                engineerName:
-                    workorder.assignedUser?.name ?? null,
+                    engineerName:
+                        workorder.assignedUser?.name ?? null,
 
-                hours:
+                    extraEngineerNames:
+                        (workorder.extraEngineers ?? [])
+                        .map((extra)=>extra.user?.name)
+                        .filter((name):name is string => Boolean(name && name.trim())),
+
+                    hours:
                     workorder.hours.map(item=>({
                         date:
                             item.date,

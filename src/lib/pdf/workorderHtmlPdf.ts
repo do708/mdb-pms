@@ -83,6 +83,31 @@ function esc(
 }
 
 
+function uniqueNames(
+    ...values:(string | null | undefined)[]
+):string[] {
+
+    const seen = new Set<string>();
+    const names:string[] = [];
+
+    for(const value of values){
+        const name = (value || "").trim();
+        if(!name){
+            continue;
+        }
+        const key = name.toLowerCase();
+        if(seen.has(key)){
+            continue;
+        }
+        seen.add(key);
+        names.push(name);
+    }
+
+    return names;
+
+}
+
+
 function extraDienstRegel(
     aan:boolean | undefined,
     label:string,
@@ -159,6 +184,8 @@ export interface WorkorderHtmlPdfInput {
     };
 
     engineerName:string | null;
+
+    extraEngineerNames?:string[];
 
     hours:{
         date:Date | null;
@@ -310,7 +337,8 @@ function textAnswer(
 
 function opleverSections(
     data:OpleverData,
-    monteur1:string | null
+    monteur1:string | null,
+    extraEngineerNames:string[] = []
 ):string {
 
     const t = data.tarief;
@@ -333,16 +361,25 @@ function opleverSections(
         ]);
     }
 
-    if(t.monteur2){
-        monteurs.push([t.monteur2,t.urenMonteur2]);
+    if(t.monteur2 || extraEngineerNames[0]){
+        monteurs.push([
+            t.monteur2 || extraEngineerNames[0],
+            t.urenMonteur2
+        ]);
     }
 
-    if(t.monteur3){
-        monteurs.push([t.monteur3,t.urenMonteur3]);
+    if(t.monteur3 || extraEngineerNames[1]){
+        monteurs.push([
+            t.monteur3 || extraEngineerNames[1],
+            t.urenMonteur3
+        ]);
     }
 
-    if(t.monteur4){
-        monteurs.push([t.monteur4,t.urenMonteur4]);
+    if(t.monteur4 || extraEngineerNames[2]){
+        monteurs.push([
+            t.monteur4 || extraEngineerNames[2],
+            t.urenMonteur4
+        ]);
     }
 
 
@@ -368,11 +405,11 @@ function opleverSections(
 
     const kostenRows =
         kosten
-        .filter(([,blok])=>blok.actief)
+        .filter(([,blok])=>blok.actief && blok.kosten)
         .map(([label,blok])=>
             row(
                 `${label}${blok.voorgeschoten === true ? " (voorgeschoten)" : ""}`,
-                textAnswer(blok.kosten ? `€ ${blok.kosten}` : "—")
+                textAnswer(`€ ${blok.kosten}`)
             )
         )
         .join("");
@@ -647,7 +684,7 @@ function opleverSections(
       ${i.audio === true && i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : ""}
       ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : ""}
       ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
-      ${i.audio === true && i.audioAndersTekst ? row(i.audioAndersTekst + " (aantal)",textAnswer(i.audioAndersAantal || "—")) : ""}
+      ${i.audio === true && i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""}
       `}
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
       ${summarizeVoorziening("Internet", i.internetBlok) ? row("Internet", textAnswer(summarizeVoorziening("Internet", i.internetBlok).replace(/^Internet:\s*/,""))) : ""}
@@ -724,7 +761,7 @@ function opleverSections(
           <tr><td colspan="2" style="padding-top:6px;font-weight:700;color:#0f172a">6. Spare player</td></tr>
           ${row("Spare player geïnstalleerd?", pill(spare))}
           ${spare === true ? spareRegels : ""}
-          ${spare === true ? row("Melding gemaakt bij eValue8?", pill(data.evalue8SpareMelding)) : ""}
+          ${spare === true && data.evalue8SpareMelding !== null ? row("Melding gemaakt bij eValue8?", pill(data.evalue8SpareMelding)) : ""}
       `;
 
       if(!gekozenRegels && !spareBlok){ return ""; }
@@ -754,11 +791,11 @@ function opleverSections(
       </thead>
       <tbody>
         ${data.hardware.map(h=>`<tr>
-          <td>${esc(h.actie) || "—"}</td>
-          <td>${esc(h.merk) || "—"}</td>
-          <td>${esc(h.type) || "—"}</td>
-          <td>${esc(h.serienummer) || "—"}</td>
-          <td>${esc(h.macAddress) || "—"}</td>
+          <td>${esc(h.actie)}</td>
+          <td>${esc(h.merk)}</td>
+          <td>${esc(h.type)}</td>
+          <td>${esc(h.serienummer)}</td>
+          <td>${esc(h.macAddress)}</td>
         </tr>`).join("")}
       </tbody>
     </table>
@@ -810,16 +847,14 @@ function opleverSections(
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>` : ""}
 
-  <div class="section">
-    <div class="section-title">Checklist</div>
-    <table class="qa">
-      ${row("1. Is de installatie werkend opgeleverd?",pill(c.werkendOpgeleverd))}
+  ${qaBlock("Checklist", `
+      ${c.werkendOpgeleverd !== null ? row("1. Is de installatie werkend opgeleverd?",pill(c.werkendOpgeleverd)) : ""}
       ${c.werkendOpgeleverd === false && c.redenWerkend ? row("Reden",textAnswer(c.redenWerkend)) : ""}
-      ${row("2. Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar))}
+      ${c.lichtnetSchakelbaar !== null ? row("2. Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar)) : ""}
       ${c.lichtnetSchakelbaar === true && c.redenLichtnet ? row("Reden",textAnswer(c.redenLichtnet)) : ""}
-      ${row("3. WiFi verbinding van toepassing?",pill(c.wifiVanToepassing))}
-      ${c.wifiVanToepassing === true ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
-      ${row("4. Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices))}
+      ${c.wifiVanToepassing !== null ? row("3. WiFi verbinding van toepassing?",pill(c.wifiVanToepassing)) : ""}
+      ${c.wifiVanToepassing === true && c.wifiSterkte ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
+      ${c.remoteServices ? row("4. Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices)) : ""}
       ${c.remoteServices === "Nee" && c.redenRemote ? row("Reden",textAnswer(c.redenRemote)) : ""}
       ${(()=>{
         const loc = c.mediaplayerLocaties && typeof c.mediaplayerLocaties === "object" ? c.mediaplayerLocaties : {};
@@ -834,9 +869,8 @@ function opleverSections(
         }
         return "";
       })()}
-      ${row("6. Afvalverwijdering?",pill(c.afvalverwijdering))}
-    </table>
-  </div>`;
+      ${c.afvalverwijdering !== null ? row("6. Afvalverwijdering?",pill(c.afvalverwijdering)) : ""}
+  `)}`;
 
 }
 
@@ -872,26 +906,25 @@ function customFieldsSection(
                 section.fields.map(field=>{
 
                     const raw = custom[field.id];
-                    const required = Boolean(field.required);
 
                     if(field.type === "checkbox"){
                         const checked = Boolean(raw);
-                        if(!required && !checked){
+                        if(!checked){
                             return "";
                         }
-                        return row(field.label, chipSvg(checked ? "Ja" : "Nee", checked ? "yes" : "no"));
+                        return row(field.label, chipSvg("Ja","yes"));
                     }
 
                     const empty =
                         raw === undefined || raw === null || String(raw).trim() === "";
 
-                    if(empty && !required){
+                    if(empty){
                         return "";
                     }
 
                     return row(
                         field.label,
-                        empty ? chipSvg("—","empty") : textAnswer(String(raw))
+                        textAnswer(String(raw))
                     );
 
                 }).join("");
@@ -1087,33 +1120,38 @@ function generateHtml(
   </div>
 
   <!-- META -->
-  <div class="section">
-    ${(()=>{
-        const alleMonteurs = [
+  ${(()=>{
+        const alleMonteurs = uniqueNames(
             data.engineerName,
+            ...(data.extraEngineerNames ?? []),
             oplever.tarief.monteur2,
             oplever.tarief.monteur3,
             oplever.tarief.monteur4
-        ].filter(m=>m && String(m).trim());
+        );
+        const uitgevoerd = data.workDate || data.plannedDate;
 
-        if(alleMonteurs.length === 0){ return ""; }
+        if(alleMonteurs.length === 0 && !uitgevoerd){
+            return "";
+        }
 
-        return `<div style="display:grid;grid-template-columns:repeat(${alleMonteurs.length},1fr);gap:8px;margin-bottom:8px">
+        return `<div class="section">
+        ${alleMonteurs.length === 0 ? "" : `<div style="display:grid;grid-template-columns:repeat(${alleMonteurs.length},1fr);gap:8px;margin-bottom:8px">
             ${alleMonteurs.map(m=>`
               <div class="info-box">
                 <div class="info-label">Monteur</div>
-                <div class="info-value">${esc(String(m))}</div>
+                <div class="info-value">${esc(m)}</div>
               </div>
             `).join("")}
+        </div>`}
+        ${uitgevoerd ? `
+        <div class="grid-2" style="gap:8px">
+          <div class="info-box">
+            <div class="info-label">Uitgevoerd op</div>
+            <div class="info-value">${formatDate(data.workDate ?? data.plannedDate)}</div>
+          </div>
+        </div>` : ""}
         </div>`;
     })()}
-    <div class="grid-2" style="gap:8px">
-      <div class="info-box">
-        <div class="info-label">Uitgevoerd op</div>
-        <div class="info-value">${formatDate(data.workDate ?? data.plannedDate)}</div>
-      </div>
-    </div>
-  </div>
 
   <!-- OMSCHRIJVING -->
   ${data.description ? `
@@ -1136,7 +1174,7 @@ function generateHtml(
           <td>${formatNumber(Number(item.hours),1)}</td>
           <td>${formatNumber(Number(item.travelTime),1)}</td>
           <td>${formatNumber(Number(item.kilometers),0)}</td>
-          <td>${item.hotel ? "✓" : "—"}</td>
+          <td>${item.hotel ? "✓" : ""}</td>
         </tr>`).join("")}
       </tbody>
       <tfoot><tr>
@@ -1160,18 +1198,18 @@ function generateHtml(
       <tbody>
         ${data.hardware.map(item=>`<tr>
           <td>${esc(item.name)}</td>
-          <td>${esc(item.brand) || "—"}</td>
-          <td>${esc(item.model) || "—"}</td>
-          <td style="font-family:monospace">${esc(item.serialNumber) || "—"}</td>
+          <td>${esc(item.brand)}</td>
+          <td>${esc(item.model)}</td>
+          <td style="font-family:monospace">${esc(item.serialNumber)}</td>
           <td>${item.quantity}</td>
-          <td>${esc(item.location) || "—"}</td>
+          <td>${esc(item.location)}</td>
         </tr>`).join("")}
       </tbody>
     </table>
   </div>` : ""}
 
   <!-- OPLEVERFORMULIER -->
-  ${opleverSections(oplever,data.engineerName)}
+  ${opleverSections(oplever,data.engineerName,data.extraEngineerNames ?? [])}
 
   <!-- KLANT-SPECIFIEKE VELDEN -->
   ${customFieldsSection(data.customerSchema, oplever.custom)}
@@ -1264,6 +1302,8 @@ async function renderWorkorderPdfWithPdfLib(
     data:WorkorderHtmlPdfInput
 ):Promise<Buffer> {
 
+    const oplever = mergeOpleverData(data.formData);
+
     const bytes = await generateOpleverPdf({
         number: data.number,
         title: data.title,
@@ -1271,7 +1311,13 @@ async function renderWorkorderPdfWithPdfLib(
         customerAddress: data.customer.address,
         projectName: data.projectName,
         date: data.plannedDate || data.workDate,
-        engineers: [data.engineerName],
+        engineers: uniqueNames(
+            data.engineerName,
+            ...(data.extraEngineerNames ?? []),
+            oplever.tarief.monteur2,
+            oplever.tarief.monteur3,
+            oplever.tarief.monteur4
+        ),
         hoursTotal: data.hours.reduce(
             (sum, item) => sum + Number(item.hours),
             0

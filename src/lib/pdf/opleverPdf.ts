@@ -600,7 +600,7 @@ export async function generateOpleverPdf(
 
     labelValue(
         "Adres:",
-        input.customerAddress ?? "-"
+        input.customerAddress ?? ""
     );
 
     labelValue(
@@ -612,33 +612,35 @@ export async function generateOpleverPdf(
     y -= 6;
 
 
-    // monteurs naast elkaar
+    // monteurs naast elkaar — alleen wie op deze opdracht staat
 
-    ensure(34);
+    const assignedEngineers =
+        input.engineers
+        .map((name)=> (name || "").trim())
+        .filter(Boolean);
 
-    const engineerColumn =
-        CONTENT_WIDTH / 4;
+    if(assignedEngineers.length > 0){
+
+        ensure(34);
+
+        const engineerColumn =
+            CONTENT_WIDTH / Math.max(assignedEngineers.length, 1);
 
 
-    for(let index = 0; index < 4; index++){
+        for(let index = 0; index < assignedEngineers.length; index++){
 
-        const x =
-            MARGIN + index * engineerColumn;
+            const x =
+                MARGIN + index * engineerColumn;
 
-        page.drawText(`Monteur ${index + 1}:`,{
-            x,
-            y,
-            size:9,
-            font,
-            color:GRAY_TEXT
-        });
+            page.drawText(`Monteur ${index + 1}:`,{
+                x,
+                y,
+                size:9,
+                font,
+                color:GRAY_TEXT
+            });
 
-        const name =
-            input.engineers[index];
-
-        if(name){
-
-            page.drawText(name,{
+            page.drawText(assignedEngineers[index],{
                 x,
                 y:y - 13,
                 size:9,
@@ -648,9 +650,9 @@ export async function generateOpleverPdf(
 
         }
 
-    }
+        y -= 34;
 
-    y -= 34;
+    }
 
 
 
@@ -1037,28 +1039,42 @@ export async function generateOpleverPdf(
 
     // ================= Checklist =================
 
+    const checklist = data.checklist;
+    const heeftChecklist =
+        checklist.werkendOpgeleverd !== null
+        || checklist.lichtnetSchakelbaar !== null
+        || checklist.wifiVanToepassing !== null
+        || Boolean(checklist.remoteServices)
+        || Boolean(checklist.locatieMediaplayer)
+        || Boolean(checklist.aantalMediaplayers)
+        || checklist.afvalverwijdering !== null
+        || (
+            checklist.mediaplayerLocaties
+            && typeof checklist.mediaplayerLocaties === "object"
+            && Object.keys(checklist.mediaplayerLocaties).length > 0
+        );
+
+    if(heeftChecklist){
+
     sectionBar("Checklist:");
 
 
     jaNee(
         "1. Is de installatie werkend opgeleverd?",
         data.checklist.werkendOpgeleverd,
-        ["Ja","Nee"],
-        true
+        ["Ja","Nee"]
     );
 
     jaNee(
         "2. Is de hardware aangesloten op een schakelstroompunt dat handmatig uit te zetten is?",
         data.checklist.lichtnetSchakelbaar,
-        ["Ja","Nee"],
-        true
+        ["Ja","Nee"]
     );
 
     jaNee(
         "3. WiFi verbinding van toepassing?",
         data.checklist.wifiVanToepassing,
-        ["Ja","Nee"],
-        true
+        ["Ja","Nee"]
     );
 
     if(data.checklist.wifiVanToepassing === true){
@@ -1074,8 +1090,7 @@ export async function generateOpleverPdf(
     keuze(
         "4. Zijn de schermen gekoppeld aan Remote Services?",
         data.checklist.remoteServices,
-        ["Ja","Nee","n.v.t."],
-        true
+        ["Ja","Nee","n.v.t."]
     );
 
     keuze(
@@ -1098,9 +1113,10 @@ export async function generateOpleverPdf(
     jaNee(
         "6. Afvalverwijdering?",
         data.checklist.afvalverwijdering,
-        ["Ja","Nee"],
-        true
+        ["Ja","Nee"]
     );
+
+    }
 
 
 
