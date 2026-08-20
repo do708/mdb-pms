@@ -324,6 +324,7 @@ function NewWorkorderInner(){
             straat,
             huisnummer,
             city,
+            contactPersoon,
         });
 
         if(locatieFout){

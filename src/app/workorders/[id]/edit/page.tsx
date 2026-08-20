@@ -438,6 +438,7 @@ export default function EditWorkorderPage(){
             straat,
             huisnummer,
             city,
+            contactPersoon,
         });
 
         if(locatieFout){
