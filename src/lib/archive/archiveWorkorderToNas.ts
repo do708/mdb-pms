@@ -129,10 +129,15 @@ export async function archiveWorkorderToNas(workorderId: string) {
         },
     });
 
+    const customerName =
+        workorder.customer?.name
+        || workorder.project?.customer?.name
+        || "";
+
     try {
         await ensureCustomerArchiveFolder(customerId);
 
-        const locatieRaw = workorder.title || workorder.location;
+        const locatieRaw = workorder.title;
         const plaatsRaw = workorder.city;
 
         const locationFolder = await ensureLocationArchiveFolder(
@@ -190,7 +195,11 @@ export async function archiveWorkorderToNas(workorderId: string) {
             await deleteSupabaseObject(url);
         }
 
-        const label = formatArchiveLocationLabel(locatieRaw, plaatsRaw);
+        const label = formatArchiveLocationLabel(
+            locatieRaw,
+            plaatsRaw,
+            customerName
+        );
 
         await prisma.workorder.update({
             where: { id: workorderId },

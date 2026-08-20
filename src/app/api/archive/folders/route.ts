@@ -59,16 +59,14 @@ export async function GET() {
             },
         });
 
-        const folders = isEngineer
-            ? customers
-                  .map((customer) => ({
-                      ...customer,
-                      children: customer.children.filter(
-                          (location) => location.children.length > 0
-                      ),
-                  }))
-                  .filter((customer) => customer.children.length > 0)
-            : customers;
+        const folders = customers
+            .map((customer) => ({
+                ...customer,
+                children: customer.children.filter(
+                    (location) => !isEngineer || location.children.length > 0
+                ),
+            }))
+            .filter((customer) => customer.children.length > 0);
 
         return NextResponse.json({ folders });
     } catch (error) {

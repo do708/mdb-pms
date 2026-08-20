@@ -56,7 +56,8 @@ export async function ensureLocationArchiveFolder(
     const customerFolder = await ensureCustomerArchiveFolder(customerId);
     const { label, slug, locationKey } = formatArchiveLocationName(
         locatieRaw,
-        plaatsRaw
+        plaatsRaw,
+        customerFolder.name
     );
 
     const existing = await prisma.archiveFolder.findFirst({

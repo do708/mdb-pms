@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ChevronDown, ChevronRight, Folder } from "lucide-react";
 
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
+import {
+    archiveCustomerLabel,
+    formatArchiveLocationLabel,
+} from "@/lib/archive/formatArchiveLocationName";
 import {
     PageShell,
     SpecFieldLabel,
@@ -25,6 +28,7 @@ interface Workorder {
     id: string;
     number: string;
     title: string;
+    city: string | null;
     status: string;
     plannedDate: string | null;
     archiveStatus: string | null;
@@ -34,6 +38,16 @@ interface Workorder {
     assignedUser: { name: string | null } | null;
 }
 
+interface LocationGroup {
+    name: string;
+    workorders: Workorder[];
+}
+
+interface CustomerGroup {
+    name: string;
+    locations: LocationGroup[];
+}
+
 interface Form {
     id: string;
     type: string;
@@ -41,27 +55,6 @@ interface Form {
     status: string;
     createdAt: string;
     user: { name: string | null } | null;
-}
-
-interface ArchiveWorkorderRef {
-    id: string;
-    number: string;
-    title: string;
-    status: string;
-    archivedAt: string | null;
-    archiveStatus: string | null;
-    archiveNasPath: string | null;
-    plannedDate: string | null;
-}
-
-interface ArchiveFolderNode {
-    id: string;
-    kind: string;
-    name: string;
-    nasPath: string;
-    children?: ArchiveFolderNode[];
-    workorder?: ArchiveWorkorderRef | null;
-    _count?: { children: number };
 }
 
 export default function ArchivePage() {
@@ -83,29 +76,10 @@ export default function ArchivePage() {
     const [type, setType] = useState("");
     const [workorders, setWorkorders] = useState<Workorder[]>([]);
     const [forms, setForms] = useState<Form[]>([]);
-    const [folders, setFolders] = useState<ArchiveFolderNode[]>([]);
     const [openFolders, setOpenFolders] = useState<Record<string, boolean>>(
         {}
     );
     const [loading, setLoading] = useState(true);
-    const [foldersLoading, setFoldersLoading] = useState(true);
-
-    async function loadFolders() {
-        setFoldersLoading(true);
-
-        try {
-            const response = await fetch("/api/archive/folders");
-
-            if (response.ok) {
-                const data = await response.json();
-                setFolders(Array.isArray(data.folders) ? data.folders : []);
-            }
-        } catch {
-            // stil
-        }
-
-        setFoldersLoading(false);
-    }
 
     async function search() {
         setLoading(true);
@@ -132,7 +106,6 @@ export default function ArchivePage() {
 
     useEffect(() => {
         search();
-        loadFolders();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -170,6 +143,55 @@ export default function ArchivePage() {
         return parts.join(":");
     }
 
+    function workorderCustomerName(workorder: Workorder) {
+        return archiveCustomerLabel(
+            workorder.customer?.name
+            ?? workorder.project?.customer?.name
+        );
+    }
+
+    function workorderLocationName(workorder: Workorder) {
+        return formatArchiveLocationLabel(
+            workorder.title,
+            workorder.city,
+            workorder.customer?.name
+            ?? workorder.project?.customer?.name
+        );
+    }
+
+    function groupedWorkorders(): CustomerGroup[] {
+        const customers = new Map<string, Map<string, Workorder[]>>();
+
+        for (const workorder of workorders) {
+            const customerName = workorderCustomerName(workorder);
+            const locationName = workorderLocationName(workorder);
+
+            if (!customers.has(customerName)) {
+                customers.set(customerName, new Map());
+            }
+
+            const locations = customers.get(customerName)!;
+
+            if (!locations.has(locationName)) {
+                locations.set(locationName, []);
+            }
+
+            locations.get(locationName)!.push(workorder);
+        }
+
+        return [...customers.entries()]
+            .sort(([a], [b]) => a.localeCompare(b, "nl"))
+            .map(([name, locations]) => ({
+                name,
+                locations: [...locations.entries()]
+                    .sort(([a], [b]) => a.localeCompare(b, "nl"))
+                    .map(([locationName, items]) => ({
+                        name: locationName,
+                        workorders: items,
+                    })),
+            }));
+    }
+
     function toggleFolder(key: string) {
         setOpenFolders((prev) => ({
             ...prev,
@@ -177,16 +199,48 @@ export default function ArchivePage() {
         }));
     }
 
-    function renderLocationFolder(
-        customerId: string,
-        location: ArchiveFolderNode
+    function renderWorkorderRow(workorder: Workorder) {
+        return (
+            <a
+                key={workorder.id}
+                href={`/workorders/${workorder.id}`}
+                className="block"
+            >
+                <SpecListRow className="flex justify-between items-center hover:bg-gray-50 py-2">
+                    <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">
+                            {workorder.number} — {workorder.title}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                            {workorder.assignedUser?.name ?? "—"}
+                            {workorder.plannedDate
+                                ? ` · ${new Date(workorder.plannedDate).toLocaleDateString("nl-NL")}`
+                                : ""}
+                        </p>
+                    </div>
+                    <span
+                        className={`
+                            shrink-0 ml-2 px-2 py-0.5
+                            rounded-full text-xs
+                            ${getStatus(workorder.status).badge}
+                        `}
+                    >
+                        {getStatus(workorder.status).label}
+                    </span>
+                </SpecListRow>
+            </a>
+        );
+    }
+
+    function renderGroupedLocation(
+        customerName: string,
+        location: LocationGroup
     ) {
-        const key = folderKey(["loc", customerId, location.id]);
+        const key = folderKey(["wloc", customerName, location.name]);
         const open = openFolders[key] === true;
-        const workorderFolders = location.children ?? [];
 
         return (
-            <SpecPanel key={location.id} tone="white" className="!p-0 overflow-hidden ml-4">
+            <SpecPanel key={key} tone="white" className="!p-0 overflow-hidden ml-4">
                 <button
                     type="button"
                     onClick={() => toggleFolder(key)}
@@ -203,63 +257,28 @@ export default function ArchivePage() {
                             {location.name}
                         </p>
                         <p className="text-xs text-gray-500">
-                            {workorderFolders.length} opdracht
-                            {workorderFolders.length === 1 ? "" : "en"}
+                            {location.workorders.length} opdracht
+                            {location.workorders.length === 1 ? "" : "en"}
                         </p>
                     </div>
                 </button>
 
-                {open && workorderFolders.length > 0 ? (
+                {open ? (
                     <div className="border-t px-3 py-2 space-y-1">
-                        {workorderFolders.map((woFolder) => {
-                            const wo = woFolder.workorder;
-
-                            if (!wo) {
-                                return null;
-                            }
-
-                            return (
-                                <Link
-                                    key={woFolder.id}
-                                    href={`/workorders/${wo.id}`}
-                                    className="block"
-                                >
-                                    <SpecListRow className="hover:bg-gray-50 py-2">
-                                        <div className="min-w-0">
-                                            <p className="font-medium text-sm truncate">
-                                                {wo.number} — {wo.title}
-                                            </p>
-                                            <p className="text-xs text-gray-500 truncate">
-                                                {wo.archiveStatus === "completed"
-                                                    ? "Gearchiveerd op NAS"
-                                                    : wo.archiveStatus === "pending"
-                                                      ? "Archiveren…"
-                                                      : wo.archiveStatus === "failed"
-                                                        ? "Archief mislukt"
-                                                        : "Nog niet gearchiveerd"}
-                                                {wo.plannedDate
-                                                    ? ` · ${new Date(wo.plannedDate).toLocaleDateString("nl-NL")}`
-                                                    : ""}
-                                            </p>
-                                        </div>
-                                    </SpecListRow>
-                                </Link>
-                            );
-                        })}
+                        {location.workorders.map(renderWorkorderRow)}
                     </div>
                 ) : null}
             </SpecPanel>
         );
     }
 
-    function renderCustomerFolder(customerFolder: ArchiveFolderNode) {
-        const key = folderKey(["cust", customerFolder.id]);
+    function renderGroupedCustomer(group: CustomerGroup) {
+        const key = folderKey(["wcust", group.name]);
         const open = openFolders[key] === true;
-        const locations = customerFolder.children ?? [];
 
         return (
             <SpecPanel
-                key={customerFolder.id}
+                key={key}
                 tone="white"
                 className="!p-0 overflow-hidden"
             >
@@ -276,28 +295,19 @@ export default function ArchivePage() {
                     <Folder size={20} className="text-[#0066FF] shrink-0" />
                     <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm text-gray-800 truncate">
-                            {customerFolder.name}
+                            {group.name}
                         </p>
                         <p className="text-xs text-gray-500">
-                            {locations.length} locatie
-                            {locations.length === 1 ? "" : "s"}
+                            {group.locations.length} locatie
+                            {group.locations.length === 1 ? "" : "s"}
                         </p>
                     </div>
                 </button>
 
                 {open ? (
                     <div className="border-t px-2 py-2 space-y-2">
-                        {locations.length === 0 ? (
-                            <p className="text-xs text-gray-400 px-2 py-1">
-                                Nog geen locatiemappen.
-                            </p>
-                        ) : (
-                            locations.map((loc) =>
-                                renderLocationFolder(
-                                    customerFolder.id,
-                                    loc
-                                )
-                            )
+                        {group.locations.map((location) =>
+                            renderGroupedLocation(group.name, location)
                         )}
                     </div>
                 ) : null}
@@ -416,46 +426,7 @@ export default function ArchivePage() {
                     </h2>
 
                     <div className="space-y-2">
-                        {workorders.map((workorder) => (
-                            <a
-                                key={workorder.id}
-                                href={`/workorders/${workorder.id}`}
-                                className="block"
-                            >
-                                <SpecListRow className="flex justify-between items-center hover:bg-gray-50">
-                                    <div className="min-w-0">
-                                        <p className="font-medium text-sm truncate">
-                                            {workorder.number} —{" "}
-                                            {workorder.title}
-                                        </p>
-                                        <p className="text-xs text-gray-500 truncate">
-                                            {workorder.archiveLocationLabel
-                                                ? `${workorder.archiveLocationLabel} · `
-                                                : ""}
-                                            {workorder.customer?.name ??
-                                                workorder.project?.customer
-                                                    ?.name ??
-                                                "—"}
-                                            {" · "}
-                                            {workorder.assignedUser?.name ??
-                                                "—"}
-                                            {workorder.plannedDate
-                                                ? ` · ${new Date(workorder.plannedDate).toLocaleDateString("nl-NL")}`
-                                                : ""}
-                                        </p>
-                                    </div>
-                                    <span
-                                        className={`
-                                            shrink-0 ml-2 px-2 py-0.5
-                                            rounded-full text-xs
-                                            ${getStatus(workorder.status).badge}
-                                        `}
-                                    >
-                                        {getStatus(workorder.status).label}
-                                    </span>
-                                </SpecListRow>
-                            </a>
-                        ))}
+                        {groupedWorkorders().map(renderGroupedCustomer)}
 
                         {!loading && workorders.length === 0 && (
                             <p className="text-sm text-gray-400">
@@ -504,22 +475,6 @@ export default function ArchivePage() {
                     </div>
                 </SpecPageCard>
             )}
-
-            <SpecPageCard>
-                {foldersLoading ? (
-                    <p className="text-sm text-gray-500">Mappen laden…</p>
-                ) : folders.length === 0 ? (
-                    <p className="text-sm text-gray-500">
-                        Nog geen archiefmappen.
-                    </p>
-                ) : (
-                    <div className="space-y-2">
-                        {folders.map((folder) =>
-                            renderCustomerFolder(folder)
-                        )}
-                    </div>
-                )}
-            </SpecPageCard>
         </PageShell>
     );
 }
