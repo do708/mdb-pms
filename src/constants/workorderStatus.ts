@@ -52,7 +52,8 @@ export const WORKORDER_STATUSES:WorkorderStatus[] = [
     {
         key:"gefactureerd",
         label:"Gefactureerd",
-        badge:"bg-purple-100 text-purple-700"
+        badge:"bg-purple-100 text-purple-700",
+        inPlanning:true
     },
 
     {
