@@ -316,7 +316,7 @@ export default function StatusFlow({
                             ?
                             "bg-amber-500 text-white border-amber-500"
                             :
-                            "text-amber-800 border-amber-200 bg-amber-50 hover:bg-amber-100"
+                            "text-gray-400 border-gray-200"
                         }
                     `}
                 >
