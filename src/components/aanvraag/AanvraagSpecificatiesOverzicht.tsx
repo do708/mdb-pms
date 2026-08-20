@@ -270,7 +270,7 @@ function SchermenBlok({
                                     label="Bevestiging"
                                     value={
                                         str(s.bevestigingDetail) === "Anders"
-                                            ? `Specials: ${str(s.bevestigingAnders) || "Anders"}`
+                                            ? `Special: ${str(s.bevestigingAnders) || "Anders"}`
                                             : [
                                                   str(s.bevestigingDetail),
                                                   str(s.beugel),

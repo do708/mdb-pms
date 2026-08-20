@@ -54,7 +54,7 @@ function mapBeugelType(item: AanvraagSchermItem): {
         return { werkzaamheid: "wand", beugelType: "wand_vast", beugelMaat: mapWandMaat(item.formaat) };
     }
 
-    // Specials / Anders
+    // Special / Anders
     if (hoofdcat.includes("special") || detail) {
         return { werkzaamheid: "wand", beugelType: "geen", beugelMaat: "" };
     }

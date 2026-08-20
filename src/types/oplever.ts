@@ -734,7 +734,7 @@ export function mergeOpleverData(
                                             zwenk:"Muurbeugel",
                                             plafond:"Plafondbeugel",
                                             vloerstandaard:"Vloerstandaard",
-                                            geen:"Specials"
+                                            geen:"Special"
                                         };
                                         merged.beugel = map[r.beugelType] || "";
                                     }

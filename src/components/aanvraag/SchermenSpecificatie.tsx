@@ -4,17 +4,17 @@ import { useState } from "react";
 import {
     AanvraagSchermItem,
     AANSTURING_OPTIES,
-    BEVESTIGING_DETAIL,
     BEVESTIGING_OPTIES,
-    BevestigingSoort,
     FORMAAT_PASTEL,
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
     berekendInstallatieType,
+    bevestigingDetails,
     isHoofdType,
     isPlayerAansturing,
-    patchRaaktVoorzieningen,
     legeVoorzieningen,
+    normaliseerBevestiging,
+    patchRaaktVoorzieningen,
     syncSchermItems,
     syncVoorzieningenVanAnkers,
 } from "@/lib/aanvraag/installatieTypes";
@@ -118,12 +118,7 @@ export default function SchermenSpecificatie({
                                 text: "text-slate-800",
                             };
                         const detailOpties =
-                            scherm.beugel &&
-                            scherm.beugel in BEVESTIGING_DETAIL
-                                ? BEVESTIGING_DETAIL[
-                                      scherm.beugel as BevestigingSoort
-                                  ]
-                                : [];
+                            bevestigingDetails(scherm.beugel);
                         const gekoppeld = Boolean(
                             scherm.naastSchermId
                         );
@@ -397,8 +392,9 @@ export default function SchermenSpecificatie({
                                                             scherm.id,
                                                             {
                                                                 beugel:
-                                                                    scherm.beugel ===
-                                                                    b
+                                                                    normaliseerBevestiging(
+                                                                        scherm.beugel
+                                                                    ) === b
                                                                         ? ""
                                                                         : b,
                                                                 bevestigingDetail:
@@ -413,8 +409,9 @@ export default function SchermenSpecificatie({
                                                     className={
                                                         "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
                                                         +
-                                                        (scherm.beugel ===
-                                                        b
+                                                        (normaliseerBevestiging(
+                                                            scherm.beugel
+                                                        ) === b
                                                             ? "bg-sky-100 text-sky-900 border-sky-300"
                                                             : "bg-white text-gray-700 border-gray-200")
                                                     }
@@ -429,7 +426,9 @@ export default function SchermenSpecificatie({
                                         <div className="mt-2 pl-2 border-l-2 border-sky-200 space-y-1.5">
                                             <span className="text-xs text-gray-600 block">
                                                 Type{" "}
-                                                {scherm.beugel.toLowerCase()}
+                                                {normaliseerBevestiging(
+                                                    scherm.beugel
+                                                ).toLowerCase()}
                                             </span>
                                             <div className="flex flex-col gap-2">
                                                 {detailOpties.map(

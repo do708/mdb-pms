@@ -39,10 +39,18 @@ export const BEVESTIGING_OPTIES = [
     "Muurbeugel",
     "Plafondbeugel",
     "Vloerstandaard",
-    "Specials",
+    "Special",
 ] as const;
 
 export type BevestigingSoort = (typeof BEVESTIGING_OPTIES)[number];
+
+/** Oude opgeslagen waarde “Specials” → “Special”. */
+export function normaliseerBevestiging(beugel?: string | null): string {
+    if (beugel === "Specials") {
+        return "Special";
+    }
+    return beugel || "";
+}
 
 export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
     Muurbeugel: [
@@ -59,12 +67,20 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
         "Vloer-plafond standaard",
         "Mobiele vloerstandaard (trolley)",
     ],
-    Specials: [
+    Special: [
         "Kolombeugel",
         "Roterende beugel",
         "Anders",
     ],
 };
+
+export function bevestigingDetails(beugel?: string | null): string[] {
+    const soort = normaliseerBevestiging(beugel);
+    if (soort && soort in BEVESTIGING_DETAIL) {
+        return BEVESTIGING_DETAIL[soort as BevestigingSoort];
+    }
+    return [];
+}
 
 /** Aansturing van het scherm (onder bevestiging). */
 export const AANSTURING_OPTIES = [
@@ -198,11 +214,11 @@ export interface AanvraagSchermItem {
     id: string;
     formaat: string;
     formaatAnders: string;
-    /** Hoofdcategorie: Muurbeugel / Plafondbeugel / Vloerstandaard / Specials */
+    /** Hoofdcategorie: Muurbeugel / Plafondbeugel / Vloerstandaard / Special */
     beugel: string;
     /** Specifieke bevestiging binnen de categorie */
     bevestigingDetail: string;
-    /** Vrije tekst bij Specials → Anders (of overige specials-toelichting) */
+    /** Vrije tekst bij Special → Anders */
     bevestigingAnders: string;
     /** Alleen bij Plafondbeugel: 80cm / 150cm / 300cm */
     plafondHoogte: string;
@@ -361,7 +377,7 @@ export function schermVeldenCompleet(
     }
 
     if (
-        scherm.beugel in BEVESTIGING_DETAIL
+        normaliseerBevestiging(scherm.beugel) in BEVESTIGING_DETAIL
         && !scherm.bevestigingDetail
     ) {
         return false;

@@ -2,12 +2,12 @@
 
 import {
     AANSTURING_OPTIES,
-    BEVESTIGING_DETAIL,
     BEVESTIGING_OPTIES,
-    BevestigingSoort,
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
+    bevestigingDetails,
     isPlayerAansturing,
+    normaliseerBevestiging,
 } from "@/lib/aanvraag/installatieTypes";
 import {
     InstallatieRuimte,
@@ -190,12 +190,7 @@ export default function InstallatieRuimtesSectie({
         <div className="space-y-4">
             <div className="space-y-4">
                 {schermKaarten.map(({ ruimteId, scherm }, index) => {
-                    const detailOpties =
-                        scherm.beugel && scherm.beugel in BEVESTIGING_DETAIL
-                            ? BEVESTIGING_DETAIL[
-                                  scherm.beugel as BevestigingSoort
-                              ]
-                            : [];
+                    const detailOpties = bevestigingDetails(scherm.beugel);
                     const specsOk = schermSpecsGevuld(scherm);
                     const toonPlayer = isPlayerAansturing(scherm.aansturing);
                     const bronnen =
@@ -299,7 +294,7 @@ export default function InstallatieRuimtesSectie({
                                     <span className="text-red-500">*</span>
                                 </span>
                                 <select
-                                    value={scherm.beugel || ""}
+                                    value={normaliseerBevestiging(scherm.beugel)}
                                     onChange={(e) =>
                                         updateScherm(ruimteId, scherm.id, {
                                             beugel: e.target.value,
@@ -329,7 +324,7 @@ export default function InstallatieRuimtesSectie({
                                         className="w-full border rounded-lg p-2.5 bg-white text-sm"
                                     >
                                         <option value="">
-                                            Type {scherm.beugel.toLowerCase()}
+                                            Type {normaliseerBevestiging(scherm.beugel).toLowerCase()}
                                         </option>
                                         {detailOpties.map((d) => (
                                             <option key={d} value={d}>
