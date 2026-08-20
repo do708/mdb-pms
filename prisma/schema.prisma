@@ -48,6 +48,23 @@ model Customer {
   archiveFolders ArchiveFolder[]
 }
 
+model ArchiveFile {
+  id          String        @id @default(cuid())
+  folderId    String
+  folder      ArchiveFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  name        String
+  /// nas | supabase
+  storage     String        @default("supabase")
+  storagePath String
+  url         String?
+  contentType String?
+  size        Int?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([folderId])
+}
+
 
 // Publieke opdrachtaanvraag, ingediend door een opdrachtgever via de unieke
 // link (/aanvraag?client_id=TOKEN). Wordt op het dashboard getoond en kan
@@ -209,7 +226,7 @@ model Workorder {
 
 model ArchiveFolder {
   id           String          @id @default(cuid())
-  /// customer | location | workorder
+  /// customer | location | workorder | custom
   kind         String
   name         String
   nasPath      String          @unique
@@ -217,6 +234,7 @@ model ArchiveFolder {
   parentId     String?
   parent       ArchiveFolder?  @relation("ArchiveTree", fields: [parentId], references: [id], onDelete: Cascade)
   children     ArchiveFolder[] @relation("ArchiveTree")
+  files        ArchiveFile[]
   customerId   String?
   customer     Customer?       @relation(fields: [customerId], references: [id], onDelete: Cascade)
   /// Unieke sleutel per opdrachtgever voor locatiemappen

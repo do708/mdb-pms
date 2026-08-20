@@ -268,6 +268,46 @@ export async function synologyUploadFile(
     return joinNasPath(destFolder, filename);
 }
 
+/** Hernoem bestand of map op de NAS. */
+export async function synologyRename(
+    nasPath: string,
+    newName: string
+): Promise<string> {
+    await withSid({
+        api: "SYNO.FileStation.Rename",
+        version: "2",
+        method: "rename",
+        path: JSON.stringify([nasPath]),
+        name: newName,
+    });
+
+    const parent = nasPath.replace(/\/[^/]+$/, "") || "/";
+
+    return joinNasPath(parent, newName);
+}
+
+/** Verplaats bestand of map naar een andere map. */
+export async function synologyMove(
+    nasPath: string,
+    destFolder: string
+): Promise<string> {
+    await synologyEnsureFolder(destFolder);
+
+    await withSid({
+        api: "SYNO.FileStation.CopyMove",
+        version: "3",
+        method: "start",
+        path: JSON.stringify([nasPath]),
+        dest_folder_path: destFolder,
+        overwrite: "true",
+        remove_src: "true",
+    });
+
+    const filename = nasPath.split("/").filter(Boolean).pop() || "bestand";
+
+    return joinNasPath(destFolder, filename);
+}
+
 /** Download bestand van NAS. */
 export async function synologyDownloadFile(nasPath: string): Promise<Buffer> {
     const sid = await login();

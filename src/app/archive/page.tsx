@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { ChevronDown, ChevronRight, Folder } from "lucide-react";
 
-import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
-import {
-    archiveCustomerLabel,
-    formatArchiveLocationLabel,
-} from "@/lib/archive/formatArchiveLocationName";
+import ArchiveTree, {
+    type ArchiveWorkorder,
+    type StoredFolder,
+} from "@/components/archive/ArchiveTree";
 import {
     PageShell,
     SpecFieldLabel,
@@ -24,30 +22,6 @@ function formIcon(type: string): string {
     return FORM_DEFINITIONS.find((d) => d.type === type)?.icon ?? "📝";
 }
 
-interface Workorder {
-    id: string;
-    number: string;
-    title: string;
-    city: string | null;
-    status: string;
-    plannedDate: string | null;
-    archiveStatus: string | null;
-    archiveLocationLabel: string | null;
-    customer: { name: string } | null;
-    project: { customer: { name: string | null } | null } | null;
-    assignedUser: { name: string | null } | null;
-}
-
-interface LocationGroup {
-    name: string;
-    workorders: Workorder[];
-}
-
-interface CustomerGroup {
-    name: string;
-    locations: LocationGroup[];
-}
-
 interface Form {
     id: string;
     type: string;
@@ -60,7 +34,8 @@ interface Form {
 export default function ArchivePage() {
     const { data: session } = useSession();
     const role = session?.user?.role ?? "";
-    const showMonteurFilter = role === "admin" || role === "office";
+    const canManage = role === "admin" || role === "office";
+    const showMonteurFilter = canManage;
 
     const [q, setQ] = useState("");
     const [customer, setCustomer] = useState("");
@@ -74,12 +49,21 @@ export default function ArchivePage() {
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
     const [type, setType] = useState("");
-    const [workorders, setWorkorders] = useState<Workorder[]>([]);
+    const [workorders, setWorkorders] = useState<ArchiveWorkorder[]>([]);
+    const [storedFolders, setStoredFolders] = useState<StoredFolder[]>([]);
     const [forms, setForms] = useState<Form[]>([]);
-    const [openFolders, setOpenFolders] = useState<Record<string, boolean>>(
-        {}
-    );
     const [loading, setLoading] = useState(true);
+
+    async function loadFolders() {
+        const response = await fetch("/api/archive/folders");
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        setStoredFolders(data.folders ?? []);
+    }
 
     async function search() {
         setLoading(true);
@@ -93,10 +77,13 @@ export default function ArchivePage() {
         if (to) params.set("to", to);
         if (type) params.set("type", type);
 
-        const response = await fetch(`/api/archive?${params.toString()}`);
+        const [archiveRes] = await Promise.all([
+            fetch(`/api/archive?${params.toString()}`),
+            loadFolders(),
+        ]);
 
-        if (response.ok) {
-            const data = await response.json();
+        if (archiveRes.ok) {
+            const data = await archiveRes.json();
             setWorkorders(data.workorders ?? []);
             setForms(data.forms ?? []);
         }
@@ -137,182 +124,6 @@ export default function ArchivePage() {
         setFrom("");
         setTo("");
         setType("");
-    }
-
-    function folderKey(parts: string[]) {
-        return parts.join(":");
-    }
-
-    function workorderCustomerName(workorder: Workorder) {
-        return archiveCustomerLabel(
-            workorder.customer?.name
-            ?? workorder.project?.customer?.name
-        );
-    }
-
-    function workorderLocationName(workorder: Workorder) {
-        return formatArchiveLocationLabel(
-            workorder.title,
-            workorder.city,
-            workorder.customer?.name
-            ?? workorder.project?.customer?.name
-        );
-    }
-
-    function groupedWorkorders(): CustomerGroup[] {
-        const customers = new Map<string, Map<string, Workorder[]>>();
-
-        for (const workorder of workorders) {
-            const customerName = workorderCustomerName(workorder);
-            const locationName = workorderLocationName(workorder);
-
-            if (!customers.has(customerName)) {
-                customers.set(customerName, new Map());
-            }
-
-            const locations = customers.get(customerName)!;
-
-            if (!locations.has(locationName)) {
-                locations.set(locationName, []);
-            }
-
-            locations.get(locationName)!.push(workorder);
-        }
-
-        return [...customers.entries()]
-            .sort(([a], [b]) => a.localeCompare(b, "nl"))
-            .map(([name, locations]) => ({
-                name,
-                locations: [...locations.entries()]
-                    .sort(([a], [b]) => a.localeCompare(b, "nl"))
-                    .map(([locationName, items]) => ({
-                        name: locationName,
-                        workorders: items,
-                    })),
-            }));
-    }
-
-    function toggleFolder(key: string) {
-        setOpenFolders((prev) => ({
-            ...prev,
-            [key]: !prev[key],
-        }));
-    }
-
-    function renderWorkorderRow(workorder: Workorder) {
-        return (
-            <a
-                key={workorder.id}
-                href={`/workorders/${workorder.id}`}
-                className="block"
-            >
-                <SpecListRow className="flex justify-between items-center hover:bg-gray-50 py-2">
-                    <div className="min-w-0">
-                        <p className="font-medium text-sm truncate">
-                            {workorder.number} — {workorder.title}
-                        </p>
-                        <p className="text-xs text-gray-500 truncate">
-                            {workorder.assignedUser?.name ?? "—"}
-                            {workorder.plannedDate
-                                ? ` · ${new Date(workorder.plannedDate).toLocaleDateString("nl-NL")}`
-                                : ""}
-                        </p>
-                    </div>
-                    <span
-                        className={`
-                            shrink-0 ml-2 px-2 py-0.5
-                            rounded-full text-xs
-                            ${getStatus(workorder.status).badge}
-                        `}
-                    >
-                        {getStatus(workorder.status).label}
-                    </span>
-                </SpecListRow>
-            </a>
-        );
-    }
-
-    function renderGroupedLocation(
-        customerName: string,
-        location: LocationGroup
-    ) {
-        const key = folderKey(["wloc", customerName, location.name]);
-        const open = openFolders[key] === true;
-
-        return (
-            <SpecPanel key={key} tone="white" className="!p-0 overflow-hidden ml-4">
-                <button
-                    type="button"
-                    onClick={() => toggleFolder(key)}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 min-h-[44px] hover:bg-gray-50 text-left"
-                >
-                    {open ? (
-                        <ChevronDown size={18} />
-                    ) : (
-                        <ChevronRight size={18} />
-                    )}
-                    <Folder size={18} className="text-sky-600 shrink-0" />
-                    <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-gray-900 truncate">
-                            {location.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                            {location.workorders.length} opdracht
-                            {location.workorders.length === 1 ? "" : "en"}
-                        </p>
-                    </div>
-                </button>
-
-                {open ? (
-                    <div className="border-t px-3 py-2 space-y-1">
-                        {location.workorders.map(renderWorkorderRow)}
-                    </div>
-                ) : null}
-            </SpecPanel>
-        );
-    }
-
-    function renderGroupedCustomer(group: CustomerGroup) {
-        const key = folderKey(["wcust", group.name]);
-        const open = openFolders[key] === true;
-
-        return (
-            <SpecPanel
-                key={key}
-                tone="white"
-                className="!p-0 overflow-hidden"
-            >
-                <button
-                    type="button"
-                    onClick={() => toggleFolder(key)}
-                    className="w-full flex items-center gap-3 px-3 py-3 min-h-[52px] hover:bg-gray-50 text-left"
-                >
-                    {open ? (
-                        <ChevronDown size={20} />
-                    ) : (
-                        <ChevronRight size={20} />
-                    )}
-                    <Folder size={20} className="text-[#0066FF] shrink-0" />
-                    <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-gray-800 truncate">
-                            {group.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                            {group.locations.length} locatie
-                            {group.locations.length === 1 ? "" : "s"}
-                        </p>
-                    </div>
-                </button>
-
-                {open ? (
-                    <div className="border-t px-2 py-2 space-y-2">
-                        {group.locations.map((location) =>
-                            renderGroupedLocation(group.name, location)
-                        )}
-                    </div>
-                ) : null}
-            </SpecPanel>
-        );
     }
 
     return (
@@ -425,15 +236,27 @@ export default function ArchivePage() {
                         Opdrachten ({workorders.length})
                     </h2>
 
-                    <div className="space-y-2">
-                        {groupedWorkorders().map(renderGroupedCustomer)}
+                    {canManage ? (
+                        <p className="text-xs text-gray-500 -mt-1">
+                            Mappen aanmaken of hernoemen, en bestanden
+                            slepen naar een map.
+                        </p>
+                    ) : null}
 
-                        {!loading && workorders.length === 0 && (
-                            <p className="text-sm text-gray-400">
-                                Geen opdrachten gevonden.
-                            </p>
-                        )}
-                    </div>
+                    <ArchiveTree
+                        workorders={workorders}
+                        storedFolders={storedFolders}
+                        canManage={canManage}
+                        onRefresh={async () => {
+                            await loadFolders();
+                        }}
+                    />
+
+                    {!loading && workorders.length === 0 && storedFolders.length === 0 && (
+                        <p className="text-sm text-gray-400">
+                            Geen opdrachten gevonden.
+                        </p>
+                    )}
                 </SpecPageCard>
             )}
 
