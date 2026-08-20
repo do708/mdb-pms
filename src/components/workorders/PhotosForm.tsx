@@ -113,6 +113,9 @@ export default function PhotosForm({
     const [uploading,setUploading] =
         useState(false);
 
+    const [sleepActief,setSleepActief] =
+        useState(false);
+
 
 
 
@@ -141,16 +144,11 @@ export default function PhotosForm({
 
 
     // Direct uploaden zodra foto's gekozen zijn.
-    async function selectPhotos(
-        event:React.ChangeEvent<HTMLInputElement>
-    ){
+    async function uploadFiles(gekozen: File[]){
 
-        if(!event.target.files || event.target.files.length === 0){
+        if(gekozen.length === 0){
             return;
         }
-
-        const gekozen =
-            Array.from(event.target.files);
 
         setUploading(true);
 
@@ -202,6 +200,95 @@ export default function PhotosForm({
         }
 
     }
+
+    async function importUrls(urls: string[]){
+        const uniek = [...new Set(urls.map((u)=>u.trim()).filter((u)=>
+            /^https?:\/\//i.test(u)
+        ))];
+
+        if(uniek.length === 0){
+            return;
+        }
+
+        setUploading(true);
+
+        try {
+            const response = await fetch(
+                `/api/workorders/${workorderId}/photos`,
+                {
+                    method:"POST",
+                    headers:{ "Content-Type":"application/json" },
+                    body:JSON.stringify({ urls: uniek })
+                }
+            );
+
+            const data = await response.json().catch(()=>({}));
+
+            if(response.ok && Array.isArray(data.photos)){
+                setPhotos(prev=>[...prev, ...data.photos]);
+            } else {
+                const reden =
+                    typeof data.error === "string" && data.error.trim()
+                    ? data.error
+                    : "Fotolink toevoegen mislukt";
+                alert(reden);
+            }
+        } catch(error){
+            console.error(error);
+            alert("Fout bij toevoegen fotolink");
+        } finally {
+            setUploading(false);
+        }
+    }
+
+    function urlsUitDrop(data: DataTransfer): string[] {
+        const uitTekst = [
+            data.getData("text/uri-list"),
+            data.getData("text/plain"),
+        ]
+            .join("\n")
+            .split(/[\s\n]+/)
+            .map((u)=>u.trim())
+            .filter((u)=>/^https?:\/\//i.test(u));
+
+        const html = data.getData("text/html");
+        if(html){
+            const hrefs = [...html.matchAll(/https?:\/\/[^"'>\s]+/gi)]
+                .map((m)=>m[0]);
+            uitTekst.push(...hrefs);
+        }
+
+        return [...new Set(uitTekst)];
+    }
+
+    async function selectPhotos(
+        event:React.ChangeEvent<HTMLInputElement>
+    ){
+
+        if(!event.target.files || event.target.files.length === 0){
+            return;
+        }
+
+        await uploadFiles(Array.from(event.target.files));
+
+    }
+
+    useEffect(()=>{
+        function onImport(ev: Event){
+            const detail = (ev as CustomEvent<{
+                workorderId?: string;
+                url?: string;
+            }>).detail;
+            if(!detail?.url || detail.workorderId !== workorderId){
+                return;
+            }
+            void importUrls([detail.url]);
+        }
+
+        window.addEventListener("mdb-import-photo-url", onImport);
+        return ()=>
+            window.removeEventListener("mdb-import-photo-url", onImport);
+    }, [workorderId]);
 
 
 
@@ -272,14 +359,36 @@ export default function PhotosForm({
                             type="button"
                             onClick={()=>fileRef.current?.click()}
                             disabled={uploading}
-                            className="
+                            onDragOver={(e)=>{
+                                e.preventDefault();
+                                setSleepActief(true);
+                            }}
+                            onDragLeave={()=>setSleepActief(false)}
+                            onDrop={(e)=>{
+                                e.preventDefault();
+                                setSleepActief(false);
+                                const files = Array.from(e.dataTransfer.files || [])
+                                    .filter((f)=>f.type.startsWith("image/") || f.size > 0);
+                                if(files.length){
+                                    void uploadFiles(files);
+                                    return;
+                                }
+                                const urls = urlsUitDrop(e.dataTransfer);
+                                if(urls.length){
+                                    void importUrls(urls);
+                                }
+                            }}
+                            className={`
                                 w-full rounded-lg border border-dashed
-                                border-gray-300 bg-white px-3 py-4
+                                bg-white px-3 py-4
                                 text-sm font-medium text-gray-700
                                 hover:border-sky-300 hover:bg-sky-50/50
                                 disabled:opacity-50
                                 flex flex-col items-center gap-1
-                            "
+                                ${sleepActief
+                                    ? "border-sky-400 bg-sky-50"
+                                    : "border-gray-300"}
+                            `}
                         >
                             {
                                 uploading
@@ -293,7 +402,7 @@ export default function PhotosForm({
                                         </span>
                                         <span>Foto&apos;s toevoegen</span>
                                         <span className="text-xs font-normal text-gray-500">
-                                            Klik om foto&apos;s te kiezen
+                                            Klik, sleep foto&apos;s of sleep een fotolink hierheen
                                         </span>
                                     </>
                                 )

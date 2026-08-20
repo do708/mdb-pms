@@ -25,6 +25,165 @@ function isUploadFile(value: FormDataEntryValue): value is File {
     );
 }
 
+function isBlockedPhotoHost(hostname: string): boolean {
+    const h = hostname.toLowerCase().replace(/\.$/, "");
+    if (
+        h === "localhost"
+        || h === "127.0.0.1"
+        || h === "0.0.0.0"
+        || h === "::1"
+        || h.endsWith(".local")
+        || h.endsWith(".internal")
+    ) {
+        return true;
+    }
+    if (/^(10\.|192\.168\.|169\.254\.)/.test(h)) {
+        return true;
+    }
+    const m = /^172\.(\d+)\./.exec(h);
+    if (m) {
+        const n = Number(m[1]);
+        if (n >= 16 && n <= 31) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function looksLikeImage(buffer: Buffer): boolean {
+    if (buffer.length < 12) {
+        return false;
+    }
+    if (buffer[0] === 0xff && buffer[1] === 0xd8) {
+        return true;
+    }
+    if (
+        buffer[0] === 0x89
+        && buffer[1] === 0x50
+        && buffer[2] === 0x4e
+        && buffer[3] === 0x47
+    ) {
+        return true;
+    }
+    if (
+        buffer.slice(0, 4).toString("ascii") === "RIFF"
+        && buffer.slice(8, 12).toString("ascii") === "WEBP"
+    ) {
+        return true;
+    }
+    return false;
+}
+
+async function storePhotoBuffer(args: {
+    workorderId: string;
+    buffer: Buffer;
+    contentType: string;
+    originalName: string;
+}) {
+    let payload: Buffer = args.buffer;
+    let contentType = args.contentType || "image/jpeg";
+    let extension = ".jpg";
+
+    try {
+        const compressed = await compressPhoto(
+            args.buffer,
+            args.contentType || "image/jpeg"
+        );
+        payload = Buffer.from(compressed.buffer);
+        contentType = compressed.contentType;
+        extension = compressed.extension || ".jpg";
+    } catch (compressError) {
+        console.warn("PHOTO COMPRESS FAILED", compressError);
+    }
+
+    const filename = `${args.workorderId}/${Date.now()}-${photoStorageName(
+        args.originalName || "foto",
+        extension
+    )}`;
+
+    const upload = await supabase.storage
+        .from("workorder-files")
+        .upload(filename, payload, {
+            contentType,
+            upsert: true,
+        });
+
+    if (upload.error) {
+        throw new Error(
+            upload.error.message || "Opslag van de foto is mislukt"
+        );
+    }
+
+    const url = supabase.storage
+        .from("workorder-files")
+        .getPublicUrl(filename).data.publicUrl;
+
+    return prisma.workorderPhoto.create({
+        data: {
+            workorderId: args.workorderId,
+            url,
+            filename: args.originalName || null,
+        },
+    });
+}
+
+async function importPhotoFromUrl(workorderId: string, rawUrl: string) {
+    let parsed: URL;
+    try {
+        parsed = new URL(rawUrl);
+    } catch {
+        throw new Error("Ongeldige fotolink");
+    }
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        throw new Error("Alleen http(s)-fotolinks zijn toegestaan");
+    }
+
+    if (isBlockedPhotoHost(parsed.hostname)) {
+        throw new Error("Deze fotolink is niet toegestaan");
+    }
+
+    try {
+        const response = await fetch(parsed.toString(), {
+            redirect: "follow",
+            headers: { Accept: "image/*,*/*" },
+        });
+
+        if (response.ok) {
+            const buffer = Buffer.from(await response.arrayBuffer());
+            const contentType =
+                response.headers.get("content-type") || "";
+            const imageType = contentType.split(";")[0].trim();
+            if (
+                buffer.length > 0
+                && buffer.length <= 12 * 1024 * 1024
+                && (imageType.startsWith("image/") || looksLikeImage(buffer))
+            ) {
+                const pathName = parsed.pathname.split("/").pop() || "foto";
+                return storePhotoBuffer({
+                    workorderId,
+                    buffer,
+                    contentType: imageType.startsWith("image/")
+                        ? imageType
+                        : "image/jpeg",
+                    originalName: decodeURIComponent(pathName),
+                });
+            }
+        }
+    } catch (error) {
+        console.warn("PHOTO URL FETCH FAILED", rawUrl, error);
+    }
+
+    return prisma.workorderPhoto.create({
+        data: {
+            workorderId,
+            url: parsed.toString(),
+            filename: "Foto link",
+            caption: parsed.toString(),
+        },
+    });
+}
+
 export async function POST(
     request: NextRequest,
     context: {
@@ -63,6 +222,37 @@ export async function POST(
                 { error: "Foto-opslag is niet geconfigureerd" },
                 { status: 500 }
             );
+        }
+
+        const contentType = request.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+            const body = (await request.json()) as { urls?: unknown };
+            const urls = Array.isArray(body.urls)
+                ? body.urls.filter(
+                    (u): u is string =>
+                        typeof u === "string" && /^https?:\/\//i.test(u.trim())
+                )
+                : [];
+
+            if (urls.length === 0) {
+                return NextResponse.json(
+                    { error: "Geen fotolinks ontvangen" },
+                    { status: 400 }
+                );
+            }
+
+            const uploadedPhotos = [];
+            for (const url of urls.slice(0, 12)) {
+                uploadedPhotos.push(
+                    await importPhotoFromUrl(id, url.trim())
+                );
+            }
+
+            return NextResponse.json({
+                success: true,
+                photos: uploadedPhotos,
+            });
         }
 
         const formData = await request.formData();

@@ -13,6 +13,7 @@ import AanvraagSpecificatiesOverzicht, {
 import { bouwKlantWerkzaamheden } from "@/lib/aanvraag/klantWerkzaamheden";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
+import WerkInstructieVeld from "@/components/workorders/WerkInstructieVeld";
 
 
 
@@ -1059,17 +1060,12 @@ export default function EditWorkorderPage(){
                     </h2>
                     <p className="text-xs text-gray-500 leading-snug">
                         Interne instructie voor de monteur.
-                        Komt niet in de klant-mail.
+                        Komt niet in de klant-mail. Plak gerust de setup-mail;
+                        tabellen en fotolinks blijven leesbaar.
                     </p>
-                    <textarea
+                    <WerkInstructieVeld
                         value={werkInstructie}
-                        onChange={(e)=>setWerkInstructie(e.target.value)}
-                        placeholder="Bijv. sleutel ophalen bij receptie, ladder meenemen"
-                        className="
-                            w-full border border-gray-200 rounded-lg
-                            p-2.5 text-sm text-gray-900 min-h-24 bg-white
-                            placeholder:text-gray-400
-                        "
+                        onChange={setWerkInstructie}
                     />
                 </div>
 

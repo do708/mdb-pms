@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import StatusFlow from "@/components/workorders/StatusFlow";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import CorrespondentieBlok from "@/components/workorders/CorrespondentieBlok";
+import WerkInstructieWeergave from "@/components/workorders/WerkInstructieWeergave";
 import OpleverForm from "@/components/workorders/OpleverForm";
 import AanvraagSpecificatiesOverzicht, {
     parseAanvraagSnapshot,
@@ -1511,6 +1512,44 @@ async function completeWorkorder(){
 
 
 
+
+
+            {workorder.werkInstructie && (
+
+                <section className="
+                    bg-indigo-50
+                    border
+                    border-indigo-200
+                    rounded-2xl
+                    p-4
+                    mb-4
+                    space-y-2
+                ">
+
+                    <h2 className="font-bold text-sm text-gray-900">
+                        Werkinstructie
+                    </h2>
+
+                    <WerkInstructieWeergave
+                        tekst={workorder.werkInstructie}
+                        onNaarFotos={
+                            workorder.sentAt
+                            ? undefined
+                            : (url)=>
+                                window.dispatchEvent(
+                                    new CustomEvent("mdb-import-photo-url", {
+                                        detail:{
+                                            workorderId:id,
+                                            url
+                                        }
+                                    })
+                                )
+                        }
+                    />
+
+                </section>
+
+            )}
 
 
             {workorder.internalNotes && (
