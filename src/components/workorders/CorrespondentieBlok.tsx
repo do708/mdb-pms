@@ -16,6 +16,33 @@ interface Attachment {
     createdAt:string;
 }
 
+interface ParsedEmailAttachment {
+    index:number;
+    name:string;
+    contentType:string | null;
+    size:number | null;
+}
+
+interface ParsedEmail {
+    from:string | null;
+    to:string | null;
+    cc:string | null;
+    date:string | null;
+    subject:string | null;
+    bodyHtml:string | null;
+    bodyText:string | null;
+    attachments:ParsedEmailAttachment[];
+}
+
+type ViewerState = {
+    item:Attachment;
+    naam:string;
+    laden:boolean;
+    mail:ParsedEmail | null;
+    fout:string | null;
+    downloadbaar:boolean;
+};
+
 
 interface Props {
     workorderId:string;
@@ -23,7 +50,6 @@ interface Props {
 }
 
 
-// Icoon op basis van bestandsnaam/type.
 function icoonVoor(naam:string):string {
 
     const n = naam.toLowerCase();
@@ -40,6 +66,22 @@ function icoonVoor(naam:string):string {
 }
 
 
+function isEmailBestand(naam:string):boolean {
+    const n = naam.toLowerCase();
+    return n.endsWith(".msg") || n.endsWith(".eml");
+}
+
+
+function bestandNaam(item:Attachment):string {
+    return item.originalName ?? item.filename ?? "bestand";
+}
+
+
+function bestandUrl(workorderId:string, attachmentId:string):string {
+    return `/api/workorders/${workorderId}/attachments/${attachmentId}`;
+}
+
+
 function datumNL(iso:string):string {
     try {
         return new Date(iso).toLocaleDateString("nl-NL",{
@@ -52,6 +94,24 @@ function datumNL(iso:string):string {
     } catch {
         return "";
     }
+}
+
+
+function MailRegel({
+    label,
+    waarde,
+}: {
+    label:string;
+    waarde:string | null;
+}) {
+    if(!waarde){ return null; }
+
+    return (
+        <div className="grid grid-cols-[5.5rem_1fr] gap-2 text-sm">
+            <dt className="text-gray-500">{label}</dt>
+            <dd className="text-gray-900 break-words">{waarde}</dd>
+        </div>
+    );
 }
 
 
@@ -72,6 +132,12 @@ export default function CorrespondentieBlok({
 
     const [sleepActief,setSleepActief] =
         useState(false);
+
+    const [viewer,setViewer] =
+        useState<ViewerState | null>(null);
+
+    const [htmlUrl,setHtmlUrl] =
+        useState<string | null>(null);
 
     const inputRef =
         useRef<HTMLInputElement | null>(null);
@@ -95,6 +161,40 @@ export default function CorrespondentieBlok({
         laadItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[workorderId]);
+
+
+    useEffect(()=>{
+        if(!viewer?.mail?.bodyHtml){
+            setHtmlUrl(null);
+            return;
+        }
+
+        const blob = new Blob(
+            [viewer.mail.bodyHtml],
+            { type:"text/html;charset=utf-8" }
+        );
+        const url = URL.createObjectURL(blob);
+        setHtmlUrl(url);
+
+        return () => {
+            URL.revokeObjectURL(url);
+        };
+    },[viewer?.mail?.bodyHtml]);
+
+
+    useEffect(()=>{
+        if(!viewer){ return; }
+
+        function onKey(event:KeyboardEvent){
+            if(event.key === "Escape"){
+                setViewer(null);
+            }
+        }
+
+        window.addEventListener("keydown", onKey);
+
+        return () => window.removeEventListener("keydown", onKey);
+    },[viewer]);
 
 
 
@@ -163,6 +263,75 @@ export default function CorrespondentieBlok({
             setItems(items.filter(i=>i.id !== id));
         } else {
             alert("Verwijderen mislukt");
+        }
+
+    }
+
+
+    async function openItem(item:Attachment){
+
+        const naam = bestandNaam(item);
+        const url = bestandUrl(workorderId, item.id);
+
+        if(!isEmailBestand(naam)){
+            window.open(url, "_blank", "noopener,noreferrer");
+            return;
+        }
+
+        setViewer({
+            item,
+            naam,
+            laden:true,
+            mail:null,
+            fout:null,
+            downloadbaar:true,
+        });
+
+        try {
+            const res = await fetch(`${url}/preview`);
+            const data = await res.json().catch(()=>null);
+
+            if(res.status === 404){
+                setViewer({
+                    item,
+                    naam,
+                    laden:false,
+                    mail:null,
+                    fout: data?.error || "Bestand niet gevonden in de opslag",
+                    downloadbaar:false,
+                });
+                return;
+            }
+
+            if(!res.ok){
+                setViewer({
+                    item,
+                    naam,
+                    laden:false,
+                    mail:null,
+                    fout: data?.error || "Dit e-mailbestand kon niet worden gelezen",
+                    downloadbaar: Boolean(data?.downloadable ?? res.status === 422),
+                });
+                return;
+            }
+
+            setViewer({
+                item,
+                naam,
+                laden:false,
+                mail: data as ParsedEmail,
+                fout:null,
+                downloadbaar:true,
+            });
+        } catch {
+            setViewer({
+                item,
+                naam,
+                laden:false,
+                mail:null,
+                fout:"E-mail openen mislukt",
+                downloadbaar:true,
+            });
         }
 
     }
@@ -273,10 +442,7 @@ export default function CorrespondentieBlok({
                         {
                             items.map(item=>{
 
-                                const naam =
-                                    item.originalName
-                                    ?? item.filename
-                                    ?? "bestand";
+                                const naam = bestandNaam(item);
 
                                 return (
 
@@ -288,15 +454,15 @@ export default function CorrespondentieBlok({
                                             "
                                         >
 
-                                        <a
-                                            href={item.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
+                                        <button
+                                            type="button"
+                                            onClick={()=>openItem(item)}
                                             className="
                                                 flex
                                                 items-center
                                                 gap-2
                                                 min-w-0
+                                                text-left
                                                 hover:underline
                                             "
                                         >
@@ -311,7 +477,7 @@ export default function CorrespondentieBlok({
                                                     {datumNL(item.createdAt)}
                                                 </span>
                                             </span>
-                                        </a>
+                                        </button>
 
                                         {
                                             !readOnly && (
@@ -340,6 +506,199 @@ export default function CorrespondentieBlok({
                         }
 
                     </ul>
+                )
+            }
+
+
+            {
+                viewer && (
+
+                    <div
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4"
+                        role="presentation"
+                        onClick={()=>setViewer(null)}
+                    >
+                        <div
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="mail-viewer-title"
+                            className="
+                                w-full max-w-3xl max-h-[90vh]
+                                flex flex-col
+                                rounded-2xl bg-white shadow-xl
+                                border border-gray-100
+                            "
+                            onClick={(e)=>e.stopPropagation()}
+                        >
+
+                            <div className="flex items-start justify-between gap-3 border-b px-5 py-4">
+                                <div className="min-w-0">
+                                    <h2
+                                        id="mail-viewer-title"
+                                        className="text-base font-semibold text-gray-900 truncate"
+                                    >
+                                        {viewer.mail?.subject || viewer.naam}
+                                    </h2>
+                                    <p className="text-xs text-gray-500 truncate">
+                                        {viewer.naam}
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={()=>setViewer(null)}
+                                    className="
+                                        text-gray-400 hover:text-gray-700
+                                        text-lg leading-none px-1
+                                    "
+                                    title="Sluiten"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            <div className="overflow-y-auto px-5 py-4 space-y-4 min-h-0">
+
+                                {
+                                    viewer.laden
+                                    ?
+                                    (
+                                        <p className="text-sm text-gray-500">
+                                            E-mail laden...
+                                        </p>
+                                    )
+                                    :
+                                    viewer.fout
+                                    ?
+                                    (
+                                        <div className="space-y-3">
+                                            <p className="text-sm text-red-700">
+                                                {viewer.fout}
+                                            </p>
+                                            {
+                                                viewer.downloadbaar && (
+                                                    <a
+                                                        href={bestandUrl(workorderId, viewer.item.id)}
+                                                        className="text-sm text-sky-700 hover:underline"
+                                                    >
+                                                        Bestand downloaden
+                                                    </a>
+                                                )
+                                            }
+                                        </div>
+                                    )
+                                    :
+                                    viewer.mail
+                                    ?
+                                    (
+                                        <>
+                                            <dl className="space-y-1.5">
+                                                <MailRegel label="Van" waarde={viewer.mail.from} />
+                                                <MailRegel label="Aan" waarde={viewer.mail.to} />
+                                                <MailRegel label="Cc" waarde={viewer.mail.cc} />
+                                                <MailRegel
+                                                    label="Datum"
+                                                    waarde={
+                                                        viewer.mail.date
+                                                        ? datumNL(viewer.mail.date)
+                                                        : null
+                                                    }
+                                                />
+                                                <MailRegel label="Onderwerp" waarde={viewer.mail.subject} />
+                                            </dl>
+
+                                            {
+                                                viewer.mail.attachments.length > 0 && (
+                                                    <div className="space-y-1">
+                                                        <p className="text-xs font-medium text-gray-500">
+                                                            Bijlagen
+                                                        </p>
+                                                        <ul className="space-y-1">
+                                                            {
+                                                                viewer.mail.attachments.map(bijlage=>(
+                                                                    <li key={bijlage.index}>
+                                                                        <a
+                                                                            href={`${bestandUrl(workorderId, viewer.item.id)}?nested=${bijlage.index}`}
+                                                                            className="text-sm text-sky-700 hover:underline"
+                                                                        >
+                                                                            📎 {bijlage.name}
+                                                                        </a>
+                                                                    </li>
+                                                                ))
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                )
+                                            }
+
+                                            <div className="rounded-lg border border-gray-200 overflow-hidden bg-white">
+                                                {
+                                                    htmlUrl
+                                                    ?
+                                                    (
+                                                        <iframe
+                                                            title="E-mailinhoud"
+                                                            src={htmlUrl}
+                                                            sandbox=""
+                                                            className="w-full h-[50vh] bg-white"
+                                                        />
+                                                    )
+                                                    :
+                                                    viewer.mail.bodyText
+                                                    ?
+                                                    (
+                                                        <pre className="whitespace-pre-wrap break-words p-3 text-sm text-gray-800 font-sans">
+                                                            {viewer.mail.bodyText}
+                                                        </pre>
+                                                    )
+                                                    :
+                                                    (
+                                                        <p className="p-3 text-sm text-gray-500">
+                                                            Geen inhoud in dit bericht.
+                                                        </p>
+                                                    )
+                                                }
+                                            </div>
+                                        </>
+                                    )
+                                    :
+                                    null
+                                }
+
+                            </div>
+
+                            <div className="flex flex-wrap justify-end gap-2 border-t px-5 py-3">
+                                {
+                                    viewer.downloadbaar && (
+                                        <a
+                                            href={bestandUrl(workorderId, viewer.item.id)}
+                                            className="
+                                                text-sm font-medium
+                                                rounded-xl px-4 py-2
+                                                border border-gray-200 text-gray-700
+                                                hover:bg-gray-50
+                                            "
+                                        >
+                                            Origineel downloaden
+                                        </a>
+                                    )
+                                }
+                                <button
+                                    type="button"
+                                    onClick={()=>setViewer(null)}
+                                    className="
+                                        text-sm font-semibold
+                                        rounded-xl px-4 py-2
+                                        bg-gray-900 text-white
+                                        hover:bg-gray-800
+                                    "
+                                >
+                                    Sluiten
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
                 )
             }
 
