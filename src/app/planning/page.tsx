@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef, Suspense } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -322,6 +322,18 @@ function PlanningPageContent(){
     const [loading,setLoading] =
         useState(true);
 
+    const planningInFlightRef = useRef(false);
+    const loadGenerationRef = useRef(0);
+    const weekBusyRef = useRef(false);
+    const agendaOpenRef = useRef(false);
+    const schedulingRef = useRef(false);
+    const activityMenuOpenRef = useRef(false);
+    const draggingNativeRef = useRef(false);
+
+    const onWeekBusyChange = useCallback((busy: boolean) => {
+        weekBusyRef.current = busy;
+    }, []);
+
 
 
 
@@ -329,9 +341,16 @@ function PlanningPageContent(){
 
     async function loadPlanning(){
 
+        const generation = ++loadGenerationRef.current;
+
+        try {
 
         const planningResponse =
-            await fetch("/api/planning");
+            await fetch("/api/planning", { cache: "no-store" });
+
+        if (!planningResponse.ok) {
+            return;
+        }
 
 
         const planningData =
@@ -342,17 +361,31 @@ function PlanningPageContent(){
 
 
         const conflictResponse =
-            await fetch("/api/planning/conflicts");
+            await fetch("/api/planning/conflicts", { cache: "no-store" });
 
 
         const conflictData =
-            await conflictResponse.json();
+            conflictResponse.ok
+            ?
+            await conflictResponse.json()
+            :
+            [];
 
 
+        const engineersResponse =
+            await fetch("/api/engineers", { cache: "no-store" });
 
+        const engineersData =
+            engineersResponse.ok
+            ?
+            await engineersResponse.json()
+            :
+            [];
 
+        if (generation !== loadGenerationRef.current) {
+            return;
+        }
 
-        // De API geeft nu { workorders, leave } terug (met terugvalop een array)
         const workordersData =
             Array.isArray(planningData)
             ?
@@ -382,20 +415,13 @@ function PlanningPageContent(){
         );
 
 
-        const engineersResponse =
-            await fetch("/api/engineers");
-
-        const engineersData =
-            await engineersResponse.json();
-
-        const allEngineersList =
+        setAllEngineers(
             Array.isArray(engineersData)
             ?
             engineersData
             :
-            [];
-
-        setAllEngineers(allEngineersList);
+            []
+        );
 
 
         setConflicts(
@@ -407,12 +433,16 @@ function PlanningPageContent(){
         );
 
 
-        setLoading(false);
-
         if (typeof window !== "undefined") {
             window.dispatchEvent(
                 new CustomEvent("planning-capacity-refresh")
             );
+        }
+
+        } catch {
+            // stil: laatste bekende planning blijft staan
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -554,6 +584,79 @@ function PlanningPageContent(){
 
         loadPlanning();
     }, [sessionStatus, session?.user?.id, session?.user?.role]);
+
+
+    agendaOpenRef.current = agendaOpen;
+    schedulingRef.current = scheduling;
+    activityMenuOpenRef.current = activityMenu !== null;
+
+
+    useEffect(() => {
+        if (sessionStatus === "loading" || !canEdit) {
+            return;
+        }
+
+        function isBusy() {
+            return (
+                agendaOpenRef.current
+                || schedulingRef.current
+                || activityMenuOpenRef.current
+                || weekBusyRef.current
+                || draggingNativeRef.current
+            );
+        }
+
+        function refreshIfIdle() {
+            if (document.visibilityState !== "visible") {
+                return;
+            }
+            if (isBusy()) {
+                return;
+            }
+            if (planningInFlightRef.current) {
+                return;
+            }
+            planningInFlightRef.current = true;
+            void loadPlanning().finally(() => {
+                planningInFlightRef.current = false;
+            });
+        }
+
+        const timer = setInterval(refreshIfIdle, 10 * 1000);
+
+        function onFocus() {
+            refreshIfIdle();
+        }
+
+        function onVisibility() {
+            if (document.visibilityState === "visible") {
+                refreshIfIdle();
+            }
+        }
+
+        function onDragStart() {
+            draggingNativeRef.current = true;
+        }
+
+        function onDragEnd() {
+            draggingNativeRef.current = false;
+        }
+
+        window.addEventListener("focus", onFocus);
+        document.addEventListener("visibilitychange", onVisibility);
+        window.addEventListener("dragstart", onDragStart);
+        window.addEventListener("dragend", onDragEnd);
+        window.addEventListener("drop", onDragEnd);
+
+        return () => {
+            clearInterval(timer);
+            window.removeEventListener("focus", onFocus);
+            document.removeEventListener("visibilitychange", onVisibility);
+            window.removeEventListener("dragstart", onDragStart);
+            window.removeEventListener("dragend", onDragEnd);
+            window.removeEventListener("drop", onDragEnd);
+        };
+    }, [sessionStatus, canEdit]);
 
 
     useEffect(()=>{
@@ -1534,6 +1637,7 @@ function PlanningPageContent(){
                         canEdit ? openCreateAgenda : undefined
                     }
                     onActivityMenu={openActivityMenu}
+                    onBusyChange={onWeekBusyChange}
                 />
             )}
             </div>

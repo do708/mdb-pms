@@ -117,6 +117,8 @@ interface WeekViewProps {
         x: number;
         y: number;
     }) => void;
+    /** Sleep of resize bezig — parent kan polling pauzeren */
+    onBusyChange?: (busy: boolean) => void;
     /** IDs van opdrachten in een planningsconflict */
     conflictWorkorderIds?: string[];
     /** IDs van agenda-items in een planningsconflict */
@@ -160,6 +162,7 @@ export default function WeekView({
     showStatusIcons = true,
     onCreateAgenda,
     onActivityMenu,
+    onBusyChange,
     conflictWorkorderIds = [],
     conflictEventIds = [],
 }: WeekViewProps) {
@@ -203,6 +206,10 @@ export default function WeekView({
     const headerScrollRef = useRef<HTMLDivElement>(null);
     const bodyScrollRef = useRef<HTMLDivElement>(null);
     const syncingScroll = useRef(false);
+
+    useEffect(() => {
+        onBusyChange?.(isDragging || !!resizeOverride);
+    }, [isDragging, resizeOverride, onBusyChange]);
 
     function syncHorizontalScroll(source: "header" | "body") {
         if (syncingScroll.current) return;
