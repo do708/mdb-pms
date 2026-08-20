@@ -118,6 +118,17 @@ export function zetKlaarzetStatus(
         }
     }
 
+    // Geprepareerd ⇒ altijd ook binnengekomen.
+    if(field === "geprepareerd" && value){
+        const geleverdKey = klaarzetStatusDbKey(soort, "geleverd");
+        if(geleverdKey){
+            next = {
+                ...next,
+                [geleverdKey]:true,
+            };
+        }
+    }
+
     return next;
 
 }

@@ -64,8 +64,10 @@ function applyStatus(
 ): MateriaalRegel {
     const next: MateriaalRegel = { ...regel };
     if (field === "geleverd") next.geleverd = value;
-    else if (field === "geprepareerd") next.geprepareerd = value;
-    else if (field === "klaargezet") {
+    else if (field === "geprepareerd") {
+        next.geprepareerd = value;
+        if (value) next.geleverd = true;
+    } else if (field === "klaargezet") {
         next.klaargezet = value;
         if (value) next.geleverd = true;
     } else if (field === "opLocatie") next.opLocatie = value;

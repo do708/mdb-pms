@@ -320,9 +320,13 @@ function MateriaalRij({
                             && !geprepareerd
                             && !opLocatie
                         }
-                        onToggle={()=>
-                            onGeprepareerd(!geprepareerd)
-                        }
+                        onToggle={()=>{
+                            const next = !geprepareerd;
+                            onGeprepareerd(next);
+                            if(next){
+                                onGeleverd(true);
+                            }
+                        }}
                     >
                         Geprepareerd
                     </Chip>
