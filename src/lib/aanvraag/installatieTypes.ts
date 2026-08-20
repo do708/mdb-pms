@@ -255,6 +255,13 @@ export interface AanvraagSchermItem {
     internetTraject: string;
 }
 
+/** Alleen naast/b2b; overige waarden (o.a. uit JSON) worden leeg. */
+export function normaliseerMonterenKoppeling(
+    value?: string | null
+): "" | "naast" | "b2b" {
+    return value === "naast" || value === "b2b" ? value : "";
+}
+
 function uid(): string {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -410,8 +417,7 @@ export function schermVeldenCompleet(
 
     if (
         scherm.naastSchermId
-        && scherm.monterenKoppeling !== "naast"
-        && scherm.monterenKoppeling !== "b2b"
+        && !normaliseerMonterenKoppeling(scherm.monterenKoppeling)
     ) {
         return false;
     }
@@ -507,11 +513,9 @@ export function syncSchermItems(
         return {
             ...s,
             naastSchermId: naast,
-            monterenKoppeling: naast
-                ? (s.monterenKoppeling === "naast" || s.monterenKoppeling === "b2b"
-                    ? s.monterenKoppeling
-                    : "")
-                : "",
+            monterenKoppeling: normaliseerMonterenKoppeling(
+                naast ? s.monterenKoppeling : ""
+            ),
         };
     });
 
