@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { filterEngineersForDay } from "@/constants/staffKind";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
+import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
 
 
 
@@ -316,20 +317,17 @@ function NewWorkorderInner(){
         setError("");
 
 
-        if(!title){
+        const locatieFout = ontbrekendeVerplichteLocatieVelden({
+            customerId,
+            title,
+            straat,
+            huisnummer,
+            city,
+        });
 
-            setError("Vul een titel in");
+        if(locatieFout){
 
-            window.scrollTo({ top:0, behavior:"smooth" });
-
-            return;
-
-        }
-
-
-        if(!customerId){
-
-            setError("Kies een opdrachtgever");
+            setError(locatieFout);
 
             window.scrollTo({ top:0, behavior:"smooth" });
 
@@ -639,13 +637,15 @@ function NewWorkorderInner(){
 
                         <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Opdrachtgever
+                                Opdrachtgever{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <select
                                 value={customerId}
                                 onChange={(e)=>
                                     setCustomerId(e.target.value)
                                 }
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm bg-white
@@ -670,12 +670,14 @@ function NewWorkorderInner(){
 
                         <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Locatie / filiaalnaam
+                                Locatie / filiaalnaam{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={title}
                                 onChange={(e)=>setTitle(e.target.value)}
                                 placeholder="Bijv. Filiaal Almere Centrum"
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
@@ -686,11 +688,13 @@ function NewWorkorderInner(){
 
                         <label className="min-w-0 block">
                             <span className="text-xs text-gray-500">
-                                Straat
+                                Straat{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={straat}
                                 onChange={(e)=>setStraat(e.target.value)}
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
@@ -700,11 +704,13 @@ function NewWorkorderInner(){
 
                         <label className="min-w-0 block">
                             <span className="text-xs text-gray-500">
-                                Huisnr.
+                                Huisnr.{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={huisnummer}
                                 onChange={(e)=>setHuisnummer(e.target.value)}
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
@@ -728,11 +734,13 @@ function NewWorkorderInner(){
 
                         <label className="min-w-0 block">
                             <span className="text-xs text-gray-500">
-                                Plaats
+                                Plaats{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={city}
                                 onChange={(e)=>setCity(e.target.value)}
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900

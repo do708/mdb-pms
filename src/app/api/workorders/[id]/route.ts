@@ -14,6 +14,7 @@ import { mergeOpleverData, applyPlannedTravelToFormData } from "@/types/oplever"
 
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
+import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
 
 
 
@@ -442,6 +443,48 @@ export async function PUT(
             await request.json();
 
 
+        if(session.user.role !== "engineer"){
+            const locatieWordtBewerkt =
+                body.title !== undefined
+                || body.customerId !== undefined
+                || body.straat !== undefined
+                || body.huisnummer !== undefined
+                || body.city !== undefined;
+
+            if(locatieWordtBewerkt){
+                const locatieFout = ontbrekendeVerplichteLocatieVelden({
+                    customerId:
+                        body.customerId !== undefined
+                        ? body.customerId
+                        : existingWorkorder.customerId,
+                    title:
+                        body.title !== undefined
+                        ? body.title
+                        : existingWorkorder.title,
+                    straat:
+                        body.straat !== undefined
+                        ? body.straat
+                        : existingWorkorder.straat,
+                    huisnummer:
+                        body.huisnummer !== undefined
+                        ? body.huisnummer
+                        : existingWorkorder.huisnummer,
+                    city:
+                        body.city !== undefined
+                        ? body.city
+                        : existingWorkorder.city,
+                });
+
+                if(locatieFout){
+                    return NextResponse.json(
+                        { error: locatieFout },
+                        { status: 400 }
+                    );
+                }
+            }
+        }
+
+
 
         const planningFieldsChanged =
             session.user.role !== "engineer"
@@ -476,6 +519,19 @@ export async function PUT(
 
 
                 data:{
+
+
+                    title:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.title
+                        :
+                        body.title !== undefined
+                        ?
+                        body.title
+                        :
+                        existingWorkorder.title,
 
 
                     description:

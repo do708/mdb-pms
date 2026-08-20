@@ -12,6 +12,7 @@ import AanvraagSpecificatiesOverzicht, {
 } from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
 import { bouwKlantWerkzaamheden } from "@/lib/aanvraag/klantWerkzaamheden";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
+import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
 
 
 
@@ -430,6 +431,24 @@ export default function EditWorkorderPage(){
 
         setError("");
 
+        const locatieFout = ontbrekendeVerplichteLocatieVelden({
+            customerId,
+            title,
+            straat,
+            huisnummer,
+            city,
+        });
+
+        if(locatieFout){
+
+            setError(locatieFout);
+
+            window.scrollTo({ top:0, behavior:"smooth" });
+
+            return false;
+
+        }
+
         setSaving(true);
 
 
@@ -829,11 +848,13 @@ export default function EditWorkorderPage(){
 
                         <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Opdrachtgever
+                                Opdrachtgever{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <select
                                 value={customerId}
                                 onChange={(e)=>setCustomerId(e.target.value)}
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm bg-white
@@ -854,12 +875,14 @@ export default function EditWorkorderPage(){
 
                         <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Locatie / filiaalnaam
+                                Locatie / filiaalnaam{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={title}
                                 onChange={(e)=>setTitle(e.target.value)}
                                 placeholder="Bijv. Filiaal Almere Centrum"
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
@@ -870,11 +893,13 @@ export default function EditWorkorderPage(){
 
                         <label className="min-w-0 block">
                             <span className="text-xs text-gray-500">
-                                Straat
+                                Straat{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={straat}
                                 onChange={(e)=>setStraat(e.target.value)}
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
@@ -884,11 +909,13 @@ export default function EditWorkorderPage(){
 
                         <label className="min-w-0 block">
                             <span className="text-xs text-gray-500">
-                                Huisnr.
+                                Huisnr.{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={huisnummer}
                                 onChange={(e)=>setHuisnummer(e.target.value)}
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
@@ -912,11 +939,13 @@ export default function EditWorkorderPage(){
 
                         <label className="min-w-0 block">
                             <span className="text-xs text-gray-500">
-                                Plaats
+                                Plaats{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={city}
                                 onChange={(e)=>setCity(e.target.value)}
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900

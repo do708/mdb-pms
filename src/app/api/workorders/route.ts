@@ -13,6 +13,7 @@ import { ENGINEER_OPDRACHT_STATUS_KEYS } from "@/constants/workorderStatus";
 
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
+import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
 
 
 
@@ -280,7 +281,22 @@ export async function POST(
 
 
 
-        // Klant is optioneel maar aanbevolen; controleren als hij is meegegeven
+        // Opdrachtgever, filiaalnaam, straat, huisnr. en plaats zijn verplicht
+        const locatieFout = ontbrekendeVerplichteLocatieVelden({
+            customerId: body.customerId,
+            title: body.title,
+            straat: body.straat,
+            huisnummer: body.huisnummer,
+            city: body.city,
+        });
+
+        if(locatieFout){
+            return NextResponse.json(
+                { error: locatieFout },
+                { status: 400 }
+            );
+        }
+
         if(body.customerId){
 
             const customer =
