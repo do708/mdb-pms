@@ -27,9 +27,6 @@ export function ontbrekendeVerplichteLocatieVelden(input: {
     if (!(input.straat || "").trim()) {
         return "Vul de straat in.";
     }
-    if (!(input.huisnummer || "").trim()) {
-        return "Vul het huisnummer in.";
-    }
     if (!(input.city || "").trim()) {
         return "Vul de plaats in.";
     }

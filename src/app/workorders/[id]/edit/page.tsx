@@ -910,13 +910,11 @@ export default function EditWorkorderPage(){
 
                         <label className="min-w-0 block">
                             <span className="text-xs text-gray-500">
-                                Huisnr.{" "}
-                                <span className="text-red-500">*</span>
+                                Huisnr.
                             </span>
                             <input
                                 value={huisnummer}
                                 onChange={(e)=>setHuisnummer(e.target.value)}
-                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
