@@ -749,12 +749,14 @@ function NewWorkorderInner(){
 
                         <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Contactpersoon
+                                Contactpersoon op locatie{" "}
+                                <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={contactPersoon}
                                 onChange={(e)=>setContactPersoon(e.target.value)}
-                                placeholder="Naam contactpersoon"
+                                placeholder="Naam contactpersoon op locatie"
+                                required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900

@@ -558,7 +558,7 @@ export default function AanvraagSpecificatiesOverzicht({
                         />
                         <Field label="Plaats" value={locatie?.plaats} />
                         <Field
-                            label="Contactpersoon"
+                            label="Contactpersoon op locatie"
                             value={contactPersoon}
                         />
                         <Field

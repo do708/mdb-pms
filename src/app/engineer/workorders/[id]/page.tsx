@@ -1489,7 +1489,7 @@ async function completeWorkorder(){
                         ? (
                             <div className="min-w-0">
                                 <p className="text-xs text-gray-500">
-                                    Contactpersoon
+                                    Contactpersoon op locatie
                                 </p>
                                 <p className="text-sm text-gray-900 break-words">
                                     {workorder.contactPersoon}

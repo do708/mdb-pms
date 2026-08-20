@@ -483,8 +483,8 @@ function AanvraagFormulier(){
             setFout("Vul de plaats in.");
             return;
         }
-        if(!contactPersoon.trim()){
-            setFout("Vul de contactpersoon in.");
+                        if(!contactPersoon.trim()){
+            setFout("Vul de contactpersoon op locatie in.");
             return;
         }
         if(!contactEmail.trim() && !contactPhone.trim()){
@@ -841,13 +841,13 @@ function AanvraagFormulier(){
 
                         <label className="block">
                             <span className="text-sm text-gray-600">
-                                Contactpersoon{" "}
+                                Contactpersoon op locatie{" "}
                                 <span className="text-red-500">*</span>
                             </span>
                             <input
                                 value={contactPersoon}
                                 onChange={(e)=>setContactPersoon(e.target.value)}
-                                placeholder="Naam contactpersoon"
+                                placeholder="Naam contactpersoon op locatie"
                                 className="w-full border rounded-xl p-3 mt-1"
                                 required
                             />

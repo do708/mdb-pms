@@ -449,7 +449,8 @@ export async function PUT(
                 || body.customerId !== undefined
                 || body.straat !== undefined
                 || body.huisnummer !== undefined
-                || body.city !== undefined;
+                || body.city !== undefined
+                || body.contactPersoon !== undefined;
 
             if(locatieWordtBewerkt){
                 const locatieFout = ontbrekendeVerplichteLocatieVelden({
@@ -473,6 +474,10 @@ export async function PUT(
                         body.city !== undefined
                         ? body.city
                         : existingWorkorder.city,
+                    contactPersoon:
+                        body.contactPersoon !== undefined
+                        ? body.contactPersoon
+                        : existingWorkorder.contactPersoon,
                 });
 
                 if(locatieFout){

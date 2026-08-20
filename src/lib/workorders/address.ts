@@ -17,6 +17,7 @@ export function ontbrekendeVerplichteLocatieVelden(input: {
     straat?: string | null;
     huisnummer?: string | null;
     city?: string | null;
+    contactPersoon?: string | null;
 }): string | null {
     if (!(input.customerId || "").trim()) {
         return "Kies een opdrachtgever";
@@ -29,6 +30,9 @@ export function ontbrekendeVerplichteLocatieVelden(input: {
     }
     if (!(input.city || "").trim()) {
         return "Vul de plaats in.";
+    }
+    if (!(input.contactPersoon || "").trim()) {
+        return "Vul de contactpersoon op locatie in.";
     }
     return null;
 }

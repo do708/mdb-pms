@@ -288,6 +288,7 @@ export async function POST(
             straat: body.straat,
             huisnummer: body.huisnummer,
             city: body.city,
+            contactPersoon: body.contactPersoon,
         });
 
         if(locatieFout){
