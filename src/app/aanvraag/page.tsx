@@ -196,6 +196,9 @@ function AanvraagFormulier(){
     const [sleepActief,setSleepActief] =
         useState(false);
 
+    const [linkVeld,setLinkVeld] =
+        useState("");
+
 
     const [versturenBezig,setVersturenBezig] =
         useState(false);
@@ -359,6 +362,84 @@ function AanvraagFormulier(){
                     setFout("Upload mislukt.");
                 }
 
+            }
+
+            setUploadBezig(false);
+
+        },[token]);
+
+
+    function urlsUitDrop(data: DataTransfer): string[] {
+        const uitTekst = [
+            data.getData("text/uri-list"),
+            data.getData("text/plain"),
+        ]
+            .join("\n")
+            .split(/[\s\n]+/)
+            .map((u)=>u.trim())
+            .filter((u)=>/^https?:\/\//i.test(u));
+
+        const html = data.getData("text/html");
+        if(html){
+            const hrefs = [...html.matchAll(/https?:\/\/[^"'>\s]+/gi)]
+                .map((m)=>m[0]);
+            uitTekst.push(...hrefs);
+        }
+
+        return [...new Set(uitTekst)];
+    }
+
+
+    function urlsUitTekst(waarde: string): string[] {
+        return [...new Set(
+            (waarde.match(/https?:\/\/[^\s<>"'()]+/gi) ?? [])
+                .map((url)=>url.replace(/[.,;:]+$/g,""))
+        )];
+    }
+
+
+    const voegLinksToe =
+        useCallback(async (urls: string[])=>{
+
+            const uniek = [...new Set(
+                urls.map((u)=>u.trim()).filter((u)=>/^https?:\/\//i.test(u))
+            )];
+
+            if(uniek.length === 0){
+                setFout("Plak een geldige afbeeldingslink (http of https).");
+                return;
+            }
+
+            setFout("");
+            setUploadBezig(true);
+
+            try {
+
+                const res = await fetch("/api/aanvraag/upload",{
+                    method:"POST",
+                    headers:{ "Content-Type":"application/json" },
+                    body:JSON.stringify({ token, urls: uniek })
+                });
+
+                const data = await res.json();
+
+                if(res.ok && data.success && Array.isArray(data.bijlagen)){
+                    setBijlagen((b)=>{
+                        const bekend = new Set(b.map((x)=>x.url));
+                        const extra = data.bijlagen.filter(
+                            (x:{ url?:string })=>
+                                typeof x?.url === "string"
+                                && !bekend.has(x.url)
+                        );
+                        return [...b, ...extra];
+                    });
+                    setLinkVeld("");
+                } else {
+                    setFout(data.error || "Afbeeldingslink toevoegen mislukt.");
+                }
+
+            } catch {
+                setFout("Afbeeldingslink toevoegen mislukt.");
             }
 
             setUploadBezig(false);
@@ -1462,13 +1543,29 @@ function AanvraagFormulier(){
                         </h2>
 
                         <div
+                            tabIndex={0}
                             onDragOver={(e)=>{ e.preventDefault(); setSleepActief(true); }}
                             onDragLeave={()=>setSleepActief(false)}
+                            onPaste={(e)=>{
+                                const tekst =
+                                    e.clipboardData.getData("text/plain")
+                                    || e.clipboardData.getData("text/uri-list");
+                                const urls = urlsUitTekst(tekst);
+                                if(urls.length){
+                                    e.preventDefault();
+                                    void voegLinksToe(urls);
+                                }
+                            }}
                             onDrop={(e)=>{
                                 e.preventDefault();
                                 setSleepActief(false);
                                 if(e.dataTransfer.files?.length){
                                     verwerkBestanden(e.dataTransfer.files);
+                                    return;
+                                }
+                                const urls = urlsUitDrop(e.dataTransfer);
+                                if(urls.length){
+                                    void voegLinksToe(urls);
                                 }
                             }}
                             className={
@@ -1478,7 +1575,7 @@ function AanvraagFormulier(){
                             }
                         >
                             <p className="text-gray-500 text-sm mb-2">
-                                Sleep foto&apos;s of PDF&apos;s hierheen, of
+                                Sleep foto&apos;s, PDF&apos;s of een afbeeldingslink hierheen, of
                             </p>
                             <label className="inline-block cursor-pointer text-sky-600 font-medium">
                                 <span>kies bestanden</span>
@@ -1494,11 +1591,46 @@ function AanvraagFormulier(){
                                     }}
                                 />
                             </label>
+                            <p className="text-xs text-gray-400 mt-2">
+                                Een afbeeldingslink plakken (Ctrl+V) mag ook.
+                            </p>
                             {
                                 uploadBezig && (
                                     <p className="text-xs text-gray-400 mt-2">Bezig met uploaden...</p>
                                 )
                             }
+                        </div>
+
+                        <div className="flex gap-2">
+                            <input
+                                value={linkVeld}
+                                onChange={(e)=>setLinkVeld(e.target.value)}
+                                onKeyDown={(e)=>{
+                                    if(e.key === "Enter"){
+                                        e.preventDefault();
+                                        const urls = urlsUitTekst(linkVeld);
+                                        void voegLinksToe(urls.length ? urls : [linkVeld]);
+                                    }
+                                }}
+                                placeholder="Plak hier een afbeeldingslink"
+                                className="flex-1 min-w-0 border rounded-xl p-3 text-sm"
+                                disabled={uploadBezig}
+                            />
+                            <button
+                                type="button"
+                                onClick={()=>void voegLinksToe(urlsUitTekst(linkVeld).length
+                                    ? urlsUitTekst(linkVeld)
+                                    : [linkVeld]
+                                )}
+                                disabled={uploadBezig || !linkVeld.trim()}
+                                className="
+                                    shrink-0 px-4 rounded-xl
+                                    bg-sky-600 text-white text-sm font-medium
+                                    disabled:opacity-50 disabled:cursor-not-allowed
+                                "
+                            >
+                                Link toevoegen
+                            </button>
                         </div>
 
                         {
