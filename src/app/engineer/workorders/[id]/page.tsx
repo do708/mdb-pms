@@ -1761,9 +1761,10 @@ async function completeWorkorder(){
             ">
 
                 <h2 className="font-semibold text-sm text-gray-800 border-b pb-1">
-                    Werkzaamheden
+                    {isOffice ? "Werkzaamheden" : "Werkinstructie monteur"}
                 </h2>
 
+                {isOffice && (
                 <div className="
                     grid
                     grid-cols-1
@@ -1798,7 +1799,6 @@ async function completeWorkorder(){
                         />
                     </div>
 
-                    {isOffice && (
                     <div className="
                         rounded-xl border border-gray-200
                         bg-white p-2.5 space-y-1.5
@@ -1992,22 +1992,27 @@ async function completeWorkorder(){
                         </div>
 
                     </div>
-                    )}
 
                 </div>
+                )}
 
                 {
-                    workorder.werkInstructie?.trim()
+                    (
+                        !isOffice
+                        || Boolean(workorder.werkInstructie?.trim())
+                    )
                     ? (
                         <div className="
                             rounded-xl border border-indigo-200
                             bg-indigo-50/70 p-2.5 space-y-2
                         ">
-                            <p className="text-xs font-semibold text-indigo-800">
-                                Voor de monteur
-                            </p>
+                            {isOffice ? (
+                                <p className="text-xs font-semibold text-indigo-800">
+                                    Voor de monteur
+                                </p>
+                            ) : null}
                             <WerkInstructieWeergave
-                                tekst={workorder.werkInstructie}
+                                tekst={workorder.werkInstructie ?? ""}
                                 onNaarFotos={
                                     workorder.sentAt
                                     ? undefined
