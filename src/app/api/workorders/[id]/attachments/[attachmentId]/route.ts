@@ -32,9 +32,15 @@ export async function GET(
             return guard.response;
         }
 
-        const attachment = await prisma.workorderAttachment.findUnique({
-            where: { id: attachmentId },
-        });
+        const [attachment, workorder] = await Promise.all([
+            prisma.workorderAttachment.findUnique({
+                where: { id: attachmentId },
+            }),
+            prisma.workorder.findUnique({
+                where: { id },
+                select: { archiveNasPath: true },
+            }),
+        ]);
 
         if (!attachment || attachment.workorderId !== id) {
             return NextResponse.json(
@@ -43,7 +49,11 @@ export async function GET(
             );
         }
 
-        const buffer = await downloadAttachmentBytes(attachment);
+        const buffer = await downloadAttachmentBytes({
+            ...attachment,
+            workorderId: id,
+            archiveNasPath: workorder?.archiveNasPath ?? null,
+        });
         const displayName =
             attachment.originalName
             || attachment.filename

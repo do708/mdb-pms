@@ -7,81 +7,108 @@ import {
     ensureLocationArchiveFolder,
     ensureWorkorderArchiveFolder,
 } from "@/lib/archive/ensureArchiveFolders";
-import { isNasArchiveEnabled } from "@/lib/nas/synologyConfig";
+import { isNasArchiveEnabled, joinNasPath } from "@/lib/nas/synologyConfig";
 import { synologyUploadFile } from "@/lib/nas/synologyClient";
 import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
+import {
+    AttachmentNotFoundError,
+    candidateStoragePaths,
+    downloadAttachmentBytes,
+} from "@/lib/attachments/storage";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-function supabasePathFromUrl(url: string): string | null {
-    const marker = "/workorder-files/";
+async function deleteSupabasePaths(paths: string[]) {
+    const unique = [...new Set(paths.filter(Boolean))];
 
-    if (!url.includes(marker)) {
-        return null;
-    }
-
-    return url.split(marker)[1]?.split("?")[0] ?? null;
-}
-
-async function deleteSupabaseObject(url: string) {
-    const path = supabasePathFromUrl(url);
-
-    if (!path) {
+    if (unique.length === 0) {
         return;
     }
 
-    await supabase.storage.from("workorder-files").remove([path]);
+    await supabase.storage.from("workorder-files").remove(unique);
 }
 
-async function fetchBuffer(url: string): Promise<Buffer | null> {
-    try {
-        const response = await fetch(url);
+function uniqueNasFilename(used: Set<string>, preferred: string): string {
+    const cleaned =
+        preferred.replace(/[\\/:*?"<>|]+/g, "_").trim() || "bestand";
+    const lastDot = cleaned.lastIndexOf(".");
+    const base = lastDot > 0 ? cleaned.slice(0, lastDot) : cleaned;
+    const ext = lastDot > 0 ? cleaned.slice(lastDot) : "";
 
-        if (!response.ok) {
-            return null;
-        }
+    let name = cleaned;
+    let n = 2;
 
-        return Buffer.from(await response.arrayBuffer());
-    } catch {
-        return null;
+    while (used.has(name.toLowerCase())) {
+        name = `${base}-${n}${ext}`;
+        n += 1;
     }
+
+    used.add(name.toLowerCase());
+    return name;
 }
 
 async function resolveIntakePdf(
     workorder: {
-        attachments: Array<{ url: string; filename: string | null }>;
+        id: string;
+        archiveNasPath: string | null;
+        attachments: Array<{
+            url: string;
+            filename: string | null;
+            originalName: string | null;
+            contentType: string | null;
+        }>;
         documents: Array<{ url: string; name: string }>;
     }
 ): Promise<{ buffer: Buffer; filename: string } | null> {
     for (const attachment of workorder.attachments) {
-        const buffer = await fetchBuffer(attachment.url);
+        const name =
+            attachment.originalName || attachment.filename || "intake";
+        const isPdf =
+            name.toLowerCase().endsWith(".pdf")
+            || (attachment.contentType || "").includes("pdf")
+            || attachment.url.toLowerCase().includes(".pdf");
 
-        if (!buffer) {
+        if (!isPdf) {
             continue;
         }
 
-        const name = attachment.filename || "intake";
-        const isPdf =
-            name.toLowerCase().endsWith(".pdf")
-            || attachment.url.toLowerCase().includes(".pdf");
+        try {
+            const buffer = await downloadAttachmentBytes({
+                ...attachment,
+                workorderId: workorder.id,
+                archiveNasPath: workorder.archiveNasPath,
+            });
 
-        if (isPdf) {
             return { buffer, filename: "intake.pdf" };
+        } catch (error) {
+            if (!(error instanceof AttachmentNotFoundError)) {
+                console.error("ARCHIVE INTAKE ATTACHMENT ERROR", error);
+            }
         }
     }
 
     for (const doc of workorder.documents) {
-        if (!doc.url.toLowerCase().includes(".pdf")) {
+        if (!doc.url.toLowerCase().includes(".pdf") && !doc.name.toLowerCase().endsWith(".pdf")) {
             continue;
         }
 
-        const buffer = await fetchBuffer(doc.url);
+        try {
+            const buffer = await downloadAttachmentBytes({
+                filename: null,
+                url: doc.url,
+                originalName: doc.name,
+                workorderId: workorder.id,
+                archiveNasPath: workorder.archiveNasPath,
+            });
 
-        if (buffer) {
             return { buffer, filename: "intake.pdf" };
+        } catch (error) {
+            if (!(error instanceof AttachmentNotFoundError)) {
+                console.error("ARCHIVE INTAKE DOCUMENT ERROR", error);
+            }
         }
     }
 
@@ -153,6 +180,7 @@ export async function archiveWorkorderToNas(workorderId: string) {
         );
 
         const dest = workorderFolder.nasPath;
+        const copiedStoragePaths: string[] = [];
 
         if (workorder.pdfData) {
             await synologyUploadFile(
@@ -172,6 +200,15 @@ export async function archiveWorkorderToNas(workorderId: string) {
                 zipBuffer,
                 "application/zip"
             );
+
+            for (const photo of workorder.photos) {
+                copiedStoragePaths.push(
+                    ...candidateStoragePaths({
+                        filename: null,
+                        url: photo.url,
+                    })
+                );
+            }
         }
 
         const intake = await resolveIntakePdf(workorder);
@@ -185,15 +222,89 @@ export async function archiveWorkorderToNas(workorderId: string) {
             );
         }
 
-        const urlsToDelete: string[] = [
-            ...workorder.photos.map((p) => p.url),
-            ...workorder.attachments.map((a) => a.url),
-            ...workorder.documents.map((d) => d.url),
-        ];
+        const correspondentieFolder = joinNasPath(dest, "correspondentie");
+        const usedNames = new Set<string>();
 
-        for (const url of urlsToDelete) {
-            await deleteSupabaseObject(url);
+        for (const attachment of workorder.attachments) {
+            try {
+                const buffer = await downloadAttachmentBytes({
+                    ...attachment,
+                    workorderId,
+                    archiveNasPath: dest,
+                });
+                const preferred =
+                    attachment.originalName
+                    || attachment.filename?.split("/").filter(Boolean).pop()
+                    || "bijlage";
+                const filename = uniqueNasFilename(usedNames, preferred);
+
+                await synologyUploadFile(
+                    correspondentieFolder,
+                    filename,
+                    buffer,
+                    attachment.contentType || "application/octet-stream"
+                );
+
+                copiedStoragePaths.push(
+                    ...candidateStoragePaths({
+                        ...attachment,
+                        workorderId,
+                    })
+                );
+            } catch (error) {
+                if (error instanceof AttachmentNotFoundError) {
+                    console.error(
+                        "ARCHIVE ATTACHMENT MISSING",
+                        attachment.id,
+                        attachment.originalName || attachment.filename
+                    );
+                    continue;
+                }
+
+                throw error;
+            }
         }
+
+        for (const doc of workorder.documents) {
+            try {
+                const buffer = await downloadAttachmentBytes({
+                    filename: null,
+                    url: doc.url,
+                    originalName: doc.name,
+                    workorderId,
+                    archiveNasPath: dest,
+                });
+                const filename = uniqueNasFilename(
+                    usedNames,
+                    doc.name || "document"
+                );
+
+                await synologyUploadFile(
+                    correspondentieFolder,
+                    filename,
+                    buffer,
+                    "application/octet-stream"
+                );
+
+                copiedStoragePaths.push(
+                    ...candidateStoragePaths({
+                        filename: null,
+                        url: doc.url,
+                        originalName: doc.name,
+                        workorderId,
+                    })
+                );
+            } catch (error) {
+                if (error instanceof AttachmentNotFoundError) {
+                    console.error("ARCHIVE DOCUMENT MISSING", doc.name);
+                    continue;
+                }
+
+                throw error;
+            }
+        }
+
+        await deleteSupabasePaths(copiedStoragePaths);
 
         const label = formatArchiveLocationLabel(
             locatieRaw,

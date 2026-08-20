@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 
 import { prisma } from "@/lib/prisma";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { removeAttachmentObject } from "@/lib/attachments/storage";
 
 
 
@@ -219,13 +220,11 @@ export async function DELETE(
         }
 
 
-        // Uit de opslag verwijderen (best effort).
-        if(attachment.filename){
-            await supabase.storage
-                .from("workorder-files")
-                .remove([attachment.filename])
-                .catch(()=>{});
-        }
+        // Uit de opslag verwijderen (best effort, meerdere padvarianten).
+        await removeAttachmentObject({
+            ...attachment,
+            workorderId: id,
+        }).catch(()=>{});
 
         await prisma.workorderAttachment.delete({
             where:{ id:attachmentId }

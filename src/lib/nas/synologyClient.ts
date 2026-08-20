@@ -308,6 +308,38 @@ export async function synologyMove(
     return joinNasPath(destFolder, filename);
 }
 
+/** Bestanden in een NAS-map (leeg als de map ontbreekt). */
+export async function synologyListFiles(
+    folderPath: string
+): Promise<Array<{ name: string; path: string; isDir: boolean }>> {
+    try {
+        const json = await withSid({
+            api: "SYNO.FileStation.List",
+            version: "2",
+            method: "list",
+            folder_path: folderPath,
+        });
+
+        const files = Array.isArray(json.data?.files)
+            ? (json.data.files as Array<{
+                name?: string;
+                path?: string;
+                isdir?: boolean;
+            }>)
+            : [];
+
+        return files
+            .filter((file) => file.name && file.path)
+            .map((file) => ({
+                name: file.name as string,
+                path: file.path as string,
+                isDir: Boolean(file.isdir),
+            }));
+    } catch {
+        return [];
+    }
+}
+
 /** Download bestand van NAS. */
 export async function synologyDownloadFile(nasPath: string): Promise<Buffer> {
     const sid = await login();
