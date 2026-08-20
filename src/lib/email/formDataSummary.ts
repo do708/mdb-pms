@@ -1,8 +1,13 @@
 import type { FormDefinition, FormField } from "@/constants/formDefinitions";
+import { nlFormDate } from "@/lib/forms/formDisplay";
 
 function displayValue(field: FormField, raw: unknown): string | null {
     if (raw === undefined || raw === null || raw === "") {
         return null;
+    }
+
+    if (field.type === "date") {
+        return nlFormDate(raw) || null;
     }
 
     const val = String(raw);

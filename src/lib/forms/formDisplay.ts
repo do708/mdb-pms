@@ -3,13 +3,37 @@ export function nlFormDate(value: unknown): string {
         return "";
     }
 
+    const isoDag = /^(\d{4})-(\d{2})-(\d{2})/.exec(value.trim());
+
+    if (isoDag) {
+        const date = new Date(
+            Number(isoDag[1]),
+            Number(isoDag[2]) - 1,
+            Number(isoDag[3])
+        );
+
+        if (isNaN(date.getTime())) {
+            return "";
+        }
+
+        return date.toLocaleDateString("nl-NL", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+    }
+
     const d = new Date(value);
 
     if (isNaN(d.getTime())) {
         return "";
     }
 
-    return d.toLocaleDateString("nl-NL");
+    return d.toLocaleDateString("nl-NL", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
 }
 
 export function verlofMonteurName(

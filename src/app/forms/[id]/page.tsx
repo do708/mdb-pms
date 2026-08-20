@@ -13,6 +13,7 @@ import {
 
 import {
     buildVerlofTitle,
+    nlFormDate,
     verlofSubtitle,
 } from "@/lib/forms/formDisplay";
 
@@ -296,6 +297,29 @@ export default function FormDetailPage(){
                     {value ? `€ ${value}` : "—"}
 
                 </strong>
+
+            );
+
+        }
+
+
+        if(field.type === "date"){
+
+            const getoond = nlFormDate(value);
+
+            return (
+
+                <span className={
+                    getoond
+                    ?
+                    "font-medium"
+                    :
+                    "text-gray-400"
+                }>
+
+                    {getoond || "—"}
+
+                </span>
 
             );
 
