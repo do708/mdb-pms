@@ -11,7 +11,7 @@ import {
     TYPE_AANVRAAG_LABELS,
     VELD_LABELS,
 } from "@/lib/aanvraag/overzichtLabels";
-import { aansturingWeergave } from "@/lib/aanvraag/installatieTypes";
+import { aansturingWeergave, installatieTypeWeergave } from "@/lib/aanvraag/installatieTypes";
 
 export interface AanvraagOverzichtSnapshot {
     specificaties?: unknown;
@@ -314,7 +314,9 @@ function SchermenBlok({
                                             Installatietype
                                         </p>
                                         <p className="text-sm font-semibold text-[#0066FF]">
-                                            Type {str(s.berekendType)}
+                                            {installatieTypeWeergave(
+                                                str(s.berekendType)
+                                            )}
                                         </p>
                                     </div>
                                 ) : null}

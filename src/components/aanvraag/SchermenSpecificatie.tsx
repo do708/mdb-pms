@@ -10,6 +10,7 @@ import {
     SCHERM_FORMATEN,
     berekendInstallatieType,
     bevestigingDetails,
+    installatieTypeWeergave,
     isHoofdType,
     isPlayerAansturing,
     legeVoorzieningen,
@@ -134,7 +135,7 @@ export default function SchermenSpecificatie({
                                     </p>
                                     {type ? (
                                         <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#0066FF]/10 text-[#0066FF] border border-[#0066FF]/30">
-                                            Type {type}
+                                            {installatieTypeWeergave(type)}
                                         </span>
                                     ) : (
                                         <span className="text-xs text-gray-400">
@@ -856,9 +857,7 @@ export default function SchermenSpecificatie({
                                             : ""}
                                         :{" "}
                                         <strong>
-                                            {t
-                                                ? `Type ${t}`
-                                                : "— vul formaat + bevestiging"}
+                                            {installatieTypeWeergave(t)}
                                         </strong>
                                         {hoofd
                                             ? " · hoofdtype"

@@ -161,6 +161,10 @@ export function typeCodeVoorBevestigingEnBand(
     bevestiging: string,
     band: FormaatBand | ""
 ): string {
+    if (normaliseerBevestiging(bevestiging) === "Special") {
+        return "special";
+    }
+
     if (!bevestiging || !band) {
         return "";
     }
@@ -594,6 +598,9 @@ export function basisTypeCode(
     }
 
     const item = itemOrFormaat;
+    if (normaliseerBevestiging(item.beugel) === "Special") {
+        return "special";
+    }
     const inch = formaatInch(item);
     if (!inch) {
         return "";
@@ -725,6 +732,17 @@ export function berekendInstallatieType(
     return `${basis}v`;
 }
 
+/** Weergave in UI: Type 03 / [special] / placeholder. */
+export function installatieTypeWeergave(code?: string | null): string {
+    if (!code) {
+        return "— vul formaat + bevestiging";
+    }
+    if (code === "special" || code === "specialv") {
+        return "[special]";
+    }
+    return `Type ${code}`;
+}
+
 export function isHoofdType(
     item: AanvraagSchermItem,
     alle: AanvraagSchermItem[]
@@ -765,7 +783,11 @@ export function samenvattingSchermen(
                 koppelIndex >= 0
                     ? `${s.monterenKoppeling === "b2b" ? "b2b" : "naast"} scherm ${koppelIndex + 1}`
                     : "",
-                type ? `type ${type}` : "",
+                type === "special" || type === "specialv"
+                    ? "[special]"
+                    : type
+                        ? `type ${type}`
+                        : "",
             ].filter(Boolean);
 
             return parts.join(" · ");
