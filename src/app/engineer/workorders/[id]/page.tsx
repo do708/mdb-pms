@@ -1610,44 +1610,6 @@ async function completeWorkorder(){
 
 
 
-            {workorder.werkInstructie && (
-
-                <section className="
-                    bg-indigo-50
-                    border
-                    border-indigo-200
-                    rounded-2xl
-                    p-4
-                    mb-4
-                    space-y-2
-                ">
-
-                    <h2 className="font-bold text-sm text-gray-900">
-                        Werkinstructie
-                    </h2>
-
-                    <WerkInstructieWeergave
-                        tekst={workorder.werkInstructie}
-                        onNaarFotos={
-                            workorder.sentAt
-                            ? undefined
-                            : (url)=>
-                                window.dispatchEvent(
-                                    new CustomEvent("mdb-import-photo-url", {
-                                        detail:{
-                                            workorderId:id,
-                                            url
-                                        }
-                                    })
-                                )
-                        }
-                    />
-
-                </section>
-
-            )}
-
-
             {workorder.internalNotes && (
 
                 <section className="
@@ -1809,6 +1771,9 @@ async function completeWorkorder(){
                         rounded-xl border border-gray-200
                         bg-white p-2.5 space-y-1.5
                     ">
+                        <p className="text-xs text-gray-500">
+                            Voor de klant
+                        </p>
                         <textarea
                             value={notes}
                             onChange={(e)=>
@@ -2026,6 +1991,37 @@ async function completeWorkorder(){
                     )}
 
                 </div>
+
+                {
+                    workorder.werkInstructie?.trim()
+                    ? (
+                        <div className="
+                            rounded-xl border border-indigo-200
+                            bg-indigo-50/70 p-2.5 space-y-2
+                        ">
+                            <p className="text-xs font-semibold text-indigo-800">
+                                Voor de monteur
+                            </p>
+                            <WerkInstructieWeergave
+                                tekst={workorder.werkInstructie}
+                                onNaarFotos={
+                                    workorder.sentAt
+                                    ? undefined
+                                    : (url)=>
+                                        window.dispatchEvent(
+                                            new CustomEvent("mdb-import-photo-url", {
+                                                detail:{
+                                                    workorderId:id,
+                                                    url
+                                                }
+                                            })
+                                        )
+                                }
+                            />
+                        </div>
+                    )
+                    : null
+                }
 
            </section>
 
