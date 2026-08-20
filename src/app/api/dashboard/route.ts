@@ -136,22 +136,20 @@ export async function GET(){
 
 
 
-        const recent =
+        const uitgevoerdLijst =
 
             await prisma.workorder.findMany({
 
-                take:10,
-
                 where:{
-                    ...excludeArchivedWorkorders()
+                    status:"uitgevoerd"
                 },
 
 
-                orderBy:{
-
-                    createdAt:"desc"
-
-                },
+                orderBy:[
+                    { sentAt:"desc" },
+                    { workDate:"desc" },
+                    { updatedAt:"desc" }
+                ],
 
                 omit: {
                     formData: true,
@@ -332,7 +330,7 @@ export async function GET(){
             openFormsList,
 
 
-            recent,
+            uitgevoerdLijst,
 
 
             recentForms

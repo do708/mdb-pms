@@ -323,13 +323,16 @@ interface DashboardData {
             datum?: string;
         };
     }>;
-    recent: Array<{
+    uitgevoerdLijst: Array<{
         id: string;
         number: string;
         title: string;
         status: string;
+        sentAt?: string | null;
+        workDate?: string | null;
         customer?: { name: string } | null;
         project?: { customer?: { name: string } | null } | null;
+        assignedUser?: { name: string | null } | null;
     }>;
     recentForms: Array<{
         id: string;
@@ -631,17 +634,27 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <SpecPageCard>
-                    <h2 className="font-semibold text-sm text-gray-800">
-                        Laatste opdrachten
-                    </h2>
+                    <div className="flex items-center justify-between gap-2">
+                        <h2 className="font-semibold text-sm text-gray-800">
+                            Overzicht uitgevoerd
+                        </h2>
+                        {(data?.uitgevoerdLijst?.length ?? 0) > 0 ? (
+                            <a
+                                href="/workorders?status=uitgevoerd"
+                                className="text-xs text-[#0066FF] hover:underline shrink-0"
+                            >
+                                Alle ({data?.counters.uitgevoerd ?? 0})
+                            </a>
+                        ) : null}
+                    </div>
 
                     <div className="space-y-2">
-                        {(data?.recent?.length ?? 0) === 0 ? (
+                        {(data?.uitgevoerdLijst?.length ?? 0) === 0 ? (
                             <p className="text-sm text-gray-500">
-                                Nog geen opdrachten.
+                                Nog geen uitgevoerde opdrachten.
                             </p>
                         ) : (
-                            data?.recent.map((workorder) => (
+                            data?.uitgevoerdLijst.map((workorder) => (
                                 <a
                                     key={workorder.id}
                                     href={`/workorders/${workorder.id}`}
@@ -662,6 +675,9 @@ export default function DashboardPage() {
                                                     workorder.project?.customer
                                                         ?.name ??
                                                     "—"}
+                                                {" · "}
+                                                {workorder.assignedUser?.name ??
+                                                    "Geen monteur"}
                                             </p>
                                         </div>
                                         <span
@@ -671,7 +687,13 @@ export default function DashboardPage() {
                                                 ${getStatus(workorder.status).badge}
                                             `}
                                         >
-                                            {getStatus(workorder.status).label}
+                                            {workorder.sentAt || workorder.workDate
+                                                ? new Date(
+                                                      workorder.sentAt
+                                                      ?? workorder.workDate
+                                                      ?? ""
+                                                  ).toLocaleDateString("nl-NL")
+                                                : getStatus(workorder.status).label}
                                         </span>
                                     </SpecListRow>
                                 </a>
