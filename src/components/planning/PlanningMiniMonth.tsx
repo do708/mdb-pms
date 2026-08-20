@@ -125,8 +125,8 @@ function loadColor(level: LoadLevel): string {
 
 /**
  * Mini-maandkalender voor in de sidebar op /planning.
- * Weeknummers links; bezettingsbolletje ma–za: groen / geel (≥60%) / rood (≥85%).
- * Zondag toont geen bolletje.
+ * Weeknummers links; bezettingsbolletje ma–vr: groen / geel (≥60%) / rood (≥85%).
+ * Weekend (za–zo) toont geen bolletje.
  */
 export default function PlanningMiniMonth() {
     const router = useRouter();
@@ -425,7 +425,6 @@ export default function PlanningMiniMonth() {
                             const isToday = iso === todayIso;
                             const isSelected = selectedIso === iso;
                             const isWeekend = i >= 5;
-                            const isSunday = i === 6;
                             const ratio = loadByDay[iso] ?? 0;
                             const level = loadLevel(ratio);
                             const pct = Math.round(ratio * 100);
@@ -460,7 +459,7 @@ export default function PlanningMiniMonth() {
                                         className={`
                                             mt-0.5 h-1.5 w-1.5 rounded-full
                                             ${
-                                                cell.inMonth && !isSunday
+                                                cell.inMonth && !isWeekend
                                                     ? loadColor(level)
                                                     : "bg-transparent"
                                             }
