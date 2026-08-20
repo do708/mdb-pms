@@ -522,7 +522,7 @@ function AanvraagFormulier(){
             );
             if(incompleet >= 0){
                 setFout(
-                    `Scherm ${incompleet + 1}: vul formaat, bevestiging, oriëntatie, locatie, stroom en internet in.`
+                    `Scherm ${incompleet + 1}: vul formaat, bevestiging, oriëntatie, locatie, stroom en internet in. Bij een extra scherm: kies naast of b2b.`
                 );
                 return;
             }

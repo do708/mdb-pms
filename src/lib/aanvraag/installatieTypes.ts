@@ -217,6 +217,8 @@ export interface AanvraagSchermItem {
      * Leeg = eigen locatieveld bepaalt de groep.
      */
     naastSchermId: string;
+    /** Hoe het scherm gekoppeld is: naast of back-to-back. Leeg tot er geklikt is. */
+    monterenKoppeling: "" | "naast" | "b2b";
     stroom: "" | "Ja" | "Nee";
     /** Alleen bij stroom === "Nee": wil MDB dit realiseren? */
     stroomMdb: "" | "Ja" | "Nee" | string;
@@ -251,6 +253,7 @@ export function emptySchermItem(): AanvraagSchermItem {
         orientatie: "",
         locatie: "",
         naastSchermId: "",
+        monterenKoppeling: "",
         stroom: "",
         stroomMdb: "",
         stroomAfstand: "",
@@ -385,6 +388,14 @@ export function schermVeldenCompleet(
         return false;
     }
 
+    if (
+        scherm.naastSchermId
+        && scherm.monterenKoppeling !== "naast"
+        && scherm.monterenKoppeling !== "b2b"
+    ) {
+        return false;
+    }
+
     return true;
 }
 
@@ -476,6 +487,11 @@ export function syncSchermItems(
         return {
             ...s,
             naastSchermId: naast,
+            monterenKoppeling: naast
+                ? (s.monterenKoppeling === "naast" || s.monterenKoppeling === "b2b"
+                    ? s.monterenKoppeling
+                    : "")
+                : "",
         };
     });
 
@@ -720,6 +736,9 @@ export function samenvattingSchermen(
                 s.formaat === "Anders"
                     ? s.formaatAnders || "Anders"
                     : s.formaat;
+            const koppelIndex = s.naastSchermId
+                ? items.findIndex((x) => x.id === s.naastSchermId)
+                : -1;
             const parts = [
                 `Scherm ${i + 1}`,
                 formaat,
@@ -727,6 +746,9 @@ export function samenvattingSchermen(
                 s.plafondHoogte || "",
                 s.orientatie,
                 s.locatie ? `@ ${s.locatie}` : "",
+                koppelIndex >= 0
+                    ? `${s.monterenKoppeling === "b2b" ? "b2b" : "naast"} scherm ${koppelIndex + 1}`
+                    : "",
                 type ? `type ${type}` : "",
             ].filter(Boolean);
 

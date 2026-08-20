@@ -149,10 +149,64 @@ export default function SchermenSpecificatie({
                                 </div>
 
                                 {index > 0 ? (
-                                    <label className="block">
-                                        <span className="text-xs text-gray-600">
-                                            Dit scherm monteren naast
-                                        </span>
+                                    <div className="space-y-1.5">
+                                        <p className="text-xs text-gray-600">
+                                            Dit scherm monteren{" "}
+                                            {(["naast", "b2b"] as const).map(
+                                                (optie, oi) => (
+                                                    <span key={optie}>
+                                                        {oi > 0 ? (
+                                                            <span className="text-gray-400">
+                                                                {" / "}
+                                                            </span>
+                                                        ) : null}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const ankerId =
+                                                                    scherm.naastSchermId
+                                                                    || items.find(
+                                                                        (s) =>
+                                                                            s.id
+                                                                            !== scherm.id
+                                                                    )?.id
+                                                                    || "";
+
+                                                                updateItem(
+                                                                    scherm.id,
+                                                                    {
+                                                                        monterenKoppeling:
+                                                                            optie,
+                                                                        naastSchermId:
+                                                                            ankerId,
+                                                                    }
+                                                                );
+                                                            }}
+                                                            className={
+                                                                "inline px-0.5 font-semibold underline underline-offset-2 "
+                                                                +
+                                                                (scherm.monterenKoppeling
+                                                                    === optie
+                                                                    ? "text-[#0066FF] decoration-[#0066FF]"
+                                                                    : "text-gray-500 decoration-dotted decoration-gray-400 hover:text-[#0066FF] hover:decoration-solid")
+                                                            }
+                                                        >
+                                                            {optie}
+                                                        </button>
+                                                    </span>
+                                                )
+                                            )}
+                                            {" "}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </p>
+                                        {!scherm.monterenKoppeling
+                                        && scherm.naastSchermId ? (
+                                            <p className="text-xs text-amber-800">
+                                                Klik op naast of b2b.
+                                            </p>
+                                        ) : null}
                                         <select
                                             value={
                                                 scherm.naastSchermId ||
@@ -171,6 +225,8 @@ export default function SchermenSpecificatie({
                                                         {
                                                             naastSchermId:
                                                                 "",
+                                                            monterenKoppeling:
+                                                                "",
                                                             ...legeVoorzieningen(),
                                                         }
                                                     );
@@ -185,7 +241,7 @@ export default function SchermenSpecificatie({
                                                     }
                                                 );
                                             }}
-                                            className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                            className="w-full border rounded-lg p-2 bg-white text-sm"
                                         >
                                             {items
                                                 .map((s, si) =>
@@ -215,7 +271,7 @@ export default function SchermenSpecificatie({
                                                 Eigen locatie
                                             </option>
                                         </select>
-                                    </label>
+                                    </div>
                                 ) : null}
 
                                 <div className="space-y-1.5">
@@ -809,7 +865,7 @@ export default function SchermenSpecificatie({
                                             ? " · hoofdtype"
                                             : " · vervolg"}
                                         {naastIndex >= 0
-                                            ? ` · naast scherm ${naastIndex + 1}`
+                                            ? ` · ${s.monterenKoppeling === "b2b" ? "b2b" : "naast"} scherm ${naastIndex + 1}`
                                             : ""}
                                     </li>
                                 );
