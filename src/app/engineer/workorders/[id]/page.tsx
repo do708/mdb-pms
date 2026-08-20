@@ -25,6 +25,10 @@ import {
     mergeKlaarzetPrefill,
 } from "@/lib/aanvraag/klaarzetVanSpecificaties";
 import { leesSchermAansturing } from "@/lib/klaarzetMateriaal";
+import {
+    formatAmsterdamDateIso,
+    formatAmsterdamHHmm,
+} from "@/lib/datetime/amsterdam";
 
 interface Workorder {
 
@@ -90,6 +94,10 @@ interface Workorder {
 
     werkInstructie:string | null;
 
+    plannedDate:string | null;
+
+    plannedEndDate:string | null;
+
     plannedRoundTripKm:number | null;
 
     plannedReisuren:number | null;
@@ -123,8 +131,54 @@ interface Workorder {
 }
 
 
+function formatIngeplandeDatum(
+    plannedDate: string | null | undefined,
+    plannedEndDate?: string | null
+): string | null {
+    if (!plannedDate) {
+        return null;
+    }
 
+    const start = new Date(plannedDate);
+    if (Number.isNaN(start.getTime())) {
+        return null;
+    }
 
+    const datum = start.toLocaleDateString("nl-NL", {
+        timeZone: "Europe/Amsterdam",
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+
+    const startTijd = formatAmsterdamHHmm(start);
+    const toonStartTijd = startTijd !== "00:00";
+
+    if (plannedEndDate) {
+        const end = new Date(plannedEndDate);
+        if (!Number.isNaN(end.getTime())) {
+            const zelfdeDag =
+                formatAmsterdamDateIso(start) === formatAmsterdamDateIso(end);
+            const eindTijd = formatAmsterdamHHmm(end);
+            if (zelfdeDag) {
+                return toonStartTijd
+                    ? `${datum}, ${startTijd} – ${eindTijd}`
+                    : datum;
+            }
+            const eindDatum = end.toLocaleDateString("nl-NL", {
+                timeZone: "Europe/Amsterdam",
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            });
+            return `${datum}, ${startTijd} – ${eindDatum}, ${eindTijd}`;
+        }
+    }
+
+    return toonStartTijd ? `${datum}, ${startTijd}` : datum;
+}
 
 
 
@@ -988,6 +1042,10 @@ async function completeWorkorder(){
         workorder.aanvraagSpecificaties
     );
     const heeftNativeOsAansturing = schermAansturing.heeftNativeOs;
+    const ingeplandLabel = formatIngeplandeDatum(
+        workorder.plannedDate,
+        workorder.plannedEndDate
+    );
 
 
 
@@ -1077,6 +1135,19 @@ async function completeWorkorder(){
                     }
 
                 </div>
+
+                {
+                    ingeplandLabel && (
+                        <p className="text-sm text-gray-700 mt-1.5">
+                            <span className="text-xs text-gray-500">
+                                Ingepland{" "}
+                            </span>
+                            <span className="font-medium">
+                                {ingeplandLabel}
+                            </span>
+                        </p>
+                    )
+                }
 
 
             </header>
@@ -1310,6 +1381,18 @@ async function completeWorkorder(){
                         <h2 className="font-semibold text-gray-800 border-b pb-1">
                             Specificatie uit aanvraag
                         </h2>
+                        {
+                            ingeplandLabel && (
+                                <div className="min-w-0 pb-1">
+                                    <p className="text-xs text-gray-500">
+                                        Ingepland
+                                    </p>
+                                    <p className="text-sm text-gray-900">
+                                        {ingeplandLabel}
+                                    </p>
+                                </div>
+                            )
+                        }
                         <AanvraagSpecificatiesOverzicht
                             snapshot={parseAanvraagSnapshot(
                                 workorder.aanvraagSpecificaties
@@ -1357,6 +1440,19 @@ async function completeWorkorder(){
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+
+                    {
+                        ingeplandLabel && (
+                            <div className="min-w-0 sm:col-span-2">
+                                <p className="text-xs text-gray-500">
+                                    Ingepland
+                                </p>
+                                <p className="text-sm text-gray-900">
+                                    {ingeplandLabel}
+                                </p>
+                            </div>
+                        )
+                    }
 
                     <div className="min-w-0">
                         <p className="text-xs text-gray-500">
