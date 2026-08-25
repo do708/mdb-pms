@@ -22,16 +22,6 @@ const STANDAARD_TYPES = [
         key:"evalue8",
         name:"eValue8",
         sortOrder:3
-    },
-    {
-        key:"plus_intake",
-        name:"PLUS - Intake",
-        sortOrder:4
-    },
-    {
-        key:"plus_oplevering",
-        name:"PLUS - Oplevering",
-        sortOrder:5
     }
 ];
 
@@ -67,6 +57,21 @@ async function ensureStandaardTypes(){
         }
 
     }
+
+    await prisma.formType.updateMany({
+        where: {
+            key: {
+                in: [
+                    "plus_intake",
+                    "plus_oplevering",
+                    "uren",
+                    "digital_signage",
+                    "evalue8"
+                ]
+            }
+        },
+        data: { active: false }
+    });
 
 }
 

@@ -1217,7 +1217,12 @@ function generateHtml(
   <!-- AFRONDING -->
   ${
     (
+      oplever.afronding.werkzaamhedenGereed ||
+      oplever.afronding.nietGereedOmschrijving ||
       oplever.afronding.vervolgafspraken ||
+      oplever.afronding.meerwerkGehad !== null ||
+      oplever.afronding.meerwerkUren ||
+      oplever.afronding.meerwerkOpmerkingen ||
       oplever.afronding.meerwerkMateriaal ||
       oplever.afronding.meerwerkInOpdrachtVan ||
       oplever.afronding.netwerkGecontroleerdDoor
@@ -1225,7 +1230,20 @@ function generateHtml(
   <div class="section">
     <div class="section-title">Afronding</div>
     <table class="qa">
+      ${oplever.afronding.werkzaamhedenGereed ? row("Werkzaamheden gereed?", textAnswer(
+        oplever.afronding.werkzaamhedenGereed === "gereed"
+          ? "Gereed"
+          : oplever.afronding.werkzaamhedenGereed === "niet_gereed"
+            ? "Niet gereed"
+            : oplever.afronding.werkzaamhedenGereed === "nog_af_te_ronden"
+              ? "Nog af te ronden"
+              : oplever.afronding.werkzaamhedenGereed
+      )) : ""}
+      ${oplever.afronding.nietGereedOmschrijving ? row("Omschrijving niet gereed", textAnswer(oplever.afronding.nietGereedOmschrijving)) : ""}
       ${oplever.afronding.vervolgafspraken ? row("Nog af te ronden / vervolgafspraken / advies aan klant", textAnswer(oplever.afronding.vervolgafspraken)) : ""}
+      ${oplever.afronding.meerwerkGehad === true ? row("Meerwerk gehad?", "Ja") : oplever.afronding.meerwerkGehad === false ? row("Meerwerk gehad?", "Nee") : ""}
+      ${oplever.afronding.meerwerkUren ? row("Meerwerk uren", textAnswer(oplever.afronding.meerwerkUren)) : ""}
+      ${oplever.afronding.meerwerkOpmerkingen ? row("Opmerkingen meerwerk", textAnswer(oplever.afronding.meerwerkOpmerkingen)) : ""}
       ${oplever.afronding.meerwerkMateriaal ? row("Meerwerk- en materiaal geleverd", textAnswer(oplever.afronding.meerwerkMateriaal)) : ""}
       ${oplever.afronding.meerwerkInOpdrachtVan ? row("Meerarbeid en -materialen geleverd in opdracht van", textAnswer(oplever.afronding.meerwerkInOpdrachtVan)) : ""}
       ${oplever.afronding.netwerkGecontroleerdDoor ? row("Netwerkverbinding mediaspelers gecontroleerd door", textAnswer(oplever.afronding.netwerkGecontroleerdDoor)) : ""}

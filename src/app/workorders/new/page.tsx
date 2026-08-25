@@ -8,6 +8,8 @@ import { useSession } from "next-auth/react";
 import { filterEngineersForDay } from "@/constants/staffKind";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 import WerkInstructieVeld from "@/components/workorders/WerkInstructieVeld";
+import OpleverModulesPicker from "@/components/workorders/OpleverModulesPicker";
+import type { OpleverModule } from "@/lib/workorders/opleverModules";
 import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
 
 
@@ -116,13 +118,8 @@ function NewWorkorderInner(){
         useState("");
 
 
-    // Beschikbare formuliertypes + welke zijn aangevinkt voor deze werkbon.
-    const [formTypes,setFormTypes] =
-        useState<{ id:string; key:string; name:string }[]>([]);
-
-
-    const [selectedFormTypeId,setSelectedFormTypeId] =
-        useState<string>("");
+    const [selectedModules,setSelectedModules] =
+        useState<OpleverModule[]>([]);
 
 
     const searchParams =
@@ -243,23 +240,6 @@ function NewWorkorderInner(){
 
 
 
-            try {
-                const formTypesResponse =
-                    await fetch("/api/form-types");
-
-                const formTypesData =
-                    await formTypesResponse.json();
-
-                setFormTypes(
-                    Array.isArray(formTypesData)
-                    ?
-                    formTypesData
-                    :
-                    []
-                );
-            } catch {
-                // stil falen; dan toont het scherm geen formuliertypes
-            }
 
 
 
@@ -330,17 +310,6 @@ function NewWorkorderInner(){
         if(locatieFout){
 
             setError(locatieFout);
-
-            window.scrollTo({ top:0, behavior:"smooth" });
-
-            return;
-
-        }
-
-
-        if(isEngineer && !selectedFormTypeId){
-
-            setError("Kies welk formulier er ingevuld moet worden");
 
             window.scrollTo({ top:0, behavior:"smooth" });
 
@@ -474,12 +443,8 @@ function NewWorkorderInner(){
                                 :
                                 null,
 
-                            formTypeIds:
-                                selectedFormTypeId
-                                ?
-                                [selectedFormTypeId]
-                                :
-                                [],
+                            opleverModules:
+                                selectedModules,
 
                             status:
                                 isEngineer
@@ -1416,83 +1381,17 @@ function NewWorkorderInner(){
                 }
 
 
-                {/* Welke opleverformulieren zijn van toepassing op deze werkbon? */}
-                {
-                    formTypes.length > 0 && (
-
-                        <div className="
-                            border
-                            rounded-2xl
-                            p-5
-                            bg-gray-50
-                            space-y-3
-                        ">
-
-                            <span className="
-                                block
-                                text-sm
-                                font-medium
-                                text-gray-700
-                            ">
-                                Welke formulier moet er ingevuld worden?
-                            </span>
-                            {
-                                isEngineer && (
-                                    <p className="text-xs text-gray-500 leading-snug">
-                                        Kies het formulier en sla op. Daarna vul je de werkbon in,
-                                        hetzelfde scherm als bij een klaargezette opdracht.
-                                    </p>
-                                )
-                            }
-
-                            <div className="
-                                flex
-                                flex-wrap
-                                gap-3
-                            ">
-                                {
-                                    formTypes.map(ft=>{
-
-                                        const gekozen =
-                                            selectedFormTypeId === ft.id;
-
-                                        return (
-                                            <button
-                                                key={ft.id}
-                                                type="button"
-                                                onClick={()=>{
-                                                    setSelectedFormTypeId(
-                                                        gekozen ? "" : ft.id
-                                                    );
-                                                }}
-                                                className={`
-                                                    px-4
-                                                    py-2
-                                                    rounded-xl
-                                                    border
-                                                    text-sm
-                                                    transition
-                                                    ${
-                                                        gekozen
-                                                        ?
-                                                        "bg-blue-50 border-blue-400 text-blue-800 font-medium"
-                                                        :
-                                                        "bg-white border-slate-200 text-gray-600 hover:border-slate-300"
-                                                    }
-                                                `}
-                                            >
-                                                {ft.name}
-                                            </button>
-                                        );
-
-                                    })
-                                }
-                            </div>
-
-                        </div>
-
-                    )
-                }
+                <OpleverModulesPicker
+                    value={selectedModules}
+                    onChange={setSelectedModules}
+                    hint={
+                        isEngineer
+                        ?
+                        "Vink aan wat je gaat invullen. Daarna sla je op en vul je de werkbon in."
+                        :
+                        undefined
+                    }
+                />
 
 
             </section>

@@ -14,6 +14,11 @@ import { bouwKlantWerkzaamheden } from "@/lib/aanvraag/klantWerkzaamheden";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
 import WerkInstructieVeld from "@/components/workorders/WerkInstructieVeld";
+import OpleverModulesPicker from "@/components/workorders/OpleverModulesPicker";
+import {
+    modulesVanWerkbon,
+    type OpleverModule,
+} from "@/lib/workorders/opleverModules";
 
 
 
@@ -152,11 +157,8 @@ export default function EditWorkorderPage(){
         }[]>([]);
 
 
-    const [formTypes,setFormTypes] =
-        useState<{ id:string; key:string; name:string }[]>([]);
-
-    const [selectedFormTypeId,setSelectedFormTypeId] =
-        useState("");
+    const [selectedModules,setSelectedModules] =
+        useState<OpleverModule[]>([]);
 
 
     const [aanvraagSnapshot,setAanvraagSnapshot] =
@@ -186,14 +188,12 @@ export default function EditWorkorderPage(){
             const [
                 workorderResponse,
                 customersResponse,
-                engineersResponse,
-                formTypesResponse
+                engineersResponse
             ] =
                 await Promise.all([
                     fetch(`/api/workorders/${id}`),
                     fetch("/api/customers"),
-                    fetch("/api/engineers"),
-                    fetch("/api/form-types")
+                    fetch("/api/engineers")
                 ]);
 
 
@@ -219,21 +219,6 @@ export default function EditWorkorderPage(){
                 :
                 []
             );
-
-            try {
-                const formTypesData =
-                    await formTypesResponse.json();
-
-                setFormTypes(
-                    Array.isArray(formTypesData)
-                    ?
-                    formTypesData
-                    :
-                    []
-                );
-            } catch {
-                setFormTypes([]);
-            }
 
 
 
@@ -321,16 +306,17 @@ export default function EditWorkorderPage(){
 
                 setAssignedUserId(wo.assignedUserId ?? "");
 
-                const gekoppeldFormulier =
-                    Array.isArray(wo.forms) && wo.forms[0]
-                    ?
-                    wo.forms[0].formTypeId
-                    || wo.forms[0].formType?.id
-                    || ""
-                    :
-                    "";
-
-                setSelectedFormTypeId(gekoppeldFormulier);
+                setSelectedModules(
+                    modulesVanWerkbon({
+                        opleverModules: wo.opleverModules,
+                        formKey:
+                            Array.isArray(wo.forms) && wo.forms[0]?.formType?.key
+                            ?
+                            wo.forms[0].formType.key
+                            :
+                            null
+                    })
+                );
 
                 setPlannedDate(
                     wo.plannedDate
@@ -564,12 +550,8 @@ export default function EditWorkorderPage(){
                                 :
                                 null,
 
-                            formTypeIds:
-                                selectedFormTypeId
-                                ?
-                                [selectedFormTypeId]
-                                :
-                                []
+                            opleverModules:
+                                selectedModules
 
                         })
 
@@ -1113,57 +1095,11 @@ export default function EditWorkorderPage(){
                 </div>
 
 
-                {
-                    formTypes.length > 0 && (
-                        <div className="
-                            rounded-xl border border-gray-200
-                            bg-gray-50 p-3 space-y-3
-                        ">
-                            <div>
-                                <h2 className="font-semibold text-sm text-gray-800">
-                                    Welke formulier moet er ingevuld worden?
-                                </h2>
-                                <p className="text-xs text-gray-500 mt-0.5 leading-snug">
-                                    Kies welk formulier de monteur invult. Je kunt dit
-                                    hier later opnieuw aanpassen.
-                                </p>
-                            </div>
-                            <div className="flex flex-wrap gap-3">
-                                {
-                                    formTypes.map(ft=>{
-                                        const gekozen =
-                                            selectedFormTypeId === ft.id;
-
-                                        return (
-                                            <button
-                                                key={ft.id}
-                                                type="button"
-                                                onClick={()=>{
-                                                    setSelectedFormTypeId(
-                                                        gekozen ? "" : ft.id
-                                                    );
-                                                }}
-                                                className={`
-                                                    px-4 py-2 rounded-xl border text-sm
-                                                    transition
-                                                    ${
-                                                        gekozen
-                                                        ?
-                                                        "bg-blue-50 border-blue-400 text-blue-800 font-medium"
-                                                        :
-                                                        "bg-white border-slate-200 text-gray-600 hover:border-slate-300"
-                                                    }
-                                                `}
-                                            >
-                                                {ft.name}
-                                            </button>
-                                        );
-                                    })
-                                }
-                            </div>
-                        </div>
-                    )
-                }
+                <OpleverModulesPicker
+                    value={selectedModules}
+                    onChange={setSelectedModules}
+                    hint="Vink aan wat de monteur moet invullen. Je kunt dit hier later opnieuw aanpassen."
+                />
 
 
                 <div className="

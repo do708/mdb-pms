@@ -300,8 +300,11 @@ export interface OpleverData {
         meerwerkInOpdrachtVan:string;
         netwerkGecontroleerdDoor:string;
         contactpersoon:string;
-        werkzaamhedenGereed:"" | "gereed" | "niet_gereed";
+        werkzaamhedenGereed:"" | "gereed" | "niet_gereed" | "nog_af_te_ronden";
         nietGereedOmschrijving:string;
+        meerwerkGehad:boolean | null;
+        meerwerkUren:string;
+        meerwerkOpmerkingen:string;
         handtekening:string;
     };
 
@@ -587,6 +590,9 @@ export function emptyOpleverData():OpleverData {
             contactpersoon:"",
             werkzaamhedenGereed:"",
             nietGereedOmschrijving:"",
+            meerwerkGehad:null,
+            meerwerkUren:"",
+            meerwerkOpmerkingen:"",
             handtekening:""
         },
 

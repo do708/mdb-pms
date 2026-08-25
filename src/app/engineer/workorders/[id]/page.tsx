@@ -22,6 +22,10 @@ import {
     type OpleverData
 } from "@/types/oplever";
 import {
+    modulesVanWerkbon,
+    toonChecklist,
+} from "@/lib/workorders/opleverModules";
+import {
     klaarzetVanAanvraagSpecificaties,
     mergeKlaarzetPrefill,
 } from "@/lib/aanvraag/klaarzetVanSpecificaties";
@@ -60,6 +64,8 @@ interface Workorder {
     formData:unknown;
 
     aanvraagSpecificaties?:unknown;
+
+    opleverModules?:unknown;
 
     assignedUser:{
 
@@ -871,11 +877,13 @@ async function verstuurAfspraak(){
 async function completeWorkorder(){
 
 
-    // Checklist is verplicht bij Digital Signage en eValue8 (niet bij Uren).
-    const formKey =
-        (workorder?.forms ?? [])[0]?.formType?.key ?? "";
+    const opleverModules =
+        modulesVanWerkbon({
+            opleverModules: workorder?.opleverModules,
+            formKey: (workorder?.forms ?? [])[0]?.formType?.key ?? null
+        });
 
-    if(formKey !== "uren" && opleverData){
+    if(opleverData){
 
         const snFout =
             ontbrekendeMateriaalSerienummers(opleverData);
@@ -885,6 +893,8 @@ async function completeWorkorder(){
             window.scrollTo({ top:0, behavior:"smooth" });
             return;
         }
+
+        if(toonChecklist(opleverModules)){
 
         const cl = opleverData.checklist;
 
@@ -900,6 +910,8 @@ async function completeWorkorder(){
                 "Vul eerst de volledige checklist in voordat je de opdracht verstuurt."
             );
             return;
+        }
+
         }
 
     }
@@ -2099,16 +2111,11 @@ async function completeWorkorder(){
                 setOpleverData(next);
             }}
 
-            variant={
-                (workorder.forms ?? [])[0]?.formType?.key === "uren"
-                ?
-                "uren"
-                :
-                (workorder.forms ?? [])[0]?.formType?.key === "evalue8"
-                ?
-                "evalue8"
-                :
-                "volledig"
+            modules={
+                modulesVanWerkbon({
+                    opleverModules: workorder.opleverModules,
+                    formKey: (workorder.forms ?? [])[0]?.formType?.key ?? null
+                })
             }
 
             plannedRoundTripKm={

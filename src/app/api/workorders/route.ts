@@ -14,6 +14,7 @@ import { ENGINEER_OPDRACHT_STATUS_KEYS } from "@/constants/workorderStatus";
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
 import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
+import { parseOpleverModules } from "@/lib/workorders/opleverModules";
 import { syncWorkorderForms } from "@/lib/workorders/syncForms";
 
 
@@ -394,6 +395,13 @@ export async function POST(
                         mergeOpleverData(
                             body.formData
                         ) as object
+                        :
+                        undefined,
+
+                    opleverModules:
+                        body.opleverModules !== undefined
+                        ?
+                        parseOpleverModules(body.opleverModules)
                         :
                         undefined,
 

@@ -32,6 +32,15 @@ import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
 import { normalizeMac, emptyExtra, schermHeeftGegevens } from "@/types/installatieRuimtes";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
+import {
+    heeftGroep,
+    heeftModule,
+    modulesVanLegacyForm,
+    toonChecklist,
+    toonInstallatie,
+    werkzaamhedenHint,
+    type OpleverModule,
+} from "@/lib/workorders/opleverModules";
 
 
 
@@ -59,9 +68,10 @@ interface Props {
 
     onChange?:(data:OpleverData)=>void;
 
-    // "volledig" (Digital Signage) toont alles; "uren" toont alleen
-    // het Tarief & Uren-blok met een opmerkingenveld; "evalue8" toont het
-    // Tarief-blok plus de eValue8-installatiesecties.
+    /** Aangevinkte onderdelen vanuit het klaarzetten. */
+    modules?:OpleverModule[];
+
+    /** @deprecated Gebruik modules. Fallback voor oude schermen. */
     variant?:"volledig" | "uren" | "evalue8";
 
     /** Berekende rit zaak ↔ klus (bij voorrijtarief Nee) */
@@ -1682,6 +1692,8 @@ export default function OpleverForm({
 
     onChange,
 
+    modules: modulesProp,
+
     variant = "volledig"
 
     ,
@@ -1921,6 +1933,45 @@ export default function OpleverForm({
     const t = data.tarief;
 
     const i = data.installatie;
+
+    const modules =
+        modulesProp
+        ??
+        modulesVanLegacyForm(
+            variant === "uren"
+            ?
+            "uren"
+            :
+            variant === "evalue8"
+            ?
+            "evalue8"
+            :
+            "digital_signage"
+        );
+
+    const toonUren =
+        heeftModule(modules, "uren");
+
+    const toonKilometers =
+        heeftModule(modules, "kilometers");
+
+    const toonExtraKosten =
+        heeftModule(modules, "extra_kosten");
+
+    const schermenHint =
+        werkzaamhedenHint("schermen", modules);
+
+    const videowallHint =
+        werkzaamhedenHint("videowall", modules);
+
+    const kioskHint =
+        werkzaamhedenHint("kiosk", modules);
+
+    const mediaplayersHint =
+        werkzaamhedenHint("mediaplayers", modules);
+
+    const audioHint =
+        werkzaamhedenHint("audio", modules);
 
     const heeftSchermenData = i.ruimtes.some((r)=>
         (r.schermen || []).some((s)=>schermHeeftGegevens(s))
@@ -2206,17 +2257,7 @@ export default function OpleverForm({
                     tracking-tight
                 ">
 
-                    {
-                        variant === "uren"
-                        ?
-                        "Uren Opleverformulier"
-                        :
-                        variant === "evalue8"
-                        ?
-                        "eValue8 Opleverformulier"
-                        :
-                        "Digital Signage Opleverformulier"
-                    }
+                    Opleverformulier
 
                 </h2>
 
@@ -2300,6 +2341,8 @@ export default function OpleverForm({
                 <Kop>Installatiegegevens</Kop>
 
 
+                {
+                    (toonUren || toonKilometers) && (
                 <p className="
                     text-[13px]
                     font-semibold
@@ -2316,8 +2359,12 @@ export default function OpleverForm({
                     1. Tarief &amp; Uren
 
                 </p>
+                    )
+                }
 
 
+                {
+                    toonKilometers && (
                 <div className="
                     flex
                     flex-wrap
@@ -2411,8 +2458,12 @@ export default function OpleverForm({
                     }
 
                 </div>
+                    )
+                }
 
 
+                {
+                    toonUren && (
                 <div className="
                     grid
                     grid-cols-1
@@ -2515,8 +2566,12 @@ export default function OpleverForm({
                 }
 
                 </div>
+                    )
+                }
 
 
+                {
+                    toonExtraKosten && (
                 <div className="
                     border-b
                     border-dashed
@@ -2605,10 +2660,12 @@ export default function OpleverForm({
                     }
 
                 </div>
+                    )
+                }
 
 
 {
-                  variant === "volledig" && (
+                  toonInstallatie(modules) && (
                     <>
 
                 <p className="
@@ -2628,8 +2685,16 @@ export default function OpleverForm({
 
                 <div className="space-y-3 mb-3">
 
+                    {
+                    heeftGroep(modules, "schermen") && (
                     <SpecUitklap
-                        titel="1. Schermen"
+                        titel={
+                            schermenHint
+                            ?
+                            `1. Schermen (${schermenHint})`
+                            :
+                            "1. Schermen"
+                        }
                         kleur="bg-sky-50 border-sky-200"
                         open={schermenOpen}
                         onToggle={(open)=>
@@ -2660,9 +2725,19 @@ export default function OpleverForm({
                             uploadFile={uploadSchermFoto}
                         />
                     </SpecUitklap>
+                    )
+                    }
 
+                    {
+                    heeftGroep(modules, "videowall") && (
                     <SpecUitklap
-                        titel="2. Videowall"
+                        titel={
+                            videowallHint
+                            ?
+                            `2. Videowall (${videowallHint})`
+                            :
+                            "2. Videowall"
+                        }
                         kleur="bg-emerald-50 border-emerald-200"
                         open={i.videowall === true}
                         onToggle={(open)=>
@@ -2701,9 +2776,19 @@ export default function OpleverForm({
                         />
                         </div>
                     </SpecUitklap>
+                    )
+                    }
 
+                    {
+                    heeftGroep(modules, "kiosk") && (
                     <SpecUitklap
-                        titel="3. Kiosk"
+                        titel={
+                            kioskHint
+                            ?
+                            `3. Kiosk (${kioskHint})`
+                            :
+                            "3. Kiosk"
+                        }
                         kleur="bg-amber-50 border-amber-200"
                         open={i.kiosk === true}
                         onToggle={(open)=>
@@ -2730,9 +2815,19 @@ export default function OpleverForm({
                             }
                         />
                     </SpecUitklap>
+                    )
+                    }
 
+                    {
+                    heeftGroep(modules, "mediaplayers") && (
                     <SpecUitklap
-                        titel="4. Mediaplayers"
+                        titel={
+                            mediaplayersHint
+                            ?
+                            `4. Mediaplayers (${mediaplayersHint})`
+                            :
+                            "4. Mediaplayers"
+                        }
                         kleur="bg-violet-50 border-violet-200"
                         open={!!i.mediaplayers}
                         onToggle={(open)=>
@@ -2770,9 +2865,19 @@ export default function OpleverForm({
                             />
                         </div>
                     </SpecUitklap>
+                    )
+                    }
 
+                    {
+                    heeftGroep(modules, "audio") && (
                     <SpecUitklap
-                        titel="5. Audio"
+                        titel={
+                            audioHint
+                            ?
+                            `5. Audio (${audioHint})`
+                            :
+                            "5. Audio"
+                        }
                         kleur="bg-rose-50 border-rose-200"
                         open={i.audio === true}
                         onToggle={(open)=>
@@ -2872,7 +2977,11 @@ export default function OpleverForm({
                         />
                         </div>
                     </SpecUitklap>
+                    )
+                    }
 
+                    {
+                    heeftModule(modules, "project") && (
                     <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">
                         <span className="text-sm font-medium text-gray-800 block">
                             6. Project (offerte-basis) — is het een project?
@@ -2906,6 +3015,8 @@ export default function OpleverForm({
                             )
                         }
                     </div>
+                    )
+                    }
 
                 </div>
 
@@ -2916,7 +3027,7 @@ export default function OpleverForm({
 
                 {/* ================= eValue8-installatieregels ================= */}
                 {
-                  variant === "evalue8" && (
+                  false && variant === "evalue8" && (
                     <>
                         {
                             EVALUE8_SECTIES.map(sectie=>(
@@ -3413,9 +3524,7 @@ export default function OpleverForm({
             }
 
 
-            {
-              (variant === "volledig" || variant === "evalue8") && (
-                <>
+            <>
 
 
             {/* ================= Gebruikte materialen ================= */}
@@ -3761,6 +3870,9 @@ export default function OpleverForm({
 
 
 
+            {
+                toonChecklist(modules) && (
+            <>
             {/* ================= Checklist ================= */}
 
             <div>
@@ -3999,15 +4111,12 @@ export default function OpleverForm({
                 </ChecklistVraag>
 
             </div>
-
-                </>
-              )
+            </>
+                )
             }
 
+            </>
 
-            {
-              (variant === "volledig" || variant === "evalue8") && (
-                <>
 
             {/* ================= Afronding / oplevering ================= */}
 
@@ -4029,7 +4138,7 @@ export default function OpleverForm({
                             Werkzaamheden gereed?
                         </span>
 
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-3">
 
                             <button
                                 type="button"
@@ -4071,6 +4180,26 @@ export default function OpleverForm({
                                 ✕ Niet gereed
                             </button>
 
+                            <button
+                                type="button"
+                                onClick={()=>update(draft=>{
+                                    draft.afronding.werkzaamhedenGereed = "nog_af_te_ronden";
+                                })}
+                                className={
+                                    "flex-1 rounded-xl py-3 px-3 font-bold border-2 transition "
+                                    +
+                                    (
+                                        data.afronding.werkzaamhedenGereed === "nog_af_te_ronden"
+                                        ?
+                                        "bg-amber-500 text-white border-amber-500"
+                                        :
+                                        "bg-white text-amber-700 border-amber-300"
+                                    )
+                                }
+                            >
+                                Nog af te ronden
+                            </button>
+
                         </div>
 
 
@@ -4108,27 +4237,88 @@ export default function OpleverForm({
                             )
                         }
 
+                        {
+                            data.afronding.werkzaamhedenGereed === "nog_af_te_ronden" && (
+
+                                <label className="block mt-4">
+
+                                    <span className="text-sm font-medium text-gray-700 mb-1 block">
+                                        Wat moet er nog afgerond worden / vervolgafspraken / advies aan klant
+                                    </span>
+
+                                    <textarea
+                                        rows={3}
+                                        value={data.afronding.vervolgafspraken}
+                                        onChange={(e)=>update(draft=>{
+                                            draft.afronding.vervolgafspraken = e.target.value;
+                                        })}
+                                        className="w-full border rounded-xl p-3"
+                                    />
+
+                                </label>
+
+                            )
+                        }
+
                     </div>
 
 
-                    <label className="block">
+                    <div className="
+                        rounded-xl
+                        border
+                        border-gray-200
+                        p-4
+                        bg-gray-50
+                        space-y-3
+                    ">
 
-                        <span className="text-sm font-medium text-gray-700 mb-1 block">
-                            Nog af te ronden / vervolgafspraken / advies aan klant
+                        <span className="text-sm font-medium text-gray-700 block">
+                            Meerwerk gehad?
                         </span>
 
-                        <textarea
-                            rows={3}
-                            value={data.afronding.vervolgafspraken}
-                            onChange={(e)=>update(draft=>{
-                                draft.afronding.vervolgafspraken = e.target.value;
+                        <JaNee
+                            value={data.afronding.meerwerkGehad}
+                            onChange={(v)=>update(draft=>{
+                                draft.afronding.meerwerkGehad = v;
+                                if(v !== true){
+                                    draft.afronding.meerwerkUren = "";
+                                    draft.afronding.meerwerkOpmerkingen = "";
+                                }
                             })}
-                            className="w-full border rounded-xl p-3"
                         />
 
-                    </label>
+                        {
+                            data.afronding.meerwerkGehad === true && (
+                                <>
+                                    <Veld
+                                        label="Aantal uren meerwerk"
+                                        value={data.afronding.meerwerkUren}
+                                        onChange={(v)=>update(draft=>{
+                                            draft.afronding.meerwerkUren = v;
+                                        })}
+                                    />
+                                    <label className="block">
+                                        <span className="text-sm font-medium text-gray-700 mb-1 block">
+                                            Opmerkingen meerwerk
+                                        </span>
+                                        <textarea
+                                            rows={3}
+                                            value={data.afronding.meerwerkOpmerkingen}
+                                            onChange={(e)=>update(draft=>{
+                                                draft.afronding.meerwerkOpmerkingen = e.target.value;
+                                            })}
+                                            className="w-full border rounded-xl p-3"
+                                        />
+                                    </label>
+                                </>
+                            )
+                        }
+
+                    </div>
 
 
+                    {
+                        heeftGroep(modules, "mediaplayers") && (
                     <label className="block">
 
                         <span className="text-sm font-medium text-gray-700 mb-1 block">
@@ -4145,6 +4335,8 @@ export default function OpleverForm({
                         />
 
                     </label>
+                        )
+                    }
 
                 </div>
 
@@ -4197,11 +4389,6 @@ export default function OpleverForm({
                 </div>
 
             </div>
-
-                </>
-              )
-            }
-
 
 
             {
