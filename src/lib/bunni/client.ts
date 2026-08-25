@@ -17,9 +17,17 @@ const CACHE_MS = 5 * 60 * 1000;
 let cache: Cache | null = null;
 
 function bunniConfig() {
-    const apiKey = process.env.BUNNI_API_KEY?.trim();
+    // Strip per ongeluk meegestuurde Vercel-flags uit de env-waarde.
+    const clean = (value: string | undefined) =>
+        (value || "")
+            .trim()
+            .replace(/[\r\n]+/g, "")
+            .replace(/sensitive$/i, "")
+            .trim();
+
+    const apiKey = clean(process.env.BUNNI_API_KEY);
     const businessId =
-        process.env.BUNNI_BUSINESS_ID?.trim() || "mdb-networks";
+        clean(process.env.BUNNI_BUSINESS_ID) || "mdb-networks";
 
     if (!apiKey) {
         return null;
@@ -104,8 +112,14 @@ async function bunniGet(path: string): Promise<unknown> {
     } | null;
 
     if (!response.ok || json?.status !== "success") {
+        const bunniMessage = json?.error?.message || "";
+        if (response.status === 403 || bunniMessage === "forbidden") {
+            throw new Error(
+                "Bunni weigert de API-sleutel. Controleer BUNNI_API_KEY en BUNNI_BUSINESS_ID."
+            );
+        }
         throw new Error(
-            json?.error?.message || `Bunni gaf ${response.status}`
+            bunniMessage || `Bunni gaf ${response.status}`
         );
     }
 
