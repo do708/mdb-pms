@@ -11,16 +11,19 @@ export function bunniNumericId(
     return match ? match[1] : null;
 }
 
-/** Intern Bunni-id in de URL (`offerte-334439`), niet het formuliernummer. */
+/**
+ * Intern Bunni-id in de paginalink (`offerte-334165`), niet het
+ * offertenummer op het formulier (`260466`).
+ */
 export function looksLikeInternBunniId(value: string | null | undefined): boolean {
     const n = (value || "").trim();
     return /^\d{6,}$/.test(n) && n.startsWith("33");
 }
 
 export function bunniOffertePageUrl(
-    offertenummer: string | null | undefined
+    urlId: string | null | undefined
 ): string | null {
-    const number = (offertenummer || "").trim();
+    const number = bunniNumericId(urlId) || (urlId || "").trim();
     if (!number) {
         return null;
     }
@@ -33,15 +36,14 @@ export function bunniPageUrl(
     number?: string | null
 ): string | null {
     if (kind === "offerte") {
-        const offertenummer = (number || "").trim();
-        if (offertenummer && !looksLikeInternBunniId(offertenummer)) {
-            return bunniOffertePageUrl(offertenummer);
-        }
         const fromId = bunniNumericId(id);
-        if (fromId && !looksLikeInternBunniId(fromId)) {
+        if (fromId && fromId !== (number || "").trim()) {
             return bunniOffertePageUrl(fromId);
         }
-        return bunniOffertePageUrl(offertenummer || fromId);
+        if (fromId && looksLikeInternBunniId(fromId)) {
+            return bunniOffertePageUrl(fromId);
+        }
+        return bunniOffertePageUrl(fromId || number);
     }
 
     const numeric = bunniNumericId(id);
@@ -73,8 +75,8 @@ export function parseBunniOfferteUrl(
 
 /**
  * Offertenummer uit het Bunni-formulier.
- * Het cijfer in de URL (`offerte-334439`) is het interne id, niet het
- * offertenummer (`260475`).
+ * Het cijfer in de URL (`offerte-334165`) is het interne id, niet het
+ * offertenummer (`260466`).
  */
 export function offertenummerUitTekst(
     input: string,
@@ -91,40 +93,50 @@ export type OfferteKoppeling = {
     pageUrl: string;
 };
 
-/** Eén veld: offertenummer of Bunni-link. Pagina gebruikt altijd het formuliernummer. */
-export function parseOfferteKoppeling(
-    input: string
-): OfferteKoppeling | { error: string } {
-    const text = input.trim();
-    if (!text) {
-        return { error: "Plak het offertenummer of de Bunni-link." };
+export function parseOfferteKoppeling(input: {
+    number?: string;
+    url?: string;
+}): OfferteKoppeling | { error: string } {
+    const numberText = (input.number || "").trim();
+    const urlText = (input.url || "").trim();
+    const combined = `${numberText} ${urlText}`.trim();
+
+    if (!combined) {
+        return {
+            error: "Plak de Bunni-paginalink en vul het offertenummer in.",
+        };
     }
 
-    const fromUrl = parseBunniOfferteUrl(text);
-    const numbers = text.match(/\b(\d{4,8})\b/g) || [];
-    const fromDigits = text.match(/^\d{4,8}$/) ? text : null;
+    const fromUrl =
+        parseBunniOfferteUrl(urlText)
+        || parseBunniOfferteUrl(numberText)
+        || parseBunniOfferteUrl(combined);
 
+    const typedNumber = /^\d{4,8}$/.test(numberText) ? numberText : null;
     const number = (
-        offertenummerUitTekst(text, fromUrl?.numeric)
-        || (fromDigits && !looksLikeInternBunniId(fromDigits) ? fromDigits : null)
-        || (fromUrl && !looksLikeInternBunniId(fromUrl.numeric)
-            ? fromUrl.numeric
-            : null)
-        || numbers.find((value) => !looksLikeInternBunniId(value))
+        (typedNumber && typedNumber !== fromUrl?.numeric ? typedNumber : null)
+        || offertenummerUitTekst(combined, fromUrl?.numeric)
         || ""
     ).trim();
 
-    if (!number || looksLikeInternBunniId(number)) {
+    if (!fromUrl) {
         return {
             error:
-                "Vul het offertenummer in dat op de offerte staat, bijv. 260475. Het cijfer in de Bunni-URL opent de verkeerde (bovenste) offerte.",
+                "Plak de Bunni-paginalink, bijv. …/offertemaker/offerte-334165. Dat is de pagina van deze offerte.",
+        };
+    }
+
+    if (!number || number === fromUrl.numeric || looksLikeInternBunniId(number)) {
+        return {
+            error:
+                "Vul het offertenummer in dat op de offerte staat, bijv. 260466. Dat is niet het cijfer in de Bunni-URL.",
         };
     }
 
     return {
-        id: fromUrl?.id ?? `in_${number}`,
+        id: fromUrl.id,
         number,
-        pageUrl: bunniOffertePageUrl(number)!,
+        pageUrl: bunniOffertePageUrl(fromUrl.numeric)!,
     };
 }
 
@@ -139,4 +151,17 @@ export function isBunniUrlIdAsNumber(
     }
     const numeric = bunniNumericId(documentId);
     return Boolean(numeric && n && n === numeric && looksLikeInternBunniId(numeric));
+}
+
+/** Gekoppeld met alleen het formuliernummer, zonder echte paginalink. */
+export function offertePaginaMistUrlId(
+    documentId: string | null | undefined,
+    number: string | null | undefined
+): boolean {
+    const numeric = bunniNumericId(documentId);
+    const n = (number || "").trim();
+    if (!numeric || !n) {
+        return false;
+    }
+    return numeric === n;
 }

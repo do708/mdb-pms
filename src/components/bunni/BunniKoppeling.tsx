@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import {
     bunniPageUrl,
     isBunniUrlIdAsNumber,
+    offertePaginaMistUrlId,
+    offertenummerUitTekst,
+    parseBunniOfferteUrl,
     parseOfferteKoppeling,
 } from "@/lib/bunni/urls";
 
@@ -56,6 +59,7 @@ export function BunniDocumentPicker({
     compact?: boolean;
 }) {
     const [q, setQ] = useState("");
+    const [urlQ, setUrlQ] = useState("");
     const [open, setOpen] = useState(false);
     const [hits, setHits] = useState<BunniHit[]>([]);
     const [loading, setLoading] = useState(false);
@@ -102,12 +106,35 @@ export function BunniDocumentPicker({
 
     const paginaUrl = bunniPageUrl(kind, value.id, value.number);
     const urlAlsNummer = kind === "offerte" && isBunniUrlIdAsNumber(value.id, value.number);
+    const paginaMistUrl =
+        kind === "offerte" && offertePaginaMistUrlId(value.id, value.number);
     const inputClass = compact
         ? "mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
         : "mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm";
 
+    function applyOffertePaste(raw: string, target: "number" | "url") {
+        const fromUrl = parseBunniOfferteUrl(raw);
+        if (fromUrl) {
+            setUrlQ(
+                `https://mijn.bunni.nl/administratie/mdb-networks/offertemaker/offerte-${fromUrl.numeric}`
+            );
+            const leftover = offertenummerUitTekst(raw, fromUrl.numeric);
+            if (leftover) {
+                setQ(leftover);
+            } else if (target === "number") {
+                setQ("");
+            }
+            return;
+        }
+        if (target === "number") {
+            setQ(raw);
+        } else {
+            setUrlQ(raw);
+        }
+    }
+
     function koppelOfferte() {
-        const parsed = parseOfferteKoppeling(q);
+        const parsed = parseOfferteKoppeling({ number: q, url: urlQ });
         if ("error" in parsed) {
             setError(parsed.error);
             return;
@@ -123,6 +150,7 @@ export function BunniDocumentPicker({
             snippet: null,
         });
         setQ("");
+        setUrlQ("");
         setError(null);
     }
 
@@ -173,7 +201,13 @@ export function BunniDocumentPicker({
                         <p className="mt-1 text-xs text-amber-800">
                             Dit is het nummer uit de URL, niet het
                             offertenummer. Ontkoppel en vul het nummer in dat
-                            op de offerte staat, bijv. 260475.
+                            op de offerte staat, bijv. 260466.
+                        </p>
+                    ) : paginaMistUrl ? (
+                        <p className="mt-1 text-xs text-amber-800">
+                            Paginalink ontbreekt. Ontkoppel en plak de
+                            Bunni-link (…/offerte-334165) plus het
+                            offertenummer.
                         </p>
                     ) : null}
                 </div>
@@ -182,11 +216,11 @@ export function BunniDocumentPicker({
             )}
             {!disabled ? (
                 kind === "offerte" ? (
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-2 space-y-2">
                         <input
-                            value={q}
+                            value={urlQ}
                             onChange={(e) => {
-                                setQ(e.target.value);
+                                applyOffertePaste(e.target.value, "url");
                                 setError(null);
                             }}
                             onKeyDown={(e) => {
@@ -195,7 +229,23 @@ export function BunniDocumentPicker({
                                     koppelOfferte();
                                 }
                             }}
-                            placeholder="Offertenummer of Bunni-link, bijv. 260475"
+                            placeholder="Bunni-paginalink, bijv. …/offerte-334165"
+                            className={`${inputClass} mt-0`}
+                        />
+                        <div className="flex gap-2">
+                        <input
+                            value={q}
+                            onChange={(e) => {
+                                applyOffertePaste(e.target.value, "number");
+                                setError(null);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    koppelOfferte();
+                                }
+                            }}
+                            placeholder="Offertenummer op de offerte, bijv. 260466"
                             className={`${inputClass} mt-0`}
                         />
                         <button
@@ -205,6 +255,7 @@ export function BunniDocumentPicker({
                         >
                             Koppel
                         </button>
+                        </div>
                     </div>
                 ) : (
                     <>

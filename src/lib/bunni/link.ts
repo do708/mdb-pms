@@ -47,11 +47,18 @@ export async function resolveBunniLinkPatch(body: {
                 ?
                 body.offerteNumber.trim()
                 :
-                bunniNumericId(body.offerteId);
+                null;
+            const urlId = bunniNumericId(body.offerteId);
+
+            if (!urlId || urlId === number) {
+                throw new Error(
+                    "Plak de Bunni-paginalink, bijv. …/offertemaker/offerte-334165. Dat is de pagina van deze offerte."
+                );
+            }
 
             if (!number || looksLikeInternBunniId(number)) {
                 throw new Error(
-                    "Vul het offertenummer in dat op de offerte staat, bijv. 260475. Het cijfer in de Bunni-URL opent de verkeerde offerte."
+                    "Vul het offertenummer in dat op de offerte staat, bijv. 260466. Dat is niet het cijfer in de Bunni-URL."
                 );
             }
 
