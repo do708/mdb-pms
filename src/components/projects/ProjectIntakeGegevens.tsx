@@ -166,7 +166,7 @@ export default function ProjectIntakeGegevens({
                     {canEdit ? (
                         <label className="block">
                             <SpecFieldLabel>
-                                Wens / toelichting
+                                Toelichting:
                             </SpecFieldLabel>
                             <textarea
                                 rows={5}
@@ -196,7 +196,7 @@ export default function ProjectIntakeGegevens({
                         </label>
                     ) : waarde.trim() ? (
                         <div>
-                            <SpecFieldLabel>Wens / toelichting</SpecFieldLabel>
+                            <SpecFieldLabel>Toelichting:</SpecFieldLabel>
                             <p className="mt-0.5 text-sm text-gray-800 whitespace-pre-wrap">
                                 {waarde}
                             </p>
