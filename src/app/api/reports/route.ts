@@ -19,10 +19,66 @@ import {
 } from "@/lib/travel/plannedKilometers";
 
 import { amsterdamDateKey, toDateKey } from "@/lib/reports/periods";
+import {
+    countsTowardKilometers,
+    parseStaffKind,
+} from "@/constants/staffKind";
 
 
 
 export const maxDuration = 60;
+
+type EngineerRef = {
+    id: string;
+    name: string | null;
+    staffKind?: string | null;
+};
+
+function plannedHoursFromWorkorder(workorder: {
+    plannedHours: number | null;
+    plannedDate: Date | null;
+    plannedEndDate: Date | null;
+}): number {
+    if (
+        typeof workorder.plannedHours === "number"
+        && Number.isFinite(workorder.plannedHours)
+        && workorder.plannedHours > 0
+    ) {
+        return workorder.plannedHours;
+    }
+
+    if (workorder.plannedDate && workorder.plannedEndDate) {
+        const hours =
+            (workorder.plannedEndDate.getTime()
+                - workorder.plannedDate.getTime())
+            / 3600000;
+        return hours > 0 && Number.isFinite(hours) ? hours : 0;
+    }
+
+    return 0;
+}
+
+function engineersOnWorkorder(workorder: {
+    assignedUser: EngineerRef | null;
+    extraEngineers: { user: EngineerRef | null }[];
+}): EngineerRef[] {
+    const list: EngineerRef[] = [];
+    const seen = new Set<string>();
+
+    function add(user: EngineerRef | null) {
+        if (!user || seen.has(user.id)) {
+            return;
+        }
+        seen.add(user.id);
+        list.push(user);
+    }
+
+    add(workorder.assignedUser);
+    for (const extra of workorder.extraEngineers) {
+        add(extra.user);
+    }
+    return list;
+}
 
 
 
@@ -109,6 +165,10 @@ export async function GET(){
 
                     plannedDate:true,
 
+                    plannedEndDate:true,
+
+                    plannedHours:true,
+
                     location:true,
 
                     straat:true,
@@ -128,7 +188,8 @@ export async function GET(){
                     assignedUser:{
                         select:{
                             id:true,
-                            name:true
+                            name:true,
+                            staffKind:true
                         }
                     },
 
@@ -137,7 +198,8 @@ export async function GET(){
                             user:{
                                 select:{
                                     id:true,
-                                    name:true
+                                    name:true,
+                                    staffKind:true
                                 }
                             }
                         }
@@ -183,7 +245,8 @@ export async function GET(){
                     user:{
                         select:{
                             id:true,
-                            name:true
+                            name:true,
+                            staffKind:true
                         }
                     },
 
@@ -237,6 +300,7 @@ export async function GET(){
         type DayGroup = {
             engineerId:string;
             engineerName:string;
+            staffKind:string;
             plannedDate:Date;
             items:DayItem[];
         };
@@ -245,7 +309,7 @@ export async function GET(){
             new Map<string,DayGroup>();
 
         function addDayItem(
-            engineer:{ id:string; name:string | null },
+            engineer:{ id:string; name:string | null; staffKind?: string | null },
             plannedDate:Date,
             item:DayItem
         ){
@@ -265,6 +329,7 @@ export async function GET(){
                     engineerId:engineer.id,
                     engineerName:
                         engineer.name ?? "Onbekend",
+                    staffKind: parseStaffKind(engineer.staffKind),
                     plannedDate,
                     items:[item]
                 });
@@ -303,7 +368,12 @@ export async function GET(){
                     workorder.plannedDate
             };
 
-            if(workorder.assignedUser){
+            if(
+                workorder.assignedUser
+                && countsTowardKilometers(
+                    workorder.assignedUser.staffKind
+                )
+            ){
                 addDayItem(
                     workorder.assignedUser,
                     workorder.plannedDate,
@@ -322,6 +392,9 @@ export async function GET(){
                     && extra.user.id
                         === workorder.assignedUser.id
                 ){
+                    continue;
+                }
+                if(!countsTowardKilometers(extra.user.staffKind)){
                     continue;
                 }
                 addDayItem(
@@ -353,11 +426,13 @@ export async function GET(){
                 plannedDate:row.datum
             };
 
-            addDayItem(
-                engineer,
-                row.datum,
-                item
-            );
+            if(countsTowardKilometers(engineer.staffKind)){
+                addDayItem(
+                    engineer,
+                    row.datum,
+                    item
+                );
+            }
 
         }
 
@@ -455,6 +530,7 @@ export async function GET(){
             date:string;
             engineerId:string;
             engineerName:string;
+            staffKind:string;
             hours:number;
             travel:number;
             kilometers:number;
@@ -471,17 +547,22 @@ export async function GET(){
         function upsertDay(
             date:string,
             engineerId:string,
-            engineerName:string
+            engineerName:string,
+            staffKind?:string | null
         ):DayAgg {
             const key = `${date}|${engineerId}`;
             const existing = byDay.get(key);
             if(existing){
+                if(!existing.staffKind && staffKind){
+                    existing.staffKind = parseStaffKind(staffKind);
+                }
                 return existing;
             }
             const created:DayAgg = {
                 date,
                 engineerId,
                 engineerName,
+                staffKind: parseStaffKind(staffKind),
                 hours:0,
                 travel:0,
                 kilometers:0,
@@ -524,32 +605,60 @@ export async function GET(){
         for(const workorder of workorders){
 
 
-            const oplever =
-                mergeOpleverData(workorder.formData);
-
-
-            const uren =
-                parseClockHours(oplever.tarief.urenMonteur1) +
-                parseClockHours(oplever.tarief.urenMonteur2) +
-                parseClockHours(oplever.tarief.urenMonteur3) +
-                parseClockHours(oplever.tarief.urenMonteur4);
-
-
-            hoursTotal += uren;
-
-
-            if(workorder.createdAt >= monthStart){
-                hoursThisMonth += uren;
+            if(!workorder.plannedDate){
+                continue;
             }
 
+            const uren = plannedHoursFromWorkorder(workorder);
 
+            if(uren <= 0){
+                continue;
+            }
 
+            const customer =
+                workorder.customer
+                ??
+                workorder.project?.customer
+                ??
+                { id:"onbekend", name:"Onbekende opdrachtgever" };
 
-            const engineer =
-                workorder.assignedUser;
+            const engineers = engineersOnWorkorder(workorder);
 
+            if(engineers.length === 0){
+                hoursTotal += uren;
 
-            if(engineer){
+                if(workorder.plannedDate >= monthStart){
+                    hoursThisMonth += uren;
+                }
+
+                const day =
+                    upsertDay(
+                        amsterdamDateKey(workorder.plannedDate),
+                        "geen",
+                        "Geen monteur"
+                    );
+
+                day.hours += uren;
+                addDayCustomerHours(day, customer, uren);
+
+                const existingCustomer =
+                    byCustomer.get(customer.id)
+                    ??
+                    {
+                        name:customer.name,
+                        hours:0
+                    };
+                existingCustomer.hours += uren;
+                byCustomer.set(customer.id, existingCustomer);
+                continue;
+            }
+
+            for(const engineer of engineers){
+                hoursTotal += uren;
+
+                if(workorder.plannedDate >= monthStart){
+                    hoursThisMonth += uren;
+                }
 
                 const existing =
                     byEngineer.get(engineer.id)
@@ -564,45 +673,24 @@ export async function GET(){
                     };
 
                 existing.hours += uren;
-
                 byEngineer.set(engineer.id, existing);
 
-            }
+                const existingCustomer =
+                    byCustomer.get(customer.id)
+                    ??
+                    {
+                        name:customer.name,
+                        hours:0
+                    };
+                existingCustomer.hours += uren;
+                byCustomer.set(customer.id, existingCustomer);
 
-
-
-
-            const customer =
-                workorder.customer
-                ??
-                workorder.project?.customer
-                ??
-                { id:"onbekend", name:"Onbekende opdrachtgever" };
-
-
-            const existingCustomer =
-                byCustomer.get(customer.id)
-                ??
-                {
-                    name:customer.name,
-                    hours:0
-                };
-
-            existingCustomer.hours += uren;
-
-            byCustomer.set(customer.id, existingCustomer);
-
-
-            if(uren > 0){
                 const day =
                     upsertDay(
-                        amsterdamDateKey(
-                            workorder.plannedDate ?? workorder.createdAt
-                        ),
-                        engineer?.id || "geen",
-                        engineer
-                            ? (engineer.name ?? "Onbekend")
-                            : "Geen monteur"
+                        amsterdamDateKey(workorder.plannedDate),
+                        engineer.id,
+                        engineer.name ?? "Onbekend",
+                        engineer.staffKind
                     );
 
                 day.hours += uren;
@@ -662,7 +750,8 @@ export async function GET(){
                     upsertDay(
                         amsterdamDateKey(row.datum),
                         engineer.id,
-                        engineer.name ?? "Onbekend"
+                        engineer.name ?? "Onbekend",
+                        engineer.staffKind
                     );
 
                 day.hours += uren;
@@ -711,7 +800,8 @@ export async function GET(){
                 upsertDay(
                     amsterdamDateKey(group.plannedDate),
                     group.engineerId,
-                    group.engineerName
+                    group.engineerName,
+                    group.staffKind
                 );
 
             day.travel += travel.reisuren;
@@ -749,6 +839,7 @@ export async function GET(){
                     date:row.date,
                     engineerId:row.engineerId,
                     engineerName:row.engineerName,
+                    staffKind:row.staffKind,
                     hours:row.hours,
                     travel:row.travel,
                     kilometers:Math.round(row.kilometers),

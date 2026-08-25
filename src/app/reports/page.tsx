@@ -4,6 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import { formatClockHours } from "@/types/oplever";
 import {
+    countsTowardKilometers,
+    parseStaffKind,
+    STAFF_KIND_LABELS,
+} from "@/constants/staffKind";
+import {
     PageHeader,
     PageShell,
     SpecFieldLabel,
@@ -60,6 +65,28 @@ const GROUP_OPTIONS: { value: GroupBy; label: string }[] = [
 function formatKm(value: number): string {
     const rounded = Math.round(value);
     return String(rounded);
+}
+
+function staffKindNote(staffKind?: string): string | null {
+    const kind = parseStaffKind(staffKind);
+    if (kind === "monteur") {
+        return null;
+    }
+    return STAFF_KIND_LABELS[kind];
+}
+
+function formatTravelCell(value: number, staffKind?: string): string {
+    if (!countsTowardKilometers(staffKind)) {
+        return "—";
+    }
+    return formatClockHours(value) || "0";
+}
+
+function formatKmCell(value: number, staffKind?: string): string {
+    if (!countsTowardKilometers(staffKind)) {
+        return "—";
+    }
+    return formatKm(value);
 }
 
 function currentMonthInput(): string {
@@ -192,7 +219,7 @@ export default function ReportsPage() {
             <SpecPageCard>
                 <SpecPanel
                     title="Filters"
-                    hint="Cijfers en tabellen volgen monteur en periode. Kilometers zijn werkelijk gereden (dagroute), niet alleen de km van één klus. Verlof telt werkdagen (ma–vr) van geaccepteerde aanvragen in de gekozen periode."
+                    hint="Uren komen uit de planning (niet uit de werkbon). Kilometers en reistijd alleen voor eigen monteurs; inleners en stagiairs staan wel in het urenoverzicht. Kilometers zijn werkelijk gereden (dagroute). Verlof telt werkdagen (ma–vr) van geaccepteerde aanvragen."
                 >
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <label className="block">
@@ -497,6 +524,15 @@ export default function ReportsPage() {
                                         >
                                             <td className="py-2 text-gray-900">
                                                 {engineer.name}
+                                                {staffKindNote(
+                                                    engineer.staffKind
+                                                ) ? (
+                                                    <span className="block text-xs text-gray-500">
+                                                        {staffKindNote(
+                                                            engineer.staffKind
+                                                        )}
+                                                    </span>
+                                                ) : null}
                                             </td>
                                             <td className="py-2 text-right text-gray-900">
                                                 {formatClockHours(
@@ -504,12 +540,16 @@ export default function ReportsPage() {
                                                 ) || "0"}
                                             </td>
                                             <td className="py-2 text-right text-gray-900">
-                                                {formatClockHours(
-                                                    engineer.travel
-                                                ) || "0"}
+                                                {formatTravelCell(
+                                                    engineer.travel,
+                                                    engineer.staffKind
+                                                )}
                                             </td>
                                             <td className="py-2 text-right text-gray-900">
-                                                {formatKm(engineer.kilometers)}
+                                                {formatKmCell(
+                                                    engineer.kilometers,
+                                                    engineer.staffKind
+                                                )}
                                             </td>
                                             <td className="py-2 text-right text-gray-900">
                                                 {engineer.leaveDays}

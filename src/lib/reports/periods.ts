@@ -22,6 +22,7 @@ export type ReportDayRow = {
     date: string;
     engineerId: string;
     engineerName: string;
+    staffKind?: string;
     hours: number;
     travel: number;
     kilometers: number;
@@ -51,6 +52,7 @@ export type YearMonthFilter = {
 export type EngineerPeriodTotals = {
     id: string;
     name: string;
+    staffKind?: string;
     hours: number;
     travel: number;
     kilometers: number;
@@ -425,6 +427,7 @@ export function engineersTotalsWithLeave(
         map.set(id, {
             id,
             name: item.name,
+            staffKind: undefined,
             hours: 0,
             travel: 0,
             kilometers: 0,
@@ -443,6 +446,7 @@ export function engineersTotalsWithLeave(
 export function engineersTotals(rows: ReportDayRow[]): {
     id: string;
     name: string;
+    staffKind?: string;
     hours: number;
     travel: number;
     kilometers: number;
@@ -452,6 +456,7 @@ export function engineersTotals(rows: ReportDayRow[]): {
         {
             id: string;
             name: string;
+            staffKind?: string;
             hours: number;
             travel: number;
             kilometers: number;
@@ -462,6 +467,7 @@ export function engineersTotals(rows: ReportDayRow[]): {
         const existing = map.get(row.engineerId) || {
             id: row.engineerId,
             name: row.engineerName,
+            staffKind: row.staffKind,
             hours: 0,
             travel: 0,
             kilometers: 0,
@@ -469,6 +475,9 @@ export function engineersTotals(rows: ReportDayRow[]): {
         existing.hours += row.hours;
         existing.travel += row.travel;
         existing.kilometers += row.kilometers;
+        if (!existing.staffKind && row.staffKind) {
+            existing.staffKind = row.staffKind;
+        }
         map.set(row.engineerId, existing);
     }
 

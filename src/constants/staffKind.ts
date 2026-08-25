@@ -29,6 +29,13 @@ export function countsTowardCapacity(staffKind: string | null | undefined): bool
     return parseStaffKind(staffKind) === "monteur";
 }
 
+/** Kilometers en reistijd in rapportages: alleen eigen monteurs. */
+export function countsTowardKilometers(
+    staffKind: string | null | undefined
+): boolean {
+    return countsTowardCapacity(staffKind);
+}
+
 /** YYYY-MM-DD uit Date of ISO-string (lokale kalenderdag). */
 export function toIsoDay(value: string | Date | null | undefined): string | null {
     if (!value) return null;
