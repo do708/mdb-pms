@@ -129,6 +129,8 @@ model Project {
   termijn2Factuurnummer String?
   termijn3Factuurnummer String?
   termijn4Factuurnummer String?
+  /// Vrije intake-notities (wens klant, toelichting)
+  intakeTekst      String?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   customer         Customer           @relation(fields: [customerId], references: [id])
@@ -179,6 +181,8 @@ model ProjectAttachment {
   filename     String?
   originalName String?
   contentType  String?
+  /// plattegrond | intake
+  kind         String   @default("plattegrond")
   createdAt    DateTime @default(now())
   project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 

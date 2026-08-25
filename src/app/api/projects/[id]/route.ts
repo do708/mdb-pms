@@ -124,6 +124,13 @@ export async function PATCH(
             data.offerteFilename = body.offerteFilename || null;
         }
 
+        if (body.intakeTekst !== undefined) {
+            data.intakeTekst =
+                typeof body.intakeTekst === "string" && body.intakeTekst.trim()
+                    ? body.intakeTekst
+                    : null;
+        }
+
         if (body.termijnAantal !== undefined) {
             if (body.termijnAantal === null || body.termijnAantal === "") {
                 data.termijnAantal = null;

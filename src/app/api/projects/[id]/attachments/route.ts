@@ -9,7 +9,7 @@ import {
     extensionForContentType,
 } from "@/lib/attachments/contentType";
 import { uploadStorageObject } from "@/lib/attachments/storage";
-import { storeProjectPlattegrond } from "@/lib/projects/plattegrondStorage";
+import { storeProjectFile } from "@/lib/projects/plattegrondStorage";
 import {
     compressPhoto,
     photoStorageName,
@@ -37,8 +37,17 @@ export async function GET(
             return guard.response;
         }
 
+        const kindParam = request.nextUrl.searchParams.get("kind");
+        const kindFilter =
+            kindParam === "intake" || kindParam === "plattegrond"
+                ? kindParam
+                : undefined;
+
         const bijlagen = await prisma.projectAttachment.findMany({
-            where: { projectId: id },
+            where: {
+                projectId: id,
+                ...(kindFilter ? { kind: kindFilter } : {}),
+            },
             orderBy: { createdAt: "desc" },
         });
 
@@ -86,6 +95,9 @@ export async function POST(
 
         const formData = await request.formData();
         const file = formData.get("file");
+        const kind =
+            formData.get("kind") === "intake" ? "intake" : "plattegrond";
+        const folder = kind === "intake" ? "intake" : "plattegronden";
 
         if (
             !file
@@ -115,14 +127,15 @@ export async function POST(
             : upload.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const stamp = Date.now();
         const nestedPath =
-            `projecten/${id}/plattegronden/${stamp}-${veiligeNaam}`;
-        const flatPath = `plattegronden/${id}/${stamp}-${veiligeNaam}`;
+            `projecten/${id}/${folder}/${stamp}-${veiligeNaam}`;
+        const flatPath = `${folder}/${id}/${stamp}-${veiligeNaam}`;
 
-        const stored = await storeProjectPlattegrond({
+        const stored = await storeProjectFile({
             project,
             filename: `${stamp}-${veiligeNaam}`,
             buffer: payload.buffer,
             contentType: payload.contentType || contentType,
+            folder,
             supabaseUpload: async () => {
                 const uploaded = await uploadStorageObject({
                     path: nestedPath,
@@ -145,6 +158,7 @@ export async function POST(
                 filename: stored.path,
                 originalName: upload.name,
                 contentType: payload.contentType || contentType,
+                kind,
             },
         });
 

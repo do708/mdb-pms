@@ -121,14 +121,18 @@ export function serializeProjectDetail(
         bookedBy: row.bookedBy,
     }));
 
-    const bijlagen = (project.bijlagen ?? []).map((row) => ({
+    const alleBijlagen = (project.bijlagen ?? []).map((row) => ({
         id: row.id,
         url: row.url,
         filename: row.filename,
         originalName: row.originalName,
         contentType: row.contentType,
+        kind: row.kind || "plattegrond",
         createdAt: row.createdAt,
     }));
+    const bijlagen = alleBijlagen.filter((row) => row.kind !== "intake");
+    const intakeBijlagen = alleBijlagen.filter((row) => row.kind === "intake");
+    const intakeTekst = project.intakeTekst ?? null;
 
     if (options.forEngineer) {
         return {
@@ -166,11 +170,13 @@ export function serializeProjectDetail(
             termijn2Factuurnummer: null,
             termijn3Factuurnummer: null,
             termijn4Factuurnummer: null,
+            intakeTekst,
             createdAt: project.createdAt,
             gebruikteUren,
             materiaalKosten: 0,
             uren,
             bijlagen,
+            intakeBijlagen,
             materialen: [],
             workorders: [],
         };
@@ -209,11 +215,13 @@ export function serializeProjectDetail(
         termijn2Factuurnummer: project.termijn2Factuurnummer ?? null,
         termijn3Factuurnummer: project.termijn3Factuurnummer ?? null,
         termijn4Factuurnummer: project.termijn4Factuurnummer ?? null,
+        intakeTekst,
         createdAt: project.createdAt,
         gebruikteUren,
         materiaalKosten,
         uren,
         bijlagen,
+        intakeBijlagen,
         materialen: project.materialen.map((row) => ({
             id: row.id,
             omschrijving: row.omschrijving,

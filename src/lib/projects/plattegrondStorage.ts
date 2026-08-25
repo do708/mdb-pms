@@ -10,20 +10,33 @@ import {
 } from "@/lib/nas/synologyConfig";
 import { synologyUploadFile } from "@/lib/nas/synologyClient";
 
-export function projectPlattegrondNasFolder(project: {
-    number: string;
-    name: string;
-    customer: { name: string };
-}): string {
+export type ProjectFileFolder = "plattegronden" | "intake";
+
+export function projectFileNasFolder(
+    project: {
+        number: string;
+        name: string;
+        customer: { name: string };
+    },
+    folder: ProjectFileFolder
+): string {
     const archive = synologyArchiveRoot();
     const parent = archive.replace(/\/[^/]+$/, "") || "/mdb-pms";
     const customer = archiveCustomerSlug(project.customer.name);
     const projectSlug = archiveSlug(`${project.number}-${project.name}`);
 
-    return joinNasPath(parent, "projecten", customer, projectSlug, "plattegronden");
+    return joinNasPath(parent, "projecten", customer, projectSlug, folder);
 }
 
-export async function storeProjectPlattegrond(options: {
+export function projectPlattegrondNasFolder(project: {
+    number: string;
+    name: string;
+    customer: { name: string };
+}): string {
+    return projectFileNasFolder(project, "plattegronden");
+}
+
+export async function storeProjectFile(options: {
     project: {
         number: string;
         name: string;
@@ -32,12 +45,13 @@ export async function storeProjectPlattegrond(options: {
     filename: string;
     buffer: Buffer;
     contentType: string;
+    folder: ProjectFileFolder;
     supabaseUpload: () => Promise<{ path: string; url: string }>;
 }): Promise<{ path: string; url: string; storage: "nas" | "supabase" }> {
     if (isNasConfigured()) {
-        const folder = projectPlattegrondNasFolder(options.project);
+        const dest = projectFileNasFolder(options.project, options.folder);
         const nasPath = await synologyUploadFile(
-            folder,
+            dest,
             options.filename,
             options.buffer,
             options.contentType
@@ -56,4 +70,21 @@ export async function storeProjectPlattegrond(options: {
         ...supabase,
         storage: "supabase",
     };
+}
+
+export async function storeProjectPlattegrond(options: {
+    project: {
+        number: string;
+        name: string;
+        customer: { name: string };
+    };
+    filename: string;
+    buffer: Buffer;
+    contentType: string;
+    supabaseUpload: () => Promise<{ path: string; url: string }>;
+}): Promise<{ path: string; url: string; storage: "nas" | "supabase" }> {
+    return storeProjectFile({
+        ...options,
+        folder: "plattegronden",
+    });
 }

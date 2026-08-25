@@ -12,6 +12,7 @@ import {
     ProjectResultaatTotaal,
 } from "@/components/projects/ProjectBudget";
 import ProjectPlattegronden from "@/components/projects/ProjectPlattegronden";
+import ProjectIntakeGegevens from "@/components/projects/ProjectIntakeGegevens";
 import BunniKoppeling, {
     BunniDocumentPicker,
 } from "@/components/bunni/BunniKoppeling";
@@ -67,6 +68,7 @@ interface ProjectDetail {
     termijn2Factuurnummer: string | null;
     termijn3Factuurnummer: string | null;
     termijn4Factuurnummer: string | null;
+    intakeTekst: string | null;
     gebruikteUren: number;
     materiaalKosten: number;
     uren: {
@@ -98,6 +100,14 @@ interface ProjectDetail {
         status: string;
     }[];
     bijlagen: {
+        id: string;
+        url: string;
+        filename: string | null;
+        originalName: string | null;
+        contentType: string | null;
+        createdAt: string;
+    }[];
+    intakeBijlagen: {
         id: string;
         url: string;
         filename: string | null;
@@ -1088,6 +1098,14 @@ export default function ProjectDetailPage() {
                     </SpecPanel>
                 </SpecPageCard>
             ) : null}
+
+            <ProjectIntakeGegevens
+                projectId={project.id}
+                tekst={project.intakeTekst}
+                items={project.intakeBijlagen ?? []}
+                canEdit={isOffice}
+                onChanged={loadProject}
+            />
 
             {isOffice ? (
                 <>
