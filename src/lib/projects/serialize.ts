@@ -117,6 +117,15 @@ export function serializeProjectDetail(
         bookedBy: row.bookedBy,
     }));
 
+    const bijlagen = project.bijlagen.map((row) => ({
+        id: row.id,
+        url: row.url,
+        filename: row.filename,
+        originalName: row.originalName,
+        contentType: row.contentType,
+        createdAt: row.createdAt,
+    }));
+
     if (options.forEngineer) {
         return {
             id: project.id,
@@ -150,6 +159,7 @@ export function serializeProjectDetail(
             gebruikteUren,
             materiaalKosten: 0,
             uren,
+            bijlagen,
             materialen: [],
             workorders: [],
         };
@@ -185,6 +195,7 @@ export function serializeProjectDetail(
         gebruikteUren,
         materiaalKosten,
         uren,
+        bijlagen,
         materialen: project.materialen.map((row) => ({
             id: row.id,
             omschrijving: row.omschrijving,
@@ -228,6 +239,9 @@ export async function loadProjectDetail(id: string) {
                 },
             },
             materialen: {
+                orderBy: { createdAt: "desc" },
+            },
+            bijlagen: {
                 orderBy: { createdAt: "desc" },
             },
             workorders: {

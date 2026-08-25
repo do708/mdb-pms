@@ -36,6 +36,7 @@ export type AttachmentStorageRef = {
     url: string;
     originalName?: string | null;
     workorderId?: string | null;
+    projectId?: string | null;
     archiveNasPath?: string | null;
 };
 
@@ -144,6 +145,7 @@ export function candidateStoragePaths(attachment: AttachmentStorageRef): string[
     add(attachment.url);
 
     const workorderId = attachment.workorderId?.trim();
+    const projectId = attachment.projectId?.trim();
     const original = attachment.originalName?.trim();
     const fileBase = attachment.filename
         ? basename(attachment.filename)
@@ -157,6 +159,19 @@ export function candidateStoragePaths(attachment: AttachmentStorageRef): string[
         if (original) {
             add(`correspondentie/${workorderId}/${original}`);
             add(`correspondentie/${workorderId}/${sanitizedName(original)}`);
+        }
+    }
+
+    if (projectId) {
+        if (fileBase && !fileBase.startsWith("http")) {
+            add(`projecten/${projectId}/plattegronden/${fileBase}`);
+        }
+
+        if (original) {
+            add(`projecten/${projectId}/plattegronden/${original}`);
+            add(
+                `projecten/${projectId}/plattegronden/${sanitizedName(original)}`
+            );
         }
     }
 
@@ -346,6 +361,19 @@ export async function downloadAttachmentBytes(
     if (workorderId) {
         const listed = await downloadFromListedFolder(
             `correspondentie/${workorderId}`,
+            attachment
+        );
+
+        if (listed) {
+            return listed;
+        }
+    }
+
+    const projectId = attachment.projectId?.trim();
+
+    if (projectId) {
+        const listed = await downloadFromListedFolder(
+            `projecten/${projectId}/plattegronden`,
             attachment
         );
 

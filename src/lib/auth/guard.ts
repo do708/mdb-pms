@@ -104,3 +104,49 @@ export async function requireWorkorderAccess(
 
     return guard;
 }
+
+/**
+ * Toegang tot één project.
+ *
+ * Admin en kantoor mogen elk project. Een monteur alleen actieve
+ * projecten (zelfde als project-GET).
+ */
+export async function requireProjectAccess(
+    projectId: string
+): Promise<GuardResult> {
+    const guard = await requireApiUser();
+
+    if (!guard.ok) return guard;
+
+    const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        select: { id: true, status: true },
+    });
+
+    if (!project) {
+        return {
+            ok: false,
+            response: NextResponse.json(
+                { error: "Project niet gevonden" },
+                { status: 404 }
+            ),
+        };
+    }
+
+    if (guard.user.role === "engineer") {
+        const allowed =
+            project.status === "actief" || project.status === "new";
+
+        if (!allowed) {
+            return {
+                ok: false,
+                response: NextResponse.json(
+                    { error: "Geen toegang" },
+                    { status: 403 }
+                ),
+            };
+        }
+    }
+
+    return guard;
+}

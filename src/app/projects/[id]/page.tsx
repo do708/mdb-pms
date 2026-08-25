@@ -10,6 +10,7 @@ import {
     BudgetBadge,
     ProgressBar,
 } from "@/components/projects/ProjectBudget";
+import ProjectPlattegronden from "@/components/projects/ProjectPlattegronden";
 import {
     PageHeader,
     PageShell,
@@ -77,6 +78,14 @@ interface ProjectDetail {
         number: string;
         title: string;
         status: string;
+    }[];
+    bijlagen: {
+        id: string;
+        url: string;
+        filename: string | null;
+        originalName: string | null;
+        contentType: string | null;
+        createdAt: string;
     }[];
 }
 
@@ -215,7 +224,9 @@ export default function ProjectDetailPage() {
         }
 
         setProject(data);
-        resetFormFromProject(data);
+        if (!editingBasics) {
+            resetFormFromProject(data);
+        }
         setLoading(false);
     }
 
@@ -1222,6 +1233,13 @@ export default function ProjectDetailPage() {
                     </SpecPanel>
                 </SpecPageCard>
             )}
+
+            <ProjectPlattegronden
+                projectId={project.id}
+                items={project.bijlagen ?? []}
+                canEdit={isOffice}
+                onChanged={loadProject}
+            />
 
             {isOffice ? (
                 <SpecPageCard>
