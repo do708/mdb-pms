@@ -53,3 +53,42 @@ export function decimalToNumber(
 
     return Number.isFinite(n) ? n : 0;
 }
+
+/** Intern uurtarief voor project-totaal (uren × tarief + materiaal − offerte). */
+export const PROJECT_UUR_TARIEF = 55;
+
+export function projectUrenKosten(
+    uren: number,
+    tarief = PROJECT_UUR_TARIEF
+): number {
+    return uren * tarief;
+}
+
+export function projectKostenTotaal(
+    uren: number,
+    materiaal: number,
+    tarief = PROJECT_UUR_TARIEF
+): number {
+    return projectUrenKosten(uren, tarief) + materiaal;
+}
+
+/** Kosten − offerte. Positief = over budget (rood), negatief of 0 = binnen budget (groen). */
+export function projectEindbedrag(
+    uren: number,
+    materiaal: number,
+    offerte: number,
+    tarief = PROJECT_UUR_TARIEF
+): number {
+    return projectKostenTotaal(uren, materiaal, tarief) - offerte;
+}
+
+export function projectEindbedragSignal(
+    eindbedrag: number,
+    heeftOfferte: boolean
+): BudgetSignal {
+    if (!heeftOfferte) {
+        return "onbekend";
+    }
+
+    return eindbedrag > 0 ? "rood" : "groen";
+}

@@ -9,6 +9,7 @@ import DeleteButton from "@/components/DeleteButton";
 import {
     BudgetBadge,
     ProgressBar,
+    ProjectResultaatTotaal,
 } from "@/components/projects/ProjectBudget";
 import ProjectPlattegronden from "@/components/projects/ProjectPlattegronden";
 import {
@@ -1220,6 +1221,16 @@ export default function ProjectDetailPage() {
                             </SpecPanel>
                         </SpecPageCard>
                     </div>
+
+                    <SpecPageCard>
+                        <SpecPanel title="Totaal">
+                            <ProjectResultaatTotaal
+                                uren={project.gebruikteUren}
+                                materiaal={project.materiaalKosten}
+                                offerte={project.geoffreerdBedrag}
+                            />
+                        </SpecPanel>
+                    </SpecPageCard>
                 </>
             ) : (
                 <SpecPageCard>
