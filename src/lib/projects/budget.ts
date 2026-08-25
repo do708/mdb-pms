@@ -57,6 +57,48 @@ export function decimalToNumber(
 /** Intern uurtarief voor project-totaal (uren × tarief + materiaal − offerte). */
 export const PROJECT_UUR_TARIEF = 55;
 
+export const PROJECT_TERMIJNEN = [
+    {
+        key: "termijn1Gefactureerd",
+        dateKey: "termijn1GefactureerdOp",
+        numKey: "termijn1Factuurnummer",
+        label: "Termijn 1 — akkoord opdracht (inkoop)",
+        percentage: 30,
+    },
+    {
+        key: "termijn2Gefactureerd",
+        dateKey: "termijn2GefactureerdOp",
+        numKey: "termijn2Factuurnummer",
+        label: "Termijn 2 — start opdracht",
+        percentage: 30,
+    },
+    {
+        key: "termijn3Gefactureerd",
+        dateKey: "termijn3GefactureerdOp",
+        numKey: "termijn3Factuurnummer",
+        label: "Termijn 3 — halverwege opdracht",
+        percentage: 30,
+    },
+    {
+        key: "termijn4Gefactureerd",
+        dateKey: "termijn4GefactureerdOp",
+        numKey: "termijn4Factuurnummer",
+        label: "Termijn 4 — eind / oplevering",
+        percentage: 10,
+    },
+] as const;
+
+export function termijnBedrag(
+    offerte: number,
+    percentage: number
+): number {
+    if (!(offerte > 0)) {
+        return 0;
+    }
+
+    return (offerte * percentage) / 100;
+}
+
 export function projectUrenKosten(
     uren: number,
     tarief = PROJECT_UUR_TARIEF

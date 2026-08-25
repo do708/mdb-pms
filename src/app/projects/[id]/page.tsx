@@ -24,6 +24,10 @@ import {
 } from "@/components/ui/SpecLayout";
 import { formatHoursDisplay } from "@/lib/hours";
 import { filterEngineersForDay } from "@/constants/staffKind";
+import {
+    PROJECT_TERMIJNEN,
+    termijnBedrag,
+} from "@/lib/projects/budget";
 
 interface ProjectDetail {
     id: string;
@@ -1052,39 +1056,16 @@ export default function ProjectDetailPage() {
                     <SpecPageCard>
                         <SpecPanel title="Termijnen gefactureerd">
                             <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
-                    {(
-                        [
-                            {
-                                key: "termijn1Gefactureerd",
-                                dateKey: "termijn1GefactureerdOp",
-                                numKey: "termijn1Factuurnummer",
-                                label: "Termijn 1 — akkoord opdracht (inkoop)",
-                            },
-                            {
-                                key: "termijn2Gefactureerd",
-                                dateKey: "termijn2GefactureerdOp",
-                                numKey: "termijn2Factuurnummer",
-                                label: "Termijn 2 — start opdracht",
-                            },
-                            {
-                                key: "termijn3Gefactureerd",
-                                dateKey: "termijn3GefactureerdOp",
-                                numKey: "termijn3Factuurnummer",
-                                label: "Termijn 3 — 50%",
-                            },
-                            {
-                                key: "termijn4Gefactureerd",
-                                dateKey: "termijn4GefactureerdOp",
-                                numKey: "termijn4Factuurnummer",
-                                label: "Termijn 4 — 100%",
-                            },
-                        ] as const
-                    ).map((termijn) => {
+                    {PROJECT_TERMIJNEN.map((termijn) => {
                         const factuurdatum = termijnDatumIso(
                             project[termijn.dateKey]
                         );
                         // Alleen aangevinkt wanneer er een factuurdatum is.
                         const isChecked = Boolean(factuurdatum);
+                        const bedrag = termijnBedrag(
+                            project.geoffreerdBedrag,
+                            termijn.percentage
+                        );
 
                         return (
                         <div
@@ -1108,8 +1089,16 @@ export default function ProjectDetailPage() {
                                     }
                                     className="mt-0.5 h-4 w-4 accent-[#0066FF] shrink-0"
                                 />
-                                <span className="font-medium text-gray-800 leading-snug">
-                                    {termijn.label}
+                                <span className="min-w-0">
+                                    <span className="block font-medium text-gray-800 leading-snug">
+                                        {termijn.label}
+                                    </span>
+                                    <span className="block text-xs text-gray-500 mt-0.5">
+                                        {termijn.percentage}%
+                                        {bedrag > 0
+                                            ? ` · ${formatEuro(bedrag)}`
+                                            : ""}
+                                    </span>
                                 </span>
                             </label>
                             <div className="pl-6">
