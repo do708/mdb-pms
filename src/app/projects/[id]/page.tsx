@@ -12,6 +12,7 @@ import {
     ProjectResultaatTotaal,
 } from "@/components/projects/ProjectBudget";
 import ProjectPlattegronden from "@/components/projects/ProjectPlattegronden";
+import BunniKoppeling from "@/components/bunni/BunniKoppeling";
 import {
     PageHeader,
     PageShell,
@@ -42,6 +43,12 @@ interface ProjectDetail {
     geoffreerdBedrag: number;
     offerteUrl: string | null;
     offerteFilename: string | null;
+    bunniOfferteId: string | null;
+    bunniOfferteNummer: string | null;
+    bunniOffertePdfUrl: string | null;
+    bunniFactuurId: string | null;
+    bunniFactuurNummer: string | null;
+    bunniFactuurPdfUrl: string | null;
     termijn1Gefactureerd: boolean;
     termijn2Gefactureerd: boolean;
     termijn3Gefactureerd: boolean;
@@ -911,6 +918,56 @@ export default function ProjectDetailPage() {
                                                 : "—"}
                                         </dd>
                                     </div>
+                                    <div>
+                                        <dt>
+                                            <SpecFieldLabel>
+                                                Offertenummer
+                                            </SpecFieldLabel>
+                                        </dt>
+                                        <dd className="mt-0.5 text-gray-800">
+                                            {project.bunniOffertePdfUrl &&
+                                            project.bunniOfferteNummer ? (
+                                                <a
+                                                    href={
+                                                        project.bunniOffertePdfUrl
+                                                    }
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-[#0066FF] font-medium"
+                                                >
+                                                    {project.bunniOfferteNummer}
+                                                </a>
+                                            ) : (
+                                                project.bunniOfferteNummer ||
+                                                "—"
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt>
+                                            <SpecFieldLabel>
+                                                Factuurnummer
+                                            </SpecFieldLabel>
+                                        </dt>
+                                        <dd className="mt-0.5 text-gray-800">
+                                            {project.bunniFactuurPdfUrl &&
+                                            project.bunniFactuurNummer ? (
+                                                <a
+                                                    href={
+                                                        project.bunniFactuurPdfUrl
+                                                    }
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-[#0066FF] font-medium"
+                                                >
+                                                    {project.bunniFactuurNummer}
+                                                </a>
+                                            ) : (
+                                                project.bunniFactuurNummer ||
+                                                "—"
+                                            )}
+                                        </dd>
+                                    </div>
                                 </>
                             ) : (
                                 <div>
@@ -1240,6 +1297,34 @@ export default function ProjectDetailPage() {
                 canEdit={isOffice}
                 onChanged={loadProject}
             />
+
+            {isOffice ? (
+                <SpecPageCard>
+                    <SpecPanel
+                        title="Bunni"
+                        hint="Koppel een offerte en factuur uit Bunni. De nummers staan hierboven bij de projectgegevens."
+                    >
+                        <BunniKoppeling
+                            saveUrl={`/api/projects/${project.id}/bunni`}
+                            offerte={{
+                                id: project.bunniOfferteId,
+                                number: project.bunniOfferteNummer,
+                                pdfUrl: project.bunniOffertePdfUrl,
+                            }}
+                            factuur={{
+                                id: project.bunniFactuurId,
+                                number: project.bunniFactuurNummer,
+                                pdfUrl: project.bunniFactuurPdfUrl,
+                            }}
+                            onUpdated={(data) => {
+                                if (data && typeof data === "object") {
+                                    setProject(data as ProjectDetail);
+                                }
+                            }}
+                        />
+                    </SpecPanel>
+                </SpecPageCard>
+            ) : null}
 
             {isOffice ? (
                 <SpecPageCard>

@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import StatusFlow from "@/components/workorders/StatusFlow";
 import PhotosForm from "@/components/workorders/PhotosForm";
 import CorrespondentieBlok from "@/components/workorders/CorrespondentieBlok";
+import BunniKoppeling from "@/components/bunni/BunniKoppeling";
 import WerkInstructieWeergave from "@/components/workorders/WerkInstructieWeergave";
 import OpleverForm from "@/components/workorders/OpleverForm";
 import AanvraagSpecificatiesOverzicht, {
@@ -127,6 +128,13 @@ interface Workorder {
 
     } | null;
 
+
+    bunniOfferteId?: string | null;
+    bunniOfferteNummer?: string | null;
+    bunniOffertePdfUrl?: string | null;
+    bunniFactuurId?: string | null;
+    bunniFactuurNummer?: string | null;
+    bunniFactuurPdfUrl?: string | null;
 
 }
 
@@ -1277,6 +1285,48 @@ async function completeWorkorder(){
                             })()
                         }
 
+                    </section>
+                )
+            }
+
+            {
+                isOffice && (
+                    <section className="bg-white rounded-2xl p-4 space-y-3">
+                        <div>
+                            <h2 className="font-bold text-slate-900">
+                                Bunni
+                            </h2>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                                Koppel deze opdracht aan een offerte en factuur
+                                in Bunni. Staat de opdracht op een project, dan
+                                verschijnen de nummers daar ook.
+                            </p>
+                        </div>
+                        <BunniKoppeling
+                            saveUrl={`/api/workorders/${id}/bunni`}
+                            offerte={{
+                                id: workorder.bunniOfferteId ?? null,
+                                number: workorder.bunniOfferteNummer ?? null,
+                                pdfUrl: workorder.bunniOffertePdfUrl ?? null,
+                            }}
+                            factuur={{
+                                id: workorder.bunniFactuurId ?? null,
+                                number: workorder.bunniFactuurNummer ?? null,
+                                pdfUrl: workorder.bunniFactuurPdfUrl ?? null,
+                            }}
+                            onUpdated={(data) => {
+                                if (data && typeof data === "object") {
+                                    setWorkorder((prev) =>
+                                        prev
+                                            ? {
+                                                  ...prev,
+                                                  ...(data as Workorder),
+                                              }
+                                            : (data as Workorder)
+                                    );
+                                }
+                            }}
+                        />
                     </section>
                 )
             }
