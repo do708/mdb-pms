@@ -644,11 +644,19 @@ export default function WeekView({
         return jobs + assignedEvents + unassignedEventsOnDay(day).length;
     }
 
-    const gridCols =
-        `120px repeat(${Math.max(users.length, 1)}, minmax(110px, 1fr))`;
-
+    // Vaste dagkolom + flex-1 monteurs. Geen CSS-grid + 1fr: Safari/iPad
+    // zet dan de rijhoogte fout (lege ruimte onder het blauwe dagvak) en
+    // header/body-kolommen lopen uit de pas.
+    const COL_DAY_PX = 120;
+    const COL_USER_MIN_PX = 110;
+    const GRID_GAP_PX = 8; // gap-2
+    const userColCount = Math.max(users.length, 1);
     const minGridWidth =
-        120 + Math.max(users.length, 1) * 110;
+        COL_DAY_PX +
+        userColCount * COL_USER_MIN_PX +
+        userColCount * GRID_GAP_PX;
+    const colDayClass = "w-[120px] shrink-0";
+    const colUserClass = "min-w-[110px] flex-1 basis-0";
 
     return (
         <section className="bg-white border border-gray-200 rounded-2xl">
@@ -773,13 +781,12 @@ export default function WeekView({
                             onScroll={() => syncHorizontalScroll("header")}
                         >
                             <div
-                                className="grid gap-2 px-1 pb-2 pt-1"
+                                className="flex flex-nowrap items-start gap-2 px-2 pb-2 pt-1 border-x border-transparent"
                                 style={{
-                                    gridTemplateColumns: gridCols,
                                     minWidth: `${minGridWidth}px`,
                                 }}
                             >
-                                <div className="flex items-center justify-center px-2 pb-1 text-center">
+                                <div className={`${colDayClass} flex items-center justify-center px-2 pb-1 text-center`}>
                                     <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                                         Dag
                                     </span>
@@ -803,7 +810,7 @@ export default function WeekView({
                                     return (
                                         <div
                                             key={user.id}
-                                            className="px-1.5 py-1 min-w-0 text-center"
+                                            className={`${colUserClass} px-1.5 py-1 text-center`}
                                         >
                                             <p className="text-sm font-semibold text-slate-800 leading-snug">
                                                 {voornaam}
@@ -860,22 +867,23 @@ export default function WeekView({
                                         key={day.toISOString()}
                                         data-planning-day={iso}
                                         className={`
-                                            grid gap-2 rounded-2xl border p-2 transition
-                                            scroll-mt-24
+                                            flex flex-nowrap items-start gap-2
+                                            w-full h-max rounded-2xl border px-2 py-2
+                                            box-border transition scroll-mt-24
                                             ${
                                                 isFocused
-                                                    ? "border-[#0066FF] bg-[#e8f0ff]/70 ring-2 ring-[#0066FF]/25"
+                                                    ? "border-[#0066FF] bg-[#e8f0ff]/70 shadow-[0_0_0_2px_rgba(0,102,255,0.25)]"
                                                     : isToday
                                                       ? "border-[#d6007e]/25 bg-slate-50/40"
                                                       : "border-slate-100 bg-slate-50/40 hover:border-slate-200 hover:bg-white"
                                             }
                                         `}
                                         style={{
-                                            gridTemplateColumns: gridCols,
+                                            minWidth: `${minGridWidth}px`,
                                         }}
                                     >
                                         <div
-                                            className="flex flex-col gap-1 min-w-0"
+                                            className={`${colDayClass} flex flex-col gap-1 min-w-0`}
                                             onDragOver={
                                                 onMoveAgenda
                                                     ? (e) => {
@@ -1048,7 +1056,7 @@ export default function WeekView({
                                             return (
                                                 <div
                             key={user.id}
-                                                    className="flex flex-col gap-1.5 min-w-0"
+                                                    className={`${colUserClass} flex flex-col gap-1.5`}
                                                 >
                                                     <div
                                                         data-planning-cell={`${iso}:${user.id}`}
