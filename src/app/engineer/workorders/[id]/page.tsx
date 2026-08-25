@@ -1167,46 +1167,6 @@ async function completeWorkorder(){
 
             {
                 isOffice && (
-                    <div className="
-                        flex flex-wrap gap-2
-                        rounded-xl border border-gray-200
-                        bg-white p-3
-                    ">
-                        <a
-                            href={`/api/workorders/${id}/pdf`}
-                            className="
-                                border border-gray-200 rounded-lg
-                                px-3 py-1.5 text-sm font-medium
-                                text-gray-700 hover:bg-gray-50
-                            "
-                        >
-                            PDF downloaden
-                        </a>
-                        <a
-                            href={`/api/workorders/${id}/photos/zip`}
-                            className="
-                                border border-gray-200 rounded-lg
-                                px-3 py-1.5 text-sm font-medium
-                                text-gray-700 hover:bg-gray-50
-                            "
-                        >
-                            ZIP foto&apos;s
-                        </a>
-                        {(status || workorder.status) === "uitgevoerd" && (
-                            <span className="
-                                text-xs text-emerald-700
-                                self-center ml-1
-                            ">
-                                Status: Uitgevoerd — monteur heeft afgerond
-                            </span>
-                        )}
-                    </div>
-                )
-            }
-
-
-            {
-                isOffice && (
                     <section className="
                         bg-white
                         rounded-2xl
@@ -1286,6 +1246,45 @@ async function completeWorkorder(){
                         }
 
                     </section>
+                )
+            }
+
+            {
+                isOffice && (
+                    <div className="
+                        flex flex-wrap gap-2
+                        rounded-xl border border-gray-200
+                        bg-white p-3
+                    ">
+                        <a
+                            href={`/api/workorders/${id}/pdf`}
+                            className="
+                                border border-gray-200 rounded-lg
+                                px-3 py-1.5 text-sm font-medium
+                                text-gray-700 hover:bg-gray-50
+                            "
+                        >
+                            PDF downloaden
+                        </a>
+                        <a
+                            href={`/api/workorders/${id}/photos/zip`}
+                            className="
+                                border border-gray-200 rounded-lg
+                                px-3 py-1.5 text-sm font-medium
+                                text-gray-700 hover:bg-gray-50
+                            "
+                        >
+                            ZIP foto&apos;s
+                        </a>
+                        {(status || workorder.status) === "uitgevoerd" && (
+                            <span className="
+                                text-xs text-emerald-700
+                                self-center ml-1
+                            ">
+                                Status: Uitgevoerd — monteur heeft afgerond
+                            </span>
+                        )}
+                    </div>
                 )
             }
 
