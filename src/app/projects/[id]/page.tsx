@@ -1355,7 +1355,7 @@ export default function ProjectDetailPage() {
                     <SpecPageCard>
                         <SpecPanel
                             title="Offerte"
-                            hint="Koppel de offerte uit Bunni. Pagina opent de offerte in Bunni; pdf blijft apart beschikbaar."
+                            hint="Plak het offertenummer (bijv. 260475) of de Bunni-link. Pagina opent die offerte in Bunni; pdf blijft apart beschikbaar."
                         >
                             <BunniKoppeling
                                 saveUrl={`/api/projects/${project.id}/bunni`}

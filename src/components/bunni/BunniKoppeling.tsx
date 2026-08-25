@@ -4,8 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import {
     bunniPageUrl,
     isBunniUrlIdAsNumber,
-    offertenummerUitTekst,
-    parseBunniOfferteUrl,
+    parseOfferteKoppeling,
 } from "@/lib/bunni/urls";
 
 export type BunniHit = {
@@ -57,7 +56,6 @@ export function BunniDocumentPicker({
     compact?: boolean;
 }) {
     const [q, setQ] = useState("");
-    const [formNumber, setFormNumber] = useState("");
     const [open, setOpen] = useState(false);
     const [hits, setHits] = useState<BunniHit[]>([]);
     const [loading, setLoading] = useState(false);
@@ -75,7 +73,7 @@ export function BunniDocumentPicker({
     }, []);
 
     useEffect(() => {
-        if (!open) {
+        if (kind !== "factuur" || !open) {
             return;
         }
 
@@ -83,13 +81,7 @@ export function BunniDocumentPicker({
             setLoading(true);
             setError(null);
             try {
-                const params = new URLSearchParams({
-                    kind,
-                    q:
-                        kind === "offerte"
-                            ? [q, formNumber].filter(Boolean).join(" ")
-                            : q,
-                });
+                const params = new URLSearchParams({ kind, q });
                 const res = await fetch(`/api/bunni/invoices?${params}`);
                 const data = await res.json();
                 if (!res.ok) {
@@ -106,34 +98,31 @@ export function BunniDocumentPicker({
         }, 250);
 
         return () => window.clearTimeout(t);
-    }, [q, formNumber, kind, open]);
+    }, [q, kind, open]);
 
-    const paginaUrl = bunniPageUrl(kind, value.id);
-    const urlAlsNummer = isBunniUrlIdAsNumber(value.id, value.number);
-    const urlHit = kind === "offerte" ? parseBunniOfferteUrl(q) : null;
+    const paginaUrl = bunniPageUrl(kind, value.id, value.number);
+    const urlAlsNummer = kind === "offerte" && isBunniUrlIdAsNumber(value.id, value.number);
+    const inputClass = compact
+        ? "mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+        : "mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm";
 
-    function koppelHit(hit: BunniHit) {
-        const fromQuery = urlHit
-            ? offertenummerUitTekst(q, urlHit.numeric)
-            : null;
-        const number = (
-            formNumber.trim()
-            || fromQuery
-            || (isBunniUrlIdAsNumber(hit.id, hit.number) ? "" : hit.number)
-        ).trim();
-
-        if (kind === "offerte" && (!number || isBunniUrlIdAsNumber(hit.id, number))) {
-            setError(
-                "Vul het offertenummer uit het Bunni-formulier in. Dat is niet het nummer in de URL."
-            );
-            setOpen(true);
+    function koppelOfferte() {
+        const parsed = parseOfferteKoppeling(q);
+        if ("error" in parsed) {
+            setError(parsed.error);
             return;
         }
 
-        onSelect({ ...hit, number: number || hit.number });
+        onSelect({
+            id: parsed.id,
+            number: parsed.number,
+            date: null,
+            isFinalized: false,
+            contactName: null,
+            pdfUrl: null,
+            snippet: null,
+        });
         setQ("");
-        setFormNumber("");
-        setOpen(false);
         setError(null);
     }
 
@@ -180,11 +169,11 @@ export function BunniDocumentPicker({
                         </button>
                     ) : null}
                     </div>
-                    {kind === "offerte" && urlAlsNummer ? (
+                    {urlAlsNummer ? (
                         <p className="mt-1 text-xs text-amber-800">
                             Dit is het nummer uit de URL, niet het
-                            offertenummer uit het formulier. Ontkoppel en
-                            koppel opnieuw met het formuliernummer.
+                            offertenummer. Ontkoppel en vul het nummer in dat
+                            op de offerte staat, bijv. 260475.
                         </p>
                     ) : null}
                 </div>
@@ -192,7 +181,33 @@ export function BunniDocumentPicker({
                 <p className="mt-1 text-sm text-slate-400">Nog niet gekoppeld</p>
             )}
             {!disabled ? (
-                <>
+                kind === "offerte" ? (
+                    <div className="mt-2 flex gap-2">
+                        <input
+                            value={q}
+                            onChange={(e) => {
+                                setQ(e.target.value);
+                                setError(null);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    koppelOfferte();
+                                }
+                            }}
+                            placeholder="Offertenummer of Bunni-link, bijv. 260475"
+                            className={`${inputClass} mt-0`}
+                        />
+                        <button
+                            type="button"
+                            onClick={koppelOfferte}
+                            className="shrink-0 rounded-lg bg-[#0066FF] px-3 py-1.5 text-sm font-semibold text-white"
+                        >
+                            Koppel
+                        </button>
+                    </div>
+                ) : (
+                    <>
                     <input
                         value={q}
                         onChange={(e) => {
@@ -201,32 +216,9 @@ export function BunniDocumentPicker({
                             setError(null);
                         }}
                         onFocus={() => setOpen(true)}
-                        placeholder={
-                            kind === "offerte"
-                                ? "Plak de Bunni-paginalink van de offerte…"
-                                : "Zoek factuurnummer in Bunni…"
-                        }
-                        className={
-                            compact
-                                ? "mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
-                                : "mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                        }
+                        placeholder="Zoek factuurnummer in Bunni…"
+                        className={inputClass}
                     />
-                    {kind === "offerte" ? (
-                        <input
-                            value={formNumber}
-                            onChange={(e) => {
-                                setFormNumber(e.target.value);
-                                setError(null);
-                            }}
-                            placeholder="Offertenummer uit het formulier, bijv. 260470"
-                            className={
-                                compact
-                                    ? "mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
-                                    : "mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-                            }
-                        />
-                    ) : null}
                     {open ? (
                         <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg">
                             {loading ? (
@@ -239,11 +231,7 @@ export function BunniDocumentPicker({
                                 </p>
                             ) : hits.length === 0 ? (
                                 <p className="px-3 py-2 text-sm text-slate-500">
-                                    {kind === "offerte"
-                                        ? q.trim()
-                                            ? "Geen offerte gevonden. Plak de Bunni-link van de offertepagina en vul het offertenummer uit het formulier in."
-                                            : "Plak de Bunni-paginalink en vul het offertenummer uit het formulier in."
-                                        : "Geen facturen gevonden"}
+                                    Geen facturen gevonden
                                 </p>
                             ) : (
                                 hits.map((hit) => (
@@ -251,16 +239,15 @@ export function BunniDocumentPicker({
                                         key={hit.id}
                                         type="button"
                                         className="w-full text-left px-3 py-2 hover:bg-[#e8f0ff] border-b border-slate-50 last:border-0"
-                                        onClick={() => koppelHit(hit)}
+                                        onClick={() => {
+                                            onSelect(hit);
+                                            setQ("");
+                                            setOpen(false);
+                                            setError(null);
+                                        }}
                                     >
                                         <span className="font-semibold text-slate-800">
-                                            {hit.number
-                                            && !isBunniUrlIdAsNumber(
-                                                hit.id,
-                                                hit.number
-                                            )
-                                                ? hit.number
-                                                : "Bunni-pagina"}
+                                            {hit.number}
                                         </span>
                                         <span className="block text-xs text-slate-500 truncate">
                                             {[
@@ -276,7 +263,11 @@ export function BunniDocumentPicker({
                             )}
                         </div>
                     ) : null}
-                </>
+                    </>
+                )
+            ) : null}
+            {kind === "offerte" && error ? (
+                <p className="mt-1 text-xs text-red-600">{error}</p>
             ) : null}
         </div>
     );

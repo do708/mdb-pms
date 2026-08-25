@@ -1,6 +1,6 @@
 import type { BunniDocument } from "@/lib/bunni/client";
 import { getBunniDocument } from "@/lib/bunni/client";
-import { bunniNumericId } from "@/lib/bunni/urls";
+import { looksLikeInternBunniId, bunniNumericId } from "@/lib/bunni/urls";
 
 export type BunniLinkFields = {
     bunniOfferteId: string | null;
@@ -41,35 +41,32 @@ export async function resolveBunniLinkPatch(body: {
         if (!body.offerteId) {
             Object.assign(data, offerteFields(null));
         } else {
-            const doc = await getBunniDocument(body.offerteId);
-            if (doc) {
-                Object.assign(data, offerteFields(doc));
-            } else {
-                const number =
-                    typeof body.offerteNumber === "string"
-                    && body.offerteNumber.trim()
-                    ?
-                    body.offerteNumber.trim()
-                    :
-                    null;
-                const urlId = bunniNumericId(body.offerteId);
-                if (!number || number === urlId) {
-                    throw new Error(
-                        "Vul het offertenummer uit het Bunni-formulier in, niet het nummer uit de URL."
-                    );
-                }
-                Object.assign(data, {
-                    bunniOfferteId: body.offerteId,
-                    bunniOfferteNummer: number,
-                    bunniOffertePdfUrl:
-                        typeof body.offertePdfUrl === "string"
-                        && body.offertePdfUrl
-                        ?
-                        body.offertePdfUrl
-                        :
-                        null,
-                });
+            const number =
+                typeof body.offerteNumber === "string"
+                && body.offerteNumber.trim()
+                ?
+                body.offerteNumber.trim()
+                :
+                bunniNumericId(body.offerteId);
+
+            if (!number || looksLikeInternBunniId(number)) {
+                throw new Error(
+                    "Vul het offertenummer in dat op de offerte staat, bijv. 260475. Het cijfer in de Bunni-URL opent de verkeerde offerte."
+                );
             }
+
+            const doc = await getBunniDocument(body.offerteId);
+            Object.assign(data, {
+                bunniOfferteId: body.offerteId,
+                bunniOfferteNummer: number,
+                bunniOffertePdfUrl:
+                    (typeof body.offertePdfUrl === "string"
+                    && body.offertePdfUrl)
+                    ?
+                    body.offertePdfUrl
+                    :
+                    doc?.pdfUrl ?? null,
+            });
         }
     }
 
