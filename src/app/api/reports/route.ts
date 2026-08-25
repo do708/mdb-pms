@@ -18,6 +18,8 @@ import {
     projectJobAddress,
 } from "@/lib/travel/plannedKilometers";
 
+import { amsterdamDateKey } from "@/lib/reports/periods";
+
 
 
 export const maxDuration = 60;
@@ -432,6 +434,67 @@ export async function GET(){
             }>();
 
 
+        type DayAgg = {
+            date:string;
+            engineerId:string;
+            engineerName:string;
+            hours:number;
+            travel:number;
+            kilometers:number;
+            customers:Map<string,{
+                id:string;
+                name:string;
+                hours:number;
+            }>;
+        };
+
+        const byDay =
+            new Map<string,DayAgg>();
+
+        function upsertDay(
+            date:string,
+            engineerId:string,
+            engineerName:string
+        ):DayAgg {
+            const key = `${date}|${engineerId}`;
+            const existing = byDay.get(key);
+            if(existing){
+                return existing;
+            }
+            const created:DayAgg = {
+                date,
+                engineerId,
+                engineerName,
+                hours:0,
+                travel:0,
+                kilometers:0,
+                customers:new Map()
+            };
+            byDay.set(key, created);
+            return created;
+        }
+
+        function addDayCustomerHours(
+            row:DayAgg,
+            customer:{ id:string; name:string },
+            hours:number
+        ){
+            if(hours <= 0){
+                return;
+            }
+            const existing =
+                row.customers.get(customer.id)
+                ??
+                {
+                    id:customer.id,
+                    name:customer.name,
+                    hours:0
+                };
+            existing.hours += hours;
+            row.customers.set(customer.id, existing);
+        }
+
+
         let hoursThisMonth = 0;
 
         let hoursTotal = 0;
@@ -513,6 +576,23 @@ export async function GET(){
             byCustomer.set(customer.id, existingCustomer);
 
 
+            if(uren > 0){
+                const day =
+                    upsertDay(
+                        amsterdamDateKey(
+                            workorder.plannedDate ?? workorder.createdAt
+                        ),
+                        engineer?.id || "geen",
+                        engineer
+                            ? (engineer.name ?? "Onbekend")
+                            : "Geen monteur"
+                    );
+
+                day.hours += uren;
+                addDayCustomerHours(day, customer, uren);
+            }
+
+
         }
 
 
@@ -560,6 +640,18 @@ export async function GET(){
 
             byEngineer.set(engineer.id, existing);
 
+            if(uren > 0){
+                const day =
+                    upsertDay(
+                        amsterdamDateKey(row.datum),
+                        engineer.id,
+                        engineer.name ?? "Onbekend"
+                    );
+
+                day.hours += uren;
+                addDayCustomerHours(day, customer, uren);
+            }
+
         }
 
 
@@ -598,6 +690,16 @@ export async function GET(){
 
             byEngineer.set(group.engineerId, existing);
 
+            const day =
+                upsertDay(
+                    amsterdamDateKey(group.plannedDate),
+                    group.engineerId,
+                    group.engineerName
+                );
+
+            day.travel += travel.reisuren;
+            day.kilometers += travel.kilometers;
+
         }
 
 
@@ -622,7 +724,28 @@ export async function GET(){
 
             byCustomer:
                 Array.from(byCustomer.values())
-                .sort((a,b)=>b.hours - a.hours)
+                .sort((a,b)=>b.hours - a.hours),
+
+            byDay:
+                Array.from(byDay.values())
+                .map((row)=>({
+                    date:row.date,
+                    engineerId:row.engineerId,
+                    engineerName:row.engineerName,
+                    hours:row.hours,
+                    travel:row.travel,
+                    kilometers:Math.round(row.kilometers),
+                    customers:
+                        Array.from(row.customers.values())
+                        .sort((a,b)=>b.hours - a.hours)
+                }))
+                .sort((a,b)=>
+                    a.date === b.date
+                    ?
+                    a.engineerName.localeCompare(b.engineerName, "nl")
+                    :
+                    a.date < b.date ? 1 : -1
+                )
 
         });
 
