@@ -12,7 +12,7 @@ import AanvraagSpecificatiesOverzicht, {
 } from "@/components/aanvraag/AanvraagSpecificatiesOverzicht";
 import { bouwKlantWerkzaamheden } from "@/lib/aanvraag/klantWerkzaamheden";
 import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
-import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
+import { ontbrekendeVerplichteLocatieVelden, combineStreetAddress, splitStreetAddress } from "@/lib/workorders/address";
 import WerkInstructieVeld from "@/components/workorders/WerkInstructieVeld";
 import OpleverModulesPicker from "@/components/workorders/OpleverModulesPicker";
 import {
@@ -75,10 +75,7 @@ export default function EditWorkorderPage(){
         useState("");
 
 
-    const [straat,setStraat] =
-        useState("");
-
-    const [huisnummer,setHuisnummer] =
+    const [straatHuisnummer,setStraatHuisnummer] =
         useState("");
 
     const [postcode,setPostcode] =
@@ -240,13 +237,12 @@ export default function EditWorkorderPage(){
                     ""
                 );
 
-                setStraat(wo.straat ?? "");
-                setHuisnummer(wo.huisnummer ?? "");
+                setStraatHuisnummer(
+                    combineStreetAddress(wo.straat, wo.huisnummer)
+                    ?? wo.location
+                    ?? ""
+                );
                 setPostcode(wo.postcode ?? "");
-                // Legacy: oude opdrachten hebben alleen location
-                if (!wo.straat && wo.location) {
-                    setStraat(wo.location);
-                }
 
                 setCity(wo.city ?? "");
 
@@ -452,6 +448,9 @@ export default function EditWorkorderPage(){
 
 
         setError("");
+
+        const { straat, huisnummer } =
+            splitStreetAddress(straatHuisnummer);
 
         const locatieFout = ontbrekendeVerplichteLocatieVelden({
             customerId,
@@ -917,32 +916,20 @@ export default function EditWorkorderPage(){
                             />
                         </label>
 
-                        <label className="min-w-0 block">
+                        <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Straat{" "}
+                                Straat en huisnummer{" "}
                                 <span className="text-red-500">*</span>
                             </span>
                             <input
-                                value={straat}
-                                onChange={(e)=>setStraat(e.target.value)}
+                                value={straatHuisnummer}
+                                onChange={(e)=>setStraatHuisnummer(e.target.value)}
+                                placeholder="Bijv. Kerkstraat 12"
                                 required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
-                                "
-                            />
-                        </label>
-
-                        <label className="min-w-0 block">
-                            <span className="text-xs text-gray-500">
-                                Huisnr.
-                            </span>
-                            <input
-                                value={huisnummer}
-                                onChange={(e)=>setHuisnummer(e.target.value)}
-                                className="
-                                    mt-0.5 w-full border border-gray-200
-                                    rounded-lg p-2.5 text-sm text-gray-900
+                                    placeholder:text-gray-400
                                 "
                             />
                         </label>

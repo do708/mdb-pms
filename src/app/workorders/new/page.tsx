@@ -10,7 +10,7 @@ import { setPendingSchedule } from "@/lib/planning/pendingSchedule";
 import WerkInstructieVeld from "@/components/workorders/WerkInstructieVeld";
 import OpleverModulesPicker from "@/components/workorders/OpleverModulesPicker";
 import type { OpleverModule } from "@/lib/workorders/opleverModules";
-import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
+import { ontbrekendeVerplichteLocatieVelden, splitStreetAddress } from "@/lib/workorders/address";
 
 
 
@@ -94,10 +94,7 @@ function NewWorkorderInner(){
 
 
     // Adresvelden gelijk aan Aanvraag Service- en Installatiewerkzaamheden
-    const [straat,setStraat] =
-        useState("");
-
-    const [huisnummer,setHuisnummer] =
+    const [straatHuisnummer,setStraatHuisnummer] =
         useState("");
 
     const [postcode,setPostcode] =
@@ -297,6 +294,9 @@ function NewWorkorderInner(){
 
         setError("");
 
+
+        const { straat, huisnummer } =
+            splitStreetAddress(straatHuisnummer);
 
         const locatieFout = ontbrekendeVerplichteLocatieVelden({
             customerId,
@@ -653,32 +653,20 @@ function NewWorkorderInner(){
                             />
                         </label>
 
-                        <label className="min-w-0 block">
+                        <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Straat{" "}
+                                Straat en huisnummer{" "}
                                 <span className="text-red-500">*</span>
                             </span>
                             <input
-                                value={straat}
-                                onChange={(e)=>setStraat(e.target.value)}
+                                value={straatHuisnummer}
+                                onChange={(e)=>setStraatHuisnummer(e.target.value)}
+                                placeholder="Bijv. Kerkstraat 12"
                                 required
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900
-                                "
-                            />
-                        </label>
-
-                        <label className="min-w-0 block">
-                            <span className="text-xs text-gray-500">
-                                Huisnr.
-                            </span>
-                            <input
-                                value={huisnummer}
-                                onChange={(e)=>setHuisnummer(e.target.value)}
-                                className="
-                                    mt-0.5 w-full border border-gray-200
-                                    rounded-lg p-2.5 text-sm text-gray-900
+                                    placeholder:text-gray-400
                                 "
                             />
                         </label>
