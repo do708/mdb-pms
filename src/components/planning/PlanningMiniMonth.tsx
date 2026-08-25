@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { countsTowardCapacity } from "@/constants/staffKind";
+import { buildDayMarksLookup, marksOn } from "@/lib/calendarMarks";
 
 function toIsoDate(d: Date): string {
     const y = d.getFullYear();
@@ -147,6 +148,11 @@ export default function PlanningMiniMonth() {
         }
         return new Date(today.getFullYear(), today.getMonth(), 1);
     });
+
+    const dayMarksLookup = useMemo(() => {
+        const y = cursor.getFullYear();
+        return buildDayMarksLookup([y - 1, y, y + 1]);
+    }, [cursor]);
 
     const [loadByDay, setLoadByDay] = useState<Record<string, number>>({});
     const [capacityTick, setCapacityTick] = useState(0);
@@ -428,13 +434,20 @@ export default function PlanningMiniMonth() {
                             const ratio = loadByDay[iso] ?? 0;
                             const level = loadLevel(ratio);
                             const pct = Math.round(ratio * 100);
+                            const marks = marksOn(iso, dayMarksLookup);
+                            const extraTitle = [
+                                marks.holiday,
+                                ...marks.vacations.map((v) => v.shortName),
+                            ]
+                                .filter(Boolean)
+                                .join(" · ");
 
                             return (
                                 <button
                                     key={iso}
                                     type="button"
                                     onClick={() => selectDay(day)}
-                                    title={`${iso} · ${pct}% bezet — ga naar weekoverzicht`}
+                                    title={`${iso}${extraTitle ? ` · ${extraTitle}` : ""} · ${pct}% bezet — ga naar weekoverzicht`}
                                     className={`
                                         relative h-8 w-full rounded-lg text-[11px] tabular-nums
                                         font-semibold transition flex flex-col items-center justify-center
@@ -446,9 +459,20 @@ export default function PlanningMiniMonth() {
                                                   ? "bg-[#D6007E] text-white"
                                                   : !cell.inMonth
                                                     ? "text-slate-300 hover:bg-slate-50 hover:text-slate-500"
-                                                    : isWeekend
-                                                      ? "text-slate-400 hover:bg-slate-100"
-                                                      : "text-slate-800 hover:bg-[#e8f0ff]"
+                                                    : marks.holiday
+                                                      ? "text-[#d6007e] hover:bg-[#fff5fa]"
+                                                      : marks.vacations.some(
+                                                              (v) =>
+                                                                  v.kind ===
+                                                                  "bouwvak"
+                                                          )
+                                                        ? "text-amber-800 hover:bg-amber-50"
+                                                        : marks.vacations
+                                                                .length > 0
+                                                          ? "text-sky-800 hover:bg-sky-50"
+                                                          : isWeekend
+                                                            ? "text-slate-400 hover:bg-slate-100"
+                                                            : "text-slate-800 hover:bg-[#e8f0ff]"
                                         }
                                     `}
                                 >

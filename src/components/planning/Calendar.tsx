@@ -4,7 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 
 import DraggableAssignment from "./DraggableAssignment";
-import { dutchHolidays } from "@/lib/holidays";
+import {
+    buildDayMarksLookup,
+    marksOn,
+    vacationChipClass,
+    vacationToneClass,
+} from "@/lib/calendarMarks";
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
@@ -72,10 +77,7 @@ export default function Calendar({
         today.getFullYear() === year && today.getMonth() === month;
     const todayDay = isCurrentMonth ? today.getDate() : null;
 
-    const holidayLookup: Record<string, string> = {};
-    for (const h of dutchHolidays(year)) {
-        holidayLookup[h.date] = h.name;
-    }
+    const dayMarksLookup = buildDayMarksLookup([year - 1, year, year + 1]);
 
     function isoDateOf(d: number): string {
         const mm = String(month + 1).padStart(2, "0");
@@ -222,7 +224,9 @@ export default function Calendar({
                             : `${monthJobCount} opdracht${monthJobCount === 1 ? "" : "en"} deze maand.`}
                         {onDropDate
                             ? " Sleep een klus naar een andere dag of klik op plannen."
-                            : ""}
+                            : ""}{" "}
+                        Feestdagen, schoolvakanties regio Noord en bouwvak staan
+                        in de kalender.
                     </p>
                 </div>
 
@@ -316,12 +320,19 @@ export default function Calendar({
                                         day > 0 ? eventsOnDay(day) : [];
                                     const dayLeave =
                                         day > 0 ? leaveOnDay(day) : [];
-                                    const holiday =
-                                        day > 0
-                                            ? holidayLookup[isoDateOf(day)]
-                                            : undefined;
+                                    const dayIso =
+                                        day > 0 ? isoDateOf(day) : null;
+                                    const marks = dayIso
+                                        ? marksOn(dayIso, dayMarksLookup)
+                                        : { holiday: null, vacations: [] };
+                                    const holiday = marks.holiday;
+                                    const vacations = marks.vacations;
                                     const dayCount =
                                         dayItems.length + dayEvents.length;
+                                    const vacationTone =
+                                        day > 0 && !isToday
+                                            ? vacationToneClass(vacations)
+                                            : "";
 
                                     return (
                                         <div
@@ -377,9 +388,11 @@ export default function Calendar({
                                                         ? "bg-slate-50/80 border-slate-100"
                                                         : isToday
                                                           ? "border-[#d6007e]/40 bg-[#fff5fa] shadow-sm shadow-[#d6007e]/10"
-                                                          : isWeekend
-                                                            ? "border-slate-100 bg-slate-50/50"
-                                                            : "border-slate-200/80 bg-white hover:border-[#0066FF]/25"
+                                                          : vacationTone
+                                                            ? vacationTone
+                                                            : isWeekend
+                                                              ? "border-slate-100 bg-slate-50/50"
+                                                              : "border-slate-200/80 bg-white hover:border-[#0066FF]/25"
                                                 }
                                                 ${
                                                     day > 0 && onCreateAgenda
@@ -419,6 +432,29 @@ export default function Calendar({
                                                             </span>
                                                         ) : null}
                                                     </div>
+                                                    {vacations.length > 0 ? (
+                                                        <div className="flex flex-wrap gap-0.5 -mt-0.5">
+                                                            {vacations.map(
+                                                                (v) => (
+                                                                    <span
+                                                                        key={`${v.kind}-${v.shortName}`}
+                                                                        title={
+                                                                            v.name
+                                                                        }
+                                                                        className={`
+                                                                            text-[8px] font-semibold leading-tight
+                                                                            rounded px-1 py-px truncate max-w-full
+                                                                            ${vacationChipClass(v.kind)}
+                                                                        `}
+                                                                    >
+                                                                        {
+                                                                            v.shortName
+                                                                        }
+                                                                    </span>
+                                                                )
+                                                            )}
+                                                        </div>
+                                                    ) : null}
 
                                                     <div className="flex-1 min-h-0 space-y-1 overflow-hidden">
                                                         {dayLeave.map((l) => (

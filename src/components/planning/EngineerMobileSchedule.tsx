@@ -4,6 +4,12 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { getStatus, migrateStatus } from "@/constants/workorderStatus";
 import { formatAmsterdamHHmm } from "@/lib/datetime/amsterdam";
+import {
+    buildDayMarksLookup,
+    marksOn,
+    vacationChipClass,
+    yearsAround,
+} from "@/lib/calendarMarks";
 
 interface PlanningItem {
     id: string;
@@ -188,8 +194,14 @@ export default function EngineerMobileSchedule({
         [weekStart]
     );
 
+    const dayMarksLookup = useMemo(
+        () => buildDayMarksLookup(yearsAround(days)),
+        [days]
+    );
+
     const selectedDay = days[Math.min(5, Math.max(0, dayOffset))] ?? days[0];
     const selectedIso = toIsoDate(selectedDay);
+    const selectedMarks = marksOn(selectedIso, dayMarksLookup);
 
     const myItems = items;
 
@@ -486,6 +498,28 @@ export default function EngineerMobileSchedule({
                                         Vandaag
                                     </p>
                                 )}
+                                {selectedMarks.holiday ||
+                                selectedMarks.vacations.length > 0 ? (
+                                    <div className="mt-1 flex flex-wrap items-center justify-center gap-1">
+                                        {selectedMarks.holiday ? (
+                                            <span className="text-[11px] font-semibold text-[#d6007e]">
+                                                {selectedMarks.holiday}
+                                            </span>
+                                        ) : null}
+                                        {selectedMarks.vacations.map((v) => (
+                                            <span
+                                                key={`${v.kind}-${v.shortName}`}
+                                                title={v.name}
+                                                className={`
+                                                    text-[10px] font-semibold rounded px-1.5 py-0.5
+                                                    ${vacationChipClass(v.kind)}
+                                                `}
+                                            >
+                                                {v.shortName}
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : null}
                             </div>
                             <button
                                 type="button"
@@ -547,6 +581,7 @@ export default function EngineerMobileSchedule({
                                 const count =
                                     jobsForDay(iso).length +
                                     eventsForDay(iso).length;
+                                const marks = marksOn(iso, dayMarksLookup);
 
                                 return (
                                     <div key={iso} className="p-3 space-y-2">
@@ -566,7 +601,7 @@ export default function EngineerMobileSchedule({
                                                 justify-between gap-2 text-left
                                             "
                                         >
-                                            <div>
+                                            <div className="min-w-0">
                                                 <p
                                                     className={`
                                                         text-sm font-bold
@@ -582,6 +617,31 @@ export default function EngineerMobileSchedule({
                                                     })}
                                                     {isToday ? " · vandaag" : ""}
                                                 </p>
+                                                {marks.holiday ? (
+                                                    <p className="text-[11px] font-semibold text-[#d6007e] mt-0.5">
+                                                        {marks.holiday}
+                                                    </p>
+                                                ) : null}
+                                                {marks.vacations.length > 0 ? (
+                                                    <div className="mt-0.5 flex flex-wrap gap-1">
+                                                        {marks.vacations.map(
+                                                            (v) => (
+                                                                <span
+                                                                    key={`${v.kind}-${v.shortName}`}
+                                                                    title={
+                                                                        v.name
+                                                                    }
+                                                                    className={`
+                                                                        text-[10px] font-semibold rounded px-1.5 py-0.5
+                                                                        ${vacationChipClass(v.kind)}
+                                                                    `}
+                                                                >
+                                                                    {v.shortName}
+                                                                </span>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                ) : null}
                                             </div>
                                             <span className="text-xs text-gray-500">
                                                 {count === 0

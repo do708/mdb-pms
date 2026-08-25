@@ -1,9 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import Link from "next/link";
 
 import { PlanningStatusIcon } from "./PlanningStatusIcon";
+import {
+    buildDayMarksLookup,
+    marksOn,
+    vacationChipClass,
+    vacationToneClass,
+    yearsAround,
+} from "@/lib/calendarMarks";
 import {
     STAFF_KIND_LABELS,
     parseStaffKind,
@@ -396,6 +403,11 @@ export default function WeekView({
     function isoDate(d: Date): string {
         return toIsoDate(d);
     }
+
+    const dayMarksLookup = useMemo(
+        () => buildDayMarksLookup(yearsAround(days)),
+        [isoDate(days[0]), isoDate(days[days.length - 1])]
+    );
 
     // De dag loopt van 07:00 tot 18:00. Elk uur is PX_PER_UUR hoog.
     const DAG_START_UUR = 7;
@@ -861,6 +873,11 @@ export default function WeekView({
                                 );
                                 const dayNum = day.getDate();
                                 const jobsDay = dayJobCount(day);
+                                const marks = marksOn(iso, dayMarksLookup);
+                                const vacationTone =
+                                    !isFocused && !isToday
+                                        ? vacationToneClass(marks.vacations)
+                                        : "";
 
                                 return (
                                     <div
@@ -875,7 +892,9 @@ export default function WeekView({
                                                     ? "border-[#0066FF] bg-[#e8f0ff]/70 shadow-[0_0_0_2px_rgba(0,102,255,0.25)]"
                                                     : isToday
                                                       ? "border-[#d6007e]/25 bg-slate-50/40"
-                                                      : "border-slate-100 bg-slate-50/40 hover:border-slate-200 hover:bg-white"
+                                                      : vacationTone
+                                                        ? vacationTone
+                                                        : "border-slate-100 bg-slate-50/40 hover:border-slate-200 hover:bg-white"
                                             }
                                         `}
                                         style={{
@@ -962,6 +981,22 @@ export default function WeekView({
                                             <span className="text-lg font-bold leading-none mt-0.5 tabular-nums">
                                                 {dayNum}
                                             </span>
+                                            {marks.holiday ? (
+                                                <span
+                                                    className={`
+                                                        text-[9px] font-semibold leading-tight
+                                                        mt-1 text-center truncate max-w-full px-0.5
+                                                        ${
+                                                            isToday
+                                                                ? "text-white"
+                                                                : "text-[#d6007e]"
+                                                        }
+                                                    `}
+                                                    title={marks.holiday}
+                                                >
+                                                    {marks.holiday}
+                                                </span>
+                                            ) : null}
                                             <span
                                                 className={`text-[10px] mt-1 ${
                                                     isToday
@@ -974,6 +1009,24 @@ export default function WeekView({
                                                     : `${jobsDay} klus${jobsDay === 1 ? "" : "sen"}`}
                                             </span>
                             </Link>
+                                        {marks.vacations.length > 0 ? (
+                                            <div className="flex flex-col gap-0.5 w-full min-w-0">
+                                                {marks.vacations.map((v) => (
+                                                    <span
+                                                        key={`${v.kind}-${v.shortName}`}
+                                                        title={v.name}
+                                                        className={`
+                                                            text-[8px] font-semibold leading-tight
+                                                            rounded-md px-1 py-0.5 text-center
+                                                            truncate w-full
+                                                            ${vacationChipClass(v.kind)}
+                                                        `}
+                                                    >
+                                                        {v.shortName}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : null}
 
                                         {unassignedEventsOnDay(day).map((ev) => (
                                             <button
