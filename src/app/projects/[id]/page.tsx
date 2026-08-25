@@ -12,7 +12,9 @@ import {
     ProjectResultaatTotaal,
 } from "@/components/projects/ProjectBudget";
 import ProjectPlattegronden from "@/components/projects/ProjectPlattegronden";
-import BunniKoppeling from "@/components/bunni/BunniKoppeling";
+import BunniKoppeling, {
+    BunniDocumentPicker,
+} from "@/components/bunni/BunniKoppeling";
 import {
     PageHeader,
     PageShell,
@@ -192,7 +194,6 @@ export default function ProjectDetailPage() {
     const [matKosten, setMatKosten] = useState("");
     const [matDatum, setMatDatum] = useState("");
 
-    const [offerteUploading, setOfferteUploading] = useState(false);
     const [editingBasics, setEditingBasics] = useState(false);
     const [completing, setCompleting] = useState(false);
 
@@ -417,47 +418,78 @@ export default function ProjectDetailPage() {
         }
     }
 
-    async function uploadOfferte(file: File) {
-        setOfferteUploading(true);
+    async function koppelTermijnBunniFactuur(
+        termijn: (typeof PROJECT_TERMIJNEN)[number],
+        hit: {
+            number: string;
+            date: string | null;
+        } | null
+    ) {
+        if (!project) {
+            return;
+        }
+
+        const nextNumber = hit?.number?.trim() || null;
+        const previousNumber = project[termijn.numKey];
+        const previousDate = project[termijn.dateKey];
+        const nextDate =
+            hit?.date && /^\d{4}-\d{2}-\d{2}/.test(hit.date)
+                ? hit.date.slice(0, 10)
+                : previousDate;
+
+        if (nextNumber === previousNumber && !hit) {
+            return;
+        }
+
+        setProject({
+            ...project,
+            [termijn.numKey]: nextNumber,
+            ...(hit?.date
+                ? {
+                      [termijn.dateKey]: nextDate,
+                      [termijn.key]: true,
+                  }
+                : {}),
+        });
+        setSaving(true);
 
         try {
-            const form = new FormData();
-            form.append("file", file);
-
-            const upload = await fetch("/api/upload", {
-                method: "POST",
-                body: form,
-            });
-
-            const uploadData = await upload.json();
-
-            if (!upload.ok || !uploadData.url) {
-                alert(uploadData.error || "Upload mislukt");
-                return;
+            const body: Record<string, unknown> = {
+                [termijn.numKey]: nextNumber,
+            };
+            if (hit?.date) {
+                body[termijn.dateKey] = nextDate;
             }
 
-            const patch = await fetch(`/api/projects/${id}`, {
+            const response = await fetch(`/api/projects/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    offerteUrl: uploadData.url,
-                    offerteFilename: file.name,
-                }),
+                body: JSON.stringify(body),
             });
 
-            const data = await patch.json();
+            const data = await response.json();
 
-            if (!patch.ok) {
-                alert(data.error || "Koppelen mislukt");
+            if (!response.ok) {
+                setProject({
+                    ...project,
+                    [termijn.numKey]: previousNumber,
+                    [termijn.dateKey]: previousDate,
+                });
+                alert(data.error || "Opslaan mislukt");
                 return;
             }
 
             setProject(data);
         } catch (error) {
             console.error(error);
-            alert("Upload mislukt");
+            setProject({
+                ...project,
+                [termijn.numKey]: previousNumber,
+                [termijn.dateKey]: previousDate,
+            });
+            alert("Opslaan mislukt");
         } finally {
-            setOfferteUploading(false);
+            setSaving(false);
         }
     }
 
@@ -587,63 +619,6 @@ export default function ProjectDetailPage() {
                 ...project,
                 [dateKey]: previousDate,
                 [key]: previousChecked,
-            });
-            alert("Opslaan mislukt");
-        } finally {
-            setSaving(false);
-        }
-    }
-
-    async function setTermijnFactuurnummer(
-        numKey:
-            | "termijn1Factuurnummer"
-            | "termijn2Factuurnummer"
-            | "termijn3Factuurnummer"
-            | "termijn4Factuurnummer",
-        value: string
-    ) {
-        if (!project) {
-            return;
-        }
-
-        const next = value.trim() || null;
-        const previous = project[numKey];
-        if (next === previous) {
-            return;
-        }
-
-        setProject({
-            ...project,
-            [numKey]: next,
-        });
-        setSaving(true);
-
-        try {
-            const response = await fetch(`/api/projects/${id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    [numKey]: next,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setProject({
-                    ...project,
-                    [numKey]: previous,
-                });
-                alert(data.error || "Opslaan mislukt");
-                return;
-            }
-
-            setProject(data);
-        } catch (error) {
-            console.error(error);
-            setProject({
-                ...project,
-                [numKey]: previous,
             });
             alert("Opslaan mislukt");
         } finally {
@@ -918,56 +893,6 @@ export default function ProjectDetailPage() {
                                                 : "—"}
                                         </dd>
                                     </div>
-                                    <div>
-                                        <dt>
-                                            <SpecFieldLabel>
-                                                Offertenummer
-                                            </SpecFieldLabel>
-                                        </dt>
-                                        <dd className="mt-0.5 text-gray-800">
-                                            {project.bunniOffertePdfUrl &&
-                                            project.bunniOfferteNummer ? (
-                                                <a
-                                                    href={
-                                                        project.bunniOffertePdfUrl
-                                                    }
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="text-[#0066FF] font-medium"
-                                                >
-                                                    {project.bunniOfferteNummer}
-                                                </a>
-                                            ) : (
-                                                project.bunniOfferteNummer ||
-                                                "—"
-                                            )}
-                                        </dd>
-                                    </div>
-                                    <div>
-                                        <dt>
-                                            <SpecFieldLabel>
-                                                Factuurnummer
-                                            </SpecFieldLabel>
-                                        </dt>
-                                        <dd className="mt-0.5 text-gray-800">
-                                            {project.bunniFactuurPdfUrl &&
-                                            project.bunniFactuurNummer ? (
-                                                <a
-                                                    href={
-                                                        project.bunniFactuurPdfUrl
-                                                    }
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="text-[#0066FF] font-medium"
-                                                >
-                                                    {project.bunniFactuurNummer}
-                                                </a>
-                                            ) : (
-                                                project.bunniFactuurNummer ||
-                                                "—"
-                                            )}
-                                        </dd>
-                                    </div>
                                 </>
                             ) : (
                                 <div>
@@ -1110,103 +1035,6 @@ export default function ProjectDetailPage() {
 
             {isOffice ? (
                 <>
-                    <SpecPageCard>
-                        <SpecPanel title="Termijnen gefactureerd">
-                            <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
-                    {PROJECT_TERMIJNEN.map((termijn) => {
-                        const factuurdatum = termijnDatumIso(
-                            project[termijn.dateKey]
-                        );
-                        // Alleen aangevinkt wanneer er een factuurdatum is.
-                        const isChecked = Boolean(factuurdatum);
-                        const bedrag = termijnBedrag(
-                            project.geoffreerdBedrag,
-                            termijn.percentage
-                        );
-
-                        return (
-                        <div
-                            key={termijn.key}
-                            className="
-                                grid grid-rows-subgrid row-span-3 gap-y-2
-                                rounded-xl border border-gray-200
-                                px-3 py-2 min-w-0
-                            "
-                        >
-                            <label className="flex items-start gap-2 text-sm cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    disabled={saving}
-                                    onChange={(e) =>
-                                        toggleTermijnGefactureerd(
-                                            termijn.key,
-                                            e.target.checked
-                                        )
-                                    }
-                                    className="mt-0.5 h-4 w-4 accent-[#0066FF] shrink-0"
-                                />
-                                <span className="min-w-0">
-                                    <span className="block font-medium text-gray-800 leading-snug">
-                                        {termijn.label}
-                                    </span>
-                                    <span className="block text-xs text-gray-500 mt-0.5">
-                                        {termijn.percentage}%
-                                        {bedrag > 0
-                                            ? ` · ${formatEuro(bedrag)}`
-                                            : ""}
-                                    </span>
-                                </span>
-                            </label>
-                            <div className="pl-6">
-                                <label className="block mb-1">
-                                    <SpecFieldLabel>
-                                        Factuurdatum
-                                    </SpecFieldLabel>
-                                </label>
-                                <input
-                                    type="date"
-                                    value={factuurdatum}
-                                    disabled={saving}
-                                    onChange={(e) =>
-                                        setTermijnGefactureerdDatum(
-                                            termijn.dateKey,
-                                            e.target.value
-                                        )
-                                    }
-                                    className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
-                                />
-                            </div>
-                            <div className="pl-6">
-                                <label className="block mb-1">
-                                    <SpecFieldLabel>
-                                        Factuurnummer
-                                    </SpecFieldLabel>
-                                </label>
-                                <input
-                                    type="text"
-                                    defaultValue={
-                                        project[termijn.numKey] || ""
-                                    }
-                                    key={`${termijn.numKey}-${project[termijn.numKey] || ""}`}
-                                    disabled={saving}
-                                    onBlur={(e) =>
-                                        setTermijnFactuurnummer(
-                                            termijn.numKey,
-                                            e.target.value
-                                        )
-                                    }
-                                    placeholder="Bijv. F2026-001"
-                                    className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
-                                />
-                            </div>
-                        </div>
-                        );
-                    })}
-                            </div>
-                        </SpecPanel>
-                    </SpecPageCard>
-
                     <div className="grid lg:grid-cols-2 gap-4">
                         <SpecPageCard>
                             <SpecPanel title="Uren / budget">
@@ -1277,6 +1105,133 @@ export default function ProjectDetailPage() {
                             />
                         </SpecPanel>
                     </SpecPageCard>
+
+                    <SpecPageCard>
+                        <SpecPanel
+                            title="Termijnen gefactureerd"
+                            hint="Factuurnummer kies je uit Bunni. De factuurdatum vult mee als die in Bunni bekend is."
+                        >
+                            <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
+                    {PROJECT_TERMIJNEN.map((termijn) => {
+                        const factuurdatum = termijnDatumIso(
+                            project[termijn.dateKey]
+                        );
+                        const isChecked = Boolean(factuurdatum);
+                        const bedrag = termijnBedrag(
+                            project.geoffreerdBedrag,
+                            termijn.percentage
+                        );
+
+                        return (
+                        <div
+                            key={termijn.key}
+                            className="
+                                grid grid-rows-subgrid row-span-3 gap-y-2
+                                rounded-xl border border-gray-200
+                                px-3 py-2 min-w-0
+                            "
+                        >
+                            <label className="flex items-start gap-2 text-sm cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    disabled={saving}
+                                    onChange={(e) =>
+                                        toggleTermijnGefactureerd(
+                                            termijn.key,
+                                            e.target.checked
+                                        )
+                                    }
+                                    className="mt-0.5 h-4 w-4 accent-[#0066FF] shrink-0"
+                                />
+                                <span className="min-w-0">
+                                    <span className="block font-medium text-gray-800 leading-snug">
+                                        {termijn.label}
+                                    </span>
+                                    <span className="block text-xs text-gray-500 mt-0.5">
+                                        {termijn.percentage}%
+                                        {bedrag > 0
+                                            ? ` · ${formatEuro(bedrag)}`
+                                            : ""}
+                                    </span>
+                                </span>
+                            </label>
+                            <div className="pl-6">
+                                <label className="block mb-1">
+                                    <SpecFieldLabel>
+                                        Factuurdatum
+                                    </SpecFieldLabel>
+                                </label>
+                                <input
+                                    type="date"
+                                    value={factuurdatum}
+                                    disabled={saving}
+                                    onChange={(e) =>
+                                        setTermijnGefactureerdDatum(
+                                            termijn.dateKey,
+                                            e.target.value
+                                        )
+                                    }
+                                    className="border rounded-lg px-2 py-1.5 text-sm w-full max-w-full bg-white"
+                                />
+                            </div>
+                            <div className="pl-6 min-w-0">
+                                <label className="block mb-1">
+                                    <SpecFieldLabel>
+                                        Factuurnummer
+                                    </SpecFieldLabel>
+                                </label>
+                                <BunniDocumentPicker
+                                    kind="factuur"
+                                    compact
+                                    disabled={saving}
+                                    value={{
+                                        id: null,
+                                        number:
+                                            project[termijn.numKey] || null,
+                                        pdfUrl: null,
+                                    }}
+                                    onSelect={(hit) =>
+                                        koppelTermijnBunniFactuur(termijn, hit)
+                                    }
+                                    onClear={() =>
+                                        koppelTermijnBunniFactuur(termijn, null)
+                                    }
+                                />
+                            </div>
+                        </div>
+                        );
+                    })}
+                            </div>
+                        </SpecPanel>
+                    </SpecPageCard>
+
+                    <SpecPageCard>
+                        <SpecPanel
+                            title="Offerte"
+                            hint="Koppel de offerte uit Bunni. De bijlage opent via Bunni; niet apart uploaden."
+                        >
+                            <BunniKoppeling
+                                saveUrl={`/api/projects/${project.id}/bunni`}
+                                showFactuur={false}
+                                offerte={{
+                                    id: project.bunniOfferteId,
+                                    number: project.bunniOfferteNummer,
+                                    pdfUrl: project.bunniOffertePdfUrl,
+                                }}
+                                factuur={{
+                                    id: null,
+                                    number: null,
+                                    pdfUrl: null,
+                                }}
+                                onUpdated={(data) => {
+                                    if (data && typeof data === "object") {
+                                        setProject(data as ProjectDetail);
+                                    }
+                                }}
+                            />
+                        </SpecPanel>
+                    </SpecPageCard>
                 </>
             ) : (
                 <SpecPageCard>
@@ -1297,75 +1252,6 @@ export default function ProjectDetailPage() {
                 canEdit={isOffice}
                 onChanged={loadProject}
             />
-
-            {isOffice ? (
-                <SpecPageCard>
-                    <SpecPanel
-                        title="Bunni"
-                        hint="Koppel een offerte en factuur uit Bunni. De nummers staan hierboven bij de projectgegevens."
-                    >
-                        <BunniKoppeling
-                            saveUrl={`/api/projects/${project.id}/bunni`}
-                            offerte={{
-                                id: project.bunniOfferteId,
-                                number: project.bunniOfferteNummer,
-                                pdfUrl: project.bunniOffertePdfUrl,
-                            }}
-                            factuur={{
-                                id: project.bunniFactuurId,
-                                number: project.bunniFactuurNummer,
-                                pdfUrl: project.bunniFactuurPdfUrl,
-                            }}
-                            onUpdated={(data) => {
-                                if (data && typeof data === "object") {
-                                    setProject(data as ProjectDetail);
-                                }
-                            }}
-                        />
-                    </SpecPanel>
-                </SpecPageCard>
-            ) : null}
-
-            {isOffice ? (
-                <SpecPageCard>
-                    <SpecPanel title="Offerte (PDF)">
-                        {project.offerteUrl ? (
-                            <a
-                                href={project.offerteUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-[#d6007e] font-medium underline"
-                            >
-                                {project.offerteFilename ||
-                                    "Offerte bekijken"}
-                            </a>
-                        ) : (
-                            <p className="text-sm text-gray-500">
-                                Nog geen offerte geüpload.
-                            </p>
-                        )}
-                        <label className="inline-block">
-                            <span className="bg-gray-100 rounded-xl px-4 py-2 text-sm font-medium cursor-pointer hover:bg-gray-200">
-                                {offerteUploading
-                                    ? "Uploaden…"
-                                    : "PDF uploaden"}
-                            </span>
-                            <input
-                                type="file"
-                                accept="application/pdf,.pdf"
-                                className="hidden"
-                                disabled={offerteUploading}
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        uploadOfferte(file);
-                                    }
-                                }}
-                            />
-                        </label>
-                    </SpecPanel>
-                </SpecPageCard>
-            ) : null}
 
             <SpecPageCard>
                 <SpecPanel title="Urenlog">

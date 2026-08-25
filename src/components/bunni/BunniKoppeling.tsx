@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type BunniHit = {
+export type BunniHit = {
     id: string;
     number: string;
     date: string | null;
@@ -12,7 +12,7 @@ type BunniHit = {
     snippet: string | null;
 };
 
-type Linked = {
+export type Linked = {
     id: string | null;
     number: string | null;
     pdfUrl: string | null;
@@ -33,20 +33,22 @@ function formatDate(iso: string | null) {
     });
 }
 
-function Picker({
+export function BunniDocumentPicker({
     label,
     kind,
     value,
     onSelect,
     onClear,
     disabled,
+    compact,
 }: {
-    label: string;
+    label?: string;
     kind: "offerte" | "factuur";
     value: Linked;
     onSelect: (hit: BunniHit) => void;
     onClear: () => void;
     disabled?: boolean;
+    compact?: boolean;
 }) {
     const [q, setQ] = useState("");
     const [open, setOpen] = useState(false);
@@ -95,9 +97,11 @@ function Picker({
 
     return (
         <div ref={boxRef} className="relative min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                {label}
-            </p>
+            {label ? (
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    {label}
+                </p>
+            ) : null}
             {value.number ? (
                 <div className="mt-1 flex items-center gap-2 min-w-0">
                     {value.pdfUrl ? (
@@ -136,8 +140,16 @@ function Picker({
                             setOpen(true);
                         }}
                         onFocus={() => setOpen(true)}
-                        placeholder={`Zoek ${label.toLowerCase()} in Bunni…`}
-                        className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                        placeholder={
+                            kind === "offerte"
+                                ? "Zoek offerte in Bunni…"
+                                : "Zoek factuur in Bunni…"
+                        }
+                        className={
+                            compact
+                                ? "mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+                                : "mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                        }
                     />
                     {open ? (
                         <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg">
@@ -199,12 +211,16 @@ export default function BunniKoppeling({
     saveUrl,
     disabled,
     onUpdated,
+    showOfferte = true,
+    showFactuur = true,
 }: {
     offerte: Linked;
     factuur: Linked;
     saveUrl: string;
     disabled?: boolean;
     onUpdated?: (data: unknown) => void;
+    showOfferte?: boolean;
+    showFactuur?: boolean;
 }) {
     const [saving, setSaving] = useState(false);
     const [localOfferte, setLocalOfferte] = useState(offerte);
@@ -240,8 +256,15 @@ export default function BunniKoppeling({
     }
 
     return (
-        <div className="grid sm:grid-cols-2 gap-4">
-            <Picker
+        <div
+            className={
+                showOfferte && showFactuur
+                    ? "grid sm:grid-cols-2 gap-4"
+                    : "min-w-0"
+            }
+        >
+            {showOfferte ? (
+            <BunniDocumentPicker
                 label="Offertenummer"
                 kind="offerte"
                 value={localOfferte}
@@ -259,7 +282,9 @@ export default function BunniKoppeling({
                     void save({ offerteId: null });
                 }}
             />
-            <Picker
+            ) : null}
+            {showFactuur ? (
+            <BunniDocumentPicker
                 label="Factuurnummer"
                 kind="factuur"
                 value={localFactuur}
@@ -277,6 +302,7 @@ export default function BunniKoppeling({
                     void save({ factuurId: null });
                 }}
             />
+            ) : null}
         </div>
     );
 }
