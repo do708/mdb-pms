@@ -14,6 +14,7 @@ import { ENGINEER_OPDRACHT_STATUS_KEYS } from "@/constants/workorderStatus";
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
 import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
+import { syncWorkorderForms } from "@/lib/workorders/syncForms";
 
 
 
@@ -514,27 +515,7 @@ export async function POST(
 
 
         // Aangevinkte opleverformulieren aan de werkbon koppelen.
-        if(Array.isArray(body.formTypeIds)){
-
-            const uniekeFormTypes =
-                [...new Set(
-                    body.formTypeIds.filter((x:string)=>x)
-                )] as string[];
-
-            for(const formTypeId of uniekeFormTypes){
-
-                await prisma.workorderForm.create({
-                    data:{
-                        workorderId:workorder.id,
-                        formTypeId
-                    }
-                }).catch(()=>{
-                    // ongeldige of dubbele koppeling negeren
-                });
-
-            }
-
-        }
+        await syncWorkorderForms(workorder.id, body.formTypeIds);
 
 
 

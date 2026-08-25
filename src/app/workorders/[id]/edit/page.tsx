@@ -152,6 +152,13 @@ export default function EditWorkorderPage(){
         }[]>([]);
 
 
+    const [formTypes,setFormTypes] =
+        useState<{ id:string; key:string; name:string }[]>([]);
+
+    const [selectedFormTypeId,setSelectedFormTypeId] =
+        useState("");
+
+
     const [aanvraagSnapshot,setAanvraagSnapshot] =
         useState<AanvraagOverzichtSnapshot | null>(null);
 
@@ -179,12 +186,14 @@ export default function EditWorkorderPage(){
             const [
                 workorderResponse,
                 customersResponse,
-                engineersResponse
+                engineersResponse,
+                formTypesResponse
             ] =
                 await Promise.all([
                     fetch(`/api/workorders/${id}`),
                     fetch("/api/customers"),
-                    fetch("/api/engineers")
+                    fetch("/api/engineers"),
+                    fetch("/api/form-types")
                 ]);
 
 
@@ -210,6 +219,21 @@ export default function EditWorkorderPage(){
                 :
                 []
             );
+
+            try {
+                const formTypesData =
+                    await formTypesResponse.json();
+
+                setFormTypes(
+                    Array.isArray(formTypesData)
+                    ?
+                    formTypesData
+                    :
+                    []
+                );
+            } catch {
+                setFormTypes([]);
+            }
 
 
 
@@ -296,6 +320,17 @@ export default function EditWorkorderPage(){
                 );
 
                 setAssignedUserId(wo.assignedUserId ?? "");
+
+                const gekoppeldFormulier =
+                    Array.isArray(wo.forms) && wo.forms[0]
+                    ?
+                    wo.forms[0].formTypeId
+                    || wo.forms[0].formType?.id
+                    || ""
+                    :
+                    "";
+
+                setSelectedFormTypeId(gekoppeldFormulier);
 
                 setPlannedDate(
                     wo.plannedDate
@@ -527,7 +562,14 @@ export default function EditWorkorderPage(){
                                 ?
                                 `${plannedDate}T${endTime}`
                                 :
-                                null
+                                null,
+
+                            formTypeIds:
+                                selectedFormTypeId
+                                ?
+                                [selectedFormTypeId]
+                                :
+                                []
 
                         })
 
@@ -1069,6 +1111,59 @@ export default function EditWorkorderPage(){
                         onChange={setWerkInstructie}
                     />
                 </div>
+
+
+                {
+                    formTypes.length > 0 && (
+                        <div className="
+                            rounded-xl border border-gray-200
+                            bg-gray-50 p-3 space-y-3
+                        ">
+                            <div>
+                                <h2 className="font-semibold text-sm text-gray-800">
+                                    Welke formulier moet er ingevuld worden?
+                                </h2>
+                                <p className="text-xs text-gray-500 mt-0.5 leading-snug">
+                                    Kies welk formulier de monteur invult. Je kunt dit
+                                    hier later opnieuw aanpassen.
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-3">
+                                {
+                                    formTypes.map(ft=>{
+                                        const gekozen =
+                                            selectedFormTypeId === ft.id;
+
+                                        return (
+                                            <button
+                                                key={ft.id}
+                                                type="button"
+                                                onClick={()=>{
+                                                    setSelectedFormTypeId(
+                                                        gekozen ? "" : ft.id
+                                                    );
+                                                }}
+                                                className={`
+                                                    px-4 py-2 rounded-xl border text-sm
+                                                    transition
+                                                    ${
+                                                        gekozen
+                                                        ?
+                                                        "bg-blue-50 border-blue-400 text-blue-800 font-medium"
+                                                        :
+                                                        "bg-white border-slate-200 text-gray-600 hover:border-slate-300"
+                                                    }
+                                                `}
+                                            >
+                                                {ft.name}
+                                            </button>
+                                        );
+                                    })
+                                }
+                            </div>
+                        </div>
+                    )
+                }
 
 
                 <div className="
