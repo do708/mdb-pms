@@ -1,5 +1,6 @@
 import type { BunniDocument } from "@/lib/bunni/client";
 import { getBunniDocument } from "@/lib/bunni/client";
+import { bunniNumericId } from "@/lib/bunni/urls";
 
 export type BunniLinkFields = {
     bunniOfferteId: string | null;
@@ -51,8 +52,11 @@ export async function resolveBunniLinkPatch(body: {
                     body.offerteNumber.trim()
                     :
                     null;
-                if (!number) {
-                    throw new Error("Bunni-offerte niet gevonden");
+                const urlId = bunniNumericId(body.offerteId);
+                if (!number || number === urlId) {
+                    throw new Error(
+                        "Vul het offertenummer uit het Bunni-formulier in, niet het nummer uit de URL."
+                    );
                 }
                 Object.assign(data, {
                     bunniOfferteId: body.offerteId,

@@ -45,3 +45,27 @@ export function parseBunniOfferteUrl(
         numeric: match[1],
     };
 }
+
+/**
+ * Offertenummer uit het Bunni-formulier.
+ * Het cijfer in de URL (`offerte-334439`) is het interne id, niet het
+ * offertenummer (`260470`).
+ */
+export function offertenummerUitTekst(
+    input: string,
+    urlNumeric?: string | null
+): string | null {
+    const numbers = String(input).match(/\b(\d{4,8})\b/g) || [];
+    const other = numbers.find((value) => value !== urlNumeric);
+    return other || null;
+}
+
+/** True als het getoonde nummer het URL-id is in plaats van het formuliernummer. */
+export function isBunniUrlIdAsNumber(
+    documentId: string | null | undefined,
+    number: string | null | undefined
+): boolean {
+    const numeric = bunniNumericId(documentId);
+    const n = (number || "").trim();
+    return Boolean(numeric && n && n === numeric);
+}

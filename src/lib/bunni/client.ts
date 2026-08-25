@@ -1,4 +1,4 @@
-import { parseBunniOfferteUrl } from "@/lib/bunni/urls";
+import { parseBunniOfferteUrl, offertenummerUitTekst } from "@/lib/bunni/urls";
 
 export type BunniDocument = {
     id: string;
@@ -211,10 +211,8 @@ export function searchBunniDocuments(
     if (kind === "offerte") {
         const fromUrl = parseBunniOfferteUrl(query);
         if (fromUrl && !filtered.some((item) => item.id === fromUrl.id)) {
-            const numbers = query.match(/\b(\d{5,8})\b/g) || [];
             const quoteNumber =
-                numbers.find((value) => value !== fromUrl.numeric)
-                || fromUrl.numeric;
+                offertenummerUitTekst(query, fromUrl.numeric) || "";
             extra.push({
                 id: fromUrl.id,
                 number: quoteNumber,
@@ -222,7 +220,9 @@ export function searchBunniDocuments(
                 isFinalized: false,
                 contactName: null,
                 pdfUrl: null,
-                snippet: "Bunni offertepagina",
+                snippet: quoteNumber
+                    ? "Bunni offertepagina"
+                    : "Bunni-pagina — vul het offertenummer uit het formulier in",
             });
         }
     }

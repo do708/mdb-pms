@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { bunniPageUrl } from "@/lib/bunni/urls";
+import {
+    bunniPageUrl,
+    isBunniUrlIdAsNumber,
+    offertenummerUitTekst,
+    parseBunniOfferteUrl,
+} from "@/lib/bunni/urls";
 
 export type BunniHit = {
     id: string;
@@ -52,6 +57,7 @@ export function BunniDocumentPicker({
     compact?: boolean;
 }) {
     const [q, setQ] = useState("");
+    const [formNumber, setFormNumber] = useState("");
     const [open, setOpen] = useState(false);
     const [hits, setHits] = useState<BunniHit[]>([]);
     const [loading, setLoading] = useState(false);
@@ -77,7 +83,13 @@ export function BunniDocumentPicker({
             setLoading(true);
             setError(null);
             try {
-                const params = new URLSearchParams({ kind, q });
+                const params = new URLSearchParams({
+                    kind,
+                    q:
+                        kind === "offerte"
+                            ? [q, formNumber].filter(Boolean).join(" ")
+                            : q,
+                });
                 const res = await fetch(`/api/bunni/invoices?${params}`);
                 const data = await res.json();
                 if (!res.ok) {
@@ -94,9 +106,36 @@ export function BunniDocumentPicker({
         }, 250);
 
         return () => window.clearTimeout(t);
-    }, [q, kind, open]);
+    }, [q, formNumber, kind, open]);
 
     const paginaUrl = bunniPageUrl(kind, value.id);
+    const urlAlsNummer = isBunniUrlIdAsNumber(value.id, value.number);
+    const urlHit = kind === "offerte" ? parseBunniOfferteUrl(q) : null;
+
+    function koppelHit(hit: BunniHit) {
+        const fromQuery = urlHit
+            ? offertenummerUitTekst(q, urlHit.numeric)
+            : null;
+        const number = (
+            formNumber.trim()
+            || fromQuery
+            || (isBunniUrlIdAsNumber(hit.id, hit.number) ? "" : hit.number)
+        ).trim();
+
+        if (kind === "offerte" && (!number || isBunniUrlIdAsNumber(hit.id, number))) {
+            setError(
+                "Vul het offertenummer uit het Bunni-formulier in. Dat is niet het nummer in de URL."
+            );
+            setOpen(true);
+            return;
+        }
+
+        onSelect({ ...hit, number: number || hit.number });
+        setQ("");
+        setFormNumber("");
+        setOpen(false);
+        setError(null);
+    }
 
     return (
         <div ref={boxRef} className="relative min-w-0">
@@ -106,7 +145,8 @@ export function BunniDocumentPicker({
                 </p>
             ) : null}
             {value.number ? (
-                <div className="mt-1 flex items-center gap-2 min-w-0 flex-wrap">
+                <div className="mt-1 min-w-0">
+                    <div className="flex items-center gap-2 min-w-0 flex-wrap">
                     <span className="font-semibold text-slate-800 truncate">
                         {value.number}
                     </span>
@@ -139,6 +179,14 @@ export function BunniDocumentPicker({
                             Ontkoppel
                         </button>
                     ) : null}
+                    </div>
+                    {kind === "offerte" && urlAlsNummer ? (
+                        <p className="mt-1 text-xs text-amber-800">
+                            Dit is het nummer uit de URL, niet het
+                            offertenummer uit het formulier. Ontkoppel en
+                            koppel opnieuw met het formuliernummer.
+                        </p>
+                    ) : null}
                 </div>
             ) : (
                 <p className="mt-1 text-sm text-slate-400">Nog niet gekoppeld</p>
@@ -150,11 +198,12 @@ export function BunniDocumentPicker({
                         onChange={(e) => {
                             setQ(e.target.value);
                             setOpen(true);
+                            setError(null);
                         }}
                         onFocus={() => setOpen(true)}
                         placeholder={
                             kind === "offerte"
-                                ? "Zoek offertenummer of plak Bunni-paginalink…"
+                                ? "Plak de Bunni-paginalink van de offerte…"
                                 : "Zoek factuurnummer in Bunni…"
                         }
                         className={
@@ -163,6 +212,21 @@ export function BunniDocumentPicker({
                                 : "mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
                         }
                     />
+                    {kind === "offerte" ? (
+                        <input
+                            value={formNumber}
+                            onChange={(e) => {
+                                setFormNumber(e.target.value);
+                                setError(null);
+                            }}
+                            placeholder="Offertenummer uit het formulier, bijv. 260470"
+                            className={
+                                compact
+                                    ? "mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+                                    : "mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                            }
+                        />
+                    ) : null}
                     {open ? (
                         <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg">
                             {loading ? (
@@ -177,8 +241,8 @@ export function BunniDocumentPicker({
                                 <p className="px-3 py-2 text-sm text-slate-500">
                                     {kind === "offerte"
                                         ? q.trim()
-                                            ? "Geen offerte gevonden. Plak de Bunni-link van de offertepagina."
-                                            : "Typ een offertenummer of plak de Bunni-paginalink."
+                                            ? "Geen offerte gevonden. Plak de Bunni-link van de offertepagina en vul het offertenummer uit het formulier in."
+                                            : "Plak de Bunni-paginalink en vul het offertenummer uit het formulier in."
                                         : "Geen facturen gevonden"}
                                 </p>
                             ) : (
@@ -187,14 +251,16 @@ export function BunniDocumentPicker({
                                         key={hit.id}
                                         type="button"
                                         className="w-full text-left px-3 py-2 hover:bg-[#e8f0ff] border-b border-slate-50 last:border-0"
-                                        onClick={() => {
-                                            onSelect(hit);
-                                            setQ("");
-                                            setOpen(false);
-                                        }}
+                                        onClick={() => koppelHit(hit)}
                                     >
                                         <span className="font-semibold text-slate-800">
-                                            {hit.number}
+                                            {hit.number
+                                            && !isBunniUrlIdAsNumber(
+                                                hit.id,
+                                                hit.number
+                                            )
+                                                ? hit.number
+                                                : "Bunni-pagina"}
                                         </span>
                                         <span className="block text-xs text-slate-500 truncate">
                                             {[
