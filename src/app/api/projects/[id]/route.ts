@@ -124,6 +124,18 @@ export async function PATCH(
             data.offerteFilename = body.offerteFilename || null;
         }
 
+        if (body.termijnAantal !== undefined) {
+            if (body.termijnAantal === null || body.termijnAantal === "") {
+                data.termijnAantal = null;
+            } else {
+                const aantal = Number(body.termijnAantal);
+
+                if (aantal === 1 || aantal === 4) {
+                    data.termijnAantal = aantal;
+                }
+            }
+        }
+
         for (const key of [
             "termijn1Gefactureerd",
             "termijn2Gefactureerd",

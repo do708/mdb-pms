@@ -113,6 +113,8 @@ model Project {
   bunniFactuurNummer String?
   bunniFactuurPdfUrl String?
   status           String             @default("actief")
+  /// 1 = één factuur (100%), 4 = 30/30/30/10. Leeg = nog niet gekozen.
+  termijnAantal    Int?
   /// Facturatie van projecturen per termijn (1–4)
   termijn1Gefactureerd Boolean          @default(false)
   termijn2Gefactureerd Boolean          @default(false)

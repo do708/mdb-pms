@@ -28,8 +28,11 @@ import {
 import { formatHoursDisplay } from "@/lib/hours";
 import { filterEngineersForDay } from "@/constants/staffKind";
 import {
-    PROJECT_TERMIJNEN,
+    inferTermijnAantal,
+    projectTermijnen,
     termijnBedrag,
+    type ProjectTermijn,
+    type TermijnAantal,
 } from "@/lib/projects/budget";
 
 interface ProjectDetail {
@@ -51,6 +54,7 @@ interface ProjectDetail {
     bunniFactuurId: string | null;
     bunniFactuurNummer: string | null;
     bunniFactuurPdfUrl: string | null;
+    termijnAantal: number | null;
     termijn1Gefactureerd: boolean;
     termijn2Gefactureerd: boolean;
     termijn3Gefactureerd: boolean;
@@ -199,6 +203,14 @@ export default function ProjectDetailPage() {
 
     const projectIsActive =
         project?.status === "actief" || project?.status === "new";
+
+    const termijnAantal = useMemo(
+        () => (project ? inferTermijnAantal(project) : null),
+        [project]
+    );
+    const zichtbareTermijnen = termijnAantal
+        ? projectTermijnen(termijnAantal)
+        : [];
 
     function resetFormFromProject(data: ProjectDetail) {
         setName(data.name);
@@ -419,7 +431,7 @@ export default function ProjectDetailPage() {
     }
 
     async function koppelTermijnBunniFactuur(
-        termijn: (typeof PROJECT_TERMIJNEN)[number],
+        termijn: ProjectTermijn,
         hit: {
             number: string;
             date: string | null;
@@ -619,6 +631,50 @@ export default function ProjectDetailPage() {
                 ...project,
                 [dateKey]: previousDate,
                 [key]: previousChecked,
+            });
+            alert("Opslaan mislukt");
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    async function kiesTermijnAantal(aantal: TermijnAantal) {
+        if (!project || project.termijnAantal === aantal) {
+            return;
+        }
+
+        const previous = project.termijnAantal;
+
+        setProject({
+            ...project,
+            termijnAantal: aantal,
+        });
+        setSaving(true);
+
+        try {
+            const response = await fetch(`/api/projects/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ termijnAantal: aantal }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setProject({
+                    ...project,
+                    termijnAantal: previous,
+                });
+                alert(data.error || "Opslaan mislukt");
+                return;
+            }
+
+            setProject(data);
+        } catch (error) {
+            console.error(error);
+            setProject({
+                ...project,
+                termijnAantal: previous,
             });
             alert("Opslaan mislukt");
         } finally {
@@ -1109,10 +1165,61 @@ export default function ProjectDetailPage() {
                     <SpecPageCard>
                         <SpecPanel
                             title="Termijnen gefactureerd"
-                            hint="Factuurnummer kies je uit Bunni. De factuurdatum vult mee als die in Bunni bekend is."
+                            hint="Kies 1 factuur of 4 termijnen. Factuurnummer kies je uit Bunni; de factuurdatum vult mee als die in Bunni bekend is."
                         >
-                            <div className="grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto">
-                    {PROJECT_TERMIJNEN.map((termijn) => {
+                            <div className="space-y-4">
+                                <div>
+                                    <p className="text-sm font-medium text-gray-800 mb-2">
+                                        Hoeveel termijnen factureer je?
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {([1, 4] as const).map((aantal) => {
+                                            const selected =
+                                                termijnAantal === aantal;
+
+                                            return (
+                                                <button
+                                                    key={aantal}
+                                                    type="button"
+                                                    disabled={saving}
+                                                    onClick={() =>
+                                                        kiesTermijnAantal(
+                                                            aantal
+                                                        )
+                                                    }
+                                                    className={`
+                                                        rounded-xl px-4 py-2.5 min-h-[44px]
+                                                        text-sm font-bold border
+                                                        ${
+                                                            selected
+                                                                ? "bg-[#0066FF] text-white border-[#0066FF]"
+                                                                : "bg-white text-gray-800 border-gray-200 hover:bg-gray-50"
+                                                        }
+                                                    `}
+                                                >
+                                                    {aantal === 1
+                                                        ? "1 termijn"
+                                                        : "4 termijnen"}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {zichtbareTermijnen.length === 0 ? (
+                                    <p className="text-sm text-gray-500">
+                                        Kies 1 of 4 termijnen om de
+                                        factuurvakken te zien.
+                                    </p>
+                                ) : (
+                                    <div
+                                        className={
+                                            termijnAantal === 1
+                                                ? "grid grid-cols-1 max-w-md gap-2 min-w-0"
+                                                : "grid grid-cols-4 grid-rows-[auto_auto_auto] gap-2 min-w-0 overflow-x-auto"
+                                        }
+                                    >
+                    {zichtbareTermijnen.map((termijn) => {
                         const factuurdatum = termijnDatumIso(
                             project[termijn.dateKey]
                         );
@@ -1125,11 +1232,15 @@ export default function ProjectDetailPage() {
                         return (
                         <div
                             key={termijn.key}
-                            className="
-                                grid grid-rows-subgrid row-span-3 gap-y-2
-                                rounded-xl border border-gray-200
-                                px-3 py-2 min-w-0
-                            "
+                            className={
+                                termijnAantal === 1
+                                    ? "flex flex-col gap-y-2 rounded-xl border border-gray-200 px-3 py-2 min-w-0"
+                                    : `
+                                        grid grid-rows-subgrid row-span-3 gap-y-2
+                                        rounded-xl border border-gray-200
+                                        px-3 py-2 min-w-0
+                                    `
+                            }
                         >
                             <label className="flex items-start gap-2 text-sm cursor-pointer">
                                 <input
@@ -1202,6 +1313,8 @@ export default function ProjectDetailPage() {
                         </div>
                         );
                     })}
+                                    </div>
+                                )}
                             </div>
                         </SpecPanel>
                     </SpecPageCard>

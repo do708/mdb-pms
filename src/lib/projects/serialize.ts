@@ -153,6 +153,7 @@ export function serializeProjectDetail(
             bunniFactuurId: null,
             bunniFactuurNummer: null,
             bunniFactuurPdfUrl: null,
+            termijnAantal: null,
             termijn1Gefactureerd: false,
             termijn2Gefactureerd: false,
             termijn3Gefactureerd: false,
@@ -194,6 +195,7 @@ export function serializeProjectDetail(
         bunniFactuurId: project.bunniFactuurId,
         bunniFactuurNummer: project.bunniFactuurNummer,
         bunniFactuurPdfUrl: project.bunniFactuurPdfUrl,
+        termijnAantal: project.termijnAantal ?? null,
         // Gefactureerd = er is een factuurdatum; leeg blijft uitgevinkt.
         termijn1Gefactureerd: project.termijn1GefactureerdOp != null,
         termijn2Gefactureerd: project.termijn2GefactureerdOp != null,

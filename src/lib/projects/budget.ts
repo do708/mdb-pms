@@ -57,7 +57,27 @@ export function decimalToNumber(
 /** Intern uurtarief voor project-totaal (uren × tarief + materiaal − offerte). */
 export const PROJECT_UUR_TARIEF = 55;
 
-export const PROJECT_TERMIJNEN = [
+export type ProjectTermijn = {
+    key:
+        | "termijn1Gefactureerd"
+        | "termijn2Gefactureerd"
+        | "termijn3Gefactureerd"
+        | "termijn4Gefactureerd";
+    dateKey:
+        | "termijn1GefactureerdOp"
+        | "termijn2GefactureerdOp"
+        | "termijn3GefactureerdOp"
+        | "termijn4GefactureerdOp";
+    numKey:
+        | "termijn1Factuurnummer"
+        | "termijn2Factuurnummer"
+        | "termijn3Factuurnummer"
+        | "termijn4Factuurnummer";
+    label: string;
+    percentage: number;
+};
+
+export const PROJECT_TERMIJNEN: readonly ProjectTermijn[] = [
     {
         key: "termijn1Gefactureerd",
         dateKey: "termijn1GefactureerdOp",
@@ -86,7 +106,55 @@ export const PROJECT_TERMIJNEN = [
         label: "Termijn 4 — eind / oplevering",
         percentage: 10,
     },
-] as const;
+];
+
+export const PROJECT_TERMIJN_EEN: readonly ProjectTermijn[] = [
+    {
+        key: "termijn1Gefactureerd",
+        dateKey: "termijn1GefactureerdOp",
+        numKey: "termijn1Factuurnummer",
+        label: "Factuur",
+        percentage: 100,
+    },
+];
+
+export type TermijnAantal = 1 | 4;
+
+export function isTermijnAantal(value: unknown): value is TermijnAantal {
+    return value === 1 || value === 4;
+}
+
+export function projectTermijnen(
+    aantal: TermijnAantal
+): readonly ProjectTermijn[] {
+    return aantal === 1 ? PROJECT_TERMIJN_EEN : PROJECT_TERMIJNEN;
+}
+
+/** Opgeslagen keuze, of 4 als termijn 2–4 al ingevuld is (bestaande projecten). */
+export function inferTermijnAantal(project: {
+    termijnAantal?: number | null;
+    termijn2GefactureerdOp?: string | Date | null;
+    termijn3GefactureerdOp?: string | Date | null;
+    termijn4GefactureerdOp?: string | Date | null;
+    termijn2Factuurnummer?: string | null;
+    termijn3Factuurnummer?: string | null;
+    termijn4Factuurnummer?: string | null;
+}): TermijnAantal | null {
+    if (isTermijnAantal(project.termijnAantal)) {
+        return project.termijnAantal;
+    }
+
+    const laterGevuld = [
+        project.termijn2GefactureerdOp,
+        project.termijn3GefactureerdOp,
+        project.termijn4GefactureerdOp,
+        project.termijn2Factuurnummer,
+        project.termijn3Factuurnummer,
+        project.termijn4Factuurnummer,
+    ].some((value) => value != null && String(value).trim() !== "");
+
+    return laterGevuld ? 4 : null;
+}
 
 export function termijnBedrag(
     offerte: number,
