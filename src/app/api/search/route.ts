@@ -3,11 +3,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { requireApiUser } from "@/lib/auth/guard";
+import {
+    agendaHitsFromEvents,
+    agendaHitsFromWorkorder,
+    searchAgendaRange,
+    sortAndCapAgendaHits,
+} from "@/lib/search/agendaHits";
 
 
 
-// Globale zoekfunctie: opdrachten, projecten, formulieren, opdrachtgevers,
-// gebruikers, opdrachten, documenten en aanvragen. Monteurs zien geen
+// Globale zoekfunctie: opdrachten, projecten, formulieren, agenda,
+// opdrachtgevers, gebruikers, documenten en aanvragen. Monteurs zien geen
 // kantoor-only gegevens (gebruikers, klanten, opdrachten, documenten, aanvragen).
 
 export async function GET(
@@ -44,7 +50,8 @@ export async function GET(
                 customers:[],
                 assignments:[],
                 documents:[],
-                aanvragen:[]
+                aanvragen:[],
+                agenda:[]
             });
         }
 
@@ -67,7 +74,16 @@ export async function GET(
                     AND:[
                         isEngineer
                         ?
-                        { assignedUserId:guard.user.id }
+                        {
+                            OR:[
+                                { assignedUserId:guard.user.id },
+                                {
+                                    extraEngineers:{
+                                        some:{ userId:guard.user.id }
+                                    }
+                                }
+                            ]
+                        }
                         :
                         {},
                         {
@@ -329,6 +345,119 @@ export async function GET(
             });
 
 
+        const { rangeStart, rangeEnd } = searchAgendaRange();
+
+        const engineerPlanningWhere = isEngineer
+            ? {
+                OR: [
+                    { assignedUserId: guard.user.id },
+                    {
+                        extraEngineers: {
+                            some: { userId: guard.user.id },
+                        },
+                    },
+                ],
+            }
+            : {};
+
+        const [agendaEvents, agendaWorkorders] = await Promise.all([
+            prisma.planningEvent.findMany({
+                where: {
+                    AND: [
+                        isEngineer
+                            ? { assignedUserId: guard.user.id }
+                            : {},
+                        {
+                            OR: [
+                                { title: like },
+                                { notes: like },
+                                { assignedUser: { name: like } },
+                            ],
+                        },
+                    ],
+                },
+                include: {
+                    assignedUser: {
+                        select: { id: true, name: true },
+                    },
+                },
+                take: 80,
+            }),
+            prisma.workorder.findMany({
+                where: {
+                    AND: [
+                        engineerPlanningWhere,
+                        {
+                            plannedDate: {
+                                gte: rangeStart,
+                                lte: rangeEnd,
+                            },
+                        },
+                        {
+                            OR: [
+                                { number: like },
+                                { title: like },
+                                { location: like },
+                                { city: like },
+                                { project: { name: like } },
+                                { customer: { name: like } },
+                                { assignedUser: { name: like } },
+                                {
+                                    extraEngineers: {
+                                        some: {
+                                            user: { name: like },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+                select: {
+                    id: true,
+                    number: true,
+                    title: true,
+                    location: true,
+                    city: true,
+                    plannedDate: true,
+                    plannedEndDate: true,
+                    assignedUser: {
+                        select: { name: true },
+                    },
+                    extraEngineers: {
+                        select: {
+                            user: {
+                                select: { name: true },
+                            },
+                        },
+                    },
+                    customer: {
+                        select: { name: true },
+                    },
+                    project: {
+                        select: {
+                            customer: {
+                                select: { name: true },
+                            },
+                        },
+                    },
+                },
+                take: 40,
+                orderBy: { plannedDate: "asc" },
+            }),
+        ]);
+
+        const agenda = sortAndCapAgendaHits([
+            ...agendaHitsFromEvents(agendaEvents, rangeStart, rangeEnd),
+            ...agendaWorkorders.flatMap((workorder) =>
+                workorder.plannedDate
+                    ? agendaHitsFromWorkorder({
+                        ...workorder,
+                        plannedDate: workorder.plannedDate,
+                    })
+                    : []
+            ),
+        ]);
 
 
         return NextResponse.json({
@@ -339,7 +468,8 @@ export async function GET(
             customers,
             assignments,
             documents,
-            aanvragen
+            aanvragen,
+            agenda
         });
 
 

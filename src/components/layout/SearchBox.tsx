@@ -50,6 +50,19 @@ interface Results {
         plaats: string | null;
         customer?: { name: string } | null;
     }[];
+    agenda: {
+        id: string;
+        kind: "event" | "workorder";
+        title: string;
+        dateIso: string;
+        weekdayShort: string;
+        day: number;
+        monthLabel: string;
+        timeLabel: string;
+        technicians: string[];
+        location: string | null;
+        customer: string | null;
+    }[];
 }
 
 const EMPTY: Results = {
@@ -61,6 +74,7 @@ const EMPTY: Results = {
     assignments: [],
     documents: [],
     aanvragen: [],
+    agenda: [],
 };
 
 function ResultSection({
@@ -163,11 +177,12 @@ export default function SearchBox() {
         results.customers.length +
         results.assignments.length +
         results.documents.length +
-        results.aanvragen.length;
+        results.aanvragen.length +
+        results.agenda.length;
 
     return (
         <div ref={boxRef} className="relative">
-            <div className="flex items-center w-[420px] h-11 bg-gray-50 border border-gray-200 rounded-xl px-4">
+            <div className="flex items-center w-[420px] max-w-[90vw] h-11 bg-gray-50 border border-gray-200 rounded-xl px-4">
                 <Search size={19} className="text-gray-400" />
 
                 <input
@@ -184,7 +199,7 @@ export default function SearchBox() {
             </div>
 
             {open && query.trim().length >= 2 ? (
-                <div className="absolute top-12 left-0 w-[420px] max-h-[70vh] overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg z-50 p-2">
+                <div className="absolute top-12 left-0 w-[520px] max-w-[90vw] max-h-[70vh] overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg z-50 p-2">
                     {loading ? (
                         <p className="text-sm text-gray-400 p-3">Zoeken...</p>
                     ) : null}
@@ -230,6 +245,67 @@ export default function SearchBox() {
                                     </span>
                                 </ResultButton>
                             ))}
+                        </ResultSection>
+                    ) : null}
+
+                    {results.agenda.length > 0 ? (
+                        <ResultSection title="Agenda">
+                            {results.agenda.map((item, index) => {
+                                const prev = results.agenda[index - 1];
+                                const showMonth =
+                                    !prev || prev.monthLabel !== item.monthLabel;
+                                const technicians =
+                                    item.technicians.length > 0
+                                        ? item.technicians.join(", ")
+                                        : null;
+
+                                return (
+                                    <div key={item.id}>
+                                        {showMonth ? (
+                                            <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide px-3 pt-2 pb-1">
+                                                {item.monthLabel}
+                                            </p>
+                                        ) : null}
+                                        <ResultButton
+                                            onClick={() =>
+                                                go(
+                                                    `/planning?date=${item.dateIso}`
+                                                )
+                                            }
+                                        >
+                                            <span className="flex items-start gap-2.5">
+                                                <span className="shrink-0 w-9 rounded-md border border-gray-200 bg-gray-50 text-center py-0.5">
+                                                    <span className="block text-[9px] font-semibold uppercase text-gray-500 leading-none">
+                                                        {item.weekdayShort}
+                                                    </span>
+                                                    <span className="block text-sm font-bold text-gray-800 leading-tight">
+                                                        {item.day}
+                                                    </span>
+                                                </span>
+                                                <span className="min-w-0 flex-1">
+                                                    <span className="block font-medium text-gray-900 truncate">
+                                                        {item.title}
+                                                    </span>
+                                                    <span className="block text-xs text-gray-500 truncate">
+                                                        {item.timeLabel}
+                                                        {technicians
+                                                            ? ` · ${technicians}`
+                                                            : ""}
+                                                        {item.location
+                                                            ? ` · ${item.location}`
+                                                            : ""}
+                                                    </span>
+                                                </span>
+                                                {item.customer ? (
+                                                    <span className="shrink-0 mt-0.5 rounded-full bg-sky-100 text-sky-800 text-[10px] font-semibold px-2 py-0.5 max-w-[7rem] truncate">
+                                                        {item.customer}
+                                                    </span>
+                                                ) : null}
+                                            </span>
+                                        </ResultButton>
+                                    </div>
+                                );
+                            })}
                         </ResultSection>
                     ) : null}
 
