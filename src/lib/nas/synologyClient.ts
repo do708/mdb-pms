@@ -105,6 +105,16 @@ async function synoApi(
     return json;
 }
 
+/** Verwijder een bestand of map op de NAS. */
+export async function synologyDeleteFile(nasPath: string): Promise<void> {
+    await withSid({
+        api: "SYNO.FileStation.Delete",
+        version: "2",
+        method: "delete",
+        path: JSON.stringify([nasPath]),
+    });
+}
+
 async function login(): Promise<string> {
     if (cachedSid && Date.now() < sidExpiresAt) {
         return cachedSid;

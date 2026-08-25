@@ -129,7 +129,7 @@ export default function ProjectPlattegronden({
                 </h2>
                 <p className="text-xs text-gray-500 leading-snug">
                     Monteurs zien hier altijd de nieuwste tekeningen van dit
-                    project.
+                    project. Nieuwe bestanden gaan naar de NAS.
                 </p>
             </div>
 

@@ -9,6 +9,7 @@ import {
     extensionForContentType,
 } from "@/lib/attachments/contentType";
 import { uploadStorageObject } from "@/lib/attachments/storage";
+import { storeProjectPlattegrond } from "@/lib/projects/plattegrondStorage";
 import {
     compressPhoto,
     photoStorageName,
@@ -68,7 +69,12 @@ export async function POST(
 
         const project = await prisma.project.findUnique({
             where: { id },
-            select: { id: true },
+            select: {
+                id: true,
+                number: true,
+                name: true,
+                customer: { select: { name: true } },
+            },
         });
 
         if (!project) {
@@ -112,21 +118,30 @@ export async function POST(
             `projecten/${id}/plattegronden/${stamp}-${veiligeNaam}`;
         const flatPath = `plattegronden/${id}/${stamp}-${veiligeNaam}`;
 
-        const stored = await uploadStorageObject({
-            path: nestedPath,
+        const stored = await storeProjectPlattegrond({
+            project,
+            filename: `${stamp}-${veiligeNaam}`,
             buffer: payload.buffer,
             contentType: payload.contentType || contentType,
-            fallbackPaths: [flatPath],
-        });
+            supabaseUpload: async () => {
+                const uploaded = await uploadStorageObject({
+                    path: nestedPath,
+                    buffer: payload.buffer,
+                    contentType: payload.contentType || contentType,
+                    fallbackPaths: [flatPath],
+                });
+                const publicUrl = supabase.storage
+                    .from("workorder-files")
+                    .getPublicUrl(uploaded.path).data.publicUrl;
 
-        const publicUrl = supabase.storage
-            .from("workorder-files")
-            .getPublicUrl(stored.path).data.publicUrl;
+                return { path: uploaded.path, url: publicUrl };
+            },
+        });
 
         const attachment = await prisma.projectAttachment.create({
             data: {
                 projectId: id,
-                url: publicUrl,
+                url: stored.url,
                 filename: stored.path,
                 originalName: upload.name,
                 contentType: payload.contentType || contentType,
@@ -145,7 +160,9 @@ export async function POST(
                 ? "Database mist de plattegrondentabel — voer prisma migrate deploy uit."
                 : /payload|too large|request entity|413/i.test(lower)
                   ? "Bestand is te groot. Gebruik een kleinere PDF of PNG (max. circa 4,5 MB)."
-                  : message || "Bijlage opslaan mislukt";
+                  : /synology|nas|quickconnect/i.test(lower)
+                    ? `Opslaan op de NAS mislukt: ${message}`
+                    : message || "Bijlage opslaan mislukt";
 
         return NextResponse.json(
             { error: hint },

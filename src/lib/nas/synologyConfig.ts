@@ -68,3 +68,41 @@ export function joinNasPath(...parts: string[]): string {
         .join("/")
         .replace(/^([^/])/, "/$1");
 }
+
+export function nasFileUrl(nasPath: string): string {
+    return `nas:${joinNasPath(nasPath)}`;
+}
+
+export function nasPathFromStored(
+    raw: string | null | undefined
+): string | null {
+    if (!raw?.trim()) {
+        return null;
+    }
+
+    const value = raw.trim();
+
+    if (value.startsWith("nas:")) {
+        return joinNasPath(value.slice(4));
+    }
+
+    if (value.startsWith("/") && !value.startsWith("//")) {
+        const root = synologyArchiveRoot();
+        const parent = root.replace(/\/[^/]+$/, "") || "/mdb-pms";
+
+        if (
+            value === root
+            || value.startsWith(`${root}/`)
+            || value.startsWith(`${parent}/`)
+            || value.startsWith("/mdb-pms/")
+        ) {
+            return value;
+        }
+    }
+
+    return null;
+}
+
+export function isNasConfigured(): boolean {
+    return isNasArchiveEnabled() && Boolean(synologyCredentials());
+}

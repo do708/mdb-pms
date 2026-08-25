@@ -3,8 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import {
     isNasArchiveEnabled,
     joinNasPath,
+    nasPathFromStored,
 } from "@/lib/nas/synologyConfig";
 import {
+    synologyDeleteFile,
     synologyDownloadFile,
     synologyListFiles,
 } from "@/lib/nas/synologyClient";
@@ -83,6 +85,10 @@ function normalizeStoragePath(raw: string | null | undefined): string | null {
 
     if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
         return pathFromStorageUrl(trimmed);
+    }
+
+    if (nasPathFromStored(trimmed)) {
+        return null;
     }
 
     let path = decodePath(trimmed).replace(/^\/+/, "");
@@ -341,6 +347,17 @@ export function attachmentStoragePath(
 export async function downloadAttachmentBytes(
     attachment: AttachmentStorageRef
 ): Promise<Buffer> {
+    const directNas = nasPathFromStored(attachment.filename)
+        || nasPathFromStored(attachment.url);
+
+    if (directNas) {
+        const fromPath = await downloadFromNasPath(directNas);
+
+        if (fromPath) {
+            return fromPath;
+        }
+    }
+
     const paths = candidateStoragePaths(attachment);
     let lastError: unknown = null;
 
@@ -413,6 +430,13 @@ export async function downloadAttachmentBytes(
 export async function removeAttachmentObject(
     attachment: AttachmentStorageRef
 ): Promise<void> {
+    const nasPath = nasPathFromStored(attachment.filename)
+        || nasPathFromStored(attachment.url);
+
+    if (nasPath) {
+        await synologyDeleteFile(nasPath).catch(() => {});
+    }
+
     const paths = candidateStoragePaths(attachment);
 
     if (paths.length === 0) {
