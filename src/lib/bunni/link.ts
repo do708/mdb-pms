@@ -28,7 +28,11 @@ function factuurFields(doc: BunniDocument | null) {
 
 export async function resolveBunniLinkPatch(body: {
     offerteId?: string | null;
+    offerteNumber?: string | null;
+    offertePdfUrl?: string | null;
     factuurId?: string | null;
+    factuurNumber?: string | null;
+    factuurPdfUrl?: string | null;
 }): Promise<Partial<BunniLinkFields>> {
     const data: Partial<BunniLinkFields> = {};
 
@@ -37,10 +41,31 @@ export async function resolveBunniLinkPatch(body: {
             Object.assign(data, offerteFields(null));
         } else {
             const doc = await getBunniDocument(body.offerteId);
-            if (!doc) {
-                throw new Error("Bunni-offerte niet gevonden");
+            if (doc) {
+                Object.assign(data, offerteFields(doc));
+            } else {
+                const number =
+                    typeof body.offerteNumber === "string"
+                    && body.offerteNumber.trim()
+                    ?
+                    body.offerteNumber.trim()
+                    :
+                    null;
+                if (!number) {
+                    throw new Error("Bunni-offerte niet gevonden");
+                }
+                Object.assign(data, {
+                    bunniOfferteId: body.offerteId,
+                    bunniOfferteNummer: number,
+                    bunniOffertePdfUrl:
+                        typeof body.offertePdfUrl === "string"
+                        && body.offertePdfUrl
+                        ?
+                        body.offertePdfUrl
+                        :
+                        null,
+                });
             }
-            Object.assign(data, offerteFields(doc));
         }
     }
 
@@ -49,10 +74,31 @@ export async function resolveBunniLinkPatch(body: {
             Object.assign(data, factuurFields(null));
         } else {
             const doc = await getBunniDocument(body.factuurId);
-            if (!doc) {
-                throw new Error("Bunni-factuur niet gevonden");
+            if (doc) {
+                Object.assign(data, factuurFields(doc));
+            } else {
+                const number =
+                    typeof body.factuurNumber === "string"
+                    && body.factuurNumber.trim()
+                    ?
+                    body.factuurNumber.trim()
+                    :
+                    null;
+                if (!number) {
+                    throw new Error("Bunni-factuur niet gevonden");
+                }
+                Object.assign(data, {
+                    bunniFactuurId: body.factuurId,
+                    bunniFactuurNummer: number,
+                    bunniFactuurPdfUrl:
+                        typeof body.factuurPdfUrl === "string"
+                        && body.factuurPdfUrl
+                        ?
+                        body.factuurPdfUrl
+                        :
+                        null,
+                });
             }
-            Object.assign(data, factuurFields(doc));
         }
     }
 

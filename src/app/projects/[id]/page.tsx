@@ -1340,7 +1340,7 @@ export default function ProjectDetailPage() {
                     <SpecPageCard>
                         <SpecPanel
                             title="Offerte"
-                            hint="Koppel de offerte uit Bunni. De bijlage opent via Bunni; niet apart uploaden."
+                            hint="Koppel de offerte uit Bunni. Pagina opent de offerte in Bunni; pdf blijft apart beschikbaar."
                         >
                             <BunniKoppeling
                                 saveUrl={`/api/projects/${project.id}/bunni`}
