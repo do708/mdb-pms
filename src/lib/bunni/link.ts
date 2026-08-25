@@ -1,6 +1,5 @@
 import type { BunniDocument } from "@/lib/bunni/client";
 import { getBunniDocument } from "@/lib/bunni/client";
-import { looksLikeInternBunniId, bunniNumericId } from "@/lib/bunni/urls";
 
 export type BunniLinkFields = {
     bunniOfferteId: string | null;
@@ -41,39 +40,32 @@ export async function resolveBunniLinkPatch(body: {
         if (!body.offerteId) {
             Object.assign(data, offerteFields(null));
         } else {
-            const number =
-                typeof body.offerteNumber === "string"
-                && body.offerteNumber.trim()
-                ?
-                body.offerteNumber.trim()
-                :
-                null;
-            const urlId = bunniNumericId(body.offerteId);
-
-            if (!urlId || urlId === number) {
-                throw new Error(
-                    "Plak de Bunni-paginalink, bijv. …/offertemaker/offerte-334165. Dat is de pagina van deze offerte."
-                );
-            }
-
-            if (!number || looksLikeInternBunniId(number)) {
-                throw new Error(
-                    "Vul het offertenummer in dat op de offerte staat, bijv. 260466. Dat is niet het cijfer in de Bunni-URL."
-                );
-            }
-
             const doc = await getBunniDocument(body.offerteId);
-            Object.assign(data, {
-                bunniOfferteId: body.offerteId,
-                bunniOfferteNummer: number,
-                bunniOffertePdfUrl:
-                    (typeof body.offertePdfUrl === "string"
-                    && body.offertePdfUrl)
+            if (doc) {
+                Object.assign(data, offerteFields(doc));
+            } else {
+                const number =
+                    typeof body.offerteNumber === "string"
+                    && body.offerteNumber.trim()
                     ?
-                    body.offertePdfUrl
+                    body.offerteNumber.trim()
                     :
-                    doc?.pdfUrl ?? null,
-            });
+                    null;
+                if (!number) {
+                    throw new Error("Bunni-offerte niet gevonden");
+                }
+                Object.assign(data, {
+                    bunniOfferteId: body.offerteId,
+                    bunniOfferteNummer: number,
+                    bunniOffertePdfUrl:
+                        typeof body.offertePdfUrl === "string"
+                        && body.offertePdfUrl
+                        ?
+                        body.offertePdfUrl
+                        :
+                        null,
+                });
+            }
         }
     }
 

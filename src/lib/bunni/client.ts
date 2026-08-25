@@ -1,5 +1,3 @@
-import { parseBunniOfferteUrl, offertenummerUitTekst } from "@/lib/bunni/urls";
-
 export type BunniDocument = {
     id: string;
     number: string;
@@ -207,25 +205,11 @@ export function searchBunniDocuments(
         );
     });
 
-    const extra: BunniDocument[] = [];
-    if (kind === "offerte") {
-        const fromUrl = parseBunniOfferteUrl(query);
-        if (fromUrl && !filtered.some((item) => item.id === fromUrl.id)) {
-            const quoteNumber =
-                offertenummerUitTekst(query, fromUrl.numeric) || "";
-            extra.push({
-                id: fromUrl.id,
-                number: quoteNumber,
-                date: null,
-                isFinalized: false,
-                contactName: null,
-                pdfUrl: null,
-                snippet: quoteNumber
-                    ? "Bunni offertepagina"
-                    : "Bunni-pagina — vul het offertenummer uit het formulier in",
-            });
-        }
+    // In Bunni staan offertes als niet-afgeronde facturen. Als die lijst
+    // leeg is, toon alle documenten zodat je toch een nummer met pdf kunt koppelen.
+    if (kind === "offerte" && filtered.length === 0 && items.length > 0) {
+        return searchBunniDocuments(items, query, "alle");
     }
 
-    return [...extra, ...filtered].slice(0, 40);
+    return filtered.slice(0, 40);
 }
