@@ -11,7 +11,14 @@ import {
     TYPE_AANVRAAG_LABELS,
     VELD_LABELS,
 } from "@/lib/aanvraag/overzichtLabels";
-import { aansturingWeergave, installatieTypeWeergave } from "@/lib/aanvraag/installatieTypes";
+import {
+    aansturingWeergave,
+    emptySchermItem,
+    installatieTypeWeergave,
+    mdbBeugelTypeWeergave,
+    telBenodigdeBeugels,
+    type AanvraagSchermItem,
+} from "@/lib/aanvraag/installatieTypes";
 
 export interface AanvraagOverzichtSnapshot {
     specificaties?: unknown;
@@ -188,6 +195,18 @@ function formaatWeergave(item: Record<string, unknown>): string {
     return formaat;
 }
 
+function naarSchermItem(item: Record<string, unknown>): AanvraagSchermItem {
+    return {
+        ...emptySchermItem(),
+        formaat: str(item.formaat),
+        formaatAnders: str(item.formaatAnders),
+        beugel: str(item.beugel),
+        bevestigingDetail: str(item.bevestigingDetail),
+        bevestigingAnders: str(item.bevestigingAnders),
+        plafondHoogte: str(item.plafondHoogte),
+    };
+}
+
 function labelVoorVeld(key: string): string {
     if (VELD_LABELS[key]) return VELD_LABELS[key];
     if (key.startsWith("beugel_")) {
@@ -246,6 +265,11 @@ function SchermenBlok({
 
     const items = Array.isArray(blok.items) ? blok.items : [];
     const velden = asRecord(blok.velden);
+    const schermItems = items
+        .map((raw) => asRecord(raw))
+        .filter((s): s is Record<string, unknown> => Boolean(s))
+        .map(naarSchermItem);
+    const benodigdeBeugels = telBenodigdeBeugels(schermItems);
 
     return (
         <Section
@@ -320,9 +344,55 @@ function SchermenBlok({
                                         </p>
                                     </div>
                                 ) : null}
+                                <Field
+                                    label="Type beugel"
+                                    value={mdbBeugelTypeWeergave(
+                                        naarSchermItem(s)
+                                    )}
+                                />
                             </Card>
                         );
                     })}
+                    {benodigdeBeugels.length > 0 ? (
+                        <div className="rounded-xl border border-[#0066FF]/20 bg-[#0066FF]/5 p-3 space-y-2">
+                            <p className="text-xs font-semibold text-[#0066FF]">
+                                Overzicht types
+                            </p>
+                            <ul className="text-sm text-gray-800 space-y-0.5">
+                                {schermItems.map((s, i) => {
+                                    const raw = asRecord(items[i]) || {};
+                                    const beugel = mdbBeugelTypeWeergave(s);
+                                    return (
+                                        <li key={i}>
+                                            Scherm {i + 1}
+                                            {formaatWeergave(raw)
+                                                ? ` — ${formaatWeergave(raw)}`
+                                                : ""}
+                                            {": "}
+                                            <strong>
+                                                {installatieTypeWeergave(
+                                                    str(raw.berekendType)
+                                                )}
+                                            </strong>
+                                            {beugel ? ` · ${beugel}` : ""}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                            <div className="pt-2 border-t border-[#0066FF]/15">
+                                <p className="text-xs font-semibold text-[#0066FF] mb-1">
+                                    Benodigde beugels
+                                </p>
+                                <ul className="text-sm text-gray-800 space-y-0.5">
+                                    {benodigdeBeugels.map((rij) => (
+                                        <li key={rij.label}>
+                                            {rij.aantal}× {rij.label}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    ) : null}
                 </div>
             ) : (
                 <>

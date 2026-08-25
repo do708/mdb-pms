@@ -4,7 +4,10 @@
  */
 
 import type { AanvraagSchermItem } from "@/lib/aanvraag/installatieTypes";
-import { isPlayerAansturing } from "@/lib/aanvraag/installatieTypes";
+import {
+    isPlayerAansturing,
+    wandVastMaatVanFormaat,
+} from "@/lib/aanvraag/installatieTypes";
 import type {
     InstallatieRuimte,
     InstallatieScherm,
@@ -51,7 +54,11 @@ function mapBeugelType(item: AanvraagSchermItem): {
         return { werkzaamheid: "wand", beugelType: "zwenk", beugelMaat: "" };
     }
     if (detail.includes("vast") || hoofdcat.includes("muur")) {
-        return { werkzaamheid: "wand", beugelType: "wand_vast", beugelMaat: mapWandMaat(item.formaat) };
+        return {
+            werkzaamheid: "wand",
+            beugelType: "wand_vast",
+            beugelMaat: wandVastMaatVanFormaat(item),
+        };
     }
 
     // Special / Anders
@@ -60,15 +67,6 @@ function mapBeugelType(item: AanvraagSchermItem): {
     }
 
     return { werkzaamheid: "wand", beugelType: "", beugelMaat: "" };
-}
-
-function mapWandMaat(formaat: string): string {
-    const inch = parseInt(formaat, 10);
-    if (!inch) return "";
-    if (inch <= 55) return 't/m 55"';
-    if (inch <= 65) return '65"';
-    if (inch <= 85) return '75"-85"';
-    return '98"-100"';
 }
 
 function mapOrientatie(ori: string): Orientatie | "" {

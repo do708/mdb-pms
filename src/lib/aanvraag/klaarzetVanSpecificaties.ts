@@ -2,7 +2,11 @@
  * Prefill klaarzet-materiaalvelden vanuit aanvraag-specificaties.
  */
 
-import { isPlayerAansturing } from "@/lib/aanvraag/installatieTypes";
+import {
+    emptySchermItem,
+    isPlayerAansturing,
+    mdbBeugelTypeWeergave,
+} from "@/lib/aanvraag/installatieTypes";
 
 export type KlaarzetPrefill = {
     schermenAantal?: string;
@@ -80,7 +84,15 @@ export function klaarzetVanAanvraagSpecificaties(
             .map((item) => {
                 const r = asRecord(item);
                 if (!r) return "";
-                return str(r.bevestigingDetail) || str(r.beugel);
+                return mdbBeugelTypeWeergave({
+                    ...emptySchermItem(),
+                    formaat: str(r.formaat),
+                    formaatAnders: str(r.formaatAnders),
+                    beugel: str(r.beugel),
+                    bevestigingDetail: str(r.bevestigingDetail),
+                    bevestigingAnders: str(r.bevestigingAnders),
+                    plafondHoogte: str(r.plafondHoogte),
+                });
             })
             .filter(Boolean);
         const beugelTekst = groepeerTeksten(beugels);

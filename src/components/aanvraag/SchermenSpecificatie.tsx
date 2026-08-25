@@ -9,7 +9,9 @@ import {
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
     berekendInstallatieType,
+    beugelTypeWeergave,
     bevestigingDetails,
+    formaatWeergaveScherm,
     installatieTypeWeergave,
     isHoofdType,
     isPlayerAansturing,
@@ -18,6 +20,7 @@ import {
     patchRaaktVoorzieningen,
     syncSchermItems,
     syncVoorzieningenVanAnkers,
+    telBenodigdeBeugels,
 } from "@/lib/aanvraag/installatieTypes";
 import {
     JaNee,
@@ -39,6 +42,7 @@ export default function SchermenSpecificatie({
     onItemsChange,
 }: Props) {
     const [toondeMaxMelding, setToondeMaxMelding] = useState(false);
+    const benodigdeBeugels = telBenodigdeBeugels(items);
 
     function zetAantal(raw: string) {
         if (raw === "") {
@@ -830,12 +834,12 @@ export default function SchermenSpecificatie({
                         );
                     })}
 
-                    {/* Overzicht berekende types */}
-                    <div className="rounded-xl border border-[#0066FF]/20 bg-[#0066FF]/5 p-3">
-                        <p className="text-xs font-semibold text-[#0066FF] mb-1.5">
-                            Berekende installatietypes
+                    {/* Overzicht types + benodigde beugels */}
+                    <div className="rounded-xl border border-[#0066FF]/20 bg-[#0066FF]/5 p-3 space-y-3">
+                        <p className="text-xs font-semibold text-[#0066FF]">
+                            Overzicht types
                         </p>
-                        <ul className="text-sm text-gray-800 space-y-0.5">
+                        <ul className="text-sm text-gray-800 space-y-1">
                             {items.map((s, i) => {
                                 const t = berekendInstallatieType(
                                     s,
@@ -848,14 +852,16 @@ export default function SchermenSpecificatie({
                                               x.id === s.naastSchermId
                                       )
                                     : -1;
+                                const formaat = formaatWeergaveScherm(s);
+                                const beugel = beugelTypeWeergave(s);
 
                                 return (
                                     <li key={s.id}>
                                         Scherm {i + 1}
-                                        {s.formaat
-                                            ? ` (${s.formaat === "Anders" ? s.formaatAnders || "Anders" : s.formaat})`
+                                        {formaat || beugel
+                                            ? ` — ${[formaat, beugel].filter(Boolean).join(" · ")}`
                                             : ""}
-                                        :{" "}
+                                        {": "}
                                         <strong>
                                             {installatieTypeWeergave(t)}
                                         </strong>
@@ -869,6 +875,25 @@ export default function SchermenSpecificatie({
                                 );
                             })}
                         </ul>
+                        {benodigdeBeugels.length > 0 ? (
+                            <div className="pt-2 border-t border-[#0066FF]/15">
+                                <p className="text-xs font-semibold text-[#0066FF] mb-1">
+                                    Benodigde beugels
+                                </p>
+                                <ul className="text-sm text-gray-800 space-y-0.5">
+                                    {benodigdeBeugels.map((rij) => (
+                                        <li key={rij.label}>
+                                            {rij.aantal}× {rij.label}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : (
+                            <p className="text-xs text-gray-500">
+                                Kies per scherm formaat en beugel om de
+                                types en benodigde beugels te zien.
+                            </p>
+                        )}
                     </div>
                 </div>
             ) : null}
