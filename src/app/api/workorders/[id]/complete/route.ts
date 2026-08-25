@@ -11,6 +11,7 @@ import { sendWorkorderMail } from "@/lib/email/sendWorkorderMail";
 import { sendNietGereedMail } from "@/lib/email/sendNietGereedMail";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
+import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
 
 export const maxDuration = 60;
 
@@ -258,7 +259,10 @@ export async function POST(
                         })),
 
                     photos:
-                        (workorder.photos ?? []).map(photo=>({
+                        zonderInstructieFotos(
+                            workorder.photos ?? [],
+                            workorder.werkInstructie
+                        ).map(photo=>({
                             url:
                                 photo.url,
                             caption:
@@ -305,7 +309,10 @@ export async function POST(
         let zipBuffer: Buffer | null = null;
         try {
             zipBuffer = await buildWorkorderPhotosZip(
-                (workorder.photos ?? []).map((photo)=>({
+                zonderInstructieFotos(
+                    workorder.photos ?? [],
+                    workorder.werkInstructie
+                ).map((photo)=>({
                     id: photo.id,
                     url: photo.url,
                     filename: photo.filename,

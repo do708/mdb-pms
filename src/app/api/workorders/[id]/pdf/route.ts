@@ -6,6 +6,7 @@ import { customerName, resolveCustomer } from "@/lib/workorderCustomer";
 
 import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
 
 export const maxDuration = 60;
 export const runtime = "nodejs";
@@ -222,7 +223,10 @@ customer:true,
                     })),
 
                 photos:
-                    (workorder.photos ?? []).map(photo=>({
+                    zonderInstructieFotos(
+                        workorder.photos ?? [],
+                        workorder.werkInstructie
+                    ).map(photo=>({
                         url:
                             photo.url,
                         caption:

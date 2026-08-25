@@ -10,6 +10,7 @@ import {
 import { isNasArchiveEnabled, joinNasPath } from "@/lib/nas/synologyConfig";
 import { synologyUploadFile } from "@/lib/nas/synologyClient";
 import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
+import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
 import {
     AttachmentNotFoundError,
     candidateStoragePaths,
@@ -191,7 +192,12 @@ export async function archiveWorkorderToNas(workorderId: string) {
             );
         }
 
-        const zipBuffer = await buildWorkorderPhotosZip(workorder.photos);
+        const installatieFotos = zonderInstructieFotos(
+            workorder.photos,
+            workorder.werkInstructie
+        );
+
+        const zipBuffer = await buildWorkorderPhotosZip(installatieFotos);
 
         if (zipBuffer) {
             await synologyUploadFile(
@@ -201,7 +207,7 @@ export async function archiveWorkorderToNas(workorderId: string) {
                 "application/zip"
             );
 
-            for (const photo of workorder.photos) {
+            for (const photo of installatieFotos) {
                 copiedStoragePaths.push(
                     ...candidateStoragePaths({
                         filename: null,

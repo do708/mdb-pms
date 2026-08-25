@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
+import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
 
 export const maxDuration = 60;
 
@@ -30,6 +31,7 @@ export async function GET(
             select: {
                 id: true,
                 number: true,
+                werkInstructie: true,
                 photos: {
                     orderBy: { createdAt: "asc" },
                     select: {
@@ -49,14 +51,19 @@ export async function GET(
             );
         }
 
-        if (workorder.photos.length === 0) {
+        const fotos = zonderInstructieFotos(
+            workorder.photos,
+            workorder.werkInstructie
+        );
+
+        if (fotos.length === 0) {
             return NextResponse.json(
                 { error: "Geen foto's op deze opdracht" },
                 { status: 404 }
             );
         }
 
-        const zipBuffer = await buildWorkorderPhotosZip(workorder.photos);
+        const zipBuffer = await buildWorkorderPhotosZip(fotos);
 
         if (!zipBuffer) {
             return NextResponse.json(

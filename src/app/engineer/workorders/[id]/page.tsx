@@ -2057,19 +2057,6 @@ async function completeWorkorder(){
                             ) : null}
                             <WerkInstructieWeergave
                                 tekst={workorder.werkInstructie ?? ""}
-                                onNaarFotos={
-                                    workorder.sentAt
-                                    ? undefined
-                                    : (url)=>
-                                        window.dispatchEvent(
-                                            new CustomEvent("mdb-import-photo-url", {
-                                                detail:{
-                                                    workorderId:id,
-                                                    url
-                                                }
-                                            })
-                                        )
-                                }
                             />
                         </div>
                     )

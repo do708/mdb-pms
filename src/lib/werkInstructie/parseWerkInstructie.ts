@@ -185,3 +185,48 @@ export function parseWerkInstructie(ruw: string): InstructieBlok[] {
 
     return blokken;
 }
+
+function bestandsnaamUitUrl(url: string): string {
+    try {
+        const stuk = new URL(url).pathname.split("/").pop() || "";
+        return decodeURIComponent(stuk).toLowerCase();
+    } catch {
+        return url.split("/").pop()?.toLowerCase() || "";
+    }
+}
+
+/** Setup-foto's uit de werkinstructie horen niet bij de installatiefoto's. */
+export function isInfoFotoVanInstructie(
+    photo: { url: string; filename?: string | null },
+    werkInstructie: string | null | undefined
+): boolean {
+    const instructieUrls = urlsUitTekst(werkInstructie || "");
+
+    if (instructieUrls.length === 0) {
+        return false;
+    }
+
+    if (instructieUrls.includes(photo.url)) {
+        return true;
+    }
+
+    const naam = (photo.filename || "").split("/").pop()?.toLowerCase() || "";
+
+    if (!naam) {
+        return false;
+    }
+
+    return instructieUrls.some((url) => {
+        const stuk = bestandsnaamUitUrl(url);
+        return Boolean(stuk) && (naam === stuk || naam.endsWith(stuk) || stuk.endsWith(naam));
+    });
+}
+
+export function zonderInstructieFotos<T extends { url: string; filename?: string | null }>(
+    photos: T[],
+    werkInstructie: string | null | undefined
+): T[] {
+    return photos.filter(
+        (photo) => !isInfoFotoVanInstructie(photo, werkInstructie)
+    );
+}

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 import { createClient } from "@supabase/supabase-js";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { zonderInstructieFotos, isInfoFotoVanInstructie } from "@/lib/werkInstructie/parseWerkInstructie";
 import {
     compressPhoto,
     photoStorageName,
@@ -201,10 +202,10 @@ export async function POST(
             return guard.response;
         }
 
-        const workorder = await prisma.workorder.findUnique({
-            where: { id },
-            select: { id: true },
-        });
+            const workorder = await prisma.workorder.findUnique({
+                where: { id },
+                select: { id: true, werkInstructie: true },
+            });
 
         if (!workorder) {
             return NextResponse.json(
@@ -235,15 +236,23 @@ export async function POST(
                 )
                 : [];
 
-            if (urls.length === 0) {
-                return NextResponse.json(
-                    { error: "Geen fotolinks ontvangen" },
-                    { status: 400 }
-                );
+            const teImporteren = urls.filter(
+                (url) =>
+                    !isInfoFotoVanInstructie(
+                        { url: url.trim() },
+                        workorder.werkInstructie
+                    )
+            );
+
+            if (teImporteren.length === 0) {
+                return NextResponse.json({
+                    success: true,
+                    photos: [],
+                });
             }
 
             const uploadedPhotos = [];
-            for (const url of urls.slice(0, 12)) {
+            for (const url of teImporteren.slice(0, 12)) {
                 uploadedPhotos.push(
                     await importPhotoFromUrl(id, url.trim())
                 );
@@ -367,10 +376,18 @@ export async function GET(
             return guard.response;
         }
 
-        const photos = await prisma.workorderPhoto.findMany({
-            where: { workorderId: id },
-            orderBy: { createdAt: "asc" },
+        const workorder = await prisma.workorder.findUnique({
+            where: { id },
+            select: { werkInstructie: true },
         });
+
+        const photos = zonderInstructieFotos(
+            await prisma.workorderPhoto.findMany({
+                where: { workorderId: id },
+                orderBy: { createdAt: "asc" },
+            }),
+            workorder?.werkInstructie
+        );
 
         return NextResponse.json({
             photos,

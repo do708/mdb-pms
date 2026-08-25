@@ -201,66 +201,6 @@ export default function PhotosForm({
 
     }
 
-    async function importUrls(urls: string[]){
-        const uniek = [...new Set(urls.map((u)=>u.trim()).filter((u)=>
-            /^https?:\/\//i.test(u)
-        ))];
-
-        if(uniek.length === 0){
-            return;
-        }
-
-        setUploading(true);
-
-        try {
-            const response = await fetch(
-                `/api/workorders/${workorderId}/photos`,
-                {
-                    method:"POST",
-                    headers:{ "Content-Type":"application/json" },
-                    body:JSON.stringify({ urls: uniek })
-                }
-            );
-
-            const data = await response.json().catch(()=>({}));
-
-            if(response.ok && Array.isArray(data.photos)){
-                setPhotos(prev=>[...prev, ...data.photos]);
-            } else {
-                const reden =
-                    typeof data.error === "string" && data.error.trim()
-                    ? data.error
-                    : "Fotolink toevoegen mislukt";
-                alert(reden);
-            }
-        } catch(error){
-            console.error(error);
-            alert("Fout bij toevoegen fotolink");
-        } finally {
-            setUploading(false);
-        }
-    }
-
-    function urlsUitDrop(data: DataTransfer): string[] {
-        const uitTekst = [
-            data.getData("text/uri-list"),
-            data.getData("text/plain"),
-        ]
-            .join("\n")
-            .split(/[\s\n]+/)
-            .map((u)=>u.trim())
-            .filter((u)=>/^https?:\/\//i.test(u));
-
-        const html = data.getData("text/html");
-        if(html){
-            const hrefs = [...html.matchAll(/https?:\/\/[^"'>\s]+/gi)]
-                .map((m)=>m[0]);
-            uitTekst.push(...hrefs);
-        }
-
-        return [...new Set(uitTekst)];
-    }
-
     async function selectPhotos(
         event:React.ChangeEvent<HTMLInputElement>
     ){
@@ -272,23 +212,6 @@ export default function PhotosForm({
         await uploadFiles(Array.from(event.target.files));
 
     }
-
-    useEffect(()=>{
-        function onImport(ev: Event){
-            const detail = (ev as CustomEvent<{
-                workorderId?: string;
-                url?: string;
-            }>).detail;
-            if(!detail?.url || detail.workorderId !== workorderId){
-                return;
-            }
-            void importUrls([detail.url]);
-        }
-
-        window.addEventListener("mdb-import-photo-url", onImport);
-        return ()=>
-            window.removeEventListener("mdb-import-photo-url", onImport);
-    }, [workorderId]);
 
 
 
@@ -340,7 +263,7 @@ export default function PhotosForm({
         <SpecPageCard className="space-y-3">
 
             <h2 className="font-semibold text-sm text-gray-800 border-b pb-1">
-                Foto&apos;s
+                Foto&apos;s van de installatie
             </h2>
 
             {
@@ -371,11 +294,6 @@ export default function PhotosForm({
                                     .filter((f)=>f.type.startsWith("image/") || f.size > 0);
                                 if(files.length){
                                     void uploadFiles(files);
-                                    return;
-                                }
-                                const urls = urlsUitDrop(e.dataTransfer);
-                                if(urls.length){
-                                    void importUrls(urls);
                                 }
                             }}
                             className={`
@@ -402,7 +320,7 @@ export default function PhotosForm({
                                         </span>
                                         <span>Foto&apos;s toevoegen</span>
                                         <span className="text-xs font-normal text-gray-500">
-                                            Klik, sleep foto&apos;s of sleep een fotolink hierheen
+                                            Tijdens of na het installeren. Klik of sleep foto&apos;s hierheen.
                                         </span>
                                     </>
                                 )
@@ -417,7 +335,7 @@ export default function PhotosForm({
                 photos.length === 0
                 ? (
                     <p className="text-sm text-gray-500">
-                        Nog geen foto&apos;s toegevoegd.
+                        Nog geen foto&apos;s van de installatie.
                     </p>
                 )
                 : (

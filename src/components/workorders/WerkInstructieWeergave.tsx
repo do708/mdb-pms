@@ -1,66 +1,67 @@
 "use client";
 
+import { useState } from "react";
+
 import {
     parseWerkInstructie,
     urlsUitTekst,
     type InstructieBlok,
 } from "@/lib/werkInstructie/parseWerkInstructie";
 
-function startFotoSleep(event: React.DragEvent, url: string) {
-    event.dataTransfer.setData("text/uri-list", url);
-    event.dataTransfer.setData("text/plain", url);
-    event.dataTransfer.effectAllowed = "copy";
-}
+function InstructieFoto({ url }: { url: string }) {
+    const [kapot, setKapot] = useState(false);
 
-function FotoLinks({
-    urls,
-    onNaarFotos,
-}: {
-    urls: string[];
-    onNaarFotos?: (url: string) => void;
-}) {
+    if (kapot) {
+        return (
+            <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-sky-700 underline break-all"
+            >
+                {url}
+            </a>
+        );
+    }
+
     return (
-        <ul className="space-y-1.5">
-            {urls.map((url) => (
-                <li key={url} className="flex items-start gap-2 min-w-0">
-                    <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        draggable
-                        onDragStart={(e) => startFotoSleep(e, url)}
-                        className="
-                            text-sm text-sky-700 underline break-all min-w-0
-                            cursor-grab
-                        "
-                    >
-                        {url}
-                    </a>
-                    {onNaarFotos ? (
-                        <button
-                            type="button"
-                            onClick={() => onNaarFotos(url)}
-                            className="
-                                shrink-0 text-[11px] font-medium
-                                text-[#0066FF] hover:underline
-                            "
-                        >
-                            Naar foto&apos;s
-                        </button>
-                    ) : null}
-                </li>
-            ))}
-        </ul>
+        <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-lg border border-indigo-100 bg-white overflow-hidden"
+        >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+                src={url}
+                alt="Setup-foto"
+                className="w-full max-h-48 object-contain bg-white"
+                onError={() => setKapot(true)}
+            />
+        </a>
     );
 }
 
-function BlokWeergave({
-    blok,
-    onNaarFotos,
-}: {
-    blok: InstructieBlok;
-    onNaarFotos?: (url: string) => void;
-}) {
+function InstructieFotos({ urls }: { urls: string[] }) {
+    if (urls.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="space-y-1.5">
+            <p className="text-[11px] font-medium text-indigo-800">
+                Foto&apos;s vooraf — ter informatie
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {urls.map((url) => (
+                    <InstructieFoto key={url} url={url} />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function BlokWeergave({ blok }: { blok: InstructieBlok }) {
     if (blok.soort === "kop") {
         return (
             <h3 className="text-sm font-bold text-gray-900 pt-1">
@@ -72,14 +73,15 @@ function BlokWeergave({
     if (blok.soort === "regel") {
         const urls = urlsUitTekst(blok.waarde);
         return (
-            <p className="text-sm text-gray-800">
-                <span className="font-semibold">{blok.label}: </span>
-                {urls.length ? (
-                    <FotoLinks urls={urls} onNaarFotos={onNaarFotos} />
-                ) : (
-                    <span className="whitespace-pre-wrap">{blok.waarde}</span>
-                )}
-            </p>
+            <div className="space-y-1.5">
+                <p className="text-sm text-gray-800">
+                    <span className="font-semibold">{blok.label}: </span>
+                    {urls.length === 0 ? (
+                        <span className="whitespace-pre-wrap">{blok.waarde}</span>
+                    ) : null}
+                </p>
+                <InstructieFotos urls={urls} />
+            </div>
         );
     }
 
@@ -126,7 +128,7 @@ function BlokWeergave({
     }
 
     if (blok.soort === "links") {
-        return <FotoLinks urls={blok.urls} onNaarFotos={onNaarFotos} />;
+        return <InstructieFotos urls={blok.urls} />;
     }
 
     const urls = urlsUitTekst(blok.tekst);
@@ -138,38 +140,27 @@ function BlokWeergave({
         );
     }
 
-    const delen = blok.tekst.split(/(https?:\/\/[^\s<>"'()]+)/gi);
+    const rest = blok.tekst
+        .replace(/https?:\/\/[^\s<>"'()]+/gi, "")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+
     return (
-        <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">
-            {delen.map((deel, i) => {
-                if (/^https?:\/\//i.test(deel)) {
-                    const url = deel.replace(/[.,;:]+$/g, "");
-                    return (
-                        <a
-                            key={`${url}-${i}`}
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            draggable
-                            onDragStart={(e) => startFotoSleep(e, url)}
-                            className="text-sky-700 underline break-all cursor-grab"
-                        >
-                            {url}
-                        </a>
-                    );
-                }
-                return <span key={i}>{deel}</span>;
-            })}
-        </p>
+        <div className="space-y-1.5">
+            {rest ? (
+                <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">
+                    {rest}
+                </p>
+            ) : null}
+            <InstructieFotos urls={urls} />
+        </div>
     );
 }
 
 export default function WerkInstructieWeergave({
     tekst,
-    onNaarFotos,
 }: {
     tekst: string;
-    onNaarFotos?: (url: string) => void;
 }) {
     const blokken = parseWerkInstructie(tekst);
 
@@ -182,18 +173,8 @@ export default function WerkInstructieWeergave({
     return (
         <div className="space-y-3">
             {blokken.map((blok, index) => (
-                <BlokWeergave
-                    key={index}
-                    blok={blok}
-                    onNaarFotos={onNaarFotos}
-                />
+                <BlokWeergave key={index} blok={blok} />
             ))}
-            {onNaarFotos ? (
-                <p className="text-[11px] text-gray-500">
-                    Fotolinks kun je naar Foto&apos;s slepen of via
-                    &quot;Naar foto&apos;s&quot; toevoegen.
-                </p>
-            ) : null}
         </div>
     );
 }
