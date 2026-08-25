@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         "puppeteer",
         "sharp",
     ],
+    experimental: {
+        middlewareClientMaxBodySize: "25mb",
+        proxyClientMaxBodySize: "25mb",
+    },
 };
 
 export default nextConfig;

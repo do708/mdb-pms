@@ -92,8 +92,9 @@ export default function ProjectPlattegronden({
                     alert(
                         data?.error
                             ? `Uploaden mislukt: ${data.error}`
-                            : "Uploaden mislukt"
+                            : `Uploaden mislukt (${res.status})`
                     );
+                    continue;
                 }
             }
 

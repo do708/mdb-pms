@@ -4,7 +4,18 @@ import { createClient } from "@supabase/supabase-js";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole, requireProjectAccess } from "@/lib/auth/guard";
-import { removeAttachmentObject } from "@/lib/attachments/storage";
+import {
+    contentTypeForFile,
+    extensionForContentType,
+} from "@/lib/attachments/contentType";
+import { uploadStorageObject } from "@/lib/attachments/storage";
+import {
+    compressPhoto,
+    photoStorageName,
+} from "@/lib/images/compressPhoto";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -68,46 +79,57 @@ export async function POST(
         }
 
         const formData = await request.formData();
-        const file = formData.get("file") as File | null;
+        const file = formData.get("file");
 
-        if (!file) {
+        if (
+            !file
+            || typeof file === "string"
+            || typeof (file as File).arrayBuffer !== "function"
+            || (file as File).size <= 0
+        ) {
             return NextResponse.json(
                 { error: "Geen bestand ontvangen" },
                 { status: 400 }
             );
         }
 
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const veiligeNaam = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        const opslagNaam =
-            `projecten/${id}/plattegronden/${Date.now()}-${veiligeNaam}`;
+        const upload = file as File;
+        const contentType = contentTypeForFile(upload);
+        const raw = Buffer.from(await upload.arrayBuffer());
+        const payload = contentType.startsWith("image/")
+            ? await compressPhoto(raw, contentType)
+            : {
+                buffer: raw,
+                contentType,
+                extension: extensionForContentType(upload.name, contentType),
+            };
 
-        const { data, error } = await supabase.storage
+        const veiligeNaam = payload.extension
+            ? photoStorageName(upload.name, payload.extension)
+            : upload.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const stamp = Date.now();
+        const nestedPath =
+            `projecten/${id}/plattegronden/${stamp}-${veiligeNaam}`;
+        const flatPath = `plattegronden/${id}/${stamp}-${veiligeNaam}`;
+
+        const stored = await uploadStorageObject({
+            path: nestedPath,
+            buffer: payload.buffer,
+            contentType: payload.contentType || contentType,
+            fallbackPaths: [flatPath],
+        });
+
+        const publicUrl = supabase.storage
             .from("workorder-files")
-            .upload(opslagNaam, buffer, {
-                contentType: file.type || "application/octet-stream",
-                upsert: false,
-            });
-
-        if (error) {
-            console.error(error);
-            return NextResponse.json(
-                { error: error.message },
-                { status: 500 }
-            );
-        }
-
-        const { data: urlData } = supabase.storage
-            .from("workorder-files")
-            .getPublicUrl(data.path);
+            .getPublicUrl(stored.path).data.publicUrl;
 
         const attachment = await prisma.projectAttachment.create({
             data: {
                 projectId: id,
-                url: urlData.publicUrl,
-                filename: data.path,
-                originalName: file.name,
-                contentType: file.type || null,
+                url: publicUrl,
+                filename: stored.path,
+                originalName: upload.name,
+                contentType: payload.contentType || contentType,
             },
         });
 
@@ -115,8 +137,18 @@ export async function POST(
     } catch (error) {
         console.error("PROJECT ATTACHMENTS POST ERROR:", error);
 
+        const message =
+            error instanceof Error ? error.message : "";
+        const lower = message.toLowerCase();
+        const hint =
+            /projectattachment|does not exist|p2021/i.test(message)
+                ? "Database mist de plattegrondentabel — voer prisma migrate deploy uit."
+                : /payload|too large|request entity|413/i.test(lower)
+                  ? "Bestand is te groot. Gebruik een kleinere PDF of PNG (max. circa 4,5 MB)."
+                  : message || "Bijlage opslaan mislukt";
+
         return NextResponse.json(
-            { error: "Bijlage opslaan mislukt" },
+            { error: hint },
             { status: 500 }
         );
     }

@@ -421,3 +421,39 @@ export async function removeAttachmentObject(
 
     await supabase.storage.from(BUCKET).remove(paths).catch(() => {});
 }
+
+export async function uploadStorageObject(options: {
+    path: string;
+    buffer: Buffer;
+    contentType: string;
+    fallbackPaths?: string[];
+}): Promise<{ path: string }> {
+    const paths = [options.path, ...(options.fallbackPaths ?? [])];
+    const types = [
+        options.contentType,
+        "application/octet-stream",
+    ].filter((type, index, list) => type && list.indexOf(type) === index);
+
+    let lastError: { message?: string } | null = null;
+
+    for (const path of paths) {
+        for (const contentType of types) {
+            const { data, error } = await supabase.storage
+                .from(BUCKET)
+                .upload(path, new Uint8Array(options.buffer), {
+                    contentType,
+                    upsert: false,
+                });
+
+            if (data?.path && !error) {
+                return { path: data.path };
+            }
+
+            lastError = error;
+        }
+    }
+
+    throw new Error(
+        lastError?.message || "Bestand kon niet in de opslag worden gezet"
+    );
+}
