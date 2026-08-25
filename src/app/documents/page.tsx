@@ -31,24 +31,6 @@ interface DocumentItem {
 
     createdAt:string;
 
-    workorder?:{
-
-        number:string;
-
-        project?:{
-
-            name:string;
-
-            customer?:{
-
-                name:string;
-
-            }
-
-        }
-
-    }
-
 }
 
 
@@ -117,7 +99,7 @@ export default function DocumentsPage(){
 
             <PageHeader
                 title="Documenten"
-                subtitle="Opdrachten, rapporten en bestanden"
+                subtitle="Handleidingen, certificaten en algemene bestanden. Bijlagen van opdrachten staan op de werkbon."
             />
 
 
@@ -146,7 +128,7 @@ export default function DocumentsPage(){
 
                     {!loading && documents.length === 0 && (
                         <p className="text-sm text-gray-500">
-                            Nog geen documenten beschikbaar.
+                            Nog geen documenten in de documentenbox.
                         </p>
                     )}
 
@@ -170,12 +152,6 @@ export default function DocumentsPage(){
 
                                         <p className="text-sm font-semibold text-gray-900 truncate">
                                             {doc.name}
-                                        </p>
-
-                                        <p className="text-xs text-gray-500 truncate">
-                                            {doc.workorder?.number ?? ""}
-                                            {" "}
-                                            {doc.workorder?.project?.customer?.name ?? ""}
                                         </p>
 
                                     </div>

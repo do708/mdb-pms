@@ -29,32 +29,13 @@ export async function GET() {
 
         const documents = await prisma.document.findMany({
 
+            where:{
+                workorderId: null
+            },
+
             orderBy:{
 
                 createdAt:"desc"
-
-            },
-
-
-            include:{
-
-                workorder:{
-
-                    include:{
-
-                        project:{
-
-                            include:{
-
-                                customer:true
-
-                            }
-
-                        }
-
-                    }
-
-                }
 
             }
 

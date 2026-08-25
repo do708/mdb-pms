@@ -285,6 +285,7 @@ export async function GET(
             await prisma.document.findMany({
 
                 where:{
+                    workorderId: null,
                     OR:[
                         { name:like },
                         { type:like }
@@ -294,13 +295,7 @@ export async function GET(
                 select:{
                     id:true,
                     name:true,
-                    type:true,
-                    workorder:{
-                        select:{
-                            id:true,
-                            number:true
-                        }
-                    }
+                    type:true
                 },
 
                 take:6,
