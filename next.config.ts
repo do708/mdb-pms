@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
         "sharp",
     ],
     experimental: {
-        middlewareClientMaxBodySize: "25mb",
         proxyClientMaxBodySize: "25mb",
     },
 };
