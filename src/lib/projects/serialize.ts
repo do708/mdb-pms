@@ -117,7 +117,7 @@ export function serializeProjectDetail(
         bookedBy: row.bookedBy,
     }));
 
-    const bijlagen = project.bijlagen.map((row) => ({
+    const bijlagen = (project.bijlagen ?? []).map((row) => ({
         id: row.id,
         url: row.url,
         filename: row.filename,
@@ -214,45 +214,90 @@ export function serializeProjectDetail(
     };
 }
 
-export async function loadProjectDetail(id: string) {
-    return prisma.project.findUnique({
-        where: { id },
+function isMissingProjectAttachmentTable(error: unknown): boolean {
+    const code =
+        error && typeof error === "object" && "code" in error
+            ? String((error as { code: unknown }).code)
+            : "";
+    const message =
+        error instanceof Error ? error.message : String(error ?? "");
+
+    return (
+        code === "P2021"
+        || (
+            /projectattachment/i.test(message)
+            && /does not exist|niet bestaan|unknown arg/i.test(message)
+        )
+    );
+}
+
+const projectDetailInclude = {
+    customer: true,
+    uren: {
+        orderBy: [{ datum: "desc" as const }, { createdAt: "desc" as const }],
         include: {
-            customer: true,
-            uren: {
-                orderBy: [{ datum: "desc" }, { createdAt: "desc" }],
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                        },
-                    },
-                    bookedBy: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                        },
-                    },
-                },
-            },
-            materialen: {
-                orderBy: { createdAt: "desc" },
-            },
-            bijlagen: {
-                orderBy: { createdAt: "desc" },
-            },
-            workorders: {
-                orderBy: { createdAt: "desc" },
+            user: {
                 select: {
                     id: true,
-                    number: true,
-                    title: true,
-                    status: true,
+                    name: true,
+                    email: true,
+                },
+            },
+            bookedBy: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
                 },
             },
         },
-    });
+    },
+    materialen: {
+        orderBy: { createdAt: "desc" as const },
+    },
+    workorders: {
+        orderBy: { createdAt: "desc" as const },
+        select: {
+            id: true,
+            number: true,
+            title: true,
+            status: true,
+        },
+    },
+};
+
+export async function loadProjectDetail(id: string) {
+    try {
+        return await prisma.project.findUnique({
+            where: { id },
+            include: {
+                ...projectDetailInclude,
+                bijlagen: {
+                    orderBy: { createdAt: "desc" },
+                },
+            },
+        });
+    } catch (error) {
+        if (!isMissingProjectAttachmentTable(error)) {
+            throw error;
+        }
+
+        console.warn(
+            "PROJECT ATTACHMENT TABLE MISSING — voer prisma migrate deploy uit"
+        );
+
+        const project = await prisma.project.findUnique({
+            where: { id },
+            include: projectDetailInclude,
+        });
+
+        if (!project) {
+            return null;
+        }
+
+        return {
+            ...project,
+            bijlagen: [],
+        };
+    }
 }
