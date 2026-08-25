@@ -13,6 +13,7 @@ import {
 } from "@/components/projects/ProjectBudget";
 import ProjectPlattegronden from "@/components/projects/ProjectPlattegronden";
 import ProjectIntakeGegevens from "@/components/projects/ProjectIntakeGegevens";
+import ProjectUrenAfdruk from "@/components/projects/ProjectUrenAfdruk";
 import BunniKoppeling, {
     BunniDocumentPicker,
 } from "@/components/bunni/BunniKoppeling";
@@ -829,8 +830,20 @@ export default function ProjectDetailPage() {
         );
     }
 
+    function printUrenoverzicht() {
+        const vorigeTitel = document.title;
+        document.title = `Urenoverzicht ${project.number} ${project.name}`;
+        const herstel = () => {
+            document.title = vorigeTitel;
+            window.removeEventListener("afterprint", herstel);
+        };
+        window.addEventListener("afterprint", herstel);
+        window.print();
+    }
+
     return (
-        <PageShell>
+        <PageShell className="print:p-0 print:space-y-0">
+            <div className="print:hidden space-y-6">
             <Link
                 href="/projects"
                 className="text-sm text-[#d6007e] font-medium -mt-2"
@@ -1385,7 +1398,20 @@ export default function ProjectDetailPage() {
             />
 
             <SpecPageCard>
-                <SpecPanel title="Urenlog">
+                <SpecPanel
+                    title="Urenlog"
+                    actions={
+                        project.uren.length > 0 ? (
+                            <button
+                                type="button"
+                                onClick={printUrenoverzicht}
+                                className="inline-flex items-center rounded-lg bg-[#0066FF] px-3 py-2 text-sm font-semibold text-white hover:bg-[#0052cc]"
+                            >
+                                Afdrukken
+                            </button>
+                        ) : null
+                    }
+                >
                 {urenPerMonteur.length > 0 ? (
                     <SpecPanel title="Overzicht per monteur" tone="slate">
                         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -1769,6 +1795,18 @@ export default function ProjectDetailPage() {
                     </SpecPanel>
                 </SpecPageCard>
             ) : null}
+            </div>
+
+            <ProjectUrenAfdruk
+                number={project.number}
+                name={project.name}
+                customerName={project.customer.name}
+                location={project.location}
+                plaats={project.plaats}
+                uren={project.uren}
+                perMonteur={urenPerMonteur}
+                totaalUren={project.gebruikteUren}
+            />
         </PageShell>
     );
 }
