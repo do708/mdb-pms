@@ -8,6 +8,7 @@ import DeleteButton from "@/components/DeleteButton";
 import { PlanningStatusIcon, WorkorderStatusIconLegend } from "@/components/planning/PlanningStatusIcon";
 import {
     getStatus,
+    heeftUitgevoerdeWerkbon,
     migrateStatus,
     WORKORDER_ACTIVE_STATUSES,
     WORKORDER_ACTIVE_STATUS_KEYS,
@@ -268,31 +269,37 @@ function WorkordersPageContent() {
                                         Openen
                                     </Link>
 
-                                    <a
-                                        href={`/api/workorders/${workorder.id}/pdf`}
-                                        title="PDF download"
-                                        className="
-                                            border border-gray-200
-                                            px-3 py-1.5 rounded-lg text-sm
-                                            text-gray-700 hover:bg-gray-50
-                                        "
-                                    >
-                                        PDF
-                                    </a>
+                                    {heeftUitgevoerdeWerkbon(workorder.status) ? (
+                                        <a
+                                            href={`/api/workorders/${workorder.id}/pdf`}
+                                            title="PDF download"
+                                            className="
+                                                border border-gray-200
+                                                px-3 py-1.5 rounded-lg text-sm
+                                                text-gray-700 hover:bg-gray-50
+                                            "
+                                        >
+                                            PDF
+                                        </a>
+                                    ) : null}
 
                                     {(role === "admin" || role === "office") && (
                                         <>
-                                            <a
-                                                href={`/api/workorders/${workorder.id}/photos/zip`}
-                                                title="Download alle foto's van de werkbon (.zip)"
-                                                className="
-                                                    border border-gray-200
-                                                    px-3 py-1.5 rounded-lg text-sm
-                                                    text-gray-700 hover:bg-gray-50
-                                                "
-                                            >
-                                                .zip
-                                            </a>
+                                            {heeftUitgevoerdeWerkbon(
+                                                workorder.status
+                                            ) ? (
+                                                <a
+                                                    href={`/api/workorders/${workorder.id}/photos/zip`}
+                                                    title="Download alle foto's van de werkbon (.zip)"
+                                                    className="
+                                                        border border-gray-200
+                                                        px-3 py-1.5 rounded-lg text-sm
+                                                        text-gray-700 hover:bg-gray-50
+                                                    "
+                                                >
+                                                    .zip
+                                                </a>
+                                            ) : null}
 
                                             <DeleteButton
                                                 url={`/api/workorders/${workorder.id}`}

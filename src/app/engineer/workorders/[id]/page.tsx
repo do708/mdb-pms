@@ -26,6 +26,7 @@ import {
     mergeKlaarzetPrefill,
 } from "@/lib/aanvraag/klaarzetVanSpecificaties";
 import { leesSchermAansturing } from "@/lib/klaarzetMateriaal";
+import { heeftUitgevoerdeWerkbon } from "@/constants/workorderStatus";
 import {
     formatAmsterdamDateIso,
     formatAmsterdamHHmm,
@@ -1250,7 +1251,9 @@ async function completeWorkorder(){
             }
 
             {
-                isOffice && (
+                isOffice
+                && heeftUitgevoerdeWerkbon(status || workorder.status)
+                && (
                     <div className="
                         flex flex-wrap gap-2
                         rounded-xl border border-gray-200
@@ -1276,14 +1279,6 @@ async function completeWorkorder(){
                         >
                             ZIP foto&apos;s
                         </a>
-                        {(status || workorder.status) === "uitgevoerd" && (
-                            <span className="
-                                text-xs text-emerald-700
-                                self-center ml-1
-                            ">
-                                Status: Uitgevoerd — monteur heeft afgerond
-                            </span>
-                        )}
                     </div>
                 )
             }

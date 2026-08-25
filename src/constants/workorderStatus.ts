@@ -99,6 +99,14 @@ export const ENGINEER_OPDRACHT_STATUS_KEYS = [
     "in_uitvoering",
 ] as const;
 
+/** PDF en foto-ZIP bestaan pas als de monteur de opdracht heeft afgerond. */
+export function heeftUitgevoerdeWerkbon(
+    key: string | null | undefined
+): boolean {
+    const status = migrateStatus(key);
+    return status === "uitgevoerd" || status === "gefactureerd";
+}
+
 
 
 export function getStatus(
