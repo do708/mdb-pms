@@ -830,9 +830,11 @@ export default function ProjectDetailPage() {
         );
     }
 
+    const huidigProject = project;
+
     function printUrenoverzicht() {
         const vorigeTitel = document.title;
-        document.title = `Urenoverzicht ${project.number} ${project.name}`;
+        document.title = `Urenoverzicht ${huidigProject.number} ${huidigProject.name}`;
         const herstel = () => {
             document.title = vorigeTitel;
             window.removeEventListener("afterprint", herstel);
