@@ -18,7 +18,7 @@ import {
     projectJobAddress,
 } from "@/lib/travel/plannedKilometers";
 
-import { amsterdamDateKey } from "@/lib/reports/periods";
+import { amsterdamDateKey, toDateKey } from "@/lib/reports/periods";
 
 
 
@@ -207,6 +207,23 @@ export async function GET(){
 
 
 
+
+        const leaveForms =
+            await prisma.formSubmission.findMany({
+                where: {
+                    type: "verlof",
+                    status: "geaccepteerd",
+                },
+                select: {
+                    data: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                },
+            });
 
         type DayItem = {
             formKilometers:number;
@@ -745,7 +762,36 @@ export async function GET(){
                     a.engineerName.localeCompare(b.engineerName, "nl")
                     :
                     a.date < b.date ? 1 : -1
-                )
+                ),
+
+            leave:
+                leaveForms
+                .map((form)=>{
+                    const data =
+                        (form.data ?? {}) as Record<string, unknown>;
+                    const from =
+                        toDateKey(data.eersteDag);
+                    const to =
+                        toDateKey(data.laatsteDag) ?? from;
+
+                    if(!from || !to){
+                        return null;
+                    }
+
+                    return {
+                        userId: form.user.id,
+                        userName:
+                            form.user.name ?? "Onbekend",
+                        from,
+                        to
+                    };
+                })
+                .filter((row): row is {
+                    userId: string;
+                    userName: string;
+                    from: string;
+                    to: string;
+                } => row !== null)
 
         });
 

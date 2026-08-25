@@ -14,17 +14,20 @@ import {
     specSelectClassName,
 } from "@/components/ui/SpecLayout";
 import {
+    availableYears,
     customersTotals,
-    engineersFromTimeline,
-    engineersTotals,
+    engineersFromSources,
+    engineersTotalsWithLeave,
     filterTimeline,
     groupTimeline,
+    MONTH_FILTER_OPTIONS,
     periodRange,
     periodStatLabel,
     timelineTotals,
     type GroupBy,
     type PeriodPreset,
     type ReportDayRow,
+    type ReportLeaveRange,
 } from "@/lib/reports/periods";
 
 interface ReportData {
@@ -36,13 +39,14 @@ interface ReportData {
     };
     byStatus: Record<string, number>;
     byDay?: ReportDayRow[];
+    leave?: ReportLeaveRange[];
 }
 
 const PERIOD_OPTIONS: { value: PeriodPreset; label: string }[] = [
     { value: "day", label: "Vandaag" },
     { value: "week", label: "Deze week" },
     { value: "month", label: "Deze maand" },
-    { value: "year", label: "Dit jaar" },
+    { value: "year", label: "Jaar / maand" },
     { value: "custom", label: "Kies maand" },
     { value: "all", label: "Alles" },
 ];
@@ -71,6 +75,10 @@ export default function ReportsPage() {
     const [engineerFilter, setEngineerFilter] = useState("alle");
     const [periodPreset, setPeriodPreset] = useState<PeriodPreset>("month");
     const [customMonth, setCustomMonth] = useState(currentMonthInput);
+    const [selectedYear, setSelectedYear] = useState(
+        () => new Date().getFullYear()
+    );
+    const [selectedYearMonth, setSelectedYearMonth] = useState("");
     const [groupBy, setGroupBy] = useState<GroupBy>("day");
 
     useEffect(() => {
@@ -94,16 +102,31 @@ export default function ReportsPage() {
         load();
     }, []);
 
+    const leave = data?.leave ?? [];
+
+    const yearFilter = useMemo(
+        () => ({ year: selectedYear, month: selectedYearMonth }),
+        [selectedYear, selectedYearMonth]
+    );
+
     const range = useMemo(
-        () => periodRange(periodPreset, customMonth),
-        [periodPreset, customMonth]
+        () => periodRange(periodPreset, customMonth, yearFilter),
+        [periodPreset, customMonth, yearFilter]
     );
 
     const timeline = data?.byDay ?? [];
 
+    const yearOptions = useMemo(() => {
+        const years = availableYears(timeline, leave);
+        if (!years.includes(selectedYear)) {
+            return [selectedYear, ...years].sort((a, b) => b - a);
+        }
+        return years;
+    }, [timeline, leave, selectedYear]);
+
     const engineerOptions = useMemo(
-        () => engineersFromTimeline(timeline),
-        [timeline]
+        () => engineersFromSources(timeline, leave),
+        [timeline, leave]
     );
 
     const filtered = useMemo(
@@ -117,8 +140,18 @@ export default function ReportsPage() {
         [filtered, groupBy]
     );
     const perMonteur = useMemo(
-        () => engineersTotals(filtered),
-        [filtered]
+        () =>
+            engineersTotalsWithLeave(
+                filtered,
+                leave,
+                engineerFilter,
+                range
+            ),
+        [filtered, leave, engineerFilter, range]
+    );
+    const leaveDaysTotal = useMemo(
+        () => perMonteur.reduce((sum, row) => sum + row.leaveDays, 0),
+        [perMonteur]
     );
     const perKlant = useMemo(
         () => customersTotals(filtered),
@@ -154,15 +187,12 @@ export default function ReportsPage() {
 
     return (
         <PageShell>
-            <PageHeader
-                title="Rapportages"
-                subtitle="Overzicht uren, reistijd en kilometers"
-            />
+            <PageHeader title="Rapportages" />
 
             <SpecPageCard>
                 <SpecPanel
                     title="Filters"
-                    hint="Cijfers en tabellen volgen monteur en periode. Kilometers zijn werkelijk gereden (dagroute), niet alleen de km van één klus."
+                    hint="Cijfers en tabellen volgen monteur en periode. Kilometers zijn werkelijk gereden (dagroute), niet alleen de km van één klus. Verlof telt werkdagen (ma–vr) van geaccepteerde aanvragen in de gekozen periode."
                 >
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <label className="block">
@@ -208,6 +238,56 @@ export default function ReportsPage() {
                             </select>
                         </label>
 
+                        {periodPreset === "year" ? (
+                            <>
+                                <label className="block">
+                                    <SpecFieldLabel>Jaar</SpecFieldLabel>
+                                    <select
+                                        value={String(selectedYear)}
+                                        onChange={(e) =>
+                                            setSelectedYear(
+                                                Number(e.target.value)
+                                            )
+                                        }
+                                        className={specSelectClassName}
+                                    >
+                                        {yearOptions.map((year) => (
+                                            <option
+                                                key={year}
+                                                value={year}
+                                            >
+                                                {year}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+
+                                <label className="block">
+                                    <SpecFieldLabel>Maand</SpecFieldLabel>
+                                    <select
+                                        value={selectedYearMonth}
+                                        onChange={(e) =>
+                                            setSelectedYearMonth(
+                                                e.target.value
+                                            )
+                                        }
+                                        className={specSelectClassName}
+                                    >
+                                        {MONTH_FILTER_OPTIONS.map((optie) => (
+                                            <option
+                                                key={optie.value || "jaar"}
+                                                value={optie.value}
+                                            >
+                                                {optie.value
+                                                    ? `${optie.label} ${selectedYear}`
+                                                    : `Hele jaar ${selectedYear}`}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            </>
+                        ) : null}
+
                         {periodPreset === "custom" ? (
                             <label className="block">
                                 <SpecFieldLabel>Maand</SpecFieldLabel>
@@ -245,7 +325,7 @@ export default function ReportsPage() {
                 </SpecPanel>
             </SpecPageCard>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                 <SpecStat
                     label="Opdrachten totaal"
                     value={data.totals.workorders}
@@ -254,7 +334,8 @@ export default function ReportsPage() {
                     label={periodStatLabel(
                         "Uren",
                         periodPreset,
-                        customMonth
+                        customMonth,
+                        yearFilter
                     )}
                     value={formatClockHours(totals.hours) || "0"}
                 />
@@ -262,7 +343,8 @@ export default function ReportsPage() {
                     label={periodStatLabel(
                         "Reistijd",
                         periodPreset,
-                        customMonth
+                        customMonth,
+                        yearFilter
                     )}
                     value={formatClockHours(totals.travel) || "0"}
                 />
@@ -270,9 +352,19 @@ export default function ReportsPage() {
                     label={periodStatLabel(
                         "Kilometers",
                         periodPreset,
-                        customMonth
+                        customMonth,
+                        yearFilter
                     )}
                     value={formatKm(totals.kilometers)}
+                />
+                <SpecStat
+                    label={periodStatLabel(
+                        "Verlof",
+                        periodPreset,
+                        customMonth,
+                        yearFilter
+                    )}
+                    value={leaveDaysTotal}
                 />
             </div>
 
@@ -372,7 +464,8 @@ export default function ReportsPage() {
                 <SpecPanel title="Uren per monteur">
                     {perMonteur.length === 0 ? (
                         <p className="text-sm text-gray-500">
-                            Nog geen uren of kilometers in deze selectie.
+                            Nog geen uren, kilometers of verlof in deze
+                            selectie.
                         </p>
                     ) : (
                         <div className="overflow-x-auto">
@@ -390,6 +483,9 @@ export default function ReportsPage() {
                                         </th>
                                         <th className="py-2 text-right text-xs font-medium text-gray-500">
                                             Kilometers
+                                        </th>
+                                        <th className="py-2 text-right text-xs font-medium text-gray-500">
+                                            Verlofdagen
                                         </th>
                                     </tr>
                                 </thead>
@@ -414,6 +510,9 @@ export default function ReportsPage() {
                                             </td>
                                             <td className="py-2 text-right text-gray-900">
                                                 {formatKm(engineer.kilometers)}
+                                            </td>
+                                            <td className="py-2 text-right text-gray-900">
+                                                {engineer.leaveDays}
                                             </td>
                                         </tr>
                                     ))}
