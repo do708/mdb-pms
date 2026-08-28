@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-/** Kantoor MDB: Monitorweg 10, Almere */
-const LAT = 52.3702;
-const LON = 5.2145;
+/** Kantoor MDB: Monitorweg 10, 1322 BJ Almere */
+const LAT = 52.34782;
+const LON = 5.1774;
 
 export type WeatherPayload = {
     temperature: number;
@@ -26,17 +26,111 @@ export function weatherLabel(code: number): string {
     return "Wisselvallig";
 }
 
+function isPrecipCode(code: number): boolean {
+    return (
+        (code >= 51 && code <= 67)
+        || (code >= 71 && code <= 77)
+        || (code >= 80 && code <= 86)
+        || code >= 95
+    );
+}
+
+function codeFromPrecipMm(mm: number): number {
+    if (mm >= 4) return 65;
+    if (mm >= 1) return 63;
+    if (mm >= 0.2) return 61;
+    return 51;
+}
+
+function pushSlot(
+    codes: number[],
+    precipValues: number[],
+    code: unknown,
+    ...mm: unknown[]
+) {
+    const n = Number(code);
+    if (Number.isFinite(n)) codes.push(n);
+    for (const value of mm) {
+        precipValues.push(Number(value) || 0);
+    }
+}
+
+/**
+ * Open-Meteo `current.weather_code` loopt vaak achter op buien.
+ * Gebruik neerslag + het huidige uur en de volgende 15-minuten-slot.
+ */
+export function effectiveWeatherCode(
+    current: {
+        weather_code?: number;
+        precipitation?: number;
+        rain?: number;
+        showers?: number;
+    },
+    minutely?: {
+        weather_code?: number[];
+        precipitation?: number[];
+        rain?: number[];
+    },
+    hourly?: {
+        weather_code?: number[];
+        precipitation?: number[];
+        rain?: number[];
+    },
+): number {
+    const currentCode = Number(current.weather_code);
+    const precipValues = [
+        Number(current.precipitation) || 0,
+        Number(current.rain) || 0,
+        Number(current.showers) || 0,
+    ];
+
+    const codes: number[] = Number.isFinite(currentCode) ? [currentCode] : [];
+    const n = Math.min(2, minutely?.weather_code?.length ?? 0);
+    for (let i = 0; i < n; i++) {
+        pushSlot(
+            codes,
+            precipValues,
+            minutely?.weather_code?.[i],
+            minutely?.precipitation?.[i],
+            minutely?.rain?.[i],
+        );
+    }
+    pushSlot(
+        codes,
+        precipValues,
+        hourly?.weather_code?.[0],
+        hourly?.precipitation?.[0],
+        hourly?.rain?.[0],
+    );
+
+    const rainCodes = codes.filter(isPrecipCode);
+    if (rainCodes.length > 0) {
+        return Math.max(...rainCodes);
+    }
+
+    const mm = Math.max(...precipValues);
+    if (mm > 0) {
+        return codeFromPrecipMm(mm);
+    }
+
+    return currentCode;
+}
+
 export async function GET() {
     try {
         const url =
             `https://api.open-meteo.com/v1/forecast`
             + `?latitude=${LAT}`
             + `&longitude=${LON}`
-            + `&current=temperature_2m,weather_code`
+            + `&current=temperature_2m,weather_code,precipitation,rain,showers`
+            + `&minutely_15=weather_code,precipitation,rain`
+            + `&forecast_minutely_15=4`
+            + `&hourly=weather_code,precipitation,rain`
+            + `&forecast_hours=1`
             + `&timezone=Europe%2FAmsterdam`;
 
         const response = await fetch(url, {
-            next: { revalidate: 900 },
+            next: { revalidate: 300 },
         });
 
         if (!response.ok) {
@@ -48,7 +142,11 @@ export async function GET() {
 
         const data = await response.json();
         const temperature = Number(data?.current?.temperature_2m);
-        const weatherCode = Number(data?.current?.weather_code);
+        const weatherCode = effectiveWeatherCode(
+            data?.current ?? {},
+            data?.minutely_15,
+            data?.hourly,
+        );
 
         if (!Number.isFinite(temperature) || !Number.isFinite(weatherCode)) {
             return NextResponse.json(
@@ -65,7 +163,7 @@ export async function GET() {
 
         return NextResponse.json(payload, {
             headers: {
-                "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800",
+                "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
             },
         });
     } catch (error) {

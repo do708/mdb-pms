@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
     Cloud,
-    CloudDrizzle,
     CloudFog,
     CloudLightning,
     CloudRain,
@@ -24,7 +23,7 @@ function iconForCode(code: number): LucideIcon {
     if (code === 1 || code === 2) return CloudSun;
     if (code === 3) return Cloud;
     if (code === 45 || code === 48) return CloudFog;
-    if (code >= 51 && code <= 57) return CloudDrizzle;
+    if (code >= 51 && code <= 57) return CloudRain;
     if (code >= 61 && code <= 67) return CloudRain;
     if (code >= 71 && code <= 77) return CloudSnow;
     if (code >= 80 && code <= 82) return CloudRain;
@@ -41,7 +40,9 @@ export default function HeaderWeather() {
 
         async function load() {
             try {
-                const response = await fetch("/api/weather");
+                const response = await fetch("/api/weather", {
+                    cache: "no-store",
+                });
                 if (!response.ok) return;
                 const data = await response.json();
                 if (
@@ -65,7 +66,7 @@ export default function HeaderWeather() {
         }
 
         load();
-        const timer = setInterval(load, 15 * 60 * 1000);
+        const timer = setInterval(load, 5 * 60 * 1000);
         return () => {
             cancelled = true;
             clearInterval(timer);
@@ -85,11 +86,11 @@ export default function HeaderWeather() {
                 text-sm text-gray-700
                 tabular-nums shrink-0
             "
-            title={`${weather.label} · Monitorweg, Almere`}
+            title={`${weather.label} · Monitorweg 10, Almere`}
             aria-label={`Weer: ${weather.label}, ${weather.temperature} graden`}
         >
             <Icon
-                size={16}
+                size={18}
                 className="text-[#12345b] shrink-0"
                 aria-hidden
             />
