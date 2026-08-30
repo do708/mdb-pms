@@ -606,7 +606,7 @@ function opleverSections(
 
 
     return `
-  ${qaBlock("1. Tarief &amp; Uren", `
+  ${qaBlock("Tarief &amp; Uren", `
       ${t.voorrijtarief !== null ? row("Voorrijtarief?", t.voorrijtarief ? chipSvg("Vast","yes") : chipSvg("KM's + Uren","no")) : ""}
       ${t.voorrijtarief === false && t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
       ${t.voorrijtarief === false && t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
@@ -614,7 +614,7 @@ function opleverSections(
       ${kostenRows}
   `)}
 
-  ${qaBlock("2. Installatie werkzaamheden", `
+  ${qaBlock("Installatie werkzaamheden", `
       ${filledRuimtes.length > 0
         ? filledRuimtes.map((r, ri)=>{
             const naam = (r.naam || `Ruimte ${ri + 1}`).trim();
@@ -644,10 +644,10 @@ function opleverSections(
             );
           }).join("")
         : `
-      ${i.nieuweSchermen === true ? row("1. Schermen",pill(i.nieuweSchermen)) : ""}
+      ${i.nieuweSchermen === true ? row("Schermen",pill(i.nieuweSchermen)) : ""}
       ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
       ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
-      ${i.videowall === true ? row("2. Videowall",pill(i.videowall)) : ""}
+      ${i.videowall === true ? row("Videowall",pill(i.videowall)) : ""}
       ${i.videowall === true ? (()=>{
         const v = { ...(i.videowallVelden || {}) };
         if(!v.configuratie && (i.videowallHorizontaal || i.videowallVerticaal)){
@@ -672,13 +672,13 @@ function opleverSections(
             v.internet ? row("Internet binnen 3 meter?", textAnswer(v.internet)) : ""
         ].join("");
       })() : ""}
-      ${i.kiosk === true ? row("3. Kiosk",pill(i.kiosk)) : ""}
+      ${i.kiosk === true ? row("Kiosk",pill(i.kiosk)) : ""}
       ${i.kiosk === true ? (i.kioskBlokken || []).filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
           row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
         ).join("") : ""}
-      ${i.mediaplayers ? row("4. Mediaplayers",choicePill(i.mediaplayers)) : ""}
+      ${i.mediaplayers ? row("Mediaplayers",choicePill(i.mediaplayers)) : ""}
       ${i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
-      ${i.audio === true ? row("5. Audio",pill(i.audio)) : ""}
+      ${i.audio === true ? row("Audio",pill(i.audio)) : ""}
       ${i.audio === true && i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : ""}
       ${i.audio === true && i.audioSpeler ? row("Audiospeler",textAnswer(formatMateriaalStukken(i.audioSpeler, i.audioSpelerItems, []))) : ""}
       ${i.audio === true && i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : ""}
@@ -696,7 +696,7 @@ function opleverSections(
             i.extra.audio ? "Audio" : ""
           ].filter(Boolean).join(", ")))
         : ""}
-      ${i.isProject !== null ? row("6. Project (offertebasis)?",pill(i.isProject)) : ""}
+      ${i.isProject !== null ? row("Project (offertebasis)?",pill(i.isProject)) : ""}
       ${i.isProject === true && i.projectNummer ? row("Projectnummer",textAnswer(i.projectNummer)) : ""}
   `)}
   ${i.opmerkingen ? `<div class="section"><div class="description-box">${esc(i.opmerkingen)}</div></div>` : ""}
@@ -704,24 +704,24 @@ function opleverSections(
   ${(()=>{
       const ev = data.evalue8 && typeof data.evalue8 === "object" ? data.evalue8 : {};
       const secties:{ titel:string; regels:{ key:string; naam:string }[] }[] = [
-          { titel:"2. Werkplek (WKS)", regels:[
+          { titel:"Werkplek (WKS)", regels:[
               { key:"wks_easy", naam:"WKS Easy" },
               { key:"wks_full", naam:"WKS Full" },
               { key:"wks_vervolg_kort", naam:"Vervolginstallatie (Kort)" },
               { key:"wks_vervolg_lang", naam:"Vervolginstallatie (Lang)" }
           ]},
-          { titel:"3. Kiosk", regels:[
+          { titel:"Kiosk", regels:[
               { key:"kiosk_easy", naam:"Kiosk Easy" },
               { key:"kiosk_full", naam:"Kiosk Full" },
               { key:"kiosk_extended", naam:"Kiosk Extended" },
               { key:"kiosk_demontage", naam:"Demontage Kiosk" }
           ]},
-          { titel:"4. Digital Signage (DS)", regels:[
+          { titel:"Digital Signage (DS)", regels:[
               { key:"ds_extra_scherm", naam:"Extra scherm op locatie" },
               { key:"ds_player", naam:"Installatie DS Player" },
               { key:"ds_swap", naam:"Installatie DS Swap" }
           ]},
-          { titel:"5. Service, Software & Storingen", regels:[
+          { titel:"Service, Software & Storingen", regels:[
               { key:"balie_software", naam:"Installatie Balie software" },
               { key:"storing_type1", naam:"Storing Type 1" },
               { key:"storing_type2", naam:"Storing Type 2" }
@@ -758,7 +758,7 @@ function opleverSections(
       .join("");
 
       const spareBlok = spare === null ? "" : `
-          <tr><td colspan="2" style="padding-top:6px;font-weight:700;color:#0f172a">6. Spare player</td></tr>
+          <tr><td colspan="2" style="padding-top:6px;font-weight:700;color:#0f172a">Spare player</td></tr>
           ${row("Spare player geïnstalleerd?", pill(spare))}
           ${spare === true ? spareRegels : ""}
           ${spare === true && data.evalue8SpareMelding !== null ? row("Melding gemaakt bij eValue8?", pill(data.evalue8SpareMelding)) : ""}

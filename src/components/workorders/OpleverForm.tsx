@@ -35,6 +35,7 @@ import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import {
     heeftGroep,
     heeftModule,
+    kioskStatusVanModules,
     modulesVanLegacyForm,
     toonChecklist,
     toonInstallatie,
@@ -316,7 +317,7 @@ const EVALUE8_SECTIES:{
     regels:{ key:string; naam:string; toelichting:string }[];
 }[] = [
     {
-        titel:"2. Werkplek (WKS)",
+        titel:"Werkplek (WKS)",
         regels:[
             { key:"wks_easy", naam:"Installatie WKS Easy", toelichting:"Aansluiting 220v / netwerk max. 1 meter" },
             { key:"wks_full", naam:"Installatie WKS Full", toelichting:"Aansluiting 220v / netwerk max. 3 meter" },
@@ -325,7 +326,7 @@ const EVALUE8_SECTIES:{
         ]
     },
     {
-        titel:"3. Kiosk",
+        titel:"Kiosk",
         regels:[
             { key:"kiosk_easy", naam:"Installatie Kiosk Easy", toelichting:"Bekabeling max. 1 meter" },
             { key:"kiosk_full", naam:"Installatie Kiosk Full", toelichting:"Bekabeling max. 3 meter" },
@@ -334,7 +335,7 @@ const EVALUE8_SECTIES:{
         ]
     },
     {
-        titel:"4. Digital Signage (DS)",
+        titel:"Digital Signage (DS)",
         regels:[
             { key:"ds_extra_scherm", naam:"Extra scherm op locatie", toelichting:"Alleen i.c.m. volledige installatie" },
             { key:"ds_player", naam:"Installatie DS Player", toelichting:"Aansluiten op een bestaand scherm" },
@@ -342,7 +343,7 @@ const EVALUE8_SECTIES:{
         ]
     },
     {
-        titel:"5. Service, Software & Storingen",
+        titel:"Service, Software & Storingen",
         regels:[
             { key:"balie_software", naam:"Installatie Balie software", toelichting:"Softwarematige installatie" },
             { key:"storing_type1", naam:"Storing Type 1", toelichting:"Inclusief voorrijkosten + 1 uur installatie" },
@@ -1296,15 +1297,26 @@ function ExtraKostenDetails({
 
 function KioskBlokken({
     blokken,
-    onChange
+    onChange,
+    vasteStatus
 }:{
     blokken:KioskBlok[];
     onChange:(blokken:KioskBlok[])=>void;
+    /** Uit werkbon-modules; verbergt de geïnstalleerd/gedemonteerd-vraag. */
+    vasteStatus?:"" | "Geïnstalleerd" | "Gedemonteerd";
 }){
     function patch(index:number, next:Partial<KioskBlok>){
         onChange(
             blokken.map((blok, i)=>
-                i === index ? { ...blok, ...next } : blok
+                i === index
+                ?
+                {
+                    ...blok,
+                    ...next,
+                    ...(vasteStatus ? { status:vasteStatus } : {})
+                }
+                :
+                blok
             )
         );
     }
@@ -1337,15 +1349,19 @@ function KioskBlokken({
                                 )
                             }
                         </div>
-                        <Keuze
-                            value={blok.status}
-                            options={["Geïnstalleerd", "Gedemonteerd"]}
-                            onChange={(v)=>
-                                patch(index, {
-                                    status:v as KioskBlok["status"]
-                                })
-                            }
-                        />
+                        {
+                            !vasteStatus && (
+                                <Keuze
+                                    value={blok.status}
+                                    options={["Geïnstalleerd", "Gedemonteerd"]}
+                                    onChange={(v)=>
+                                        patch(index, {
+                                            status:v as KioskBlok["status"]
+                                        })
+                                    }
+                                />
+                            )
+                        }
                         <div className="flex items-center gap-2">
                             <input
                                 value={blok.omschrijving}
@@ -1372,7 +1388,13 @@ function KioskBlokken({
             }
             <button
                 type="button"
-                onClick={()=>onChange([...blokken, emptyKioskBlok()])}
+                onClick={()=>onChange([
+                    ...blokken,
+                    {
+                        ...emptyKioskBlok(),
+                        ...(vasteStatus ? { status:vasteStatus } : {})
+                    }
+                ])}
                 className="text-sm font-semibold text-[#0066FF]"
             >
                 + Kiosk toevoegen
@@ -1744,6 +1766,47 @@ export default function OpleverForm({
                 }
             }
 
+            const startModules =
+                modulesProp
+                ??
+                modulesVanLegacyForm(
+                    variant === "uren"
+                    ?
+                    "uren"
+                    :
+                    variant === "evalue8"
+                    ?
+                    "evalue8"
+                    :
+                    "digital_signage"
+                );
+
+            if(heeftGroep(startModules, "kiosk")){
+                const kioskStatus =
+                    kioskStatusVanModules(startModules);
+
+                merged.installatie.kiosk = true;
+
+                if(kioskStatus){
+                    merged.installatie.kioskStatus = kioskStatus;
+                }
+
+                if(merged.installatie.kioskBlokken.length === 0){
+                    merged.installatie.kioskBlokken = [
+                        {
+                            ...emptyKioskBlok(),
+                            status:kioskStatus
+                        }
+                    ];
+                }else if(kioskStatus){
+                    merged.installatie.kioskBlokken =
+                        merged.installatie.kioskBlokken.map((blok)=>({
+                            ...blok,
+                            status:kioskStatus
+                        }));
+                }
+            }
+
             return merged;
 
         });
@@ -1967,11 +2030,70 @@ export default function OpleverForm({
     const kioskHint =
         werkzaamhedenHint("kiosk", modules);
 
+    const kioskVasteStatus =
+        kioskStatusVanModules(modules);
+
     const mediaplayersHint =
         werkzaamhedenHint("mediaplayers", modules);
 
     const audioHint =
         werkzaamhedenHint("audio", modules);
+
+    useEffect(()=>{
+        if(!heeftGroep(modules, "kiosk")){
+            return;
+        }
+
+        const moetOpen = data.installatie.kiosk !== true;
+        const moetBlok =
+            data.installatie.kioskBlokken.length === 0;
+        const moetStatus =
+            Boolean(kioskVasteStatus)
+            &&
+            (
+                data.installatie.kioskStatus !== kioskVasteStatus
+                ||
+                data.installatie.kioskBlokken.some(
+                    (blok)=>blok.status !== kioskVasteStatus
+                )
+            );
+
+        if(!moetOpen && !moetBlok && !moetStatus){
+            return;
+        }
+
+        update((draft)=>{
+            draft.installatie.kiosk = true;
+
+            if(kioskVasteStatus){
+                draft.installatie.kioskStatus = kioskVasteStatus;
+            }
+
+            if(draft.installatie.kioskBlokken.length === 0){
+                draft.installatie.kioskBlokken = [
+                    {
+                        ...emptyKioskBlok(),
+                        status:kioskVasteStatus
+                    }
+                ];
+                return;
+            }
+
+            if(kioskVasteStatus){
+                draft.installatie.kioskBlokken =
+                    draft.installatie.kioskBlokken.map((blok)=>({
+                        ...blok,
+                        status:kioskVasteStatus
+                    }));
+            }
+        });
+    }, [
+        modules,
+        kioskVasteStatus,
+        data.installatie.kiosk,
+        data.installatie.kioskStatus,
+        data.installatie.kioskBlokken
+    ]);
 
     const heeftSchermenData = i.ruimtes.some((r)=>
         (r.schermen || []).some((s)=>schermHeeftGegevens(s))
@@ -2356,7 +2478,7 @@ export default function OpleverForm({
                     mb-3
                 ">
 
-                    1. Tarief &amp; Uren
+                    Tarief &amp; Uren
 
                 </p>
                     )
@@ -2680,7 +2802,7 @@ export default function OpleverForm({
                     rounded-r
                     mb-3
                 ">
-                    2. Installatie werkzaamheden
+                    Installatie werkzaamheden
                 </p>
 
                 <div className="space-y-3 mb-3">
@@ -2691,9 +2813,9 @@ export default function OpleverForm({
                         titel={
                             schermenHint
                             ?
-                            `1. Schermen (${schermenHint})`
+                            `Schermen (${schermenHint})`
                             :
-                            "1. Schermen"
+                            "Schermen"
                         }
                         kleur="bg-sky-50 border-sky-200"
                         open={schermenOpen}
@@ -2734,9 +2856,9 @@ export default function OpleverForm({
                         titel={
                             videowallHint
                             ?
-                            `2. Videowall (${videowallHint})`
+                            `Videowall (${videowallHint})`
                             :
-                            "2. Videowall"
+                            "Videowall"
                         }
                         kleur="bg-emerald-50 border-emerald-200"
                         open={i.videowall === true}
@@ -2781,40 +2903,39 @@ export default function OpleverForm({
 
                     {
                     heeftGroep(modules, "kiosk") && (
-                    <SpecUitklap
-                        titel={
-                            kioskHint
-                            ?
-                            `3. Kiosk (${kioskHint})`
-                            :
-                            "3. Kiosk"
-                        }
-                        kleur="bg-amber-50 border-amber-200"
-                        open={i.kiosk === true}
-                        onToggle={(open)=>
-                            update(draft=>{
-                                draft.installatie.kiosk = open ? true : false;
-                                if(
-                                    open
-                                    &&
-                                    draft.installatie.kioskBlokken.length === 0
-                                ){
-                                    draft.installatie.kioskBlokken = [
-                                        emptyKioskBlok()
-                                    ];
+                    <div className="rounded-xl border bg-amber-50 border-amber-200">
+                        <div className="p-3">
+                            <span className="font-medium text-gray-800">
+                                {
+                                    kioskHint
+                                    ?
+                                    `Kiosk (${kioskHint})`
+                                    :
+                                    "Kiosk"
                                 }
-                            })
-                        }
-                    >
-                        <KioskBlokken
-                            blokken={i.kioskBlokken}
-                            onChange={(blokken)=>
-                                update(draft=>{
-                                    draft.installatie.kioskBlokken = blokken;
-                                })
-                            }
-                        />
-                    </SpecUitklap>
+                            </span>
+                        </div>
+                        <div className="px-3 pb-3 space-y-3">
+                            <KioskBlokken
+                                blokken={i.kioskBlokken}
+                                vasteStatus={kioskVasteStatus || undefined}
+                                onChange={(blokken)=>
+                                    update(draft=>{
+                                        draft.installatie.kiosk = true;
+                                        draft.installatie.kioskBlokken =
+                                            kioskVasteStatus
+                                            ?
+                                            blokken.map((blok)=>({
+                                                ...blok,
+                                                status:kioskVasteStatus
+                                            }))
+                                            :
+                                            blokken;
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
                     )
                     }
 
@@ -2824,9 +2945,9 @@ export default function OpleverForm({
                         titel={
                             mediaplayersHint
                             ?
-                            `4. Mediaplayers (${mediaplayersHint})`
+                            `Mediaplayers (${mediaplayersHint})`
                             :
-                            "4. Mediaplayers"
+                            "Mediaplayers"
                         }
                         kleur="bg-violet-50 border-violet-200"
                         open={!!i.mediaplayers}
@@ -2874,9 +2995,9 @@ export default function OpleverForm({
                         titel={
                             audioHint
                             ?
-                            `5. Audio (${audioHint})`
+                            `Audio (${audioHint})`
                             :
-                            "5. Audio"
+                            "Audio"
                         }
                         kleur="bg-rose-50 border-rose-200"
                         open={i.audio === true}
@@ -2984,7 +3105,7 @@ export default function OpleverForm({
                     heeftModule(modules, "project") && (
                     <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">
                         <span className="text-sm font-medium text-gray-800 block">
-                            6. Project (offerte-basis) — is het een project?
+                            Project (offerte-basis) — is het een project?
                         </span>
                         <JaNee
                             value={i.isProject}
@@ -3091,7 +3212,7 @@ export default function OpleverForm({
                                 rounded-r
                                 mb-3
                             ">
-                                6. Spare player
+                                Spare player
                             </p>
 
                             <Vraag label="Spare player geïnstalleerd?">

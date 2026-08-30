@@ -62,28 +62,28 @@ const ONDERDELEN:{
 }[] = [
     {
         key:"schermen",
-        titel:"1. Schermen",
+        titel:"Schermen",
         kleur:"bg-sky-50 border-sky-200",
         // Velden worden via SchermenSpecificatie gerenderd (per scherm).
         velden:[]
     },
     {
         key:"videowall",
-        titel:"2. Videowall",
+        titel:"Videowall",
         kleur:"bg-emerald-50 border-emerald-200",
         // Velden via VideowallSpecificatie (LCD/LED).
         velden:[]
     },
     {
         key:"kiosk",
-        titel:"3. Kiosk",
+        titel:"Kiosk",
         kleur:"bg-amber-50 border-amber-200",
         // Velden via KioskSpecificatie (per kiosk).
         velden:[]
     },
     {
         key:"mediaplayers",
-        titel:"4. Mediaplayers",
+        titel:"Mediaplayers",
         kleur:"bg-violet-50 border-violet-200",
         velden:[
             { key:"aantal", label:"Aantal", plh:"Bijv. 2" },
@@ -92,7 +92,7 @@ const ONDERDELEN:{
     },
     {
         key:"audio",
-        titel:"5. Audio",
+        titel:"Audio",
         kleur:"bg-rose-50 border-rose-200",
         // Velden via AudioSpecificatie.
         velden:[]
@@ -1160,7 +1160,7 @@ function AanvraagFormulier(){
                         {/* Project ja/nee — alleen Ja of niets */}
                         <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">
                             <span className="text-sm font-medium text-gray-800 block">
-                                6. Project (offerte-basis) — is het een project?
+                                Project (offerte-basis) — is het een project?
                             </span>
                             <div className="flex gap-2">
                                 <button

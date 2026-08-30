@@ -662,7 +662,7 @@ export async function generateOpleverPdf(
     sectionBar("Installatiegegevens:");
 
 
-    text("1. Tarief & Uren",{ useBold:true, gap:2 });
+    text("Tarief & Uren",{ useBold:true, gap:2 });
 
 
     jaNee(
@@ -711,7 +711,7 @@ export async function generateOpleverPdf(
     );
 
 
-    text("2. Installatie werkzaamheden",{ useBold:true, gap:2 });
+    text("Installatie werkzaamheden",{ useBold:true, gap:2 });
 
     {
         const ruimtes = data.installatie.ruimtes || [];
@@ -827,14 +827,14 @@ export async function generateOpleverPdf(
 
 
     if(data.installatie.videowall){
-        text("3. Videowall",{ useBold:true, gap:2 });
+        text("Videowall",{ useBold:true, gap:2 });
         text("Ja",{ gap:2 });
         dashedLine();
     }
 
 
     if(data.installatie.kiosk){
-        text("4. Kiosk",{ useBold:true, gap:2 });
+        text("Kiosk",{ useBold:true, gap:2 });
         text("Ja",{ gap:2 });
         dashedLine();
     }
@@ -842,7 +842,7 @@ export async function generateOpleverPdf(
 
     if(data.installatie.mediaplayers){
 
-        text("5. Mediaplayers",{ useBold:true, gap:2 });
+        text("Mediaplayers",{ useBold:true, gap:2 });
 
         keuze(
             "Heb je mediaplayers;",
@@ -859,7 +859,7 @@ export async function generateOpleverPdf(
 
 
     if(data.installatie.audio){
-        text("6. Audio",{ useBold:true, gap:2 });
+        text("Audio",{ useBold:true, gap:2 });
         text("Ja",{ gap:2 });
         dashedLine();
     }
@@ -869,7 +869,7 @@ export async function generateOpleverPdf(
 
 
     jaNee(
-        "7. Project (offerte basis) — is het een project?",
+        "Project (offerte basis) — is het een project?",
         data.installatie.isProject
     );
 

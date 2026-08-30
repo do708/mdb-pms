@@ -189,6 +189,29 @@ export function toonInstallatie(modules: readonly string[]): boolean {
     );
 }
 
+/**
+ * Montage/hermontage vs demontage staat al op de werkbon.
+ * Alleen leeg als beide kanten aangevinkt zijn (dan moet de monteur per kiosk kiezen).
+ */
+export function kioskStatusVanModules(
+    modules: readonly string[]
+): "" | "Geïnstalleerd" | "Gedemonteerd" {
+    const installeert =
+        modules.includes("kiosk_montage")
+        || modules.includes("kiosk_hermontage");
+    const demonteert = modules.includes("kiosk_demontage");
+
+    if (installeert && !demonteert) {
+        return "Geïnstalleerd";
+    }
+
+    if (demonteert && !installeert) {
+        return "Gedemonteerd";
+    }
+
+    return "";
+}
+
 export function werkzaamhedenHint(
     groep: "schermen" | "videowall" | "kiosk" | "mediaplayers" | "audio",
     modules: readonly string[]

@@ -13,23 +13,23 @@ export const ONDERDEEL_META: Record<
     { titel: string; kleur: string }
 > = {
     schermen: {
-        titel: "1. Schermen",
+        titel: "Schermen",
         kleur: "bg-sky-50 border-sky-200",
     },
     videowall: {
-        titel: "2. Videowall",
+        titel: "Videowall",
         kleur: "bg-emerald-50 border-emerald-200",
     },
     kiosk: {
-        titel: "3. Kiosk",
+        titel: "Kiosk",
         kleur: "bg-amber-50 border-amber-200",
     },
     mediaplayers: {
-        titel: "4. Mediaplayers",
+        titel: "Mediaplayers",
         kleur: "bg-violet-50 border-violet-200",
     },
     audio: {
-        titel: "5. Audio",
+        titel: "Audio",
         kleur: "bg-rose-50 border-rose-200",
     },
 };
