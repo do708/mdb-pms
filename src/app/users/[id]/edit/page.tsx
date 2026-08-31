@@ -510,11 +510,9 @@ export default function EditUserPage(){
                 ) : null}
 
 
-                <label className="
-                    flex
-                    items-center
-                    gap-2
-                ">
+                <label className="flex flex-col gap-1">
+
+                    <span className="flex items-center gap-2">
 
                     <input
 
@@ -532,6 +530,13 @@ export default function EditUserPage(){
 
                         Actief (kan inloggen)
 
+                    </span>
+
+                    </span>
+
+                    <span className="text-xs text-gray-400 pl-6">
+                        Uitvinken blokkeert alleen inloggen; de persoon
+                        blijft in de planning.
                     </span>
 
                 </label>

@@ -6,10 +6,13 @@ import { requireApiUser } from "@/lib/auth/guard";
 
 
 
-// Lichte lijst van actieve monteurs, voor selectievelden.
+// Lichte monteurslijst voor selectievelden en planning.
 // Bewust geen e-mailadressen of andere gegevens.
+// `active` = mag inloggen; standaard alleen accounts die mogen inloggen.
+// Planning vraagt ?includeInactive=1 zodat uitgeschakelde login
+// de monteur-kolom en historische opdrachten niet wegfiltert.
 
-export async function GET(){
+export async function GET(request: Request){
 
 
     try {
@@ -26,6 +29,9 @@ export async function GET(){
         }
 
 
+        const includeInactive =
+            new URL(request.url).searchParams.get("includeInactive") ===
+            "1";
 
 
         // Volledige monteurslijst: nodig voor o.a. projecturen (boeken voor
@@ -37,7 +43,7 @@ export async function GET(){
 
                     role:"engineer",
 
-                    active:true
+                    ...(includeInactive ? {} : { active: true }),
 
                 },
 
@@ -50,6 +56,8 @@ export async function GET(){
                     staffKind:true,
 
                     stagiaireUntil:true,
+
+                    active:true,
 
                 },
 

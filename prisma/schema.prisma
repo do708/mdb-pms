@@ -19,6 +19,7 @@ model User {
   stagiaireUntil DateTime?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  /// Mag inloggen. Geen filter voor planning-zichtbaarheid.
   active      Boolean          @default(true)
   assignments AssignmentUser[]
   workorders  Workorder[]

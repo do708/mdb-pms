@@ -577,23 +577,97 @@ export default function WeekView({
     }
 
     const users = (() => {
-        const list =
-            engineers.length > 0
-                ? engineers
-                : (Array.from(
-                      new Map(
-                          items
-                              .filter((item) => item.assignedUser)
-                              .map((item) => [
-                                  item.assignedUser.id,
-                                  item.assignedUser,
-                              ])
-                      ).values()
-                  ) as {
-                      id: string;
-                      name: string | null;
-                      staffKind?: string;
-        }[]);
+        type PlannerUser = {
+            id: string;
+            name: string | null;
+            staffKind?: string;
+        };
+        const byId = new Map<string, PlannerUser>();
+        const add = (
+            id: string | null | undefined,
+            name?: string | null,
+            staffKind?: string
+        ) => {
+            if (!id) return;
+            const prev = byId.get(id);
+            if (prev) {
+                byId.set(id, {
+                    ...prev,
+                    name: prev.name || name || null,
+                    staffKind: prev.staffKind || staffKind,
+                });
+                return;
+            }
+            byId.set(id, {
+                id,
+                name: name ?? null,
+                staffKind,
+            });
+        };
+
+        for (const e of engineers) {
+            add(e.id, e.name, e.staffKind);
+        }
+
+        // Wie deze week nog een klus, agenda-item of verlof heeft, blijft
+        // als kolom staan — ook zonder login (active=false).
+        const weekStartIso = days.length ? isoDate(days[0]) : "";
+        const weekEndIso = days.length
+            ? isoDate(days[days.length - 1])
+            : "";
+        const overlapsWeek = (startIso: string, endIso: string) =>
+            Boolean(
+                weekStartIso &&
+                    weekEndIso &&
+                    startIso <= weekEndIso &&
+                    endIso >= weekStartIso
+            );
+
+        for (const item of items) {
+            if (!item?.plannedDate) continue;
+            const startIso = isoDate(new Date(item.plannedDate));
+            const endIso = item.plannedEndDate
+                ? isoDate(new Date(item.plannedEndDate))
+                : startIso;
+            if (!overlapsWeek(startIso, endIso)) continue;
+            add(
+                item.assignedUser?.id,
+                item.assignedUser?.name,
+                item.assignedUser?.staffKind
+            );
+            if (Array.isArray(item.extraEngineers)) {
+                for (const extra of item.extraEngineers) {
+                    add(
+                        extra?.user?.id,
+                        extra?.user?.name,
+                        extra?.user?.staffKind
+                    );
+                }
+            }
+        }
+
+        for (const ev of events) {
+            if (!ev?.startAt) continue;
+            const startIso = isoDate(new Date(ev.startAt));
+            const endIso = ev.endAt
+                ? isoDate(new Date(ev.endAt))
+                : startIso;
+            if (!overlapsWeek(startIso, endIso)) continue;
+            add(
+                ev.assignedUserId,
+                ev.assignedUser?.name,
+                ev.assignedUser?.staffKind
+            );
+        }
+
+        for (const l of leave) {
+            if (!l?.userId || !l.from) continue;
+            const to = l.to || l.from;
+            if (!overlapsWeek(l.from, to)) continue;
+            add(l.userId, l.userName);
+        }
+
+        const list = Array.from(byId.values());
 
         const byName = (
             a: { name: string | null },

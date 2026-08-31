@@ -373,7 +373,9 @@ function PlanningPageContent(){
 
 
         const engineersResponse =
-            await fetch("/api/engineers", { cache: "no-store" });
+            await fetch("/api/engineers?includeInactive=1", {
+                cache: "no-store",
+            });
 
         const engineersData =
             engineersResponse.ok

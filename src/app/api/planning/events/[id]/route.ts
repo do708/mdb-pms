@@ -131,7 +131,6 @@ export async function PATCH(
                     where: {
                         id: assignedUserId,
                         role: "engineer",
-                        active: true,
                     },
                     select: { id: true },
                 });

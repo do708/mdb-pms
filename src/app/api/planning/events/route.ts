@@ -107,7 +107,6 @@ export async function POST(req: Request) {
                 where: {
                     id: assignedUserId,
                     role: "engineer",
-                    active: true,
                 },
                 select: { id: true },
             });

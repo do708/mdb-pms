@@ -363,12 +363,9 @@ export default function UserDetailPage(){
 
 
 
-                <label className="
-                    flex
-                    gap-3
-                    items-center
-                ">
+                <label className="flex flex-col gap-1">
 
+                    <span className="flex gap-3 items-center">
 
                     <input
 
@@ -385,8 +382,14 @@ export default function UserDetailPage(){
                     />
 
 
-                    Actief
+                    Actief (kan inloggen)
 
+                    </span>
+
+                    <span className="text-xs text-gray-400 pl-8">
+                        Uitvinken blokkeert alleen inloggen; de persoon
+                        blijft in de planning.
+                    </span>
 
                 </label>
 
