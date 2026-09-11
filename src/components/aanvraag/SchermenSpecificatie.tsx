@@ -10,18 +10,18 @@ import {
     SCHERM_FORMATEN,
     berekendInstallatieType,
     bevestigingDetails,
-    formaatWeergaveScherm,
     installatieTypeWeergave,
-    isHoofdType,
     isPlayerAansturing,
     legeVoorzieningen,
     normaliseerBevestiging,
     patchRaaktVoorzieningen,
-    schermBeugelArtikelWeergave,
     syncSchermItems,
     syncVoorzieningenVanAnkers,
     telBenodigdeBeugels,
 } from "@/lib/aanvraag/installatieTypes";
+import BeugelkeuzeOverzicht, {
+    naarBeugelkeuzeSchermRij,
+} from "@/components/aanvraag/BeugelkeuzeOverzicht";
 import {
     JaNee,
     JaWifiNee,
@@ -834,69 +834,13 @@ export default function SchermenSpecificatie({
                         );
                     })}
 
-                    {/* Overzicht types + benodigde beugels */}
-                    <div className="rounded-xl border border-[#0066FF]/20 bg-[#0066FF]/5 p-3 space-y-3">
-                        <p className="text-xs font-semibold text-[#0066FF]">
-                            Overzicht types
-                        </p>
-                        <ul className="text-sm text-gray-800 space-y-1">
-                            {items.map((s, i) => {
-                                const t = berekendInstallatieType(
-                                    s,
-                                    items
-                                );
-                                const hoofd = isHoofdType(s, items);
-                                const naastIndex = s.naastSchermId
-                                    ? items.findIndex(
-                                          (x) =>
-                                              x.id === s.naastSchermId
-                                      )
-                                    : -1;
-                                const formaat = formaatWeergaveScherm(s);
-                                const beugelArtikel =
-                                    schermBeugelArtikelWeergave(s);
-
-                                return (
-                                    <li key={s.id}>
-                                        Scherm {i + 1}
-                                        {formaat ? ` — ${formaat}` : ""}
-                                        {beugelArtikel
-                                            ? ` | ${beugelArtikel}`
-                                            : ""}
-                                        {" | "}
-                                        <strong>
-                                            {installatieTypeWeergave(t)}
-                                        </strong>
-                                        {hoofd
-                                            ? " · hoofdtype"
-                                            : " · vervolg"}
-                                        {naastIndex >= 0
-                                            ? ` · ${s.monterenKoppeling === "b2b" ? "b2b" : "naast"} scherm ${naastIndex + 1}`
-                                            : ""}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        {benodigdeBeugels.length > 0 ? (
-                            <div className="pt-2 border-t border-[#0066FF]/15">
-                                <p className="text-xs font-semibold text-[#0066FF] mb-1">
-                                    Benodigde beugels
-                                </p>
-                                <ul className="text-sm text-gray-800 space-y-0.5">
-                                    {benodigdeBeugels.map((rij) => (
-                                        <li key={rij.label}>
-                                            {rij.aantal}× {rij.label}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ) : (
-                            <p className="text-xs text-gray-500">
-                                Kies per scherm formaat en beugel om de
-                                types en benodigde beugels te zien.
-                            </p>
+                    <BeugelkeuzeOverzicht
+                        schermen={items.map((s, i) =>
+                            naarBeugelkeuzeSchermRij(s, items, i)
                         )}
-                    </div>
+                        beugels={benodigdeBeugels}
+                        leegHint="Kies per scherm formaat en beugel om de types en benodigde beugels te zien."
+                    />
                 </div>
             ) : null}
         </div>

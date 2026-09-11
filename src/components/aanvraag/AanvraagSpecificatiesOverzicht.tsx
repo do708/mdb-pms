@@ -14,15 +14,15 @@ import {
 import {
     aansturingWeergave,
     emptySchermItem,
-    formaatWeergaveScherm,
     installatieTypeWeergave,
-    isHoofdType,
     mdbBeugelTypeWeergave,
     normaliseerMonterenKoppeling,
-    schermBeugelArtikelWeergave,
     telBenodigdeBeugels,
     type AanvraagSchermItem,
 } from "@/lib/aanvraag/installatieTypes";
+import BeugelkeuzeOverzicht, {
+    naarBeugelkeuzeSchermRij,
+} from "@/components/aanvraag/BeugelkeuzeOverzicht";
 
 export interface AanvraagOverzichtSnapshot {
     specificaties?: unknown;
@@ -365,72 +365,19 @@ function SchermenBlok({
                             </Card>
                         );
                     })}
-                    {benodigdeBeugels.length > 0 ? (
-                        <div className="rounded-xl border border-[#0066FF]/20 bg-[#0066FF]/5 p-3 space-y-2">
-                            <p className="text-xs font-semibold text-[#0066FF]">
-                                Overzicht types
-                            </p>
-                            <ul className="text-sm text-gray-800 space-y-0.5">
-                                {schermItems.map((s, i) => {
-                                    const raw = asRecord(items[i]) || {};
-                                    const formaat =
-                                        formaatWeergaveScherm(s) ||
-                                        formaatWeergave(raw);
-                                    const beugelArtikel =
-                                        schermBeugelArtikelWeergave(s);
-                                    const typeCode =
-                                        str(raw.berekendType);
-                                    const hoofd = isHoofdType(
-                                        s,
-                                        schermItems
-                                    );
-                                    const naastIndex = s.naastSchermId
-                                        ? schermItems.findIndex(
-                                              (x) =>
-                                                  x.id ===
-                                                  s.naastSchermId
-                                          )
-                                        : -1;
-                                    return (
-                                        <li key={s.id || i}>
-                                            Scherm {i + 1}
-                                            {formaat
-                                                ? ` — ${formaat}`
-                                                : ""}
-                                            {beugelArtikel
-                                                ? ` | ${beugelArtikel}`
-                                                : ""}
-                                            {" | "}
-                                            <strong>
-                                                {installatieTypeWeergave(
-                                                    typeCode
-                                                )}
-                                            </strong>
-                                            {typeCode
-                                                ? hoofd
-                                                    ? " · hoofdtype"
-                                                    : " · vervolg"
-                                                : ""}
-                                            {naastIndex >= 0
-                                                ? ` · ${s.monterenKoppeling === "b2b" ? "b2b" : "naast"} scherm ${naastIndex + 1}`
-                                                : ""}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                            <div className="pt-2 border-t border-[#0066FF]/15">
-                                <p className="text-xs font-semibold text-[#0066FF] mb-1">
-                                    Benodigde beugels
-                                </p>
-                                <ul className="text-sm text-gray-800 space-y-0.5">
-                                    {benodigdeBeugels.map((rij) => (
-                                        <li key={rij.label}>
-                                            {rij.aantal}× {rij.label}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
+                    {schermItems.length > 0 ? (
+                        <BeugelkeuzeOverzicht
+                            schermen={schermItems.map((s, i) => {
+                                const raw = asRecord(items[i]) || {};
+                                return naarBeugelkeuzeSchermRij(
+                                    s,
+                                    schermItems,
+                                    i,
+                                    str(raw.berekendType)
+                                );
+                            })}
+                            beugels={benodigdeBeugels}
+                        />
                     ) : null}
                 </div>
             ) : (

@@ -176,22 +176,42 @@ export function artikelLabel(regel: BeugelArtikelRegel): string {
     return regel.type;
 }
 
+/** Eén artikelregel voor tabelcellen (aantal / code / naam). */
+export type BeugelArtikelKolom = {
+    aantal: number;
+    artikel: string;
+    naam: string;
+};
+
+export function schermBeugelArtikelen(
+    item: BeugelKeuzeScherm
+): BeugelArtikelKolom[] {
+    const gevonden = zoekBeugelCombinatie(item);
+    if (!gevonden || gevonden.artikelen.length === 0) {
+        const fallback = legacyBeugelLabel(item);
+        return fallback ? [{ aantal: 1, artikel: "", naam: fallback }] : [];
+    }
+    return gevonden.artikelen.map((a) => ({
+        aantal: a.aantal,
+        artikel: a.type,
+        naam: a.onderdeel && a.onderdeel !== a.type ? a.onderdeel : "",
+    }));
+}
+
 /**
  * Artikel achter het scherm in het type-overzicht:
  * `1× PFW 4510, Muurbeugel kantelbaar`.
  * Leeg tot formaat + bevestiging een match (of legacy-label) geven.
  */
 export function schermBeugelArtikelWeergave(item: BeugelKeuzeScherm): string {
-    const gevonden = zoekBeugelCombinatie(item);
-    if (!gevonden || gevonden.artikelen.length === 0) {
-        return legacyBeugelLabel(item);
-    }
-    return gevonden.artikelen
+    const rijen = schermBeugelArtikelen(item);
+    if (rijen.length === 0) return "";
+    return rijen
         .map((a) => {
-            const naam =
-                a.onderdeel && a.onderdeel !== a.type ? a.onderdeel : "";
-            const artikel = `${a.aantal}× ${a.type}`;
-            return naam ? `${artikel}, ${naam}` : artikel;
+            const artikel = a.artikel
+                ? `${a.aantal}× ${a.artikel}`
+                : `${a.aantal}×`;
+            return a.naam ? `${artikel}, ${a.naam}` : artikel;
         })
         .join(" + ");
 }
@@ -218,34 +238,42 @@ export function mdbBeugelTypeWeergave(item: BeugelKeuzeScherm): string {
         .join(" + ");
 }
 
+export type BenodigdeBeugelRij = {
+    label: string;
+    aantal: number;
+    artikel: string;
+    naam: string;
+};
+
 /** Aantallen per artikel over alle schermen (bestellijst). */
 export function telBenodigdeBeugels(
     items: BeugelKeuzeScherm[]
-): { label: string; aantal: number }[] {
-    const counts = new Map<string, number>();
+): BenodigdeBeugelRij[] {
+    const counts = new Map<string, BenodigdeBeugelRij>();
 
     for (const item of items) {
-        const gevonden = zoekBeugelCombinatie(item);
-        if (gevonden && gevonden.artikelen.length > 0) {
-            for (const regel of gevonden.artikelen) {
-                const label = artikelLabel(regel);
-                counts.set(
+        for (const rij of schermBeugelArtikelen(item)) {
+            const label = rij.artikel
+                ? rij.naam
+                    ? `${rij.artikel} — ${rij.naam}`
+                    : rij.artikel
+                : rij.naam;
+            if (!label) continue;
+            const bestaand = counts.get(label);
+            if (bestaand) {
+                bestaand.aantal += rij.aantal;
+            } else {
+                counts.set(label, {
                     label,
-                    (counts.get(label) || 0) + regel.aantal
-                );
+                    aantal: rij.aantal,
+                    artikel: rij.artikel,
+                    naam: rij.naam,
+                });
             }
-            continue;
         }
-
-        const fallback = legacyBeugelLabel(item);
-        if (!fallback) continue;
-        counts.set(fallback, (counts.get(fallback) || 0) + 1);
     }
 
-    return [...counts.entries()].map(([label, aantal]) => ({
-        label,
-        aantal,
-    }));
+    return [...counts.values()];
 }
 
 /** Fallback als de combinatie ontbreekt of geen bestellijst heeft. */

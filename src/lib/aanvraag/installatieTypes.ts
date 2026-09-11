@@ -815,9 +815,11 @@ export function wandVastMaatVanFormaat(item: AanvraagSchermItem): string {
 
 export {
     mdbBeugelTypeWeergave,
+    schermBeugelArtikelen,
     schermBeugelArtikelWeergave,
     telBenodigdeBeugels,
 } from "./beugelkeuze";
+export type { BeugelArtikelKolom, BenodigdeBeugelRij } from "./beugelkeuze";
 
 export function isHoofdType(
     item: AanvraagSchermItem,
