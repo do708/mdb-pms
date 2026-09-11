@@ -500,6 +500,7 @@ export function syncSchermItems(
 ): AanvraagSchermItem[] {
     const n = Math.max(0, Math.min(15, aantal));
     const next = [...items];
+    const bestaandeIds = new Set(items.map((s) => s.id));
 
     while (next.length < n) {
         const nieuw = emptySchermItem();
@@ -528,8 +529,14 @@ export function syncSchermItems(
             naast = "";
         }
 
-        // Standaard actief voor scherm 2+: koppel aan scherm 1 als leeg
-        if (i > 0 && !naast && next[0]) {
+        // Alleen nieuwe schermen standaard koppelen. Een bestaand scherm zonder
+        // koppeling is bewust als "Eigen locatie" gekozen.
+        if (
+            i > 0
+            && !naast
+            && next[0]
+            && !bestaandeIds.has(s.id)
+        ) {
             naast = next[0].id;
         }
 

@@ -148,63 +148,9 @@ export default function SchermenSpecificatie({
 
                                 {index > 0 ? (
                                     <div className="space-y-1.5">
-                                        <p className="text-xs text-gray-600">
-                                            Dit scherm monteren{" "}
-                                            {(["naast", "b2b"] as const).map(
-                                                (optie, oi) => (
-                                                    <span key={optie}>
-                                                        {oi > 0 ? (
-                                                            <span className="text-gray-400">
-                                                                {" / "}
-                                                            </span>
-                                                        ) : null}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => {
-                                                                const ankerId =
-                                                                    scherm.naastSchermId
-                                                                    || items.find(
-                                                                        (s) =>
-                                                                            s.id
-                                                                            !== scherm.id
-                                                                    )?.id
-                                                                    || "";
-
-                                                                updateItem(
-                                                                    scherm.id,
-                                                                    {
-                                                                        monterenKoppeling:
-                                                                            optie,
-                                                                        naastSchermId:
-                                                                            ankerId,
-                                                                    }
-                                                                );
-                                                            }}
-                                                            className={
-                                                                "inline px-0.5 font-semibold underline underline-offset-2 "
-                                                                +
-                                                                (scherm.monterenKoppeling
-                                                                    === optie
-                                                                    ? "text-[#0066FF] decoration-[#0066FF]"
-                                                                    : "text-gray-500 decoration-dotted decoration-gray-400 hover:text-[#0066FF] hover:decoration-solid")
-                                                            }
-                                                        >
-                                                            {optie}
-                                                        </button>
-                                                    </span>
-                                                )
-                                            )}
-                                            {" "}
-                                            <span className="text-red-500">
-                                                *
-                                            </span>
-                                        </p>
-                                        {!scherm.monterenKoppeling
-                                        && scherm.naastSchermId ? (
-                                            <p className="text-xs text-amber-800">
-                                                Klik op naast of b2b.
-                                            </p>
-                                        ) : null}
+                                        <span className="text-xs text-gray-600">
+                                            Zelfde locatie als
+                                        </span>
                                         <select
                                             value={
                                                 scherm.naastSchermId ||
@@ -269,6 +215,55 @@ export default function SchermenSpecificatie({
                                                 Eigen locatie
                                             </option>
                                         </select>
+                                        {gekoppeld ? (
+                                            <>
+                                                <p className="text-xs text-gray-600">
+                                                    Dit scherm monteren{" "}
+                                                    {(["naast", "b2b"] as const).map(
+                                                        (optie, oi) => (
+                                                            <span key={optie}>
+                                                                {oi > 0 ? (
+                                                                    <span className="text-gray-400">
+                                                                        {" / "}
+                                                                    </span>
+                                                                ) : null}
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        updateItem(
+                                                                            scherm.id,
+                                                                            {
+                                                                                monterenKoppeling:
+                                                                                    optie,
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                    className={
+                                                                        "inline px-0.5 font-semibold underline underline-offset-2 "
+                                                                        +
+                                                                        (scherm.monterenKoppeling
+                                                                            === optie
+                                                                            ? "text-[#0066FF] decoration-[#0066FF]"
+                                                                            : "text-gray-500 decoration-dotted decoration-gray-400 hover:text-[#0066FF] hover:decoration-solid")
+                                                                    }
+                                                                >
+                                                                    {optie}
+                                                                </button>
+                                                            </span>
+                                                        )
+                                                    )}
+                                                    {" "}
+                                                    <span className="text-red-500">
+                                                        *
+                                                    </span>
+                                                </p>
+                                                {!scherm.monterenKoppeling ? (
+                                                    <p className="text-xs text-amber-800">
+                                                        Klik op naast of b2b.
+                                                    </p>
+                                                ) : null}
+                                            </>
+                                        ) : null}
                                     </div>
                                 ) : null}
 
