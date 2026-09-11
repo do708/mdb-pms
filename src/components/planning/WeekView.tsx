@@ -65,6 +65,12 @@ interface WeekViewProps {
     events?: any[];
     // Alle monteurs (zodat ook lege monteurs een rij krijgen)
     engineers?: { id: string; name: string | null; staffKind?: string }[];
+    /**
+     * Alleen kolommen uit `engineers`. Geen extra rijen uit assignedUser /
+     * extraEngineers / agenda / verlof. Voor rol monteur: eigen planning.
+     * Kantoor laat dit uit zodat inactieve login historisch zichtbaar blijft.
+     */
+    lockColumnsToEngineers?: boolean;
     // Maandag van de te tonen week; standaard deze week
     weekStart?: Date;
     /** Dag om te markeren/scrollen (sidebar mini-maand ?date=) */
@@ -155,6 +161,7 @@ export default function WeekView({
     leave = [],
     events = [],
     engineers = [],
+    lockColumnsToEngineers = false,
     weekStart,
     focusDateIso = null,
     weekNavigation,
@@ -611,60 +618,63 @@ export default function WeekView({
 
         // Wie deze week nog een klus, agenda-item of verlof heeft, blijft
         // als kolom staan — ook zonder login (active=false).
-        const weekStartIso = days.length ? isoDate(days[0]) : "";
-        const weekEndIso = days.length
-            ? isoDate(days[days.length - 1])
-            : "";
-        const overlapsWeek = (startIso: string, endIso: string) =>
-            Boolean(
-                weekStartIso &&
-                    weekEndIso &&
-                    startIso <= weekEndIso &&
-                    endIso >= weekStartIso
-            );
+        // Monteur: niet doen, anders verschijnt de collega op dezelfde werkbon.
+        if (!lockColumnsToEngineers) {
+            const weekStartIso = days.length ? isoDate(days[0]) : "";
+            const weekEndIso = days.length
+                ? isoDate(days[days.length - 1])
+                : "";
+            const overlapsWeek = (startIso: string, endIso: string) =>
+                Boolean(
+                    weekStartIso &&
+                        weekEndIso &&
+                        startIso <= weekEndIso &&
+                        endIso >= weekStartIso
+                );
 
-        for (const item of items) {
-            if (!item?.plannedDate) continue;
-            const startIso = isoDate(new Date(item.plannedDate));
-            const endIso = item.plannedEndDate
-                ? isoDate(new Date(item.plannedEndDate))
-                : startIso;
-            if (!overlapsWeek(startIso, endIso)) continue;
-            add(
-                item.assignedUser?.id,
-                item.assignedUser?.name,
-                item.assignedUser?.staffKind
-            );
-            if (Array.isArray(item.extraEngineers)) {
-                for (const extra of item.extraEngineers) {
-                    add(
-                        extra?.user?.id,
-                        extra?.user?.name,
-                        extra?.user?.staffKind
-                    );
+            for (const item of items) {
+                if (!item?.plannedDate) continue;
+                const startIso = isoDate(new Date(item.plannedDate));
+                const endIso = item.plannedEndDate
+                    ? isoDate(new Date(item.plannedEndDate))
+                    : startIso;
+                if (!overlapsWeek(startIso, endIso)) continue;
+                add(
+                    item.assignedUser?.id,
+                    item.assignedUser?.name,
+                    item.assignedUser?.staffKind
+                );
+                if (Array.isArray(item.extraEngineers)) {
+                    for (const extra of item.extraEngineers) {
+                        add(
+                            extra?.user?.id,
+                            extra?.user?.name,
+                            extra?.user?.staffKind
+                        );
+                    }
                 }
             }
-        }
 
-        for (const ev of events) {
-            if (!ev?.startAt) continue;
-            const startIso = isoDate(new Date(ev.startAt));
-            const endIso = ev.endAt
-                ? isoDate(new Date(ev.endAt))
-                : startIso;
-            if (!overlapsWeek(startIso, endIso)) continue;
-            add(
-                ev.assignedUserId,
-                ev.assignedUser?.name,
-                ev.assignedUser?.staffKind
-            );
-        }
+            for (const ev of events) {
+                if (!ev?.startAt) continue;
+                const startIso = isoDate(new Date(ev.startAt));
+                const endIso = ev.endAt
+                    ? isoDate(new Date(ev.endAt))
+                    : startIso;
+                if (!overlapsWeek(startIso, endIso)) continue;
+                add(
+                    ev.assignedUserId,
+                    ev.assignedUser?.name,
+                    ev.assignedUser?.staffKind
+                );
+            }
 
-        for (const l of leave) {
-            if (!l?.userId || !l.from) continue;
-            const to = l.to || l.from;
-            if (!overlapsWeek(l.from, to)) continue;
-            add(l.userId, l.userName);
+            for (const l of leave) {
+                if (!l?.userId || !l.from) continue;
+                const to = l.to || l.from;
+                if (!overlapsWeek(l.from, to)) continue;
+                add(l.userId, l.userName);
+            }
         }
 
         const list = Array.from(byId.values());

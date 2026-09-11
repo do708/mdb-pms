@@ -261,7 +261,26 @@ function PlanningPageContent(){
     const weekIso = formatAmsterdamDateIso(weekStart);
 
     const engineers = useMemo(() => {
-        const visible = allEngineers.filter(
+        if (isEngineer) {
+            if (!session?.user?.id) {
+                return [];
+            }
+            // Eigen rij, ook als stagiair-einddatum deze week al voorbij is.
+            const mine = allEngineers.filter(
+                (e: { id: string }) => e.id === session.user.id
+            );
+            if (mine.length > 0) {
+                return mine;
+            }
+            return [
+                {
+                    id: session.user.id,
+                    name: session.user.name ?? "Monteur",
+                },
+            ];
+        }
+
+        return allEngineers.filter(
             (e: {
                 id: string;
                 staffKind?: string;
@@ -273,15 +292,7 @@ function PlanningPageContent(){
                     weekIso
                 )
         );
-
-        if (isEngineer && session?.user?.id) {
-            return visible.filter(
-                (e: { id: string }) => e.id === session.user.id
-            );
-        }
-
-        return visible;
-    }, [allEngineers, weekIso, isEngineer, session?.user?.id]);
+    }, [allEngineers, weekIso, isEngineer, session?.user?.id, session?.user?.name]);
 
 
     function shiftWeek(deltaWeeks:number){
@@ -1589,6 +1600,7 @@ function PlanningPageContent(){
                     leave={leave}
                     events={events}
                     engineers={engineers}
+                    lockColumnsToEngineers={isEngineer}
                     weekStart={weekStart}
                     focusDateIso={searchParams.get("date")}
                     view={view}

@@ -22,6 +22,9 @@ interface PlanningItem {
     straat?: string | null;
     huisnummer?: string | null;
     city: string | null;
+    assignedUserId?: string | null;
+    assignedUser?: { id: string } | null;
+    extraEngineers?: { user?: { id: string } | null }[];
     customer?: { name: string; color?: string } | null;
     project?: {
         name: string;
@@ -94,6 +97,24 @@ function clockMinutes(
     if (label === "00:00") return -1;
     const [h, m] = label.split(":").map(Number);
     return h * 60 + m;
+}
+
+function itemBelongsToEngineer(
+    item: PlanningItem,
+    engineerId: string
+): boolean {
+    if (
+        item.assignedUser?.id === engineerId
+        || item.assignedUserId === engineerId
+    ) {
+        return true;
+    }
+    return (
+        Array.isArray(item.extraEngineers)
+        && item.extraEngineers.some(
+            (e) => e.user?.id === engineerId
+        )
+    );
 }
 
 function itemOnDay(item: PlanningItem, dayIso: string): boolean {
@@ -203,7 +224,21 @@ export default function EngineerMobileSchedule({
     const selectedIso = toIsoDate(selectedDay);
     const selectedMarks = marksOn(selectedIso, dayMarksLookup);
 
-    const myItems = items;
+    const myItems = useMemo(
+        () =>
+            items.filter((item) =>
+                itemBelongsToEngineer(item, engineerId)
+            ),
+        [items, engineerId]
+    );
+
+    const myEvents = useMemo(
+        () =>
+            events.filter(
+                (ev) => ev.assignedUserId === engineerId
+            ),
+        [events, engineerId]
+    );
 
     function jobsForDay(dayIso: string) {
         return myItems
@@ -220,7 +255,7 @@ export default function EngineerMobileSchedule({
     }
 
     function eventsForDay(dayIso: string) {
-        return events
+        return myEvents
             .filter((ev) => eventOnDay(ev, dayIso))
             .sort((a, b) => {
                 const ta = a.startAt ? new Date(a.startAt).getTime() : 0;
