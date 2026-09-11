@@ -20,6 +20,10 @@ export const chipIdleClassName =
 export const chipSelectedClassName =
     "bg-[#0066FF] text-white border-[#0066FF] shadow-sm";
 
+/** Binnenkaart op een pastel-modulekaart: lichter dan de parent, geen wit gat. */
+export const nestedCardClassName =
+    "rounded-xl border border-black/10 bg-white/75";
+
 export const CHIP_SELECTED_TONE = {
     green: "bg-emerald-600 text-white border-emerald-600 shadow-sm",
     red: "bg-red-600 text-white border-red-600 shadow-sm",

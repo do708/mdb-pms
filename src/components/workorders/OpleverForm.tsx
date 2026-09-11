@@ -49,7 +49,8 @@ import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import {
     CHIP_SELECTED_TONE,
     chipIdleClassName,
-    chipSelectedClassName
+    chipSelectedClassName,
+    nestedCardClassName
 } from "@/components/ui/SpecLayout";
 import {
     actieveWerkzaamheden,
@@ -762,7 +763,7 @@ function AudioVakInhoud({
 
     return (
         <div className="space-y-3">
-            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+            <div className={`${nestedCardClassName} p-3 space-y-2`}>
                 <AudioRegel
                     label="Audiospeler"
                     value={blok.speler}
@@ -782,7 +783,7 @@ function AudioVakInhoud({
                     onChange={(items)=>patch({ spelerItems:items })}
                 />
             </div>
-            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+            <div className={`${nestedCardClassName} p-3 space-y-2`}>
                 <AudioRegel
                     label="Versterker"
                     value={blok.versterker}
@@ -802,7 +803,7 @@ function AudioVakInhoud({
                     onChange={(items)=>patch({ versterkerItems:items })}
                 />
             </div>
-            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+            <div className={`${nestedCardClassName} p-3 space-y-2`}>
                 <AudioRegel
                     label="Volumeregelaar"
                     value={blok.volumeregelaar}
@@ -823,7 +824,7 @@ function AudioVakInhoud({
                     requiredSn={false}
                 />
             </div>
-            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+            <div className={`${nestedCardClassName} p-3 space-y-2`}>
                 <AudioRegel
                     label="Speakers"
                     value={blok.speakers}
@@ -1581,7 +1582,7 @@ function KioskBlokken({
                 blokken.map((blok, index)=>(
                     <div
                         key={index}
-                        className="rounded-xl border border-amber-300/70 bg-amber-100/40 p-3 space-y-3"
+                        className={`${nestedCardClassName} p-3 space-y-3`}
                     >
                         <div className="flex items-center justify-between gap-2">
                             <p className="font-semibold text-sm text-gray-800">
@@ -3475,14 +3476,14 @@ export default function OpleverForm({
                         titel={vakTitel("Mediaplayers", type)}
                         kleur="bg-violet-50 border-violet-200"
                     >
-                        <label className="block">
-                            <span className="text-xs text-gray-600">
+                        <label className="block space-y-1 max-w-[9rem]">
+                            <span className="block text-xs font-medium text-gray-600">
                                 Aantal
                             </span>
                             <input
                                 inputMode="numeric"
                                 value={aantal}
-                                placeholder="Aantal"
+                                placeholder="0"
                                 onChange={(e)=>
                                     update(draft=>{
                                         const value = e.target.value;
@@ -3511,13 +3512,13 @@ export default function OpleverForm({
                                         }
                                     })
                                 }
-                                className="w-24 border rounded-lg p-2 text-sm bg-white/80"
+                                className="w-24 border border-black/10 rounded-lg p-2 text-sm bg-white/80"
                             />
                         </label>
                         {items.map((item, index)=>(
                             <div
                                 key={index}
-                                className="rounded-xl border border-violet-300/70 bg-violet-100/40 p-3 space-y-2"
+                                className={`${nestedCardClassName} p-3 space-y-2`}
                             >
                                 <p className="font-semibold text-sm text-gray-800">
                                     Player {index + 1}

@@ -4,6 +4,7 @@ import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen
 import {
     chipIdleClassName,
     chipSelectedClassName,
+    nestedCardClassName,
 } from "@/components/ui/SpecLayout";
 import {
     SCHERM_FORMATEN,
@@ -215,7 +216,7 @@ export default function VideowallSpecificatie({
                     </div>
 
                     {paneelAantal > 0 ? (
-                        <div className="rounded-xl border border-black/10 bg-white/40 overflow-hidden">
+                        <div className={`${nestedCardClassName} overflow-hidden`}>
                             <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                                 Schermen — gegevens
                             </p>

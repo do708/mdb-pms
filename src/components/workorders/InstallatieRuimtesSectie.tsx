@@ -20,6 +20,7 @@ import {
     CHIP_SELECTED_TONE,
     chipIdleClassName,
     chipSelectedClassName,
+    nestedCardClassName,
 } from "@/components/ui/SpecLayout";
 import {
     InstallatieRuimte,
@@ -137,7 +138,7 @@ export function HardwareKenmerkenTabel({
     requiredKenmerken?: boolean;
 }) {
     return (
-        <div className="rounded-xl border border-black/10 bg-white/40 overflow-hidden">
+        <div className="rounded-xl border border-black/10 bg-white overflow-hidden">
             <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                 {titel}
             </p>
@@ -406,7 +407,7 @@ export default function InstallatieRuimtesSectie({
                     return (
                         <div
                             key={scherm.id}
-                            className="rounded-xl border border-sky-300/70 bg-sky-100/40 p-3 space-y-3"
+                            className={`${nestedCardClassName} p-3 space-y-3`}
                         >
                             <div className="flex items-center justify-between gap-2">
                                 <p className="font-semibold text-sm text-gray-800">
