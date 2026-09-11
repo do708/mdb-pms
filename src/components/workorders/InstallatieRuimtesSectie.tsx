@@ -29,6 +29,15 @@ import {
     syncSchermen,
 } from "@/types/installatieRuimtes";
 
+function VerplichtSter() {
+    return (
+        <>
+            {" "}
+            <span className="text-red-500">*</span>
+        </>
+    );
+}
+
 function Chips({
     options,
     value,
@@ -106,6 +115,7 @@ function HardwareKenmerkenTabel({
     serienummer,
     mac,
     onChange,
+    requiredKenmerken = false,
 }: {
     titel: string;
     merk: string;
@@ -118,6 +128,8 @@ function HardwareKenmerkenTabel({
         serienummer?: string;
         mac?: string;
     }) => void;
+    /** Merk, type en serienummer verplicht; MAC blijft optioneel. */
+    requiredKenmerken?: boolean;
 }) {
     return (
         <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
@@ -130,12 +142,15 @@ function HardwareKenmerkenTabel({
                         <tr className="bg-white">
                             <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
                                 Merk
+                                {requiredKenmerken ? <VerplichtSter /> : null}
                             </th>
                             <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
                                 Type
+                                {requiredKenmerken ? <VerplichtSter /> : null}
                             </th>
                             <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
                                 Serienummer
+                                {requiredKenmerken ? <VerplichtSter /> : null}
                             </th>
                             <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
                                 MAC-adres
@@ -151,6 +166,7 @@ function HardwareKenmerkenTabel({
                                         onChange({ merk: e.target.value })
                                     }
                                     placeholder="Merk"
+                                    aria-required={requiredKenmerken || undefined}
                                     className="w-full border rounded-lg p-2 bg-white text-sm"
                                 />
                             </td>
@@ -161,6 +177,7 @@ function HardwareKenmerkenTabel({
                                         onChange({ type: e.target.value })
                                     }
                                     placeholder="Type"
+                                    aria-required={requiredKenmerken || undefined}
                                     className="w-full border rounded-lg p-2 bg-white text-sm"
                                 />
                             </td>
@@ -173,6 +190,7 @@ function HardwareKenmerkenTabel({
                                         })
                                     }
                                     placeholder="Serienummer"
+                                    aria-required={requiredKenmerken || undefined}
                                     className="w-full border rounded-lg p-2 bg-white text-sm"
                                 />
                             </td>
@@ -473,6 +491,7 @@ export default function InstallatieRuimtesSectie({
                                     type={scherm.type || ""}
                                     serienummer={scherm.serienummer || ""}
                                     mac={scherm.mac || ""}
+                                    requiredKenmerken
                                     onChange={(patch) =>
                                         patchSchermHardware(
                                             ruimteId,

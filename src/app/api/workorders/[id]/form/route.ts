@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
-import { mergeOpleverData } from "@/types/oplever";
+import { mergeOpleverData, ontbrekendeMateriaalSerienummers } from "@/types/oplever";
+import { ontbrekendeSchermKenmerken } from "@/types/installatieRuimtes";
 
 
 
@@ -47,6 +48,21 @@ export async function PUT(
             mergeOpleverData(
                 body.formData
             );
+
+        const veldenFout =
+            [
+                ontbrekendeMateriaalSerienummers(formData),
+                ontbrekendeSchermKenmerken(formData.installatie.ruimtes)
+            ]
+            .filter(Boolean)
+            .join(" ");
+
+        if(veldenFout){
+            return NextResponse.json(
+                { error: veldenFout },
+                { status: 400 }
+            );
+        }
 
 
 

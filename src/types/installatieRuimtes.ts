@@ -387,6 +387,67 @@ export function emptyRuimte(): InstallatieRuimte {
     };
 }
 
+function werkzaamheidLabelVanActie(actie: string): string {
+    if (actie === "nieuw") {
+        return "montage";
+    }
+    if (actie === "hergebruikt") {
+        return "hermontage";
+    }
+    if (actie === "gedemonteerd") {
+        return "demontage";
+    }
+    return "";
+}
+
+/** Scherm-gegevens-tabel (merk/type/SN/MAC) is zichtbaar na keuze formaat. */
+export function toonSchermGegevensTabel(s: InstallatieScherm): boolean {
+    return Boolean(s.formaat);
+}
+
+/** Merk, type en serienummer verplicht zodra de schermtabel zichtbaar is. MAC niet. */
+export function schermGegevensCompleet(s: InstallatieScherm): boolean {
+    if (!toonSchermGegevensTabel(s)) {
+        return true;
+    }
+
+    return Boolean(
+        (s.merk || "").trim()
+        && (s.type || "").trim()
+        && (s.serienummer || "").trim()
+    );
+}
+
+/** Fouttekst als verplichte schermgegevens (merk/type/serienummer) ontbreken. */
+export function ontbrekendeSchermKenmerken(
+    ruimtes: InstallatieRuimte[]
+): string | null {
+    const namen: string[] = [];
+
+    for (const ruimte of ruimtes) {
+        const werkLabel = werkzaamheidLabelVanActie(ruimte.actie);
+
+        ruimte.schermen.forEach((scherm, i) => {
+            if (schermGegevensCompleet(scherm)) {
+                return;
+            }
+
+            const label =
+                (scherm.label || "").trim() || `Scherm ${i + 1}`;
+
+            namen.push(
+                werkLabel ? `${label} (${werkLabel})` : label
+            );
+        });
+    }
+
+    if (namen.length === 0) {
+        return null;
+    }
+
+    return `Vul merk, type en serienummer in bij: ${namen.join(", ")}. MAC-adres is optioneel.`;
+}
+
 export function emptyStroomInternet(): StroomInternetBlok {
     return {
         aanwezig: "",

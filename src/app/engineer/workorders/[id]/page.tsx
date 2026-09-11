@@ -22,6 +22,7 @@ import {
     ontbrekendeMateriaalSerienummers,
     type OpleverData
 } from "@/types/oplever";
+import { ontbrekendeSchermKenmerken } from "@/types/installatieRuimtes";
 import {
     modulesVanWerkbon,
     toonChecklist,
@@ -944,8 +945,14 @@ async function completeWorkorder(){
         const snFout =
             ontbrekendeMateriaalSerienummers(opleverData);
 
-        if(snFout){
-            setFormError(snFout);
+        const schermFout =
+            ontbrekendeSchermKenmerken(opleverData.installatie.ruimtes);
+
+        const veldenFout =
+            [snFout, schermFout].filter(Boolean).join(" ");
+
+        if(veldenFout){
+            setFormError(veldenFout);
             window.scrollTo({ top:0, behavior:"smooth" });
             return;
         }

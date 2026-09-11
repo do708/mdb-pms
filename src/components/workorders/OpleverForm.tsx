@@ -32,7 +32,12 @@ import {
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
-import { normalizeMac, emptyExtra, emptyRuimte } from "@/types/installatieRuimtes";
+import {
+    normalizeMac,
+    emptyExtra,
+    emptyRuimte,
+    ontbrekendeSchermKenmerken
+} from "@/types/installatieRuimtes";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import {
     actieveWerkzaamheden,
@@ -804,6 +809,7 @@ function AudioVakInhoud({
                 aantal={blok.volumeregelaar}
                 items={blok.volumeregelaarItems}
                 onChange={(items)=>patch({ volumeregelaarItems:items })}
+                requiredSn={false}
             />
             <AudioRegel
                 label="Speakers"
@@ -2194,9 +2200,15 @@ export default function OpleverForm({
         const snFout =
             ontbrekendeMateriaalSerienummers(data);
 
-        if(snFout){
+        const schermFout =
+            ontbrekendeSchermKenmerken(data.installatie.ruimtes);
 
-            setFormError(snFout);
+        const veldenFout =
+            [snFout, schermFout].filter(Boolean).join(" ");
+
+        if(veldenFout){
+
+            setFormError(veldenFout);
 
             window.scrollTo({ top:0, behavior:"smooth" });
 
@@ -2237,13 +2249,24 @@ export default function OpleverForm({
                 );
 
 
-            setMessage(
-                response.ok
-                ?
-                "Opleverformulier opgeslagen"
-                :
-                "Opslaan mislukt"
-            );
+            const payload =
+                await response.json().catch(()=>null);
+
+            if(!response.ok){
+
+                setFormError(
+                    typeof payload?.error === "string"
+                    ? payload.error
+                    : "Opslaan mislukt"
+                );
+
+                window.scrollTo({ top:0, behavior:"smooth" });
+
+                return;
+
+            }
+
+            setMessage("Opleverformulier opgeslagen");
 
 
         } finally {
