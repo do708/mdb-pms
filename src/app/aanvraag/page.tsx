@@ -735,9 +735,9 @@ function AanvraagFormulier(){
 
     return (
 
-        <div className="min-h-screen bg-gray-50 py-5 sm:py-8 px-4">
+        <div className="min-h-screen bg-gray-50 px-3 py-5 sm:px-4 sm:py-8 lg:px-6">
 
-            <div className="max-w-2xl mx-auto">
+            <div className="mx-auto w-full max-w-7xl">
 
                 <div className="mb-4 sm:mb-6 text-center">
                     <img
@@ -751,7 +751,7 @@ function AanvraagFormulier(){
                 </div>
 
 
-                <div className="bg-white rounded-2xl shadow-sm border p-6 space-y-6">
+                <div className="space-y-6 rounded-2xl border bg-white p-4 shadow-sm sm:p-6 lg:p-8">
 
 
                     <div className="bg-sky-50 border border-sky-200 rounded-xl p-4">
