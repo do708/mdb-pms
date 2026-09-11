@@ -16,7 +16,7 @@ import { ontbrekendeVerplichteLocatieVelden, combineStreetAddress, splitStreetAd
 import WerkInstructieVeld from "@/components/workorders/WerkInstructieVeld";
 import OpleverModulesPicker from "@/components/workorders/OpleverModulesPicker";
 import {
-    modulesVanWerkbon,
+    parseOpleverModules,
     type OpleverModule,
 } from "@/lib/workorders/opleverModules";
 
@@ -303,15 +303,7 @@ export default function EditWorkorderPage(){
                 setAssignedUserId(wo.assignedUserId ?? "");
 
                 setSelectedModules(
-                    modulesVanWerkbon({
-                        opleverModules: wo.opleverModules,
-                        formKey:
-                            Array.isArray(wo.forms) && wo.forms[0]?.formType?.key
-                            ?
-                            wo.forms[0].formType.key
-                            :
-                            null
-                    })
+                    parseOpleverModules(wo.opleverModules)
                 );
 
                 setPlannedDate(

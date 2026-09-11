@@ -151,6 +151,8 @@ export async function POST(
                         (contact.email || null),
                     contactPhone:
                         (contact.telefoon || null),
+                    opleverModules:
+                        [],
                     status:
                         "ontvangen"
                 }

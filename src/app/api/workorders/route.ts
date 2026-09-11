@@ -403,7 +403,7 @@ export async function POST(
                         ?
                         parseOpleverModules(body.opleverModules)
                         :
-                        undefined,
+                        [],
 
 
 
