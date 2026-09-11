@@ -17,7 +17,6 @@ import {
     patchRaaktVoorzieningen,
     syncSchermItems,
     syncVoorzieningenVanAnkers,
-    telBenodigdeBeugels,
 } from "@/lib/aanvraag/installatieTypes";
 import BeugelkeuzeOverzicht, {
     naarBeugelkeuzeSchermRij,
@@ -42,7 +41,6 @@ export default function SchermenSpecificatie({
     onItemsChange,
 }: Props) {
     const [toondeMaxMelding, setToondeMaxMelding] = useState(false);
-    const benodigdeBeugels = telBenodigdeBeugels(items);
 
     function zetAantal(raw: string) {
         if (raw === "") {
@@ -838,8 +836,6 @@ export default function SchermenSpecificatie({
                         schermen={items.map((s, i) =>
                             naarBeugelkeuzeSchermRij(s, items, i)
                         )}
-                        beugels={benodigdeBeugels}
-                        leegHint="Kies per scherm formaat en beugel om de types en benodigde beugels te zien."
                     />
                 </div>
             ) : null}

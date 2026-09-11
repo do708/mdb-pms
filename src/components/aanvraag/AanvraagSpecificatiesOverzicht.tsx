@@ -17,7 +17,6 @@ import {
     installatieTypeWeergave,
     mdbBeugelTypeWeergave,
     normaliseerMonterenKoppeling,
-    telBenodigdeBeugels,
     type AanvraagSchermItem,
 } from "@/lib/aanvraag/installatieTypes";
 import BeugelkeuzeOverzicht, {
@@ -281,7 +280,6 @@ function SchermenBlok({
         .map((raw) => asRecord(raw))
         .filter((s): s is Record<string, unknown> => Boolean(s))
         .map(naarSchermItem);
-    const benodigdeBeugels = telBenodigdeBeugels(schermItems);
 
     return (
         <Section
@@ -376,7 +374,6 @@ function SchermenBlok({
                                     str(raw.berekendType)
                                 );
                             })}
-                            beugels={benodigdeBeugels}
                         />
                     ) : null}
                 </div>

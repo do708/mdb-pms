@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import {
+    beugelTypeWeergave,
     berekendInstallatieType,
     formaatWeergaveScherm,
     installatieTypeWeergave,
@@ -9,17 +10,16 @@ import {
     schermBeugelArtikelen,
     type AanvraagSchermItem,
     type BeugelArtikelKolom,
-    type BenodigdeBeugelRij,
 } from "@/lib/aanvraag/installatieTypes";
 
 export type BeugelkeuzeSchermRij = {
     key: string;
     scherm: string;
     formaat: string;
+    installatie: string;
     artikelen: BeugelArtikelKolom[];
     typeLabel: string;
-    rol: string;
-    opmerking: string;
+    plaatsing: string;
 };
 
 export function naarBeugelkeuzeSchermRij(
@@ -39,17 +39,16 @@ export function naarBeugelkeuzeSchermRij(
         key: item.id || String(index),
         scherm: `Scherm ${index + 1}`,
         formaat: formaatWeergaveScherm(item),
+        installatie: beugelTypeWeergave(item),
         artikelen: schermBeugelArtikelen(item),
         typeLabel: installatieTypeWeergave(typeCode),
-        rol: typeCode
+        plaatsing: typeCode
             ? isHoofdType(item, alle)
-                ? "hoofdtype"
-                : "vervolg"
-            : "",
-        opmerking:
-            naastIndex >= 0
-                ? `${item.monterenKoppeling === "b2b" ? "b2b" : "naast"} scherm ${naastIndex + 1}`
-                : "",
+                ? "Hoofdinstallatie"
+                : naastIndex >= 0
+                    ? `Vervolginstallatie (${item.monterenKoppeling === "b2b" ? "back-to-back met" : "naast"} scherm ${naastIndex + 1})`
+                    : "Vervolginstallatie"
+            : "—",
     };
 }
 
@@ -129,20 +128,24 @@ function rijKleur(index: number): string {
 
 export default function BeugelkeuzeOverzicht({
     schermen,
-    beugels,
-    leegHint,
 }: {
     schermen: BeugelkeuzeSchermRij[];
-    beugels: BenodigdeBeugelRij[];
-    leegHint?: string;
 }) {
     if (schermen.length === 0) return null;
 
     return (
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1.45fr)_minmax(16rem,1fr)]">
+        <div className="min-w-0">
             <ExcelTabel
                 titel="Overzicht types"
-                kolommen={["Scherm", "Formaat", "Artikel", "Beugel", "Type"]}
+                kolommen={[
+                    "Scherm",
+                    "Formaat",
+                    "Installatie",
+                    "Artikel",
+                    "Beugel",
+                    "Type",
+                    "Plaatsing",
+                ]}
             >
                 {schermen.map((s, i) => (
                     <tr key={s.key} className={rijKleur(i)}>
@@ -151,6 +154,9 @@ export default function BeugelkeuzeOverzicht({
                         </td>
                         <td className="whitespace-nowrap border border-[#C5D4E8] px-2 py-1 text-gray-800">
                             {s.formaat || "—"}
+                        </td>
+                        <td className="whitespace-nowrap border border-[#C5D4E8] px-2 py-1 text-gray-800">
+                            {s.installatie || "—"}
                         </td>
                         <td className="whitespace-nowrap border border-[#C5D4E8] px-2 py-1 font-medium text-[#1F4E79]">
                             <ArtikelRegels
@@ -165,48 +171,16 @@ export default function BeugelkeuzeOverzicht({
                             />
                         </td>
                         <td className="border border-[#C5D4E8] px-2 py-1 text-gray-800">
-                            <p className="font-semibold leading-tight text-[#0066FF]">
+                            <span className="whitespace-nowrap font-semibold text-[#0066FF]">
                                 {s.typeLabel}
-                            </p>
-                            {s.rol ? (
-                                <p className="leading-tight text-gray-600">
-                                    {s.rol}
-                                </p>
-                            ) : null}
-                            {s.opmerking ? (
-                                <p className="leading-tight text-gray-500">
-                                    {s.opmerking}
-                                </p>
-                            ) : null}
+                            </span>
+                        </td>
+                        <td className="whitespace-nowrap border border-[#C5D4E8] px-2 py-1 text-gray-800">
+                            {s.plaatsing}
                         </td>
                     </tr>
                 ))}
             </ExcelTabel>
-
-            {beugels.length > 0 ? (
-                <ExcelTabel
-                    titel="Benodigde beugels"
-                    kolommen={["Aantal", "Artikel", "Naam"]}
-                >
-                    {beugels.map((rij, i) => (
-                        <tr key={rij.label} className={rijKleur(i)}>
-                            <td className="whitespace-nowrap border border-[#C5D4E8] px-2 py-1 font-semibold tabular-nums text-[#1F4E79]">
-                                {rij.aantal}×
-                            </td>
-                            <td className="whitespace-nowrap border border-[#C5D4E8] px-2 py-1 font-medium text-[#1F4E79]">
-                                {rij.artikel || "—"}
-                            </td>
-                            <td className="border border-[#C5D4E8] px-2 py-1 text-gray-800">
-                                {rij.naam || rij.label}
-                            </td>
-                        </tr>
-                    ))}
-                </ExcelTabel>
-            ) : leegHint ? (
-                <p className="self-start rounded-sm border border-[#C5D4E8] bg-white px-3 py-2 text-xs text-gray-500">
-                    {leegHint}
-                </p>
-            ) : null}
         </div>
     );
 }
