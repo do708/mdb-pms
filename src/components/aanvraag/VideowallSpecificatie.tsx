@@ -2,7 +2,10 @@
 
 import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
 import {
-    FORMAAT_PASTEL,
+    chipIdleClassName,
+    chipSelectedClassName,
+} from "@/components/ui/SpecLayout";
+import {
     SCHERM_FORMATEN,
 } from "@/lib/aanvraag/installatieTypes";
 import {
@@ -80,8 +83,8 @@ export default function VideowallSpecificatie({
                                 "flex-1 min-w-[140px] rounded-lg py-2 px-3 border-2 text-sm font-medium "
                                 +
                                 (type === t.k
-                                    ? "bg-emerald-100 text-emerald-900 border-emerald-300"
-                                    : "bg-white/40 text-gray-700 border-black/10")
+                                    ? chipSelectedClassName
+                                    : chipIdleClassName)
                             }
                         >
                             {t.label}
@@ -172,7 +175,6 @@ export default function VideowallSpecificatie({
                             <>
                         <div className="flex flex-wrap gap-2">
                             {VIDEOWALL_FORMATEN.map((optie) => {
-                                const pastel = FORMAAT_PASTEL[optie];
                                 const selected =
                                     gekozenFormaten.includes(optie);
                                 return (
@@ -185,11 +187,9 @@ export default function VideowallSpecificatie({
                                         className={
                                             "rounded-lg px-3 py-2 border-2 text-sm font-medium "
                                             +
-                                            (selected && pastel
-                                                ? `${pastel.bg} ${pastel.border} ${pastel.text}`
-                                                : selected
-                                                ? "bg-sky-100 text-sky-900 border-sky-300"
-                                                : "bg-white/40 text-gray-700 border-black/10")
+                                            (selected
+                                                ? chipSelectedClassName
+                                                : chipIdleClassName)
                                         }
                                     >
                                         {optie}
@@ -372,8 +372,8 @@ export default function VideowallSpecificatie({
                                         "flex-1 min-w-[120px] rounded-lg py-2 border-2 text-sm font-medium "
                                         +
                                         (velden.orientatie === o
-                                            ? "bg-violet-100 text-violet-900 border-violet-300"
-                                            : "bg-white/40 text-gray-700 border-black/10")
+                                            ? chipSelectedClassName
+                                            : chipIdleClassName)
                                     }
                                 >
                                     {o}
@@ -449,8 +449,8 @@ export default function VideowallSpecificatie({
                                         "flex-1 min-w-[120px] rounded-lg py-2 border-2 text-sm font-medium "
                                         +
                                         (velden.orientatie === o
-                                            ? "bg-violet-100 text-violet-900 border-violet-300"
-                                            : "bg-white/40 text-gray-700 border-black/10")
+                                            ? chipSelectedClassName
+                                            : chipIdleClassName)
                                     }
                                 >
                                     {o}

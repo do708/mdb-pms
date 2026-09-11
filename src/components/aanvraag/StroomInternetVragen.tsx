@@ -1,5 +1,10 @@
 "use client";
 
+import {
+    CHIP_SELECTED_TONE,
+    chipIdleClassName,
+    chipSelectedClassName,
+} from "@/components/ui/SpecLayout";
 import { KABEL_TRAJECT_OPTIES } from "@/lib/aanvraag/installatieTypes";
 
 export function JaNee({
@@ -26,9 +31,9 @@ export function JaNee({
                         +
                         (value === optie
                             ? optie === "Ja"
-                                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                : "bg-amber-100 text-amber-800 border-amber-300"
-                            : "bg-white text-gray-700 border-gray-200")
+                                ? CHIP_SELECTED_TONE.green
+                                : CHIP_SELECTED_TONE.orange
+                            : chipIdleClassName)
                     }
                 >
                     {optie}
@@ -45,12 +50,12 @@ const INTERNET_ACTIEF: Record<
     Exclude<InternetAanwezig, "">,
     string
 > = {
-    Ja: "bg-emerald-100 text-emerald-800 border-emerald-300",
-    Wifi: "bg-orange-100 text-orange-800 border-orange-300",
-    Nee: "bg-red-100 text-red-800 border-red-300",
+    Ja: CHIP_SELECTED_TONE.green,
+    Wifi: CHIP_SELECTED_TONE.orange,
+    Nee: CHIP_SELECTED_TONE.red,
 };
 
-/** Ja / Wifi / Nee voor “Internet aanwezig…?” (pastel). */
+/** Ja / Wifi / Nee voor “Internet aanwezig…?”. */
 export function JaWifiNee({
     value,
     onChange,
@@ -75,7 +80,7 @@ export function JaWifiNee({
                         +
                         (value === optie
                             ? INTERNET_ACTIEF[optie]
-                            : "bg-white text-gray-700 border-gray-200")
+                            : chipIdleClassName)
                     }
                 >
                     {optie}
@@ -153,8 +158,8 @@ export function MdbRealisatieVervolg({
                                         "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left disabled:opacity-60 disabled:cursor-not-allowed "
                                         +
                                         (traject === optie
-                                            ? "bg-sky-100 text-sky-800 border-sky-300"
-                                            : "bg-white text-gray-700 border-gray-200")
+                                            ? chipSelectedClassName
+                                            : chipIdleClassName)
                                     }
                                 >
                                     {optie}

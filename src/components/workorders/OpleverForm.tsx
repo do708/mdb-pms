@@ -47,6 +47,11 @@ import {
 import { ontbrekendeVideowallPanelen } from "@/lib/workorders/videowallPanelen";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import {
+    CHIP_SELECTED_TONE,
+    chipIdleClassName,
+    chipSelectedClassName
+} from "@/components/ui/SpecLayout";
+import {
     actieveWerkzaamheden,
     actieVanWerkzaamheid,
     fallbackWerkzaamheid,
@@ -150,11 +155,11 @@ function JaNee({
         "px-4 py-1.5 text-sm";
 
     const kleurKlasse = (kleur:string)=>{
-        if(kleur === "red") return "bg-red-100 border-red-300 text-red-800";
-        if(kleur === "orange") return "bg-amber-100 border-amber-300 text-amber-800";
-        if(kleur === "sky") return "bg-sky-100 border-sky-300 text-sky-800";
-        if(kleur === "yellow") return "bg-yellow-100 border-yellow-300 text-yellow-800";
-        return "bg-emerald-100 border-emerald-300 text-emerald-800";
+        if(kleur === "red") return CHIP_SELECTED_TONE.red;
+        if(kleur === "orange") return CHIP_SELECTED_TONE.orange;
+        if(kleur === "sky") return CHIP_SELECTED_TONE.sky;
+        if(kleur === "yellow") return CHIP_SELECTED_TONE.yellow;
+        return CHIP_SELECTED_TONE.green;
     };
 
     return (
@@ -171,12 +176,14 @@ function JaNee({
                     ${size}
                     rounded-full
                     border
+                    font-medium
+                    transition
                     ${
                         value === true
                         ?
                         kleurKlasse(jaKleur)
                         :
-                        "text-gray-400"
+                        chipIdleClassName
                     }
                 `}
 
@@ -194,12 +201,14 @@ function JaNee({
                     ${size}
                     rounded-full
                     border
+                    font-medium
+                    transition
                     ${
                         value === false
                         ?
                         kleurKlasse(neeKleur)
                         :
-                        "text-gray-400"
+                        chipIdleClassName
                     }
                 `}
 
@@ -215,23 +224,12 @@ function JaNee({
 
 
 
-// Pastelkleuren voor de keuzeknoppen (per optie een andere tint).
-const PASTEL_KEUZE = [
-    "bg-sky-100 border-sky-300 text-sky-800",
-    "bg-emerald-100 border-emerald-300 text-emerald-800",
-    "bg-amber-100 border-amber-300 text-amber-800",
-    "bg-violet-100 border-violet-300 text-violet-800",
-    "bg-teal-100 border-teal-300 text-teal-800",
-    "bg-indigo-100 border-indigo-300 text-indigo-800"
-];
-
-// Vaste kleurklassen voor als een optie een specifieke kleur moet krijgen.
 const KEUZE_KLEUREN:Record<string,string> = {
-    green:"bg-emerald-100 border-emerald-300 text-emerald-800",
-    orange:"bg-amber-100 border-amber-300 text-amber-800",
-    red:"bg-red-100 border-red-300 text-red-800",
-    sky:"bg-sky-100 border-sky-300 text-sky-800",
-    yellow:"bg-yellow-100 border-yellow-300 text-yellow-800"
+    green: CHIP_SELECTED_TONE.green,
+    orange: CHIP_SELECTED_TONE.orange,
+    red: CHIP_SELECTED_TONE.red,
+    sky: CHIP_SELECTED_TONE.sky,
+    yellow: CHIP_SELECTED_TONE.yellow
 };
 
 function Keuze({
@@ -269,14 +267,14 @@ function Keuze({
         `}>
 
             {
-                options.map((option,index)=>{
+                options.map((option)=>{
 
                     const actiefKlasse =
                         kleuren && kleuren[option]
                         ?
                         KEUZE_KLEUREN[kleuren[option]]
                         :
-                        PASTEL_KEUZE[index % PASTEL_KEUZE.length];
+                        chipSelectedClassName;
 
                     return (
 
@@ -291,6 +289,7 @@ function Keuze({
                             className={`
                                 rounded-full
                                 border
+                                font-medium
                                 transition
                                 leading-snug
                                 text-center
@@ -306,7 +305,7 @@ function Keuze({
                                     ?
                                     actiefKlasse
                                     :
-                                    "border-slate-200 text-gray-400 hover:border-slate-300"
+                                    chipIdleClassName
                                 }
                             `}
 
@@ -1465,13 +1464,15 @@ function ExtraKostenChip({
                 rounded-full
                 border
                 text-xs
+                font-medium
                 whitespace-nowrap
+                transition
                 ${
                     value.actief
                     ?
-                    "bg-amber-100 border-amber-300 text-amber-800"
+                    chipSelectedClassName
                     :
-                    "text-gray-400"
+                    chipIdleClassName
                 }
             `}
         >
@@ -4684,9 +4685,9 @@ export default function OpleverForm({
                                                 ${
                                                     actief
                                                     ?
-                                                    "bg-sky-100 border-sky-300 text-sky-800"
+                                                    chipSelectedClassName
                                                     :
-                                                    "border-slate-200 text-gray-400 hover:border-slate-300"
+                                                    chipIdleClassName
                                                 }
                                             `}
                                         >

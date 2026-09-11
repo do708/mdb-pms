@@ -17,6 +17,11 @@ import {
     type OpleverWerkzaamheid,
 } from "@/lib/workorders/opleverModules";
 import {
+    CHIP_SELECTED_TONE,
+    chipIdleClassName,
+    chipSelectedClassName,
+} from "@/components/ui/SpecLayout";
+import {
     InstallatieRuimte,
     InstallatieScherm,
     KABEL_TRAJECT_P25,
@@ -42,7 +47,7 @@ function Chips({
     options,
     value,
     onChange,
-    selectedClass = "bg-sky-100 text-sky-900 border-sky-300",
+    selectedClass = chipSelectedClassName,
 }: {
     options: readonly string[];
     value: string;
@@ -61,7 +66,7 @@ function Chips({
                         +
                         (value === opt
                             ? selectedClass
-                            : "bg-white/40 text-gray-700 border-black/10")
+                            : chipIdleClassName)
                     }
                 >
                     {opt}
@@ -81,10 +86,10 @@ function JaNeeKleur({
     options: { value: string; label: string; kleur: "green" | "orange" | "sky" }[];
 }) {
     const klasse = (kleur: string, active: boolean) => {
-        if (!active) return "bg-white/40 text-gray-600 border-black/10";
-        if (kleur === "orange") return "bg-amber-100 text-amber-800 border-amber-300";
-        if (kleur === "sky") return "bg-sky-100 text-sky-800 border-sky-300";
-        return "bg-emerald-100 text-emerald-800 border-emerald-300";
+        if (!active) return chipIdleClassName;
+        if (kleur === "orange") return CHIP_SELECTED_TONE.orange;
+        if (kleur === "sky") return CHIP_SELECTED_TONE.sky;
+        return CHIP_SELECTED_TONE.green;
     };
 
     return (
@@ -660,7 +665,7 @@ export default function InstallatieRuimtesSectie({
                                             orientatie: v,
                                         })
                                     }
-                                    selectedClass="bg-violet-100 text-violet-900 border-violet-300"
+                                    selectedClass={chipSelectedClassName}
                                 />
                             </div>
 

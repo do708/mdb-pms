@@ -13,6 +13,21 @@ export const specSelectClassName = `
     p-2.5 text-sm text-gray-900 bg-white
 `.replace(/\s+/g, " ").trim();
 
+/** Keuzeknoppen op pastelkaarten: wit in rust, MDB-blauw of sterke tint als gekozen. */
+export const chipIdleClassName =
+    "bg-white text-slate-700 border-slate-300 hover:border-slate-400 hover:bg-slate-50";
+
+export const chipSelectedClassName =
+    "bg-[#0066FF] text-white border-[#0066FF] shadow-sm";
+
+export const CHIP_SELECTED_TONE = {
+    green: "bg-emerald-600 text-white border-emerald-600 shadow-sm",
+    red: "bg-red-600 text-white border-red-600 shadow-sm",
+    orange: "bg-amber-500 text-white border-amber-500 shadow-sm",
+    sky: "bg-[#0066FF] text-white border-[#0066FF] shadow-sm",
+    yellow: "bg-slate-700 text-white border-slate-700 shadow-sm",
+} as const;
+
 type Tone = "white" | "slate" | "indigo" | "amber" | "emerald";
 
 const TONE: Record<Tone, string> = {
