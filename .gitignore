@@ -45,6 +45,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# macOS Finder-duplicaten (bijv. "index.d 2.ts") — Next/tsc pakt die anders mee
+**/* 2.*
+
 /app/generated/prisma
 
 # Backups en archieven

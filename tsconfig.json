@@ -37,6 +37,8 @@
   ],
   "exclude": [
     "node_modules",
-    "prisma"
+    "prisma",
+    "**/* 2.ts",
+    "**/* 2.js"
   ]
 }
