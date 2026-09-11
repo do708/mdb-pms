@@ -196,10 +196,6 @@ function AanvraagFormulier(){
     const [sleepActief,setSleepActief] =
         useState(false);
 
-    const [linkVeld,setLinkVeld] =
-        useState("");
-
-
     const [versturenBezig,setVersturenBezig] =
         useState(false);
 
@@ -433,7 +429,6 @@ function AanvraagFormulier(){
                         );
                         return [...b, ...extra];
                     });
-                    setLinkVeld("");
                 } else {
                     setFout(data.error || "Afbeeldingslink toevoegen mislukt.");
                 }
@@ -1599,38 +1594,6 @@ function AanvraagFormulier(){
                                     <p className="text-xs text-gray-400 mt-2">Bezig met uploaden...</p>
                                 )
                             }
-                        </div>
-
-                        <div className="flex gap-2">
-                            <input
-                                value={linkVeld}
-                                onChange={(e)=>setLinkVeld(e.target.value)}
-                                onKeyDown={(e)=>{
-                                    if(e.key === "Enter"){
-                                        e.preventDefault();
-                                        const urls = urlsUitTekst(linkVeld);
-                                        void voegLinksToe(urls.length ? urls : [linkVeld]);
-                                    }
-                                }}
-                                placeholder="Plak hier een afbeeldingslink"
-                                className="flex-1 min-w-0 border rounded-xl p-3 text-sm"
-                                disabled={uploadBezig}
-                            />
-                            <button
-                                type="button"
-                                onClick={()=>void voegLinksToe(urlsUitTekst(linkVeld).length
-                                    ? urlsUitTekst(linkVeld)
-                                    : [linkVeld]
-                                )}
-                                disabled={uploadBezig || !linkVeld.trim()}
-                                className="
-                                    shrink-0 px-4 rounded-xl
-                                    bg-sky-600 text-white text-sm font-medium
-                                    disabled:opacity-50 disabled:cursor-not-allowed
-                                "
-                            >
-                                Link toevoegen
-                            </button>
                         </div>
 
                         {
