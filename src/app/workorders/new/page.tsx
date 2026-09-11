@@ -81,10 +81,6 @@ function NewWorkorderInner(){
         useState("");
 
 
-    const [internalNotes,setInternalNotes] =
-        useState("");
-
-
     const [pendingFiles,setPendingFiles] =
         useState<File[]>([]);
 
@@ -375,8 +371,6 @@ function NewWorkorderInner(){
                             description,
 
                             werkInstructie,
-
-                            internalNotes,
 
                             customerId,
 
@@ -1211,39 +1205,6 @@ function NewWorkorderInner(){
                                 }
 
                             </div>
-
-
-                            <label className="block">
-
-                                <span className="text-sm text-gray-600">
-
-                                    Interne opmerkingen (niet zichtbaar voor klant) —
-                                    denk aan plattegronden, foto&apos;s, bijzonderheden
-
-                                </span>
-
-                                <textarea
-
-                                    value={internalNotes}
-
-                                    onChange={(e)=>
-                                        setInternalNotes(e.target.value)
-                                    }
-
-                                    className="
-                                        w-full
-                                        border
-                                        border-amber-300
-                                        bg-amber-50
-                                        rounded-xl
-                                        p-3
-                                        mt-2
-                                        min-h-24
-                                    "
-
-                                />
-
-                            </label>
 
 
                             <div>

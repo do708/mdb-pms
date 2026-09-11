@@ -351,18 +351,36 @@ export default function AgendaEventDialog({
                 className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 sticky top-0 bg-white z-10">
-                    <h2 className="text-lg font-bold text-slate-900">
-                        {isEdit ? "Agenda-item bewerken" : "Agenda-item"}
-                    </h2>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200"
-                        aria-label="Sluiten"
-                    >
-                        <X size={18} />
-                    </button>
+                <div className="sticky top-0 z-10 border-b border-slate-100 bg-white">
+                    <div className="flex items-center justify-between gap-3 px-5 py-4">
+                        <h2 className="text-lg font-bold text-slate-900">
+                            {isEdit ? "Agenda-item bewerken" : "Agenda-item"}
+                        </h2>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200"
+                            aria-label="Sluiten"
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+                    {!isEdit && (
+                        <div className="px-5 pb-4">
+                            <Link
+                                href={newWorkorderHref}
+                                onClick={onClose}
+                                className="
+                                    inline-flex items-center justify-center
+                                    bg-[#d6007e] px-4 py-2 rounded-xl
+                                    text-sm font-bold text-white
+                                    hover:bg-[#b8006a]
+                                "
+                            >
+                                Nieuwe opdracht
+                            </Link>
+                        </div>
+                    )}
                 </div>
 
                 <div className="space-y-4 px-5 py-4">
@@ -799,7 +817,7 @@ export default function AgendaEventDialog({
                     )}
                 </div>
 
-                <div className="space-y-3 border-t border-slate-100 px-5 py-4">
+                <div className="border-t border-slate-100 px-5 py-4">
                     <div className="flex flex-wrap items-center gap-2">
                         <button
                             type="button"
@@ -841,19 +859,6 @@ export default function AgendaEventDialog({
                             </button>
                         )}
                     </div>
-
-                    {!isEdit && (
-                        <p className="text-xs text-slate-500">
-                            Of{" "}
-                            <Link
-                                href={newWorkorderHref}
-                                className="font-medium text-[#0066FF] hover:underline"
-                                onClick={onClose}
-                            >
-                                Nieuwe opdracht…
-                            </Link>
-                        </p>
-                    )}
                 </div>
             </div>
         </div>

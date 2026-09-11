@@ -1259,42 +1259,6 @@ export default function EditWorkorderPage(){
 
 
 
-                <label className="block">
-
-                    <span className="text-sm text-gray-600">
-
-                        Interne opmerkingen (niet zichtbaar voor klant)
-
-                    </span>
-
-                    <span className="block text-xs text-gray-400 mb-1">
-                        Alleen voor office/monteur. Aanvraagdetails staan in het overzicht hierboven.
-                    </span>
-
-                    <textarea
-
-                        value={internalNotes}
-
-                        onChange={(e)=>setInternalNotes(e.target.value)}
-
-                        placeholder="Optioneel…"
-
-                        className="
-                            w-full
-                            border
-                            border-amber-300
-                            bg-amber-50
-                            rounded-xl
-                            p-3
-                            mt-1
-                            min-h-24
-                        "
-
-                    />
-
-                </label>
-
-
                 <div>
 
                     <p className="text-sm text-gray-600 mb-2">
