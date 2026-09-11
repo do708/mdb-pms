@@ -425,6 +425,22 @@ export default function InstallatieRuimtesSectie({
                                     </button>
                                 ) : null}
                             </div>
+                            <label className="block">
+                                <span className="text-xs text-gray-600">
+                                    Locatie scherm{" "}
+                                    <span className="text-red-500">*</span>
+                                </span>
+                                <input
+                                    value={scherm.locatie || ""}
+                                    onChange={(e) =>
+                                        updateScherm(ruimteId, scherm.id, {
+                                            locatie: e.target.value,
+                                        })
+                                    }
+                                    placeholder="Bijv. Entree / Vergaderruimte 1"
+                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
+                                />
+                            </label>
                             {bronnen.length > 0 ? (
                                     <div className="flex flex-wrap gap-x-3 gap-y-1">
                                         {bronnen.map((bron) => (
@@ -669,23 +685,6 @@ export default function InstallatieRuimtesSectie({
                                     selectedClass={chipSelectedClassName}
                                 />
                             </div>
-
-                            <label className="block">
-                                <span className="text-xs text-gray-600">
-                                    Locatie scherm{" "}
-                                    <span className="text-red-500">*</span>
-                                </span>
-                                <input
-                                    value={scherm.locatie || ""}
-                                    onChange={(e) =>
-                                        updateScherm(ruimteId, scherm.id, {
-                                            locatie: e.target.value,
-                                        })
-                                    }
-                                    placeholder="Bijv. Entree / Vergaderruimte 1"
-                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
-                                />
-                            </label>
 
                             <div className="space-y-1.5">
                                 <span className="text-xs text-gray-600">

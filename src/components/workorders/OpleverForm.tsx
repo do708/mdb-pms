@@ -1604,6 +1604,22 @@ function KioskBlokken({
                                 )
                             }
                         </div>
+                        <label className="block">
+                            <span className="text-xs text-gray-600">
+                                Locatie{" "}
+                                <span className="text-red-500">*</span>
+                            </span>
+                            <input
+                                value={blok.omschrijving}
+                                placeholder="Bijv. Entree / Balie"
+                                onChange={(e)=>
+                                    patch(index, {
+                                        omschrijving:e.target.value
+                                    })
+                                }
+                                className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white/80"
+                            />
+                        </label>
                         {
                             !vasteStatus && (
                                 <Keuze
@@ -1688,16 +1704,6 @@ function KioskBlokken({
                                 }
                             />
                         </div>
-                        <input
-                            value={blok.omschrijving}
-                            placeholder="Locatie"
-                            onChange={(e)=>
-                                patch(index, {
-                                    omschrijving:e.target.value
-                                })
-                            }
-                            className="w-full border rounded-lg p-2 text-sm bg-white/80"
-                        />
                     </div>
                 ))
             }
@@ -3523,24 +3529,30 @@ export default function OpleverForm({
                                 <p className="font-semibold text-sm text-gray-800">
                                     Player {index + 1}
                                 </p>
-                                <input
-                                    value={item.locatie}
-                                    placeholder="Locatie"
-                                    onChange={(e)=>{
-                                        const next = [...items];
-                                        next[index] = {
-                                            ...item,
-                                            locatie:e.target.value
-                                        };
-                                        update(draft=>{
-                                            draft.installatie.mediaplayersItemsPerType = {
-                                                ...draft.installatie.mediaplayersItemsPerType,
-                                                [type]:next
+                                <label className="block">
+                                    <span className="text-xs text-gray-600">
+                                        Locatie{" "}
+                                        <span className="text-red-500">*</span>
+                                    </span>
+                                    <input
+                                        value={item.locatie}
+                                        placeholder="Bijv. Entree / Serverruimte"
+                                        onChange={(e)=>{
+                                            const next = [...items];
+                                            next[index] = {
+                                                ...item,
+                                                locatie:e.target.value
                                             };
-                                        });
-                                    }}
-                                    className="w-full border rounded-lg p-2 text-sm bg-white/80"
-                                />
+                                            update(draft=>{
+                                                draft.installatie.mediaplayersItemsPerType = {
+                                                    ...draft.installatie.mediaplayersItemsPerType,
+                                                    [type]:next
+                                                };
+                                            });
+                                        }}
+                                        className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white/80"
+                                    />
+                                </label>
                                 <HardwareKenmerkenTabel
                                     titel="Player — gegevens"
                                     merk={item.merk}

@@ -7,7 +7,10 @@ import {
     nestedCardClassName,
 } from "@/components/ui/SpecLayout";
 import {
+    AANSTURING_OPTIES,
     SCHERM_FORMATEN,
+    isAansturingMetApparaat,
+    isPlayerAansturing,
 } from "@/lib/aanvraag/installatieTypes";
 import {
     aantalPanelenVanConfiguratie,
@@ -15,6 +18,7 @@ import {
     syncVideowallPanelen,
     type VideowallPaneel,
 } from "@/lib/workorders/videowallPanelen";
+import { HardwareKenmerkenTabel } from "@/components/workorders/InstallatieRuimtesSectie";
 import { normalizeMac } from "@/types/installatieRuimtes";
 
 const VIDEOWALL_FORMATEN = [
@@ -27,6 +31,228 @@ function parseGekozenOpties(waarde: string): string[] {
         return [];
     }
     return waarde.split(",").map((s) => s.trim()).filter(Boolean);
+}
+
+function kopieerMerkTypeNaarAlleSchermen(
+    panelen: VideowallPaneel[]
+): VideowallPaneel[] {
+    const bron =
+        panelen.find((paneel) => paneel.merk.trim() || paneel.type.trim())
+        ?? panelen[0];
+    if (!bron) {
+        return panelen;
+    }
+    return panelen.map((paneel) => ({
+        ...paneel,
+        merk: bron.merk,
+        type: bron.type,
+    }));
+}
+
+function LocatieVeld({
+    value,
+    onChange,
+    placeholder,
+}: {
+    value: string;
+    onChange: (waarde: string) => void;
+    placeholder: string;
+}) {
+    return (
+        <label className="block">
+            <span className="text-xs text-gray-600">
+                Locatie
+            </span>
+            <input
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={placeholder}
+                className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+            />
+        </label>
+    );
+}
+
+function AansturingBlok({
+    velden,
+    onChange,
+    onPatch,
+}: {
+    velden: Record<string, string>;
+    onChange: (veld: string, waarde: string) => void;
+    onPatch: (patch: Record<string, string>) => void;
+}) {
+    const aansturing = velden.aansturing || "";
+    const toonApparaat = isAansturingMetApparaat(aansturing);
+
+    return (
+        <>
+            <div className="space-y-1.5">
+                <span className="text-xs text-gray-600">
+                    Aansturing{" "}
+                    <span className="text-red-500">*</span>
+                </span>
+                <select
+                    value={
+                        isPlayerAansturing(aansturing)
+                            ? "Player"
+                            : aansturing
+                    }
+                    onChange={(e) =>
+                        onPatch({
+                            aansturing: e.target.value,
+                            aansturingAnders: "",
+                        })
+                    }
+                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                >
+                    <option value="">Kies aansturing</option>
+                    {AANSTURING_OPTIES.map((optie) => (
+                        <option key={optie} value={optie}>
+                            {optie}
+                        </option>
+                    ))}
+                </select>
+                {aansturing === "Anders" ? (
+                    <input
+                        type="text"
+                        value={velden.aansturingAnders || ""}
+                        onChange={(e) =>
+                            onChange("aansturingAnders", e.target.value)
+                        }
+                        placeholder="Welke aansturing?"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                    />
+                ) : null}
+            </div>
+            {toonApparaat ? (
+                <HardwareKenmerkenTabel
+                    titel={
+                        isPlayerAansturing(aansturing)
+                            ? "Aansturing (player)"
+                            : aansturing === "Anders"
+                              ? `Aansturing (${velden.aansturingAnders || "anders"})`
+                              : `Aansturing (${aansturing})`
+                    }
+                    merk={velden.playerMerk || ""}
+                    type={velden.playerType || ""}
+                    serienummer={velden.playerSerienummer || ""}
+                    mac={velden.playerMac || ""}
+                    onChange={(patch) =>
+                        onPatch({
+                            ...(patch.merk !== undefined
+                                ? { playerMerk: patch.merk }
+                                : {}),
+                            ...(patch.type !== undefined
+                                ? { playerType: patch.type }
+                                : {}),
+                            ...(patch.serienummer !== undefined
+                                ? { playerSerienummer: patch.serienummer }
+                                : {}),
+                            ...(patch.mac !== undefined
+                                ? { playerMac: patch.mac }
+                                : {}),
+                        })
+                    }
+                />
+            ) : null}
+        </>
+    );
+}
+
+function ControllerBlok({
+    velden,
+    onChange,
+}: {
+    velden: Record<string, string>;
+    onChange: (veld: string, waarde: string) => void;
+}) {
+    return (
+        <div className="rounded-xl border border-black/10 bg-white overflow-hidden">
+            <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
+                Controller
+            </p>
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse min-w-[28rem]">
+                    <thead>
+                        <tr>
+                            <th className="border-b border-black/10 p-2 text-left font-medium text-gray-600">
+                                Merk
+                            </th>
+                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                Type
+                            </th>
+                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                Serienummer
+                            </th>
+                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                IP-adres
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={velden.controllerMerk || ""}
+                                    onChange={(e) =>
+                                        onChange(
+                                            "controllerMerk",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Merk"
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                />
+                            </td>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={velden.controllerType || ""}
+                                    onChange={(e) =>
+                                        onChange(
+                                            "controllerType",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Type"
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                />
+                            </td>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={
+                                        velden.controllerSerienummer || ""
+                                    }
+                                    onChange={(e) =>
+                                        onChange(
+                                            "controllerSerienummer",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Serienummer"
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                />
+                            </td>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={velden.controllerIp || ""}
+                                    onChange={(e) =>
+                                        onChange(
+                                            "controllerIp",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Optioneel"
+                                    spellCheck={false}
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 }
 
 interface Props {
@@ -96,6 +322,16 @@ export default function VideowallSpecificatie({
 
             {type === "LCD" ? (
                 <div className="space-y-3">
+                    <LocatieVeld
+                        value={velden.locatie || velden.opmerking || ""}
+                        onChange={(waarde) =>
+                            onPatch({
+                                locatie: waarde,
+                                opmerking: waarde,
+                            })
+                        }
+                        placeholder="Waar komt het scherm?"
+                    />
                     <label className="block">
                         <span className="text-xs text-gray-600">
                             Configuratie
@@ -216,7 +452,23 @@ export default function VideowallSpecificatie({
                     </div>
 
                     {paneelAantal > 0 ? (
-                        <div className={`${nestedCardClassName} overflow-hidden`}>
+                        <div className="space-y-2">
+                            {paneelAantal > 1 ? (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        patchPanelen(
+                                            kopieerMerkTypeNaarAlleSchermen(
+                                                panelen
+                                            )
+                                        )
+                                    }
+                                    className="text-sm font-semibold text-[#0066FF] hover:underline"
+                                >
+                                    Kopieer merk en type naar alle schermen
+                                </button>
+                            ) : null}
+                            <div className={`${nestedCardClassName} overflow-hidden`}>
                             <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                                 Schermen — gegevens
                             </p>
@@ -350,7 +602,14 @@ export default function VideowallSpecificatie({
                                 </table>
                             </div>
                         </div>
+                        </div>
                     ) : null}
+
+                    <AansturingBlok
+                        velden={velden}
+                        onChange={onChange}
+                        onPatch={onPatch}
+                    />
 
                     <div className="space-y-1.5">
                         <span className="text-xs text-gray-600 block">
@@ -382,23 +641,6 @@ export default function VideowallSpecificatie({
                             ))}
                         </div>
                     </div>
-
-                    <label className="block">
-                        <span className="text-xs text-gray-600">
-                            Locatie scherm
-                        </span>
-                        <input
-                            value={velden.locatie || velden.opmerking || ""}
-                            onChange={(e) => {
-                                onPatch({
-                                    locatie: e.target.value,
-                                    opmerking: e.target.value,
-                                });
-                            }}
-                            placeholder="Waar komt het scherm?"
-                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
-                        />
-                    </label>
 
                     <StroomInternetVragen
                         velden={velden}
@@ -415,6 +657,11 @@ export default function VideowallSpecificatie({
 
             {type === "LED" ? (
                 <div className="space-y-3">
+                    <LocatieVeld
+                        value={velden.locatie || ""}
+                        onChange={(waarde) => onChange("locatie", waarde)}
+                        placeholder="Waar komt de videowall?"
+                    />
                     <label className="block">
                         <span className="text-xs text-gray-600">
                             Afmeting
@@ -428,6 +675,62 @@ export default function VideowallSpecificatie({
                             className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
                         />
                     </label>
+
+                    <label className="block">
+                        <span className="text-xs text-gray-600">
+                            Cabinet-afmeting
+                        </span>
+                        <input
+                            value={velden.cabinetAfmeting || ""}
+                            onChange={(e) =>
+                                onChange("cabinetAfmeting", e.target.value)
+                            }
+                            placeholder="Bijv. 500 × 500 mm"
+                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                        />
+                    </label>
+
+                    <label className="block">
+                        <span className="text-xs text-gray-600">
+                            Resolutie per cabinet
+                        </span>
+                        <input
+                            value={velden.resolutiePerCabinet || ""}
+                            onChange={(e) =>
+                                onChange(
+                                    "resolutiePerCabinet",
+                                    e.target.value
+                                )
+                            }
+                            placeholder="Bijv. 128 × 128"
+                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                        />
+                    </label>
+
+                    <label className="block">
+                        <span className="text-xs text-gray-600">
+                            Aantal cabinetten
+                        </span>
+                        <input
+                            value={velden.aantalCabinetten || ""}
+                            onChange={(e) =>
+                                onChange("aantalCabinetten", e.target.value)
+                            }
+                            placeholder="Bijv. 24"
+                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                        />
+                    </label>
+
+                    <AansturingBlok
+                        velden={velden}
+                        onChange={onChange}
+                        onPatch={onPatch}
+                    />
+
+                    <ControllerBlok
+                        velden={velden}
+                        onChange={onChange}
+                    />
 
                     <div className="space-y-1.5">
                         <span className="text-xs text-gray-600 block">
@@ -459,20 +762,6 @@ export default function VideowallSpecificatie({
                             ))}
                         </div>
                     </div>
-
-                    <label className="block">
-                        <span className="text-xs text-gray-600">
-                            Locatie
-                        </span>
-                        <input
-                            value={velden.locatie || ""}
-                            onChange={(e) =>
-                                onChange("locatie", e.target.value)
-                            }
-                            placeholder="Waar komt de videowall?"
-                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
-                        />
-                    </label>
 
                     <StroomInternetVragen
                         velden={velden}

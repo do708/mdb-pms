@@ -32,6 +32,7 @@ import {
     panelenUitVelden,
     syncVideowallPanelen,
 } from "@/lib/workorders/videowallPanelen";
+import { aansturingWeergave } from "@/lib/aanvraag/installatieTypes";
 
 
 
@@ -686,13 +687,35 @@ function opleverSections(
             }
             return row(`Scherm ${index + 1}`, textAnswer(tekst));
         }).join("");
+        const aansturingTekst =
+            v.aansturing === "Anders"
+            ? (v.aansturingAnders || "Anders")
+            : aansturingWeergave(v.aansturing || "");
+        const playerTekst = [
+            v.playerMerk,
+            v.playerType,
+            v.playerSerienummer ? `S/N ${v.playerSerienummer}` : "",
+            v.playerMac ? `MAC ${v.playerMac}` : "",
+        ].filter(Boolean).join(" · ");
+        const controllerTekst = [
+            v.controllerMerk,
+            v.controllerType,
+            v.controllerSerienummer ? `S/N ${v.controllerSerienummer}` : "",
+            v.controllerIp ? `IP ${v.controllerIp}` : "",
+        ].filter(Boolean).join(" · ");
         return [
             typeLabel ? row("Type videowall", textAnswer(typeLabel)) : "",
+            (v.locatie || v.opmerking) ? row("Locatie", textAnswer(v.locatie || v.opmerking)) : "",
             v.configuratie ? row("Configuratie", textAnswer(v.configuratie)) : "",
             v.afmeting ? row("Afmeting", textAnswer(v.afmeting)) : "",
+            v.cabinetAfmeting ? row("Cabinet-afmeting", textAnswer(v.cabinetAfmeting)) : "",
+            v.resolutiePerCabinet ? row("Resolutie per cabinet", textAnswer(v.resolutiePerCabinet)) : "",
+            v.aantalCabinetten ? row("Aantal cabinetten", textAnswer(v.aantalCabinetten)) : "",
             formaat ? row("Formaat", textAnswer(formaat)) : "",
+            aansturingTekst ? row("Aansturing", textAnswer(aansturingTekst)) : "",
+            playerTekst ? row("Aansturing (apparaat)", textAnswer(playerTekst)) : "",
+            controllerTekst ? row("Controller", textAnswer(controllerTekst)) : "",
             v.orientatie ? row("Oriëntatie", textAnswer(v.orientatie)) : "",
-            (v.locatie || v.opmerking) ? row("Locatie", textAnswer(v.locatie || v.opmerking)) : "",
             v.stroom ? row("Stroom binnen 3 meter?", textAnswer(v.stroom)) : "",
             v.internet ? row("Internet binnen 3 meter?", textAnswer(v.internet)) : "",
             paneelRows
