@@ -16,6 +16,10 @@ import {
     normalizeMac,
     normalizeP25WandTraject,
 } from "@/types/installatieRuimtes";
+import {
+    isOpleverWerkzaamheid,
+    type OpleverWerkzaamheid,
+} from "@/lib/workorders/opleverModules";
 
 export interface MateriaalStuk {
     merk:string;
@@ -161,6 +165,7 @@ export interface OpleverData {
         videowallAantal:string;
         videowallOrientatie:"" | "Landscape" | "Portrait";
         videowallVelden:Record<string,string>;
+        videowallPerType:Partial<Record<OpleverWerkzaamheid, Record<string,string>>>;
 
         kiosk:boolean | null;
         kioskStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
@@ -170,6 +175,7 @@ export interface OpleverData {
 
         mediaplayers:"" | "Geïnstalleerd" | "Gedemonteerd";
         aantalMediaplayers:string;
+        mediaplayersPerType:Partial<Record<OpleverWerkzaamheid, string>>;
 
         audio:boolean | null;
         audioStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
@@ -184,6 +190,7 @@ export interface OpleverData {
         audioSpelerItems:MateriaalStuk[];
         audioVersterkerItems:MateriaalStuk[];
         audioVolumeregelaarItems:MateriaalStuk[];
+        audioPerType:Partial<Record<OpleverWerkzaamheid, AudioTypeBlok>>;
 
         isProject:boolean | null;
         projectNummer:string;
@@ -376,8 +383,20 @@ export interface HardwareRegel {
 
 export interface KioskBlok {
     status:"" | "Geïnstalleerd" | "Gedemonteerd";
+    soort?:OpleverWerkzaamheid;
     omschrijving:string;
     aantal:string;
+}
+
+
+export interface AudioTypeBlok {
+    speler:string;
+    versterker:string;
+    volumeregelaar:string;
+    speakers:string;
+    spelerItems:MateriaalStuk[];
+    versterkerItems:MateriaalStuk[];
+    volumeregelaarItems:MateriaalStuk[];
 }
 
 
@@ -386,6 +405,19 @@ export function emptyKioskBlok():KioskBlok {
         status:"",
         omschrijving:"",
         aantal:""
+    };
+}
+
+
+export function emptyAudioTypeBlok():AudioTypeBlok {
+    return {
+        speler:"",
+        versterker:"",
+        volumeregelaar:"",
+        speakers:"",
+        spelerItems:[],
+        versterkerItems:[],
+        volumeregelaarItems:[]
     };
 }
 
@@ -462,6 +494,7 @@ export function emptyOpleverData():OpleverData {
             videowallAantal:"",
             videowallOrientatie:"",
             videowallVelden:{},
+            videowallPerType:{},
             kiosk:null,
             kioskStatus:"",
             kioskOmschrijving:"",
@@ -469,6 +502,7 @@ export function emptyOpleverData():OpleverData {
             kioskBlokken:[],
             mediaplayers:"",
             aantalMediaplayers:"",
+            mediaplayersPerType:{},
             audio:null,
             audioStatus:"",
             audioSpeler:"",
@@ -482,6 +516,7 @@ export function emptyOpleverData():OpleverData {
             audioSpelerItems:[],
             audioVersterkerItems:[],
             audioVolumeregelaarItems:[],
+            audioPerType:{},
             isProject:null,
             projectNummer:"",
             opmerkingen:""
@@ -638,6 +673,105 @@ export function emptyOpleverData():OpleverData {
 }
 
 
+
+
+function asStringRecord(value:unknown):Record<string,string> {
+    if(!value || typeof value !== "object"){
+        return {};
+    }
+
+    return Object.fromEntries(
+        Object.entries(value as Record<string,unknown>)
+            .filter(([, v])=>typeof v === "string")
+    ) as Record<string,string>;
+}
+
+
+function mergeVideowallPerType(
+    raw:unknown
+):Partial<Record<OpleverWerkzaamheid, Record<string,string>>> {
+    if(!raw || typeof raw !== "object"){
+        return {};
+    }
+
+    const next:Partial<Record<OpleverWerkzaamheid, Record<string,string>>> = {};
+
+    for(const [key, value] of Object.entries(raw as Record<string,unknown>)){
+        if(isOpleverWerkzaamheid(key)){
+            next[key] = asStringRecord(value);
+        }
+    }
+
+    return next;
+}
+
+
+function mergeMediaplayersPerType(
+    raw:unknown
+):Partial<Record<OpleverWerkzaamheid, string>> {
+    if(!raw || typeof raw !== "object"){
+        return {};
+    }
+
+    const next:Partial<Record<OpleverWerkzaamheid, string>> = {};
+
+    for(const [key, value] of Object.entries(raw as Record<string,unknown>)){
+        if(isOpleverWerkzaamheid(key) && typeof value === "string"){
+            next[key] = value;
+        }
+    }
+
+    return next;
+}
+
+
+function mergeAudioTypeBlok(raw:unknown):AudioTypeBlok {
+    const empty = emptyAudioTypeBlok();
+
+    if(!raw || typeof raw !== "object"){
+        return empty;
+    }
+
+    const data = raw as Partial<AudioTypeBlok>;
+
+    return {
+        speler: typeof data.speler === "string" ? data.speler : "",
+        versterker: typeof data.versterker === "string" ? data.versterker : "",
+        volumeregelaar:
+            typeof data.volumeregelaar === "string" ? data.volumeregelaar : "",
+        speakers: typeof data.speakers === "string" ? data.speakers : "",
+        spelerItems: mergeItemsMetSn(data.spelerItems, parseAantal(data.speler), []),
+        versterkerItems: mergeItemsMetSn(
+            data.versterkerItems,
+            parseAantal(data.versterker),
+            []
+        ),
+        volumeregelaarItems: mergeItemsMetSn(
+            data.volumeregelaarItems,
+            parseAantal(data.volumeregelaar),
+            []
+        )
+    };
+}
+
+
+function mergeAudioPerType(
+    raw:unknown
+):Partial<Record<OpleverWerkzaamheid, AudioTypeBlok>> {
+    if(!raw || typeof raw !== "object"){
+        return {};
+    }
+
+    const next:Partial<Record<OpleverWerkzaamheid, AudioTypeBlok>> = {};
+
+    for(const [key, value] of Object.entries(raw as Record<string,unknown>)){
+        if(isOpleverWerkzaamheid(key)){
+            next[key] = mergeAudioTypeBlok(value);
+        }
+    }
+
+    return next;
+}
 
 
 // Bestaand (deels ingevuld of ouder) formData veilig samenvoegen
@@ -799,11 +933,25 @@ export function mergeOpleverData(
                 data.installatie.kioskBlokken.map(
                     (blok:Partial<KioskBlok>)=>({
                         ...emptyKioskBlok(),
-                        ...blok
+                        ...blok,
+                        soort: isOpleverWerkzaamheid(blok.soort)
+                            ? blok.soort
+                            : undefined
                     })
                 )
                 :
                 [],
+
+            videowallPerType:
+                mergeVideowallPerType(data.installatie?.videowallPerType),
+
+            mediaplayersPerType:
+                mergeMediaplayersPerType(
+                    data.installatie?.mediaplayersPerType
+                ),
+
+            audioPerType:
+                mergeAudioPerType(data.installatie?.audioPerType),
 
             videowallVelden:
                 data.installatie?.videowallVelden &&

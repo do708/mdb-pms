@@ -11,7 +11,9 @@ import {
     SchermBlok,
     emptyExtraKosten,
     emptySchermBlok,
+    emptyAudioTypeBlok,
     emptyKioskBlok,
+    AudioTypeBlok,
     KioskBlok,
     mergeOpleverData,
     enforceVoorrijtariefTravelRules,
@@ -30,17 +32,23 @@ import {
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
-import { normalizeMac, emptyExtra } from "@/types/installatieRuimtes";
+import { normalizeMac, emptyExtra, emptyRuimte } from "@/types/installatieRuimtes";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import {
+    actieveWerkzaamheden,
+    actieVanWerkzaamheid,
+    fallbackWerkzaamheid,
     heeftGroep,
     heeftModule,
-    kioskStatusVanModules,
+    installatieStatusVanWerkzaamheid,
+    isOpleverWerkzaamheid,
     modulesVanLegacyForm,
+    resolvedWerkzaamheid,
     toonChecklist,
     toonInstallatie,
-    werkzaamhedenHint,
+    vakTitel,
     type OpleverModule,
+    type OpleverWerkzaamheid,
 } from "@/lib/workorders/opleverModules";
 
 
@@ -727,6 +735,86 @@ function MateriaalStukkenOnderAantal({
 }
 
 
+function AudioVakInhoud({
+    blok,
+    onChange
+}:{
+    blok:AudioTypeBlok;
+    onChange:(next:AudioTypeBlok)=>void;
+}){
+    function patch(next:Partial<AudioTypeBlok>){
+        onChange({
+            ...blok,
+            ...next
+        });
+    }
+
+    return (
+        <div className="rounded-xl bg-white p-3 space-y-3 border border-rose-100">
+            <AudioRegel
+                label="Audiospeler"
+                value={blok.speler}
+                onChange={(v)=>
+                    patch({
+                        speler:v,
+                        spelerItems:resizeMateriaalItems(
+                            blok.spelerItems,
+                            parseAantal(v)
+                        )
+                    })
+                }
+            />
+            <MateriaalStukkenOnderAantal
+                aantal={blok.speler}
+                items={blok.spelerItems}
+                onChange={(items)=>patch({ spelerItems:items })}
+            />
+            <AudioRegel
+                label="Versterker"
+                value={blok.versterker}
+                onChange={(v)=>
+                    patch({
+                        versterker:v,
+                        versterkerItems:resizeMateriaalItems(
+                            blok.versterkerItems,
+                            parseAantal(v)
+                        )
+                    })
+                }
+            />
+            <MateriaalStukkenOnderAantal
+                aantal={blok.versterker}
+                items={blok.versterkerItems}
+                onChange={(items)=>patch({ versterkerItems:items })}
+            />
+            <AudioRegel
+                label="Volumeregelaar"
+                value={blok.volumeregelaar}
+                onChange={(v)=>
+                    patch({
+                        volumeregelaar:v,
+                        volumeregelaarItems:resizeMateriaalItems(
+                            blok.volumeregelaarItems,
+                            parseAantal(v)
+                        )
+                    })
+                }
+            />
+            <MateriaalStukkenOnderAantal
+                aantal={blok.volumeregelaar}
+                items={blok.volumeregelaarItems}
+                onChange={(items)=>patch({ volumeregelaarItems:items })}
+            />
+            <AudioRegel
+                label="Speakers"
+                value={blok.speakers}
+                onChange={(v)=>patch({ speakers:v })}
+            />
+        </div>
+    );
+}
+
+
 function eersteSwitchSn(d:OpleverData):string {
     return (
         [
@@ -991,6 +1079,162 @@ function patchVideowallVelden(
             ? patch.orientatie
             : "";
     }
+}
+
+function kioskSoortVanBlok(
+    blok:KioskBlok,
+    actieve:readonly OpleverWerkzaamheid[]
+):OpleverWerkzaamheid {
+    if(isOpleverWerkzaamheid(blok.soort)){
+        return resolvedWerkzaamheid(blok.soort, actieve);
+    }
+
+    if(blok.status === "Gedemonteerd"){
+        return resolvedWerkzaamheid("demontage", actieve);
+    }
+
+    if(blok.status === "Geïnstalleerd"){
+        const voorkeur =
+            actieve.includes("montage")
+            ?
+            "montage"
+            :
+            "hermontage";
+        return resolvedWerkzaamheid(voorkeur, actieve);
+    }
+
+    return fallbackWerkzaamheid(actieve);
+}
+
+function videowallVeldenVoorType(
+    i:OpleverData["installatie"],
+    type:OpleverWerkzaamheid,
+    actieve:readonly OpleverWerkzaamheid[]
+):Record<string,string> {
+    const stored = i.videowallPerType?.[type];
+    if(stored && Object.keys(stored).length > 0){
+        return stored;
+    }
+
+    const legacy = videowallVeldenVan(i);
+    const heeftLegacy = Object.values(legacy).some((v)=>String(v || "").trim());
+    if(!heeftLegacy){
+        return {};
+    }
+
+    const legacyType =
+        i.videowallStatus === "Gedemonteerd"
+        ?
+        "demontage"
+        :
+        i.videowallStatus === "Geïnstalleerd"
+        ?
+        (actieve.includes("montage") ? "montage" : "hermontage")
+        :
+        fallbackWerkzaamheid(actieve);
+
+    if(resolvedWerkzaamheid(legacyType, actieve) !== type){
+        return {};
+    }
+
+    return legacy;
+}
+
+function audioBlokVanLegacy(
+    i:OpleverData["installatie"]
+):AudioTypeBlok {
+    return {
+        speler:i.audioSpeler,
+        versterker:i.audioVersterker,
+        volumeregelaar:i.audioVolumeregelaar,
+        speakers:i.audioSpeakers,
+        spelerItems:i.audioSpelerItems,
+        versterkerItems:i.audioVersterkerItems,
+        volumeregelaarItems:i.audioVolumeregelaarItems
+    };
+}
+
+function schrijfAudioBlokNaarLegacy(
+    draft:OpleverData,
+    blok:AudioTypeBlok
+){
+    draft.installatie.audioSpeler = blok.speler;
+    draft.installatie.audioVersterker = blok.versterker;
+    draft.installatie.audioVolumeregelaar = blok.volumeregelaar;
+    draft.installatie.audioSpeakers = blok.speakers;
+    draft.installatie.audioSpelerItems = blok.spelerItems;
+    draft.installatie.audioVersterkerItems = blok.versterkerItems;
+    draft.installatie.audioVolumeregelaarItems = blok.volumeregelaarItems;
+}
+
+function audioVoorType(
+    i:OpleverData["installatie"],
+    type:OpleverWerkzaamheid,
+    actieve:readonly OpleverWerkzaamheid[]
+):AudioTypeBlok {
+    const stored = i.audioPerType?.[type];
+    if(stored){
+        return {
+            ...emptyAudioTypeBlok(),
+            ...stored
+        };
+    }
+
+    const heeftLegacy =
+        Boolean(i.audioSpeler || i.audioVersterker || i.audioVolumeregelaar || i.audioSpeakers);
+
+    if(!heeftLegacy){
+        return emptyAudioTypeBlok();
+    }
+
+    const legacyType =
+        i.audioStatus === "Gedemonteerd"
+        ?
+        "demontage"
+        :
+        i.audioStatus === "Geïnstalleerd"
+        ?
+        (actieve.includes("montage") ? "montage" : "hermontage")
+        :
+        fallbackWerkzaamheid(actieve);
+
+    if(resolvedWerkzaamheid(legacyType, actieve) !== type){
+        return emptyAudioTypeBlok();
+    }
+
+    return audioBlokVanLegacy(i);
+}
+
+function aantalMediaplayersVoorType(
+    i:OpleverData["installatie"],
+    type:OpleverWerkzaamheid,
+    actieve:readonly OpleverWerkzaamheid[]
+):string {
+    const stored = i.mediaplayersPerType?.[type];
+    if(typeof stored === "string" && stored.trim()){
+        return stored;
+    }
+
+    if(!(i.aantalMediaplayers || "").trim()){
+        return stored ?? "";
+    }
+
+    const legacyType =
+        i.mediaplayers === "Gedemonteerd"
+        ?
+        "demontage"
+        :
+        i.mediaplayers === "Geïnstalleerd"
+        ?
+        (actieve.includes("montage") ? "montage" : "hermontage")
+        :
+        fallbackWerkzaamheid(actieve);
+
+    if(resolvedWerkzaamheid(legacyType, actieve) !== type){
+        return "";
+    }
+
+    return i.aantalMediaplayers;
 }
 
 function ModuleKaart({
@@ -1767,29 +2011,65 @@ export default function OpleverForm({
                 );
 
             if(heeftGroep(startModules, "kiosk")){
-                const kioskStatus =
-                    kioskStatusVanModules(startModules);
+                const kioskTypes =
+                    actieveWerkzaamheden("kiosk", startModules);
 
                 merged.installatie.kiosk = true;
 
-                if(kioskStatus){
-                    merged.installatie.kioskStatus = kioskStatus;
+                if(kioskTypes.length === 1){
+                    merged.installatie.kioskStatus =
+                        installatieStatusVanWerkzaamheid(kioskTypes[0]);
                 }
 
                 if(merged.installatie.kioskBlokken.length === 0){
-                    merged.installatie.kioskBlokken = [
-                        {
+                    merged.installatie.kioskBlokken =
+                        kioskTypes.map((type)=>({
                             ...emptyKioskBlok(),
-                            status:kioskStatus
-                        }
-                    ];
-                }else if(kioskStatus){
+                            soort:type,
+                            status:installatieStatusVanWerkzaamheid(type)
+                        }));
+                }else if(kioskTypes.length === 1){
                     merged.installatie.kioskBlokken =
                         merged.installatie.kioskBlokken.map((blok)=>({
                             ...blok,
-                            status:kioskStatus
+                            soort:kioskTypes[0],
+                            status:installatieStatusVanWerkzaamheid(kioskTypes[0])
                         }));
                 }
+            }
+
+            const schermenTypes =
+                actieveWerkzaamheden("schermen", startModules);
+
+            if(schermenTypes.length > 0){
+                const fallback =
+                    fallbackWerkzaamheid(schermenTypes);
+                let ruimtes =
+                    merged.installatie.ruimtes.map((ruimte)=>(
+                        ruimte.actie
+                        ?
+                        ruimte
+                        :
+                        {
+                            ...ruimte,
+                            actie:actieVanWerkzaamheid(fallback)
+                        }
+                    ));
+
+                for(const type of schermenTypes){
+                    const actie = actieVanWerkzaamheid(type);
+                    if(!ruimtes.some((ruimte)=>ruimte.actie === actie)){
+                        ruimtes = [
+                            ...ruimtes,
+                            {
+                                ...emptyRuimte(),
+                                actie
+                            }
+                        ];
+                    }
+                }
+
+                merged.installatie.ruimtes = ruimtes;
             }
 
             return merged;
@@ -2006,78 +2286,166 @@ export default function OpleverForm({
     const toonExtraKosten =
         heeftModule(modules, "extra_kosten");
 
-    const schermenHint =
-        werkzaamhedenHint("schermen", modules);
+    const schermenTypes =
+        actieveWerkzaamheden("schermen", modules);
 
-    const videowallHint =
-        werkzaamhedenHint("videowall", modules);
+    const videowallTypes =
+        actieveWerkzaamheden("videowall", modules);
 
-    const kioskHint =
-        werkzaamhedenHint("kiosk", modules);
+    const kioskTypes =
+        actieveWerkzaamheden("kiosk", modules);
 
-    const kioskVasteStatus =
-        kioskStatusVanModules(modules);
+    const mediaplayersTypes =
+        actieveWerkzaamheden("mediaplayers", modules);
 
-    const mediaplayersHint =
-        werkzaamhedenHint("mediaplayers", modules);
-
-    const audioHint =
-        werkzaamhedenHint("audio", modules);
+    const audioTypes =
+        actieveWerkzaamheden("audio", modules);
 
     useEffect(()=>{
-        if(!heeftGroep(modules, "kiosk")){
-            return;
-        }
-
-        const moetOpen = data.installatie.kiosk !== true;
-        const moetBlok =
-            data.installatie.kioskBlokken.length === 0;
-        const moetStatus =
-            Boolean(kioskVasteStatus)
+        const kioskMoetOpen =
+            kioskTypes.length > 0
             &&
-            (
-                data.installatie.kioskStatus !== kioskVasteStatus
-                ||
-                data.installatie.kioskBlokken.some(
-                    (blok)=>blok.status !== kioskVasteStatus
+            data.installatie.kiosk !== true;
+
+        const kioskMoetBlok =
+            kioskTypes.length > 0
+            &&
+            kioskTypes.some((type)=>
+                !data.installatie.kioskBlokken.some((blok)=>
+                    kioskSoortVanBlok(blok, kioskTypes) === type
                 )
             );
 
-        if(!moetOpen && !moetBlok && !moetStatus){
+        const kioskEnkeleStatus =
+            kioskTypes.length === 1
+            ?
+            installatieStatusVanWerkzaamheid(kioskTypes[0])
+            :
+            "";
+
+        const kioskMoetStatus =
+            Boolean(kioskEnkeleStatus)
+            &&
+            (
+                data.installatie.kioskStatus !== kioskEnkeleStatus
+                ||
+                data.installatie.kioskBlokken.some((blok)=>
+                    blok.status !== kioskEnkeleStatus
+                    ||
+                    blok.soort !== kioskTypes[0]
+                )
+            );
+
+        const fallbackScherm =
+            schermenTypes.length > 0
+            ?
+            fallbackWerkzaamheid(schermenTypes)
+            :
+            "montage";
+
+        const schermenMoetenTag =
+            schermenTypes.length > 0
+            &&
+            data.installatie.ruimtes.some((ruimte)=>!ruimte.actie);
+
+        const schermenMoetenVak =
+            schermenTypes.some((type)=>{
+                const actie = actieVanWerkzaamheid(type);
+                return !data.installatie.ruimtes.some((ruimte)=>
+                    ruimte.actie
+                    ?
+                    ruimte.actie === actie
+                    :
+                    actieVanWerkzaamheid(fallbackScherm) === actie
+                );
+            });
+
+        if(
+            !kioskMoetOpen
+            &&
+            !kioskMoetBlok
+            &&
+            !kioskMoetStatus
+            &&
+            !schermenMoetenTag
+            &&
+            !schermenMoetenVak
+        ){
             return;
         }
 
         update((draft)=>{
-            draft.installatie.kiosk = true;
+            if(kioskTypes.length > 0){
+                draft.installatie.kiosk = true;
 
-            if(kioskVasteStatus){
-                draft.installatie.kioskStatus = kioskVasteStatus;
-            }
+                if(kioskEnkeleStatus){
+                    draft.installatie.kioskStatus = kioskEnkeleStatus;
+                    draft.installatie.kioskBlokken =
+                        draft.installatie.kioskBlokken.map((blok)=>({
+                            ...blok,
+                            soort:kioskTypes[0],
+                            status:kioskEnkeleStatus
+                        }));
+                }
 
-            if(draft.installatie.kioskBlokken.length === 0){
-                draft.installatie.kioskBlokken = [
-                    {
+                const bestaande = draft.installatie.kioskBlokken;
+                const extra = kioskTypes
+                    .filter((type)=>
+                        !bestaande.some((blok)=>
+                            kioskSoortVanBlok(blok, kioskTypes) === type
+                        )
+                    )
+                    .map((type)=>({
                         ...emptyKioskBlok(),
-                        status:kioskVasteStatus
-                    }
-                ];
-                return;
+                        soort:type,
+                        status:installatieStatusVanWerkzaamheid(type)
+                    }));
+
+                if(extra.length > 0){
+                    draft.installatie.kioskBlokken = [
+                        ...bestaande,
+                        ...extra
+                    ];
+                }
             }
 
-            if(kioskVasteStatus){
-                draft.installatie.kioskBlokken =
-                    draft.installatie.kioskBlokken.map((blok)=>({
-                        ...blok,
-                        status:kioskVasteStatus
-                    }));
+            if(schermenTypes.length > 0){
+                let ruimtes =
+                    draft.installatie.ruimtes.map((ruimte)=>(
+                        ruimte.actie
+                        ?
+                        ruimte
+                        :
+                        {
+                            ...ruimte,
+                            actie:actieVanWerkzaamheid(fallbackScherm)
+                        }
+                    ));
+
+                for(const type of schermenTypes){
+                    const actie = actieVanWerkzaamheid(type);
+                    if(!ruimtes.some((ruimte)=>ruimte.actie === actie)){
+                        ruimtes = [
+                            ...ruimtes,
+                            {
+                                ...emptyRuimte(),
+                                actie
+                            }
+                        ];
+                    }
+                }
+
+                draft.installatie.ruimtes = ruimtes;
             }
         });
     }, [
         modules,
-        kioskVasteStatus,
+        kioskTypes,
+        schermenTypes,
         data.installatie.kiosk,
         data.installatie.kioskStatus,
-        data.installatie.kioskBlokken
+        data.installatie.kioskBlokken,
+        data.installatie.ruimtes
     ]);
 
     async function uploadSchermFoto(file:File):Promise<{ url:string; name:string } | null>{
@@ -2772,19 +3140,16 @@ export default function OpleverForm({
                 <div className="space-y-4 mb-3">
 
                     {
-                    heeftGroep(modules, "schermen") && (
+                    schermenTypes.map((type)=>(
                     <ModuleKaart
-                        titel={
-                            schermenHint
-                            ?
-                            `Schermen (${schermenHint})`
-                            :
-                            "Schermen"
-                        }
+                        key={`schermen-${type}`}
+                        titel={vakTitel("Schermen", type)}
                         kleur="bg-sky-50 border-sky-200"
                     >
                         <InstallatieRuimtesSectie
                             ruimtes={i.ruimtes}
+                            werkzaamheid={type}
+                            actieveWerkzaamheden={schermenTypes}
                             onRuimtesChange={(ruimtes)=>
                                 update(draft=>{
                                     draft.installatie.ruimtes = ruimtes;
@@ -2806,242 +3171,252 @@ export default function OpleverForm({
                             uploadFile={uploadSchermFoto}
                         />
                     </ModuleKaart>
-                    )
+                    ))
                     }
 
                     {
-                    heeftGroep(modules, "videowall") && (
+                    videowallTypes.map((type)=>{
+                        const velden =
+                            videowallVeldenVoorType(i, type, videowallTypes);
+                        const status =
+                            installatieStatusVanWerkzaamheid(type);
+
+                        return (
                     <ModuleKaart
-                        titel={
-                            videowallHint
-                            ?
-                            `Videowall (${videowallHint})`
-                            :
-                            "Videowall"
-                        }
+                        key={`videowall-${type}`}
+                        titel={vakTitel("Videowall", type)}
                         kleur="bg-emerald-50 border-emerald-200"
                     >
                         <div className="rounded-xl bg-white p-3 space-y-3 border border-emerald-100">
                         <VideowallSpecificatie
-                            velden={videowallVeldenVan(i)}
+                            velden={velden}
                             onChange={(veld, waarde)=>
                                 update(draft=>{
+                                    const huidige =
+                                        videowallVeldenVoorType(
+                                            draft.installatie,
+                                            type,
+                                            videowallTypes
+                                        );
+                                    const next = {
+                                        ...huidige,
+                                        [veld]:waarde
+                                    };
                                     draft.installatie.videowall = true;
-                                    patchVideowallVelden(draft, { [veld]: waarde });
+                                    draft.installatie.videowallStatus = status;
+                                    draft.installatie.videowallPerType = {
+                                        ...draft.installatie.videowallPerType,
+                                        [type]:next
+                                    };
+                                    if(
+                                        videowallTypes.length === 1
+                                        ||
+                                        type === fallbackWerkzaamheid(videowallTypes)
+                                    ){
+                                        patchVideowallVelden(draft, { [veld]:waarde });
+                                    }
                                 })
                             }
                             onPatch={(patch)=>
                                 update(draft=>{
+                                    const huidige =
+                                        videowallVeldenVoorType(
+                                            draft.installatie,
+                                            type,
+                                            videowallTypes
+                                        );
+                                    const next = {
+                                        ...huidige,
+                                        ...patch
+                                    };
                                     draft.installatie.videowall = true;
-                                    patchVideowallVelden(draft, patch);
+                                    draft.installatie.videowallStatus = status;
+                                    draft.installatie.videowallPerType = {
+                                        ...draft.installatie.videowallPerType,
+                                        [type]:next
+                                    };
+                                    if(
+                                        videowallTypes.length === 1
+                                        ||
+                                        type === fallbackWerkzaamheid(videowallTypes)
+                                    ){
+                                        patchVideowallVelden(draft, patch);
+                                    }
                                 })
                             }
                             onToggleFormaat={(optie)=>
                                 update(draft=>{
-                                    draft.installatie.videowall = true;
-                                    const huidige = parseGekozenOpties(
-                                        videowallVeldenVan(draft.installatie).formaat || ""
+                                    const huidige =
+                                        videowallVeldenVoorType(
+                                            draft.installatie,
+                                            type,
+                                            videowallTypes
+                                        );
+                                    const gekozen = parseGekozenOpties(
+                                        huidige.formaat || ""
                                     );
-                                    const volgende = huidige.includes(optie)
-                                        ? huidige.filter((o)=>o !== optie)
-                                        : [...huidige, optie];
-                                    patchVideowallVelden(draft, {
+                                    const volgende = gekozen.includes(optie)
+                                        ? gekozen.filter((o)=>o !== optie)
+                                        : [...gekozen, optie];
+                                    const patch = {
                                         formaat: volgende.join(", ")
-                                    });
+                                    };
+                                    const next = {
+                                        ...huidige,
+                                        ...patch
+                                    };
+                                    draft.installatie.videowall = true;
+                                    draft.installatie.videowallStatus = status;
+                                    draft.installatie.videowallPerType = {
+                                        ...draft.installatie.videowallPerType,
+                                        [type]:next
+                                    };
+                                    if(
+                                        videowallTypes.length === 1
+                                        ||
+                                        type === fallbackWerkzaamheid(videowallTypes)
+                                    ){
+                                        patchVideowallVelden(draft, patch);
+                                    }
                                 })
                             }
                             formaatAlsSelect
                         />
                         </div>
                     </ModuleKaart>
-                    )
+                        );
+                    })
                     }
 
                     {
-                    heeftGroep(modules, "kiosk") && (
+                    kioskTypes.map((type)=>{
+                        const status =
+                            installatieStatusVanWerkzaamheid(type);
+                        const blokken =
+                            i.kioskBlokken.filter((blok)=>
+                                kioskSoortVanBlok(blok, kioskTypes) === type
+                            );
+
+                        return (
                     <ModuleKaart
-                        titel={
-                            kioskHint
-                            ?
-                            `Kiosk (${kioskHint})`
-                            :
-                            "Kiosk"
-                        }
+                        key={`kiosk-${type}`}
+                        titel={vakTitel("Kiosk", type)}
                         kleur="bg-amber-50 border-amber-200"
                     >
                             <KioskBlokken
-                                blokken={i.kioskBlokken}
-                                vasteStatus={kioskVasteStatus || undefined}
-                                onChange={(blokken)=>
+                                blokken={blokken}
+                                vasteStatus={status}
+                                onChange={(volgende)=>
                                     update(draft=>{
+                                        const rest =
+                                            draft.installatie.kioskBlokken.filter(
+                                                (blok)=>
+                                                    kioskSoortVanBlok(
+                                                        blok,
+                                                        kioskTypes
+                                                    ) !== type
+                                            );
                                         draft.installatie.kiosk = true;
-                                        draft.installatie.kioskBlokken =
-                                            kioskVasteStatus
-                                            ?
-                                            blokken.map((blok)=>({
+                                        if(kioskTypes.length === 1){
+                                            draft.installatie.kioskStatus = status;
+                                        }
+                                        draft.installatie.kioskBlokken = [
+                                            ...rest,
+                                            ...volgende.map((blok)=>({
                                                 ...blok,
-                                                status:kioskVasteStatus
+                                                soort:type,
+                                                status
                                             }))
-                                            :
-                                            blokken;
+                                        ];
                                     })
                                 }
                             />
                     </ModuleKaart>
-                    )
+                        );
+                    })
                     }
 
                     {
-                    heeftGroep(modules, "mediaplayers") && (
+                    mediaplayersTypes.map((type)=>{
+                        const status =
+                            installatieStatusVanWerkzaamheid(type);
+                        const aantal =
+                            aantalMediaplayersVoorType(
+                                i,
+                                type,
+                                mediaplayersTypes
+                            );
+
+                        return (
                     <ModuleKaart
-                        titel={
-                            mediaplayersHint
-                            ?
-                            `Mediaplayers (${mediaplayersHint})`
-                            :
-                            "Mediaplayers"
-                        }
+                        key={`mediaplayers-${type}`}
+                        titel={vakTitel("Mediaplayers", type)}
                         kleur="bg-violet-50 border-violet-200"
                     >
-                        <div className="flex items-center gap-2">
-                            <div className="flex-1 min-w-0">
-                                <Keuze
-                                    value={i.mediaplayers}
-                                    options={["Geïnstalleerd", "Gedemonteerd"]}
-                                    onChange={(v)=>
-                                        update(draft=>{
-                                            draft.installatie.mediaplayers =
-                                                v as typeof i.mediaplayers;
-                                        })
+                        <input
+                            inputMode="numeric"
+                            value={aantal}
+                            placeholder="Aantal"
+                            onChange={(e)=>
+                                update(draft=>{
+                                    const value = e.target.value;
+                                    draft.installatie.mediaplayersPerType = {
+                                        ...draft.installatie.mediaplayersPerType,
+                                        [type]:value
+                                    };
+                                    if(
+                                        mediaplayersTypes.length === 1
+                                        ||
+                                        type === fallbackWerkzaamheid(mediaplayersTypes)
+                                    ){
+                                        draft.installatie.mediaplayers = status;
+                                        draft.installatie.aantalMediaplayers = value;
                                     }
-                                />
-                            </div>
-                            <input
-                                inputMode="numeric"
-                                value={i.aantalMediaplayers}
-                                placeholder="Aantal"
-                                onChange={(e)=>
-                                    update(draft=>{
-                                        draft.installatie.aantalMediaplayers =
-                                            e.target.value;
-                                    })
-                                }
-                                className="w-20 shrink-0 border rounded-lg p-2 text-sm bg-white"
-                            />
-                        </div>
+                                })
+                            }
+                            className="w-24 border rounded-lg p-2 text-sm bg-white"
+                        />
                     </ModuleKaart>
-                    )
+                        );
+                    })
                     }
 
                     {
-                    heeftGroep(modules, "audio") && (
+                    audioTypes.map((type)=>{
+                        const status =
+                            installatieStatusVanWerkzaamheid(type);
+                        const blok =
+                            audioVoorType(i, type, audioTypes);
+
+                        return (
                     <ModuleKaart
-                        titel={
-                            audioHint
-                            ?
-                            `Audio (${audioHint})`
-                            :
-                            "Audio"
-                        }
+                        key={`audio-${type}`}
+                        titel={vakTitel("Audio", type)}
                         kleur="bg-rose-50 border-rose-200"
                     >
-                        <div className="rounded-xl bg-white p-3 space-y-3 border border-rose-100">
-                        <Keuze
-                            value={i.audioStatus}
-                            options={["Geïnstalleerd", "Gedemonteerd"]}
-                            onChange={(v)=>
+                        <AudioVakInhoud
+                            blok={blok}
+                            onChange={(next)=>
                                 update(draft=>{
                                     draft.installatie.audio = true;
-                                    draft.installatie.audioStatus =
-                                        v as typeof i.audioStatus;
+                                    draft.installatie.audioStatus = status;
+                                    draft.installatie.audioPerType = {
+                                        ...draft.installatie.audioPerType,
+                                        [type]:next
+                                    };
+                                    if(
+                                        audioTypes.length === 1
+                                        ||
+                                        type === fallbackWerkzaamheid(audioTypes)
+                                    ){
+                                        schrijfAudioBlokNaarLegacy(draft, next);
+                                    }
                                 })
                             }
                         />
-                        <AudioRegel
-                            label="Audiospeler"
-                            value={i.audioSpeler}
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.installatie.audio = true;
-                                    draft.installatie.audioSpeler = v;
-                                    draft.installatie.audioSpelerItems =
-                                        resizeMateriaalItems(
-                                            draft.installatie.audioSpelerItems,
-                                            parseAantal(v)
-                                        );
-                                })
-                            }
-                        />
-                        <MateriaalStukkenOnderAantal
-                            aantal={i.audioSpeler}
-                            items={i.audioSpelerItems}
-                            onChange={(items)=>
-                                update(draft=>{
-                                    draft.installatie.audioSpelerItems = items;
-                                })
-                            }
-                        />
-                        <AudioRegel
-                            label="Versterker"
-                            value={i.audioVersterker}
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.installatie.audio = true;
-                                    draft.installatie.audioVersterker = v;
-                                    draft.installatie.audioVersterkerItems =
-                                        resizeMateriaalItems(
-                                            draft.installatie.audioVersterkerItems,
-                                            parseAantal(v)
-                                        );
-                                })
-                            }
-                        />
-                        <MateriaalStukkenOnderAantal
-                            aantal={i.audioVersterker}
-                            items={i.audioVersterkerItems}
-                            onChange={(items)=>
-                                update(draft=>{
-                                    draft.installatie.audioVersterkerItems = items;
-                                })
-                            }
-                        />
-                        <AudioRegel
-                            label="Volumeregelaar"
-                            value={i.audioVolumeregelaar}
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.installatie.audio = true;
-                                    draft.installatie.audioVolumeregelaar = v;
-                                    draft.installatie.audioVolumeregelaarItems =
-                                        resizeMateriaalItems(
-                                            draft.installatie.audioVolumeregelaarItems,
-                                            parseAantal(v)
-                                        );
-                                })
-                            }
-                        />
-                        <MateriaalStukkenOnderAantal
-                            aantal={i.audioVolumeregelaar}
-                            items={i.audioVolumeregelaarItems}
-                            onChange={(items)=>
-                                update(draft=>{
-                                    draft.installatie.audioVolumeregelaarItems = items;
-                                })
-                            }
-                        />
-                        <AudioRegel
-                            label="Speakers"
-                            value={i.audioSpeakers}
-                            onChange={(v)=>
-                                update(draft=>{
-                                    draft.installatie.audio = true;
-                                    draft.installatie.audioSpeakers = v;
-                                })
-                            }
-                        />
-                        </div>
                     </ModuleKaart>
-                    )
+                        );
+                    })
                     }
 
                     {

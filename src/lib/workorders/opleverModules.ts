@@ -212,21 +212,125 @@ export function kioskStatusVanModules(
     return "";
 }
 
+export const OPLEVER_WERKZAAMHEDEN = [
+    { key: "montage", titel: "montage" },
+    { key: "hermontage", titel: "hermontage" },
+    { key: "demontage", titel: "gedemonteerd" },
+] as const;
+
+export type OpleverWerkzaamheid = (typeof OPLEVER_WERKZAAMHEDEN)[number]["key"];
+
+const WERKZAAMHEID_SET = new Set<string>(
+    OPLEVER_WERKZAAMHEDEN.map((item) => item.key)
+);
+
+export function isOpleverWerkzaamheid(
+    value: unknown
+): value is OpleverWerkzaamheid {
+    return typeof value === "string" && WERKZAAMHEID_SET.has(value);
+}
+
+export type OpleverInstallatieGroep =
+    | "schermen"
+    | "videowall"
+    | "kiosk"
+    | "mediaplayers"
+    | "audio";
+
+export function actieveWerkzaamheden(
+    groep: OpleverInstallatieGroep,
+    modules: readonly string[]
+): OpleverWerkzaamheid[] {
+    return OPLEVER_WERKZAAMHEDEN
+        .filter((item) => modules.includes(`${groep}_${item.key}`))
+        .map((item) => item.key);
+}
+
+export function vakTitel(
+    groepLabel: string,
+    type: OpleverWerkzaamheid
+): string {
+    const titel =
+        OPLEVER_WERKZAAMHEDEN.find((item) => item.key === type)?.titel
+        ?? type;
+    return `${groepLabel} ${titel}`;
+}
+
+export function actieVanWerkzaamheid(
+    type: OpleverWerkzaamheid
+): "nieuw" | "hergebruikt" | "gedemonteerd" {
+    if (type === "hermontage") {
+        return "hergebruikt";
+    }
+    if (type === "demontage") {
+        return "gedemonteerd";
+    }
+    return "nieuw";
+}
+
+export function werkzaamheidVanActie(
+    actie: string
+): OpleverWerkzaamheid | "" {
+    if (actie === "nieuw") {
+        return "montage";
+    }
+    if (actie === "hergebruikt") {
+        return "hermontage";
+    }
+    if (actie === "gedemonteerd") {
+        return "demontage";
+    }
+    return "";
+}
+
+export function installatieStatusVanWerkzaamheid(
+    type: OpleverWerkzaamheid
+): "Geïnstalleerd" | "Gedemonteerd" {
+    return type === "demontage" ? "Gedemonteerd" : "Geïnstalleerd";
+}
+
+export function fallbackWerkzaamheid(
+    types: readonly OpleverWerkzaamheid[]
+): OpleverWerkzaamheid {
+    if (types.includes("montage")) {
+        return "montage";
+    }
+    if (types.includes("hermontage")) {
+        return "hermontage";
+    }
+    if (types.includes("demontage")) {
+        return "demontage";
+    }
+    return "montage";
+}
+
+/** Opgeslagen type, of de enige/eerste aangevinkte als het type niet (meer) bestaat. */
+export function resolvedWerkzaamheid(
+    opgeslagen: OpleverWerkzaamheid | "",
+    actieve: readonly OpleverWerkzaamheid[]
+): OpleverWerkzaamheid {
+    if (opgeslagen && (actieve.length === 0 || actieve.includes(opgeslagen))) {
+        return opgeslagen;
+    }
+    return fallbackWerkzaamheid(actieve);
+}
+
+export function itemPastBijWerkzaamheid(
+    opgeslagen: OpleverWerkzaamheid | "",
+    type: OpleverWerkzaamheid,
+    actieve: readonly OpleverWerkzaamheid[]
+): boolean {
+    return resolvedWerkzaamheid(opgeslagen, actieve) === type;
+}
+
 export function werkzaamhedenHint(
-    groep: "schermen" | "videowall" | "kiosk" | "mediaplayers" | "audio",
+    groep: OpleverInstallatieGroep,
     modules: readonly string[]
 ): string {
-    const labels: string[] = [];
-
-    if (modules.includes(`${groep}_montage`)) {
-        labels.push("montage");
-    }
-    if (modules.includes(`${groep}_hermontage`)) {
-        labels.push("hermontage");
-    }
-    if (modules.includes(`${groep}_demontage`)) {
-        labels.push("demontage");
-    }
-
-    return labels.join(" · ");
+    return actieveWerkzaamheden(groep, modules)
+        .map((type) =>
+            OPLEVER_WERKZAAMHEDEN.find((item) => item.key === type)?.titel
+            ?? type
+        )
+        .join(" · ");
 }

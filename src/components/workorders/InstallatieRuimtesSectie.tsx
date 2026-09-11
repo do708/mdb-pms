@@ -11,6 +11,12 @@ import {
     normaliseerBevestiging,
 } from "@/lib/aanvraag/installatieTypes";
 import {
+    actieVanWerkzaamheid,
+    itemPastBijWerkzaamheid,
+    werkzaamheidVanActie,
+    type OpleverWerkzaamheid,
+} from "@/lib/workorders/opleverModules";
+import {
     InstallatieRuimte,
     InstallatieScherm,
     KABEL_TRAJECT_P25,
@@ -206,29 +212,74 @@ interface Props {
     onOpmerkingenChange?: (v: string) => void;
     showOpmerkingen?: boolean;
     uploadFile: (file: File) => Promise<{ url: string; name: string } | null>;
+    werkzaamheid?: OpleverWerkzaamheid;
+    actieveWerkzaamheden?: OpleverWerkzaamheid[];
 }
 
 export default function InstallatieRuimtesSectie({
     ruimtes,
     onRuimtesChange,
+    werkzaamheid,
+    actieveWerkzaamheden = [],
     opmerkingen = "",
     onOpmerkingenChange,
     showOpmerkingen = false,
 }: Props) {
-    const schermKaarten = ruimtes.flatMap((ruimte) =>
+    const actieve =
+        werkzaamheid
+            ? (actieveWerkzaamheden.length > 0
+                ? actieveWerkzaamheden
+                : [werkzaamheid])
+            : actieveWerkzaamheden;
+
+    const zichtbareRuimtes =
+        werkzaamheid
+            ? ruimtes.filter((ruimte) =>
+                itemPastBijWerkzaamheid(
+                    werkzaamheidVanActie(ruimte.actie),
+                    werkzaamheid,
+                    actieve
+                )
+            )
+            : ruimtes;
+
+    function commit(nextVisible: InstallatieRuimte[]) {
+        if (!werkzaamheid) {
+            onRuimtesChange(nextVisible);
+            return;
+        }
+
+        const rest = ruimtes.filter((ruimte) =>
+            !itemPastBijWerkzaamheid(
+                werkzaamheidVanActie(ruimte.actie),
+                werkzaamheid,
+                actieve
+            )
+        );
+        const tagged = nextVisible.map((ruimte) => ({
+            ...ruimte,
+            actie: actieVanWerkzaamheid(werkzaamheid),
+        }));
+        onRuimtesChange([...rest, ...tagged]);
+    }
+
+    const schermKaarten = zichtbareRuimtes.flatMap((ruimte) =>
         ruimte.schermen.map((scherm) => ({
             ruimteId: ruimte.id,
             scherm,
         }))
     );
 
+    const hardwareStatusLabel =
+        werkzaamheid === "demontage" ? "gedemonteerd" : "geïnstalleerd";
+
     function updateScherm(
         ruimteId: string,
         schermId: string,
         patch: Partial<InstallatieScherm>
     ) {
-        onRuimtesChange(
-            ruimtes.map((r) => {
+        commit(
+            zichtbareRuimtes.map((r) => {
                 if (r.id !== ruimteId) return r;
                 return {
                     ...r,
@@ -269,13 +320,13 @@ export default function InstallatieRuimtesSectie({
     }
 
     function addScherm() {
-        if (ruimtes.length === 0) {
-            onRuimtesChange([emptyRuimte()]);
+        if (zichtbareRuimtes.length === 0) {
+            commit([emptyRuimte()]);
             return;
         }
-        const last = ruimtes[ruimtes.length - 1];
-        onRuimtesChange(
-            ruimtes.map((r) =>
+        const last = zichtbareRuimtes[zichtbareRuimtes.length - 1];
+        commit(
+            zichtbareRuimtes.map((r) =>
                 r.id === last.id
                     ? syncSchermen(r, r.aantalSchermen + 1)
                     : r
@@ -284,7 +335,7 @@ export default function InstallatieRuimtesSectie({
     }
 
     function removeScherm(ruimteId: string, schermId: string) {
-        const next = ruimtes
+        const next = zichtbareRuimtes
             .map((r) => {
                 if (r.id !== ruimteId) return r;
                 const schermen = r.schermen.filter((s) => s.id !== schermId);
@@ -300,7 +351,11 @@ export default function InstallatieRuimtesSectie({
             })
             .filter((r): r is InstallatieRuimte => r !== null);
 
-        onRuimtesChange(next.length > 0 ? next : [emptyRuimte()]);
+        commit(
+            next.length > 0 || werkzaamheid
+                ? next
+                : [emptyRuimte()]
+        );
     }
 
     return (
@@ -412,7 +467,7 @@ export default function InstallatieRuimtesSectie({
                                     titel={
                                         scherm.formaat === "Anders"
                                             ? `${scherm.formaatAnders || "Scherm"} — gegevens`
-                                            : `${scherm.formaat} geïnstalleerd — gegevens`
+                                            : `${scherm.formaat} ${hardwareStatusLabel} — gegevens`
                                     }
                                     merk={scherm.merk || ""}
                                     type={scherm.type || ""}

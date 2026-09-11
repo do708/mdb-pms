@@ -8,7 +8,8 @@ import {
     MateriaalStuk,
     OpleverData,
     SchermBlok,
-    mergeOpleverData
+    mergeOpleverData,
+    type AudioTypeBlok,
 } from "@/types/oplever";
 import {
     samenvattingSchermHardware,
@@ -17,6 +18,13 @@ import {
     beugelLabel,
     schermHeeftGegevens,
 } from "@/types/installatieRuimtes";
+import {
+    OPLEVER_WERKZAAMHEDEN,
+    installatieStatusVanWerkzaamheid,
+    isOpleverWerkzaamheid,
+    vakTitel,
+    werkzaamheidVanActie,
+} from "@/lib/workorders/opleverModules";
 
 
 
@@ -605,14 +613,13 @@ function opleverSections(
         :
         [];
 
-    const schermenPdfRows =
-        filledRuimtes.length > 0
-        ? filledRuimtes.map((r, ri)=>{
+    const schermenPdfRowsVoor = (
+        ruimtes:typeof filledRuimtes
+    ) => ruimtes.map((r, ri)=>{
             const naam = (r.naam || `Ruimte ${ri + 1}`).trim();
             const parts = [
               r.werkzaamheid ? werkzaamheidLabel(r.werkzaamheid) : "",
               r.beugelType ? `${beugelLabel(r.beugelType)}${r.beugelMaat ? ` (${r.beugelMaat})` : ""}` : "",
-              r.actie,
               r.orientatie,
               r.aantalSchermen ? `${r.aantalSchermen} scherm(en)` : ""
             ].filter(Boolean);
@@ -624,15 +631,27 @@ function opleverSections(
               naam,
               (parts.join(" · ") ? textAnswer(parts.join(" · ")) : "") + (schermen ? `<div style="margin-top:4px;font-size:11px">${schermen}</div>` : "")
             );
+          }).join("");
+
+    const schermenPdfByType =
+        filledRuimtes.length > 0
+        ? OPLEVER_WERKZAAMHEDEN.map((item)=>{
+            const ruimtes = filledRuimtes.filter((r)=>
+                (werkzaamheidVanActie(r.actie) || "montage") === item.key
+            );
+            if(ruimtes.length === 0){
+                return "";
+            }
+            return qaBlock(vakTitel("Schermen", item.key), schermenPdfRowsVoor(ruimtes));
           }).join("")
-        : `
+        : qaBlock("Schermen", `
       ${i.nieuweSchermen === true ? row("Schermen",pill(i.nieuweSchermen)) : ""}
       ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
       ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
-        `;
+        `);
 
-    const videowallPdfRows = i.videowall === true ? (()=>{
-        const v = { ...(i.videowallVelden || {}) };
+    const videowallRowsVanVelden = (vIn:Record<string,string>)=>{
+        const v = { ...vIn };
         if(!v.configuratie && (i.videowallHorizontaal || i.videowallVerticaal)){
             v.configuratie = `${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"}`;
         }
@@ -654,27 +673,119 @@ function opleverSections(
             v.stroom ? row("Stroom binnen 3 meter?", textAnswer(v.stroom)) : "",
             v.internet ? row("Internet binnen 3 meter?", textAnswer(v.internet)) : ""
         ].join("");
-    })() : "";
+    };
 
-    const kioskPdfRows = i.kiosk === true
-        ? (i.kioskBlokken || []).filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
-            row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
+    const videowallTypes = OPLEVER_WERKZAAMHEDEN
+        .map((item)=>item.key)
+        .filter((type)=>{
+            const velden = i.videowallPerType?.[type];
+            return Boolean(velden && Object.values(velden).some((v)=>String(v || "").trim()));
+        });
+
+    const videowallPdfBlocks =
+        videowallTypes.length > 0
+        ? videowallTypes.map((type)=>
+            qaBlock(
+                vakTitel("Videowall", type),
+                videowallRowsVanVelden(i.videowallPerType?.[type] || {})
+            )
           ).join("")
+        : qaBlock(
+            "Videowall",
+            i.videowall === true ? videowallRowsVanVelden(i.videowallVelden || {}) : ""
+          );
+
+    const kioskPdfBlocks =
+        i.kiosk === true
+        ? OPLEVER_WERKZAAMHEDEN.map((item)=>{
+            const blokken = (i.kioskBlokken || []).filter((kb)=>{
+                const soort =
+                    isOpleverWerkzaamheid(kb.soort)
+                    ? kb.soort
+                    : kb.status === "Gedemonteerd"
+                      ? "demontage"
+                      : kb.status === "Geïnstalleerd"
+                        ? "montage"
+                        : "";
+                return (
+                    (kb.status || kb.omschrijving || kb.aantal)
+                    &&
+                    (soort || "montage") === item.key
+                );
+            });
+            if(blokken.length === 0){
+                return "";
+            }
+            return qaBlock(
+                vakTitel("Kiosk", item.key),
+                blokken.map((kb,ki)=>
+                    row(
+                        `Kiosk ${ki + 1}`,
+                        textAnswer(
+                            [
+                                kb.omschrijving,
+                                kb.aantal ? `aantal: ${kb.aantal}` : ""
+                            ].filter(Boolean).join(" · ")
+                        )
+                    )
+                ).join("")
+            );
+          }).join("")
         : "";
 
-    const mediaplayersPdfRows = [
-        i.mediaplayers ? row("Mediaplayers",choicePill(i.mediaplayers)) : "",
-        i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""
+    const mediaplayersPdfBlocks =
+        OPLEVER_WERKZAAMHEDEN.map((item)=>{
+            const aantal = i.mediaplayersPerType?.[item.key];
+            if(!(aantal || "").trim()){
+                return "";
+            }
+            return qaBlock(
+                vakTitel("Mediaplayers", item.key),
+                row("Aantal", textAnswer(aantal || ""))
+            );
+        }).join("")
+        || qaBlock("Mediaplayers", [
+            i.mediaplayers ? row("Mediaplayers",choicePill(i.mediaplayers)) : "",
+            i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""
+        ].join(""));
+
+    const audioRowsVanBlok = (blok:AudioTypeBlok, status?:string)=>[
+        status ? row("Audio status",textAnswer(status)) : "",
+        blok.speler ? row("Audiospeler",textAnswer(formatMateriaalStukken(blok.speler, blok.spelerItems, []))) : "",
+        blok.versterker ? row("Versterker",textAnswer(formatMateriaalStukken(blok.versterker, blok.versterkerItems, []))) : "",
+        blok.volumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(blok.volumeregelaar, blok.volumeregelaarItems, []))) : "",
+        blok.speakers ? row("Speakers (aantal)",textAnswer(blok.speakers)) : ""
     ].join("");
 
-    const audioPdfRows = i.audio === true ? [
-        i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : "",
-        i.audioSpeler ? row("Audiospeler",textAnswer(formatMateriaalStukken(i.audioSpeler, i.audioSpelerItems, []))) : "",
-        i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : "",
-        i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : "",
-        i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : "",
-        i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""
-    ].join("") : "";
+    const audioTypes = OPLEVER_WERKZAAMHEDEN
+        .map((item)=>item.key)
+        .filter((type)=>{
+            const blok = i.audioPerType?.[type];
+            return Boolean(
+                blok &&
+                (blok.speler || blok.versterker || blok.volumeregelaar || blok.speakers)
+            );
+        });
+
+    const audioPdfBlocks =
+        audioTypes.length > 0
+        ? audioTypes.map((type)=>
+            qaBlock(
+                vakTitel("Audio", type),
+                audioRowsVanBlok(
+                    i.audioPerType?.[type] as AudioTypeBlok,
+                    installatieStatusVanWerkzaamheid(type)
+                )
+            )
+          ).join("")
+        : qaBlock("Audio", i.audio === true ? [
+            i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : "",
+            i.audioSpeler ? row("Audiospeler",textAnswer(formatMateriaalStukken(i.audioSpeler, i.audioSpelerItems, []))) : "",
+            i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : "",
+            i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : "",
+            i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : "",
+            i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""
+        ].join("") : "");
 
 
     return `
@@ -686,11 +797,11 @@ function opleverSections(
       ${kostenRows}
   `)}
 
-  ${qaBlock("Schermen", schermenPdfRows)}
-  ${qaBlock("Videowall", videowallPdfRows)}
-  ${qaBlock("Kiosk", kioskPdfRows)}
-  ${qaBlock("Mediaplayers", mediaplayersPdfRows)}
-  ${qaBlock("Audio", audioPdfRows)}
+  ${schermenPdfByType}
+  ${videowallPdfBlocks}
+  ${kioskPdfBlocks}
+  ${mediaplayersPdfBlocks}
+  ${audioPdfBlocks}
 
   ${qaBlock("Overig", `
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}

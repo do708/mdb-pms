@@ -18,6 +18,11 @@ import {
     summarizeVoorziening,
 } from "@/types/installatieRuimtes";
 import {
+    OPLEVER_WERKZAAMHEDEN,
+    vakTitel,
+    werkzaamheidVanActie,
+} from "@/lib/workorders/opleverModules";
+import {
     MDB_BLUE,
     MDB_NAVY,
     MDB_PINK,
@@ -722,16 +727,29 @@ export async function generateOpleverPdf(
         );
 
         if (heeftRuimtes) {
-            text("Schermen",{ useBold:true, gap:2 });
-            for (const regel of summarizeRuimtes(ruimtes)) {
-                text(`• ${regel}`, { gap: 1 });
-            }
-            for (const ruimte of ruimtes) {
-                for (const scherm of ruimte.schermen || []) {
-                    if (!schermHeeftGegevens(scherm)) {
-                        continue;
+            for (const item of OPLEVER_WERKZAAMHEDEN) {
+                const vanType = ruimtes.filter((r) =>
+                    (werkzaamheidVanActie(r.actie) || "montage") === item.key
+                    && (
+                        r.werkzaamheid
+                        || r.naam
+                        || (r.schermen || []).some((s) => schermHeeftGegevens(s))
+                    )
+                );
+                if (vanType.length === 0) {
+                    continue;
+                }
+                text(vakTitel("Schermen", item.key),{ useBold:true, gap:2 });
+                for (const regel of summarizeRuimtes(vanType)) {
+                    text(`• ${regel}`, { gap: 1 });
+                }
+                for (const ruimte of vanType) {
+                    for (const scherm of ruimte.schermen || []) {
+                        if (!schermHeeftGegevens(scherm)) {
+                            continue;
+                        }
+                        text(`  ${samenvattingSchermHardware(scherm)}`, { gap: 1 });
                     }
-                    text(`  ${samenvattingSchermHardware(scherm)}`, { gap: 1 });
                 }
             }
 
