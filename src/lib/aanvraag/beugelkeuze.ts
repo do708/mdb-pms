@@ -177,6 +177,26 @@ export function artikelLabel(regel: BeugelArtikelRegel): string {
 }
 
 /**
+ * Artikel achter het scherm in het type-overzicht:
+ * `1× PFW 4510, Muurbeugel kantelbaar`.
+ * Leeg tot formaat + bevestiging een match (of legacy-label) geven.
+ */
+export function schermBeugelArtikelWeergave(item: BeugelKeuzeScherm): string {
+    const gevonden = zoekBeugelCombinatie(item);
+    if (!gevonden || gevonden.artikelen.length === 0) {
+        return legacyBeugelLabel(item);
+    }
+    return gevonden.artikelen
+        .map((a) => {
+            const naam =
+                a.onderdeel && a.onderdeel !== a.type ? a.onderdeel : "";
+            const artikel = `${a.aantal}× ${a.type}`;
+            return naam ? `${artikel}, ${naam}` : artikel;
+        })
+        .join(" + ");
+}
+
+/**
  * Compacte weergave per scherm (één artikel, of de complete set).
  * Leeg tot formaat + bevestiging een databasematch geven.
  */

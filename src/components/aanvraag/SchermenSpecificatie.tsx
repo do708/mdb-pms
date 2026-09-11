@@ -9,7 +9,6 @@ import {
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
     berekendInstallatieType,
-    beugelTypeWeergave,
     bevestigingDetails,
     formaatWeergaveScherm,
     installatieTypeWeergave,
@@ -18,6 +17,7 @@ import {
     legeVoorzieningen,
     normaliseerBevestiging,
     patchRaaktVoorzieningen,
+    schermBeugelArtikelWeergave,
     syncSchermItems,
     syncVoorzieningenVanAnkers,
     telBenodigdeBeugels,
@@ -853,15 +853,17 @@ export default function SchermenSpecificatie({
                                       )
                                     : -1;
                                 const formaat = formaatWeergaveScherm(s);
-                                const beugel = beugelTypeWeergave(s);
+                                const beugelArtikel =
+                                    schermBeugelArtikelWeergave(s);
 
                                 return (
                                     <li key={s.id}>
                                         Scherm {i + 1}
-                                        {formaat || beugel
-                                            ? ` — ${[formaat, beugel].filter(Boolean).join(" · ")}`
+                                        {formaat ? ` — ${formaat}` : ""}
+                                        {beugelArtikel
+                                            ? ` | ${beugelArtikel}`
                                             : ""}
-                                        {": "}
+                                        {" | "}
                                         <strong>
                                             {installatieTypeWeergave(t)}
                                         </strong>

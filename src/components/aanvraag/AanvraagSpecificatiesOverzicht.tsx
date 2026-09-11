@@ -14,8 +14,12 @@ import {
 import {
     aansturingWeergave,
     emptySchermItem,
+    formaatWeergaveScherm,
     installatieTypeWeergave,
+    isHoofdType,
     mdbBeugelTypeWeergave,
+    normaliseerMonterenKoppeling,
+    schermBeugelArtikelWeergave,
     telBenodigdeBeugels,
     type AanvraagSchermItem,
 } from "@/lib/aanvraag/installatieTypes";
@@ -196,14 +200,22 @@ function formaatWeergave(item: Record<string, unknown>): string {
 }
 
 function naarSchermItem(item: Record<string, unknown>): AanvraagSchermItem {
+    const base = emptySchermItem();
+    const id = str(item.id);
     return {
-        ...emptySchermItem(),
+        ...base,
+        id: id || base.id,
         formaat: str(item.formaat),
         formaatAnders: str(item.formaatAnders),
         beugel: str(item.beugel),
         bevestigingDetail: str(item.bevestigingDetail),
         bevestigingAnders: str(item.bevestigingAnders),
         plafondHoogte: str(item.plafondHoogte),
+        orientatie: str(item.orientatie),
+        naastSchermId: str(item.naastSchermId),
+        monterenKoppeling: normaliseerMonterenKoppeling(
+            str(item.monterenKoppeling)
+        ),
     };
 }
 
@@ -361,20 +373,47 @@ function SchermenBlok({
                             <ul className="text-sm text-gray-800 space-y-0.5">
                                 {schermItems.map((s, i) => {
                                     const raw = asRecord(items[i]) || {};
-                                    const beugel = mdbBeugelTypeWeergave(s);
+                                    const formaat =
+                                        formaatWeergaveScherm(s) ||
+                                        formaatWeergave(raw);
+                                    const beugelArtikel =
+                                        schermBeugelArtikelWeergave(s);
+                                    const typeCode =
+                                        str(raw.berekendType);
+                                    const hoofd = isHoofdType(
+                                        s,
+                                        schermItems
+                                    );
+                                    const naastIndex = s.naastSchermId
+                                        ? schermItems.findIndex(
+                                              (x) =>
+                                                  x.id ===
+                                                  s.naastSchermId
+                                          )
+                                        : -1;
                                     return (
-                                        <li key={i}>
+                                        <li key={s.id || i}>
                                             Scherm {i + 1}
-                                            {formaatWeergave(raw)
-                                                ? ` — ${formaatWeergave(raw)}`
+                                            {formaat
+                                                ? ` — ${formaat}`
                                                 : ""}
-                                            {": "}
+                                            {beugelArtikel
+                                                ? ` | ${beugelArtikel}`
+                                                : ""}
+                                            {" | "}
                                             <strong>
                                                 {installatieTypeWeergave(
-                                                    str(raw.berekendType)
+                                                    typeCode
                                                 )}
                                             </strong>
-                                            {beugel ? ` · ${beugel}` : ""}
+                                            {typeCode
+                                                ? hoofd
+                                                    ? " · hoofdtype"
+                                                    : " · vervolg"
+                                                : ""}
+                                            {naastIndex >= 0
+                                                ? ` · ${s.monterenKoppeling === "b2b" ? "b2b" : "naast"} scherm ${naastIndex + 1}`
+                                                : ""}
                                         </li>
                                     );
                                 })}
