@@ -81,7 +81,7 @@ export default function VideowallSpecificatie({
                                 +
                                 (type === t.k
                                     ? "bg-emerald-100 text-emerald-900 border-emerald-300"
-                                    : "bg-white text-gray-700 border-gray-200")
+                                    : "bg-white/40 text-gray-700 border-black/10")
                             }
                         >
                             {t.label}
@@ -115,7 +115,7 @@ export default function VideowallSpecificatie({
                                 });
                             }}
                             placeholder="Bijv. 2x2, 3x3"
-                            className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
                         />
                     </label>
                     {paneelAantal > 0 ? (
@@ -143,7 +143,7 @@ export default function VideowallSpecificatie({
                                     onChange={(e) =>
                                         onChange("formaat", e.target.value)
                                     }
-                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                 >
                                     <option value="">
                                         Kies formaat
@@ -164,7 +164,7 @@ export default function VideowallSpecificatie({
                                             )
                                         }
                                         placeholder="Anders formaat (inch)"
-                                        className="w-full border rounded-lg p-2 bg-white"
+                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70"
                                     />
                                 ) : null}
                             </>
@@ -189,7 +189,7 @@ export default function VideowallSpecificatie({
                                                 ? `${pastel.bg} ${pastel.border} ${pastel.text}`
                                                 : selected
                                                 ? "bg-sky-100 text-sky-900 border-sky-300"
-                                                : "bg-white text-gray-700 border-gray-200")
+                                                : "bg-white/40 text-gray-700 border-black/10")
                                         }
                                     >
                                         {optie}
@@ -207,7 +207,7 @@ export default function VideowallSpecificatie({
                                     )
                                 }
                                 placeholder="Anders formaat (inch)"
-                                className="w-full border rounded-lg p-2 bg-white"
+                                className="w-full border border-black/10 rounded-lg p-2 bg-white/70"
                             />
                         ) : null}
                             </>
@@ -215,14 +215,14 @@ export default function VideowallSpecificatie({
                     </div>
 
                     {paneelAantal > 0 ? (
-                        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-                            <p className="px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-50 border-b border-slate-200">
+                        <div className="rounded-xl border border-black/10 bg-white/40 overflow-hidden">
+                            <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                                 Schermen — gegevens
                             </p>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm border-collapse min-w-[28rem]">
                                     <thead>
-                                        <tr className="bg-white">
+                                        <tr>
                                             <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600 w-20">
                                                 {" "}
                                             </th>
@@ -270,7 +270,7 @@ export default function VideowallSpecificatie({
                                                         }}
                                                         placeholder="Merk"
                                                         aria-required
-                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                                     />
                                                 </td>
                                                 <td className="p-1.5 align-top">
@@ -288,7 +288,7 @@ export default function VideowallSpecificatie({
                                                         }}
                                                         placeholder="Type"
                                                         aria-required
-                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                                     />
                                                 </td>
                                                 <td className="p-1.5 align-top">
@@ -309,7 +309,7 @@ export default function VideowallSpecificatie({
                                                         }}
                                                         placeholder="Serienummer"
                                                         aria-required
-                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                                     />
                                                 </td>
                                                 <td className="p-1.5 align-top">
@@ -340,7 +340,7 @@ export default function VideowallSpecificatie({
                                                         placeholder="Optioneel"
                                                         autoCapitalize="characters"
                                                         spellCheck={false}
-                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                                     />
                                                 </td>
                                             </tr>
@@ -373,7 +373,7 @@ export default function VideowallSpecificatie({
                                         +
                                         (velden.orientatie === o
                                             ? "bg-violet-100 text-violet-900 border-violet-300"
-                                            : "bg-white text-gray-700 border-gray-200")
+                                            : "bg-white/40 text-gray-700 border-black/10")
                                     }
                                 >
                                     {o}
@@ -395,7 +395,7 @@ export default function VideowallSpecificatie({
                                 });
                             }}
                             placeholder="Waar komt het scherm?"
-                            className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
                         />
                     </label>
 
@@ -424,7 +424,7 @@ export default function VideowallSpecificatie({
                                 onChange("afmeting", e.target.value)
                             }
                             placeholder="Bijv. 3 × 2 meter"
-                            className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
                         />
                     </label>
 
@@ -450,7 +450,7 @@ export default function VideowallSpecificatie({
                                         +
                                         (velden.orientatie === o
                                             ? "bg-violet-100 text-violet-900 border-violet-300"
-                                            : "bg-white text-gray-700 border-gray-200")
+                                            : "bg-white/40 text-gray-700 border-black/10")
                                     }
                                 >
                                     {o}
@@ -469,7 +469,7 @@ export default function VideowallSpecificatie({
                                 onChange("locatie", e.target.value)
                             }
                             placeholder="Waar komt de videowall?"
-                            className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
                         />
                     </label>
 

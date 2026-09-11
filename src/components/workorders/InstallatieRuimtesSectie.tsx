@@ -61,7 +61,7 @@ function Chips({
                         +
                         (value === opt
                             ? selectedClass
-                            : "bg-white text-gray-700 border-gray-200")
+                            : "bg-white/40 text-gray-700 border-black/10")
                     }
                 >
                     {opt}
@@ -81,7 +81,7 @@ function JaNeeKleur({
     options: { value: string; label: string; kleur: "green" | "orange" | "sky" }[];
 }) {
     const klasse = (kleur: string, active: boolean) => {
-        if (!active) return "bg-white text-gray-600 border-gray-200";
+        if (!active) return "bg-white/40 text-gray-600 border-black/10";
         if (kleur === "orange") return "bg-amber-100 text-amber-800 border-amber-300";
         if (kleur === "sky") return "bg-sky-100 text-sky-800 border-sky-300";
         return "bg-emerald-100 text-emerald-800 border-emerald-300";
@@ -108,7 +108,7 @@ function JaNeeKleur({
     );
 }
 
-function HardwareKenmerkenTabel({
+export function HardwareKenmerkenTabel({
     titel,
     merk,
     type,
@@ -132,15 +132,15 @@ function HardwareKenmerkenTabel({
     requiredKenmerken?: boolean;
 }) {
     return (
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-            <p className="px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-50 border-b border-slate-200">
+        <div className="rounded-xl border border-black/10 bg-white/40 overflow-hidden">
+            <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                 {titel}
             </p>
             <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse min-w-[28rem]">
                     <thead>
-                        <tr className="bg-white">
-                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                        <tr>
+                            <th className="border-b border-black/10 p-2 text-left font-medium text-gray-600">
                                 Merk
                                 {requiredKenmerken ? <VerplichtSter /> : null}
                             </th>
@@ -167,7 +167,7 @@ function HardwareKenmerkenTabel({
                                     }
                                     placeholder="Merk"
                                     aria-required={requiredKenmerken || undefined}
-                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                 />
                             </td>
                             <td className="p-1.5 align-top">
@@ -178,7 +178,7 @@ function HardwareKenmerkenTabel({
                                     }
                                     placeholder="Type"
                                     aria-required={requiredKenmerken || undefined}
-                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                 />
                             </td>
                             <td className="p-1.5 align-top">
@@ -191,7 +191,7 @@ function HardwareKenmerkenTabel({
                                     }
                                     placeholder="Serienummer"
                                     aria-required={requiredKenmerken || undefined}
-                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                 />
                             </td>
                             <td className="p-1.5 align-top">
@@ -208,7 +208,7 @@ function HardwareKenmerkenTabel({
                                     placeholder="Optioneel"
                                     autoCapitalize="characters"
                                     spellCheck={false}
-                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                 />
                             </td>
                         </tr>
@@ -401,7 +401,7 @@ export default function InstallatieRuimtesSectie({
                     return (
                         <div
                             key={scherm.id}
-                            className="rounded-xl border border-sky-200 bg-white p-3 space-y-3"
+                            className="rounded-xl border border-sky-300/70 bg-sky-100/40 p-3 space-y-3"
                         >
                             <div className="flex items-center justify-between gap-2">
                                 <p className="font-semibold text-sm text-gray-800">
@@ -455,7 +455,7 @@ export default function InstallatieRuimtesSectie({
                                             formaatAnders: "",
                                         })
                                     }
-                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                 >
                                     <option value="">Kies formaat</option>
                                     {SCHERM_FORMATEN.map((f) => (
@@ -517,7 +517,7 @@ export default function InstallatieRuimtesSectie({
                                             plafondHoogte: "",
                                         })
                                     }
-                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                 >
                                     <option value="">Kies bevestiging</option>
                                     {BEVESTIGING_OPTIES.map((b) => (
@@ -535,7 +535,7 @@ export default function InstallatieRuimtesSectie({
                                                 bevestigingAnders: "",
                                             })
                                         }
-                                        className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                        className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                     >
                                         <option value="">
                                             Type {normaliseerBevestiging(scherm.beugel).toLowerCase()}
@@ -568,7 +568,7 @@ export default function InstallatieRuimtesSectie({
                                                 plafondHoogte: e.target.value,
                                             })
                                         }
-                                        className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                        className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                     >
                                         <option value="">
                                             Lengte plafondbeugel
@@ -599,7 +599,7 @@ export default function InstallatieRuimtesSectie({
                                             aansturingAnders: "",
                                         })
                                     }
-                                    className="w-full border rounded-lg p-2.5 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                 >
                                     <option value="">Kies aansturing</option>
                                     {AANSTURING_OPTIES.map((a) => (
@@ -677,7 +677,7 @@ export default function InstallatieRuimtesSectie({
                                         })
                                     }
                                     placeholder="Bijv. Entree / Vergaderruimte 1"
-                                    className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
                                 />
                             </label>
 
@@ -739,7 +739,7 @@ export default function InstallatieRuimtesSectie({
                                                             )
                                                         }
                                                         placeholder="Bijv. 8"
-                                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                                        className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
                                                     />
                                                 </label>
                                                 <Chips
@@ -818,7 +818,7 @@ export default function InstallatieRuimtesSectie({
                                                             )
                                                         }
                                                         placeholder="Bijv. 8"
-                                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white text-sm"
+                                                        className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
                                                     />
                                                 </label>
                                                 <Chips

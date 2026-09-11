@@ -4,7 +4,12 @@ import { prisma } from "@/lib/prisma";
 
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
-import { mergeOpleverData, ontbrekendeMateriaalSerienummers } from "@/types/oplever";
+import {
+    mergeOpleverData,
+    ontbrekendeMateriaalSerienummers,
+    ontbrekendeKioskKenmerken,
+    ontbrekendeMediaplayerKenmerken
+} from "@/types/oplever";
 import { ontbrekendeSchermKenmerken } from "@/types/installatieRuimtes";
 import { ontbrekendeVideowallPanelen } from "@/lib/workorders/videowallPanelen";
 
@@ -57,6 +62,12 @@ export async function PUT(
                 ontbrekendeVideowallPanelen(
                     formData.installatie.videowallPerType,
                     formData.installatie.videowallVelden
+                ),
+                ontbrekendeKioskKenmerken(formData.installatie.kioskBlokken),
+                ontbrekendeMediaplayerKenmerken(
+                    formData.installatie.mediaplayersItemsPerType,
+                    formData.installatie.mediaplayersPerType,
+                    formData.installatie.aantalMediaplayers
                 )
             ]
             .filter(Boolean)

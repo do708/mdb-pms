@@ -13,6 +13,7 @@ import {
     emptySchermBlok,
     emptyAudioTypeBlok,
     emptyKioskBlok,
+    KIOSK_FORMATEN,
     AudioTypeBlok,
     KioskBlok,
     mergeOpleverData,
@@ -20,8 +21,11 @@ import {
     normalizeOpleverMacs,
     parseAantal,
     resizeMateriaalItems,
+    resizeMediaplayerItems,
     snsVanItems,
     ontbrekendeMateriaalSerienummers,
+    ontbrekendeKioskKenmerken,
+    ontbrekendeMediaplayerKenmerken,
     type MateriaalStuk
 } from "@/types/oplever";
 
@@ -30,7 +34,9 @@ import {
 } from "@/types/customerForms";
 
 import CustomerFormSection from "./CustomerFormSection";
-import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
+import InstallatieRuimtesSectie, {
+    HardwareKenmerkenTabel
+} from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
 import {
     normalizeMac,
@@ -650,7 +656,7 @@ function AudioRegel({
                 value={value}
                 placeholder="Aantal"
                 onChange={(e)=>onChange(e.target.value)}
-                className="w-20 border rounded-lg p-1.5 text-sm"
+                className="w-20 border border-black/10 rounded-lg p-1.5 text-sm bg-white/70"
             />
         </div>
     );
@@ -695,7 +701,7 @@ function MateriaalStukkenOnderAantal({
                                 onChange(next);
                             }}
                             placeholder="Merk"
-                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white text-sm"
+                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white/80 text-sm"
                         />
                     </label>
                     <label className="flex-1 min-w-0">
@@ -710,7 +716,7 @@ function MateriaalStukkenOnderAantal({
                                 onChange(next);
                             }}
                             placeholder="Type"
-                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white text-sm"
+                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white/80 text-sm"
                         />
                     </label>
                     <label className="flex-1 min-w-0">
@@ -731,7 +737,7 @@ function MateriaalStukkenOnderAantal({
                                 onChange(next);
                             }}
                             placeholder="Serienummer"
-                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white text-sm"
+                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white/80 text-sm"
                         />
                     </label>
                 </div>
@@ -756,67 +762,75 @@ function AudioVakInhoud({
     }
 
     return (
-        <div className="rounded-xl bg-white p-3 space-y-3 border border-rose-100">
-            <AudioRegel
-                label="Audiospeler"
-                value={blok.speler}
-                onChange={(v)=>
-                    patch({
-                        speler:v,
-                        spelerItems:resizeMateriaalItems(
-                            blok.spelerItems,
-                            parseAantal(v)
-                        )
-                    })
-                }
-            />
-            <MateriaalStukkenOnderAantal
-                aantal={blok.speler}
-                items={blok.spelerItems}
-                onChange={(items)=>patch({ spelerItems:items })}
-            />
-            <AudioRegel
-                label="Versterker"
-                value={blok.versterker}
-                onChange={(v)=>
-                    patch({
-                        versterker:v,
-                        versterkerItems:resizeMateriaalItems(
-                            blok.versterkerItems,
-                            parseAantal(v)
-                        )
-                    })
-                }
-            />
-            <MateriaalStukkenOnderAantal
-                aantal={blok.versterker}
-                items={blok.versterkerItems}
-                onChange={(items)=>patch({ versterkerItems:items })}
-            />
-            <AudioRegel
-                label="Volumeregelaar"
-                value={blok.volumeregelaar}
-                onChange={(v)=>
-                    patch({
-                        volumeregelaar:v,
-                        volumeregelaarItems:resizeMateriaalItems(
-                            blok.volumeregelaarItems,
-                            parseAantal(v)
-                        )
-                    })
-                }
-            />
-            <MateriaalStukkenOnderAantal
-                aantal={blok.volumeregelaar}
-                items={blok.volumeregelaarItems}
-                onChange={(items)=>patch({ volumeregelaarItems:items })}
-                requiredSn={false}
-            />
-            <AudioRegel
-                label="Speakers"
-                value={blok.speakers}
-                onChange={(v)=>patch({ speakers:v })}
-            />
+        <div className="space-y-3">
+            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+                <AudioRegel
+                    label="Audiospeler"
+                    value={blok.speler}
+                    onChange={(v)=>
+                        patch({
+                            speler:v,
+                            spelerItems:resizeMateriaalItems(
+                                blok.spelerItems,
+                                parseAantal(v)
+                            )
+                        })
+                    }
+                />
+                <MateriaalStukkenOnderAantal
+                    aantal={blok.speler}
+                    items={blok.spelerItems}
+                    onChange={(items)=>patch({ spelerItems:items })}
+                />
+            </div>
+            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+                <AudioRegel
+                    label="Versterker"
+                    value={blok.versterker}
+                    onChange={(v)=>
+                        patch({
+                            versterker:v,
+                            versterkerItems:resizeMateriaalItems(
+                                blok.versterkerItems,
+                                parseAantal(v)
+                            )
+                        })
+                    }
+                />
+                <MateriaalStukkenOnderAantal
+                    aantal={blok.versterker}
+                    items={blok.versterkerItems}
+                    onChange={(items)=>patch({ versterkerItems:items })}
+                />
+            </div>
+            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+                <AudioRegel
+                    label="Volumeregelaar"
+                    value={blok.volumeregelaar}
+                    onChange={(v)=>
+                        patch({
+                            volumeregelaar:v,
+                            volumeregelaarItems:resizeMateriaalItems(
+                                blok.volumeregelaarItems,
+                                parseAantal(v)
+                            )
+                        })
+                    }
+                />
+                <MateriaalStukkenOnderAantal
+                    aantal={blok.volumeregelaar}
+                    items={blok.volumeregelaarItems}
+                    onChange={(items)=>patch({ volumeregelaarItems:items })}
+                    requiredSn={false}
+                />
+            </div>
+            <div className="rounded-xl border border-rose-300/70 bg-rose-100/40 p-3 space-y-2">
+                <AudioRegel
+                    label="Speakers"
+                    value={blok.speakers}
+                    onChange={(v)=>patch({ speakers:v })}
+                />
+            </div>
         </div>
     );
 }
@@ -952,31 +966,33 @@ function UitklapVraag({
     label,
     actief,
     onToggle,
-    children
+    children,
+    kleur = "bg-sky-50 border-sky-200"
 }:{
     label:string;
     actief:boolean;
     onToggle:(actief:boolean)=>void;
     children:React.ReactNode;
+    kleur?:string;
 }){
 
     return (
 
-        <div className="
-            border-b
-            border-slate-100
-            py-2.5
-        ">
+        <div className={`rounded-xl border shadow-sm ${kleur}`}>
 
             <div className="
                 flex
                 items-center
                 gap-3
+                px-3
+                pt-3
+                pb-2
             ">
 
                 <p className="
                     text-sm
-                    text-slate-700
+                    font-medium
+                    text-slate-800
                     flex-1
                 ">
                     {label}
@@ -999,9 +1015,9 @@ function UitklapVraag({
                         ${
                             actief
                             ?
-                            "bg-sky-100 border border-sky-300 text-sky-700"
+                            "bg-white/70 border border-black/10 text-slate-700"
                             :
-                            "border border-slate-300 text-slate-500 hover:border-sky-400 hover:text-sky-600"
+                            "border border-black/15 text-slate-600 hover:bg-white/50"
                         }
                     `}
                 >
@@ -1012,7 +1028,7 @@ function UitklapVraag({
 
             {
                 actief && (
-                    <div className="mt-3 space-y-3">
+                    <div className="px-3 pb-3 space-y-3">
                         {children}
                     </div>
                 )
@@ -1275,18 +1291,15 @@ function ModuleKaart({
 // Checklist-vraag: label boven, antwoord (en eventuele reden/sub-vraag) eronder.
 function ChecklistVraag({
     label,
-    children
+    children,
+    kleur = "bg-slate-50 border-slate-200"
 }:{
     label:string;
     children:React.ReactNode;
+    kleur?:string;
 }){
     return (
-        <div className="
-            border-b
-            border-slate-100
-            py-3
-            space-y-3
-        ">
+        <div className={`rounded-xl border shadow-sm py-3 px-3 space-y-3 ${kleur}`}>
             <p className="text-sm text-slate-700">
                 {label}
             </p>
@@ -1312,7 +1325,7 @@ function RedenVeld({
                 rows={2}
                 value={value}
                 onChange={(e)=>onChange(e.target.value)}
-                className="w-full border rounded-xl p-2.5 text-sm"
+                className="w-full border border-black/10 rounded-xl p-2.5 text-sm bg-white/70"
             />
         </div>
     );
@@ -1338,7 +1351,7 @@ function ExtraDienstenKeuzes({
             ).map(([key, aantalKey, label]) => (
                 <div
                     key={key}
-                    className="flex items-center gap-3 rounded-xl border px-3 py-2.5 bg-white"
+                    className="flex items-center gap-3 rounded-xl border border-black/10 px-3 py-2.5 bg-white/40"
                 >
                     <label className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">
                         <input
@@ -1370,7 +1383,7 @@ function ExtraDienstenKeuzes({
                                     [aantalKey]: e.target.value,
                                 })
                             }
-                            className="w-20 shrink-0 border rounded-lg p-1.5 text-sm"
+                            className="w-20 shrink-0 border border-black/10 rounded-lg p-1.5 text-sm bg-white/70"
                         />
                     ) : null}
                 </div>
@@ -1479,10 +1492,11 @@ function ExtraKostenDetails({
     return (
         <div className="
             border
+            border-black/10
             rounded-lg
             px-3
             py-2
-            bg-gray-50
+            bg-white/40
             space-y-2
             w-full
             min-w-0
@@ -1566,7 +1580,7 @@ function KioskBlokken({
                 blokken.map((blok, index)=>(
                     <div
                         key={index}
-                        className="rounded-xl border border-amber-200 bg-white p-3 space-y-2"
+                        className="rounded-xl border border-amber-300/70 bg-amber-100/40 p-3 space-y-3"
                     >
                         <div className="flex items-center justify-between gap-2">
                             <p className="font-semibold text-sm text-gray-800">
@@ -1601,27 +1615,87 @@ function KioskBlokken({
                                 />
                             )
                         }
-                        <div className="flex items-center gap-2">
-                            <input
-                                value={blok.omschrijving}
-                                placeholder="Omschrijving / locatie"
-                                onChange={(e)=>
+                        <div className="space-y-1.5">
+                            <span className="text-xs text-gray-600">
+                                Formaat / inch{" "}
+                                <span className="text-red-500">*</span>
+                            </span>
+                            <Keuze
+                                value={blok.formaat}
+                                options={[...KIOSK_FORMATEN, "Anders"]}
+                                onChange={(v)=>
                                     patch(index, {
-                                        omschrijving:e.target.value
+                                        formaat:v,
+                                        formaatAnders:
+                                            v === "Anders"
+                                            ? blok.formaatAnders
+                                            : ""
                                     })
                                 }
-                                className="flex-1 min-w-0 border rounded-lg p-2 text-sm"
                             />
-                            <input
-                                inputMode="numeric"
-                                value={blok.aantal}
-                                placeholder="Aantal"
-                                onChange={(e)=>
-                                    patch(index, { aantal:e.target.value })
+                            {
+                                blok.formaat === "Anders" && (
+                                    <input
+                                        value={blok.formaatAnders}
+                                        placeholder='Afwijkend formaat, bijv. 32"'
+                                        onChange={(e)=>
+                                            patch(index, {
+                                                formaatAnders:e.target.value
+                                            })
+                                        }
+                                        className="w-full border rounded-lg p-2 text-sm bg-white/80"
+                                    />
+                                )
+                            }
+                        </div>
+                        {
+                            blok.formaat ? (
+                                <HardwareKenmerkenTabel
+                                    titel={
+                                        (
+                                            blok.formaat === "Anders"
+                                            ? (blok.formaatAnders || "Kiosk")
+                                            : blok.formaat
+                                        )
+                                        + " — gegevens"
+                                    }
+                                    merk={blok.merk || ""}
+                                    type={blok.type || ""}
+                                    serienummer={blok.serienummer || ""}
+                                    mac={blok.mac || ""}
+                                    requiredKenmerken
+                                    onChange={(hardware)=>
+                                        patch(index, hardware)
+                                    }
+                                />
+                            ) : null
+                        }
+                        <div className="space-y-1.5">
+                            <span className="text-xs text-gray-600">
+                                Oriëntatie{" "}
+                                <span className="text-red-500">*</span>
+                            </span>
+                            <Keuze
+                                value={blok.orientatie}
+                                options={["Horizontaal", "Verticaal"]}
+                                onChange={(v)=>
+                                    patch(index, {
+                                        orientatie:
+                                            v as KioskBlok["orientatie"]
+                                    })
                                 }
-                                className="w-20 shrink-0 border rounded-lg p-2 text-sm"
                             />
                         </div>
+                        <input
+                            value={blok.omschrijving}
+                            placeholder="Locatie"
+                            onChange={(e)=>
+                                patch(index, {
+                                    omschrijving:e.target.value
+                                })
+                            }
+                            className="w-full border rounded-lg p-2 text-sm bg-white/80"
+                        />
                     </div>
                 ))
             }
@@ -2213,8 +2287,20 @@ export default function OpleverForm({
                 data.installatie.videowallVelden
             );
 
+        const kioskFout =
+            ontbrekendeKioskKenmerken(data.installatie.kioskBlokken);
+
+        const playerFout =
+            ontbrekendeMediaplayerKenmerken(
+                data.installatie.mediaplayersItemsPerType,
+                data.installatie.mediaplayersPerType,
+                data.installatie.aantalMediaplayers
+            );
+
         const veldenFout =
-            [snFout, schermFout, videowallFout].filter(Boolean).join(" ");
+            [snFout, schermFout, videowallFout, kioskFout, playerFout]
+                .filter(Boolean)
+                .join(" ");
 
         if(veldenFout){
 
@@ -3220,7 +3306,6 @@ export default function OpleverForm({
                         titel={vakTitel("Videowall", type)}
                         kleur="bg-emerald-50 border-emerald-200"
                     >
-                        <div className="rounded-xl bg-white p-3 space-y-3 border border-emerald-100">
                         <VideowallSpecificatie
                             velden={velden}
                             onChange={(veld, waarde)=>
@@ -3315,7 +3400,6 @@ export default function OpleverForm({
                             }
                             formaatAlsSelect
                         />
-                        </div>
                     </ModuleKaart>
                         );
                     })
@@ -3379,6 +3463,10 @@ export default function OpleverForm({
                                 type,
                                 mediaplayersTypes
                             );
+                        const items = resizeMediaplayerItems(
+                            i.mediaplayersItemsPerType?.[type],
+                            parseAantal(aantal)
+                        );
 
                         return (
                     <ModuleKaart
@@ -3386,29 +3474,94 @@ export default function OpleverForm({
                         titel={vakTitel("Mediaplayers", type)}
                         kleur="bg-violet-50 border-violet-200"
                     >
-                        <input
-                            inputMode="numeric"
-                            value={aantal}
-                            placeholder="Aantal"
-                            onChange={(e)=>
-                                update(draft=>{
-                                    const value = e.target.value;
-                                    draft.installatie.mediaplayersPerType = {
-                                        ...draft.installatie.mediaplayersPerType,
-                                        [type]:value
-                                    };
-                                    if(
-                                        mediaplayersTypes.length === 1
-                                        ||
-                                        type === fallbackWerkzaamheid(mediaplayersTypes)
-                                    ){
-                                        draft.installatie.mediaplayers = status;
-                                        draft.installatie.aantalMediaplayers = value;
-                                    }
-                                })
-                            }
-                            className="w-24 border rounded-lg p-2 text-sm bg-white"
-                        />
+                        <label className="block">
+                            <span className="text-xs text-gray-600">
+                                Aantal
+                            </span>
+                            <input
+                                inputMode="numeric"
+                                value={aantal}
+                                placeholder="Aantal"
+                                onChange={(e)=>
+                                    update(draft=>{
+                                        const value = e.target.value;
+                                        const nextItems =
+                                            resizeMediaplayerItems(
+                                                draft.installatie
+                                                    .mediaplayersItemsPerType
+                                                    ?.[type],
+                                                parseAantal(value)
+                                            );
+                                        draft.installatie.mediaplayersPerType = {
+                                            ...draft.installatie.mediaplayersPerType,
+                                            [type]:value
+                                        };
+                                        draft.installatie.mediaplayersItemsPerType = {
+                                            ...draft.installatie.mediaplayersItemsPerType,
+                                            [type]:nextItems
+                                        };
+                                        if(
+                                            mediaplayersTypes.length === 1
+                                            ||
+                                            type === fallbackWerkzaamheid(mediaplayersTypes)
+                                        ){
+                                            draft.installatie.mediaplayers = status;
+                                            draft.installatie.aantalMediaplayers = value;
+                                        }
+                                    })
+                                }
+                                className="w-24 border rounded-lg p-2 text-sm bg-white/80"
+                            />
+                        </label>
+                        {items.map((item, index)=>(
+                            <div
+                                key={index}
+                                className="rounded-xl border border-violet-300/70 bg-violet-100/40 p-3 space-y-2"
+                            >
+                                <p className="font-semibold text-sm text-gray-800">
+                                    Player {index + 1}
+                                </p>
+                                <input
+                                    value={item.locatie}
+                                    placeholder="Locatie"
+                                    onChange={(e)=>{
+                                        const next = [...items];
+                                        next[index] = {
+                                            ...item,
+                                            locatie:e.target.value
+                                        };
+                                        update(draft=>{
+                                            draft.installatie.mediaplayersItemsPerType = {
+                                                ...draft.installatie.mediaplayersItemsPerType,
+                                                [type]:next
+                                            };
+                                        });
+                                    }}
+                                    className="w-full border rounded-lg p-2 text-sm bg-white/80"
+                                />
+                                <HardwareKenmerkenTabel
+                                    titel="Player — gegevens"
+                                    merk={item.merk}
+                                    type={item.type}
+                                    serienummer={item.serienummer}
+                                    mac={item.mac}
+                                    requiredKenmerken
+                                    onChange={(patch)=>{
+                                        const next = [...items];
+                                        next[index] = {
+                                            ...item,
+                                            ...patch
+                                        };
+                                        update(draft=>{
+                                            draft.installatie.mediaplayersItemsPerType = {
+                                                ...draft.installatie.mediaplayersItemsPerType,
+                                                [type]:next
+                                            };
+                                        });
+                                    }}
+                                />
+                            </div>
+                        ))}
                     </ModuleKaart>
                         );
                     })
@@ -3484,7 +3637,7 @@ export default function OpleverForm({
                                                     e.target.value;
                                             })
                                         }
-                                        className="w-full border rounded-lg p-2 mt-0.5 bg-white"
+                                        className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
                                     />
                                 </label>
                             )
@@ -3613,18 +3766,10 @@ export default function OpleverForm({
                 }
 
 
-                <div className="pt-3">
-
-                    <span className="
-                        block
-                        text-sm
-                        font-medium
-                        text-slate-700
-                        mb-2
-                    ">
-                        Opmerkingen:
-                    </span>
-
+                <ModuleKaart
+                    titel="Opmerkingen installatie"
+                    kleur="bg-slate-50 border-slate-200"
+                >
                     <textarea
 
                         value={i.opmerkingen}
@@ -3636,11 +3781,10 @@ export default function OpleverForm({
                             })
                         }
 
-                        className="w-full border rounded-xl p-3 min-h-24"
+                        className="w-full border border-black/10 rounded-xl p-3 min-h-24 bg-white/70"
 
                     />
-
-                </div>
+                </ModuleKaart>
 
             </div>
 
@@ -4004,13 +4148,14 @@ export default function OpleverForm({
 
             {/* ================= Gebruikte materialen ================= */}
 
-            <div>
+            <div className="space-y-4">
 
                 <Kop>Gebruikte materialen</Kop>
 
 
                 <UitklapVraag
                     label="1. Extra HDMI kabels/splitters gebruikt?"
+                    kleur="bg-sky-50 border-sky-200"
                     actief={m.extraHdmiKabels === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4076,6 +4221,7 @@ export default function OpleverForm({
 
                 <UitklapVraag
                     label="2. Extra patchkabels gebruikt"
+                    kleur="bg-emerald-50 border-emerald-200"
                     actief={m.extraPatchkabels === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4095,6 +4241,7 @@ export default function OpleverForm({
 
                 <UitklapVraag
                     label="3. Extra switches gebruikt"
+                    kleur="bg-amber-50 border-amber-200"
                     actief={m.extraSwitches === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4180,6 +4327,7 @@ export default function OpleverForm({
 
                 <UitklapVraag
                     label="4. Extra UTP kabel getrokken"
+                    kleur="bg-violet-50 border-violet-200"
                     actief={m.utpGetrokken === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4199,6 +4347,7 @@ export default function OpleverForm({
 
                 <UitklapVraag
                     label="5. Extra stroomkabel getrokken"
+                    kleur="bg-rose-50 border-rose-200"
                     actief={m.stroomkabelGetrokken === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4215,6 +4364,7 @@ export default function OpleverForm({
 
                 <UitklapVraag
                     label="6. Verlengsnoeren (stekkerdozen) gebruikt"
+                    kleur="bg-teal-50 border-teal-200"
                     actief={m.verlengsnoeren === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4231,6 +4381,7 @@ export default function OpleverForm({
 
                 <UitklapVraag
                     label="7. Extra seriële en/of USB speakers gebruikt"
+                    kleur="bg-indigo-50 border-indigo-200"
                     actief={m.extraSpeakers === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4249,6 +4400,7 @@ export default function OpleverForm({
 
                 <UitklapVraag
                     label="8. Multicast set"
+                    kleur="bg-yellow-50 border-yellow-200"
                     actief={m.multicast === true}
                     onToggle={(v)=>
                         update(draft=>{
@@ -4311,18 +4463,10 @@ export default function OpleverForm({
                 </UitklapVraag>
 
 
-                <div className="pt-3">
-
-                    <span className="
-                        block
-                        text-sm
-                        font-medium
-                        text-slate-700
-                        mb-2
-                    ">
-                        Opmerkingen:
-                    </span>
-
+                <ModuleKaart
+                    titel="Opmerkingen"
+                    kleur="bg-slate-50 border-slate-200"
+                >
                     <textarea
 
                         value={m.opmerkingen}
@@ -4334,11 +4478,10 @@ export default function OpleverForm({
                             })
                         }
 
-                        className="w-full border rounded-xl p-3 min-h-24"
+                        className="w-full border rounded-xl p-3 min-h-24 bg-white/80"
 
                     />
-
-                </div>
+                </ModuleKaart>
 
             </div>
 
@@ -4358,9 +4501,11 @@ export default function OpleverForm({
                     Alle checklistvragen zijn verplicht.
                 </p>
 
-
-                {/* 1. Werkend opgeleverd */}
-                <ChecklistVraag label="1. Is de installatie werkend opgeleverd?">
+                <div className="space-y-3">
+                <ChecklistVraag
+                    label="1. Is de installatie werkend opgeleverd?"
+                    kleur="bg-sky-50 border-sky-200"
+                >
                     <JaNee
                         value={c.werkendOpgeleverd}
                         jaKleur="green"
@@ -4383,7 +4528,10 @@ export default function OpleverForm({
 
 
                 {/* 2. Lichtnet schakelbaar */}
-                <ChecklistVraag label="2. Is de hardware aangesloten op het lichtnet of een ander schakelstroompunt dat handmatig uit te zetten is?">
+                <ChecklistVraag
+                    label="2. Is de hardware aangesloten op het lichtnet of een ander schakelstroompunt dat handmatig uit te zetten is?"
+                    kleur="bg-emerald-50 border-emerald-200"
+                >
                     <JaNee
                         value={c.lichtnetSchakelbaar}
                         jaKleur="red"
@@ -4406,7 +4554,10 @@ export default function OpleverForm({
 
 
                 {/* 3. WiFi */}
-                <ChecklistVraag label="3. WiFi verbinding van toepassing?">
+                <ChecklistVraag
+                    label="3. WiFi verbinding van toepassing?"
+                    kleur="bg-amber-50 border-amber-200"
+                >
                     <JaNee
                         value={c.wifiVanToepassing}
                         jaKleur="orange"
@@ -4449,7 +4600,10 @@ export default function OpleverForm({
 
 
                 {/* 4. Remote Services */}
-                <ChecklistVraag label="4. Zijn de schermen gekoppeld aan Remote Services?">
+                <ChecklistVraag
+                    label="4. Zijn de schermen gekoppeld aan Remote Services?"
+                    kleur="bg-violet-50 border-violet-200"
+                >
                     <Keuze
                         value={c.remoteServices}
                         options={["Ja","Nee","n.v.t."]}
@@ -4477,7 +4631,10 @@ export default function OpleverForm({
 
 
                 {/* 5. Locatie mediaplayer */}
-                <ChecklistVraag label="5. Wat is de locatie van de mediaplayer(s)?">
+                <ChecklistVraag
+                    label="5. Wat is de locatie van de mediaplayer(s)?"
+                    kleur="bg-rose-50 border-rose-200"
+                >
                     <p className="text-sm text-slate-500 -mt-1">
                         Meerdere locaties mogelijk — vink aan en vul het aantal in.
                     </p>
@@ -4548,7 +4705,7 @@ export default function OpleverForm({
                                                         [locatie]:e.target.value
                                                     };
                                                 })}
-                                                className="w-20 shrink-0 border rounded-lg p-1.5 text-sm"
+                                                className="w-20 shrink-0 border border-black/10 rounded-lg p-1.5 text-sm bg-white/70"
                                             />
                                         ) : null}
                                     </div>
@@ -4561,7 +4718,10 @@ export default function OpleverForm({
 
 
                 {/* 6. Afvalverwijdering */}
-                <ChecklistVraag label="6. Afvalverwijdering?">
+                <ChecklistVraag
+                    label="6. Afvalverwijdering?"
+                    kleur="bg-teal-50 border-teal-200"
+                >
                     <JaNee
                         value={c.afvalverwijdering}
                         jaKleur="red"
@@ -4584,6 +4744,8 @@ export default function OpleverForm({
                         )
                     }
                 </ChecklistVraag>
+
+                </div>
 
             </div>
             </>

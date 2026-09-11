@@ -27,8 +27,26 @@ export interface MateriaalStuk {
     sn:string;
 }
 
+export interface MediaplayerStuk {
+    merk:string;
+    type:string;
+    serienummer:string;
+    mac:string;
+    locatie:string;
+}
+
 export function emptyMateriaalStuk():MateriaalStuk {
     return { merk:"", type:"", sn:"" };
+}
+
+export function emptyMediaplayerStuk():MediaplayerStuk {
+    return {
+        merk:"",
+        type:"",
+        serienummer:"",
+        mac:"",
+        locatie:""
+    };
 }
 
 export const OPDRACHTGEVERS = [
@@ -176,6 +194,7 @@ export interface OpleverData {
         mediaplayers:"" | "Geïnstalleerd" | "Gedemonteerd";
         aantalMediaplayers:string;
         mediaplayersPerType:Partial<Record<OpleverWerkzaamheid, string>>;
+        mediaplayersItemsPerType:Partial<Record<OpleverWerkzaamheid, MediaplayerStuk[]>>;
 
         audio:boolean | null;
         audioStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
@@ -386,6 +405,13 @@ export interface KioskBlok {
     soort?:OpleverWerkzaamheid;
     omschrijving:string;
     aantal:string;
+    formaat:string;
+    formaatAnders:string;
+    orientatie:"" | "Horizontaal" | "Verticaal";
+    merk:string;
+    type:string;
+    serienummer:string;
+    mac:string;
 }
 
 
@@ -400,12 +426,73 @@ export interface AudioTypeBlok {
 }
 
 
+export const KIOSK_FORMATEN = ['15,6"', '21,5"'] as const;
+
 export function emptyKioskBlok():KioskBlok {
     return {
         status:"",
         omschrijving:"",
-        aantal:""
+        aantal:"",
+        formaat:"",
+        formaatAnders:"",
+        orientatie:"",
+        merk:"",
+        type:"",
+        serienummer:"",
+        mac:""
     };
+}
+
+export function kioskFormaatLabel(blok:KioskBlok):string {
+    if(blok.formaat === "Anders"){
+        return (blok.formaatAnders || "").trim() || "Anders";
+    }
+    return (blok.formaat || "").trim();
+}
+
+export function toonKioskGegevensTabel(blok:KioskBlok):boolean {
+    return Boolean(blok.formaat);
+}
+
+export function kioskGegevensCompleet(blok:KioskBlok):boolean {
+    if(!toonKioskGegevensTabel(blok)){
+        return true;
+    }
+
+    return Boolean(
+        (blok.merk || "").trim()
+        && (blok.type || "").trim()
+        && (blok.serienummer || "").trim()
+    );
+}
+
+export function ontbrekendeKioskKenmerken(
+    blokken:KioskBlok[]
+):string | null {
+    const namen:string[] = [];
+
+    blokken.forEach((blok, i)=>{
+        const formaatOk =
+            blok.formaat === "Anders"
+            ? Boolean((blok.formaatAnders || "").trim())
+            : Boolean((blok.formaat || "").trim());
+        const oriOk =
+            blok.orientatie === "Horizontaal"
+            || blok.orientatie === "Verticaal";
+        const locatieOk = Boolean((blok.omschrijving || "").trim());
+
+        if(formaatOk && oriOk && locatieOk && kioskGegevensCompleet(blok)){
+            return;
+        }
+
+        namen.push(`Kiosk ${i + 1}`);
+    });
+
+    if(namen.length === 0){
+        return null;
+    }
+
+    return `Vul formaat, oriëntatie, locatie, merk, type en serienummer in bij: ${namen.join(", ")}. MAC-adres is optioneel.`;
 }
 
 
@@ -503,6 +590,7 @@ export function emptyOpleverData():OpleverData {
             mediaplayers:"",
             aantalMediaplayers:"",
             mediaplayersPerType:{},
+            mediaplayersItemsPerType:{},
             audio:null,
             audioStatus:"",
             audioSpeler:"",
@@ -718,6 +806,40 @@ function mergeMediaplayersPerType(
     for(const [key, value] of Object.entries(raw as Record<string,unknown>)){
         if(isOpleverWerkzaamheid(key) && typeof value === "string"){
             next[key] = value;
+        }
+    }
+
+    return next;
+}
+
+function asMediaplayerStuk(value:unknown):MediaplayerStuk {
+    if(!value || typeof value !== "object"){
+        return emptyMediaplayerStuk();
+    }
+
+    const row = value as Record<string,unknown>;
+    return {
+        merk: typeof row.merk === "string" ? row.merk : "",
+        type: typeof row.type === "string" ? row.type : "",
+        serienummer:
+            typeof row.serienummer === "string" ? row.serienummer : "",
+        mac: typeof row.mac === "string" ? row.mac : "",
+        locatie: typeof row.locatie === "string" ? row.locatie : ""
+    };
+}
+
+function mergeMediaplayersItemsPerType(
+    raw:unknown
+):Partial<Record<OpleverWerkzaamheid, MediaplayerStuk[]>> {
+    if(!raw || typeof raw !== "object"){
+        return {};
+    }
+
+    const next:Partial<Record<OpleverWerkzaamheid, MediaplayerStuk[]>> = {};
+
+    for(const [key, value] of Object.entries(raw as Record<string,unknown>)){
+        if(isOpleverWerkzaamheid(key) && Array.isArray(value)){
+            next[key] = value.map(asMediaplayerStuk);
         }
     }
 
@@ -948,6 +1070,11 @@ export function mergeOpleverData(
             mediaplayersPerType:
                 mergeMediaplayersPerType(
                     data.installatie?.mediaplayersPerType
+                ),
+
+            mediaplayersItemsPerType:
+                mergeMediaplayersItemsPerType(
+                    data.installatie?.mediaplayersItemsPerType
                 ),
 
             audioPerType:
@@ -1360,6 +1487,86 @@ export function resizeMateriaalItems(
 }
 
 
+export function resizeMediaplayerItems(
+    items:MediaplayerStuk[] | undefined,
+    n:number
+):MediaplayerStuk[] {
+    if(n <= 0){
+        return [];
+    }
+
+    const base =
+        Array.isArray(items)
+        ? items.map(asMediaplayerStuk)
+        : [];
+
+    const next = base.slice(0, n);
+
+    while(next.length < n){
+        next.push(emptyMediaplayerStuk());
+    }
+
+    return next;
+}
+
+
+export function ontbrekendeMediaplayerKenmerken(
+    perType:Partial<Record<OpleverWerkzaamheid, MediaplayerStuk[]>> | undefined,
+    aantallen:Partial<Record<OpleverWerkzaamheid, string>> | undefined,
+    fallbackAantal?:string,
+    fallbackItems?:MediaplayerStuk[]
+):string | null {
+    const namen:string[] = [];
+
+    const types:OpleverWerkzaamheid[] = ["montage", "hermontage", "demontage"];
+
+    let hadType = false;
+
+    for(const type of types){
+        const aantal = aantallen?.[type];
+        const n = parseAantal(aantal);
+        if(n <= 0 && !Array.isArray(perType?.[type])){
+            continue;
+        }
+        hadType = true;
+        const items = resizeMediaplayerItems(perType?.[type], n);
+        items.forEach((item, i)=>{
+            if(
+                item.merk.trim()
+                && item.type.trim()
+                && item.serienummer.trim()
+                && item.locatie.trim()
+            ){
+                return;
+            }
+            namen.push(`Mediaplayer ${i + 1} (${type})`);
+        });
+    }
+
+    if(!hadType && fallbackAantal){
+        const n = parseAantal(fallbackAantal);
+        const items = resizeMediaplayerItems(fallbackItems, n);
+        items.forEach((item, i)=>{
+            if(
+                item.merk.trim()
+                && item.type.trim()
+                && item.serienummer.trim()
+                && item.locatie.trim()
+            ){
+                return;
+            }
+            namen.push(`Mediaplayer ${i + 1}`);
+        });
+    }
+
+    if(namen.length === 0){
+        return null;
+    }
+
+    return `Vul merk, type, serienummer en locatie in bij: ${namen.join(", ")}. MAC-adres is optioneel.`;
+}
+
+
 export function snsVanItems(items:MateriaalStuk[]):string[] {
     return items.map((item)=>item.sn);
 }
@@ -1646,6 +1853,16 @@ export function normalizeOpleverMacs(data:OpleverData):OpleverData {
 
     for(const h of data.hardware){
         h.macAddress = normalizeMac(h.macAddress || "");
+    }
+
+    for(const blok of data.installatie.kioskBlokken){
+        blok.mac = normalizeMac(blok.mac || "");
+    }
+
+    for(const items of Object.values(data.installatie.mediaplayersItemsPerType || {})){
+        for(const item of items || []){
+            item.mac = normalizeMac(item.mac || "");
+        }
     }
 
     return data;

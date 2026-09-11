@@ -9,6 +9,8 @@ import {
     OpleverData,
     SchermBlok,
     mergeOpleverData,
+    parseAantal,
+    resizeMediaplayerItems,
     type AudioTypeBlok,
 } from "@/types/oplever";
 import {
@@ -730,7 +732,7 @@ function opleverSections(
                         ? "montage"
                         : "";
                 return (
-                    (kb.status || kb.omschrijving || kb.aantal)
+                    (kb.status || kb.omschrijving || kb.aantal || kb.formaat || kb.merk)
                     &&
                     (soort || "montage") === item.key
                 );
@@ -745,7 +747,15 @@ function opleverSections(
                         `Kiosk ${ki + 1}`,
                         textAnswer(
                             [
+                                kb.formaat === "Anders"
+                                    ? (kb.formaatAnders || "Anders")
+                                    : kb.formaat,
+                                kb.orientatie,
                                 kb.omschrijving,
+                                kb.merk,
+                                kb.type,
+                                kb.serienummer ? `S/N ${kb.serienummer}` : "",
+                                kb.mac ? `MAC ${kb.mac}` : "",
                                 kb.aantal ? `aantal: ${kb.aantal}` : ""
                             ].filter(Boolean).join(" · ")
                         )
@@ -761,9 +771,26 @@ function opleverSections(
             if(!(aantal || "").trim()){
                 return "";
             }
+            const items = resizeMediaplayerItems(
+                i.mediaplayersItemsPerType?.[item.key],
+                parseAantal(aantal)
+            );
+            const playerRows = items.map((player, index)=>{
+                const tekst = [
+                    player.locatie,
+                    player.merk,
+                    player.type,
+                    player.serienummer ? `S/N ${player.serienummer}` : "",
+                    player.mac ? `MAC ${player.mac}` : ""
+                ].filter(Boolean).join(" · ");
+                return row(
+                    `Player ${index + 1}`,
+                    textAnswer(tekst || "—")
+                );
+            }).join("");
             return qaBlock(
                 vakTitel("Mediaplayers", item.key),
-                row("Aantal", textAnswer(aantal || ""))
+                row("Aantal", textAnswer(aantal || "")) + playerRows
             );
         }).join("")
         || qaBlock("Mediaplayers", [
