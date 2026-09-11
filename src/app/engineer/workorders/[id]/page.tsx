@@ -9,6 +9,7 @@ import PhotosForm from "@/components/workorders/PhotosForm";
 import CorrespondentieBlok from "@/components/workorders/CorrespondentieBlok";
 import BunniKoppeling from "@/components/bunni/BunniKoppeling";
 import WerkInstructieWeergave from "@/components/workorders/WerkInstructieWeergave";
+import WerkInstructieVeld from "@/components/workorders/WerkInstructieVeld";
 import OpleverForm from "@/components/workorders/OpleverForm";
 import AanvraagSpecificatiesOverzicht, {
     parseAanvraagSnapshot,
@@ -409,6 +410,9 @@ export default function EngineerWorkorderPage(){
     const [notes,setNotes] =
         useState("");
 
+    const [werkInstructie,setWerkInstructie] =
+        useState("");
+
     const [onHoldNotes,setOnHoldNotes] =
         useState("");
 
@@ -458,6 +462,8 @@ export default function EngineerWorkorderPage(){
     const materiaalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const opleverGeladen = useRef(false);
     const opleverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const werkzaamhedenGeladen = useRef(false);
+    const werkzaamhedenTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 
 
@@ -503,6 +509,7 @@ export default function EngineerWorkorderPage(){
 
             materiaalGeladen.current = false;
             opleverGeladen.current = false;
+            werkzaamhedenGeladen.current = false;
 
             const response =
                 await fetch(
@@ -519,6 +526,10 @@ export default function EngineerWorkorderPage(){
 
             setNotes(
                 data.description || ""
+            );
+
+            setWerkInstructie(
+                data.werkInstructie || ""
             );
 
             setOnHoldNotes(
@@ -702,6 +713,49 @@ export default function EngineerWorkorderPage(){
     },[opleverData, loading]);
 
 
+    // Werkzaamheden (klant + monteur) automatisch bewaren, net als materiaal.
+    useEffect(()=>{
+
+        if(loading || !isOffice){
+            return;
+        }
+
+        if(!werkzaamhedenGeladen.current){
+            werkzaamhedenGeladen.current = true;
+            return;
+        }
+
+        if(werkzaamhedenTimer.current){
+            clearTimeout(werkzaamhedenTimer.current);
+        }
+
+        werkzaamhedenTimer.current =
+            setTimeout(()=>{
+
+                fetch(
+                    `/api/workorders/${id}`,
+                    {
+                        method:"PUT",
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
+                        body:JSON.stringify({
+                            description:notes,
+                            werkInstructie
+                        })
+                    }
+                ).catch(()=>{});
+
+            },800);
+
+        return ()=>{
+            if(werkzaamhedenTimer.current){
+                clearTimeout(werkzaamhedenTimer.current);
+            }
+        };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[notes, werkInstructie, loading, isOffice]);
 
 
 
@@ -738,6 +792,8 @@ export default function EngineerWorkorderPage(){
                         body:JSON.stringify({
 
                             description:notes,
+
+                            werkInstructie,
 
                             formData:{
                                 ...(opleverData ?? {}),
@@ -2053,26 +2109,31 @@ async function completeWorkorder(){
                 )}
 
                 {
-                    (
-                        !isOffice
-                        || Boolean(workorder.werkInstructie?.trim())
-                    )
+                    isOffice
                     ? (
+                        <div className="
+                            rounded-xl border border-gray-200
+                            bg-white p-2.5 space-y-1.5
+                        ">
+                            <p className="text-xs text-gray-500">
+                                Voor de monteur
+                            </p>
+                            <WerkInstructieVeld
+                                value={werkInstructie}
+                                onChange={setWerkInstructie}
+                            />
+                        </div>
+                    )
+                    : (
                         <div className="
                             rounded-xl border border-indigo-200
                             bg-indigo-50/70 p-2.5 space-y-2
                         ">
-                            {isOffice ? (
-                                <p className="text-xs font-semibold text-indigo-800">
-                                    Voor de monteur
-                                </p>
-                            ) : null}
                             <WerkInstructieWeergave
-                                tekst={workorder.werkInstructie ?? ""}
+                                tekst={werkInstructie || workorder.werkInstructie || ""}
                             />
                         </div>
                     )
-                    : null
                 }
 
            </section>
