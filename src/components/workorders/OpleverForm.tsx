@@ -687,7 +687,7 @@ function MateriaalStukkenOnderAantal({
             {fields.map((stuk, i)=>(
                 <div
                     key={i}
-                    className="flex items-end gap-1.5"
+                    className="grid grid-cols-1 gap-2 md:grid-cols-3 md:items-end"
                 >
                     <label className="flex-1 min-w-0">
                         <span className="text-xs text-gray-600">
@@ -2932,7 +2932,9 @@ export default function OpleverForm({
 
             <div>
 
-                <Kop>Installatiegegevens</Kop>
+                <div className="hidden sm:block">
+                    <Kop>Installatiegegevens</Kop>
+                </div>
 
 
                 {

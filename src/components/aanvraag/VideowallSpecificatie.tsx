@@ -170,90 +170,30 @@ function ControllerBlok({
     onChange: (veld: string, waarde: string) => void;
 }) {
     return (
-        <div className="rounded-xl border border-black/10 bg-white overflow-hidden">
-            <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
-                Controller
-            </p>
-            <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse min-w-[28rem]">
-                    <thead>
-                        <tr>
-                            <th className="border-b border-black/10 p-2 text-left font-medium text-gray-600">
-                                Merk
-                            </th>
-                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
-                                Type
-                            </th>
-                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
-                                Serienummer
-                            </th>
-                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
-                                IP-adres
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td className="p-1.5 align-top">
-                                <input
-                                    value={velden.controllerMerk || ""}
-                                    onChange={(e) =>
-                                        onChange(
-                                            "controllerMerk",
-                                            e.target.value
-                                        )
-                                    }
-                                    placeholder="Merk"
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
-                                />
-                            </td>
-                            <td className="p-1.5 align-top">
-                                <input
-                                    value={velden.controllerType || ""}
-                                    onChange={(e) =>
-                                        onChange(
-                                            "controllerType",
-                                            e.target.value
-                                        )
-                                    }
-                                    placeholder="Type"
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
-                                />
-                            </td>
-                            <td className="p-1.5 align-top">
-                                <input
-                                    value={
-                                        velden.controllerSerienummer || ""
-                                    }
-                                    onChange={(e) =>
-                                        onChange(
-                                            "controllerSerienummer",
-                                            e.target.value
-                                        )
-                                    }
-                                    placeholder="Serienummer"
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
-                                />
-                            </td>
-                            <td className="p-1.5 align-top">
-                                <input
-                                    value={velden.controllerIp || ""}
-                                    onChange={(e) =>
-                                        onChange(
-                                            "controllerIp",
-                                            e.target.value
-                                        )
-                                    }
-                                    placeholder="Optioneel"
-                                    spellCheck={false}
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
-                                />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <HardwareKenmerkenTabel
+            titel="Controller"
+            merk={velden.controllerMerk || ""}
+            type={velden.controllerType || ""}
+            serienummer={velden.controllerSerienummer || ""}
+            mac={velden.controllerIp || ""}
+            vierdeLabel="IP-adres"
+            vierdePlaceholder="Optioneel"
+            normaliseerVierdeWaarde={false}
+            onChange={(patch) => {
+                if (patch.merk !== undefined) {
+                    onChange("controllerMerk", patch.merk);
+                }
+                if (patch.type !== undefined) {
+                    onChange("controllerType", patch.type);
+                }
+                if (patch.serienummer !== undefined) {
+                    onChange("controllerSerienummer", patch.serienummer);
+                }
+                if (patch.mac !== undefined) {
+                    onChange("controllerIp", patch.mac);
+                }
+            }}
+        />
     );
 }
 
@@ -286,6 +226,15 @@ export default function VideowallSpecificatie({
 
     function patchPanelen(next: VideowallPaneel[]) {
         onPatch({ panelenJson: JSON.stringify(next) });
+    }
+
+    function patchPaneel(
+        index: number,
+        patch: Partial<VideowallPaneel>
+    ) {
+        const next = [...panelen];
+        next[index] = { ...next[index], ...patch };
+        patchPanelen(next);
     }
 
     return (
@@ -476,8 +425,66 @@ export default function VideowallSpecificatie({
                             <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                                 Schermen — gegevens
                             </p>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm border-collapse min-w-[28rem]">
+                            <div className="space-y-4 p-3 md:hidden">
+                                {panelen.map((paneel, index) => (
+                                    <div key={index} className="space-y-3">
+                                        <p className="text-xs font-semibold text-slate-600">
+                                            Scherm {index + 1}
+                                        </p>
+                                        {([
+                                            ["merk", "Merk", "Merk"],
+                                            ["type", "Type", "Type"],
+                                            ["serienummer", "Serienummer", "Serienummer"],
+                                            ["mac", "MAC-adres", "Optioneel"],
+                                        ] as const).map(([key, label, placeholder]) => (
+                                            <label key={key} className="block min-w-0">
+                                                <span className="block text-xs font-medium text-gray-600">
+                                                    {label}
+                                                    {key !== "mac" ? (
+                                                        <>
+                                                            {" "}
+                                                            <span className="text-red-500">*</span>
+                                                        </>
+                                                    ) : null}
+                                                </span>
+                                                <input
+                                                    value={paneel[key]}
+                                                    onChange={(e) =>
+                                                        patchPaneel(index, {
+                                                            [key]: e.target.value,
+                                                        })
+                                                    }
+                                                    onBlur={
+                                                        key === "mac"
+                                                            ? (e) =>
+                                                                  patchPaneel(index, {
+                                                                      mac: normalizeMac(
+                                                                          e.target.value
+                                                                      ),
+                                                                  })
+                                                            : undefined
+                                                    }
+                                                    placeholder={placeholder}
+                                                    aria-required={key !== "mac" || undefined}
+                                                    autoCapitalize={
+                                                        key === "mac"
+                                                            ? "characters"
+                                                            : undefined
+                                                    }
+                                                    spellCheck={
+                                                        key === "mac"
+                                                            ? false
+                                                            : undefined
+                                                    }
+                                                    className="mt-1 w-full min-w-0 rounded-lg border border-black/10 bg-white/70 p-2.5 text-sm"
+                                                />
+                                            </label>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="hidden md:block">
+                                <table className="w-full table-fixed text-sm border-collapse">
                                     <thead>
                                         <tr>
                                             <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600 w-20">
@@ -515,16 +522,11 @@ export default function VideowallSpecificatie({
                                                 <td className="p-1.5 align-top">
                                                     <input
                                                         value={paneel.merk}
-                                                        onChange={(e) => {
-                                                            const next = [
-                                                                ...panelen,
-                                                            ];
-                                                            next[index] = {
-                                                                ...paneel,
+                                                        onChange={(e) =>
+                                                            patchPaneel(index, {
                                                                 merk: e.target.value,
-                                                            };
-                                                            patchPanelen(next);
-                                                        }}
+                                                            })
+                                                        }
                                                         placeholder="Merk"
                                                         aria-required
                                                         className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
@@ -533,16 +535,11 @@ export default function VideowallSpecificatie({
                                                 <td className="p-1.5 align-top">
                                                     <input
                                                         value={paneel.type}
-                                                        onChange={(e) => {
-                                                            const next = [
-                                                                ...panelen,
-                                                            ];
-                                                            next[index] = {
-                                                                ...paneel,
+                                                        onChange={(e) =>
+                                                            patchPaneel(index, {
                                                                 type: e.target.value,
-                                                            };
-                                                            patchPanelen(next);
-                                                        }}
+                                                            })
+                                                        }
                                                         placeholder="Type"
                                                         aria-required
                                                         className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
@@ -553,17 +550,12 @@ export default function VideowallSpecificatie({
                                                         value={
                                                             paneel.serienummer
                                                         }
-                                                        onChange={(e) => {
-                                                            const next = [
-                                                                ...panelen,
-                                                            ];
-                                                            next[index] = {
-                                                                ...paneel,
+                                                        onChange={(e) =>
+                                                            patchPaneel(index, {
                                                                 serienummer:
                                                                     e.target.value,
-                                                            };
-                                                            patchPanelen(next);
-                                                        }}
+                                                            })
+                                                        }
                                                         placeholder="Serienummer"
                                                         aria-required
                                                         className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
@@ -572,28 +564,18 @@ export default function VideowallSpecificatie({
                                                 <td className="p-1.5 align-top">
                                                     <input
                                                         value={paneel.mac}
-                                                        onChange={(e) => {
-                                                            const next = [
-                                                                ...panelen,
-                                                            ];
-                                                            next[index] = {
-                                                                ...paneel,
+                                                        onChange={(e) =>
+                                                            patchPaneel(index, {
                                                                 mac: e.target.value,
-                                                            };
-                                                            patchPanelen(next);
-                                                        }}
-                                                        onBlur={(e) => {
-                                                            const next = [
-                                                                ...panelen,
-                                                            ];
-                                                            next[index] = {
-                                                                ...paneel,
+                                                            })
+                                                        }
+                                                        onBlur={(e) =>
+                                                            patchPaneel(index, {
                                                                 mac: normalizeMac(
                                                                     e.target.value
                                                                 ),
-                                                            };
-                                                            patchPanelen(next);
-                                                        }}
+                                                            })
+                                                        }
                                                         placeholder="Optioneel"
                                                         autoCapitalize="characters"
                                                         spellCheck={false}

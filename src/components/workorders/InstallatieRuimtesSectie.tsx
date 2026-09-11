@@ -122,6 +122,9 @@ export function HardwareKenmerkenTabel({
     mac,
     onChange,
     requiredKenmerken = false,
+    vierdeLabel = "MAC-adres",
+    vierdePlaceholder = "Optioneel",
+    normaliseerVierdeWaarde = true,
 }: {
     titel: string;
     merk: string;
@@ -136,14 +139,79 @@ export function HardwareKenmerkenTabel({
     }) => void;
     /** Merk, type en serienummer verplicht; MAC blijft optioneel. */
     requiredKenmerken?: boolean;
+    vierdeLabel?: string;
+    vierdePlaceholder?: string;
+    normaliseerVierdeWaarde?: boolean;
 }) {
+    const velden = [
+        {
+            key: "merk" as const,
+            label: "Merk",
+            value: merk,
+            placeholder: "Merk",
+            required: requiredKenmerken,
+        },
+        {
+            key: "type" as const,
+            label: "Type",
+            value: type,
+            placeholder: "Type",
+            required: requiredKenmerken,
+        },
+        {
+            key: "serienummer" as const,
+            label: "Serienummer",
+            value: serienummer,
+            placeholder: "Serienummer",
+            required: requiredKenmerken,
+        },
+        {
+            key: "mac" as const,
+            label: vierdeLabel,
+            value: mac,
+            placeholder: vierdePlaceholder,
+            required: false,
+        },
+    ];
+
     return (
         <div className="rounded-xl border border-black/10 bg-white overflow-hidden">
             <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                 {titel}
             </p>
-            <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse min-w-[28rem]">
+            <div className="grid grid-cols-1 gap-3 p-3 md:hidden">
+                {velden.map((veld) => (
+                    <label key={veld.key} className="block min-w-0">
+                        <span className="block text-xs font-medium text-gray-600">
+                            {veld.label}
+                            {veld.required ? <VerplichtSter /> : null}
+                        </span>
+                        <input
+                            value={veld.value}
+                            onChange={(e) =>
+                                onChange({ [veld.key]: e.target.value })
+                            }
+                            onBlur={
+                                veld.key === "mac" && normaliseerVierdeWaarde
+                                    ? (e) =>
+                                          onChange({
+                                              mac: normalizeMac(e.target.value),
+                                          })
+                                    : undefined
+                            }
+                            placeholder={veld.placeholder}
+                            aria-required={veld.required || undefined}
+                            autoCapitalize={
+                                veld.key === "mac" ? "characters" : undefined
+                            }
+                            spellCheck={veld.key === "mac" ? false : undefined}
+                            className="mt-1 w-full min-w-0 rounded-lg border border-black/10 bg-white/70 p-2.5 text-sm"
+                        />
+                    </label>
+                ))}
+            </div>
+            <div className="hidden md:block">
+                <table className="w-full table-fixed text-sm border-collapse">
                     <thead>
                         <tr>
                             <th className="border-b border-black/10 p-2 text-left font-medium text-gray-600">
@@ -159,7 +227,7 @@ export function HardwareKenmerkenTabel({
                                 {requiredKenmerken ? <VerplichtSter /> : null}
                             </th>
                             <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
-                                MAC-adres
+                                {vierdeLabel}
                             </th>
                         </tr>
                     </thead>
@@ -206,12 +274,17 @@ export function HardwareKenmerkenTabel({
                                     onChange={(e) =>
                                         onChange({ mac: e.target.value })
                                     }
-                                    onBlur={(e) =>
-                                        onChange({
-                                            mac: normalizeMac(e.target.value),
-                                        })
+                                    onBlur={
+                                        normaliseerVierdeWaarde
+                                            ? (e) =>
+                                                  onChange({
+                                                      mac: normalizeMac(
+                                                          e.target.value
+                                                      ),
+                                                  })
+                                            : undefined
                                     }
-                                    placeholder="Optioneel"
+                                    placeholder={vierdePlaceholder}
                                     autoCapitalize="characters"
                                     spellCheck={false}
                                     className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
