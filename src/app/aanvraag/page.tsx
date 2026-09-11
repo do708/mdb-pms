@@ -743,7 +743,7 @@ function AanvraagFormulier(){
                     <img
                         src="/images/MDB-Logo.png"
                         alt="MDB Networks"
-                        className="mx-auto mb-3 h-auto w-full max-w-[300px] object-contain sm:mb-4 sm:max-w-[320px] md:max-w-[360px]"
+                        className="mx-auto mb-3 h-auto w-full max-w-[380px] object-contain sm:mb-4 sm:max-w-[420px] md:max-w-[480px]"
                     />
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-snug">
                         Aanvraag Service- en Installatiewerkzaamheden
@@ -785,8 +785,8 @@ function AanvraagFormulier(){
                             />
                         </label>
 
-                        <div className="flex flex-wrap gap-3">
-                            <label className="block flex-1 min-w-[180px]">
+                        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_10rem]">
+                            <label className="block min-w-0">
                                 <span className="text-sm text-gray-600">
                                     Straat{" "}
                                     <span className="text-red-500">*</span>
@@ -798,7 +798,7 @@ function AanvraagFormulier(){
                                     required
                                 />
                             </label>
-                            <label className="block w-28">
+                            <label className="block">
                                 <span className="text-sm text-gray-600">
                                     Huisnr.{" "}
                                     <span className="text-red-500">*</span>
