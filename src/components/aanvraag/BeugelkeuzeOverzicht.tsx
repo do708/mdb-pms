@@ -93,7 +93,7 @@ function ExcelTabel({
 }) {
     return (
         <div className="min-w-0 overflow-hidden rounded-sm border border-[#9BB7D4] bg-white shadow-sm">
-            <p className="bg-[#E8883A] px-2 py-1.5 text-center text-xs font-bold tracking-wide text-white">
+            <p className="bg-[#D6007E] px-2 py-1.5 text-center text-xs font-bold tracking-wide text-white">
                 {titel}
             </p>
             <div className="overflow-x-auto">
