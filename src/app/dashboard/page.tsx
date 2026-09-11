@@ -292,7 +292,15 @@ interface DashboardData {
         openForms: number;
         openAanvragen?: number;
         materiaal?: number;
+        nietGereed?: number;
     };
+    nietGereed?: Array<{
+        id: string;
+        title: string;
+        message: string | null;
+        workorderId: string | null;
+        createdAt: string;
+    }>;
     teLaat: Array<{
         id: string;
         number: string;
@@ -406,6 +414,32 @@ export default function DashboardPage() {
     const openFormsCount = data?.counters.openForms ?? 0;
     const openAanvragenCount = data?.counters.openAanvragen ?? 0;
     const materiaalCount = data?.counters.materiaal ?? 0;
+    const nietGereed = data?.nietGereed ?? [];
+
+    async function markeerNietGereedGelezen(id: string) {
+        setData((prev) => {
+            if (!prev) return prev;
+            const next = (prev.nietGereed ?? []).filter((n) => n.id !== id);
+            return {
+                ...prev,
+                nietGereed: next,
+                counters: {
+                    ...prev.counters,
+                    nietGereed: next.length,
+                },
+            };
+        });
+
+        try {
+            await fetch("/api/notifications", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id }),
+            });
+        } catch {
+            // lokale lijst is al bijgewerkt
+        }
+    }
 
     return (
         <PageShell>
@@ -488,6 +522,56 @@ export default function DashboardPage() {
                     />
                 </div>
             </div>
+
+            {nietGereed.length > 0 && (
+                <SpecPanel
+                    title={`Werkzaamheden niet gereed (${nietGereed.length})`}
+                    hint="Monteur heeft de werkbon afgerond, maar de klus is niet gereed. Opnieuw inplannen en eventueel materiaal bestellen."
+                    tone="amber"
+                >
+                    <div className="space-y-2">
+                        {nietGereed.map((melding) => (
+                            <SpecListRow
+                                key={melding.id}
+                                className="
+                                    flex justify-between items-center gap-3
+                                "
+                            >
+                                <a
+                                    href={
+                                        melding.workorderId
+                                            ? `/workorders/${melding.workorderId}`
+                                            : "/dashboard"
+                                    }
+                                    className="min-w-0 flex-1 hover:bg-gray-50 rounded-lg -m-1 p-1"
+                                >
+                                    <p className="font-semibold text-sm text-gray-900 truncate">
+                                        {melding.title}
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                        {melding.message ?? "Opnieuw inplannen"}
+                                    </p>
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        void markeerNietGereedGelezen(
+                                            melding.id
+                                        )
+                                    }
+                                    className="
+                                        text-xs font-medium text-amber-800
+                                        shrink-0 px-2 py-1 rounded-lg
+                                        hover:bg-amber-100
+                                    "
+                                >
+                                    Gelezen
+                                </button>
+                            </SpecListRow>
+                        ))}
+                    </div>
+                </SpecPanel>
+            )}
 
             {(data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
                 <SpecPanel

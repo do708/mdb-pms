@@ -3,7 +3,8 @@ export type OfficeNotificationSoort =
     | "formulier"
     | "telaat"
     | "materiaal"
-    | "planningsconflict";
+    | "planningsconflict"
+    | "niet_gereed";
 
 export interface OfficeNotification {
     id: string;
@@ -22,4 +23,5 @@ export const OFFICE_NOTIFICATION_LABEL: Record<
     telaat: "Te laat invullen",
     materiaal: "Materiaal klaarzetten",
     planningsconflict: "Planningsconflict",
+    niet_gereed: "Niet gereed",
 };

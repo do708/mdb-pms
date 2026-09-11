@@ -20,6 +20,8 @@ import { parseCustomerSchema } from "@/types/customerForms";
 import {
     mergeOpleverData,
     ontbrekendeMateriaalSerienummers,
+    ontbrekendeKioskKenmerken,
+    ontbrekendeMediaplayerKenmerken,
     type OpleverData
 } from "@/types/oplever";
 import { ontbrekendeSchermKenmerken } from "@/types/installatieRuimtes";
@@ -955,8 +957,20 @@ async function completeWorkorder(){
                 opleverData.installatie.videowallVelden
             );
 
+        const kioskFout =
+            ontbrekendeKioskKenmerken(opleverData.installatie.kioskBlokken);
+
+        const playerFout =
+            ontbrekendeMediaplayerKenmerken(
+                opleverData.installatie.mediaplayersItemsPerType,
+                opleverData.installatie.mediaplayersPerType,
+                opleverData.installatie.aantalMediaplayers
+            );
+
         const veldenFout =
-            [snFout, schermFout, videowallFout].filter(Boolean).join(" ");
+            [snFout, schermFout, videowallFout, kioskFout, playerFout]
+                .filter(Boolean)
+                .join(" ");
 
         if(veldenFout){
             setFormError(veldenFout);
@@ -982,6 +996,28 @@ async function completeWorkorder(){
             return;
         }
 
+        }
+
+        const gereedKeuze =
+            opleverData.afronding.werkzaamhedenGereed;
+
+        if(gereedKeuze !== "gereed" && gereedKeuze !== "niet_gereed"){
+            alert(
+                "Kies bij Afronding of de werkzaamheden gereed of niet gereed zijn."
+            );
+            window.scrollTo({ top:0, behavior:"smooth" });
+            return;
+        }
+
+        if(
+            gereedKeuze === "niet_gereed"
+            && !opleverData.afronding.nietGereedOmschrijving.trim()
+        ){
+            alert(
+                "Vul een omschrijving in bij niet gereed: wat moet er nog gebeuren en welk materiaal is nodig?"
+            );
+            window.scrollTo({ top:0, behavior:"smooth" });
+            return;
         }
 
     }

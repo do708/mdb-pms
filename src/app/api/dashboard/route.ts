@@ -8,6 +8,7 @@ import { excludeArchivedWorkorders, excludeArchivedForms } from "@/lib/archive";
 import {
     moetOpMateriaalControle,
 } from "@/lib/klaarzetMateriaal";
+import { loadNietGereedMeldingen } from "@/lib/officeNotifications";
 
 
 
@@ -294,6 +295,8 @@ export async function GET(){
                     engineer: w.assignedUser?.name ?? null,
                 }));
 
+        const nietGereed = await loadNietGereedMeldingen();
+
 
         return NextResponse.json({
 
@@ -318,10 +321,16 @@ export async function GET(){
                 materiaal:materiaalWaarschuwing.length,
 
 
+                nietGereed:nietGereed.length,
+
+
             },
 
 
             materiaalWaarschuwing,
+
+
+            nietGereed,
 
 
             teLaat,

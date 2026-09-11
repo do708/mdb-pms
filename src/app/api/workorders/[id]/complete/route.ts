@@ -369,16 +369,19 @@ export async function POST(
         }
 
 
+        const afronding =
+            (workorder.formData as { afronding?: {
+                werkzaamhedenGereed?:string;
+                nietGereedOmschrijving?:string;
+            } } | null)?.afronding;
+
+        const nietGereed =
+            afronding?.werkzaamhedenGereed === "niet_gereed";
+
         // Extra melding naar kantoor als de werkzaamheden NIET gereed zijn.
         try {
 
-            const afronding =
-                (workorder.formData as { afronding?: {
-                    werkzaamhedenGereed?:string;
-                    nietGereedOmschrijving?:string;
-                } } | null)?.afronding;
-
-            if(afronding?.werkzaamhedenGereed === "niet_gereed"){
+            if(nietGereed){
 
                 await sendNietGereedMail({
                     workorderNumber:
@@ -395,7 +398,7 @@ export async function POST(
                     werkzaamheden:
                         (workorder.description ?? workorder.title ?? "—"),
                     omschrijving:
-                        (afronding.nietGereedOmschrijving || "(geen omschrijving ingevuld)"),
+                        (afronding?.nietGereedOmschrijving || "(geen omschrijving ingevuld)"),
                     monteur:
                         (workorder.assignedUser?.name ?? "Een monteur")
                 });
@@ -414,15 +417,27 @@ export async function POST(
 
 
 
-        // Melding voor kantoor/projects dat de werkbon is verstuurd.
+        // Melding voor kantoor/projects. Bij niet-gereed een aparte
+        // dashboardmelding zodat office opnieuw kan inplannen.
         try {
             await prisma.notification.create({
-                data:{
-                    type:"workorder_sent",
-                    title:`Opdracht ${workorder.number} verstuurd`,
-                    message:`${customerName(workorder)} — opdracht is uitgevoerd en verstuurd door de monteur.`,
-                    workorderId:workorder.id
-                }
+                data: nietGereed
+                    ? {
+                        type: "niet_gereed",
+                        title: `Werkzaamheden niet gereed — ${workorder.number}`,
+                        message:
+                            `${customerName(workorder)} — ${
+                                afronding?.nietGereedOmschrijving?.trim()
+                                || "geen omschrijving"
+                            }. Opnieuw inplannen.`,
+                        workorderId: workorder.id
+                    }
+                    : {
+                        type: "workorder_sent",
+                        title: `Opdracht ${workorder.number} verstuurd`,
+                        message: `${customerName(workorder)} — opdracht is uitgevoerd en verstuurd door de monteur.`,
+                        workorderId: workorder.id
+                    }
             });
         } catch(notifyError){
             console.error("MELDING AANMAKEN MISLUKT (afronden gaat door)", notifyError);

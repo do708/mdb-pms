@@ -4655,26 +4655,6 @@ export default function OpleverForm({
                                 ✕ Niet gereed
                             </button>
 
-                            <button
-                                type="button"
-                                onClick={()=>update(draft=>{
-                                    draft.afronding.werkzaamhedenGereed = "nog_af_te_ronden";
-                                })}
-                                className={
-                                    "flex-1 rounded-xl py-3 px-3 font-bold border-2 transition "
-                                    +
-                                    (
-                                        data.afronding.werkzaamhedenGereed === "nog_af_te_ronden"
-                                        ?
-                                        "bg-amber-500 text-white border-amber-500"
-                                        :
-                                        "bg-white text-amber-700 border-amber-300"
-                                    )
-                                }
-                            >
-                                Nog af te ronden
-                            </button>
-
                         </div>
 
 
@@ -4704,31 +4684,9 @@ export default function OpleverForm({
 
                                     <span className="block text-xs text-gray-500 mt-1">
                                         Bij het afronden gaat er automatisch een melding naar kantoor
-                                        (projects@mdb-networks.nl) om de klus opnieuw in te plannen en materiaal te bestellen.
+                                        (dashboard + e-mail naar projects@mdb-networks.nl) om de klus
+                                        opnieuw in te plannen en materiaal te bestellen.
                                     </span>
-
-                                </label>
-
-                            )
-                        }
-
-                        {
-                            data.afronding.werkzaamhedenGereed === "nog_af_te_ronden" && (
-
-                                <label className="block mt-4">
-
-                                    <span className="text-sm font-medium text-gray-700 mb-1 block">
-                                        Wat moet er nog afgerond worden / vervolgafspraken / advies aan klant
-                                    </span>
-
-                                    <textarea
-                                        rows={3}
-                                        value={data.afronding.vervolgafspraken}
-                                        onChange={(e)=>update(draft=>{
-                                            draft.afronding.vervolgafspraken = e.target.value;
-                                        })}
-                                        className="w-full border rounded-xl p-3"
-                                    />
 
                                 </label>
 

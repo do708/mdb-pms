@@ -17,6 +17,7 @@ const SOORT_STYLE: Record<OfficeNotificationSoort, string> = {
     telaat: "bg-red-100 text-red-700",
     materiaal: "bg-orange-100 text-orange-800",
     planningsconflict: "bg-pink-100 text-[#d6007e]",
+    niet_gereed: "bg-red-100 text-red-800",
 };
 
 export default function NotificationBell() {
@@ -165,8 +166,8 @@ export default function NotificationBell() {
                             Meldingen
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">
-                            Open aanvragen, formulieren, te laat, materiaal en
-                            planningsconflicten
+                            Open aanvragen, formulieren, te laat, materiaal,
+                            niet gereed en planningsconflicten
                         </p>
                     </div>
 
@@ -180,7 +181,21 @@ export default function NotificationBell() {
                                 <a
                                     key={item.id}
                                     href={item.href}
-                                    onClick={() => setOpen(false)}
+                                    onClick={() => {
+                                        setOpen(false);
+                                        if (item.soort === "niet_gereed") {
+                                            void fetch("/api/notifications", {
+                                                method: "PATCH",
+                                                headers: {
+                                                    "Content-Type":
+                                                        "application/json",
+                                                },
+                                                body: JSON.stringify({
+                                                    id: item.id,
+                                                }),
+                                            }).then(() => void load());
+                                        }
+                                    }}
                                     className="
                                         block px-4 py-3 border-b
                                         hover:bg-gray-50

@@ -17,6 +17,37 @@ export interface OfficeNotificationCounters {
     teLaat: number;
     materiaal: number;
     planningsconflicten: number;
+    nietGereed: number;
+}
+
+export interface NietGereedMelding {
+    id: string;
+    title: string;
+    message: string | null;
+    workorderId: string | null;
+    createdAt: Date;
+}
+
+export async function loadNietGereedMeldingen(): Promise<NietGereedMelding[]> {
+    return safe(
+        "niet-gereed",
+        () =>
+            prisma.notification.findMany({
+                where: {
+                    type: "niet_gereed",
+                    read: false,
+                },
+                orderBy: { createdAt: "desc" },
+                select: {
+                    id: true,
+                    title: true,
+                    message: true,
+                    workorderId: true,
+                    createdAt: true,
+                },
+            }),
+        []
+    );
 }
 
 export interface OfficeNotificationsPayload {
@@ -58,7 +89,7 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
     const eindMorgen = new Date(volgWerkdag);
     eindMorgen.setDate(eindMorgen.getDate() + 1);
 
-    const [aanvragen, formulieren, teLaat, morgenKlussen, conflicten] =
+    const [aanvragen, formulieren, teLaat, morgenKlussen, conflicten, nietGereed] =
         await Promise.all([
             safe(
                 "aanvragen",
@@ -134,6 +165,8 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
             ),
 
             safe("planningsconflicten", () => loadUpcomingPlanningConflicts(), []),
+
+            loadNietGereedMeldingen(),
         ]);
 
     const materiaalItems: OfficeNotification[] = [];
@@ -196,6 +229,14 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
 
         ...materiaalItems,
 
+        ...nietGereed.map((n): OfficeNotification => ({
+            id: n.id,
+            soort: "niet_gereed",
+            title: n.title,
+            subtitle: n.message || "Opnieuw inplannen",
+            href: n.workorderId ? `/workorders/${n.workorderId}` : "/dashboard",
+        })),
+
         ...conflicten.map((c, index): OfficeNotification => ({
             id: `conflict-${c.userId}-${c.dateIso}-${index}`,
             soort: "planningsconflict",
@@ -211,6 +252,7 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
         teLaat: teLaat.length,
         materiaal: materiaalItems.length,
         planningsconflicten: conflicten.length,
+        nietGereed: nietGereed.length,
     };
 
     const count =
@@ -218,7 +260,8 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
         + counters.openForms
         + counters.teLaat
         + counters.materiaal
-        + counters.planningsconflicten;
+        + counters.planningsconflicten
+        + counters.nietGereed;
 
     return { items, counters, count };
 }
