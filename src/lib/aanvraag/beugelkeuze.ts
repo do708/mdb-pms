@@ -24,12 +24,18 @@ export type BeugelArtikelRegel = {
     eenheid: string;
 };
 
+type BeugelArtikelTuple = [type: string, aantal: number];
+
 type CombinatieJson = {
     status: string;
-    artikelen: [string, number][];
+    artikelen: BeugelArtikelTuple[];
 };
 
-const COMBINATIES = data.combinaties as Record<string, CombinatieJson>;
+// JSON-import verliest tuple-types ((string | number)[][] i.p.v. [string, number][]).
+const COMBINATIES = data.combinaties as unknown as Record<
+    string,
+    CombinatieJson
+>;
 const ARTIKELEN = data.artikelen as Record<
     string,
     { artikelnummer: string; onderdeel: string; eenheid: string }
