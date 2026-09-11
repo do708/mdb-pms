@@ -8,6 +8,7 @@ import {
 } from "@/lib/archive/formatArchiveLocationName";
 import {
     defaultArchiveRoot,
+    synologyDeleteFile,
     synologyEnsureFolder,
     synologyRename,
 } from "@/lib/nas/synologyClient";
@@ -314,4 +315,45 @@ export async function renameArchiveFolder(
     return prisma.archiveFolder.findUniqueOrThrow({
         where: { id: folder.id },
     });
+}
+
+/** Verwijder een map inclusief submappen en bestanden (DB + NAS). */
+export async function deleteArchiveFolder(folderId: string) {
+    const folder = await prisma.archiveFolder.findUnique({
+        where: { id: folderId },
+    });
+
+    if (!folder) {
+        throw new Error("Map niet gevonden");
+    }
+
+    const folders = await prisma.archiveFolder.findMany({
+        where: {
+            OR: [
+                { id: folder.id },
+                { nasPath: { startsWith: `${folder.nasPath}/` } },
+            ],
+        },
+        select: { id: true },
+    });
+
+    const files = await prisma.archiveFile.findMany({
+        where: { folderId: { in: folders.map((item) => item.id) } },
+    });
+
+    if (isNasArchiveEnabled()) {
+        for (const file of files) {
+            if (file.storage === "nas") {
+                await synologyDeleteFile(file.storagePath).catch(() => {});
+            }
+        }
+
+        await synologyDeleteFile(folder.nasPath).catch(() => {});
+    }
+
+    await prisma.archiveFolder.delete({
+        where: { id: folder.id },
+    });
+
+    return files;
 }

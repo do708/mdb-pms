@@ -238,8 +238,8 @@ export default function ArchivePage() {
 
                     {canManage ? (
                         <p className="text-xs text-gray-500 -mt-1">
-                            Mappen aanmaken of hernoemen, en bestanden
-                            slepen naar een map.
+                            Mappen aanmaken, hernoemen of verwijderen, en
+                            bestanden slepen naar een map.
                         </p>
                     ) : null}
 

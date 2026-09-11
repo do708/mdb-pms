@@ -1,7 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ChevronDown, ChevronRight, Folder, FolderPlus, Pencil } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+    ChevronDown,
+    ChevronRight,
+    Folder,
+    FolderPlus,
+    Pencil,
+    Trash2,
+} from "lucide-react";
 
 import { getStatus } from "@/constants/workorderStatus";
 import {
@@ -153,6 +160,48 @@ function mergeStored(
     return nodes;
 }
 
+function countFolderContents(node: TreeNode) {
+    let files = node.files.length;
+    let subfolders = node.children.length;
+    let workorders = node.workorders.length;
+
+    for (const child of node.children) {
+        const nested = countFolderContents(child);
+        files += nested.files;
+        subfolders += nested.subfolders;
+        workorders += nested.workorders;
+    }
+
+    return { files, subfolders, workorders };
+}
+
+function dutchCount(count: number, one: string, many: string) {
+    return `${count} ${count === 1 ? one : many}`;
+}
+
+function folderContentParts(node: TreeNode) {
+    const counts = countFolderContents(node);
+    const parts: string[] = [];
+
+    if (counts.files > 0) {
+        parts.push(dutchCount(counts.files, "bestand", "bestanden"));
+    }
+
+    if (counts.subfolders > 0) {
+        parts.push(dutchCount(counts.subfolders, "submap", "submappen"));
+    }
+
+    if (counts.workorders > 0) {
+        parts.push(dutchCount(counts.workorders, "opdracht", "opdrachten"));
+    }
+
+    return {
+        ...counts,
+        parts,
+        hasContent: parts.length > 0,
+    };
+}
+
 export default function ArchiveTree({
     workorders,
     storedFolders,
@@ -167,6 +216,28 @@ export default function ArchiveTree({
     const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
     const [dropKey, setDropKey] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
+    const [pendingDelete, setPendingDelete] = useState<TreeNode | null>(null);
+
+    const pendingContents = pendingDelete
+        ? folderContentParts(pendingDelete)
+        : null;
+    const canDeleteStored = Boolean(pendingDelete?.folderId);
+
+    useEffect(() => {
+        if (!pendingDelete) {
+            return;
+        }
+
+        function onKey(event: KeyboardEvent) {
+            if (event.key === "Escape" && !busy) {
+                setPendingDelete(null);
+            }
+        }
+
+        window.addEventListener("keydown", onKey);
+
+        return () => window.removeEventListener("keydown", onKey);
+    }, [pendingDelete, busy]);
 
     const tree = useMemo(
         () => mergeStored(buildWorkorderTree(workorders), storedFolders),
@@ -260,6 +331,35 @@ export default function ArchiveTree({
                 return;
             }
 
+            await onRefresh();
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    async function deleteFolder(node: TreeNode) {
+        if (!node.folderId) {
+            setPendingDelete(null);
+            alert(
+                "Deze map komt automatisch van opdrachten en kan niet worden verwijderd."
+            );
+            return;
+        }
+
+        setBusy(true);
+
+        try {
+            const res = await fetch(`/api/archive/folders/${node.folderId}`, {
+                method: "DELETE",
+            });
+            const data = await res.json().catch(() => null);
+
+            if (!res.ok) {
+                alert(data?.error || "Verwijderen mislukt");
+                return;
+            }
+
+            setPendingDelete(null);
             await onRefresh();
         } finally {
             setBusy(false);
@@ -484,6 +584,19 @@ export default function ArchiveTree({
                             >
                                 <FolderPlus size={14} />
                             </button>
+                            <button
+                                type="button"
+                                title="Map verwijderen"
+                                disabled={busy}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setPendingDelete(node);
+                                }}
+                                className="p-1.5 rounded text-red-500 hover:text-red-700 hover:bg-red-50"
+                            >
+                                <Trash2 size={14} />
+                            </button>
                         </div>
                     ) : null}
                 </div>
@@ -521,6 +634,116 @@ export default function ArchiveTree({
             ) : null}
 
             {tree.map((node) => renderNode(node, 0))}
+
+            {pendingDelete ? (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4"
+                    role="presentation"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        if (!busy) {
+                            setPendingDelete(null);
+                        }
+                    }}
+                >
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="folder-delete-dialog-title"
+                        className="w-full max-w-sm rounded-2xl bg-white shadow-xl border border-gray-100 p-5 space-y-4"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }}
+                    >
+                        <div className="space-y-3">
+                            <div className="space-y-1">
+                                <h2
+                                    id="folder-delete-dialog-title"
+                                    className="text-base font-semibold text-gray-900"
+                                >
+                                    Map verwijderen?
+                                </h2>
+                                {canDeleteStored ? (
+                                    <p className="text-sm text-gray-600 leading-relaxed break-words">
+                                        Weet je zeker dat je map{" "}
+                                        <span className="font-medium text-gray-900">
+                                            {pendingDelete.name}
+                                        </span>{" "}
+                                        wilt verwijderen? Dit kan niet ongedaan
+                                        worden gemaakt.
+                                    </p>
+                                ) : (
+                                    <p className="text-sm text-gray-600 leading-relaxed break-words">
+                                        Map{" "}
+                                        <span className="font-medium text-gray-900">
+                                            {pendingDelete.name}
+                                        </span>{" "}
+                                        kan niet worden verwijderd.
+                                    </p>
+                                )}
+                            </div>
+                            {!canDeleteStored ? (
+                                <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
+                                    Deze map komt automatisch van opdrachten.
+                                    Alleen mappen die je zelf hebt aangemaakt,
+                                    of mappen met geüploade bestanden, kun je
+                                    wissen. Opdrachten zelf blijven altijd
+                                    bestaan.
+                                </p>
+                            ) : pendingContents?.hasContent ? (
+                                <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
+                                    Deze map bevat{" "}
+                                    {pendingContents.parts.join(", ")}.
+                                    Bestanden en submappen worden definitief
+                                    verwijderd. Opdrachten zelf blijven
+                                    bestaan.
+                                </p>
+                            ) : null}
+                        </div>
+
+                        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setPendingDelete(null)}
+                                disabled={busy}
+                                className="
+                                    text-sm font-medium
+                                    rounded-xl px-4 py-2.5 min-h-[44px]
+                                    border border-gray-200 text-gray-700
+                                    hover:bg-gray-50
+                                    disabled:opacity-50
+                                "
+                            >
+                                {canDeleteStored ? "Annuleren" : "Sluiten"}
+                            </button>
+
+                            {canDeleteStored ? (
+                                <button
+                                    type="button"
+                                    onClick={() => void deleteFolder(pendingDelete)}
+                                    disabled={busy}
+                                    className="
+                                        text-sm font-semibold
+                                        rounded-xl px-4 py-2.5 min-h-[44px]
+                                        bg-red-600 text-white
+                                        hover:bg-red-700
+                                        disabled:opacity-50
+                                    "
+                                >
+                                    {busy
+                                        ? "Bezig…"
+                                        : pendingContents?.hasContent
+                                          ? "Map én inhoud verwijderen"
+                                          : "Verwijderen"}
+                                </button>
+                            ) : null}
+                        </div>
+                    </div>
+                </div>
+            ) : null}
         </div>
     );
 }
