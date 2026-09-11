@@ -77,10 +77,12 @@ function AansturingBlok({
     velden,
     onChange,
     onPatch,
+    showOpleverDetails,
 }: {
     velden: Record<string, string>;
     onChange: (veld: string, waarde: string) => void;
     onPatch: (patch: Record<string, string>) => void;
+    showOpleverDetails: boolean;
 }) {
     const aansturing = velden.aansturing || "";
     const toonApparaat = isAansturingMetApparaat(aansturing);
@@ -125,7 +127,7 @@ function AansturingBlok({
                     />
                 ) : null}
             </div>
-            {toonApparaat ? (
+            {showOpleverDetails && toonApparaat ? (
                 <HardwareKenmerkenTabel
                     titel={
                         isPlayerAansturing(aansturing)
@@ -611,6 +613,7 @@ export default function VideowallSpecificatie({
                         velden={velden}
                         onChange={onChange}
                         onPatch={onPatch}
+                        showOpleverDetails={showOpleverDetails}
                     />
 
                     <div className="space-y-1.5">
@@ -739,6 +742,7 @@ export default function VideowallSpecificatie({
                         velden={velden}
                         onChange={onChange}
                         onPatch={onPatch}
+                        showOpleverDetails={showOpleverDetails}
                     />
 
                     {showOpleverDetails ? (
