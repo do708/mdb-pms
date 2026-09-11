@@ -18,6 +18,7 @@ export const SCHERM_FORMATEN = [
     '55"',
     '65"',
     '75"',
+    '85"',
     '86"',
     '98"',
 ] as const;
@@ -31,6 +32,7 @@ export const FORMAAT_PASTEL: Record<string, { bg: string; border: string; text: 
     '55"': { bg: "bg-lime-100", border: "border-lime-300", text: "text-lime-900" },
     '65"': { bg: "bg-sky-100", border: "border-sky-300", text: "text-sky-900" },
     '75"': { bg: "bg-violet-100", border: "border-violet-300", text: "text-violet-900" },
+    '85"': { bg: "bg-purple-100", border: "border-purple-300", text: "text-purple-900" },
     '86"': { bg: "bg-fuchsia-100", border: "border-fuchsia-300", text: "text-fuchsia-900" },
     '98"': { bg: "bg-indigo-100", border: "border-indigo-300", text: "text-indigo-900" },
 };
@@ -64,6 +66,7 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
     ],
     Vloerstandaard: [
         "Vaste vloerstandaard",
+        "Vastgeschroefde vloerstandaard",
         "Vloer-plafond standaard",
         "Mobiele vloerstandaard (trolley)",
     ],
@@ -229,6 +232,7 @@ export const TYPE_CODE_PER_FORMAAT: Record<string, string> = {
     '55"': "03",
     '65"': "05",
     '75"': "06",
+    '85"': "06",
     '86"': "06",
     '98"': "06",
 };
@@ -809,69 +813,10 @@ export function wandVastMaatVanFormaat(item: AanvraagSchermItem): string {
     return '98"-100"';
 }
 
-/**
- * Type beugel dat MDB meeneemt, afgeleid van formaat + gekozen bevestiging.
- */
-export function mdbBeugelTypeWeergave(item: AanvraagSchermItem): string {
-    const soort = normaliseerBevestiging(item.beugel);
-    const detail =
-        item.bevestigingDetail === "Anders"
-            ? (item.bevestigingAnders?.trim() || "Anders")
-            : (item.bevestigingDetail || "");
-    const lower = detail.toLowerCase();
-
-    if (!soort && !detail) {
-        return "";
-    }
-
-    if (soort === "Plafondbeugel") {
-        const naam = detail || "Plafondsteun Fixed";
-        const hoogte = item.plafondHoogte?.trim();
-        return [naam, hoogte].filter(Boolean).join(" · ");
-    }
-
-    if (soort === "Vloerstandaard") {
-        return detail || "Vloerstandaard";
-    }
-
-    if (soort === "Special") {
-        return detail || "Special";
-    }
-
-    if (lower.includes("kantel")) {
-        return "Wandsteun kantelbaar";
-    }
-    if (lower.includes("draai") || lower.includes("zwenk")) {
-        return "Draaibare / Zwenkbeugel";
-    }
-
-    const maat = wandVastMaatVanFormaat(item);
-    if (lower.includes("vast") || soort === "Muurbeugel") {
-        return maat ? `Wandsteun vast ${maat}` : "Wandsteun vast";
-    }
-
-    return detail || soort;
-}
-
-/** Aantallen per MDB-beugeltype voor het type-overzicht. */
-export function telBenodigdeBeugels(
-    items: AanvraagSchermItem[]
-): { label: string; aantal: number }[] {
-    const counts = new Map<string, number>();
-
-    for (const item of items) {
-        const label = mdbBeugelTypeWeergave(item);
-        if (!label) {
-            continue;
-        }
-        counts.set(label, (counts.get(label) || 0) + 1);
-    }
-
-    return [...counts.entries()].map(([label, aantal]) => ({
-        label,
-        aantal,
-    }));
-}
+export {
+    mdbBeugelTypeWeergave,
+    telBenodigdeBeugels,
+} from "./beugelkeuze";
 
 export function isHoofdType(
     item: AanvraagSchermItem,

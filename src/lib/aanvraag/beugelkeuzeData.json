@@ -1,0 +1,5757 @@
+{
+  "bron": "Beugelkeuze_database.xlsx (Vogel's Pro-AV catalogue 2025–2026)",
+  "inches": [
+    32,
+    43,
+    49,
+    50,
+    55,
+    65,
+    75,
+    85,
+    86,
+    98
+  ],
+  "vesa": {
+    "32": {
+      "h": 200,
+      "v": 200
+    },
+    "43": {
+      "h": 200,
+      "v": 200
+    },
+    "49": {
+      "h": 400,
+      "v": 400
+    },
+    "50": {
+      "h": 400,
+      "v": 400
+    },
+    "55": {
+      "h": 400,
+      "v": 400
+    },
+    "65": {
+      "h": 400,
+      "v": 400
+    },
+    "75": {
+      "h": 600,
+      "v": 400
+    },
+    "85": {
+      "h": 600,
+      "v": 400
+    },
+    "86": {
+      "h": 600,
+      "v": 400
+    },
+    "98": {
+      "h": 800,
+      "v": 400
+    }
+  },
+  "artikelen": {
+    "PFW 4500": {
+      "artikelnummer": "7045000",
+      "onderdeel": "Muurbeugel vlak",
+      "eenheid": "stuk"
+    },
+    "PFW 4510": {
+      "artikelnummer": "7045100",
+      "onderdeel": "Muurbeugel kantelbaar",
+      "eenheid": "stuk"
+    },
+    "PFW 3040": {
+      "artikelnummer": "7330400",
+      "onderdeel": "Muurbeugel draaibaar",
+      "eenheid": "stuk"
+    },
+    "PFW 4700": {
+      "artikelnummer": "7047000",
+      "onderdeel": "Muurbeugel vlak",
+      "eenheid": "stuk"
+    },
+    "PFW 6810": {
+      "artikelnummer": "7368100",
+      "onderdeel": "Muurbeugel kantelbaar",
+      "eenheid": "stuk"
+    },
+    "PFW 6852": {
+      "artikelnummer": "7368520",
+      "onderdeel": "Muurbeugel draaibaar",
+      "eenheid": "stuk"
+    },
+    "PFW 6815": {
+      "artikelnummer": "7368150",
+      "onderdeel": "Muurbeugel vlak portrait",
+      "eenheid": "stuk"
+    },
+    "PFW 6900": {
+      "artikelnummer": "7369000",
+      "onderdeel": "Muurbeugel vlak XXL",
+      "eenheid": "stuk"
+    },
+    "PFW 6910": {
+      "artikelnummer": "7369100",
+      "onderdeel": "Muurbeugel kantelbaar XXL",
+      "eenheid": "stuk"
+    },
+    "PFW 6858": {
+      "artikelnummer": "7368580",
+      "onderdeel": "Roterende wandbeugel",
+      "eenheid": "stuk"
+    },
+    "PFW 6855": {
+      "artikelnummer": "7368550",
+      "onderdeel": "Roterende wandbeugel XXL",
+      "eenheid": "stuk"
+    },
+    "PUC 1060": {
+      "artikelnummer": "7210604",
+      "onderdeel": "Vaste plafondplaat PUC 25xx",
+      "eenheid": "stuk"
+    },
+    "PUC 2508B": {
+      "artikelnummer": "7225080",
+      "onderdeel": "Plafondbuis 80 cm zwart",
+      "eenheid": "stuk"
+    },
+    "PUC 2515B": {
+      "artikelnummer": "7225150",
+      "onderdeel": "Plafondbuis 150 cm zwart",
+      "eenheid": "stuk"
+    },
+    "PUC 2530B": {
+      "artikelnummer": "7225300",
+      "onderdeel": "Plafondbuis 300 cm zwart",
+      "eenheid": "stuk"
+    },
+    "PUC 2718B": {
+      "artikelnummer": "7227180",
+      "onderdeel": "Vloerstandaardbuis 180 cm zwart",
+      "eenheid": "stuk"
+    },
+    "PFB 3405B": {
+      "artikelnummer": "7234050",
+      "onderdeel": "Interfaceprofiel zwart",
+      "eenheid": "stuk"
+    },
+    "PFB 3407B": {
+      "artikelnummer": "7234070",
+      "onderdeel": "Interfaceprofiel zwart",
+      "eenheid": "stuk"
+    },
+    "PFB 3409B": {
+      "artikelnummer": "7234090",
+      "onderdeel": "Interfaceprofiel zwart",
+      "eenheid": "stuk"
+    },
+    "PFS 3304": {
+      "artikelnummer": "7233040",
+      "onderdeel": "Interfacestrips",
+      "eenheid": "set"
+    },
+    "PFS 3306": {
+      "artikelnummer": "7233060",
+      "onderdeel": "Interfacestrips",
+      "eenheid": "set"
+    },
+    "PFS 3308": {
+      "artikelnummer": "7233080",
+      "onderdeel": "Interfacestrips",
+      "eenheid": "set"
+    },
+    "PFS 3204": {
+      "artikelnummer": "7232040",
+      "onderdeel": "Interfacestrips heavy duty",
+      "eenheid": "set"
+    },
+    "PFS 3208": {
+      "artikelnummer": "7232080",
+      "onderdeel": "Interfacestrips heavy duty",
+      "eenheid": "set"
+    },
+    "PFF 7020B": {
+      "artikelnummer": "7327020",
+      "onderdeel": "Vrijstaande vloerplaat zwart",
+      "eenheid": "stuk"
+    },
+    "PFF 7030B": {
+      "artikelnummer": "7327030",
+      "onderdeel": "Vrijstaande vloerplaat dubbel zwart",
+      "eenheid": "stuk"
+    },
+    "PFF 7070": {
+      "artikelnummer": "7327070",
+      "onderdeel": "Vloerplaat voor vaste montage",
+      "eenheid": "stuk"
+    },
+    "PFT 8520B": {
+      "artikelnummer": "7328520",
+      "onderdeel": "Trolleyframe zwart",
+      "eenheid": "stuk"
+    },
+    "PFT 8530B": {
+      "artikelnummer": "7328530",
+      "onderdeel": "Trolleyframe XL zwart",
+      "eenheid": "stuk"
+    },
+    "PFA 9103": {
+      "artikelnummer": "7291030",
+      "onderdeel": "Vloerbevestiging voor PUC 25xx",
+      "eenheid": "stuk"
+    },
+    "PFA 9126": {
+      "artikelnummer": "7291260",
+      "onderdeel": "Extra bevestigingskit profiel aan buis",
+      "eenheid": "set"
+    },
+    "PFA 9145": {
+      "artikelnummer": "7291450",
+      "onderdeel": "Kolomklem",
+      "eenheid": "stuk"
+    },
+    "PUA 9503": {
+      "artikelnummer": "7295054",
+      "onderdeel": "Koppelstuk PUC 25xx",
+      "eenheid": "stuk"
+    }
+  },
+  "combinaties": {
+    "32|Landscape|Muur vlak": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Muur kantelbaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Muur draaibaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Landscape|Roterende wandbeugel": {
+      "status": "Geen catalogusmatch",
+      "artikelen": []
+    },
+    "32|Portrait|Muur vlak": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Muur kantelbaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Muur draaibaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "32|Portrait|Roterende wandbeugel": {
+      "status": "Geen catalogusmatch",
+      "artikelen": []
+    },
+    "43|Landscape|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Landscape|Roterende wandbeugel": {
+      "status": "Geen catalogusmatch",
+      "artikelen": []
+    },
+    "43|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "43|Portrait|Roterende wandbeugel": {
+      "status": "Geen catalogusmatch",
+      "artikelen": []
+    },
+    "49|Landscape|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "49|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "50|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7020B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Vloer vastgeschroefd": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8520B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "55|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Muur vlak": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Muur kantelbaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Muur draaibaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Muur vlak": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4500",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Muur kantelbaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4510",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Muur draaibaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 3040",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2508B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2515B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          1
+        ],
+        [
+          "PUC 1060",
+          1
+        ],
+        [
+          "PUC 2530B",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "65|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 4700",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6810",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6852",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "75|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6815",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Muur draaibaar": {
+      "status": "Niet aangeboden",
+      "artikelen": []
+    },
+    "75|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "75|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Muur vlak": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4700",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Muur kantelbaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 6810",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6852",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "85|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6815",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Muur draaibaar": {
+      "status": "Niet aangeboden",
+      "artikelen": []
+    },
+    "85|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "85|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Muur vlak": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 4700",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Muur kantelbaar": {
+      "status": "Afwijking catalogus",
+      "artikelen": [
+        [
+          "PFW 6810",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6852",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "86|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6815",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Muur draaibaar": {
+      "status": "Niet aangeboden",
+      "artikelen": []
+    },
+    "86|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3306",
+          1
+        ]
+      ]
+    },
+    "86|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6858",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6900",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Muur kantelbaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6910",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Muur draaibaar": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6852",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3204",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3409B",
+          1
+        ],
+        [
+          "PFS 3304",
+          1
+        ]
+      ]
+    },
+    "98|Landscape|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6855",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Muur vlak": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFW 6815",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Muur kantelbaar": {
+      "status": "Niet aangeboden",
+      "artikelen": []
+    },
+    "98|Portrait|Muur draaibaar": {
+      "status": "Niet aangeboden",
+      "artikelen": []
+    },
+    "98|Portrait|Plafond 80 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Plafond 80 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2508B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Plafond 150 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Plafond 150 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2515B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Plafond 300 cm vast": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Plafond 300 cm kantelbaar": {
+      "status": "Beperkt kantelbaar",
+      "artikelen": [
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Vloer vrijstaand": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7030B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Vloer vastgeschroefd": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFF 7070",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Trolley": {
+      "status": "Opgegeven keuze",
+      "artikelen": [
+        [
+          "PFT 8530B",
+          1
+        ],
+        [
+          "PUC 2718B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Vloer-plafond": {
+      "status": "Maatvoering nodig",
+      "artikelen": [
+        [
+          "PFA 9103",
+          2
+        ],
+        [
+          "PUC 1060",
+          2
+        ],
+        [
+          "PUC 2530B",
+          2
+        ],
+        [
+          "PFB 3407B",
+          1
+        ],
+        [
+          "PFS 3208",
+          1
+        ],
+        [
+          "PFA 9126",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Kolombeugel": {
+      "status": "Kolommaat nodig",
+      "artikelen": [
+        [
+          "PFA 9145",
+          1
+        ],
+        [
+          "PFB 3405B",
+          1
+        ],
+        [
+          "PFS 3308",
+          1
+        ]
+      ]
+    },
+    "98|Portrait|Roterende wandbeugel": {
+      "status": "Aangevuld uit catalogus",
+      "artikelen": [
+        [
+          "PFW 6855",
+          1
+        ]
+      ]
+    }
+  }
+}

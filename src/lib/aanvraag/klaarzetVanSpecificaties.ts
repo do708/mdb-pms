@@ -5,7 +5,7 @@
 import {
     emptySchermItem,
     isPlayerAansturing,
-    mdbBeugelTypeWeergave,
+    telBenodigdeBeugels,
 } from "@/lib/aanvraag/installatieTypes";
 
 export type KlaarzetPrefill = {
@@ -80,11 +80,11 @@ export function klaarzetVanAanvraagSpecificaties(
             }
         }
 
-        const beugels = schermen.items
+        const beugelItems = schermen.items
             .map((item) => {
                 const r = asRecord(item);
-                if (!r) return "";
-                return mdbBeugelTypeWeergave({
+                if (!r) return null;
+                return {
                     ...emptySchermItem(),
                     formaat: str(r.formaat),
                     formaatAnders: str(r.formaatAnders),
@@ -92,10 +92,13 @@ export function klaarzetVanAanvraagSpecificaties(
                     bevestigingDetail: str(r.bevestigingDetail),
                     bevestigingAnders: str(r.bevestigingAnders),
                     plafondHoogte: str(r.plafondHoogte),
-                });
+                    orientatie: str(r.orientatie),
+                };
             })
-            .filter(Boolean);
-        const beugelTekst = groepeerTeksten(beugels);
+            .filter((item): item is NonNullable<typeof item> => item !== null);
+        const beugelTekst = telBenodigdeBeugels(beugelItems)
+            .map((rij) => `${rij.aantal}x ${rij.label}`)
+            .join(", ");
         if (beugelTekst) out.beugelsAantal = beugelTekst;
     }
 
