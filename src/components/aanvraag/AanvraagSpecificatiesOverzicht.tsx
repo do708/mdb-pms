@@ -74,6 +74,8 @@ function Field({
     value,
     href,
     external,
+    className = "",
+    valueClassName = "text-sm text-gray-900 break-words",
 }: {
     label: string;
     value: unknown;
@@ -81,11 +83,13 @@ function Field({
     href?: string;
     /** Open link in nieuw tabblad (bijv. Google Maps). */
     external?: boolean;
+    className?: string;
+    valueClassName?: string;
 }) {
     const text = str(value);
     if (!text) return null;
     return (
-        <div className="min-w-0">
+        <div className={`min-w-0 ${className}`}>
             <p className="text-xs text-gray-500">{label}</p>
             {href ? (
                 <a
@@ -103,7 +107,7 @@ function Field({
                     {text}
                 </a>
             ) : (
-                <p className="text-sm text-gray-900 break-words">{text}</p>
+                <p className={valueClassName}>{text}</p>
             )}
         </div>
     );
@@ -196,6 +200,20 @@ function formaatWeergave(item: Record<string, unknown>): string {
         return str(item.formaatAnders) || "Anders";
     }
     return formaat;
+}
+
+function bevestigingWeergave(item: Record<string, unknown>): string {
+    const bevestiging =
+        str(item.bevestigingDetail) === "Anders"
+            ? `Special: ${str(item.bevestigingAnders) || "Anders"}`
+            : [str(item.bevestigingDetail), str(item.beugel)]
+                  .filter(Boolean)
+                  .join(" · ") || str(item.beugel);
+    const plafondHoogte = str(item.plafondHoogte);
+
+    return [bevestiging, plafondHoogte && `Plafondhoogte ${plafondHoogte}`]
+        .filter(Boolean)
+        .join(" · ");
 }
 
 function naarSchermItem(item: Record<string, unknown>): AanvraagSchermItem {
@@ -299,20 +317,12 @@ function SchermenBlok({
                                 <Field
                                     label="Formaat"
                                     value={formaatWeergave(s)}
+                                    className="sm:col-start-1 sm:row-start-1"
                                 />
                                 <Field
                                     label="Bevestiging"
-                                    value={
-                                        str(s.bevestigingDetail) === "Anders"
-                                            ? `Special: ${str(s.bevestigingAnders) || "Anders"}`
-                                            : [
-                                                  str(s.bevestigingDetail),
-                                                  str(s.beugel),
-                                              ]
-                                                  .filter(Boolean)
-                                                  .join(" · ")
-                                                  || str(s.beugel)
-                                    }
+                                    value={bevestigingWeergave(s)}
+                                    className="sm:col-start-2 sm:row-start-1"
                                 />
                                 <Field
                                     label="Aansturing"
@@ -324,41 +334,46 @@ function SchermenBlok({
                                                   str(s.aansturing)
                                               )
                                     }
-                                />
-                                <Field
-                                    label="Plafondhoogte"
-                                    value={s.plafondHoogte}
+                                    className="sm:col-start-1 sm:row-start-2"
                                 />
                                 <Field
                                     label="Oriëntatie"
                                     value={s.orientatie}
+                                    className="sm:col-start-2 sm:row-start-2"
                                 />
-                                <Field label="Locatie" value={s.locatie} />
+                                <Field
+                                    label="Locatie"
+                                    value={s.locatie}
+                                    className="sm:col-start-1 sm:row-start-3"
+                                />
                                 <Field
                                     label="Stroom binnen 3m"
                                     value={stroomWeergave(s)}
+                                    className="sm:col-start-2 sm:row-start-3"
                                 />
                                 <Field
                                     label="Internet binnen 3m"
                                     value={internetWeergave(s)}
+                                    className="sm:col-start-1 sm:row-start-4"
                                 />
-                                {str(s.berekendType) ? (
-                                    <div className="min-w-0">
-                                        <p className="text-xs text-gray-500">
-                                            Installatietype
-                                        </p>
-                                        <p className="text-sm font-semibold text-[#0066FF]">
-                                            {installatieTypeWeergave(
-                                                str(s.berekendType)
-                                            )}
-                                        </p>
-                                    </div>
-                                ) : null}
+                                <Field
+                                    label="Installatietype"
+                                    value={
+                                        str(s.berekendType)
+                                            ? installatieTypeWeergave(
+                                                  str(s.berekendType)
+                                              )
+                                            : ""
+                                    }
+                                    className="sm:col-start-2 sm:row-start-4"
+                                    valueClassName="text-sm font-semibold text-[#0066FF] break-words"
+                                />
                                 <Field
                                     label="Type beugel"
                                     value={mdbBeugelTypeWeergave(
                                         naarSchermItem(s)
                                     )}
+                                    className="sm:col-start-1 sm:row-start-5"
                                 />
                             </Card>
                         );
