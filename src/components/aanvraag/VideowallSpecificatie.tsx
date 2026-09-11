@@ -261,6 +261,7 @@ interface Props {
     onPatch: (patch: Record<string, string>) => void;
     onToggleFormaat: (optie: string) => void;
     formaatAlsSelect?: boolean;
+    showOpleverDetails?: boolean;
 }
 
 export default function VideowallSpecificatie({
@@ -269,6 +270,7 @@ export default function VideowallSpecificatie({
     onPatch,
     onToggleFormaat,
     formaatAlsSelect = false,
+    showOpleverDetails = false,
 }: Props) {
     const type = velden.type || "";
     const gekozenFormaten = parseGekozenOpties(velden.formaat || "");
@@ -676,50 +678,62 @@ export default function VideowallSpecificatie({
                         />
                     </label>
 
-                    <label className="block">
-                        <span className="text-xs text-gray-600">
-                            Cabinet-afmeting
-                        </span>
-                        <input
-                            value={velden.cabinetAfmeting || ""}
-                            onChange={(e) =>
-                                onChange("cabinetAfmeting", e.target.value)
-                            }
-                            placeholder="Bijv. 500 × 500 mm"
-                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
-                        />
-                    </label>
+                    {showOpleverDetails ? (
+                        <>
+                            <label className="block">
+                                <span className="text-xs text-gray-600">
+                                    Cabinet-afmeting
+                                </span>
+                                <input
+                                    value={velden.cabinetAfmeting || ""}
+                                    onChange={(e) =>
+                                        onChange(
+                                            "cabinetAfmeting",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Bijv. 500 × 500 mm"
+                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                                />
+                            </label>
 
-                    <label className="block">
-                        <span className="text-xs text-gray-600">
-                            Resolutie per cabinet
-                        </span>
-                        <input
-                            value={velden.resolutiePerCabinet || ""}
-                            onChange={(e) =>
-                                onChange(
-                                    "resolutiePerCabinet",
-                                    e.target.value
-                                )
-                            }
-                            placeholder="Bijv. 128 × 128"
-                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
-                        />
-                    </label>
+                            <label className="block">
+                                <span className="text-xs text-gray-600">
+                                    Resolutie per cabinet
+                                </span>
+                                <input
+                                    value={
+                                        velden.resolutiePerCabinet || ""
+                                    }
+                                    onChange={(e) =>
+                                        onChange(
+                                            "resolutiePerCabinet",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Bijv. 128 × 128"
+                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                                />
+                            </label>
 
-                    <label className="block">
-                        <span className="text-xs text-gray-600">
-                            Aantal cabinetten
-                        </span>
-                        <input
-                            value={velden.aantalCabinetten || ""}
-                            onChange={(e) =>
-                                onChange("aantalCabinetten", e.target.value)
-                            }
-                            placeholder="Bijv. 24"
-                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
-                        />
-                    </label>
+                            <label className="block">
+                                <span className="text-xs text-gray-600">
+                                    Aantal cabinetten
+                                </span>
+                                <input
+                                    value={velden.aantalCabinetten || ""}
+                                    onChange={(e) =>
+                                        onChange(
+                                            "aantalCabinetten",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Bijv. 24"
+                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                                />
+                            </label>
+                        </>
+                    ) : null}
 
                     <AansturingBlok
                         velden={velden}
@@ -727,10 +741,12 @@ export default function VideowallSpecificatie({
                         onPatch={onPatch}
                     />
 
-                    <ControllerBlok
-                        velden={velden}
-                        onChange={onChange}
-                    />
+                    {showOpleverDetails ? (
+                        <ControllerBlok
+                            velden={velden}
+                            onChange={onChange}
+                        />
+                    ) : null}
 
                     <div className="space-y-1.5">
                         <span className="text-xs text-gray-600 block">

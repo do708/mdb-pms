@@ -3316,6 +3316,7 @@ export default function OpleverForm({
                     >
                         <VideowallSpecificatie
                             velden={velden}
+                            showOpleverDetails
                             onChange={(veld, waarde)=>
                                 update(draft=>{
                                     const huidige =
