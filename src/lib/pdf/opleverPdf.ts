@@ -739,7 +739,7 @@ export async function generateOpleverPdf(
                 if (vanType.length === 0) {
                     continue;
                 }
-                text(vakTitel("Schermen", item.key),{ useBold:true, gap:2 });
+                text(vakTitel("Scherm", item.key),{ useBold:true, gap:2 });
                 for (const regel of summarizeRuimtes(vanType)) {
                     text(`• ${regel}`, { gap: 1 });
                 }

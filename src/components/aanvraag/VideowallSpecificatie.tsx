@@ -1,10 +1,17 @@
 "use client";
 
+import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
 import {
     FORMAAT_PASTEL,
     SCHERM_FORMATEN,
 } from "@/lib/aanvraag/installatieTypes";
-import { StroomInternetVragen } from "@/components/aanvraag/StroomInternetVragen";
+import {
+    aantalPanelenVanConfiguratie,
+    panelenUitVelden,
+    syncVideowallPanelen,
+    type VideowallPaneel,
+} from "@/lib/workorders/videowallPanelen";
+import { normalizeMac } from "@/types/installatieRuimtes";
 
 const VIDEOWALL_FORMATEN = [
     ...SCHERM_FORMATEN.filter((f) => f !== '98"'),
@@ -35,6 +42,17 @@ export default function VideowallSpecificatie({
 }: Props) {
     const type = velden.type || "";
     const gekozenFormaten = parseGekozenOpties(velden.formaat || "");
+    const paneelAantal = aantalPanelenVanConfiguratie(
+        velden.configuratie || ""
+    );
+    const panelen = syncVideowallPanelen(
+        panelenUitVelden(velden),
+        paneelAantal
+    );
+
+    function patchPanelen(next: VideowallPaneel[]) {
+        onPatch({ panelenJson: JSON.stringify(next) });
+    }
 
     return (
         <div className="space-y-3">
@@ -80,13 +98,32 @@ export default function VideowallSpecificatie({
                         </span>
                         <input
                             value={velden.configuratie || ""}
-                            onChange={(e) =>
-                                onChange("configuratie", e.target.value)
-                            }
+                            onChange={(e) => {
+                                const configuratie = e.target.value;
+                                const count =
+                                    aantalPanelenVanConfiguratie(
+                                        configuratie
+                                    );
+                                onPatch({
+                                    configuratie,
+                                    panelenJson: JSON.stringify(
+                                        syncVideowallPanelen(
+                                            panelenUitVelden(velden),
+                                            count
+                                        )
+                                    ),
+                                });
+                            }}
                             placeholder="Bijv. 2x2, 3x3"
                             className="w-full border rounded-lg p-2 mt-0.5 bg-white"
                         />
                     </label>
+                    {paneelAantal > 0 ? (
+                        <p className="text-xs text-gray-500">
+                            {paneelAantal} schermen — vul per scherm merk, type
+                            en serienummer in.
+                        </p>
+                    ) : null}
 
                     <div className="space-y-2">
                         <span className="text-xs text-gray-600 block">
@@ -176,6 +213,143 @@ export default function VideowallSpecificatie({
                             </>
                         )}
                     </div>
+
+                    {paneelAantal > 0 ? (
+                        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+                            <p className="px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-50 border-b border-slate-200">
+                                Schermen — gegevens
+                            </p>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm border-collapse min-w-[28rem]">
+                                    <thead>
+                                        <tr className="bg-white">
+                                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600 w-20">
+                                                {" "}
+                                            </th>
+                                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                                Merk{" "}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </th>
+                                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                                Type{" "}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </th>
+                                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                                Serienummer{" "}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </th>
+                                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                                MAC-adres
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {panelen.map((paneel, index) => (
+                                            <tr key={index}>
+                                                <td className="p-1.5 align-middle text-xs font-medium text-gray-500 whitespace-nowrap">
+                                                    Scherm {index + 1}
+                                                </td>
+                                                <td className="p-1.5 align-top">
+                                                    <input
+                                                        value={paneel.merk}
+                                                        onChange={(e) => {
+                                                            const next = [
+                                                                ...panelen,
+                                                            ];
+                                                            next[index] = {
+                                                                ...paneel,
+                                                                merk: e.target.value,
+                                                            };
+                                                            patchPanelen(next);
+                                                        }}
+                                                        placeholder="Merk"
+                                                        aria-required
+                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                    />
+                                                </td>
+                                                <td className="p-1.5 align-top">
+                                                    <input
+                                                        value={paneel.type}
+                                                        onChange={(e) => {
+                                                            const next = [
+                                                                ...panelen,
+                                                            ];
+                                                            next[index] = {
+                                                                ...paneel,
+                                                                type: e.target.value,
+                                                            };
+                                                            patchPanelen(next);
+                                                        }}
+                                                        placeholder="Type"
+                                                        aria-required
+                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                    />
+                                                </td>
+                                                <td className="p-1.5 align-top">
+                                                    <input
+                                                        value={
+                                                            paneel.serienummer
+                                                        }
+                                                        onChange={(e) => {
+                                                            const next = [
+                                                                ...panelen,
+                                                            ];
+                                                            next[index] = {
+                                                                ...paneel,
+                                                                serienummer:
+                                                                    e.target.value,
+                                                            };
+                                                            patchPanelen(next);
+                                                        }}
+                                                        placeholder="Serienummer"
+                                                        aria-required
+                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                    />
+                                                </td>
+                                                <td className="p-1.5 align-top">
+                                                    <input
+                                                        value={paneel.mac}
+                                                        onChange={(e) => {
+                                                            const next = [
+                                                                ...panelen,
+                                                            ];
+                                                            next[index] = {
+                                                                ...paneel,
+                                                                mac: e.target.value,
+                                                            };
+                                                            patchPanelen(next);
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            const next = [
+                                                                ...panelen,
+                                                            ];
+                                                            next[index] = {
+                                                                ...paneel,
+                                                                mac: normalizeMac(
+                                                                    e.target.value
+                                                                ),
+                                                            };
+                                                            patchPanelen(next);
+                                                        }}
+                                                        placeholder="Optioneel"
+                                                        autoCapitalize="characters"
+                                                        spellCheck={false}
+                                                        className="w-full border rounded-lg p-2 bg-white text-sm"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ) : null}
 
                     <div className="space-y-1.5">
                         <span className="text-xs text-gray-600 block">

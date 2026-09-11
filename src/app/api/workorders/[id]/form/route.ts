@@ -6,6 +6,7 @@ import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 import { mergeOpleverData, ontbrekendeMateriaalSerienummers } from "@/types/oplever";
 import { ontbrekendeSchermKenmerken } from "@/types/installatieRuimtes";
+import { ontbrekendeVideowallPanelen } from "@/lib/workorders/videowallPanelen";
 
 
 
@@ -52,7 +53,11 @@ export async function PUT(
         const veldenFout =
             [
                 ontbrekendeMateriaalSerienummers(formData),
-                ontbrekendeSchermKenmerken(formData.installatie.ruimtes)
+                ontbrekendeSchermKenmerken(formData.installatie.ruimtes),
+                ontbrekendeVideowallPanelen(
+                    formData.installatie.videowallPerType,
+                    formData.installatie.videowallVelden
+                )
             ]
             .filter(Boolean)
             .join(" ");

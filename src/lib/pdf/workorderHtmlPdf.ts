@@ -25,6 +25,11 @@ import {
     vakTitel,
     werkzaamheidVanActie,
 } from "@/lib/workorders/opleverModules";
+import {
+    aantalPanelenVanConfiguratie,
+    panelenUitVelden,
+    syncVideowallPanelen,
+} from "@/lib/workorders/videowallPanelen";
 
 
 
@@ -642,7 +647,7 @@ function opleverSections(
             if(ruimtes.length === 0){
                 return "";
             }
-            return qaBlock(vakTitel("Schermen", item.key), schermenPdfRowsVoor(ruimtes));
+            return qaBlock(vakTitel("Scherm", item.key), schermenPdfRowsVoor(ruimtes));
           }).join("")
         : qaBlock("Schermen", `
       ${i.nieuweSchermen === true ? row("Schermen",pill(i.nieuweSchermen)) : ""}
@@ -663,6 +668,22 @@ function opleverSections(
         }
         const typeLabel = v.type === "LED" ? "LED videowall" : v.type === "LCD" ? "LCD videowall" : "";
         const formaat = v.formaat === "Anders" ? (v.formaatAnders || "Anders") : v.formaat;
+        const panelen = syncVideowallPanelen(
+            panelenUitVelden(v),
+            aantalPanelenVanConfiguratie(v.configuratie || "")
+        );
+        const paneelRows = panelen.map((paneel, index) => {
+            const tekst = [
+                paneel.merk,
+                paneel.type,
+                paneel.serienummer ? `S/N ${paneel.serienummer}` : "",
+                paneel.mac ? `MAC ${paneel.mac}` : "",
+            ].filter(Boolean).join(" · ");
+            if (!tekst) {
+                return "";
+            }
+            return row(`Scherm ${index + 1}`, textAnswer(tekst));
+        }).join("");
         return [
             typeLabel ? row("Type videowall", textAnswer(typeLabel)) : "",
             v.configuratie ? row("Configuratie", textAnswer(v.configuratie)) : "",
@@ -671,7 +692,8 @@ function opleverSections(
             v.orientatie ? row("Oriëntatie", textAnswer(v.orientatie)) : "",
             (v.locatie || v.opmerking) ? row("Locatie", textAnswer(v.locatie || v.opmerking)) : "",
             v.stroom ? row("Stroom binnen 3 meter?", textAnswer(v.stroom)) : "",
-            v.internet ? row("Internet binnen 3 meter?", textAnswer(v.internet)) : ""
+            v.internet ? row("Internet binnen 3 meter?", textAnswer(v.internet)) : "",
+            paneelRows
         ].join("");
     };
 

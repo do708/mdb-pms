@@ -23,6 +23,7 @@ import {
     type OpleverData
 } from "@/types/oplever";
 import { ontbrekendeSchermKenmerken } from "@/types/installatieRuimtes";
+import { ontbrekendeVideowallPanelen } from "@/lib/workorders/videowallPanelen";
 import {
     modulesVanWerkbon,
     toonChecklist,
@@ -948,8 +949,14 @@ async function completeWorkorder(){
         const schermFout =
             ontbrekendeSchermKenmerken(opleverData.installatie.ruimtes);
 
+        const videowallFout =
+            ontbrekendeVideowallPanelen(
+                opleverData.installatie.videowallPerType,
+                opleverData.installatie.videowallVelden
+            );
+
         const veldenFout =
-            [snFout, schermFout].filter(Boolean).join(" ");
+            [snFout, schermFout, videowallFout].filter(Boolean).join(" ");
 
         if(veldenFout){
             setFormError(veldenFout);

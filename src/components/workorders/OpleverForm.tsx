@@ -38,6 +38,7 @@ import {
     emptyRuimte,
     ontbrekendeSchermKenmerken
 } from "@/types/installatieRuimtes";
+import { ontbrekendeVideowallPanelen } from "@/lib/workorders/videowallPanelen";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import {
     actieveWerkzaamheden,
@@ -1071,6 +1072,9 @@ function patchVideowallVelden(
         if(match){
             draft.installatie.videowallHorizontaal = match[1];
             draft.installatie.videowallVerticaal = match[2];
+            draft.installatie.videowallAantal = String(
+                Number(match[1]) * Number(match[2])
+            );
         }
     }
     if(patch.formaat !== undefined){
@@ -2203,8 +2207,14 @@ export default function OpleverForm({
         const schermFout =
             ontbrekendeSchermKenmerken(data.installatie.ruimtes);
 
+        const videowallFout =
+            ontbrekendeVideowallPanelen(
+                data.installatie.videowallPerType,
+                data.installatie.videowallVelden
+            );
+
         const veldenFout =
-            [snFout, schermFout].filter(Boolean).join(" ");
+            [snFout, schermFout, videowallFout].filter(Boolean).join(" ");
 
         if(veldenFout){
 
@@ -3166,7 +3176,7 @@ export default function OpleverForm({
                     schermenTypes.map((type)=>(
                     <ModuleKaart
                         key={`schermen-${type}`}
-                        titel={vakTitel("Schermen", type)}
+                        titel={vakTitel("Scherm", type)}
                         kleur="bg-sky-50 border-sky-200"
                     >
                         <InstallatieRuimtesSectie

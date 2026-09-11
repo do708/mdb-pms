@@ -215,7 +215,7 @@ export function kioskStatusVanModules(
 export const OPLEVER_WERKZAAMHEDEN = [
     { key: "montage", titel: "montage" },
     { key: "hermontage", titel: "hermontage" },
-    { key: "demontage", titel: "gedemonteerd" },
+    { key: "demontage", titel: "demontage" },
 ] as const;
 
 export type OpleverWerkzaamheid = (typeof OPLEVER_WERKZAAMHEDEN)[number]["key"];
