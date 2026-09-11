@@ -14,7 +14,6 @@ import {
     type AudioTypeBlok,
 } from "@/types/oplever";
 import {
-    samenvattingSchermHardware,
     summarizeVoorziening,
     werkzaamheidLabel,
     beugelLabel,
@@ -97,6 +96,42 @@ function esc(
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;");
 
+}
+
+
+function safeAssetUrl(
+    value:string | null | undefined
+):string {
+    const url = (value || "").trim();
+    if(!url){
+        return "";
+    }
+    if(url.startsWith("/")){
+        return url;
+    }
+    if(/^https?:\/\//i.test(url)){
+        return url;
+    }
+    if(/^data:image\/(?:png|jpe?g|webp|gif|svg\+xml);base64,/i.test(url)){
+        return url;
+    }
+    return "";
+}
+
+
+function resolveAssetUrl(
+    value:string | null | undefined,
+    appUrl:string
+):string {
+    const safe = safeAssetUrl(value);
+    if(!safe || !safe.startsWith("/")){
+        return safe;
+    }
+    try {
+        return new URL(safe, appUrl).toString();
+    } catch {
+        return "";
+    }
 }
 
 
@@ -228,6 +263,8 @@ export interface WorkorderHtmlPdfInput {
 
     signedBy:string | null;
 
+    signedAt?:Date | null;
+
     formData:unknown;
 
     // Per-opdrachtgever schema (voor de labels van de extra velden)
@@ -314,6 +351,100 @@ function row(
         <td class="a">${answer}</td>
     </tr>`;
 
+}
+
+
+function valueOrEmpty(value:unknown):string {
+    return value === null || value === undefined ? "" : String(value).trim();
+}
+
+
+function dataTable(
+    headers:string[],
+    rows:(string | number | null | undefined)[][],
+    className = "data-table"
+):string {
+    const filledRows = rows.filter((cells)=>
+        cells.some((cell)=>valueOrEmpty(cell))
+    );
+
+    if(filledRows.length === 0){
+        return "";
+    }
+
+    return `<table class="${className}">
+      <thead><tr>${headers.map((header)=>`<th>${esc(header)}</th>`).join("")}</tr></thead>
+      <tbody>
+        ${filledRows.map((cells)=>`<tr>${cells.map((cell)=>`<td>${esc(valueOrEmpty(cell))}</td>`).join("")}</tr>`).join("")}
+      </tbody>
+    </table>`;
+}
+
+
+function cardSection(
+    title:string,
+    content:string
+):string {
+    if(!content.trim()){
+        return "";
+    }
+    return `<div class="section module-card">
+      <div class="section-title">${esc(title)}</div>
+      ${content}
+    </div>`;
+}
+
+
+function schermTabel(
+    ruimtes:OpleverData["installatie"]["ruimtes"]
+):string {
+    const rows:(string | number)[][] = [];
+
+    for(const [ruimteIndex, ruimte] of ruimtes.entries()){
+        const ruimteNaam = valueOrEmpty(ruimte.naam) || `Ruimte ${ruimteIndex + 1}`;
+        const ruimteBevestiging = ruimte.beugelType
+            ? `${beugelLabel(ruimte.beugelType)}${ruimte.beugelMaat ? ` (${ruimte.beugelMaat})` : ""}`
+            : "";
+
+        for(const scherm of (ruimte.schermen || []).filter(schermHeeftGegevens)){
+            const formaat = scherm.formaat === "Anders"
+                ? (scherm.formaatAnders || "Anders")
+                : scherm.formaat;
+            const bevestiging = [
+                scherm.beugel,
+                scherm.bevestigingDetail,
+                scherm.bevestigingAnders,
+                ruimteBevestiging,
+            ].filter(Boolean).join(" · ");
+            const aansturing = [
+                scherm.aansturing === "Anders"
+                    ? (scherm.aansturingAnders || "Anders")
+                    : scherm.aansturing,
+                scherm.playerMerk,
+                scherm.playerType,
+                scherm.playerSerienummer ? `S/N ${scherm.playerSerienummer}` : "",
+                scherm.playerMac ? `MAC ${scherm.playerMac}` : "",
+            ].filter(Boolean).join(" · ");
+
+            rows.push([
+                scherm.locatie || ruimteNaam,
+                formaat,
+                scherm.merk || scherm.merkType,
+                scherm.type,
+                scherm.serienummer,
+                scherm.mac,
+                bevestiging,
+                scherm.orientatie || ruimte.orientatie,
+                aansturing,
+            ]);
+        }
+    }
+
+    return dataTable(
+        ["Locatie","Formaat","Merk","Type","Serienummer","MAC","Bevestiging","Oriëntatie","Aansturing / player"],
+        rows,
+        "data-table screen-table"
+    );
 }
 
 
@@ -621,26 +752,6 @@ function opleverSections(
         :
         [];
 
-    const schermenPdfRowsVoor = (
-        ruimtes:typeof filledRuimtes
-    ) => ruimtes.map((r, ri)=>{
-            const naam = (r.naam || `Ruimte ${ri + 1}`).trim();
-            const parts = [
-              r.werkzaamheid ? werkzaamheidLabel(r.werkzaamheid) : "",
-              r.beugelType ? `${beugelLabel(r.beugelType)}${r.beugelMaat ? ` (${r.beugelMaat})` : ""}` : "",
-              r.orientatie,
-              r.aantalSchermen ? `${r.aantalSchermen} scherm(en)` : ""
-            ].filter(Boolean);
-            const schermen = (r.schermen || [])
-              .filter((s)=>schermHeeftGegevens(s))
-              .map((s)=>samenvattingSchermHardware(s))
-              .join("<br/>");
-            return row(
-              naam,
-              (parts.join(" · ") ? textAnswer(parts.join(" · ")) : "") + (schermen ? `<div style="margin-top:4px;font-size:11px">${schermen}</div>` : "")
-            );
-          }).join("");
-
     const schermenPdfByType =
         filledRuimtes.length > 0
         ? OPLEVER_WERKZAAMHEDEN.map((item)=>{
@@ -650,7 +761,7 @@ function opleverSections(
             if(ruimtes.length === 0){
                 return "";
             }
-            return qaBlock(vakTitel("Scherm", item.key), schermenPdfRowsVoor(ruimtes));
+            return cardSection(vakTitel("Scherm", item.key), schermTabel(ruimtes));
           }).join("")
         : qaBlock("Schermen", `
       ${i.nieuweSchermen === true ? row("Schermen",pill(i.nieuweSchermen)) : ""}
@@ -763,27 +874,22 @@ function opleverSections(
             if(blokken.length === 0){
                 return "";
             }
-            return qaBlock(
+            return cardSection(
                 vakTitel("Kiosk", item.key),
-                blokken.map((kb,ki)=>
-                    row(
+                dataTable(
+                    ["Kiosk","Locatie / omschrijving","Formaat","Oriëntatie","Merk","Type","Serienummer","MAC","Aantal"],
+                    blokken.map((kb,ki)=>[
                         `Kiosk ${ki + 1}`,
-                        textAnswer(
-                            [
-                                kb.formaat === "Anders"
-                                    ? (kb.formaatAnders || "Anders")
-                                    : kb.formaat,
-                                kb.orientatie,
-                                kb.omschrijving,
-                                kb.merk,
-                                kb.type,
-                                kb.serienummer ? `S/N ${kb.serienummer}` : "",
-                                kb.mac ? `MAC ${kb.mac}` : "",
-                                kb.aantal ? `aantal: ${kb.aantal}` : ""
-                            ].filter(Boolean).join(" · ")
-                        )
-                    )
-                ).join("")
+                        kb.omschrijving,
+                        kb.formaat === "Anders" ? (kb.formaatAnders || "Anders") : kb.formaat,
+                        kb.orientatie,
+                        kb.merk,
+                        kb.type,
+                        kb.serienummer,
+                        kb.mac,
+                        kb.aantal,
+                    ])
+                )
             );
           }).join("")
         : "";
@@ -798,22 +904,19 @@ function opleverSections(
                 i.mediaplayersItemsPerType?.[item.key],
                 parseAantal(aantal)
             );
-            const playerRows = items.map((player, index)=>{
-                const tekst = [
-                    player.locatie,
-                    player.merk,
-                    player.type,
-                    player.serienummer ? `S/N ${player.serienummer}` : "",
-                    player.mac ? `MAC ${player.mac}` : ""
-                ].filter(Boolean).join(" · ");
-                return row(
-                    `Player ${index + 1}`,
-                    textAnswer(tekst || "—")
-                );
-            }).join("");
-            return qaBlock(
+            return cardSection(
                 vakTitel("Mediaplayers", item.key),
-                row("Aantal", textAnswer(aantal || "")) + playerRows
+                dataTable(
+                    ["Player","Locatie","Merk","Type","Serienummer","MAC"],
+                    items.map((player,index)=>[
+                        `Player ${index + 1}`,
+                        player.locatie,
+                        player.merk,
+                        player.type,
+                        player.serienummer,
+                        player.mac,
+                    ])
+                )
             );
         }).join("")
         || qaBlock("Mediaplayers", [
@@ -966,7 +1069,9 @@ function opleverSections(
         </div>`;
   })()}
 
-  ${data.hardware.length > 0 ? `
+  ${data.hardware.some((item)=>[
+      item.actie,item.merk,item.type,item.serienummer,item.macAddress
+    ].some((value)=>valueOrEmpty(value))) ? `
   <div class="section">
     <div class="section-title">Hardware geïnstalleerd / gedemonteerd</div>
     <table class="hardware-table">
@@ -980,7 +1085,9 @@ function opleverSections(
         </tr>
       </thead>
       <tbody>
-        ${data.hardware.map(h=>`<tr>
+        ${data.hardware.filter((item)=>[
+          item.actie,item.merk,item.type,item.serienummer,item.macAddress
+        ].some((value)=>valueOrEmpty(value))).map(h=>`<tr>
           <td>${esc(h.actie)}</td>
           <td>${esc(h.merk)}</td>
           <td>${esc(h.type)}</td>
@@ -994,32 +1101,32 @@ function opleverSections(
   ${
     (
         m.nieuweBeugels === true ||
-        m.extraHdmiKabels === true ||
-        m.extraPatchkabels === true ||
-        m.extraSwitches === true ||
-        m.utpGetrokken === true ||
-        m.stroomkabelGetrokken === true ||
-        m.verlengsnoeren === true ||
-        m.extraSpeakers === true ||
-        m.multicast === true ||
+        (m.extraHdmiKabels === true && Boolean(hdmiKabels || hdmiSplitters)) ||
+        (m.extraPatchkabels === true && Boolean(patch)) ||
+        (m.extraSwitches === true && Boolean(switches)) ||
+        (m.utpGetrokken === true && Boolean(utp)) ||
+        (m.stroomkabelGetrokken === true && Boolean(stroom)) ||
+        (m.verlengsnoeren === true && Boolean(verleng)) ||
+        (m.extraSpeakers === true && Boolean(m.usbSpeakers || rs232)) ||
+        (m.multicast === true && Boolean(m.multicastZenders || m.multicastOntvangers)) ||
         (m.opmerkingen && String(m.opmerkingen).trim())
     )
     ? `
   <div class="section">
     <div class="section-title">Gebruikte materialen</div>
     <table class="qa">
-      ${m.nieuweBeugels === true ? row("1. TV beugels gemonteerd",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
+      ${m.nieuweBeugels === true ? row("TV-beugels gemonteerd",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
       ${m.nieuweBeugels === true && beugels ? row("Beugels",textAnswer(beugels)) : ""}
       ${m.extraHdmiKabels === true && hdmiKabels ? row("HDMI kabels/splitters",textAnswer(hdmiKabels)) : ""}
       ${m.extraHdmiKabels === true && hdmiSplitters ? row("HDMI splitters",textAnswer(hdmiSplitters)) : ""}
-      ${m.extraPatchkabels === true && patch ? row("3. Patchkabels",textAnswer(patch)) : ""}
+      ${m.extraPatchkabels === true && patch ? row("Patchkabels",textAnswer(patch)) : ""}
       ${m.extraSwitches === true && switches ? row("Switches",textAnswer(switches)) : ""}
-      ${m.utpGetrokken === true && utp ? row("4. UTP-kabels",textAnswer(utp)) : ""}
-      ${m.stroomkabelGetrokken === true && stroom ? row("5. Stroomkabels",textAnswer(stroom)) : ""}
-      ${m.verlengsnoeren === true && verleng ? row("6. Verlengsnoeren",textAnswer(verleng)) : ""}
-      ${m.extraSpeakers === true && m.usbSpeakers ? row("7. USB Speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
+      ${m.utpGetrokken === true && utp ? row("UTP-kabels",textAnswer(utp)) : ""}
+      ${m.stroomkabelGetrokken === true && stroom ? row("Stroomkabels",textAnswer(stroom)) : ""}
+      ${m.verlengsnoeren === true && verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
+      ${m.extraSpeakers === true && m.usbSpeakers ? row("USB-speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
       ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
-      ${m.multicast === true && m.multicastZenders ? row("8. Multicast set — zenders",textAnswer(
+      ${m.multicast === true && m.multicastZenders ? row("Multicastset — zenders",textAnswer(
           formatMateriaalStukken(
               m.multicastZenders,
               m.multicastZenderItems,
@@ -1038,13 +1145,13 @@ function opleverSections(
   </div>` : ""}
 
   ${qaBlock("Checklist", `
-      ${c.werkendOpgeleverd !== null ? row("1. Is de installatie werkend opgeleverd?",pill(c.werkendOpgeleverd)) : ""}
+      ${c.werkendOpgeleverd !== null ? row("Is de installatie werkend opgeleverd?",pill(c.werkendOpgeleverd)) : ""}
       ${c.werkendOpgeleverd === false && c.redenWerkend ? row("Reden",textAnswer(c.redenWerkend)) : ""}
-      ${c.lichtnetSchakelbaar !== null ? row("2. Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar)) : ""}
+      ${c.lichtnetSchakelbaar !== null ? row("Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar)) : ""}
       ${c.lichtnetSchakelbaar === true && c.redenLichtnet ? row("Reden",textAnswer(c.redenLichtnet)) : ""}
-      ${c.wifiVanToepassing !== null ? row("3. WiFi verbinding van toepassing?",pill(c.wifiVanToepassing)) : ""}
+      ${c.wifiVanToepassing !== null ? row("Wifi-verbinding van toepassing?",pill(c.wifiVanToepassing)) : ""}
       ${c.wifiVanToepassing === true && c.wifiSterkte ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
-      ${c.remoteServices ? row("4. Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices)) : ""}
+      ${c.remoteServices ? row("Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices)) : ""}
       ${c.remoteServices === "Nee" && c.redenRemote ? row("Reden",textAnswer(c.redenRemote)) : ""}
       ${(()=>{
         const loc = c.mediaplayerLocaties && typeof c.mediaplayerLocaties === "object" ? c.mediaplayerLocaties : {};
@@ -1052,14 +1159,14 @@ function opleverSections(
             .map(k=>`${k}${loc[k] ? `: ${loc[k]}` : ""}`)
             .join(" · ");
         if(regels){
-            return row("5. Locatie mediaplayer(s)",textAnswer(regels));
+            return row("Locatie mediaplayer(s)",textAnswer(regels));
         }
         if(c.locatieMediaplayer){
-            return row("5. Locatie mediaplayer(s)",textAnswer(c.locatieMediaplayer + (c.aantalMediaplayers ? `: ${c.aantalMediaplayers}` : "")));
+            return row("Locatie mediaplayer(s)",textAnswer(c.locatieMediaplayer + (c.aantalMediaplayers ? `: ${c.aantalMediaplayers}` : "")));
         }
         return "";
       })()}
-      ${c.afvalverwijdering !== null ? row("6. Afvalverwijdering?",pill(c.afvalverwijdering)) : ""}
+      ${c.afvalverwijdering !== null ? row("Afval verwijderd?",pill(c.afvalverwijdering)) : ""}
   `)}`;
 
 }
@@ -1149,7 +1256,8 @@ function customFieldsSection(
 
 function generateHtml(
     data:WorkorderHtmlPdfInput,
-    logoDataUrl:string = ""
+    logoDataUrl:string = "",
+    appUrl:string = ""
 ):string {
 
 
@@ -1182,6 +1290,20 @@ function generateHtml(
             0
         );
 
+    const veiligeFotos = data.photos
+        .map((foto)=>({
+            ...foto,
+            url:resolveAssetUrl(foto.url, appUrl),
+        }))
+        .filter((foto)=>Boolean(foto.url));
+
+    const handtekeningUrl = safeAssetUrl(
+        resolveAssetUrl(
+            data.signatureUrl || oplever.afronding.handtekening,
+            appUrl
+        )
+    );
+
 
     return `<!DOCTYPE html>
 <html lang="nl">
@@ -1196,6 +1318,7 @@ function generateHtml(
     line-height: 1.45;
     background: #fff;
   }
+  @page { size: A4; margin: 0; }
   .page { width: 210mm; padding: 15mm 14mm; }
   /* Header */
   .header {
@@ -1218,7 +1341,9 @@ function generateHtml(
   .order-meta { font-size: 8.5px; color: #64748b; margin-top: 2px; }
   .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 600; background: rgba(255,255,255,0.2); color: #fff; }
   /* Sections */
-  .section { margin-bottom: 15px; page-break-inside: avoid; }
+  .section { margin-bottom: 15px; }
+  .module-card { border: 1px solid #e6ebf2; border-radius: 9px; padding: 9px; }
+  .module-card .section-title { margin: -9px -9px 9px; border-radius: 8px 8px 0 0; }
   .section-title {
     font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px;
     color: #0a2540; margin-bottom: 9px; padding: 6px 0 6px 11px;
@@ -1226,15 +1351,17 @@ function generateHtml(
   }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .info-box { background: #f8fafc; border: 1px solid #e6ebf2; border-radius: 8px; padding: 11px; }
+  .info-box { background: #f8fafc; border: 1px solid #e6ebf2; border-radius: 8px; padding: 11px; break-inside: avoid; page-break-inside: avoid; }
   .info-label { font-size: 8px; font-weight: 700; color: #8a97a8; text-transform: uppercase; letter-spacing: 0.6px; }
   .info-value { font-size: 10px; color: #1f2937; margin-top: 3px; font-weight: 500; }
   /* Tables */
   table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 9px; border-radius: 8px; }
+  thead { display: table-header-group; }
   thead tr { background: #0a2540; color: #fff; }
   thead th { padding: 7px 9px; text-align: left; font-weight: 600; letter-spacing: 0.3px; }
   tbody tr:nth-child(even) { background: #f4f7fb; }
   tbody td { padding: 6px 9px; border-bottom: 1px solid #e6ebf2; color: #334155; }
+  tr, td, th { break-inside: avoid; page-break-inside: avoid; }
   tfoot tr { background: #0066ff; color: #fff; }
   tfoot td { padding: 7px 9px; font-weight: 700; }
   /* Vraag/antwoord */
@@ -1245,6 +1372,10 @@ function generateHtml(
   .hardware-table { width: 100%; border-collapse: collapse; font-size: 9px; }
   .hardware-table th { background: #eef3f9; text-align: left; padding: 6px 9px; font-weight: 700; color: #334155; border: 1px solid #e6ebf2; }
   .hardware-table td { padding: 6px 9px; border: 1px solid #e6ebf2; color: #1f2937; }
+  .data-table { table-layout: auto; border-collapse: collapse; }
+  .data-table th { background: #0a2540; color: #fff; padding: 6px; font-size: 7.5px; }
+  .data-table td { padding: 6px; border: 1px solid #e6ebf2; font-size: 7.5px; overflow-wrap: anywhere; }
+  .screen-table { table-layout: fixed; }
   .txt { font-weight: 600; color: #1f2937; }
   .pill { display: inline-block; padding: 2px 10px; border-radius: 8px; font-size: 8.5px; font-weight: 600; }
   .pill-yes { background: #dcf5e4; color: #15803d; }
@@ -1254,9 +1385,11 @@ function generateHtml(
   .description-box { background: #f8fafc; border-left: 4px solid #0066ff; padding: 9px 11px; border-radius: 0 6px 6px 0; font-size: 9.5px; color: #334155; line-height: 1.55; }
   /* Foto's */
   .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-  .photo-item { page-break-inside: avoid; }
+  .photo-item { break-inside: avoid; page-break-inside: avoid; border: 1px solid #e6ebf2; border-radius: 8px; overflow: hidden; }
+  .photo-link { display: block; text-decoration: none; }
   .photo-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e6ebf2; border-radius: 8px; background: #f8fafc; }
-  .photo-caption { font-size: 9px; color: #475569; margin-top: 4px; padding: 3px 6px; background: #f4f7fb; border-radius: 4px; }
+  .photo-caption { font-size: 9px; color: #334155; padding: 6px 8px; background: #f4f7fb; }
+  .photo-original { font-size: 7.5px; color: #64748b; padding: 0 8px 6px; background: #f4f7fb; }
   /* Handtekeningen */
   .sig-box { position: relative; min-height: 90px; width: 100%; background: transparent; border: none; padding: 0; }
   .sig-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -1264,7 +1397,7 @@ function generateHtml(
   .sig-img { width: 100%; max-height: 120px; object-fit: contain; }
   .sig-line { border-top: 1px dashed #cbd5e1; margin-top: 40px; padding-top: 4px; font-size: 8px; color: #94a3b8; }
   /* Footer */
-  .footer { margin-top: 20px; padding-top: 12px; border-top: 3px solid #ffd400; display: flex; justify-content: space-between; align-items: flex-end; }
+  .footer { margin-top: 20px; padding-top: 12px; border-top: 3px solid #ffcc00; display: flex; justify-content: space-between; align-items: flex-end; }
   .footer-meta { font-size: 8px; color: #94a3b8; line-height: 1.8; }
   .qr-img { width: 56px; height: 56px; }
 </style>
@@ -1293,19 +1426,21 @@ function generateHtml(
 
   <!-- PROJECT + KLANT -->
   <div class="section">
-    <div class="section-title">Projectinformatie</div>
-    <div class="grid-2" style="gap:10px">
+    <div class="section-title">Project- en werkbongegevens</div>
+    <div class="grid-2" style="gap:10px;margin-bottom:10px">
       <div class="info-box">
-        <div class="info-label">Opdracht</div>
+        <div class="info-label">Project- / werkbonnaam</div>
         <div class="info-value" style="font-size:12px;font-weight:700">${esc(data.title)}</div>
       </div>
       <div class="info-box">
         <div class="info-label">Opdrachtgever</div>
-        ${opdrachtgever ? `<div class="info-value" style="font-size:11px;font-weight:700">${esc(opdrachtgever)}</div>` : ""}
-        <div class="info-value" style="font-size:11px;font-weight:700">${esc(data.customer.name)}</div>
-        ${data.customer.address ? `<div class="info-value" style="font-size:9px;color:#64748b">${esc(data.customer.address)}</div>` : ""}
-        ${data.customer.phone ? `<div class="info-value" style="font-size:9px;color:#64748b">${esc(data.customer.phone)}</div>` : ""}
+        <div class="info-value" style="font-size:11px;font-weight:700">${esc(opdrachtgever || data.customer.name)}</div>
       </div>
+    </div>
+    <div class="grid-3">
+      ${data.projectName ? `<div class="info-box"><div class="info-label">Projectnaam</div><div class="info-value">${esc(data.projectName)}</div></div>` : ""}
+      ${data.customer.address ? `<div class="info-box"><div class="info-label">Adres / locatie</div><div class="info-value">${esc(data.customer.address)}</div></div>` : ""}
+      <div class="info-box"><div class="info-label">Werkbonnummer / status</div><div class="info-value">${esc(data.number)}${data.status ? ` · ${esc(data.status)}` : ""}</div></div>
     </div>
   </div>
 
@@ -1336,7 +1471,7 @@ function generateHtml(
         ${uitgevoerd ? `
         <div class="grid-2" style="gap:8px">
           <div class="info-box">
-            <div class="info-label">Uitgevoerd op</div>
+            <div class="info-label">Datum</div>
             <div class="info-value">${formatDate(data.workDate ?? data.plannedDate)}</div>
           </div>
         </div>` : ""}
@@ -1378,7 +1513,9 @@ function generateHtml(
   </div>` : ""}
 
   <!-- HARDWARE -->
-  ${data.hardware.length > 0 ? `
+  ${data.hardware.some((item)=>[
+      item.name,item.brand,item.model,item.serialNumber,item.location,item.quantity
+    ].some((value)=>valueOrEmpty(value))) ? `
   <div class="section">
     <div class="section-title">Hardware</div>
     <table>
@@ -1386,7 +1523,9 @@ function generateHtml(
         <th>Naam</th><th>Merk</th><th>Model</th><th>Serienummer</th><th>Aantal</th><th>Locatie</th>
       </tr></thead>
       <tbody>
-        ${data.hardware.map(item=>`<tr>
+        ${data.hardware.filter((item)=>[
+          item.name,item.brand,item.model,item.serialNumber,item.location,item.quantity
+        ].some((value)=>valueOrEmpty(value))).map(item=>`<tr>
           <td>${esc(item.name)}</td>
           <td>${esc(item.brand)}</td>
           <td>${esc(item.model)}</td>
@@ -1442,35 +1581,37 @@ function generateHtml(
   }
 
   <!-- FOTO'S -->
-  ${data.photos.length > 0 ? `
+  ${veiligeFotos.length > 0 ? `
   <div class="section">
-    <div class="section-title">Foto's</div>
+    <div class="section-title">Foto's van de installatie</div>
     <div class="photo-grid">
-      ${data.photos.map(foto=>`
+      ${veiligeFotos.map(foto=>{
+        const afbeelding = `<img src="${esc(foto.url)}" alt="Werkbonfoto" onerror="const item=this.closest('.photo-item');const section=item.closest('.section');item.remove();if(!section.querySelector('.photo-item'))section.remove()" />`;
+        return `
         <div class="photo-item">
-          <img src="${esc(foto.url)}" alt="Foto" />
+          <a href="${esc(foto.url)}" target="_blank" rel="noopener noreferrer" class="photo-link">${afbeelding}</a>
           ${foto.caption ? `<div class="photo-caption">${esc(foto.caption)}</div>` : ""}
+          <div class="photo-original">Klik voor origineel ↗</div>
         </div>
-      `).join("")}
+      `}).join("")}
     </div>
   </div>` : ""}
 
   <!-- HANDTEKENING -->
-  <div class="section">
+  ${(handtekeningUrl || data.signedBy || oplever.afronding.contactpersoon) ? `<div class="section">
     <div class="section-title">Handtekening</div>
     <div>
-      <div class="info-label" style="margin-bottom:4px">Handtekening klant</div>
+      <div class="info-value" style="margin-bottom:6px"><strong>Ondertekend door:</strong> ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "Onbekend"}${data.signedAt ? ` · ${formatDateTime(data.signedAt)}` : ""}</div>
       <div class="sig-box">
         <svg class="sig-frame" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" preserveAspectRatio="none">
           <rect x="1" y="1" width="398" height="98" rx="12" ry="12" fill="#ffffff" stroke="#e6ebf2" stroke-width="1.5"/>
         </svg>
         <div class="sig-inner">
-        ${data.signatureUrl ? `<img src="${esc(data.signatureUrl)}" class="sig-img" alt="Handtekening klant" />` : (oplever.afronding.handtekening ? `<img src="${oplever.afronding.handtekening}" class="sig-img" alt="Handtekening klant" />` : "")}
-        <div class="sig-line">Naam: ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "_________________________________"}</div>
+        ${handtekeningUrl ? `<img src="${esc(handtekeningUrl)}" class="sig-img" alt="Handtekening klant" />` : `<div class="sig-line">Handtekening niet als afbeelding beschikbaar</div>`}
         </div>
       </div>
     </div>
-  </div>
+  </div>` : ""}
 
   <!-- FOOTER -->
   <div class="footer">
@@ -1497,17 +1638,18 @@ export async function generateWorkorderHtmlPdf(
 
 
     try {
-        return await renderWorkorderPdfWithBrowser(data);
+        return await renderWorkorderPdfWithBrowser(data, appUrl);
     } catch (error) {
         console.error("HTML PDF (puppeteer) mislukt, fallback pdf-lib:", error);
-        return await renderWorkorderPdfWithPdfLib(data);
+        return await renderWorkorderPdfWithPdfLib(data, appUrl);
     }
 
 }
 
 
 async function renderWorkorderPdfWithPdfLib(
-    data:WorkorderHtmlPdfInput
+    data:WorkorderHtmlPdfInput,
+    appUrl:string
 ):Promise<Buffer> {
 
     const oplever = mergeOpleverData(data.formData);
@@ -1535,9 +1677,18 @@ async function renderWorkorderPdfWithPdfLib(
             quantity: item.quantity,
             unit: null,
         })),
-        photoUrls: data.photos.map((foto) => foto.url),
-        signatureUrl: data.signatureUrl,
-        signedBy: data.signedBy,
+        photos: data.photos
+            .map((foto)=>({
+                ...foto,
+                url:resolveAssetUrl(foto.url, appUrl),
+            }))
+            .filter((foto)=>Boolean(foto.url)),
+        signatureUrl:resolveAssetUrl(
+            data.signatureUrl || oplever.afronding.handtekening,
+            appUrl
+        ),
+        signedBy:data.signedBy || oplever.afronding.contactpersoon || null,
+        signedAt: data.signedAt,
         formData: data.formData,
     });
 
@@ -1546,7 +1697,8 @@ async function renderWorkorderPdfWithPdfLib(
 
 
 async function renderWorkorderPdfWithBrowser(
-    data:WorkorderHtmlPdfInput
+    data:WorkorderHtmlPdfInput,
+    appUrl:string
 ):Promise<Buffer> {
 
 
@@ -1556,7 +1708,8 @@ async function renderWorkorderPdfWithBrowser(
     const html =
         generateHtml(
             data,
-            logoDataUrl
+            logoDataUrl,
+            appUrl
         );
 
 

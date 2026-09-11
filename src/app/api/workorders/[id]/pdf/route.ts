@@ -239,6 +239,9 @@ customer:true,
                 signedBy:
                     workorder.signature?.customerName ?? null,
 
+                signedAt:
+                    workorder.signature?.createdAt ?? null,
+
                 formData:
                     workorder.formData,
 

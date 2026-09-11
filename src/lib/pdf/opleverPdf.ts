@@ -109,11 +109,13 @@ export interface OpleverPdfInput {
         unit:string | null;
     }[];
 
-    photoUrls:string[];
+    photos:{ url:string; caption:string | null }[];
 
     signatureUrl:string | null;
 
     signedBy:string | null;
+
+    signedAt?:Date | null;
 
     formData:unknown;
 
@@ -491,18 +493,12 @@ export async function generateOpleverPdf(
 
         text(label);
 
-        badges([
-            {
-                label:labels[0],
-                active:value === true,
-                color:YES_GREEN
-            },
-            {
-                label:labels[1],
-                active:value === false,
-                color:NO_BLUE
-            }
-        ]);
+        const selected = value === true ? labels[0] : labels[1];
+        badges([{
+            label:selected,
+            active:true,
+            color:value === true ? YES_GREEN : NO_BLUE
+        }]);
 
         dashedLine();
 
@@ -524,19 +520,12 @@ export async function generateOpleverPdf(
 
         text(label);
 
-        badges(
-            options.map(option=>({
-                label:option,
-                active:value === option,
-                color:
-                    option === "Nee" ||
-                    option === "n.v.t."
-                    ?
-                    NO_BLUE
-                    :
-                    YES_GREEN
-            }))
-        );
+        const negative = value === "Nee" || value === "n.v.t." || value === "Slecht";
+        badges([{
+            label:value,
+            active:true,
+            color:negative ? NO_BLUE : YES_GREEN
+        }]);
 
         dashedLine();
 
@@ -570,7 +559,7 @@ export async function generateOpleverPdf(
     newPage();
 
 
-    text("Projectgegevens:",{
+    text("Project- en werkbongegevens",{
         size:13,
         useBold:true,
         gap:10
@@ -600,10 +589,10 @@ export async function generateOpleverPdf(
     y -= 34;
 
 
-    labelValue(
-        "Projectnaam:",
-        input.projectName
-    );
+    labelValue("Project- / werkbonnaam:", input.title);
+    labelValue("Opdrachtgever:", input.customerName);
+    labelValue("Projectnaam:", input.projectName);
+    labelValue("Werkbonnummer:", input.number);
 
     labelValue(
         "Adres:",
@@ -905,11 +894,26 @@ export async function generateOpleverPdf(
 
     // ================= Gebruikte materialen =================
 
+    const heeftMaterialen =
+        input.materials.length > 0
+        || data.materialen.nieuweBeugels === true
+        || data.materialen.extraHdmiKabels === true
+        || data.materialen.extraHdmiSplitters === true
+        || data.materialen.extraPatchkabels === true
+        || data.materialen.extraSwitches === true
+        || data.materialen.utpGetrokken === true
+        || data.materialen.stroomkabelGetrokken === true
+        || data.materialen.verlengsnoeren === true
+        || data.materialen.extraSpeakers === true
+        || data.materialen.multicast === true
+        || Boolean(data.materialen.opmerkingen.trim());
+
+    if(heeftMaterialen){
     sectionBar("Gebruikte materialen:");
 
 
     jaNee(
-        "1. Heb je nieuwe TV beugels gemonteerd?",
+        "Nieuwe TV-beugels gemonteerd?",
         data.materialen.nieuweBeugels
     );
 
@@ -944,7 +948,7 @@ export async function generateOpleverPdf(
 
 
     jaNee(
-        "2. Heb je extra HDMI kabels gebruikt?",
+        "Extra HDMI-kabels gebruikt?",
         data.materialen.extraHdmiKabels
     );
 
@@ -954,7 +958,7 @@ export async function generateOpleverPdf(
     );
 
     jaNee(
-        "3. Heb je extra patchkabels gebruikt?",
+        "Extra patchkabels gebruikt?",
         data.materialen.extraPatchkabels
     );
 
@@ -989,17 +993,17 @@ export async function generateOpleverPdf(
     );
 
     jaNee(
-        "4. Heb je extra UTP kabel getrokken?",
+        "Extra UTP-kabel getrokken?",
         data.materialen.utpGetrokken
     );
 
     jaNee(
-        "5. Heb je extra stroomkabel getrokken?",
+        "Extra stroomkabel getrokken?",
         data.materialen.stroomkabelGetrokken
     );
 
     jaNee(
-        "6. Heb je verlengsnoeren (stekkerdozen) gebruikt?",
+        "Verlengsnoeren (stekkerdozen) gebruikt?",
         data.materialen.verlengsnoeren
     );
 
@@ -1026,7 +1030,7 @@ export async function generateOpleverPdf(
 
 
     jaNee(
-        "7. Heb je extra seriële en/of USB speakers gebruikt?",
+        "Extra seriële en/of USB-speakers gebruikt?",
         data.materialen.extraSpeakers
     );
 
@@ -1053,6 +1057,7 @@ export async function generateOpleverPdf(
 
         dashedLine();
 
+    }
     }
 
 
@@ -1081,19 +1086,19 @@ export async function generateOpleverPdf(
 
 
     jaNee(
-        "1. Is de installatie werkend opgeleverd?",
+        "Is de installatie werkend opgeleverd?",
         data.checklist.werkendOpgeleverd,
         ["Ja","Nee"]
     );
 
     jaNee(
-        "2. Is de hardware aangesloten op een schakelstroompunt dat handmatig uit te zetten is?",
+        "Is de hardware aangesloten op een handmatig schakelbaar stroompunt?",
         data.checklist.lichtnetSchakelbaar,
         ["Ja","Nee"]
     );
 
     jaNee(
-        "3. WiFi verbinding van toepassing?",
+        "Wifi-verbinding van toepassing?",
         data.checklist.wifiVanToepassing,
         ["Ja","Nee"]
     );
@@ -1109,13 +1114,13 @@ export async function generateOpleverPdf(
     }
 
     keuze(
-        "4. Zijn de schermen gekoppeld aan Remote Services?",
+        "Zijn de schermen gekoppeld aan Remote Services?",
         data.checklist.remoteServices,
         ["Ja","Nee","n.v.t."]
     );
 
     keuze(
-        "5. Wat is de locatie van de mediaplayer(s)?",
+        "Wat is de locatie van de mediaplayer(s)?",
         data.checklist.locatieMediaplayer,
         [
             "Achter het scherm",
@@ -1132,7 +1137,7 @@ export async function generateOpleverPdf(
     );
 
     jaNee(
-        "6. Afvalverwijdering?",
+        "Afval verwijderd?",
         data.checklist.afvalverwijdering,
         ["Ja","Nee"]
     );
@@ -1144,7 +1149,7 @@ export async function generateOpleverPdf(
 
     // ================= Foto's =================
 
-    if(input.photoUrls.length > 0){
+    if(input.photos.length > 0){
 
         sectionBar("Foto's:");
 
@@ -1157,7 +1162,7 @@ export async function generateOpleverPdf(
         let rowHeight = 0;
 
 
-        for(const url of input.photoUrls){
+        for(const photo of input.photos){
 
 
             let image:PDFImage | null = null;
@@ -1166,7 +1171,7 @@ export async function generateOpleverPdf(
             try {
 
                 const response =
-                    await fetch(url);
+                    await fetch(photo.url);
 
                 if(!response.ok){
                     continue;
@@ -1203,18 +1208,28 @@ export async function generateOpleverPdf(
                 image.width *
                 (height / image.height);
 
+            const captionLines = photo.caption
+                ? wrap(photo.caption, 8, font, photoWidth).slice(0, 3)
+                : [];
+            const itemHeight = height + (captionLines.length ? captionLines.length * 10 + 5 : 0);
+
+            if(column === 1 && y - itemHeight < FOOTER_SPACE){
+                y -= rowHeight + 12;
+                column = 0;
+                rowHeight = 0;
+            }
 
             if(column === 0){
 
-                ensure(height + 12);
+                ensure(itemHeight + 12);
 
-                rowHeight = height;
+                rowHeight = itemHeight;
 
             } else {
 
                 // tweede kolom kan lager zijn; hoogste telt
                 rowHeight =
-                    Math.max(rowHeight,height);
+                    Math.max(rowHeight,itemHeight);
 
             }
 
@@ -1229,6 +1244,15 @@ export async function generateOpleverPdf(
                 height
             });
 
+            captionLines.forEach((line,index)=>{
+                page.drawText(line,{
+                    x:MARGIN + column * (photoWidth + 20),
+                    y:y - height - 11 - index * 10,
+                    size:8,
+                    font,
+                    color:BLACK
+                });
+            });
 
             if(column === 1){
 
@@ -1260,6 +1284,7 @@ export async function generateOpleverPdf(
 
     // ================= Handtekening =================
 
+    if(input.signatureUrl || input.signedBy){
     sectionBar("Handtekening:");
 
 
@@ -1285,6 +1310,23 @@ export async function generateOpleverPdf(
             color:BLACK
         });
 
+    }
+
+    if(input.signedAt){
+        const signedAtText = input.signedAt.toLocaleString("nl-NL",{
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        });
+        page.drawText(signedAtText,{
+            x:PAGE_WIDTH - MARGIN - font.widthOfTextAtSize(signedAtText,9),
+            y,
+            size:9,
+            font,
+            color:GRAY_TEXT
+        });
     }
 
     y -= 14;
@@ -1345,6 +1387,7 @@ export async function generateOpleverPdf(
     }
 
     y -= 125;
+    }
 
 
 

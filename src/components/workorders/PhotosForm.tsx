@@ -27,6 +27,19 @@ interface Photo {
 }
 
 
+function veiligeFotoHref(url:string):string | undefined {
+    const waarde = url.trim();
+    if(
+        waarde.startsWith("/")
+        || /^https?:\/\//i.test(waarde)
+        || /^data:image\/(?:png|jpe?g|webp|gif);base64,/i.test(waarde)
+    ){
+        return waarde;
+    }
+    return undefined;
+}
+
+
 /** Verklein telefoonfoto's in de browser zodat de upload niet stukloopt. */
 async function compressForUpload(file:File):Promise<File>{
 
@@ -343,12 +356,10 @@ export default function PhotosForm({
                         grid grid-cols-2 sm:grid-cols-3 gap-2
                     ">
                         {
-                            photos.map((photo,index)=>(
-                                <SpecListRow
-                                    key={photo.id}
-                                    className="!p-0 overflow-hidden"
-                                >
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                            photos.map((photo,index)=>{
+                                const href = veiligeFotoHref(photo.url);
+                                const thumbnail = (
+                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                         src={photo.url}
                                         alt={`Foto ${index + 1}`}
@@ -356,6 +367,24 @@ export default function PhotosForm({
                                             w-full h-28 object-cover
                                         "
                                     />
+                                );
+
+                                return (
+                                <SpecListRow
+                                    key={photo.id}
+                                    className="!p-0 overflow-hidden"
+                                >
+                                    {href ? (
+                                        <a
+                                            href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            title="Open originele foto"
+                                            className="block cursor-zoom-in"
+                                        >
+                                            {thumbnail}
+                                        </a>
+                                    ) : thumbnail}
                                     <div className="p-2 space-y-1">
                                         <span className="block text-[11px] text-gray-500">
                                             Naam
@@ -378,7 +407,8 @@ export default function PhotosForm({
                                         />
                                     </div>
                                 </SpecListRow>
-                            ))
+                                );
+                            })
                         }
                     </div>
                 )
