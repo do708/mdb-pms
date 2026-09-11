@@ -12,6 +12,7 @@ import {
     emptyRuimte,
     emptyScherm,
     emptyStroomInternet,
+    hydrateSchermHardware,
     normalizeMac,
     normalizeP25WandTraject,
 } from "@/types/installatieRuimtes";
@@ -728,12 +729,11 @@ export function mergeOpleverData(
                                     merged.internetTraject = normalizeP25WandTraject(
                                         merged.internetTraject || ""
                                     );
-                                    merged.mac = normalizeMac(merged.mac || "");
-                                    merged.playerMac = normalizeMac(merged.playerMac || "");
-                                    if(!merged.locatie && r.naam){
-                                        merged.locatie = r.naam;
+                                    const hydrated = hydrateSchermHardware(merged);
+                                    if(!hydrated.locatie && r.naam){
+                                        hydrated.locatie = r.naam;
                                     }
-                                    if(!merged.beugel && r.beugelType){
+                                    if(!hydrated.beugel && r.beugelType){
                                         const map:{[k:string]:string} = {
                                             wand_vast:"Muurbeugel",
                                             wand_kantelbaar:"Muurbeugel",
@@ -742,9 +742,9 @@ export function mergeOpleverData(
                                             vloerstandaard:"Vloerstandaard",
                                             geen:"Special"
                                         };
-                                        merged.beugel = map[r.beugelType] || "";
+                                        hydrated.beugel = map[r.beugelType] || "";
                                     }
-                                    return merged;
+                                    return hydrated;
                                 }
                             )
                             :
@@ -1492,8 +1492,7 @@ export function normalizeOpleverMacs(data:OpleverData):OpleverData {
 
     for(const ruimte of data.installatie.ruimtes){
         for(const scherm of ruimte.schermen){
-            scherm.mac = normalizeMac(scherm.mac || "");
-            scherm.playerMac = normalizeMac(scherm.playerMac || "");
+            Object.assign(scherm, hydrateSchermHardware(scherm));
         }
     }
 

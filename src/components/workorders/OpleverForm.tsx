@@ -30,7 +30,7 @@ import {
 import CustomerFormSection from "./CustomerFormSection";
 import InstallatieRuimtesSectie from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
-import { normalizeMac, emptyExtra, schermHeeftGegevens } from "@/types/installatieRuimtes";
+import { normalizeMac, emptyExtra } from "@/types/installatieRuimtes";
 import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
 import {
     heeftGroep,
@@ -993,40 +993,25 @@ function patchVideowallVelden(
     }
 }
 
-function SpecUitklap({
+function ModuleKaart({
     titel,
     kleur,
-    open,
-    onToggle,
     children
 }:{
     titel:string;
     kleur:string;
-    open:boolean;
-    onToggle:(open:boolean)=>void;
     children:React.ReactNode;
 }){
     return (
-        <div className={`rounded-xl border ${kleur}`}>
-            <button
-                type="button"
-                onClick={()=>onToggle(!open)}
-                className="w-full flex items-center justify-between p-3 text-left"
-            >
+        <div className={`rounded-xl border shadow-sm ${kleur}`}>
+            <div className="px-3 pt-3 pb-2 border-b border-black/5">
                 <span className="font-medium text-gray-800">
                     {titel}
                 </span>
-                <span className="text-xl text-gray-500 leading-none w-7 text-center">
-                    {open ? "−" : "+"}
-                </span>
-            </button>
-            {
-                open && (
-                    <div className="px-3 pb-3 space-y-3">
-                        {children}
-                    </div>
-                )
-            }
+            </div>
+            <div className="px-3 py-3 space-y-3">
+                {children}
+            </div>
         </div>
     );
 }
@@ -2095,14 +2080,6 @@ export default function OpleverForm({
         data.installatie.kioskBlokken
     ]);
 
-    const heeftSchermenData = i.ruimtes.some((r)=>
-        (r.schermen || []).some((s)=>schermHeeftGegevens(s))
-    );
-    const schermenOpen =
-        i.nieuweSchermen === true
-        ||
-        (i.nieuweSchermen !== false && heeftSchermenData);
-
     async function uploadSchermFoto(file:File):Promise<{ url:string; name:string } | null>{
         if(!workorderId){
             return null;
@@ -2790,26 +2767,13 @@ export default function OpleverForm({
                   toonInstallatie(modules) && (
                     <>
 
-                <p className="
-                    text-[13px]
-                    font-semibold
-                    text-slate-700
-                    bg-slate-50
-                    border-l-2
-                    border-blue-500
-                    px-3
-                    py-1.5
-                    rounded-r
-                    mb-3
-                ">
-                    Installatie werkzaamheden
-                </p>
+                <Kop>Installatie werkzaamheden</Kop>
 
-                <div className="space-y-3 mb-3">
+                <div className="space-y-4 mb-3">
 
                     {
                     heeftGroep(modules, "schermen") && (
-                    <SpecUitklap
+                    <ModuleKaart
                         titel={
                             schermenHint
                             ?
@@ -2818,18 +2782,13 @@ export default function OpleverForm({
                             "Schermen"
                         }
                         kleur="bg-sky-50 border-sky-200"
-                        open={schermenOpen}
-                        onToggle={(open)=>
-                            update(draft=>{
-                                draft.installatie.nieuweSchermen = open;
-                            })
-                        }
                     >
                         <InstallatieRuimtesSectie
                             ruimtes={i.ruimtes}
                             onRuimtesChange={(ruimtes)=>
                                 update(draft=>{
                                     draft.installatie.ruimtes = ruimtes;
+                                    draft.installatie.nieuweSchermen = true;
                                 })
                             }
                             stroom={i.stroomBlok}
@@ -2846,13 +2805,13 @@ export default function OpleverForm({
                             }
                             uploadFile={uploadSchermFoto}
                         />
-                    </SpecUitklap>
+                    </ModuleKaart>
                     )
                     }
 
                     {
                     heeftGroep(modules, "videowall") && (
-                    <SpecUitklap
+                    <ModuleKaart
                         titel={
                             videowallHint
                             ?
@@ -2861,28 +2820,25 @@ export default function OpleverForm({
                             "Videowall"
                         }
                         kleur="bg-emerald-50 border-emerald-200"
-                        open={i.videowall === true}
-                        onToggle={(open)=>
-                            update(draft=>{
-                                draft.installatie.videowall = open ? true : false;
-                            })
-                        }
                     >
                         <div className="rounded-xl bg-white p-3 space-y-3 border border-emerald-100">
                         <VideowallSpecificatie
                             velden={videowallVeldenVan(i)}
                             onChange={(veld, waarde)=>
                                 update(draft=>{
+                                    draft.installatie.videowall = true;
                                     patchVideowallVelden(draft, { [veld]: waarde });
                                 })
                             }
                             onPatch={(patch)=>
                                 update(draft=>{
+                                    draft.installatie.videowall = true;
                                     patchVideowallVelden(draft, patch);
                                 })
                             }
                             onToggleFormaat={(optie)=>
                                 update(draft=>{
+                                    draft.installatie.videowall = true;
                                     const huidige = parseGekozenOpties(
                                         videowallVeldenVan(draft.installatie).formaat || ""
                                     );
@@ -2897,25 +2853,22 @@ export default function OpleverForm({
                             formaatAlsSelect
                         />
                         </div>
-                    </SpecUitklap>
+                    </ModuleKaart>
                     )
                     }
 
                     {
                     heeftGroep(modules, "kiosk") && (
-                    <div className="rounded-xl border bg-amber-50 border-amber-200">
-                        <div className="p-3">
-                            <span className="font-medium text-gray-800">
-                                {
-                                    kioskHint
-                                    ?
-                                    `Kiosk (${kioskHint})`
-                                    :
-                                    "Kiosk"
-                                }
-                            </span>
-                        </div>
-                        <div className="px-3 pb-3 space-y-3">
+                    <ModuleKaart
+                        titel={
+                            kioskHint
+                            ?
+                            `Kiosk (${kioskHint})`
+                            :
+                            "Kiosk"
+                        }
+                        kleur="bg-amber-50 border-amber-200"
+                    >
                             <KioskBlokken
                                 blokken={i.kioskBlokken}
                                 vasteStatus={kioskVasteStatus || undefined}
@@ -2934,14 +2887,13 @@ export default function OpleverForm({
                                     })
                                 }
                             />
-                        </div>
-                    </div>
+                    </ModuleKaart>
                     )
                     }
 
                     {
                     heeftGroep(modules, "mediaplayers") && (
-                    <SpecUitklap
+                    <ModuleKaart
                         titel={
                             mediaplayersHint
                             ?
@@ -2950,14 +2902,6 @@ export default function OpleverForm({
                             "Mediaplayers"
                         }
                         kleur="bg-violet-50 border-violet-200"
-                        open={!!i.mediaplayers}
-                        onToggle={(open)=>
-                            update(draft=>{
-                                draft.installatie.mediaplayers = open
-                                    ? (draft.installatie.mediaplayers || "Geïnstalleerd")
-                                    : "";
-                            })
-                        }
                     >
                         <div className="flex items-center gap-2">
                             <div className="flex-1 min-w-0">
@@ -2985,13 +2929,13 @@ export default function OpleverForm({
                                 className="w-20 shrink-0 border rounded-lg p-2 text-sm bg-white"
                             />
                         </div>
-                    </SpecUitklap>
+                    </ModuleKaart>
                     )
                     }
 
                     {
                     heeftGroep(modules, "audio") && (
-                    <SpecUitklap
+                    <ModuleKaart
                         titel={
                             audioHint
                             ?
@@ -3000,12 +2944,6 @@ export default function OpleverForm({
                             "Audio"
                         }
                         kleur="bg-rose-50 border-rose-200"
-                        open={i.audio === true}
-                        onToggle={(open)=>
-                            update(draft=>{
-                                draft.installatie.audio = open ? true : false;
-                            })
-                        }
                     >
                         <div className="rounded-xl bg-white p-3 space-y-3 border border-rose-100">
                         <Keuze
@@ -3013,6 +2951,7 @@ export default function OpleverForm({
                             options={["Geïnstalleerd", "Gedemonteerd"]}
                             onChange={(v)=>
                                 update(draft=>{
+                                    draft.installatie.audio = true;
                                     draft.installatie.audioStatus =
                                         v as typeof i.audioStatus;
                                 })
@@ -3023,6 +2962,7 @@ export default function OpleverForm({
                             value={i.audioSpeler}
                             onChange={(v)=>
                                 update(draft=>{
+                                    draft.installatie.audio = true;
                                     draft.installatie.audioSpeler = v;
                                     draft.installatie.audioSpelerItems =
                                         resizeMateriaalItems(
@@ -3046,6 +2986,7 @@ export default function OpleverForm({
                             value={i.audioVersterker}
                             onChange={(v)=>
                                 update(draft=>{
+                                    draft.installatie.audio = true;
                                     draft.installatie.audioVersterker = v;
                                     draft.installatie.audioVersterkerItems =
                                         resizeMateriaalItems(
@@ -3069,6 +3010,7 @@ export default function OpleverForm({
                             value={i.audioVolumeregelaar}
                             onChange={(v)=>
                                 update(draft=>{
+                                    draft.installatie.audio = true;
                                     draft.installatie.audioVolumeregelaar = v;
                                     draft.installatie.audioVolumeregelaarItems =
                                         resizeMateriaalItems(
@@ -3092,20 +3034,24 @@ export default function OpleverForm({
                             value={i.audioSpeakers}
                             onChange={(v)=>
                                 update(draft=>{
+                                    draft.installatie.audio = true;
                                     draft.installatie.audioSpeakers = v;
                                 })
                             }
                         />
                         </div>
-                    </SpecUitklap>
+                    </ModuleKaart>
                     )
                     }
 
                     {
                     heeftModule(modules, "project") && (
-                    <div className="rounded-xl border border-violet-200 bg-violet-50/70 p-3 space-y-3">
-                        <span className="text-sm font-medium text-gray-800 block">
-                            Project (offerte-basis) — is het een project?
+                    <ModuleKaart
+                        titel="Project (offerte-basis)"
+                        kleur="bg-violet-50 border-violet-200"
+                    >
+                        <span className="text-sm text-gray-700 block">
+                            Is het een project?
                         </span>
                         <JaNee
                             value={i.isProject}
@@ -3135,7 +3081,7 @@ export default function OpleverForm({
                                 </label>
                             )
                         }
-                    </div>
+                    </ModuleKaart>
                     )
                     }
 

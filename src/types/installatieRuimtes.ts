@@ -45,11 +45,17 @@ export interface InstallatieScherm {
     internetGerealiseerd: "" | "Ja" | "Nee";
     internetMeter: string;
     internetTraject: string;
+    /** Legacy: samengevoegd merk + type. Blijft in sync met merk/type. */
     merkType: string;
+    merk: string;
+    type: string;
     serienummer: string;
     mac: string;
     playerFotoUrl: string;
+    /** Legacy: samengevoegd player-merk + type. Blijft in sync met playerMerk/playerType. */
     playerMerkType: string;
+    playerMerk: string;
+    playerType: string;
     playerSerienummer: string;
     playerMac: string;
 }
@@ -166,6 +172,93 @@ export function normalizeMac(value: string): string {
     return (value || "").toUpperCase();
 }
 
+export function joinMerkType(merk: string, type: string): string {
+    return [merk, type]
+        .map((s) => (s || "").trim())
+        .filter(Boolean)
+        .join(" ");
+}
+
+/** Oude gecombineerde waarde (“Samsung QM55B”) splitsen in merk + type. */
+export function splitMerkType(combined: string): { merk: string; type: string } {
+    const t = (combined || "").trim();
+    if (!t) {
+        return { merk: "", type: "" };
+    }
+    const space = t.indexOf(" ");
+    if (space <= 0) {
+        return { merk: t, type: "" };
+    }
+    return {
+        merk: t.slice(0, space),
+        type: t.slice(space + 1).trim(),
+    };
+}
+
+/** Vul merk/type uit legacy merkType (en player-equivalent). */
+export function hydrateSchermHardware(
+    s: InstallatieScherm
+): InstallatieScherm {
+    const merk = (s.merk || "").trim();
+    const type = (s.type || "").trim();
+    const scherm =
+        !merk && !type
+            ? splitMerkType(s.merkType || "")
+            : { merk, type };
+
+    const playerMerk = (s.playerMerk || "").trim();
+    const playerType = (s.playerType || "").trim();
+    const player =
+        !playerMerk && !playerType
+            ? splitMerkType(s.playerMerkType || "")
+            : { merk: playerMerk, type: playerType };
+
+    return {
+        ...s,
+        merk: scherm.merk,
+        type: scherm.type,
+        merkType: joinMerkType(scherm.merk, scherm.type),
+        playerMerk: player.merk,
+        playerType: player.type,
+        playerMerkType: joinMerkType(player.merk, player.type),
+        mac: normalizeMac(s.mac || ""),
+        playerMac: normalizeMac(s.playerMac || ""),
+    };
+}
+
+/** Regel voor werkbon/PDF: formaat + schermgegevens + optionele aansturing. */
+export function samenvattingSchermHardware(s: InstallatieScherm): string {
+    const formaat =
+        s.formaat === "Anders"
+            ? (s.formaatAnders || "Anders")
+            : s.formaat;
+    const merkType =
+        joinMerkType(s.merk || "", s.type || "") || s.merkType || "";
+    const player =
+        joinMerkType(s.playerMerk || "", s.playerType || "")
+        || s.playerMerkType
+        || "";
+
+    const scherm = [
+        s.label,
+        formaat,
+        merkType,
+        s.serienummer ? `SN ${s.serienummer}` : "",
+        s.mac ? `MAC ${s.mac}` : "",
+    ].filter(Boolean).join(" · ");
+
+    const aansturing = [
+        s.aansturing === "Anders"
+            ? (s.aansturingAnders || "Anders")
+            : s.aansturing,
+        player,
+        s.playerSerienummer ? `SN ${s.playerSerienummer}` : "",
+        s.playerMac ? `MAC ${s.playerMac}` : "",
+    ].filter(Boolean).join(" · ");
+
+    return aansturing ? `${scherm} | Aansturing: ${aansturing}` : scherm;
+}
+
 /** Of een scherm al specificaties heeft om over te nemen. */
 export function schermHeeftGegevens(s: InstallatieScherm): boolean {
     return Boolean(
@@ -188,9 +281,13 @@ export function schermHeeftGegevens(s: InstallatieScherm): boolean {
         || (s.internetMeter || "").trim()
         || s.internetTraject
         || (s.merkType || "").trim()
+        || (s.merk || "").trim()
+        || (s.type || "").trim()
         || (s.serienummer || "").trim()
         || (s.mac || "").trim()
         || (s.playerMerkType || "").trim()
+        || (s.playerMerk || "").trim()
+        || (s.playerType || "").trim()
         || (s.playerSerienummer || "").trim()
         || (s.playerMac || "").trim()
     );
@@ -219,10 +316,16 @@ export function specsVanScherm(
         internetGerealiseerd: s.internetGerealiseerd,
         internetMeter: s.internetMeter,
         internetTraject: normalizeP25WandTraject(s.internetTraject),
-        merkType: s.merkType,
+        merkType: joinMerkType(s.merk || "", s.type || "") || s.merkType,
+        merk: s.merk || "",
+        type: s.type || "",
         serienummer: s.serienummer,
         mac: normalizeMac(s.mac),
-        playerMerkType: s.playerMerkType,
+        playerMerkType:
+            joinMerkType(s.playerMerk || "", s.playerType || "")
+            || s.playerMerkType,
+        playerMerk: s.playerMerk || "",
+        playerType: s.playerType || "",
         playerSerienummer: s.playerSerienummer,
         playerMac: normalizeMac(s.playerMac),
     };
@@ -257,10 +360,14 @@ export function emptyScherm(
         internetMeter: "",
         internetTraject: "",
         merkType: "",
+        merk: "",
+        type: "",
         serienummer: "",
         mac: "",
         playerFotoUrl: "",
         playerMerkType: "",
+        playerMerk: "",
+        playerType: "",
         playerSerienummer: "",
         playerMac: "",
     };

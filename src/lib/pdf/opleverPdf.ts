@@ -12,6 +12,8 @@ import {
     mergeOpleverData
 } from "@/types/oplever";
 import {
+    samenvattingSchermHardware,
+    schermHeeftGegevens,
     summarizeRuimtes,
     summarizeVoorziening,
 } from "@/types/installatieRuimtes";
@@ -720,8 +722,17 @@ export async function generateOpleverPdf(
         );
 
         if (heeftRuimtes) {
+            text("Schermen",{ useBold:true, gap:2 });
             for (const regel of summarizeRuimtes(ruimtes)) {
                 text(`• ${regel}`, { gap: 1 });
+            }
+            for (const ruimte of ruimtes) {
+                for (const scherm of ruimte.schermen || []) {
+                    if (!schermHeeftGegevens(scherm)) {
+                        continue;
+                    }
+                    text(`  ${samenvattingSchermHardware(scherm)}`, { gap: 1 });
+                }
             }
 
             const stroomTekst = summarizeVoorziening(
@@ -825,46 +836,38 @@ export async function generateOpleverPdf(
             .join(", ")
     );
 
-
-    if(data.installatie.videowall){
-        text("Videowall",{ useBold:true, gap:2 });
-        text("Ja",{ gap:2 });
-        dashedLine();
-    }
-
-
-    if(data.installatie.kiosk){
-        text("Kiosk",{ useBold:true, gap:2 });
-        text("Ja",{ gap:2 });
-        dashedLine();
-    }
-
-
-    if(data.installatie.mediaplayers){
-
-        text("Mediaplayers",{ useBold:true, gap:2 });
-
-        keuze(
-            "Heb je mediaplayers;",
-            data.installatie.mediaplayers,
-            ["Geïnstalleerd","Gedemonteerd"]
-        );
-
-        labelValue(
-            "Aantal:",
-            data.installatie.aantalMediaplayers
-        );
-
-    }
-
-
-    if(data.installatie.audio){
-        text("Audio",{ useBold:true, gap:2 });
-        text("Ja",{ gap:2 });
-        dashedLine();
-    }
-
         } // end legacy else
+
+        if(data.installatie.videowall){
+            text("Videowall",{ useBold:true, gap:2 });
+            text("Ja",{ gap:2 });
+            dashedLine();
+        }
+
+        if(data.installatie.kiosk){
+            text("Kiosk",{ useBold:true, gap:2 });
+            text("Ja",{ gap:2 });
+            dashedLine();
+        }
+
+        if(data.installatie.mediaplayers){
+            text("Mediaplayers",{ useBold:true, gap:2 });
+            keuze(
+                "Heb je mediaplayers;",
+                data.installatie.mediaplayers,
+                ["Geïnstalleerd","Gedemonteerd"]
+            );
+            labelValue(
+                "Aantal:",
+                data.installatie.aantalMediaplayers
+            );
+        }
+
+        if(data.installatie.audio){
+            text("Audio",{ useBold:true, gap:2 });
+            text("Ja",{ gap:2 });
+            dashedLine();
+        }
     }
 
 

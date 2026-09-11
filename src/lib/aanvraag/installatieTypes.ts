@@ -101,6 +101,25 @@ export function isPlayerAansturing(value: string): boolean {
     return value === "Player" || value === AANSTURING_PLAYER_LEGACY;
 }
 
+const NATIVE_OS_AANSTURING = new Set(["Tizen", "webOS", "Android"]);
+
+/**
+ * Extra apparaat onder aansturing: player of andere (niet-native) aansturing.
+ * Tizen / webOS / Android zitten in het scherm zelf.
+ */
+export function isAansturingMetApparaat(value: string): boolean {
+    if (!value) {
+        return false;
+    }
+    if (isPlayerAansturing(value)) {
+        return true;
+    }
+    if (NATIVE_OS_AANSTURING.has(value)) {
+        return false;
+    }
+    return true;
+}
+
 /** Weergavelabel; normaliseert legacy "DMV player" → "Player". */
 export function aansturingWeergave(value: string): string {
     return isPlayerAansturing(value) ? "Player" : value;

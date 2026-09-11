@@ -6,6 +6,7 @@ import {
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
     bevestigingDetails,
+    isAansturingMetApparaat,
     isPlayerAansturing,
     normaliseerBevestiging,
 } from "@/lib/aanvraag/installatieTypes";
@@ -15,6 +16,7 @@ import {
     KABEL_TRAJECT_P25,
     StroomInternetBlok,
     emptyRuimte,
+    joinMerkType,
     normalizeMac,
     schermHeeftGegevens,
     specsVanScherm,
@@ -91,18 +93,105 @@ function JaNeeKleur({
     );
 }
 
-function schermSpecsGevuld(s: InstallatieScherm): boolean {
-    const formaatOk =
-        Boolean(s.formaat)
-        && (s.formaat !== "Anders" || Boolean(s.formaatAnders?.trim()));
-    return Boolean(
-        formaatOk
-        && s.beugel
-        && s.aansturing
-        && s.orientatie
-        && (s.locatie || "").trim()
-        && s.stroom
-        && s.internet
+function HardwareKenmerkenTabel({
+    titel,
+    merk,
+    type,
+    serienummer,
+    mac,
+    onChange,
+}: {
+    titel: string;
+    merk: string;
+    type: string;
+    serienummer: string;
+    mac: string;
+    onChange: (patch: {
+        merk?: string;
+        type?: string;
+        serienummer?: string;
+        mac?: string;
+    }) => void;
+}) {
+    return (
+        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+            <p className="px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-50 border-b border-slate-200">
+                {titel}
+            </p>
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse min-w-[28rem]">
+                    <thead>
+                        <tr className="bg-white">
+                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                Merk
+                            </th>
+                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                Type
+                            </th>
+                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                Serienummer
+                            </th>
+                            <th className="border-b border-slate-200 p-2 text-left font-medium text-gray-600">
+                                MAC-adres
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={merk}
+                                    onChange={(e) =>
+                                        onChange({ merk: e.target.value })
+                                    }
+                                    placeholder="Merk"
+                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                />
+                            </td>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={type}
+                                    onChange={(e) =>
+                                        onChange({ type: e.target.value })
+                                    }
+                                    placeholder="Type"
+                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                />
+                            </td>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={serienummer}
+                                    onChange={(e) =>
+                                        onChange({
+                                            serienummer: e.target.value,
+                                        })
+                                    }
+                                    placeholder="Serienummer"
+                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                />
+                            </td>
+                            <td className="p-1.5 align-top">
+                                <input
+                                    value={mac}
+                                    onChange={(e) =>
+                                        onChange({ mac: e.target.value })
+                                    }
+                                    onBlur={(e) =>
+                                        onChange({
+                                            mac: normalizeMac(e.target.value),
+                                        })
+                                    }
+                                    placeholder="Optioneel"
+                                    autoCapitalize="characters"
+                                    spellCheck={false}
+                                    className="w-full border rounded-lg p-2 bg-white text-sm"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     );
 }
 
@@ -151,6 +240,34 @@ export default function InstallatieRuimtesSectie({
         );
     }
 
+    function patchSchermHardware(
+        ruimteId: string,
+        scherm: InstallatieScherm,
+        patch: Partial<
+            Pick<
+                InstallatieScherm,
+                | "merk"
+                | "type"
+                | "serienummer"
+                | "mac"
+                | "playerMerk"
+                | "playerType"
+                | "playerSerienummer"
+                | "playerMac"
+            >
+        >
+    ) {
+        const next = { ...scherm, ...patch };
+        updateScherm(ruimteId, scherm.id, {
+            ...patch,
+            merkType: joinMerkType(next.merk || "", next.type || ""),
+            playerMerkType: joinMerkType(
+                next.playerMerk || "",
+                next.playerType || ""
+            ),
+        });
+    }
+
     function addScherm() {
         if (ruimtes.length === 0) {
             onRuimtesChange([emptyRuimte()]);
@@ -191,8 +308,10 @@ export default function InstallatieRuimtesSectie({
             <div className="space-y-4">
                 {schermKaarten.map(({ ruimteId, scherm }, index) => {
                     const detailOpties = bevestigingDetails(scherm.beugel);
-                    const specsOk = schermSpecsGevuld(scherm);
-                    const toonPlayer = isPlayerAansturing(scherm.aansturing);
+                    const toonSchermTabel = Boolean(scherm.formaat);
+                    const toonAansturingTabel = isAansturingMetApparaat(
+                        scherm.aansturing
+                    );
                     const bronnen =
                         index > 0
                             ? schermKaarten
@@ -287,6 +406,27 @@ export default function InstallatieRuimtesSectie({
                                     />
                                 ) : null}
                             </div>
+
+                            {toonSchermTabel ? (
+                                <HardwareKenmerkenTabel
+                                    titel={
+                                        scherm.formaat === "Anders"
+                                            ? `${scherm.formaatAnders || "Scherm"} — gegevens`
+                                            : `${scherm.formaat} geïnstalleerd — gegevens`
+                                    }
+                                    merk={scherm.merk || ""}
+                                    type={scherm.type || ""}
+                                    serienummer={scherm.serienummer || ""}
+                                    mac={scherm.mac || ""}
+                                    onChange={(patch) =>
+                                        patchSchermHardware(
+                                            ruimteId,
+                                            scherm,
+                                            patch
+                                        )
+                                    }
+                                />
+                            ) : null}
 
                             <div className="space-y-1.5">
                                 <span className="text-xs text-gray-600">
@@ -408,6 +548,30 @@ export default function InstallatieRuimtesSectie({
                                     />
                                 ) : null}
                             </div>
+
+                            {toonAansturingTabel ? (
+                                <HardwareKenmerkenTabel
+                                    titel={
+                                        isPlayerAansturing(scherm.aansturing)
+                                            ? "Aansturing (player)"
+                                            : scherm.aansturing === "Anders"
+                                              ? `Aansturing (${scherm.aansturingAnders || "anders"})`
+                                              : `Aansturing (${scherm.aansturing})`
+                                    }
+                                    merk={scherm.playerMerk || ""}
+                                    type={scherm.playerType || ""}
+                                    serienummer={scherm.playerSerienummer || ""}
+                                    mac={scherm.playerMac || ""}
+                                    onChange={(patch) =>
+                                        patchSchermHardware(ruimteId, scherm, {
+                                            playerMerk: patch.merk,
+                                            playerType: patch.type,
+                                            playerSerienummer: patch.serienummer,
+                                            playerMac: patch.mac,
+                                        })
+                                    }
+                                />
+                            ) : null}
 
                             <div className="space-y-1.5">
                                 <span className="text-xs text-gray-600">
@@ -599,136 +763,6 @@ export default function InstallatieRuimtesSectie({
                                     </div>
                                 ) : null}
                             </div>
-
-                            {specsOk ? (
-                                <div className="rounded-xl border bg-slate-50 p-3 space-y-3">
-                                    <p className="text-sm font-semibold text-gray-800">
-                                        Schermregistratie
-                                    </p>
-
-                                    <label className="block">
-                                        <span className="text-sm text-gray-600">
-                                            Merk &amp; Type
-                                        </span>
-                                        <input
-                                            value={scherm.merkType}
-                                            onChange={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    merkType: e.target.value,
-                                                })
-                                            }
-                                            className="w-full border rounded-xl p-2.5 mt-1"
-                                            placeholder="Bijv. Samsung QM55B"
-                                        />
-                                    </label>
-
-                                    <label className="block">
-                                        <span className="text-sm text-gray-600">
-                                            Serienummer
-                                        </span>
-                                        <input
-                                            value={scherm.serienummer}
-                                            onChange={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    serienummer: e.target.value,
-                                                })
-                                            }
-                                            className="w-full border rounded-xl p-2.5 mt-1"
-                                            placeholder="Typ of plak serienummer"
-                                        />
-                                    </label>
-
-                                    <label className="block">
-                                        <span className="text-sm text-gray-600">
-                                            MAC-adres
-                                        </span>
-                                        <input
-                                            value={scherm.mac}
-                                            onChange={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    mac: e.target.value,
-                                                })
-                                            }
-                                            onBlur={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    mac: normalizeMac(
-                                                        e.target.value
-                                                    ),
-                                                })
-                                            }
-                                            className="w-full border rounded-xl p-2.5 mt-1"
-                                            placeholder="Typ of plak MAC-adres"
-                                            autoCapitalize="characters"
-                                            spellCheck={false}
-                                        />
-                                    </label>
-                                </div>
-                            ) : null}
-
-                            {specsOk && toonPlayer ? (
-                                <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-3 space-y-3">
-                                    <p className="text-sm font-semibold text-gray-800">
-                                        Playerregistratie
-                                    </p>
-
-                                    <label className="block">
-                                        <span className="text-sm text-gray-600">
-                                            Merk &amp; Type player
-                                        </span>
-                                        <input
-                                            value={scherm.playerMerkType || ""}
-                                            onChange={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    playerMerkType: e.target.value,
-                                                })
-                                            }
-                                            className="w-full border rounded-xl p-2.5 mt-1 bg-white"
-                                            placeholder="Bijv. BrightSign LS425"
-                                        />
-                                    </label>
-
-                                    <label className="block">
-                                        <span className="text-sm text-gray-600">
-                                            Serienummer player
-                                        </span>
-                                        <input
-                                            value={scherm.playerSerienummer || ""}
-                                            onChange={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    playerSerienummer: e.target.value,
-                                                })
-                                            }
-                                            className="w-full border rounded-xl p-2.5 mt-1 bg-white"
-                                            placeholder="Typ of plak serienummer"
-                                        />
-                                    </label>
-
-                                    <label className="block">
-                                        <span className="text-sm text-gray-600">
-                                            MAC-adres player
-                                        </span>
-                                        <input
-                                            value={scherm.playerMac || ""}
-                                            onChange={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    playerMac: e.target.value,
-                                                })
-                                            }
-                                            onBlur={(e) =>
-                                                updateScherm(ruimteId, scherm.id, {
-                                                    playerMac: normalizeMac(
-                                                        e.target.value
-                                                    ),
-                                                })
-                                            }
-                                            className="w-full border rounded-xl p-2.5 mt-1 bg-white"
-                                            placeholder="Typ of plak MAC-adres"
-                                            autoCapitalize="characters"
-                                            spellCheck={false}
-                                        />
-                                    </label>
-                                </div>
-                            ) : null}
                         </div>
                     );
                 })}

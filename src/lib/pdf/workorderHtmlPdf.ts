@@ -11,6 +11,7 @@ import {
     mergeOpleverData
 } from "@/types/oplever";
 import {
+    samenvattingSchermHardware,
     summarizeVoorziening,
     werkzaamheidLabel,
     beugelLabel,
@@ -604,18 +605,8 @@ function opleverSections(
         :
         [];
 
-
-    return `
-  ${qaBlock("Tarief &amp; Uren", `
-      ${t.voorrijtarief !== null ? row("Voorrijtarief?", t.voorrijtarief ? chipSvg("Vast","yes") : chipSvg("KM's + Uren","no")) : ""}
-      ${t.voorrijtarief === false && t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
-      ${t.voorrijtarief === false && t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
-      ${urenRows}
-      ${kostenRows}
-  `)}
-
-  ${qaBlock("Installatie werkzaamheden", `
-      ${filledRuimtes.length > 0
+    const schermenPdfRows =
+        filledRuimtes.length > 0
         ? filledRuimtes.map((r, ri)=>{
             const naam = (r.naam || `Ruimte ${ri + 1}`).trim();
             const parts = [
@@ -627,16 +618,7 @@ function opleverSections(
             ].filter(Boolean);
             const schermen = (r.schermen || [])
               .filter((s)=>schermHeeftGegevens(s))
-              .map((s, si)=>{
-                const sParts = [
-                  s.label || `Scherm ${si + 1}`,
-                  s.formaat,
-                  s.merkType,
-                  s.serienummer ? `SN ${s.serienummer}` : "",
-                  s.mac ? `MAC ${s.mac}` : ""
-                ].filter(Boolean);
-                return sParts.join(" · ");
-              })
+              .map((s)=>samenvattingSchermHardware(s))
               .join("<br/>");
             return row(
               naam,
@@ -647,8 +629,9 @@ function opleverSections(
       ${i.nieuweSchermen === true ? row("Schermen",pill(i.nieuweSchermen)) : ""}
       ${i.nieuweSchermen === true ? schermBlokken("Scherm",i.nieuweFormaten) : ""}
       ${i.hergebruikteSchermen === true && i.hergebruikteFormaten.length > 0 ? schermBlokken("Scherm",i.hergebruikteFormaten) : ""}
-      ${i.videowall === true ? row("Videowall",pill(i.videowall)) : ""}
-      ${i.videowall === true ? (()=>{
+        `;
+
+    const videowallPdfRows = i.videowall === true ? (()=>{
         const v = { ...(i.videowallVelden || {}) };
         if(!v.configuratie && (i.videowallHorizontaal || i.videowallVerticaal)){
             v.configuratie = `${i.videowallHorizontaal || "?"} x ${i.videowallVerticaal || "?"}`;
@@ -671,21 +654,45 @@ function opleverSections(
             v.stroom ? row("Stroom binnen 3 meter?", textAnswer(v.stroom)) : "",
             v.internet ? row("Internet binnen 3 meter?", textAnswer(v.internet)) : ""
         ].join("");
-      })() : ""}
-      ${i.kiosk === true ? row("Kiosk",pill(i.kiosk)) : ""}
-      ${i.kiosk === true ? (i.kioskBlokken || []).filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
-          row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
-        ).join("") : ""}
-      ${i.mediaplayers ? row("Mediaplayers",choicePill(i.mediaplayers)) : ""}
-      ${i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""}
-      ${i.audio === true ? row("Audio",pill(i.audio)) : ""}
-      ${i.audio === true && i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : ""}
-      ${i.audio === true && i.audioSpeler ? row("Audiospeler",textAnswer(formatMateriaalStukken(i.audioSpeler, i.audioSpelerItems, []))) : ""}
-      ${i.audio === true && i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : ""}
-      ${i.audio === true && i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : ""}
-      ${i.audio === true && i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : ""}
-      ${i.audio === true && i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""}
-      `}
+    })() : "";
+
+    const kioskPdfRows = i.kiosk === true
+        ? (i.kioskBlokken || []).filter(kb=>kb.status || kb.omschrijving || kb.aantal).map((kb,ki)=>
+            row(`Kiosk ${ki + 1}`,textAnswer([kb.status, kb.omschrijving, kb.aantal ? `aantal: ${kb.aantal}` : ""].filter(Boolean).join(" · ")))
+          ).join("")
+        : "";
+
+    const mediaplayersPdfRows = [
+        i.mediaplayers ? row("Mediaplayers",choicePill(i.mediaplayers)) : "",
+        i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""
+    ].join("");
+
+    const audioPdfRows = i.audio === true ? [
+        i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : "",
+        i.audioSpeler ? row("Audiospeler",textAnswer(formatMateriaalStukken(i.audioSpeler, i.audioSpelerItems, []))) : "",
+        i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : "",
+        i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : "",
+        i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : "",
+        i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""
+    ].join("") : "";
+
+
+    return `
+  ${qaBlock("Tarief &amp; Uren", `
+      ${t.voorrijtarief !== null ? row("Voorrijtarief?", t.voorrijtarief ? chipSvg("Vast","yes") : chipSvg("KM's + Uren","no")) : ""}
+      ${t.voorrijtarief === false && t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
+      ${t.voorrijtarief === false && t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
+      ${urenRows}
+      ${kostenRows}
+  `)}
+
+  ${qaBlock("Schermen", schermenPdfRows)}
+  ${qaBlock("Videowall", videowallPdfRows)}
+  ${qaBlock("Kiosk", kioskPdfRows)}
+  ${qaBlock("Mediaplayers", mediaplayersPdfRows)}
+  ${qaBlock("Audio", audioPdfRows)}
+
+  ${qaBlock("Overig", `
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
       ${summarizeVoorziening("Internet", i.internetBlok) ? row("Internet", textAnswer(summarizeVoorziening("Internet", i.internetBlok).replace(/^Internet:\s*/,""))) : ""}
       ${i.extra && (i.extra.afvoerTm50 || i.extra.afvoerVanaf50 || i.extra.afval || i.extra.audio)
