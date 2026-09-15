@@ -1199,7 +1199,7 @@ function AanvraagFormulier(){
                         </div>
 
                         {/* Hardware — geldt voor de hele installatie-aanvraag */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-4">
+                        <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4">
                             <div className="space-y-3">
                                 <div>
                                     <span className="flex items-center gap-2 text-sm font-semibold text-gray-900">
@@ -1240,20 +1240,20 @@ function AanvraagFormulier(){
                                                     }
                                                 }}
                                                 className={
-                                                    "flex min-h-14 w-full items-center gap-2.5 rounded-lg border-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors "
+                                                    "flex min-h-14 w-full items-center gap-2.5 rounded-lg border-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 "
                                                     +
                                                     (selected
-                                                        ? "border-[#D6007E] bg-[#0066FF] text-white shadow-sm ring-2 ring-[#D6007E]/20"
-                                                        : "border-gray-200 bg-white text-gray-700 hover:border-[#0066FF] hover:bg-blue-50/40")
+                                                        ? "border-sky-400 bg-sky-100 text-sky-950 shadow-sm ring-1 ring-sky-300"
+                                                        : "border-slate-300 bg-white/90 text-slate-700 hover:border-sky-300 hover:bg-sky-50")
                                                 }
                                             >
                                                 <span
                                                     aria-hidden="true"
                                                     className={
-                                                        "flex h-5 w-5 shrink-0 items-center justify-center rounded border text-xs "
+                                                        "flex h-5 w-5 shrink-0 items-center justify-center rounded border text-xs font-bold "
                                                         + (selected
-                                                            ? "border-white bg-white text-[#0066FF]"
-                                                            : "border-gray-300 bg-white text-transparent")
+                                                            ? "border-sky-500 bg-white text-sky-800"
+                                                            : "border-slate-300 bg-white text-transparent")
                                                     }
                                                 >
                                                     ✓
