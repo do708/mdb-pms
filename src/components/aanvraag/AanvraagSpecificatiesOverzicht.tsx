@@ -14,9 +14,11 @@ import {
 import {
     aansturingWeergave,
     emptySchermItem,
+    formatKabelTrajectKeuzes,
     installatieTypeWeergave,
     mdbBeugelTypeWeergave,
     normaliseerMonterenKoppeling,
+    parseKabelTrajectKeuzes,
     type AanvraagSchermItem,
 } from "@/lib/aanvraag/installatieTypes";
 import BeugelkeuzeOverzicht, {
@@ -244,6 +246,14 @@ function labelVoorVeld(key: string): string {
     return key;
 }
 
+function waardeVoorVeld(key: string, value: unknown): unknown {
+    if (key !== "kabelTraject") return value;
+
+    return formatKabelTrajectKeuzes(
+        parseKabelTrajectKeuzes(str(value))
+    );
+}
+
 function VeldenGrid({
     velden,
 }: {
@@ -263,7 +273,11 @@ function VeldenGrid({
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {entries.map(([k, v]) => (
-                <Field key={k} label={labelVoorVeld(k)} value={v} />
+                <Field
+                    key={k}
+                    label={labelVoorVeld(k)}
+                    value={waardeVoorVeld(k, v)}
+                />
             ))}
         </div>
     );

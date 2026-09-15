@@ -5,7 +5,11 @@ import {
     chipIdleClassName,
     chipSelectedClassName,
 } from "@/components/ui/SpecLayout";
-import { KABEL_TRAJECT_OPTIES } from "@/lib/aanvraag/installatieTypes";
+import {
+    KABEL_TRAJECT_OPTIES,
+    parseKabelTrajectKeuzes,
+    toggleKabelTrajectKeuze,
+} from "@/lib/aanvraag/installatieTypes";
 
 export function JaNee({
     value,
@@ -99,6 +103,7 @@ export function MdbRealisatieVervolg({
     onTrajectChange,
     disabled = false,
     trajectOpties = KABEL_TRAJECT_OPTIES,
+    trajectMultiSelect = false,
 }: {
     mdb: string;
     afstand: string;
@@ -108,7 +113,12 @@ export function MdbRealisatieVervolg({
     onTrajectChange: (v: string) => void;
     disabled?: boolean;
     trajectOpties?: readonly string[];
+    trajectMultiSelect?: boolean;
 }) {
+    const geselecteerdeTrajecten = trajectMultiSelect
+        ? parseKabelTrajectKeuzes(traject)
+        : [traject];
+
     return (
         <div className="pl-2 border-l-2 border-amber-200 space-y-2">
             <span className="text-xs text-gray-600 block">
@@ -149,15 +159,21 @@ export function MdbRealisatieVervolg({
                                     disabled={disabled}
                                     onClick={() =>
                                         onTrajectChange(
-                                            traject === optie
-                                                ? ""
-                                                : optie
+                                            trajectMultiSelect
+                                                ? toggleKabelTrajectKeuze(
+                                                      traject,
+                                                      optie,
+                                                      trajectOpties
+                                                  )
+                                                : traject === optie
+                                                  ? ""
+                                                  : optie
                                         )
                                     }
                                     className={
                                         "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left disabled:opacity-60 disabled:cursor-not-allowed "
                                         +
-                                        (traject === optie
+                                        (geselecteerdeTrajecten.includes(optie)
                                             ? chipSelectedClassName
                                             : chipIdleClassName)
                                     }

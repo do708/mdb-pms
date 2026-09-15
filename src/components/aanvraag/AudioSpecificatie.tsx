@@ -114,6 +114,7 @@ export default function AudioSpecificatie({
                         afstand={velden.kabelAfstand || ""}
                         traject={velden.kabelTraject || ""}
                         trajectOpties={AUDIO_KABEL_TRAJECT_OPTIES}
+                        trajectMultiSelect
                         onMdbChange={(v) => {
                             onPatch({
                                 kabelMdb: v,

@@ -152,6 +152,42 @@ export const AUDIO_KABEL_TRAJECT_OPTIES = [
     "Kabelgoot",
 ] as const;
 
+/** Lees enkelvoudige en komma-/plus-gescheiden trajectwaarden zonder dataverlies. */
+export function parseKabelTrajectKeuzes(value?: string | null): string[] {
+    const keuzes = String(value || "")
+        .split(/\s*(?:,|\+)\s*/)
+        .map((keuze) => keuze.trim())
+        .filter(Boolean);
+
+    return [...new Set(keuzes)];
+}
+
+/** Schrijf trajectkeuzes in vaste optievolgorde als backward-compatible string. */
+export function formatKabelTrajectKeuzes(
+    keuzes: readonly string[],
+    opties: readonly string[] = AUDIO_KABEL_TRAJECT_OPTIES
+): string {
+    const uniek = [...new Set(keuzes.map((keuze) => keuze.trim()).filter(Boolean))];
+    const bekendeKeuzes = opties.filter((optie) => uniek.includes(optie));
+    const overigeKeuzes = uniek.filter((keuze) => !opties.includes(keuze));
+
+    return [...bekendeKeuzes, ...overigeKeuzes].join(", ");
+}
+
+/** Toggle één trajectkeuze en geef de canonieke opslagstring terug. */
+export function toggleKabelTrajectKeuze(
+    value: string,
+    keuze: string,
+    opties: readonly string[] = AUDIO_KABEL_TRAJECT_OPTIES
+): string {
+    const keuzes = parseKabelTrajectKeuzes(value);
+    const volgende = keuzes.includes(keuze)
+        ? keuzes.filter((bestaand) => bestaand !== keuze)
+        : [...keuzes, keuze];
+
+    return formatKabelTrajectKeuzes(volgende, opties);
+}
+
 /**
  * Formaatbanden uit het productoverzicht (geen prijzen).
  * 86" en 98" vallen onder “75 tot 85” (zelfde typecode als 75").
