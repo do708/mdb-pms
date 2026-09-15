@@ -548,11 +548,13 @@ export default function AanvraagSpecificatiesOverzicht({
         return !!(blok && blok.aan);
     });
 
+    const projectHardware = str(specs.projectHardware);
     const hardwareStatus = specs.projectHardwareStatus;
     const hardwareBesteldLegacy = str(specs.projectHardwareBesteld);
     const hardwareLevering = str(specs.projectHardwareLevering);
     const hasHardware =
-        hardwareStatus
+        projectHardware
+        || hardwareStatus
         || hardwareBesteldLegacy
         || hardwareLevering;
 
@@ -782,10 +784,17 @@ export default function AanvraagSpecificatiesOverzicht({
                     title="Hardware"
                     kleur="bg-fuchsia-50 border-fuchsia-200"
                 >
+                    <Field
+                        label="Welke hardware wordt geïnstalleerd?"
+                        value={projectHardware}
+                    />
                     <div className="
                         rounded-lg border border-gray-200
                         bg-white px-2.5 py-2 space-y-1.5
                     ">
+                        <p className="text-xs text-gray-500">
+                            Beschikbaarheid en levering
+                        </p>
                         {hardwareStatus ? (
                             <>
                                 <div className="flex flex-wrap gap-1.5">

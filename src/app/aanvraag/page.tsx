@@ -162,6 +162,7 @@ function AanvraagFormulier(){
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
+    const [projectHardware,setProjectHardware] = useState("");
     const [projectHardwareStatus,setProjectHardwareStatus] = useState<
         ProjectHardwareStatus[]
     >([]);
@@ -543,7 +544,7 @@ function AanvraagFormulier(){
         if(!isEvalue8 && typeAanvraag === "installatie"){
             if(projectHardwareStatus.length === 0){
                 setFout(
-                    "Geef aan wat de status van de hardware is (minimaal één keuze)."
+                    "Kies minimaal één optie bij beschikbaarheid en levering."
                 );
                 return;
             }
@@ -640,6 +641,7 @@ function AanvraagFormulier(){
                                     project,
                                     projectOmschrijving:
                                         project === "Ja" ? projectOmschrijving : "",
+                                    projectHardware,
                                     projectHardwareStatus,
                                     projectHardwareLevering:
                                         isProjectHardwareBesteld(
@@ -1199,69 +1201,92 @@ function AanvraagFormulier(){
                         </div>
 
                         {/* Hardware — geldt voor de hele installatie-aanvraag */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-3">
-                            <span className="text-sm font-medium text-gray-800 block">
-                                Hardware die geïnstalleerd dient te worden{" "}
-                                <span className="text-red-500">*</span>
-                            </span>
-
-                            <div className="space-y-3">
-                                <div>
-                                    <span className="text-xs text-gray-500 block mb-1.5">
-                                        Status hardware{" "}
-                                        <span className="text-red-500">*</span>{" "}
-                                        <span className="text-gray-400 font-normal">
-                                            (meerdere mogelijk)
-                                        </span>
+                        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-5">
+                            <label className="block">
+                                <span className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0066FF] text-xs font-bold text-white">
+                                        1
                                     </span>
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie, idx)=>{
-                                            const selected =
-                                                projectHardwareStatus.includes(optie);
+                                    Welke hardware wordt geïnstalleerd?
+                                    <span className="text-red-500">*</span>
+                                </span>
+                                <span className="mt-1.5 block text-xs text-gray-500">
+                                    Noem bijvoorbeeld schermen, players, beugels en kabels.
+                                </span>
+                                <textarea
+                                    rows={3}
+                                    value={projectHardware}
+                                    onChange={(e)=>setProjectHardware(e.target.value)}
+                                    placeholder="Bijv. 2 schermen, 2 players en wandbeugels"
+                                    className="mt-2 w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm focus:border-[#0066FF] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20"
+                                />
+                            </label>
 
-                                            return (
-                                                <span key={optie} className="inline-flex items-center gap-1.5">
-                                                    {idx > 0 && (
-                                                        <span className="text-xs text-gray-400 font-normal">
-                                                            en/of
-                                                        </span>
-                                                    )}
-                                                    <button
-                                                        type="button"
-                                                        aria-pressed={selected}
-                                                        onClick={()=>{
-                                                            const next =
-                                                                toggleProjectHardwareStatus(
-                                                                    projectHardwareStatus,
-                                                                    optie
-                                                                );
-                                                            setProjectHardwareStatus(
-                                                                next as ProjectHardwareStatus[]
-                                                            );
-                                                            if(
-                                                                !isProjectHardwareBesteld(
-                                                                    next
-                                                                )
-                                                            ){
-                                                                setProjectHardwareLevering(
-                                                                    ""
-                                                                );
-                                                            }
-                                                        }}
-                                                        className={
-                                                            "rounded-md border px-2.5 py-1 text-xs font-medium "
-                                                            +
-                                                            (selected
-                                                                ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                                                                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50")
-                                                        }
-                                                    >
-                                                        {optie}
-                                                    </button>
+                            <div className="border-t border-slate-200 pt-4 space-y-3">
+                                <div>
+                                    <span className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#D6007E] text-xs font-bold text-white">
+                                            2
+                                        </span>
+                                        Beschikbaarheid en levering
+                                        <span className="text-red-500">*</span>
+                                    </span>
+                                    <p className="mt-1.5 text-xs text-gray-500">
+                                        Kies alles wat van toepassing is. Combinaties zijn toegestaan.
+                                    </p>
+                                </div>
+                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                                    {PROJECT_HARDWARE_STATUS_OPTIONS.map((optie)=>{
+                                        const selected =
+                                            projectHardwareStatus.includes(optie);
+
+                                        return (
+                                            <button
+                                                key={optie}
+                                                type="button"
+                                                aria-pressed={selected}
+                                                onClick={()=>{
+                                                    const next =
+                                                        toggleProjectHardwareStatus(
+                                                            projectHardwareStatus,
+                                                            optie
+                                                        );
+                                                    setProjectHardwareStatus(
+                                                        next as ProjectHardwareStatus[]
+                                                    );
+                                                    if(
+                                                        !isProjectHardwareBesteld(
+                                                            next
+                                                        )
+                                                    ){
+                                                        setProjectHardwareLevering(
+                                                            ""
+                                                        );
+                                                    }
+                                                }}
+                                                className={
+                                                    "flex min-h-14 w-full items-center gap-2.5 rounded-lg border-2 px-3 py-2.5 text-left text-sm font-semibold transition-colors "
+                                                    +
+                                                    (selected
+                                                        ? "border-[#D6007E] bg-[#0066FF] text-white shadow-sm ring-2 ring-[#D6007E]/20"
+                                                        : "border-gray-200 bg-white text-gray-700 hover:border-[#0066FF] hover:bg-blue-50/40")
+                                                }
+                                            >
+                                                <span
+                                                    aria-hidden="true"
+                                                    className={
+                                                        "flex h-5 w-5 shrink-0 items-center justify-center rounded border text-xs "
+                                                        + (selected
+                                                            ? "border-white bg-white text-[#0066FF]"
+                                                            : "border-gray-300 bg-white text-transparent")
+                                                    }
+                                                >
+                                                    ✓
                                                 </span>
-                                            );
-                                        })}
-                                    </div>
+                                                {optie}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
 
                                 {isProjectHardwareBesteld(projectHardwareStatus) ? (
