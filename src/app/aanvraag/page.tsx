@@ -162,7 +162,6 @@ function AanvraagFormulier(){
 
     const [project,setProject] = useState("");
     const [projectOmschrijving,setProjectOmschrijving] = useState("");
-    const [projectHardware,setProjectHardware] = useState("");
     const [projectHardwareStatus,setProjectHardwareStatus] = useState<
         ProjectHardwareStatus[]
     >([]);
@@ -641,7 +640,6 @@ function AanvraagFormulier(){
                                     project,
                                     projectOmschrijving:
                                         project === "Ja" ? projectOmschrijving : "",
-                                    projectHardware,
                                     projectHardwareStatus,
                                     projectHardwareLevering:
                                         isProjectHardwareBesteld(
@@ -1201,33 +1199,10 @@ function AanvraagFormulier(){
                         </div>
 
                         {/* Hardware — geldt voor de hele installatie-aanvraag */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-5">
-                            <label className="block">
-                                <span className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0066FF] text-xs font-bold text-white">
-                                        1
-                                    </span>
-                                    Welke hardware wordt geïnstalleerd?
-                                    <span className="text-red-500">*</span>
-                                </span>
-                                <span className="mt-1.5 block text-xs text-gray-500">
-                                    Noem bijvoorbeeld schermen, players, beugels en kabels.
-                                </span>
-                                <textarea
-                                    rows={3}
-                                    value={projectHardware}
-                                    onChange={(e)=>setProjectHardware(e.target.value)}
-                                    placeholder="Bijv. 2 schermen, 2 players en wandbeugels"
-                                    className="mt-2 w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm focus:border-[#0066FF] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20"
-                                />
-                            </label>
-
-                            <div className="border-t border-slate-200 pt-4 space-y-3">
+                        <div className="rounded-xl border border-slate-200 bg-white p-4">
+                            <div className="space-y-3">
                                 <div>
                                     <span className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#D6007E] text-xs font-bold text-white">
-                                            2
-                                        </span>
                                         Beschikbaarheid en levering
                                         <span className="text-red-500">*</span>
                                     </span>
