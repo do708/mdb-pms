@@ -62,7 +62,7 @@ const ONDERDELEN:{
 }[] = [
     {
         key:"schermen",
-        titel:"Schermen",
+        titel:"Scherm(en)",
         kleur:"bg-sky-50 border-sky-200",
         // Velden worden via SchermenSpecificatie gerenderd (per scherm).
         velden:[]
