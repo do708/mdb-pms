@@ -92,9 +92,9 @@ export default function SchermenSpecificatie({
                     Aantal schermen
                 </span>
                 <input
-                    type="number"
-                    min={0}
-                    max={15}
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
                     value={aantal}
                     onChange={(e) => zetAantal(e.target.value)}
                     placeholder="Bijv. 2"
