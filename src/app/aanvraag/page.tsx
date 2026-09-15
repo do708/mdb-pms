@@ -787,7 +787,6 @@ function AanvraagFormulier(){
                             <input
                                 value={straatHuisnummer}
                                 onChange={(e)=>setStraatHuisnummer(e.target.value)}
-                                placeholder="Altdorferplantsoen 10"
                                 className="w-full border rounded-xl p-3 mt-1"
                                 required
                             />
