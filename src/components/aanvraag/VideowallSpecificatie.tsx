@@ -311,6 +311,8 @@ export default function VideowallSpecificatie({
                             className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
                         />
                     </label>
+                    {showOpleverDetails ? (
+                        <>
                     {paneelAantal > 0 ? (
                         <p className="text-xs text-gray-500">
                             {paneelAantal} schermen — vul per scherm merk, type
@@ -589,6 +591,8 @@ export default function VideowallSpecificatie({
                             </div>
                         </div>
                         </div>
+                    ) : null}
+                        </>
                     ) : null}
 
                     <AansturingBlok
