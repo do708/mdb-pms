@@ -13,7 +13,7 @@ export const ONDERDEEL_META: Record<
     { titel: string; kleur: string }
 > = {
     schermen: {
-        titel: "Schermen",
+        titel: "Scherm(en)",
         kleur: "bg-sky-50 border-sky-200",
     },
     videowall: {
