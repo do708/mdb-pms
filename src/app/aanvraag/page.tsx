@@ -780,7 +780,7 @@ function AanvraagFormulier(){
                             />
                         </label>
 
-                        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_10rem]">
+                        <div className="grid grid-cols-[minmax(0,1fr)_7rem] gap-3 sm:grid-cols-[minmax(0,1fr)_9rem]">
                             <label className="block min-w-0">
                                 <span className="text-sm text-gray-600">
                                     Straat{" "}
