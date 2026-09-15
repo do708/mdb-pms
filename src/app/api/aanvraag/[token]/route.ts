@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { sendAanvraagMail } from "@/lib/email/sendAanvraagMail";
+import { straatHuisnummerUitPayload } from "@/lib/workorders/address";
 
 
 
@@ -90,14 +91,24 @@ export async function POST(
         const body =
             await request.json();
 
+        const { straat, huisnummer } =
+            straatHuisnummerUitPayload(body);
+
+        if (!straat) {
+            return NextResponse.json(
+                { error:"Vul straat en huisnummer in." },
+                { status:400 }
+            );
+        }
+
 
         const aanvraag =
             await prisma.aanvraag.create({
                 data:{
                     customerId:customer.id,
                     locatie:body.locatie || null,
-                    straat:body.straat || null,
-                    huisnummer:body.huisnummer || null,
+                    straat,
+                    huisnummer,
                     postcode:body.postcode || null,
                     plaats:body.plaats || null,
                     schermen:body.schermen || null,

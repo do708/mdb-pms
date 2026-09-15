@@ -31,6 +31,47 @@ export function splitStreetAddress(line: string): {
     };
 }
 
+/**
+ * Lees straat/huisnummer uit een payload: één gecombineerd veld, of de
+ * bestaande aparte kolommen. Zo blijven oude aanvragen en werkbonnen werken.
+ */
+export function straatHuisnummerUitPayload(input: {
+    straat?: unknown;
+    huisnummer?: unknown;
+    straatHuisnummer?: unknown;
+}): { straat: string | null; huisnummer: string | null } {
+    const combined =
+        typeof input.straatHuisnummer === "string"
+            ? input.straatHuisnummer.trim()
+            : "";
+
+    if (combined) {
+        const parsed = splitStreetAddress(combined);
+        return {
+            straat: parsed.straat || null,
+            huisnummer: parsed.huisnummer || null,
+        };
+    }
+
+    const straat =
+        typeof input.straat === "string" ? input.straat.trim() : "";
+    const huisnummer =
+        typeof input.huisnummer === "string" ? input.huisnummer.trim() : "";
+
+    if (straat && !huisnummer) {
+        const parsed = splitStreetAddress(straat);
+        return {
+            straat: parsed.straat || null,
+            huisnummer: parsed.huisnummer || null,
+        };
+    }
+
+    return {
+        straat: straat || null,
+        huisnummer: huisnummer || null,
+    };
+}
+
 /** Verplichte locatievelden voor office/admin bij aanmaken en bewerken. */
 export function ontbrekendeVerplichteLocatieVelden(input: {
     customerId?: string | null;

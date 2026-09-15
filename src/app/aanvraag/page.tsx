@@ -37,6 +37,7 @@ import {
     isProjectHardwareBesteld,
     toggleProjectHardwareStatus,
 } from "@/lib/aanvraag/hardwareStatus";
+import { splitStreetAddress } from "@/lib/workorders/address";
 
 
 interface Bijlage {
@@ -132,8 +133,7 @@ function AanvraagFormulier(){
 
     // Locatie & adres
     const [locatie,setLocatie] = useState("");
-    const [straat,setStraat] = useState("");
-    const [huisnummer,setHuisnummer] = useState("");
+    const [straatHuisnummer,setStraatHuisnummer] = useState("");
     const [postcode,setPostcode] = useState("");
     const [plaats,setPlaats] = useState("");
 
@@ -462,12 +462,8 @@ function AanvraagFormulier(){
             setFout("Vul de locatie / filiaalnaam in.");
             return;
         }
-        if(!straat.trim()){
-            setFout("Vul de straat in.");
-            return;
-        }
-        if(!huisnummer.trim()){
-            setFout("Vul het huisnummer in.");
+        if(!straatHuisnummer.trim()){
+            setFout("Vul straat en huisnummer in.");
             return;
         }
         if(!postcode.trim()){
@@ -605,7 +601,10 @@ function AanvraagFormulier(){
                     method:"POST",
                     headers:{ "Content-Type":"application/json" },
                     body:JSON.stringify({
-                        locatie, straat, huisnummer, postcode, plaats,
+                        locatie,
+                        ...splitStreetAddress(straatHuisnummer),
+                        straatHuisnummer:straatHuisnummer.trim(),
+                        postcode, plaats,
                         schermen:schermenSamenvatting,
                         stroom:stroomTekst,
                         internet:internetTekst,
@@ -780,32 +779,19 @@ function AanvraagFormulier(){
                             />
                         </label>
 
-                        <div className="grid grid-cols-[minmax(0,1fr)_7rem] gap-3 sm:grid-cols-[minmax(0,1fr)_9rem]">
-                            <label className="block min-w-0">
-                                <span className="text-sm text-gray-600">
-                                    Straat{" "}
-                                    <span className="text-red-500">*</span>
-                                </span>
-                                <input
-                                    value={straat}
-                                    onChange={(e)=>setStraat(e.target.value)}
-                                    className="w-full border rounded-xl p-3 mt-1"
-                                    required
-                                />
-                            </label>
-                            <label className="block">
-                                <span className="text-sm text-gray-600">
-                                    Huisnr.{" "}
-                                    <span className="text-red-500">*</span>
-                                </span>
-                                <input
-                                    value={huisnummer}
-                                    onChange={(e)=>setHuisnummer(e.target.value)}
-                                    className="w-full border rounded-xl p-3 mt-1"
-                                    required
-                                />
-                            </label>
-                        </div>
+                        <label className="block">
+                            <span className="text-sm text-gray-600">
+                                Straat en huisnummer{" "}
+                                <span className="text-red-500">*</span>
+                            </span>
+                            <input
+                                value={straatHuisnummer}
+                                onChange={(e)=>setStraatHuisnummer(e.target.value)}
+                                placeholder="Altdorferplantsoen 10"
+                                className="w-full border rounded-xl p-3 mt-1"
+                                required
+                            />
+                        </label>
 
                         <div className="flex flex-wrap gap-3">
                             <label className="block w-36">

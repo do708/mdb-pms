@@ -24,6 +24,7 @@ import {
 import BeugelkeuzeOverzicht, {
     naarBeugelkeuzeSchermRij,
 } from "@/components/aanvraag/BeugelkeuzeOverzicht";
+import { combineStreetAddress } from "@/lib/workorders/address";
 
 export interface AanvraagOverzichtSnapshot {
     specificaties?: unknown;
@@ -612,12 +613,11 @@ export default function AanvraagSpecificatiesOverzicht({
                             value={locatie?.locatie}
                         />
                         {(() => {
-                            const straatRegel = [
-                                locatie?.straat,
-                                locatie?.huisnummer,
-                            ]
-                                .filter(Boolean)
-                                .join(" ");
+                            const straatRegel =
+                                combineStreetAddress(
+                                    locatie?.straat,
+                                    locatie?.huisnummer
+                                ) || "";
                             const mapsQuery = [
                                 straatRegel,
                                 locatie?.postcode,
@@ -627,7 +627,7 @@ export default function AanvraagSpecificatiesOverzicht({
                                 .join(", ");
                             return (
                                 <Field
-                                    label="Straat"
+                                    label="Straat en huisnummer"
                                     value={straatRegel}
                                     href={
                                         mapsQuery
