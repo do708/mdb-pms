@@ -106,6 +106,18 @@ export function montageVanScherm(item: BeugelKeuzeScherm): string {
     return "";
 }
 
+const BEVESTIGING_DETAIL_WEERGAVE: Record<string, string> = {
+    "Vaste muurbeugel": "Muurbeugel",
+    "Vaste plafondbeugel": "Plafondbeugel",
+    "Vaste plafondbeugel kantelbare scherm": "Plafondbeugel kantelbare scherm",
+    "Vaste vloerstandaard": "Vloerstandaard",
+    "Vaste plafondplaat": "Plafondplaat",
+};
+
+function onderdeelWeergave(naam: string): string {
+    return BEVESTIGING_DETAIL_WEERGAVE[naam] || naam;
+}
+
 function plafondHoogteCm(hoogte?: string): number | 0 {
     const match = String(hoogte || "").match(/(\d+)/);
     if (!match) return 0;
@@ -161,7 +173,7 @@ export function zoekBeugelCombinatie(item: BeugelKeuzeScherm): {
             return {
                 type,
                 aantal,
-                onderdeel: meta?.onderdeel || type,
+                onderdeel: onderdeelWeergave(meta?.onderdeel || type),
                 artikelnummer: meta?.artikelnummer || "",
                 eenheid: meta?.eenheid || "stuk",
             };
@@ -282,7 +294,9 @@ function legacyBeugelLabel(item: BeugelKeuzeScherm): string {
     const detail =
         item.bevestigingDetail === "Anders"
             ? item.bevestigingAnders?.trim() || "Anders"
-            : item.bevestigingDetail || "";
+            : BEVESTIGING_DETAIL_WEERGAVE[item.bevestigingDetail || ""]
+                || item.bevestigingDetail
+                || "";
     const lower = detail.toLowerCase();
 
     if (!soort && !detail) return "";

@@ -9,6 +9,7 @@ import {
     isAansturingMetApparaat,
     isPlayerAansturing,
     normaliseerBevestiging,
+    normaliseerBevestigingDetail,
 } from "@/lib/aanvraag/installatieTypes";
 import {
     actieVanWerkzaamheid,
@@ -623,7 +624,9 @@ export default function InstallatieRuimtesSectie({
                                 </select>
                                 {detailOpties.length > 0 ? (
                                     <select
-                                        value={scherm.bevestigingDetail || ""}
+                                        value={normaliseerBevestigingDetail(
+                                            scherm.bevestigingDetail
+                                        )}
                                         onChange={(e) =>
                                             updateScherm(ruimteId, scherm.id, {
                                                 bevestigingDetail: e.target.value,

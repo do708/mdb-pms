@@ -31,7 +31,7 @@ import {
     panelenUitVelden,
     syncVideowallPanelen,
 } from "@/lib/workorders/videowallPanelen";
-import { aansturingWeergave } from "@/lib/aanvraag/installatieTypes";
+import { aansturingWeergave, bevestigingDetailWeergave } from "@/lib/aanvraag/installatieTypes";
 
 
 
@@ -412,7 +412,7 @@ function schermTabel(
                 : scherm.formaat;
             const bevestiging = [
                 scherm.beugel,
-                scherm.bevestigingDetail,
+                bevestigingDetailWeergave(scherm.bevestigingDetail),
                 scherm.bevestigingAnders,
                 ruimteBevestiging,
             ].filter(Boolean).join(" · ");

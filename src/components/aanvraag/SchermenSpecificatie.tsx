@@ -14,6 +14,7 @@ import {
     isPlayerAansturing,
     legeVoorzieningen,
     normaliseerBevestiging,
+    normaliseerBevestigingDetail,
     patchRaaktVoorzieningen,
     syncSchermItems,
     syncVoorzieningenVanAnkers,
@@ -447,7 +448,9 @@ export default function SchermenSpecificatie({
                                                                     scherm.id,
                                                                     {
                                                                         bevestigingDetail:
-                                                                            scherm.bevestigingDetail ===
+                                                                            normaliseerBevestigingDetail(
+                                                                                scherm.bevestigingDetail
+                                                                            ) ===
                                                                             d
                                                                                 ? ""
                                                                                 : d,
@@ -459,8 +462,9 @@ export default function SchermenSpecificatie({
                                                             className={
                                                                 "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed "
                                                                 +
-                                                                (scherm.bevestigingDetail ===
-                                                                d
+                                                                (normaliseerBevestigingDetail(
+                                                                    scherm.bevestigingDetail
+                                                                ) === d
                                                                     ? "bg-teal-100 text-teal-900 border-teal-300"
                                                                     : "bg-white text-gray-700 border-gray-200")
                                                             }

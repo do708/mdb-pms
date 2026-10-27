@@ -56,16 +56,16 @@ export function normaliseerBevestiging(beugel?: string | null): string {
 
 export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
     Muurbeugel: [
-        "Vaste muurbeugel",
+        "Muurbeugel",
         "Kantelbare muurbeugel",
         "Draaibare muurbeugel",
     ],
     Plafondbeugel: [
-        "Vaste plafondbeugel",
-        "Vaste plafondbeugel kantelbare scherm",
+        "Plafondbeugel",
+        "Plafondbeugel kantelbare scherm",
     ],
     Vloerstandaard: [
-        "Vaste vloerstandaard",
+        "Vloerstandaard",
         "Vastgeschroefde vloerstandaard",
         "Vloer-plafond standaard",
         "Mobiele vloerstandaard (trolley)",
@@ -76,6 +76,41 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
         "Anders",
     ],
 };
+
+/** Oude UI-labels (met “Vaste”) → huidige labels. */
+const BEVESTIGING_DETAIL_ALIASES: Record<string, string> = {
+    "Vaste muurbeugel": "Muurbeugel",
+    "Vaste plafondbeugel": "Plafondbeugel",
+    "Vaste plafondbeugel kantelbare scherm": "Plafondbeugel kantelbare scherm",
+    "Vaste vloerstandaard": "Vloerstandaard",
+    "Vaste plafondplaat": "Plafondplaat",
+};
+
+/** Strip leidend “vast(e)” bij bevestigingslabels; “vastgeschroefd” blijft. */
+function stripVastePrefix(waarde: string): string {
+    const match = waarde.match(/^vaste?\s+(.+)$/i);
+    if (!match) {
+        return waarde;
+    }
+    const rest = match[1];
+    return rest.charAt(0).toUpperCase() + rest.slice(1);
+}
+
+/** Opgeslagen of interne waarde → huidige weergavelabel. */
+export function normaliseerBevestigingDetail(detail?: string | null): string {
+    const raw = (detail || "").trim();
+    if (!raw) {
+        return "";
+    }
+    if (BEVESTIGING_DETAIL_ALIASES[raw]) {
+        return BEVESTIGING_DETAIL_ALIASES[raw];
+    }
+    return stripVastePrefix(raw);
+}
+
+export function bevestigingDetailWeergave(detail?: string | null): string {
+    return normaliseerBevestigingDetail(detail);
+}
 
 export function bevestigingDetails(beugel?: string | null): string[] {
     const soort = normaliseerBevestiging(beugel);
@@ -827,7 +862,7 @@ export function beugelTypeWeergave(item: AanvraagSchermItem): string {
     const detail =
         item.bevestigingDetail === "Anders"
             ? (item.bevestigingAnders?.trim() || "Anders")
-            : (item.bevestigingDetail || soort);
+            : (bevestigingDetailWeergave(item.bevestigingDetail) || soort);
 
     const parts = [detail];
 
@@ -897,7 +932,7 @@ export function samenvattingSchermen(
             const parts = [
                 `Scherm ${i + 1}`,
                 formaat,
-                s.bevestigingDetail || s.beugel,
+                bevestigingDetailWeergave(s.bevestigingDetail) || s.beugel,
                 s.plafondHoogte || "",
                 s.orientatie,
                 s.locatie ? `@ ${s.locatie}` : "",

@@ -13,6 +13,7 @@ import {
 } from "@/lib/aanvraag/overzichtLabels";
 import {
     aansturingWeergave,
+    bevestigingDetailWeergave,
     emptySchermItem,
     formatKabelTrajectKeuzes,
     installatieTypeWeergave,
@@ -206,12 +207,14 @@ function formaatWeergave(item: Record<string, unknown>): string {
 }
 
 function bevestigingWeergave(item: Record<string, unknown>): string {
+    const soort = str(item.beugel);
+    const detail = bevestigingDetailWeergave(str(item.bevestigingDetail));
     const bevestiging =
         str(item.bevestigingDetail) === "Anders"
             ? `Special: ${str(item.bevestigingAnders) || "Anders"}`
-            : [str(item.bevestigingDetail), str(item.beugel)]
-                  .filter(Boolean)
-                  .join(" · ") || str(item.beugel);
+            : detail && soort && detail !== soort
+                ? `${detail} · ${soort}`
+                : detail || soort;
     const plafondHoogte = str(item.plafondHoogte);
 
     return [bevestiging, plafondHoogte && `Plafondhoogte ${plafondHoogte}`]
