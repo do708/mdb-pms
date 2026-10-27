@@ -5,6 +5,7 @@
 import {
     emptySchermItem,
     isPlayerAansturing,
+    normaliseerMonterenKoppeling,
     telBenodigdeBeugels,
 } from "@/lib/aanvraag/installatieTypes";
 
@@ -84,8 +85,10 @@ export function klaarzetVanAanvraagSpecificaties(
             .map((item) => {
                 const r = asRecord(item);
                 if (!r) return null;
+                const basis = emptySchermItem();
                 return {
-                    ...emptySchermItem(),
+                    ...basis,
+                    id: str(r.id) || basis.id,
                     formaat: str(r.formaat),
                     formaatAnders: str(r.formaatAnders),
                     beugel: str(r.beugel),
@@ -93,6 +96,10 @@ export function klaarzetVanAanvraagSpecificaties(
                     bevestigingAnders: str(r.bevestigingAnders),
                     plafondHoogte: str(r.plafondHoogte),
                     orientatie: str(r.orientatie),
+                    naastSchermId: str(r.naastSchermId),
+                    monterenKoppeling: normaliseerMonterenKoppeling(
+                        str(r.monterenKoppeling)
+                    ),
                 };
             })
             .filter((item): item is NonNullable<typeof item> => item !== null);

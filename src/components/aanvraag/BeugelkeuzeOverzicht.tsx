@@ -40,7 +40,7 @@ export function naarBeugelkeuzeSchermRij(
         scherm: `Scherm ${index + 1}`,
         formaat: formaatWeergaveScherm(item),
         installatie: beugelTypeWeergave(item),
-        artikelen: schermBeugelArtikelen(item),
+        artikelen: schermBeugelArtikelen(item, alle),
         typeLabel: installatieTypeWeergave(typeCode),
         plaatsing: typeCode
             ? isHoofdType(item, alle)
