@@ -279,21 +279,21 @@ export interface WorkorderHtmlPdfInput {
 
 function chipSvg(
     label:string,
-    kind:"yes" | "no" | "empty"
+    kind:"yes" | "no" | "warn" | "empty"
 ):string {
 
     const fill =
         kind === "yes"
-        ? "#dcf5e4"
+        ? "#059669"
         : kind === "no"
-        ? "#ddf1fd"
+        ? "#0066FF"
+        : kind === "warn"
+        ? "#f59e0b"
         : "#f1f5f9";
     const color =
-        kind === "yes"
-        ? "#15803d"
-        : kind === "no"
-        ? "#0369a1"
-        : "#94a3b8";
+        kind === "empty"
+        ? "#64748b"
+        : "#ffffff";
     const width = Math.max(32, Math.round(label.length * 5.6 + 18));
     const height = 16;
     const r = 8;
@@ -329,6 +329,10 @@ function choicePill(
 
     if(!value){
         return chipSvg("—","empty");
+    }
+
+    if(value === "Matig"){
+        return chipSvg(value, "warn");
     }
 
     const negative =
@@ -1310,7 +1314,7 @@ function generateHtml(
 <head>
 <meta charset="UTF-8" />
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     font-size: 10px;
@@ -1341,7 +1345,7 @@ function generateHtml(
   .order-meta { font-size: 8.5px; color: #64748b; margin-top: 2px; }
   .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 600; background: rgba(255,255,255,0.2); color: #fff; }
   /* Sections */
-  .section { margin-bottom: 15px; }
+  .section { margin-top: 16px; margin-bottom: 15px; }
   .module-card { border: 1px solid #e6ebf2; border-radius: 9px; padding: 9px; }
   .module-card .section-title { margin: -9px -9px 9px; border-radius: 8px 8px 0 0; }
   .section-title {
@@ -1388,8 +1392,8 @@ function generateHtml(
   .photo-item { break-inside: avoid; page-break-inside: avoid; border: 1px solid #e6ebf2; border-radius: 8px; overflow: hidden; }
   .photo-link { display: block; text-decoration: none; }
   .photo-item img { width: 100%; max-height: 220px; object-fit: contain; border: 1px solid #e6ebf2; border-radius: 8px; background: #f8fafc; }
-  .photo-caption { font-size: 9px; color: #334155; padding: 6px 8px; background: #f4f7fb; }
-  .photo-original { font-size: 7.5px; color: #64748b; padding: 0 8px 6px; background: #f4f7fb; }
+  .photo-caption { font-size: 9px; color: #334155; padding: 6px 8px; background: #f4f7fb; text-align: center; }
+  .photo-original { font-size: 7.5px; color: #64748b; padding: 0 8px 6px; background: #f4f7fb; text-align: center; }
   /* Handtekeningen */
   .sig-box { position: relative; min-height: 90px; width: 100%; background: transparent; border: none; padding: 0; }
   .sig-frame { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -1438,7 +1442,6 @@ function generateHtml(
       </div>
     </div>
     <div class="grid-3">
-      ${data.projectName ? `<div class="info-box"><div class="info-label">Projectnaam</div><div class="info-value">${esc(data.projectName)}</div></div>` : ""}
       ${data.customer.address ? `<div class="info-box"><div class="info-label">Adres / locatie</div><div class="info-value">${esc(data.customer.address)}</div></div>` : ""}
       <div class="info-box"><div class="info-label">Werkbonnummer / status</div><div class="info-value">${esc(data.number)}${data.status ? ` · ${esc(data.status)}` : ""}</div></div>
     </div>

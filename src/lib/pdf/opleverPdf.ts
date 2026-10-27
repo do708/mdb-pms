@@ -41,9 +41,9 @@ const GRAY_LINE = rgb(0.8,0.8,0.8);
 
 const BLACK = rgb(0.15,0.15,0.15);
 
-const YES_GREEN = rgb(0.08,0.5,0.24);
+const YES_GREEN = rgb(5 / 255, 150 / 255, 105 / 255);
 
-const NO_BLUE = rgb(0.01,0.41,0.63);
+const NO_BLUE = MDB_BLUE;
 
 
 function roundedRectPath(
@@ -362,9 +362,9 @@ export async function generateOpleverPdf(
 
     function sectionBar(label:string){
 
-        ensure(30);
+        ensure(44);
 
-        y -= 6;
+        y -= 16;
 
         page.drawRectangle({
             x:MARGIN,
@@ -447,7 +447,7 @@ export async function generateOpleverPdf(
                     x:x + 10,
                     y,
                     size:8,
-                    font,
+                    font:bold,
                     color:rgb(1,1,1)
                 });
 
@@ -524,7 +524,12 @@ export async function generateOpleverPdf(
         badges([{
             label:value,
             active:true,
-            color:negative ? NO_BLUE : YES_GREEN
+            color:
+                value === "Matig"
+                ? rgb(245 / 255, 158 / 255, 11 / 255)
+                : negative
+                    ? NO_BLUE
+                    : YES_GREEN
         }]);
 
         dashedLine();
@@ -591,7 +596,6 @@ export async function generateOpleverPdf(
 
     labelValue("Project- / werkbonnaam:", input.title);
     labelValue("Opdrachtgever:", input.customerName);
-    labelValue("Projectnaam:", input.projectName);
     labelValue("Werkbonnummer:", input.number);
 
     labelValue(
@@ -894,35 +898,6 @@ export async function generateOpleverPdf(
 
     // ================= Gebruikte materialen =================
 
-    const heeftMaterialen =
-        input.materials.length > 0
-        || data.materialen.nieuweBeugels === true
-        || data.materialen.extraHdmiKabels === true
-        || data.materialen.extraHdmiSplitters === true
-        || data.materialen.extraPatchkabels === true
-        || data.materialen.extraSwitches === true
-        || data.materialen.utpGetrokken === true
-        || data.materialen.stroomkabelGetrokken === true
-        || data.materialen.verlengsnoeren === true
-        || data.materialen.extraSpeakers === true
-        || data.materialen.multicast === true
-        || Boolean(data.materialen.opmerkingen.trim());
-
-    if(heeftMaterialen){
-    sectionBar("Gebruikte materialen:");
-
-
-    jaNee(
-        "Nieuwe TV-beugels gemonteerd?",
-        data.materialen.nieuweBeugels
-    );
-
-    jaNee(
-        "Heb je bestaande TV beugels gemonteerd?",
-        data.materialen.bestaandeBeugels
-    );
-
-
     const beugels:[string,string][] = [
         ["Muurbeugel",data.materialen.muurbeugel],
         ["Zwenkbeugel",data.materialen.zwenkbeugel],
@@ -937,31 +912,6 @@ export async function generateOpleverPdf(
         .filter(([,amount])=>amount)
         .map(([name,amount])=>`${name}: ${amount}`)
         .join("   ·   ");
-
-    if(beugelText){
-
-        text(beugelText,{ gap:2 });
-
-        dashedLine();
-
-    }
-
-
-    jaNee(
-        "Extra HDMI-kabels gebruikt?",
-        data.materialen.extraHdmiKabels
-    );
-
-    jaNee(
-        "Heb je extra HDMI splitters gebruikt?",
-        data.materialen.extraHdmiSplitters
-    );
-
-    jaNee(
-        "Extra patchkabels gebruikt?",
-        data.materialen.extraPatchkabels
-    );
-
 
     const patch:[string,string][] = [
         ["1 m",data.materialen.patch1],
@@ -978,36 +928,6 @@ export async function generateOpleverPdf(
         .map(([name,amount])=>`Patch kabel ${name}: ${amount}`)
         .join("   ·   ");
 
-    if(patchText){
-
-        text(patchText,{ gap:2 });
-
-        dashedLine();
-
-    }
-
-
-    jaNee(
-        "Heb je extra switches gebruikt?",
-        data.materialen.extraSwitches
-    );
-
-    jaNee(
-        "Extra UTP-kabel getrokken?",
-        data.materialen.utpGetrokken
-    );
-
-    jaNee(
-        "Extra stroomkabel getrokken?",
-        data.materialen.stroomkabelGetrokken
-    );
-
-    jaNee(
-        "Verlengsnoeren (stekkerdozen) gebruikt?",
-        data.materialen.verlengsnoeren
-    );
-
-
     const verleng:[string,string][] = [
         ["1,5 m",data.materialen.verleng15],
         ["3 m",data.materialen.verleng3],
@@ -1020,6 +940,54 @@ export async function generateOpleverPdf(
         .map(([name,amount])=>`3-voudig ${name}: ${amount}`)
         .join("   ·   ");
 
+    const hdmiText =
+        [
+            ["HDMI 1 m",data.materialen.hdmi1m],
+            ["HDMI 2 m",data.materialen.hdmi2m],
+            ["HDMI 3 m",data.materialen.hdmi3m],
+            ["HDMI 5 m",data.materialen.hdmi5m],
+            ["HDMI 7,5 m",data.materialen.hdmi75m],
+            ["HDMI 10 m",data.materialen.hdmi10m]
+        ]
+        .filter(([,amount])=>amount)
+        .map(([name,amount])=>`${name}: ${amount}`)
+        .join("   ·   ");
+
+    const heeftMaterialen =
+        input.materials.length > 0
+        || Boolean(beugelText)
+        || Boolean(patchText)
+        || Boolean(verlengText)
+        || Boolean(hdmiText)
+        || Boolean(data.materialen.opmerkingen.trim());
+
+    if(heeftMaterialen){
+    sectionBar("Gebruikte materialen:");
+
+    if(beugelText){
+
+        text(beugelText,{ gap:2 });
+
+        dashedLine();
+
+    }
+
+    if(patchText){
+
+        text(patchText,{ gap:2 });
+
+        dashedLine();
+
+    }
+
+    if(hdmiText){
+
+        text(hdmiText,{ gap:2 });
+
+        dashedLine();
+
+    }
+
     if(verlengText){
 
         text(verlengText,{ gap:2 });
@@ -1027,12 +995,6 @@ export async function generateOpleverPdf(
         dashedLine();
 
     }
-
-
-    jaNee(
-        "Extra seriële en/of USB-speakers gebruikt?",
-        data.materialen.extraSpeakers
-    );
 
     labelValue(
         "Opmerkingen:",
@@ -1245,8 +1207,12 @@ export async function generateOpleverPdf(
             });
 
             captionLines.forEach((line,index)=>{
+                const lineWidth = font.widthOfTextAtSize(line, 8);
                 page.drawText(line,{
-                    x:MARGIN + column * (photoWidth + 20),
+                    x:
+                        MARGIN +
+                        column * (photoWidth + 20) +
+                        Math.max(0, (photoWidth - lineWidth) / 2),
                     y:y - height - 11 - index * 10,
                     size:8,
                     font,
