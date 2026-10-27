@@ -46,12 +46,30 @@ export const BEVESTIGING_OPTIES = [
 
 export type BevestigingSoort = (typeof BEVESTIGING_OPTIES)[number];
 
-/** Oude opgeslagen waarde “Specials” → “Special”. */
+/** Oude of weergavelabels → interne categorie. */
 export function normaliseerBevestiging(beugel?: string | null): string {
     if (beugel === "Specials") {
         return "Special";
     }
+    if (beugel === "Wand bevestiging") {
+        return "Muurbeugel";
+    }
+    if (beugel === "Plafond bevestiging") {
+        return "Plafondbeugel";
+    }
     return beugel || "";
+}
+
+/** Interne categorie → label op het formulier. */
+export function bevestigingSoortWeergave(beugel?: string | null): string {
+    const soort = normaliseerBevestiging(beugel);
+    if (soort === "Muurbeugel") {
+        return "Wand bevestiging";
+    }
+    if (soort === "Plafondbeugel") {
+        return "Plafond bevestiging";
+    }
+    return soort;
 }
 
 export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
@@ -109,7 +127,17 @@ export function normaliseerBevestigingDetail(detail?: string | null): string {
 }
 
 export function bevestigingDetailWeergave(detail?: string | null): string {
-    return normaliseerBevestigingDetail(detail);
+    const canon = normaliseerBevestigingDetail(detail);
+    if (canon === "Muurbeugel") {
+        return "Wand bevestiging";
+    }
+    if (canon === "Plafondbeugel") {
+        return "Plafond bevestiging";
+    }
+    if (canon === "Plafondbeugel kantelbare scherm") {
+        return "Plafond bevestiging kantelbare scherm";
+    }
+    return canon;
 }
 
 export function bevestigingDetails(beugel?: string | null): string[] {
@@ -262,7 +290,7 @@ export function typeCodeVoorBevestigingEnBand(
         return "";
     }
 
-    if (bevestiging === "Muurbeugel") {
+    if (normaliseerBevestiging(bevestiging) === "Muurbeugel") {
         switch (band) {
             case "tot55":
                 return "03";
@@ -279,7 +307,7 @@ export function typeCodeVoorBevestigingEnBand(
         return band === "tot55" ? "04" : "";
     }
 
-    if (bevestiging === "Plafondbeugel") {
+    if (normaliseerBevestiging(bevestiging) === "Plafondbeugel") {
         switch (band) {
             case "tot55":
                 return "08";
@@ -503,7 +531,7 @@ export function schermVeldenCompleet(
     }
 
     if (
-        scherm.beugel === "Plafondbeugel"
+        normaliseerBevestiging(scherm.beugel) === "Plafondbeugel"
         && !scherm.plafondHoogte
     ) {
         return false;
@@ -862,9 +890,9 @@ export function beugelTypeWeergave(item: AanvraagSchermItem): string {
     const detail =
         item.bevestigingDetail === "Anders"
             ? (item.bevestigingAnders?.trim() || "Anders")
-            : (bevestigingDetailWeergave(item.bevestigingDetail) || soort);
+            : bevestigingDetailWeergave(item.bevestigingDetail);
 
-    const parts = [detail];
+    const parts = [detail || bevestigingSoortWeergave(soort)];
 
     if (soort === "Plafondbeugel" && item.plafondHoogte) {
         parts.push(item.plafondHoogte);
@@ -932,7 +960,8 @@ export function samenvattingSchermen(
             const parts = [
                 `Scherm ${i + 1}`,
                 formaat,
-                bevestigingDetailWeergave(s.bevestigingDetail) || s.beugel,
+                bevestigingDetailWeergave(s.bevestigingDetail) ||
+                    bevestigingSoortWeergave(s.beugel),
                 s.plafondHoogte || "",
                 s.orientatie,
                 s.locatie ? `@ ${s.locatie}` : "",

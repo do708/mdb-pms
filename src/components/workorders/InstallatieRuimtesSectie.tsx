@@ -5,7 +5,9 @@ import {
     BEVESTIGING_OPTIES,
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
+    bevestigingDetailWeergave,
     bevestigingDetails,
+    bevestigingSoortWeergave,
     isAansturingMetApparaat,
     isPlayerAansturing,
     normaliseerBevestiging,
@@ -618,7 +620,7 @@ export default function InstallatieRuimtesSectie({
                                     <option value="">Kies bevestiging</option>
                                     {BEVESTIGING_OPTIES.map((b) => (
                                         <option key={b} value={b}>
-                                            {b}
+                                            {bevestigingSoortWeergave(b)}
                                         </option>
                                     ))}
                                 </select>
@@ -636,11 +638,11 @@ export default function InstallatieRuimtesSectie({
                                         className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                     >
                                         <option value="">
-                                            Type {normaliseerBevestiging(scherm.beugel).toLowerCase()}
+                                            Type {bevestigingSoortWeergave(scherm.beugel).toLowerCase()}
                                         </option>
                                         {detailOpties.map((d) => (
                                             <option key={d} value={d}>
-                                                {d}
+                                                {bevestigingDetailWeergave(d)}
                                             </option>
                                         ))}
                                     </select>
@@ -658,7 +660,8 @@ export default function InstallatieRuimtesSectie({
                                         className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
                                     />
                                 ) : null}
-                                {scherm.beugel === "Plafondbeugel" ? (
+                                {normaliseerBevestiging(scherm.beugel) ===
+                                "Plafondbeugel" ? (
                                     <select
                                         value={scherm.plafondHoogte || ""}
                                         onChange={(e) =>

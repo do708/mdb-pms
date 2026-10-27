@@ -47,6 +47,8 @@ const BEKENDE_INCHES = data.inches as number[];
 
 function soortBevestiging(beugel?: string | null): string {
     if (beugel === "Specials") return "Special";
+    if (beugel === "Wand bevestiging") return "Muurbeugel";
+    if (beugel === "Plafond bevestiging") return "Plafondbeugel";
     return beugel || "";
 }
 

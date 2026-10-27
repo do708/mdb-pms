@@ -14,6 +14,7 @@ import {
 import {
     aansturingWeergave,
     bevestigingDetailWeergave,
+    bevestigingSoortWeergave,
     emptySchermItem,
     formatKabelTrajectKeuzes,
     installatieTypeWeergave,
@@ -207,7 +208,7 @@ function formaatWeergave(item: Record<string, unknown>): string {
 }
 
 function bevestigingWeergave(item: Record<string, unknown>): string {
-    const soort = str(item.beugel);
+    const soort = bevestigingSoortWeergave(str(item.beugel));
     const detail = bevestigingDetailWeergave(str(item.bevestigingDetail));
     const bevestiging =
         str(item.bevestigingDetail) === "Anders"

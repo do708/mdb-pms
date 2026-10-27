@@ -9,7 +9,9 @@ import {
     PLAFOND_HOOGTE_OPTIES,
     SCHERM_FORMATEN,
     berekendInstallatieType,
+    bevestigingDetailWeergave,
     bevestigingDetails,
+    bevestigingSoortWeergave,
     installatieTypeWeergave,
     isPlayerAansturing,
     legeVoorzieningen,
@@ -415,7 +417,9 @@ export default function SchermenSpecificatie({
                                                             : "bg-white text-gray-700 border-gray-200")
                                                     }
                                                 >
-                                                    {b}
+                                                    {bevestigingSoortWeergave(
+                                                        b
+                                                    )}
                                                 </button>
                                             )
                                         )}
@@ -425,7 +429,7 @@ export default function SchermenSpecificatie({
                                         <div className="mt-2 pl-2 border-l-2 border-sky-200 space-y-1.5">
                                             <span className="text-xs text-gray-600 block">
                                                 Type{" "}
-                                                {normaliseerBevestiging(
+                                                {bevestigingSoortWeergave(
                                                     scherm.beugel
                                                 ).toLowerCase()}
                                             </span>
@@ -469,7 +473,9 @@ export default function SchermenSpecificatie({
                                                                     : "bg-white text-gray-700 border-gray-200")
                                                             }
                                                         >
-                                                            {d}
+                                                            {bevestigingDetailWeergave(
+                                                                d
+                                                            )}
                                                         </button>
                                                     )
                                                 )}
@@ -500,8 +506,9 @@ export default function SchermenSpecificatie({
                                         </div>
                                     ) : null}
 
-                                    {scherm.beugel ===
-                                    "Plafondbeugel" ? (
+                                    {normaliseerBevestiging(
+                                        scherm.beugel
+                                    ) === "Plafondbeugel" ? (
                                         <div className="mt-2 pl-2 border-l-2 border-violet-200 space-y-1.5">
                                             <span className="text-xs text-gray-600 block">
                                                 Hoogte{" "}
