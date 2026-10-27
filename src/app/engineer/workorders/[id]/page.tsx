@@ -1402,42 +1402,6 @@ async function completeWorkorder(){
             }
 
             {
-                isOffice && (
-                    <section className="bg-white rounded-2xl p-4 space-y-3">
-                        <h2 className="font-bold text-slate-900">
-                            Bunni
-                        </h2>
-                        <BunniKoppeling
-                            saveUrl={`/api/workorders/${id}/bunni`}
-                            offerte={{
-                                id: workorder.bunniOfferteId ?? null,
-                                number: workorder.bunniOfferteNummer ?? null,
-                                pdfUrl: workorder.bunniOffertePdfUrl ?? null,
-                            }}
-                            factuur={{
-                                id: workorder.bunniFactuurId ?? null,
-                                number: workorder.bunniFactuurNummer ?? null,
-                                pdfUrl: workorder.bunniFactuurPdfUrl ?? null,
-                            }}
-                            onUpdated={(data) => {
-                                if (data && typeof data === "object") {
-                                    setWorkorder((prev) =>
-                                        prev
-                                            ? {
-                                                  ...prev,
-                                                  ...(data as Workorder),
-                                              }
-                                            : (data as Workorder)
-                                    );
-                                }
-                            }}
-                        />
-                    </section>
-                )
-            }
-
-
-            {
                 isOffice
                 && (status || workorder.status) === "on_hold"
                 && (
@@ -2239,6 +2203,41 @@ async function completeWorkorder(){
                 workorderId={id}
                 readOnly={!!workorder.sentAt}
             />
+
+            {
+                isOffice && (
+                    <section className="bg-white rounded-2xl p-4 space-y-3">
+                        <h2 className="font-bold text-slate-900">
+                            Bunni
+                        </h2>
+                        <BunniKoppeling
+                            saveUrl={`/api/workorders/${id}/bunni`}
+                            offerte={{
+                                id: workorder.bunniOfferteId ?? null,
+                                number: workorder.bunniOfferteNummer ?? null,
+                                pdfUrl: workorder.bunniOffertePdfUrl ?? null,
+                            }}
+                            factuur={{
+                                id: workorder.bunniFactuurId ?? null,
+                                number: workorder.bunniFactuurNummer ?? null,
+                                pdfUrl: workorder.bunniFactuurPdfUrl ?? null,
+                            }}
+                            onUpdated={(data) => {
+                                if (data && typeof data === "object") {
+                                    setWorkorder((prev) =>
+                                        prev
+                                            ? {
+                                                  ...prev,
+                                                  ...(data as Workorder),
+                                              }
+                                            : (data as Workorder)
+                                    );
+                                }
+                            }}
+                        />
+                    </section>
+                )
+            }
 
             {
                 isOffice && (
