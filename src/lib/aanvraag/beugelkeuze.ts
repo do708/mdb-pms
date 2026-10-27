@@ -234,9 +234,17 @@ function isInterfaceprofiel(type: string): boolean {
     return type.startsWith("PFB ");
 }
 
+function isInterfacestrips(type: string): boolean {
+    return type.startsWith("PFS ");
+}
+
 /**
  * PUC-plafondplaat-setup (Connect-it):
- * - b2b: 1× PUC 1060 + 1× buis + 1× interface (én strips) voor het paar.
+ * - b2b: plaat (PUC 1060) en buis gedeeld (1 set voor het paar; 75"+ mag
+ *   de DB-aantallen heavy-duty van het grootste scherm houden). Elk scherm
+ *   in het paar heeft eigen PFB + eigen PFS. PFA 9126 (profiel aan buis)
+ *   blijft bij de gedeelde buis (1×), tenzij een solo-scherm van dat formaat
+ *   extra kits heeft — die komen mee via de primaire BOM minus PFB/PFS.
  * - naast (2): elk scherm eigen 1060 + buis; 1× interfaceprofiel voor de
  *   som van de inches. DB: 32–65" → PFB 3405B, 75–98" → PFB 3407B.
  *   Som > 98" t/m ~130" (2×65"): PFB 3409B (langste bar in de catalogus;
@@ -386,10 +394,24 @@ function plafondArtikelenVoorGroep(
             inchVanScherm(s) > inchVanScherm(best) ? s : best
         );
         for (const kolom of soloBeugelArtikelen(primair)) {
+            if (
+                isInterfaceprofiel(kolom.artikel) ||
+                isInterfacestrips(kolom.artikel)
+            ) {
+                continue;
+            }
             voegKolomToe(out, firstKey, kolom);
         }
-        for (const s of ordered.slice(1)) {
+        for (const s of ordered) {
             const k = schermSleutel(s, alle);
+            for (const kolom of soloBeugelArtikelen(s)) {
+                if (
+                    isInterfaceprofiel(kolom.artikel) ||
+                    isInterfacestrips(kolom.artikel)
+                ) {
+                    voegKolomToe(out, k, kolom);
+                }
+            }
             if (!out.has(k)) out.set(k, []);
         }
         return out;
