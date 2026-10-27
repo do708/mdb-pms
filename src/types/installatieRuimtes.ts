@@ -418,6 +418,44 @@ export function schermGegevensCompleet(s: InstallatieScherm): boolean {
     );
 }
 
+/** Locatie, formaat, bevestiging, aansturing, oriëntatie, stroom/internet + merk/type/SN. */
+export function schermVerplichteVeldenCompleet(s: InstallatieScherm): boolean {
+    if (!(s.locatie || "").trim()) return false;
+    if (!(s.formaat || "").trim()) return false;
+    if (!(s.beugel || "").trim()) return false;
+
+    const beugel = s.beugel;
+    if (
+        beugel === "Muurbeugel"
+        || beugel === "Wand bevestiging"
+        || beugel === "Plafondbeugel"
+        || beugel === "Plafond bevestiging"
+        || beugel === "Vloerstandaard"
+        || beugel === "Special"
+    ) {
+        if (!(s.bevestigingDetail || "").trim()) return false;
+    }
+
+    if (beugel === "Plafondbeugel" || beugel === "Plafond bevestiging") {
+        if (!(s.plafondHoogte || "").trim()) return false;
+    }
+
+    if (!(s.aansturing || "").trim()) return false;
+    if (!(s.orientatie || "").trim()) return false;
+    if (!s.stroom) return false;
+    if (!s.internet) return false;
+
+    return schermGegevensCompleet(s);
+}
+
+export function ontbreektVerplichtSchermVeld(
+    ruimtes: InstallatieRuimte[]
+): boolean {
+    return ruimtes.some((ruimte) =>
+        ruimte.schermen.some((scherm) => !schermVerplichteVeldenCompleet(scherm))
+    );
+}
+
 /** Fouttekst als verplichte schermgegevens (merk/type/serienummer) ontbreken. */
 export function ontbrekendeSchermKenmerken(
     ruimtes: InstallatieRuimte[]

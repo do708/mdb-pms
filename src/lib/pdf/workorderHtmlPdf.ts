@@ -289,16 +289,20 @@ function chipSvg(
 
     const fill =
         kind === "yes"
-        ? "#059669"
+        ? "#d1fae5"
         : kind === "no"
-        ? "#dc2626"
+        ? "#fee2e2"
         : kind === "warn"
-        ? "#f59e0b"
+        ? "#ffedd5"
         : "#e2e8f0";
     const color =
-        kind === "empty"
-        ? "#475569"
-        : "#ffffff";
+        kind === "yes"
+        ? "#047857"
+        : kind === "no"
+        ? "#b91c1c"
+        : kind === "warn"
+        ? "#c2410c"
+        : "#475569";
 
     return `<span class="chip" style="background:${fill};color:${color};border-color:${fill}">${esc(label)}</span>`;
 

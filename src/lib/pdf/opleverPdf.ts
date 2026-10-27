@@ -12,11 +12,15 @@ import {
     mergeOpleverData
 } from "@/types/oplever";
 import {
-    samenvattingSchermHardware,
     schermHeeftGegevens,
+    splitMerkType,
     summarizeRuimtes,
     summarizeVoorziening,
 } from "@/types/installatieRuimtes";
+import {
+    bevestigingDetailWeergave,
+    bevestigingSoortWeergave,
+} from "@/lib/aanvraag/installatieTypes";
 import {
     OPLEVER_WERKZAAMHEDEN,
     vakTitel,
@@ -41,11 +45,14 @@ const GRAY_LINE = rgb(0.8,0.8,0.8);
 
 const BLACK = rgb(0.15,0.15,0.15);
 
-const YES_GREEN = rgb(5 / 255, 150 / 255, 105 / 255);
+const YES_FILL = rgb(209 / 255, 250 / 255, 229 / 255);
+const YES_TEXT = rgb(4 / 255, 120 / 255, 87 / 255);
 
-const NO_RED = rgb(220 / 255, 38 / 255, 38 / 255);
+const NO_FILL = rgb(254 / 255, 226 / 255, 226 / 255);
+const NO_TEXT = rgb(185 / 255, 28 / 255, 28 / 255);
 
-const WARN_ORANGE = rgb(245 / 255, 158 / 255, 11 / 255);
+const WARN_FILL = rgb(255 / 255, 237 / 255, 213 / 255);
+const WARN_TEXT = rgb(194 / 255, 65 / 255, 12 / 255);
 
 
 function roundedRectPath(
@@ -317,6 +324,77 @@ export async function generateOpleverPdf(
     }
 
 
+    function drawDataTable(headers:string[], rows:string[][]){
+
+        if(rows.length === 0){
+            return;
+        }
+
+        const cols = headers.length;
+        const colW = CONTENT_WIDTH / cols;
+        const size = 7;
+        const pad = 2;
+
+        function rowHeight(cells:string[]){
+            let h = 14;
+            for(const cell of cells){
+                const n = wrap(cell || "—", size, font, Math.max(12, colW - pad * 2)).length;
+                h = Math.max(h, n * 9 + 6);
+            }
+            return h;
+        }
+
+        ensure(18);
+        page.drawRectangle({
+            x:MARGIN,
+            y:y - 12,
+            width:CONTENT_WIDTH,
+            height:16,
+            color:MDB_NAVY
+        });
+        headers.forEach((header, i)=>{
+            const clipped = wrap(header, size, bold, Math.max(12, colW - pad * 2))[0] || header;
+            page.drawText(clipped,{
+                x:MARGIN + i * colW + pad,
+                y:y - 8,
+                size,
+                font:bold,
+                color:rgb(1, 1, 1)
+            });
+        });
+        y -= 16;
+
+        for(const [rowIndex, cells] of rows.entries()){
+            const h = rowHeight(cells);
+            ensure(h);
+            if(rowIndex % 2 === 0){
+                page.drawRectangle({
+                    x:MARGIN,
+                    y:y - h + 4,
+                    width:CONTENT_WIDTH,
+                    height:h,
+                    color:MDB_SECTION_BG
+                });
+            }
+            cells.forEach((cell, i)=>{
+                wrap(cell || "—", size, font, Math.max(12, colW - pad * 2)).forEach((line, li)=>{
+                    page.drawText(line,{
+                        x:MARGIN + i * colW + pad,
+                        y:y - 8 - li * 9,
+                        size,
+                        font,
+                        color:BLACK
+                    });
+                });
+            });
+            y -= h;
+        }
+
+        y -= 8;
+
+    }
+
+
 
 
     function text(
@@ -423,6 +501,7 @@ export async function generateOpleverPdf(
             label:string;
             active:boolean;
             color:ReturnType<typeof rgb>;
+            textColor?:ReturnType<typeof rgb>;
         }[]
     ){
 
@@ -440,17 +519,20 @@ export async function generateOpleverPdf(
 
             if(option.active){
 
-                page.drawSvgPath(
-                    roundedRectPath(x, y - 4, width, 15, 7),
-                    { color:option.color }
-                );
+                page.drawRectangle({
+                    x,
+                    y:y - 4,
+                    width,
+                    height:15,
+                    color:option.color
+                });
 
                 page.drawText(option.label,{
                     x:x + 10,
                     y,
                     size:8,
                     font:bold,
-                    color:rgb(1,1,1)
+                    color:option.textColor ?? BLACK
                 });
 
             } else {
@@ -499,7 +581,8 @@ export async function generateOpleverPdf(
         badges([{
             label:selected,
             active:true,
-            color:value === true ? YES_GREEN : NO_RED
+            color:value === true ? YES_FILL : NO_FILL,
+            textColor:value === true ? YES_TEXT : NO_TEXT
         }]);
 
         dashedLine();
@@ -528,10 +611,16 @@ export async function generateOpleverPdf(
             active:true,
             color:
                 value === "Matig"
-                ? WARN_ORANGE
+                ? WARN_FILL
                 : negative
-                    ? NO_RED
-                    : YES_GREEN
+                    ? NO_FILL
+                    : YES_FILL,
+            textColor:
+                value === "Matig"
+                ? WARN_TEXT
+                : negative
+                    ? NO_TEXT
+                    : YES_TEXT
         }]);
 
         dashedLine();
@@ -738,13 +827,70 @@ export async function generateOpleverPdf(
                 for (const regel of summarizeRuimtes(vanType)) {
                     text(`• ${regel}`, { gap: 1 });
                 }
-                for (const ruimte of vanType) {
-                    for (const scherm of ruimte.schermen || []) {
+                const schermRows:string[][] = [];
+                const playerRows:string[][] = [];
+                for (const [ruimteIndex, ruimte] of vanType.entries()) {
+                    const ruimteNaam = (ruimte.naam || "").trim() || `Ruimte ${ruimteIndex + 1}`;
+                    for (const [schermIndex, scherm] of (ruimte.schermen || []).entries()) {
                         if (!schermHeeftGegevens(scherm)) {
                             continue;
                         }
-                        text(`  ${samenvattingSchermHardware(scherm)}`, { gap: 1 });
+                        const formaat =
+                            scherm.formaat === "Anders"
+                            ? (scherm.formaatAnders || "Anders")
+                            : scherm.formaat;
+                        const schermLabel = scherm.label || `Scherm ${schermIndex + 1}`;
+                        const bevestiging = [
+                            bevestigingSoortWeergave(scherm.beugel) || scherm.beugel,
+                            bevestigingDetailWeergave(scherm.bevestigingDetail),
+                            scherm.plafondHoogte,
+                        ].filter(Boolean).join(" · ");
+                        schermRows.push([
+                            ruimteNaam,
+                            schermLabel,
+                            scherm.locatie || "",
+                            formaat || "",
+                            scherm.merk || splitMerkType(scherm.merkType || "").merk,
+                            scherm.type || splitMerkType(scherm.merkType || "").type,
+                            scherm.serienummer || "",
+                            bevestiging,
+                        ]);
+                        const aansturing =
+                            scherm.aansturing === "Anders"
+                            ? (scherm.aansturingAnders || "Anders")
+                            : scherm.aansturing;
+                        const playerMerk =
+                            scherm.playerMerk
+                            || splitMerkType(scherm.playerMerkType || "").merk;
+                        const playerType =
+                            scherm.playerType
+                            || splitMerkType(scherm.playerMerkType || "").type;
+                        if (
+                            aansturing
+                            || playerMerk
+                            || playerType
+                            || scherm.playerSerienummer
+                        ) {
+                            playerRows.push([
+                                schermLabel,
+                                aansturing || "",
+                                playerMerk,
+                                playerType,
+                                scherm.playerSerienummer || "",
+                            ]);
+                        }
                     }
+                }
+                drawDataTable(
+                    ["Ruimte","Scherm","Locatie","Formaat","Merk","Type","SN","Bevestiging"],
+                    schermRows
+                );
+                if (playerRows.length > 0) {
+                    text("Player / aansturing",{ useBold:true, gap:2 });
+                    drawDataTable(
+                        ["Scherm","Aansturing","Merk","Type","SN"],
+                        playerRows
+                    );
                 }
             }
 

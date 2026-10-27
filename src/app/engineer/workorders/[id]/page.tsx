@@ -24,7 +24,10 @@ import {
     ontbrekendeMediaplayerKenmerken,
     type OpleverData
 } from "@/types/oplever";
-import { ontbrekendeSchermKenmerken } from "@/types/installatieRuimtes";
+import {
+    ontbrekendeSchermKenmerken,
+    ontbreektVerplichtSchermVeld,
+} from "@/types/installatieRuimtes";
 import { ontbrekendeVideowallPanelen } from "@/lib/workorders/videowallPanelen";
 import {
     modulesVanWerkbon,
@@ -972,50 +975,36 @@ async function completeWorkorder(){
                 .filter(Boolean)
                 .join(" ");
 
-        if(veldenFout){
-            setFormError(veldenFout);
-            window.scrollTo({ top:0, behavior:"smooth" });
-            return;
-        }
-
-        if(toonChecklist(opleverModules)){
-
         const cl = opleverData.checklist;
-
-        const ontbreekt =
-            cl.werkendOpgeleverd === null
-            || cl.lichtnetSchakelbaar === null
-            || cl.wifiVanToepassing === null
-            || !cl.remoteServices
-            || cl.afvalverwijdering === null;
-
-        if(ontbreekt){
-            alert(
-                "Vul eerst de volledige checklist in voordat je de opdracht verstuurt."
+        const checklistOntbreekt =
+            toonChecklist(opleverModules)
+            && (
+                cl.werkendOpgeleverd === null
+                || cl.lichtnetSchakelbaar === null
+                || cl.wifiVanToepassing === null
+                || !cl.remoteServices
+                || cl.afvalverwijdering === null
             );
-            return;
-        }
-
-        }
 
         const gereedKeuze =
             opleverData.afronding.werkzaamhedenGereed;
 
-        if(gereedKeuze !== "gereed" && gereedKeuze !== "niet_gereed"){
-            alert(
-                "Kies bij Afronding of de werkzaamheden gereed of niet gereed zijn."
-            );
-            window.scrollTo({ top:0, behavior:"smooth" });
-            return;
-        }
+        const afrondingOntbreekt =
+            gereedKeuze !== "gereed" && gereedKeuze !== "niet_gereed";
+
+        const nietGereedOntbreekt =
+            gereedKeuze === "niet_gereed"
+            && !opleverData.afronding.nietGereedOmschrijving.trim();
 
         if(
-            gereedKeuze === "niet_gereed"
-            && !opleverData.afronding.nietGereedOmschrijving.trim()
+            veldenFout
+            || ontbreektVerplichtSchermVeld(opleverData.installatie.ruimtes || [])
+            || checklistOntbreekt
+            || afrondingOntbreekt
+            || nietGereedOntbreekt
         ){
-            alert(
-                "Vul een omschrijving in bij niet gereed: wat moet er nog gebeuren en welk materiaal is nodig?"
-            );
+            setFormError("Verplicht veld invullen");
+            alert("Verplicht veld invullen");
             window.scrollTo({ top:0, behavior:"smooth" });
             return;
         }
