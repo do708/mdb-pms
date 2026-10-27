@@ -3541,15 +3541,18 @@ export default function OpleverForm({
                                         value={item.locatie}
                                         placeholder="Bijv. Entree / Serverruimte"
                                         onChange={(e)=>{
-                                            const next = [...items];
-                                            next[index] = {
-                                                ...item,
-                                                locatie:e.target.value
-                                            };
+                                            const locatie = e.target.value;
                                             update(draft=>{
+                                                const huidige =
+                                                    draft.installatie.mediaplayersItemsPerType[type]
+                                                    ?? items;
                                                 draft.installatie.mediaplayersItemsPerType = {
                                                     ...draft.installatie.mediaplayersItemsPerType,
-                                                    [type]:next
+                                                    [type]:huidige.map((row, i)=>
+                                                        i === index
+                                                        ? { ...row, locatie }
+                                                        : row
+                                                    )
                                                 };
                                             });
                                         }}
@@ -3564,15 +3567,17 @@ export default function OpleverForm({
                                     mac={item.mac}
                                     requiredKenmerken
                                     onChange={(patch)=>{
-                                        const next = [...items];
-                                        next[index] = {
-                                            ...item,
-                                            ...patch
-                                        };
                                         update(draft=>{
+                                            const huidige =
+                                                draft.installatie.mediaplayersItemsPerType[type]
+                                                ?? items;
                                             draft.installatie.mediaplayersItemsPerType = {
                                                 ...draft.installatie.mediaplayersItemsPerType,
-                                                [type]:next
+                                                [type]:huidige.map((row, i)=>
+                                                    i === index
+                                                    ? { ...row, ...patch }
+                                                    : row
+                                                )
                                             };
                                         });
                                     }}

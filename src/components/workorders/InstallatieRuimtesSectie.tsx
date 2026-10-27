@@ -393,7 +393,7 @@ export default function InstallatieRuimtesSectie({
 
     function patchSchermHardware(
         ruimteId: string,
-        scherm: InstallatieScherm,
+        schermId: string,
         patch: Partial<
             Pick<
                 InstallatieScherm,
@@ -408,15 +408,33 @@ export default function InstallatieRuimtesSectie({
             >
         >
     ) {
-        const next = { ...scherm, ...patch };
-        updateScherm(ruimteId, scherm.id, {
-            ...patch,
-            merkType: joinMerkType(next.merk || "", next.type || ""),
-            playerMerkType: joinMerkType(
-                next.playerMerk || "",
-                next.playerType || ""
-            ),
-        });
+        const defined = Object.fromEntries(
+            Object.entries(patch).filter(([, value]) => value !== undefined)
+        ) as typeof patch;
+
+        commit(
+            zichtbareRuimtes.map((r) => {
+                if (r.id !== ruimteId) return r;
+                return {
+                    ...r,
+                    schermen: r.schermen.map((s) => {
+                        if (s.id !== schermId) return s;
+                        const next = { ...s, ...defined };
+                        return {
+                            ...next,
+                            merkType: joinMerkType(
+                                next.merk || "",
+                                next.type || ""
+                            ),
+                            playerMerkType: joinMerkType(
+                                next.playerMerk || "",
+                                next.playerType || ""
+                            ),
+                        };
+                    }),
+                };
+            })
+        );
     }
 
     function addScherm() {
@@ -593,7 +611,7 @@ export default function InstallatieRuimtesSectie({
                                     onChange={(patch) =>
                                         patchSchermHardware(
                                             ruimteId,
-                                            scherm,
+                                            scherm.id,
                                             patch
                                         )
                                     }
@@ -738,11 +756,22 @@ export default function InstallatieRuimtesSectie({
                                     serienummer={scherm.playerSerienummer || ""}
                                     mac={scherm.playerMac || ""}
                                     onChange={(patch) =>
-                                        patchSchermHardware(ruimteId, scherm, {
-                                            playerMerk: patch.merk,
-                                            playerType: patch.type,
-                                            playerSerienummer: patch.serienummer,
-                                            playerMac: patch.mac,
+                                        patchSchermHardware(ruimteId, scherm.id, {
+                                            ...(patch.merk !== undefined
+                                                ? { playerMerk: patch.merk }
+                                                : {}),
+                                            ...(patch.type !== undefined
+                                                ? { playerType: patch.type }
+                                                : {}),
+                                            ...(patch.serienummer !== undefined
+                                                ? {
+                                                      playerSerienummer:
+                                                          patch.serienummer,
+                                                  }
+                                                : {}),
+                                            ...(patch.mac !== undefined
+                                                ? { playerMac: patch.mac }
+                                                : {}),
                                         })
                                     }
                                 />
