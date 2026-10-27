@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
-
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import EngineerMobileNav from "./EngineerMobileNav";
 
 export default function AppShell({
     children,
@@ -14,10 +11,7 @@ export default function AppShell({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const { data: session } = useSession();
     const [menuOpen, setMenuOpen] = useState(false);
-
-    const isEngineer = session?.user?.role === "engineer";
 
     useEffect(() => {
         setMenuOpen(false);
@@ -81,8 +75,6 @@ export default function AppShell({
                 >
                     {children}
                 </main>
-
-                {isEngineer ? <EngineerMobileNav /> : null}
             </div>
         </div>
     );
