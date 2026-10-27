@@ -1267,19 +1267,6 @@ async function completeWorkorder(){
 
                 </div>
 
-                {
-                    ingeplandLabel && (
-                        <p className="text-sm text-gray-700 mt-1.5">
-                            <span className="text-xs text-gray-500">
-                                Ingepland{" "}
-                            </span>
-                            <span className="font-medium">
-                                {ingeplandLabel}
-                            </span>
-                        </p>
-                    )
-                }
-
 
             </header>
 
