@@ -1353,10 +1353,7 @@ export default function ProjectDetailPage() {
                     </SpecPageCard>
 
                     <SpecPageCard>
-                        <SpecPanel
-                            title="Offerte"
-                            hint="Offerte koppelen vanuit Bunni volgt later. Een eerder gekoppeld nummer blijft zichtbaar."
-                        >
+                        <SpecPanel title="Offerte">
                             <BunniKoppeling
                                 saveUrl={`/api/projects/${project.id}/bunni`}
                                 showFactuur={false}

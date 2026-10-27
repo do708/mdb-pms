@@ -1404,17 +1404,9 @@ async function completeWorkorder(){
             {
                 isOffice && (
                     <section className="bg-white rounded-2xl p-4 space-y-3">
-                        <div>
-                            <h2 className="font-bold text-slate-900">
-                                Bunni
-                            </h2>
-                            <p className="text-xs text-slate-500 mt-0.5">
-                                Koppel deze opdracht aan een factuur in Bunni.
-                                Offerte koppelen volgt later. Staat de opdracht
-                                op een project, dan verschijnt het factuurnummer
-                                daar ook.
-                            </p>
-                        </div>
+                        <h2 className="font-bold text-slate-900">
+                            Bunni
+                        </h2>
                         <BunniKoppeling
                             saveUrl={`/api/workorders/${id}/bunni`}
                             offerte={{
