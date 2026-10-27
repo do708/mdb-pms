@@ -720,7 +720,7 @@ export default function EngineerWorkorderPage(){
     // Werkzaamheden (klant + monteur) automatisch bewaren, net als materiaal.
     useEffect(()=>{
 
-        if(loading || !isOffice){
+        if(loading){
             return;
         }
 
@@ -744,7 +744,7 @@ export default function EngineerWorkorderPage(){
                             "Content-Type":"application/json"
                         },
                         body:JSON.stringify({
-                            description:notes,
+                            ...(isOffice ? { description: notes } : {}),
                             werkInstructie
                         })
                     }
@@ -2123,9 +2123,17 @@ async function completeWorkorder(){
                             rounded-xl border border-indigo-200
                             bg-indigo-50/70 p-2.5 space-y-2
                         ">
-                            <WerkInstructieWeergave
-                                tekst={werkInstructie || workorder.werkInstructie || ""}
+                            <WerkInstructieVeld
+                                value={werkInstructie}
+                                onChange={setWerkInstructie}
                             />
+                            {/https?:\/\/|\|/.test(
+                                werkInstructie || workorder.werkInstructie || ""
+                            ) ? (
+                                <WerkInstructieWeergave
+                                    tekst={werkInstructie || workorder.werkInstructie || ""}
+                                />
+                            ) : null}
                         </div>
                     )
                 }
