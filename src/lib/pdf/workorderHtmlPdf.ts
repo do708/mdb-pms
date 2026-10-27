@@ -18,6 +18,7 @@ import {
     werkzaamheidLabel,
     beugelLabel,
     schermHeeftGegevens,
+    splitMerkType,
 } from "@/types/installatieRuimtes";
 import {
     OPLEVER_WERKZAAMHEDEN,
@@ -31,7 +32,11 @@ import {
     panelenUitVelden,
     syncVideowallPanelen,
 } from "@/lib/workorders/videowallPanelen";
-import { aansturingWeergave, bevestigingDetailWeergave } from "@/lib/aanvraag/installatieTypes";
+import {
+    aansturingWeergave,
+    bevestigingDetailWeergave,
+    bevestigingSoortWeergave,
+} from "@/lib/aanvraag/installatieTypes";
 
 
 
@@ -286,22 +291,16 @@ function chipSvg(
         kind === "yes"
         ? "#059669"
         : kind === "no"
-        ? "#0066FF"
+        ? "#dc2626"
         : kind === "warn"
         ? "#f59e0b"
-        : "#f1f5f9";
+        : "#e2e8f0";
     const color =
         kind === "empty"
-        ? "#64748b"
+        ? "#475569"
         : "#ffffff";
-    const width = Math.max(32, Math.round(label.length * 5.6 + 18));
-    const height = 16;
-    const r = 8;
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="display:inline-block;vertical-align:middle">
-        <rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" rx="${r}" ry="${r}" fill="${fill}"/>
-        <text x="${width / 2}" y="${height / 2 + 3.4}" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="700" fill="${color}">${esc(label)}</text>
-    </svg>`;
+    return `<span class="chip" style="background:${fill};color:${color};border-color:${fill}">${esc(label)}</span>`;
 
 }
 
@@ -402,7 +401,8 @@ function cardSection(
 function schermTabel(
     ruimtes:OpleverData["installatie"]["ruimtes"]
 ):string {
-    const rows:(string | number)[][] = [];
+    const schermRows:(string | number)[][] = [];
+    const playerRows:(string | number)[][] = [];
 
     for(const [ruimteIndex, ruimte] of ruimtes.entries()){
         const ruimteNaam = valueOrEmpty(ruimte.naam) || `Ruimte ${ruimteIndex + 1}`;
@@ -410,45 +410,71 @@ function schermTabel(
             ? `${beugelLabel(ruimte.beugelType)}${ruimte.beugelMaat ? ` (${ruimte.beugelMaat})` : ""}`
             : "";
 
-        for(const scherm of (ruimte.schermen || []).filter(schermHeeftGegevens)){
+        for(const [schermIndex, scherm] of (ruimte.schermen || []).filter(schermHeeftGegevens).entries()){
             const formaat = scherm.formaat === "Anders"
                 ? (scherm.formaatAnders || "Anders")
                 : scherm.formaat;
             const bevestiging = [
-                scherm.beugel,
+                bevestigingSoortWeergave(scherm.beugel) || scherm.beugel,
                 bevestigingDetailWeergave(scherm.bevestigingDetail),
                 scherm.bevestigingAnders,
                 ruimteBevestiging,
             ].filter(Boolean).join(" · ");
-            const aansturing = [
-                scherm.aansturing === "Anders"
-                    ? (scherm.aansturingAnders || "Anders")
-                    : scherm.aansturing,
-                scherm.playerMerk,
-                scherm.playerType,
-                scherm.playerSerienummer ? `S/N ${scherm.playerSerienummer}` : "",
-                scherm.playerMac ? `MAC ${scherm.playerMac}` : "",
-            ].filter(Boolean).join(" · ");
+            const schermLabel = scherm.label || `Scherm ${schermIndex + 1}`;
 
-            rows.push([
-                scherm.locatie || ruimteNaam,
+            schermRows.push([
+                ruimteNaam,
+                schermLabel,
+                scherm.locatie,
                 formaat,
-                scherm.merk || scherm.merkType,
-                scherm.type,
+                scherm.merk || splitMerkType(scherm.merkType || "").merk,
+                scherm.type || splitMerkType(scherm.merkType || "").type,
                 scherm.serienummer,
-                scherm.mac,
                 bevestiging,
                 scherm.orientatie || ruimte.orientatie,
-                aansturing,
             ]);
+
+            const aansturing =
+                scherm.aansturing === "Anders"
+                ? (scherm.aansturingAnders || "Anders")
+                : scherm.aansturing;
+            const playerMerk =
+                scherm.playerMerk || splitMerkType(scherm.playerMerkType || "").merk;
+            const playerType =
+                scherm.playerType || splitMerkType(scherm.playerMerkType || "").type;
+            if(
+                aansturing
+                || playerMerk
+                || playerType
+                || scherm.playerSerienummer
+                || scherm.playerMac
+            ){
+                playerRows.push([
+                    schermLabel,
+                    aansturing,
+                    playerMerk,
+                    playerType,
+                    scherm.playerSerienummer,
+                    scherm.playerMac,
+                ]);
+            }
         }
     }
 
-    return dataTable(
-        ["Locatie","Formaat","Merk","Type","Serienummer","MAC","Bevestiging","Oriëntatie","Aansturing / player"],
-        rows,
-        "data-table screen-table"
-    );
+    return [
+        dataTable(
+            ["Ruimte","Scherm","Locatie","Formaat","Merk","Type","Serienummer","Bevestiging","Oriëntatie"],
+            schermRows,
+            "data-table"
+        ),
+        playerRows.length > 0
+            ? `<p class="table-sub">Player / aansturing</p>${dataTable(
+                ["Scherm","Aansturing","Merk","Type","Serienummer","MAC"],
+                playerRows,
+                "data-table"
+              )}`
+            : "",
+    ].join("");
 }
 
 
@@ -1382,9 +1408,18 @@ function generateHtml(
   .screen-table { table-layout: fixed; }
   .txt { font-weight: 600; color: #1f2937; }
   .pill { display: inline-block; padding: 2px 10px; border-radius: 8px; font-size: 8.5px; font-weight: 600; }
-  .pill-yes { background: #dcf5e4; color: #15803d; }
-  .pill-no { background: #ddf1fd; color: #0369a1; }
-  .pill-empty { background: #f1f5f9; color: #94a3b8; }
+  .chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 8.5px;
+    font-weight: 700;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .table-sub { font-size: 8.5px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin: 10px 0 6px; }
   /* Beschrijving / meerwerk */
   .description-box { background: #f8fafc; border-left: 4px solid #0066ff; padding: 9px 11px; border-radius: 0 6px 6px 0; font-size: 9.5px; color: #334155; line-height: 1.55; }
   /* Foto's */

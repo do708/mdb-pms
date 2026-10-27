@@ -182,39 +182,8 @@ export function HardwareKenmerkenTabel({
             <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                 {titel}
             </p>
-            <div className="grid grid-cols-1 gap-3 p-3 md:hidden">
-                {velden.map((veld) => (
-                    <label key={veld.key} className="block min-w-0">
-                        <span className="block text-xs font-medium text-gray-600">
-                            {veld.label}
-                            {veld.required ? <VerplichtSter /> : null}
-                        </span>
-                        <input
-                            value={veld.value}
-                            onChange={(e) =>
-                                onChange({ [veld.key]: e.target.value })
-                            }
-                            onBlur={
-                                veld.key === "mac" && normaliseerVierdeWaarde
-                                    ? (e) =>
-                                          onChange({
-                                              mac: normalizeMac(e.target.value),
-                                          })
-                                    : undefined
-                            }
-                            placeholder={veld.placeholder}
-                            aria-required={veld.required || undefined}
-                            autoCapitalize={
-                                veld.key === "mac" ? "characters" : undefined
-                            }
-                            spellCheck={veld.key === "mac" ? false : undefined}
-                            className="mt-1 w-full min-w-0 rounded-lg border border-black/10 bg-white/70 p-2.5 text-sm"
-                        />
-                    </label>
-                ))}
-            </div>
-            <div className="hidden md:block">
-                <table className="w-full table-fixed text-sm border-collapse">
+            <div className="overflow-x-auto">
+                <table className="w-full min-w-[28rem] table-fixed text-sm border-collapse">
                     <thead>
                         <tr>
                             <th className="border-b border-black/10 p-2 text-left font-medium text-gray-600">

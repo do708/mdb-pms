@@ -43,7 +43,9 @@ const BLACK = rgb(0.15,0.15,0.15);
 
 const YES_GREEN = rgb(5 / 255, 150 / 255, 105 / 255);
 
-const NO_BLUE = MDB_BLUE;
+const NO_RED = rgb(220 / 255, 38 / 255, 38 / 255);
+
+const WARN_ORANGE = rgb(245 / 255, 158 / 255, 11 / 255);
 
 
 function roundedRectPath(
@@ -497,7 +499,7 @@ export async function generateOpleverPdf(
         badges([{
             label:selected,
             active:true,
-            color:value === true ? YES_GREEN : NO_BLUE
+            color:value === true ? YES_GREEN : NO_RED
         }]);
 
         dashedLine();
@@ -526,9 +528,9 @@ export async function generateOpleverPdf(
             active:true,
             color:
                 value === "Matig"
-                ? rgb(245 / 255, 158 / 255, 11 / 255)
+                ? WARN_ORANGE
                 : negative
-                    ? NO_BLUE
+                    ? NO_RED
                     : YES_GREEN
         }]);
 
