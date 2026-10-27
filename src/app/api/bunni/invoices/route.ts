@@ -25,10 +25,18 @@ export async function GET(request: Request) {
         const url = new URL(request.url);
         const q = url.searchParams.get("q") || "";
         const kindParam = url.searchParams.get("kind");
-        const kind =
-            kindParam === "offerte" || kindParam === "factuur"
-                ? kindParam
-                : "alle";
+
+        if (kindParam === "offerte") {
+            return NextResponse.json(
+                {
+                    error:
+                        "Offerte zoeken is nog niet beschikbaar. Er is nog geen Bunni-offerte-API.",
+                },
+                { status: 400 }
+            );
+        }
+
+        const kind = kindParam === "alle" ? "alle" : "factuur";
 
         const items = await listBunniDocuments();
         const results = searchBunniDocuments(items, q, kind);

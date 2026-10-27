@@ -1409,9 +1409,10 @@ async function completeWorkorder(){
                                 Bunni
                             </h2>
                             <p className="text-xs text-slate-500 mt-0.5">
-                                Koppel deze opdracht aan een offerte en factuur
-                                in Bunni. Staat de opdracht op een project, dan
-                                verschijnen de nummers daar ook.
+                                Koppel deze opdracht aan een factuur in Bunni.
+                                Offerte koppelen volgt later. Staat de opdracht
+                                op een project, dan verschijnt het factuurnummer
+                                daar ook.
                             </p>
                         </div>
                         <BunniKoppeling

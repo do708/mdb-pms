@@ -185,13 +185,15 @@ export async function getBunniDocument(
 export function searchBunniDocuments(
     items: BunniDocument[],
     query: string,
-    kind: "offerte" | "factuur" | "alle" = "alle"
+    kind: "offerte" | "factuur" | "alle" = "factuur"
 ) {
+    // Offertes hebben nog geen eigen Bunni-API; niet via facturen zoeken.
+    if (kind === "offerte") {
+        return [];
+    }
+
     const q = query.trim().toLowerCase();
     const filtered = items.filter((item) => {
-        if (kind === "offerte" && item.isFinalized) {
-            return false;
-        }
         if (kind === "factuur" && !item.isFinalized) {
             return false;
         }
@@ -204,12 +206,6 @@ export function searchBunniDocuments(
             (item.snippet || "").toLowerCase().includes(q)
         );
     });
-
-    // In Bunni staan offertes als niet-afgeronde facturen. Als die lijst
-    // leeg is, toon alle documenten zodat je toch een nummer met pdf kunt koppelen.
-    if (kind === "offerte" && filtered.length === 0 && items.length > 0) {
-        return searchBunniDocuments(items, query, "alle");
-    }
 
     return filtered.slice(0, 40);
 }
