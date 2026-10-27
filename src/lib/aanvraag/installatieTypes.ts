@@ -98,7 +98,10 @@ export const BEVESTIGING_DETAIL: Record<BevestigingSoort, string[]> = {
 /** Oude UI-labels (met “Vaste”) → huidige labels. */
 const BEVESTIGING_DETAIL_ALIASES: Record<string, string> = {
     "Vaste muurbeugel": "Muurbeugel",
+    "Vlakke muurbeugel": "Muurbeugel",
+    "Wand bevestiging": "Muurbeugel",
     "Vaste plafondbeugel": "Plafondbeugel",
+    "Plafond bevestiging": "Plafondbeugel",
     "Vaste plafondbeugel kantelbare scherm": "Plafondbeugel kantelbare scherm",
     "Vaste vloerstandaard": "Vloerstandaard",
     "Vaste plafondplaat": "Plafondplaat",
@@ -129,13 +132,7 @@ export function normaliseerBevestigingDetail(detail?: string | null): string {
 export function bevestigingDetailWeergave(detail?: string | null): string {
     const canon = normaliseerBevestigingDetail(detail);
     if (canon === "Muurbeugel") {
-        return "Wand bevestiging";
-    }
-    if (canon === "Plafondbeugel") {
-        return "Plafond bevestiging";
-    }
-    if (canon === "Plafondbeugel kantelbare scherm") {
-        return "Plafond bevestiging kantelbare scherm";
+        return "Vlakke muurbeugel";
     }
     return canon;
 }

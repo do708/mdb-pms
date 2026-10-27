@@ -71,7 +71,9 @@ export function montageVanScherm(item: BeugelKeuzeScherm): string {
         if (lower.includes("draai") || lower.includes("zwenk")) {
             return "Muur draaibaar";
         }
-        if (lower.includes("vast") || detail) return "Muur vlak";
+        if (lower.includes("vlak") || lower.includes("vast") || detail) {
+            return "Muur vlak";
+        }
         return "";
     }
 

@@ -638,7 +638,7 @@ export default function InstallatieRuimtesSectie({
                                         className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
                                     >
                                         <option value="">
-                                            Type {bevestigingSoortWeergave(scherm.beugel).toLowerCase()}
+                                            Kies type
                                         </option>
                                         {detailOpties.map((d) => (
                                             <option key={d} value={d}>

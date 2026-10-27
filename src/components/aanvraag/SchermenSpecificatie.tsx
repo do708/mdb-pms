@@ -374,136 +374,75 @@ export default function SchermenSpecificatie({
                                             *
                                         </span>
                                     </span>
-                                    <div className="flex flex-wrap gap-2">
-                                        {BEVESTIGING_OPTIES.map(
-                                            (b) => (
-                                                <button
-                                                    key={b}
-                                                    type="button"
-                                                    disabled={
-                                                        gekoppeld
-                                                    }
-                                                    onClick={() => {
-                                                        if (
-                                                            gekoppeld
-                                                        ) {
-                                                            return;
-                                                        }
-                                                        updateItem(
-                                                            scherm.id,
-                                                            {
-                                                                beugel:
-                                                                    normaliseerBevestiging(
-                                                                        scherm.beugel
-                                                                    ) === b
-                                                                        ? ""
-                                                                        : b,
-                                                                bevestigingDetail:
-                                                                    "",
-                                                                bevestigingAnders:
-                                                                    "",
-                                                                plafondHoogte:
-                                                                    "",
-                                                            }
-                                                        );
-                                                    }}
-                                                    className={
-                                                        "rounded-lg px-3 py-2 border-2 text-sm font-medium disabled:opacity-60 disabled:cursor-not-allowed "
-                                                        +
-                                                        (normaliseerBevestiging(
-                                                            scherm.beugel
-                                                        ) === b
-                                                            ? "bg-sky-100 text-sky-900 border-sky-300"
-                                                            : "bg-white text-gray-700 border-gray-200")
-                                                    }
-                                                >
-                                                    {bevestigingSoortWeergave(
-                                                        b
-                                                    )}
-                                                </button>
-                                            )
+                                    <select
+                                        disabled={gekoppeld}
+                                        value={normaliseerBevestiging(
+                                            scherm.beugel
                                         )}
-                                    </div>
-
+                                        onChange={(e) =>
+                                            updateItem(scherm.id, {
+                                                beugel: e.target.value,
+                                                bevestigingDetail: "",
+                                                bevestigingAnders: "",
+                                                plafondHoogte: "",
+                                            })
+                                        }
+                                        className="w-full border rounded-lg p-2 bg-white text-sm disabled:opacity-60"
+                                    >
+                                        <option value="">
+                                            Kies bevestiging
+                                        </option>
+                                        {BEVESTIGING_OPTIES.map((b) => (
+                                            <option key={b} value={b}>
+                                                {bevestigingSoortWeergave(b)}
+                                            </option>
+                                        ))}
+                                    </select>
                                     {detailOpties.length > 0 ? (
-                                        <div className="mt-2 pl-2 border-l-2 border-sky-200 space-y-1.5">
-                                            <span className="text-xs text-gray-600 block">
-                                                Type{" "}
-                                                {bevestigingSoortWeergave(
-                                                    scherm.beugel
-                                                ).toLowerCase()}
-                                            </span>
-                                            <div className="flex flex-col gap-2">
-                                                {detailOpties.map(
-                                                    (d) => (
-                                                        <button
-                                                            key={d}
-                                                            type="button"
-                                                            disabled={
-                                                                gekoppeld
-                                                            }
-                                                            onClick={() => {
-                                                                if (
-                                                                    gekoppeld
-                                                                ) {
-                                                                    return;
-                                                                }
-                                                                updateItem(
-                                                                    scherm.id,
-                                                                    {
-                                                                        bevestigingDetail:
-                                                                            normaliseerBevestigingDetail(
-                                                                                scherm.bevestigingDetail
-                                                                            ) ===
-                                                                            d
-                                                                                ? ""
-                                                                                : d,
-                                                                        bevestigingAnders:
-                                                                            "",
-                                                                    }
-                                                                );
-                                                            }}
-                                                            className={
-                                                                "w-full rounded-lg px-3 py-2 border-2 text-sm font-medium text-left whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed "
-                                                                +
-                                                                (normaliseerBevestigingDetail(
-                                                                    scherm.bevestigingDetail
-                                                                ) === d
-                                                                    ? "bg-teal-100 text-teal-900 border-teal-300"
-                                                                    : "bg-white text-gray-700 border-gray-200")
-                                                            }
-                                                        >
-                                                            {bevestigingDetailWeergave(
-                                                                d
-                                                            )}
-                                                        </button>
-                                                    )
-                                                )}
-                                            </div>
-                                            {scherm.bevestigingDetail ===
-                                            "Anders" ? (
-                                                <input
-                                                    type="text"
-                                                    disabled={gekoppeld}
-                                                    value={
-                                                        scherm.bevestigingAnders ||
-                                                        ""
-                                                    }
-                                                    onChange={(e) =>
-                                                        updateItem(
-                                                            scherm.id,
-                                                            {
-                                                                bevestigingAnders:
-                                                                    e.target
-                                                                        .value,
-                                                            }
-                                                        )
-                                                    }
-                                                    placeholder="Bijv. kolombeugel, speciale constructie…"
-                                                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-60"
-                                                />
-                                            ) : null}
-                                        </div>
+                                        <select
+                                            disabled={gekoppeld}
+                                            value={normaliseerBevestigingDetail(
+                                                scherm.bevestigingDetail
+                                            )}
+                                            onChange={(e) =>
+                                                updateItem(scherm.id, {
+                                                    bevestigingDetail:
+                                                        e.target.value,
+                                                    bevestigingAnders: "",
+                                                })
+                                            }
+                                            className="w-full border rounded-lg p-2 bg-white text-sm disabled:opacity-60"
+                                        >
+                                            <option value="">
+                                                Kies type
+                                            </option>
+                                            {detailOpties.map((d) => (
+                                                <option key={d} value={d}>
+                                                    {bevestigingDetailWeergave(
+                                                        d
+                                                    )}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    ) : null}
+                                    {scherm.bevestigingDetail ===
+                                    "Anders" ? (
+                                        <input
+                                            type="text"
+                                            disabled={gekoppeld}
+                                            value={
+                                                scherm.bevestigingAnders ||
+                                                ""
+                                            }
+                                            onChange={(e) =>
+                                                updateItem(scherm.id, {
+                                                    bevestigingAnders:
+                                                        e.target.value,
+                                                })
+                                            }
+                                            placeholder="Bijv. kolombeugel, speciale constructie…"
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-60"
+                                        />
                                     ) : null}
 
                                     {normaliseerBevestiging(
