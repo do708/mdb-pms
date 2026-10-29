@@ -148,6 +148,9 @@ export function HardwareKenmerkenTabel({
     vierdePlaceholder?: string;
     normaliseerVierdeWaarde?: boolean;
 }) {
+    const scanMac =
+        vierdeLabel.toLowerCase().includes("mac");
+
     const velden = [
         {
             key: "merk" as const,
@@ -224,6 +227,17 @@ export function HardwareKenmerkenTabel({
                                     }
                                 />
                             ) : null}
+                            {veld.key === "mac" && scanMac ? (
+                                <SerialScanButton
+                                    onScan={(waarde) =>
+                                        onChange({
+                                            mac: normaliseerVierdeWaarde
+                                                ? normalizeMac(waarde)
+                                                : waarde,
+                                        })
+                                    }
+                                />
+                            ) : null}
                         </div>
                     </label>
                 ))}
@@ -294,6 +308,7 @@ export function HardwareKenmerkenTabel({
                                 </div>
                             </td>
                             <td className="p-1.5 align-top">
+                                <div className="flex gap-1.5 min-w-0">
                                 <input
                                     value={mac}
                                     onChange={(e) =>
@@ -312,8 +327,20 @@ export function HardwareKenmerkenTabel({
                                     placeholder={vierdePlaceholder}
                                     autoCapitalize="characters"
                                     spellCheck={false}
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                    className="w-full min-w-0 border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
                                 />
+                                {scanMac ? (
+                                    <SerialScanButton
+                                        onScan={(waarde) =>
+                                            onChange({
+                                                mac: normaliseerVierdeWaarde
+                                                    ? normalizeMac(waarde)
+                                                    : waarde,
+                                            })
+                                        }
+                                    />
+                                ) : null}
+                                </div>
                             </td>
                         </tr>
                     </tbody>
