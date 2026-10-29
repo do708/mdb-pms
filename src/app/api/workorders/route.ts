@@ -14,6 +14,7 @@ import { ENGINEER_OPDRACHT_STATUS_KEYS } from "@/constants/workorderStatus";
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
 import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
+import { ensureWorkorderOpdrachtnummerKolom } from "@/lib/prismaEnsure";
 import { parseOpleverModules } from "@/lib/workorders/opleverModules";
 import { syncWorkorderForms } from "@/lib/workorders/syncForms";
 
@@ -51,6 +52,8 @@ export async function GET(){
 
 
     try {
+
+        await ensureWorkorderOpdrachtnummerKolom();
 
 
         const session =
@@ -283,7 +286,10 @@ export async function POST(
 
 
 
+        await ensureWorkorderOpdrachtnummerKolom();
+
         // Opdrachtgever, filiaalnaam en contactpersoon zijn verplicht; adres is optioneel
+
         const locatieFout = ontbrekendeVerplichteLocatieVelden({
             customerId: body.customerId,
             title: body.title,

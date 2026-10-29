@@ -15,6 +15,7 @@ import { mergeOpleverData, applyPlannedTravelToFormData } from "@/types/oplever"
 import { syncEngineerDayKilometers } from "@/lib/travel/syncEngineerDayKilometers";
 import { parsePlanningDateInput } from "@/lib/datetime/amsterdam";
 import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
+import { ensureWorkorderOpdrachtnummerKolom } from "@/lib/prismaEnsure";
 import { parseOpleverModules } from "@/lib/workorders/opleverModules";
 import { syncWorkorderForms } from "@/lib/workorders/syncForms";
 
@@ -319,6 +320,8 @@ export async function PUT(
 
 
     try {
+
+        await ensureWorkorderOpdrachtnummerKolom();
 
 
         const session =
