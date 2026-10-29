@@ -557,6 +557,19 @@ export async function PUT(
                         existingWorkorder.werkInstructie,
 
 
+                    opdrachtnummerOpdrachtgever:
+
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.opdrachtnummerOpdrachtgever
+                        :
+                        body.opdrachtnummerOpdrachtgever !== undefined
+                        ?
+                        (body.opdrachtnummerOpdrachtgever || null)
+                        :
+                        existingWorkorder.opdrachtnummerOpdrachtgever,
+
+
 
                     formData:
 

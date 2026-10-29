@@ -87,12 +87,6 @@ export function ontbrekendeVerplichteLocatieVelden(input: {
     if (!(input.title || "").trim()) {
         return "Vul de locatie / filiaalnaam in.";
     }
-    if (!(input.straat || "").trim()) {
-        return "Vul straat en huisnummer in.";
-    }
-    if (!(input.city || "").trim()) {
-        return "Vul de plaats in.";
-    }
     if (!(input.contactPersoon || "").trim()) {
         return "Vul de contactpersoon op locatie in.";
     }

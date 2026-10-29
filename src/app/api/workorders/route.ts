@@ -283,7 +283,7 @@ export async function POST(
 
 
 
-        // Opdrachtgever, filiaalnaam, straat, huisnr. en plaats zijn verplicht
+        // Opdrachtgever, filiaalnaam en contactpersoon zijn verplicht; adres is optioneel
         const locatieFout = ontbrekendeVerplichteLocatieVelden({
             customerId: body.customerId,
             title: body.title,
@@ -381,6 +381,11 @@ export async function POST(
 
                     werkInstructie:
                         body.werkInstructie || null,
+
+                    opdrachtnummerOpdrachtgever:
+                        typeof body.opdrachtnummerOpdrachtgever === "string"
+                        ? (body.opdrachtnummerOpdrachtgever.trim() || null)
+                        : null,
 
 
 

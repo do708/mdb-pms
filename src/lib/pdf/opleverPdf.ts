@@ -106,6 +106,8 @@ export interface OpleverPdfInput {
 
     projectName:string;
 
+    customerOrderNumber?:string | null;
+
     date:Date | null;
 
     engineers:(string | null)[];
@@ -687,7 +689,7 @@ export async function generateOpleverPdf(
 
     labelValue("Project- / werkbonnaam:", input.title);
     labelValue("Opdrachtgever:", input.customerName);
-    labelValue("Werkbonnummer:", input.number);
+    labelValue("Opdrachtnummer opdrachtgever:", input.customerOrderNumber ?? "");
 
     labelValue(
         "Adres:",
@@ -1395,6 +1397,23 @@ export async function generateOpleverPdf(
 
 
 
+
+    // ================= Afronding =================
+    {
+        const gereed = data.afronding.werkzaamhedenGereed;
+        sectionBar("Afronding:");
+        if (gereed === "gereed") {
+            jaNee("Werkzaamheden gereed?", true, ["Gereed", "Niet gereed"]);
+        } else if (gereed === "niet_gereed") {
+            jaNee("Werkzaamheden gereed?", false, ["Gereed", "Niet gereed"]);
+            labelValue(
+                "Omschrijving niet gereed:",
+                data.afronding.nietGereedOmschrijving
+            );
+        } else {
+            text("Werkzaamheden gereed? (niet ingevuld)", { gap: 2 });
+        }
+    }
 
     // ================= Handtekening =================
 

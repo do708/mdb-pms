@@ -233,6 +233,8 @@ export interface WorkorderHtmlPdfInput {
 
     projectName:string;
 
+    customerOrderNumber?:string | null;
+
     customer:{
         name:string;
         address:string | null;
@@ -1468,25 +1470,6 @@ function generateHtml(
   </div>
 
   <!-- PROJECT + KLANT -->
-  <div class="section">
-    <div class="section-title">Project- en werkbongegevens</div>
-    <div class="grid-2" style="gap:10px;margin-bottom:10px">
-      <div class="info-box">
-        <div class="info-label">Project- / werkbonnaam</div>
-        <div class="info-value" style="font-size:12px;font-weight:700">${esc(data.title)}</div>
-      </div>
-      <div class="info-box">
-        <div class="info-label">Opdrachtgever</div>
-        <div class="info-value" style="font-size:11px;font-weight:700">${esc(opdrachtgever || data.customer.name)}</div>
-      </div>
-    </div>
-    <div class="grid-3">
-      ${data.customer.address ? `<div class="info-box"><div class="info-label">Adres / locatie</div><div class="info-value">${esc(data.customer.address)}</div></div>` : ""}
-      <div class="info-box"><div class="info-label">Werkbonnummer / status</div><div class="info-value">${esc(data.number)}${data.status ? ` · ${esc(data.status)}` : ""}</div></div>
-    </div>
-  </div>
-
-  <!-- META -->
   ${(()=>{
         const alleMonteurs = uniqueNames(
             data.engineerName,
@@ -1496,28 +1479,32 @@ function generateHtml(
             oplever.tarief.monteur4
         );
         const uitgevoerd = data.workDate || data.plannedDate;
-
-        if(alleMonteurs.length === 0 && !uitgevoerd){
-            return "";
-        }
-
+        const infoBox = (label:string, value:string)=>
+            value.trim()
+            ? `<div class="info-box"><div class="info-label">${esc(label)}</div><div class="info-value">${esc(value)}</div></div>`
+            : "";
+        const links = [
+            infoBox("Project- / werkbonnaam", data.title),
+            infoBox("Opdrachtgever", opdrachtgever || data.customer.name),
+            data.customerOrderNumber
+                ? infoBox("Opdrachtnummer opdrachtgever", data.customerOrderNumber)
+                : "",
+        ].filter(Boolean).join("");
+        const rechts = [
+            data.customer.address ? infoBox("Adres / locatie", data.customer.address) : "",
+            uitgevoerd ? infoBox("Datum", formatDate(data.workDate ?? data.plannedDate)) : "",
+            data.status ? infoBox("Status", data.status) : "",
+            alleMonteurs.length
+                ? infoBox(alleMonteurs.length === 1 ? "Monteur" : "Monteurs", alleMonteurs.join(", "))
+                : "",
+        ].filter(Boolean).join("");
         return `<div class="section">
-        ${alleMonteurs.length === 0 ? "" : `<div style="display:grid;grid-template-columns:repeat(${alleMonteurs.length},1fr);gap:8px;margin-bottom:8px">
-            ${alleMonteurs.map(m=>`
-              <div class="info-box">
-                <div class="info-label">Monteur</div>
-                <div class="info-value">${esc(m)}</div>
-              </div>
-            `).join("")}
-        </div>`}
-        ${uitgevoerd ? `
-        <div class="grid-2" style="gap:8px">
-          <div class="info-box">
-            <div class="info-label">Datum</div>
-            <div class="info-value">${formatDate(data.workDate ?? data.plannedDate)}</div>
-          </div>
-        </div>` : ""}
-        </div>`;
+    <div class="section-title">Project- en werkbongegevens</div>
+    <div class="grid-2" style="gap:10px">
+      <div style="display:grid;gap:8px">${links}</div>
+      <div style="display:grid;gap:8px">${rechts}</div>
+    </div>
+  </div>`;
     })()}
 
   <!-- OMSCHRIJVING -->
@@ -1586,41 +1573,29 @@ function generateHtml(
   ${customFieldsSection(data.customerSchema, oplever.custom)}
 
   <!-- AFRONDING -->
-  ${
-    (
-      oplever.afronding.werkzaamhedenGereed ||
-      oplever.afronding.nietGereedOmschrijving ||
-      oplever.afronding.vervolgafspraken ||
-      oplever.afronding.meerwerkGehad !== null ||
-      oplever.afronding.meerwerkUren ||
-      oplever.afronding.meerwerkOpmerkingen ||
-      oplever.afronding.meerwerkMateriaal ||
-      oplever.afronding.meerwerkInOpdrachtVan ||
-      oplever.afronding.netwerkGecontroleerdDoor
-    ) ? `
   <div class="section">
     <div class="section-title">Afronding</div>
     <table class="qa">
-      ${oplever.afronding.werkzaamhedenGereed ? row("Werkzaamheden gereed?", textAnswer(
+      ${row(
+        "Werkzaamheden gereed?",
         oplever.afronding.werkzaamhedenGereed === "gereed"
-          ? "Gereed"
+          ? chipSvg("Gereed","yes")
           : oplever.afronding.werkzaamhedenGereed === "niet_gereed"
-            ? "Niet gereed"
+            ? chipSvg("Niet gereed","no")
             : oplever.afronding.werkzaamhedenGereed === "nog_af_te_ronden"
-              ? "Nog af te ronden"
-              : oplever.afronding.werkzaamhedenGereed
-      )) : ""}
+              ? chipSvg("Nog af te ronden","warn")
+              : chipSvg("Niet ingevuld","empty")
+      )}
       ${oplever.afronding.nietGereedOmschrijving ? row("Omschrijving niet gereed", textAnswer(oplever.afronding.nietGereedOmschrijving)) : ""}
       ${oplever.afronding.vervolgafspraken ? row("Nog af te ronden / vervolgafspraken / advies aan klant", textAnswer(oplever.afronding.vervolgafspraken)) : ""}
-      ${oplever.afronding.meerwerkGehad === true ? row("Meerwerk gehad?", "Ja") : oplever.afronding.meerwerkGehad === false ? row("Meerwerk gehad?", "Nee") : ""}
+      ${oplever.afronding.meerwerkGehad === true ? row("Meerwerk gehad?", chipSvg("Ja","yes")) : oplever.afronding.meerwerkGehad === false ? row("Meerwerk gehad?", chipSvg("Nee","no")) : ""}
       ${oplever.afronding.meerwerkUren ? row("Meerwerk uren", textAnswer(oplever.afronding.meerwerkUren)) : ""}
       ${oplever.afronding.meerwerkOpmerkingen ? row("Opmerkingen meerwerk", textAnswer(oplever.afronding.meerwerkOpmerkingen)) : ""}
       ${oplever.afronding.meerwerkMateriaal ? row("Meerwerk- en materiaal geleverd", textAnswer(oplever.afronding.meerwerkMateriaal)) : ""}
       ${oplever.afronding.meerwerkInOpdrachtVan ? row("Meerarbeid en -materialen geleverd in opdracht van", textAnswer(oplever.afronding.meerwerkInOpdrachtVan)) : ""}
       ${oplever.afronding.netwerkGecontroleerdDoor ? row("Netwerkverbinding mediaspelers gecontroleerd door", textAnswer(oplever.afronding.netwerkGecontroleerdDoor)) : ""}
     </table>
-  </div>` : ""
-  }
+  </div>
 
   <!-- FOTO'S -->
   ${veiligeFotos.length > 0 ? `
@@ -1702,6 +1677,7 @@ async function renderWorkorderPdfWithPdfLib(
         customerName: data.customer.name,
         customerAddress: data.customer.address,
         projectName: data.projectName,
+        customerOrderNumber: data.customerOrderNumber,
         date: data.plannedDate || data.workDate,
         engineers: uniqueNames(
             data.engineerName,

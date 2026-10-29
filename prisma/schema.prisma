@@ -209,6 +209,8 @@ model Workorder {
   updatedAt      DateTime            @updatedAt
   description    String?
   werkInstructie String?
+  /// Optioneel referentienummer van de opdrachtgever
+  opdrachtnummerOpdrachtgever String?
   workDate       DateTime?
   internalNotes  String?
   /// Opmerkingen bij On Hold (zichtbaar in on-hold-banner)

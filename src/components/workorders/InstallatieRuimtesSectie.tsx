@@ -19,6 +19,7 @@ import {
     werkzaamheidVanActie,
     type OpleverWerkzaamheid,
 } from "@/lib/workorders/opleverModules";
+import SerialScanButton from "@/components/workorders/SerialScanButton";
 import {
     CHIP_SELECTED_TONE,
     chipIdleClassName,
@@ -189,27 +190,40 @@ export function HardwareKenmerkenTabel({
                             {veld.label}
                             {veld.required ? <VerplichtSter /> : null}
                         </span>
-                        <input
-                            value={veld.value}
-                            onChange={(e) =>
-                                onChange({ [veld.key]: e.target.value })
-                            }
-                            onBlur={
-                                veld.key === "mac" && normaliseerVierdeWaarde
-                                    ? (e) =>
-                                          onChange({
-                                              mac: normalizeMac(e.target.value),
-                                          })
-                                    : undefined
-                            }
-                            placeholder={veld.placeholder}
-                            aria-required={veld.required || undefined}
-                            autoCapitalize={
-                                veld.key === "mac" ? "characters" : undefined
-                            }
-                            spellCheck={veld.key === "mac" ? false : undefined}
-                            className="mt-1 w-full min-w-0 rounded-lg border border-black/10 bg-white/70 p-2.5 text-sm"
-                        />
+                        <div className="mt-1 flex gap-2 min-w-0">
+                            <input
+                                value={veld.value}
+                                onChange={(e) =>
+                                    onChange({ [veld.key]: e.target.value })
+                                }
+                                onBlur={
+                                    veld.key === "mac" && normaliseerVierdeWaarde
+                                        ? (e) =>
+                                              onChange({
+                                                  mac: normalizeMac(
+                                                      e.target.value
+                                                  ),
+                                              })
+                                        : undefined
+                                }
+                                placeholder={veld.placeholder}
+                                aria-required={veld.required || undefined}
+                                autoCapitalize={
+                                    veld.key === "mac" ? "characters" : undefined
+                                }
+                                spellCheck={
+                                    veld.key === "mac" ? false : undefined
+                                }
+                                className="w-full min-w-0 rounded-lg border border-black/10 bg-white/70 p-2.5 text-sm"
+                            />
+                            {veld.key === "serienummer" ? (
+                                <SerialScanButton
+                                    onScan={(waarde) =>
+                                        onChange({ serienummer: waarde })
+                                    }
+                                />
+                            ) : null}
+                        </div>
                     </label>
                 ))}
             </div>
@@ -259,17 +273,24 @@ export function HardwareKenmerkenTabel({
                                 />
                             </td>
                             <td className="p-1.5 align-top">
-                                <input
-                                    value={serienummer}
-                                    onChange={(e) =>
-                                        onChange({
-                                            serienummer: e.target.value,
-                                        })
-                                    }
-                                    placeholder="Serienummer"
-                                    aria-required={requiredKenmerken || undefined}
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
-                                />
+                                <div className="flex gap-1.5 min-w-0">
+                                    <input
+                                        value={serienummer}
+                                        onChange={(e) =>
+                                            onChange({
+                                                serienummer: e.target.value,
+                                            })
+                                        }
+                                        placeholder="Serienummer"
+                                        aria-required={requiredKenmerken || undefined}
+                                        className="w-full min-w-0 border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                    />
+                                    <SerialScanButton
+                                        onScan={(waarde) =>
+                                            onChange({ serienummer: waarde })
+                                        }
+                                    />
+                                </div>
                             </td>
                             <td className="p-1.5 align-top">
                                 <input

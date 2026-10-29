@@ -207,6 +207,9 @@ export async function POST(
                     projectName:
                         (workorder.project?.name ?? customerName(workorder)),
 
+                    customerOrderNumber:
+                        workorder.opdrachtnummerOpdrachtgever,
+
                     customer:{
                         name:
                             customerName(workorder),
