@@ -486,7 +486,8 @@ function schermTabel(
 
 function qaBlock(
     title:string,
-    rowsHtml:string
+    rowsHtml:string,
+    pageBreak = false
 ):string {
 
     if(!rowsHtml.includes("<tr>")){
@@ -494,7 +495,7 @@ function qaBlock(
     }
 
     return `
-  <div class="section">
+  <div class="section${pageBreak ? " page-break" : ""}">
     <div class="section-title">${title}</div>
     <table class="qa">
       ${rowsHtml}
@@ -1203,7 +1204,7 @@ function opleverSections(
         return "";
       })()}
       ${c.afvalverwijdering !== null ? row("Afval verwijderd?",pill(c.afvalverwijdering)) : ""}
-  `)}`;
+  `, true)}`;
 
 }
 
@@ -1378,6 +1379,7 @@ function generateHtml(
   .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 9px; font-weight: 600; background: rgba(255,255,255,0.2); color: #fff; }
   /* Sections */
   .section { margin-top: 16px; margin-bottom: 15px; }
+  .page-break { break-before: page; page-break-before: always; }
   .module-card { border: 1px solid #e6ebf2; border-radius: 9px; padding: 9px; }
   .module-card .section-title { margin: -9px -9px 9px; border-radius: 8px 8px 0 0; }
   .section-title {

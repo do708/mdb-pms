@@ -1194,6 +1194,7 @@ export async function generateOpleverPdf(
 
     if(heeftChecklist){
 
+    newPage();
     sectionBar("Checklist:");
 
 
