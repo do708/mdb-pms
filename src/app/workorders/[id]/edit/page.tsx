@@ -919,24 +919,6 @@ export default function EditWorkorderPage(){
 
                         <label className="min-w-0 block sm:col-span-2">
                             <span className="text-xs text-gray-500">
-                                Opdrachtnummer opdrachtgever
-                            </span>
-                            <input
-                                value={opdrachtnummerOpdrachtgever}
-                                onChange={(e)=>
-                                    setOpdrachtnummerOpdrachtgever(e.target.value)
-                                }
-                                placeholder="Optioneel referentienummer van de klant"
-                                className="
-                                    mt-0.5 w-full border border-gray-200
-                                    rounded-lg p-2.5 text-sm text-gray-900
-                                    placeholder:text-gray-400
-                                "
-                            />
-                        </label>
-
-                        <label className="min-w-0 block sm:col-span-2">
-                            <span className="text-xs text-gray-500">
                                 Straat en huisnummer
                             </span>
                             <input
@@ -1022,6 +1004,24 @@ export default function EditWorkorderPage(){
                                 value={contactPhone}
                                 onChange={(e)=>setContactPhone(e.target.value)}
                                 placeholder="06 ..."
+                                className="
+                                    mt-0.5 w-full border border-gray-200
+                                    rounded-lg p-2.5 text-sm text-gray-900
+                                    placeholder:text-gray-400
+                                "
+                            />
+                        </label>
+
+                        <label className="min-w-0 block sm:col-span-2">
+                            <span className="text-xs text-gray-500">
+                                Opdrachtnummer opdrachtgever
+                            </span>
+                            <input
+                                value={opdrachtnummerOpdrachtgever}
+                                onChange={(e)=>
+                                    setOpdrachtnummerOpdrachtgever(e.target.value)
+                                }
+                                placeholder="Optioneel referentienummer van de klant"
                                 className="
                                     mt-0.5 w-full border border-gray-200
                                     rounded-lg p-2.5 text-sm text-gray-900

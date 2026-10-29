@@ -1481,6 +1481,7 @@ function generateHtml(
             oplever.tarief.monteur4
         );
         const uitgevoerd = data.workDate || data.plannedDate;
+        const opdrachtnummerKlant = (data.customerOrderNumber || "").trim();
         const infoBox = (label:string, value:string)=>
             value.trim()
             ? `<div class="info-box"><div class="info-label">${esc(label)}</div><div class="info-value">${esc(value)}</div></div>`
@@ -1488,8 +1489,8 @@ function generateHtml(
         const links = [
             infoBox("Project- / werkbonnaam", data.title),
             infoBox("Opdrachtgever", opdrachtgever || data.customer.name),
-            data.customerOrderNumber
-                ? infoBox("Opdrachtnummer opdrachtgever", data.customerOrderNumber)
+            opdrachtnummerKlant
+                ? infoBox("Opdrachtnummer opdrachtgever", opdrachtnummerKlant)
                 : "",
         ].filter(Boolean).join("");
         const rechts = [

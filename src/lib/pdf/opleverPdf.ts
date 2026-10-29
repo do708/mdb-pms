@@ -690,7 +690,10 @@ export async function generateOpleverPdf(
 
     labelValue("Project- / werkbonnaam:", input.title);
     labelValue("Opdrachtgever:", input.customerName);
-    labelValue("Opdrachtnummer opdrachtgever:", input.customerOrderNumber ?? "");
+    labelValue(
+        "Opdrachtnummer opdrachtgever:",
+        (input.customerOrderNumber || "").trim()
+    );
 
     labelValue(
         "Adres:",
