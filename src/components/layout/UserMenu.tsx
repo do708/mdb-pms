@@ -50,14 +50,13 @@ export default function UserMenu() {
             </button>
 
             {open && (
-                <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-50 space-y-2">
+                <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-[60] space-y-2">
                     <button
                         type="button"
                         onClick={() => {
-                            setOpen(false);
                             window.location.reload();
                         }}
-                        className="w-full flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition"
+                        className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition"
                     >
                         <RefreshCw size={16} />
                         Vernieuwen

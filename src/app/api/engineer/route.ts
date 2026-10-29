@@ -101,9 +101,12 @@ export async function GET(){
 
 
         return NextResponse.json(
-
-            workorders
-
+            workorders,
+            {
+                headers: {
+                    "Cache-Control": "no-store",
+                },
+            }
         );
 
 

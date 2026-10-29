@@ -54,7 +54,9 @@ export default function EngineerPage() {
 
     useEffect(() => {
         async function load() {
-            const response = await fetch("/api/engineer");
+            const response = await fetch("/api/engineer", {
+                cache: "no-store",
+            });
             const data = await response.json();
             if (Array.isArray(data)) setWorkorders(data);
             setLoading(false);

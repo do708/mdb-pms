@@ -78,7 +78,9 @@ function WorkordersPageContent() {
     const [teLaatFilter, setTeLaatFilter] = useState(false);
 
     async function load() {
-        const response = await fetch("/api/workorders");
+        const response = await fetch("/api/workorders", {
+            cache: "no-store",
+        });
         const data = await response.json();
         setWorkorders(data);
         setLoading(false);
