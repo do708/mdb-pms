@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { BarcodeFormat, DecodeHintType } from "@zxing/library";
+import { BrowserMultiFormatReader } from "@zxing/browser";
 
 type BarcodeDetectorCtor = new (options?: {
     formats?: string[];
@@ -8,7 +10,7 @@ type BarcodeDetectorCtor = new (options?: {
     detect: (source: ImageBitmapSource) => Promise<Array<{ rawValue?: string }>>;
 };
 
-function barcodeDetector(): BarcodeDetectorCtor | null {
+function nativeBarcodeDetector(): BarcodeDetectorCtor | null {
     if (typeof window === "undefined") {
         return null;
     }
@@ -16,6 +18,24 @@ function barcodeDetector(): BarcodeDetectorCtor | null {
         (window as unknown as { BarcodeDetector?: BarcodeDetectorCtor })
             .BarcodeDetector ?? null
     );
+}
+
+function zxingReader(): BrowserMultiFormatReader {
+    const hints = new Map();
+    hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+        BarcodeFormat.CODE_128,
+        BarcodeFormat.CODE_39,
+        BarcodeFormat.CODE_93,
+        BarcodeFormat.ITF,
+        BarcodeFormat.EAN_13,
+        BarcodeFormat.EAN_8,
+        BarcodeFormat.QR_CODE,
+        BarcodeFormat.DATA_MATRIX,
+        BarcodeFormat.UPC_A,
+        BarcodeFormat.UPC_E,
+    ]);
+    hints.set(DecodeHintType.TRY_HARDER, true);
+    return new BrowserMultiFormatReader(hints);
 }
 
 export default function SerialScanButton({
@@ -26,6 +46,7 @@ export default function SerialScanButton({
     const [open, setOpen] = useState(false);
     const [fout, setFout] = useState("");
     const videoRef = useRef<HTMLVideoElement | null>(null);
+    const fileRef = useRef<HTMLInputElement | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const onScanRef = useRef(onScan);
     onScanRef.current = onScan;
@@ -42,15 +63,9 @@ export default function SerialScanButton({
             return;
         }
 
-        const DetectorMaybe = barcodeDetector();
-        if (!DetectorMaybe) {
-            setFout("Scannen wordt op dit apparaat niet ondersteund.");
-            return;
-        }
-        const DetectorImpl: BarcodeDetectorCtor = DetectorMaybe;
-
         let cancelled = false;
         let timer: number | null = null;
+        let zxingStop: (() => void) | null = null;
 
         async function run() {
             try {
@@ -67,43 +82,64 @@ export default function SerialScanButton({
                 if (!video) {
                     return;
                 }
+                video.setAttribute("playsinline", "true");
                 video.srcObject = stream;
                 await video.play();
 
-                const detector = new DetectorImpl({
-                    formats: [
-                        "code_128",
-                        "code_39",
-                        "code_93",
-                        "ean_13",
-                        "ean_8",
-                        "upc_a",
-                        "upc_e",
-                        "qr_code",
-                        "data_matrix",
-                        "itf",
-                    ],
-                });
+                const DetectorNative = nativeBarcodeDetector();
+                if (DetectorNative) {
+                    const detector = new DetectorNative({
+                        formats: [
+                            "code_128",
+                            "code_39",
+                            "code_93",
+                            "ean_13",
+                            "ean_8",
+                            "upc_a",
+                            "upc_e",
+                            "qr_code",
+                            "data_matrix",
+                            "itf",
+                        ],
+                    });
+                    timer = window.setInterval(async () => {
+                        if (video.readyState < 2) {
+                            return;
+                        }
+                        try {
+                            const hits = await detector.detect(video);
+                            const waarde = hits.find((hit) => hit.rawValue?.trim())
+                                ?.rawValue;
+                            if (waarde && !cancelled) {
+                                onScanRef.current(waarde.trim());
+                                stop();
+                            }
+                        } catch {
+                            /* volgende frame */
+                        }
+                    }, 400);
+                    return;
+                }
 
-                timer = window.setInterval(async () => {
-                    if (video.readyState < 2) {
-                        return;
-                    }
-                    try {
-                        const hits = await detector.detect(video);
-                        const waarde = hits.find((hit) => hit.rawValue?.trim())
-                            ?.rawValue;
-                        if (waarde) {
-                            onScanRef.current(waarde.trim());
+                const reader = zxingReader();
+                const controls = await reader.decodeFromStream(
+                    stream,
+                    video,
+                    (result, _error, scanControls) => {
+                        const waarde = result?.getText()?.trim();
+                        if (waarde && !cancelled) {
+                            onScanRef.current(waarde);
+                            scanControls.stop();
                             stop();
                         }
-                    } catch {
-                        /* volgende frame */
                     }
-                }, 400);
+                );
+                zxingStop = () => controls.stop();
             } catch {
                 if (!cancelled) {
-                    setFout("Camera kon niet worden geopend.");
+                    setFout(
+                        "Camera kon niet worden geopend. Je kunt ook een foto van de barcode maken."
+                    );
                 }
             }
         }
@@ -115,10 +151,36 @@ export default function SerialScanButton({
             if (timer) {
                 window.clearInterval(timer);
             }
+            zxingStop?.();
             streamRef.current?.getTracks().forEach((track) => track.stop());
             streamRef.current = null;
         };
     }, [open]);
+
+    async function onFoto(event: ChangeEvent<HTMLInputElement>) {
+        const file = event.target.files?.[0];
+        event.target.value = "";
+        if (!file) {
+            return;
+        }
+        try {
+            const url = URL.createObjectURL(file);
+            const image = document.createElement("img");
+            image.src = url;
+            await image.decode();
+            const result = await zxingReader().decodeFromImageElement(image);
+            URL.revokeObjectURL(url);
+            const waarde = result.getText().trim();
+            if (!waarde) {
+                setFout("Geen barcode gevonden op de foto.");
+                return;
+            }
+            onScanRef.current(waarde);
+            stop();
+        } catch {
+            setFout("Geen barcode gevonden op de foto. Probeer opnieuw, dichterbij.");
+        }
+    }
 
     return (
         <>
@@ -147,6 +209,7 @@ export default function SerialScanButton({
                             className="w-full aspect-[3/4] bg-black object-cover"
                             playsInline
                             muted
+                            autoPlay
                         />
                         {fout ? (
                             <p className="px-4 py-3 text-sm text-red-700">{fout}</p>
@@ -155,6 +218,21 @@ export default function SerialScanButton({
                                 Richt de camera op de barcode of QR-code.
                             </p>
                         )}
+                        <input
+                            ref={fileRef}
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            className="hidden"
+                            onChange={(e) => void onFoto(e)}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => fileRef.current?.click()}
+                            className="w-full py-3 text-sm font-semibold border-t"
+                        >
+                            Foto van barcode maken
+                        </button>
                         <button
                             type="button"
                             onClick={stop}
