@@ -359,11 +359,7 @@ export async function POST(
             parsePlanningDateInput(body.plannedDate);
 
 
-        const workorder =
-
-            await prisma.workorder.create({
-
-                data:{
+        const createData = {
 
 
                     number:
@@ -491,10 +487,31 @@ export async function POST(
                         body.status || "ontvangen"
 
 
-                }
+        };
 
+        let workorder;
 
+        try {
+            workorder = await prisma.workorder.create({
+                data: createData,
             });
+        } catch (createError) {
+            const tekst = String(
+                createError && typeof createError === "object" && "message" in createError
+                    ? createError.message
+                    : createError
+            );
+            if (!tekst.includes("opdrachtnummerOpdrachtgever")) {
+                throw createError;
+            }
+            const {
+                opdrachtnummerOpdrachtgever: _unused,
+                ...zonderOpdrachtnummer
+            } = createData;
+            workorder = await prisma.workorder.create({
+                data: zonderOpdrachtnummer,
+            });
+        }
 
 
 
@@ -538,10 +555,14 @@ export async function POST(
 
 
 
-        await syncEngineerDayKilometers(
-            workorder.assignedUserId,
-            workorder.plannedDate
-        );
+        try {
+            await syncEngineerDayKilometers(
+                workorder.assignedUserId,
+                workorder.plannedDate
+            );
+        } catch (travelError) {
+            console.error("CREATE WORKORDER TRAVEL ERROR", travelError);
+        }
 
 
         return NextResponse.json(

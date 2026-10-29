@@ -1,1 +1,1 @@
-ALTER TABLE "Workorder" ADD COLUMN "opdrachtnummerOpdrachtgever" TEXT;
+ALTER TABLE "Workorder" ADD COLUMN IF NOT EXISTS "opdrachtnummerOpdrachtgever" TEXT;

@@ -528,9 +528,13 @@ function NewWorkorderInner(){
 
             } else {
 
+                const data =
+                    await response.json().catch(()=>null);
 
                 setError(
-                    "Opdracht aanmaken mislukt"
+                    typeof data?.error === "string" && data.error.trim()
+                    ? data.error
+                    : "Opdracht aanmaken mislukt"
                 );
 
                 window.scrollTo({ top:0, behavior:"smooth" });
