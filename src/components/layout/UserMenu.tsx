@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, RefreshCw } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -50,8 +50,20 @@ export default function UserMenu() {
             </button>
 
             {open && (
-                <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-50">
+                <div className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-50 space-y-2">
                     <button
+                        type="button"
+                        onClick={() => {
+                            setOpen(false);
+                            window.location.reload();
+                        }}
+                        className="w-full flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition"
+                    >
+                        <RefreshCw size={16} />
+                        Vernieuwen
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => signOut({ callbackUrl: "/login" })}
                         className="w-full flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-100/70 text-yellow-700 font-medium text-sm hover:bg-yellow-200 transition"
                     >
