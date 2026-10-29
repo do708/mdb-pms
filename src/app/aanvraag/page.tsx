@@ -462,10 +462,6 @@ function AanvraagFormulier(){
             setFout("Vul de locatie / filiaalnaam in.");
             return;
         }
-        if(!straatHuisnummer.trim()){
-            setFout("Vul straat en huisnummer in.");
-            return;
-        }
         if(!postcode.trim()){
             setFout("Vul de postcode in.");
             return;
@@ -781,14 +777,13 @@ function AanvraagFormulier(){
 
                         <label className="block">
                             <span className="text-sm text-gray-600">
-                                Straat en huisnummer{" "}
-                                <span className="text-red-500">*</span>
+                                Straat en huisnummer
                             </span>
                             <input
                                 value={straatHuisnummer}
                                 onChange={(e)=>setStraatHuisnummer(e.target.value)}
+                                placeholder="Bijv. Kerkstraat 12"
                                 className="w-full border rounded-xl p-3 mt-1"
-                                required
                             />
                         </label>
 

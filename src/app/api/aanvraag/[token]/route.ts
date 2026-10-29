@@ -94,13 +94,6 @@ export async function POST(
         const { straat, huisnummer } =
             straatHuisnummerUitPayload(body);
 
-        if (!straat) {
-            return NextResponse.json(
-                { error:"Vul straat en huisnummer in." },
-                { status:400 }
-            );
-        }
-
 
         const aanvraag =
             await prisma.aanvraag.create({
