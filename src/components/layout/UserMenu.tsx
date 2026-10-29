@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { LogOut, RefreshCw } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
@@ -14,14 +13,9 @@ const ROLE_LABELS: Record<string, string> = {
 export default function UserMenu() {
     const [open, setOpen] = useState(false);
     const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
-    const [mounted, setMounted] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
     const { data: session, status } = useSession();
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     useEffect(() => {
         if (!open) {
@@ -73,33 +67,6 @@ export default function UserMenu() {
         setOpen((value) => !value);
     }
 
-    const menu = open ? (
-        <div
-            ref={menuRef}
-            className="fixed z-[200] w-56 bg-white border border-gray-200 rounded-xl shadow-lg p-2 space-y-2"
-            style={{ top: menuPos.top, right: menuPos.right }}
-        >
-            <button
-                type="button"
-                onClick={() => {
-                    window.location.reload();
-                }}
-                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-100 text-sky-800 font-medium text-sm"
-            >
-                <RefreshCw size={16} />
-                Vernieuwen
-            </button>
-            <button
-                type="button"
-                onClick={() => signOut({ callbackUrl: "/login" })}
-                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-100/70 text-yellow-700 font-medium text-sm"
-            >
-                <LogOut size={16} />
-                Uitloggen
-            </button>
-        </div>
-    ) : null;
-
     return (
         <div className="relative">
             <button
@@ -122,7 +89,32 @@ export default function UserMenu() {
                 </div>
             </button>
 
-            {mounted ? createPortal(menu, document.body) : menu}
+            {open ? (
+                <div
+                    ref={menuRef}
+                    className="fixed z-[200] w-56 bg-white border border-gray-200 rounded-xl shadow-lg p-2 space-y-2"
+                    style={{ top: menuPos.top, right: menuPos.right }}
+                >
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.reload();
+                        }}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-100 text-sky-800 font-medium text-sm"
+                    >
+                        <RefreshCw size={16} />
+                        Vernieuwen
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => signOut({ callbackUrl: "/login" })}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-100/70 text-yellow-700 font-medium text-sm"
+                    >
+                        <LogOut size={16} />
+                        Uitloggen
+                    </button>
+                </div>
+            ) : null}
         </div>
     );
 }

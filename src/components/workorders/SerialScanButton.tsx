@@ -42,11 +42,12 @@ export default function SerialScanButton({
             return;
         }
 
-        const Detector = barcodeDetector();
-        if (!Detector) {
+        const DetectorMaybe = barcodeDetector();
+        if (!DetectorMaybe) {
             setFout("Scannen wordt op dit apparaat niet ondersteund.");
             return;
         }
+        const DetectorImpl: BarcodeDetectorCtor = DetectorMaybe;
 
         let cancelled = false;
         let timer: number | null = null;
@@ -69,7 +70,7 @@ export default function SerialScanButton({
                 video.srcObject = stream;
                 await video.play();
 
-                const detector = new Detector({
+                const detector = new DetectorImpl({
                     formats: [
                         "code_128",
                         "code_39",
