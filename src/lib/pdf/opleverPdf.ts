@@ -18,6 +18,7 @@ import {
     summarizeVoorziening,
 } from "@/types/installatieRuimtes";
 import {
+    aansturingWeergave,
     bevestigingDetailWeergave,
     bevestigingSoortWeergave,
 } from "@/lib/aanvraag/installatieTypes";
@@ -860,7 +861,7 @@ export async function generateOpleverPdf(
                         const aansturing =
                             scherm.aansturing === "Anders"
                             ? (scherm.aansturingAnders || "Anders")
-                            : scherm.aansturing;
+                            : aansturingWeergave(scherm.aansturing);
                         const playerMerk =
                             scherm.playerMerk
                             || splitMerkType(scherm.playerMerkType || "").merk;

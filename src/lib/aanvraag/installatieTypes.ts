@@ -164,7 +164,19 @@ export function isPlayerAansturing(value: string): boolean {
     return value === "Player" || value === AANSTURING_PLAYER_LEGACY;
 }
 
-const NATIVE_OS_AANSTURING = new Set(["Tizen", "webOS", "Android"]);
+export const NATIVE_OS_AANSTURING_OPTIES = [
+    "Tizen",
+    "webOS",
+    "Android",
+] as const;
+
+const NATIVE_OS_AANSTURING = new Set<string>(NATIVE_OS_AANSTURING_OPTIES);
+
+const AANSTURING_MERK_LABEL: Record<string, string> = {
+    Tizen: 'Tizen "Samsung"',
+    webOS: 'webOS "LG"',
+    Android: 'Android "Philips"',
+};
 
 /**
  * Extra apparaat onder aansturing: player of andere (niet-native) aansturing.
@@ -185,7 +197,26 @@ export function isAansturingMetApparaat(value: string): boolean {
 
 /** Weergavelabel; normaliseert legacy "DMV player" → "Player". */
 export function aansturingWeergave(value: string): string {
-    return isPlayerAansturing(value) ? "Player" : value;
+    if (isPlayerAansturing(value)) {
+        return "Player";
+    }
+    return AANSTURING_MERK_LABEL[value] || value;
+}
+
+export function telNativeOsAansturing(
+    aansturingen: string[]
+): Record<(typeof NATIVE_OS_AANSTURING_OPTIES)[number], number> {
+    const counts = {
+        Tizen: 0,
+        webOS: 0,
+        Android: 0,
+    };
+    for (const value of aansturingen) {
+        if (value === "Tizen" || value === "webOS" || value === "Android") {
+            counts[value] += 1;
+        }
+    }
+    return counts;
 }
 
 /** Hoogte-opties bij plafondbeugel. */

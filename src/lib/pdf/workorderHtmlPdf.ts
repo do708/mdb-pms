@@ -443,7 +443,7 @@ function schermTabel(
             const aansturing =
                 scherm.aansturing === "Anders"
                 ? (scherm.aansturingAnders || "Anders")
-                : scherm.aansturing;
+                : aansturingWeergave(scherm.aansturing);
             const playerMerk =
                 scherm.playerMerk || splitMerkType(scherm.playerMerkType || "").merk;
             const playerType =
@@ -1193,7 +1193,7 @@ function opleverSections(
       ${(()=>{
         const loc = c.mediaplayerLocaties && typeof c.mediaplayerLocaties === "object" ? c.mediaplayerLocaties : {};
         const regels = Object.keys(loc)
-            .map(k=>`${k}${loc[k] ? `: ${loc[k]}` : ""}`)
+            .map(k=>`${aansturingWeergave(k)}${loc[k] ? `: ${loc[k]}` : ""}`)
             .join(" · ");
         if(regels){
             return row("Locatie mediaplayer(s)",textAnswer(regels));

@@ -13,6 +13,7 @@ import {
     bevestigingDetails,
     bevestigingSoortWeergave,
     installatieTypeWeergave,
+    aansturingWeergave,
     isPlayerAansturing,
     legeVoorzieningen,
     normaliseerBevestiging,
@@ -539,7 +540,7 @@ export default function SchermenSpecificatie({
                                                         : "bg-white text-gray-700 border-gray-200")
                                                 }
                                             >
-                                                {a}
+                                                {aansturingWeergave(a)}
                                             </button>
                                             );
                                         })}

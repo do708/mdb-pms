@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import {
     BEUGEL_TYPES,
@@ -38,6 +38,11 @@ import InstallatieRuimtesSectie, {
     HardwareKenmerkenTabel
 } from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
+import {
+    NATIVE_OS_AANSTURING_OPTIES,
+    aansturingWeergave,
+    telNativeOsAansturing,
+} from "@/lib/aanvraag/installatieTypes";
 import {
     normalizeMac,
     emptyExtra,
@@ -2278,6 +2283,83 @@ export default function OpleverForm({
     }
 
 
+    const nativeOsAantallen = useMemo(() => {
+        const aansturingen: string[] = [];
+        for (const ruimte of data.installatie.ruimtes) {
+            for (const scherm of ruimte.schermen) {
+                if (scherm.aansturing) {
+                    aansturingen.push(scherm.aansturing);
+                }
+            }
+        }
+        const videowallAansturing =
+            data.installatie.videowallVelden?.aansturing || "";
+        if (videowallAansturing) {
+            const n = Math.max(
+                1,
+                parseAantal(data.installatie.videowallAantal) || 1
+            );
+            for (let i = 0; i < n; i++) {
+                aansturingen.push(videowallAansturing);
+            }
+        }
+        return telNativeOsAansturing(aansturingen);
+    }, [
+        data.installatie.ruimtes,
+        data.installatie.videowallVelden,
+        data.installatie.videowallAantal,
+    ]);
+
+
+    const nativeOsAantallenSleutel =
+        `${nativeOsAantallen.Tizen}-${nativeOsAantallen.webOS}-${nativeOsAantallen.Android}`;
+    const vorigeNativeOsAantallen = useRef(nativeOsAantallen);
+
+    useEffect(() => {
+        setData((previous) => {
+            const huidig = previous.checklist.mediaplayerLocaties || {};
+            const next = { ...huidig };
+            let changed = false;
+            for (const os of NATIVE_OS_AANSTURING_OPTIES) {
+                const aantal = nativeOsAantallen[os];
+                if (aantal > 0) {
+                    const auto = String(aantal);
+                    const vorigeAuto = String(
+                        vorigeNativeOsAantallen.current[os]
+                    );
+                    if (
+                        next[os] === undefined
+                        || next[os] === ""
+                        || next[os] === vorigeAuto
+                    ) {
+                        if (next[os] !== auto) {
+                            next[os] = auto;
+                            changed = true;
+                        }
+                    }
+                } else if (next[os] !== undefined) {
+                    delete next[os];
+                    changed = true;
+                }
+            }
+            if (
+                next["Tizen/WebOS/Android"] !== undefined
+                && NATIVE_OS_AANSTURING_OPTIES.some(
+                    (os) => nativeOsAantallen[os] > 0
+                )
+            ) {
+                delete next["Tizen/WebOS/Android"];
+                changed = true;
+            }
+            if (!changed) {
+                return previous;
+            }
+            const draft = structuredClone(previous);
+            draft.checklist.mediaplayerLocaties = next;
+            return draft;
+        });
+        vorigeNativeOsAantallen.current = nativeOsAantallen;
+    }, [nativeOsAantallen, nativeOsAantallenSleutel]);
 
 
     async function save(){
@@ -4672,7 +4754,18 @@ export default function OpleverForm({
                                 "In de patchkast",
                                 "Boven het plafond",
                                 "Kiosk",
-                                "Tizen/WebOS/Android",
+                                ...NATIVE_OS_AANSTURING_OPTIES.filter((os) =>
+                                    nativeOsAantallen[os] > 0
+                                    || c.mediaplayerLocaties[os] !== undefined
+                                ),
+                                ...(
+                                    c.mediaplayerLocaties["Tizen/WebOS/Android"] !== undefined
+                                    && !NATIVE_OS_AANSTURING_OPTIES.some(
+                                        (os) => nativeOsAantallen[os] > 0
+                                    )
+                                    ? ["Tizen/WebOS/Android"]
+                                    : []
+                                ),
                                 "Anders"
                             ].map((locatie)=>{
 
@@ -4718,7 +4811,9 @@ export default function OpleverForm({
                                             `}
                                         >
                                             <span className="w-3 shrink-0">{actief ? "✓" : ""}</span>
-                                            <span className="truncate">{locatie}</span>
+                                            <span className="truncate">
+                                                {aansturingWeergave(locatie)}
+                                            </span>
                                         </button>
 
                                         {actief ? (

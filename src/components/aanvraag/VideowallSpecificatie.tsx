@@ -9,6 +9,7 @@ import {
 import {
     AANSTURING_OPTIES,
     SCHERM_FORMATEN,
+    aansturingWeergave,
     isAansturingMetApparaat,
     isPlayerAansturing,
 } from "@/lib/aanvraag/installatieTypes";
@@ -111,7 +112,7 @@ function AansturingBlok({
                     <option value="">Kies aansturing</option>
                     {AANSTURING_OPTIES.map((optie) => (
                         <option key={optie} value={optie}>
-                            {optie}
+                            {aansturingWeergave(optie)}
                         </option>
                     ))}
                 </select>
@@ -134,7 +135,7 @@ function AansturingBlok({
                             ? "Aansturing (player)"
                             : aansturing === "Anders"
                               ? `Aansturing (${velden.aansturingAnders || "anders"})`
-                              : `Aansturing (${aansturing})`
+                              : `Aansturing (${aansturingWeergave(aansturing)})`
                     }
                     merk={velden.playerMerk || ""}
                     type={velden.playerType || ""}

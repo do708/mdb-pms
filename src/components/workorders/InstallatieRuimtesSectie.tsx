@@ -8,6 +8,7 @@ import {
     bevestigingDetailWeergave,
     bevestigingDetails,
     bevestigingSoortWeergave,
+    aansturingWeergave,
     isAansturingMetApparaat,
     isPlayerAansturing,
     normaliseerBevestiging,
@@ -744,7 +745,7 @@ export default function InstallatieRuimtesSectie({
                                     <option value="">Kies aansturing</option>
                                     {AANSTURING_OPTIES.map((a) => (
                                         <option key={a} value={a}>
-                                            {a}
+                                            {aansturingWeergave(a)}
                                         </option>
                                     ))}
                                 </select>
