@@ -2158,6 +2158,13 @@ async function completeWorkorder(){
 
             error={formError}
 
+            beforeHandtekening={
+                <PhotosForm
+                    workorderId={id}
+                    readOnly={!!workorder.sentAt}
+                />
+            }
+
             onChange={(next)=>{
                 setFormError("");
                 setOpleverData(next);
@@ -2183,10 +2190,14 @@ async function completeWorkorder(){
 }
 
 
-            <PhotosForm
-                workorderId={id}
-                readOnly={!!workorder.sentAt}
-            />
+            {
+                isOffice && (
+                    <PhotosForm
+                        workorderId={id}
+                        readOnly={!!workorder.sentAt}
+                    />
+                )
+            }
 
             {
                 isOffice && (

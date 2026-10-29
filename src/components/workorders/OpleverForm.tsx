@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import {
     BEUGEL_TYPES,
@@ -111,6 +111,9 @@ interface Props {
 
     /** Foutmelding van de parent (bijv. bij afronden). */
     error?:string;
+
+    /** Bijv. foto's: tussen afronding en handtekening. */
+    beforeHandtekening?:ReactNode;
 
 }
 
@@ -2047,7 +2050,9 @@ export default function OpleverForm({
 
     aanvraagSpecificaties,
 
-    error
+    error,
+
+    beforeHandtekening
 
 }:Props){
 
@@ -4960,6 +4965,7 @@ export default function OpleverForm({
             </div>
 
 
+            {beforeHandtekening}
 
 
             {/* ================= Handtekening voor akkoord ================= */}
