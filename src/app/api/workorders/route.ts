@@ -378,11 +378,6 @@ export async function POST(
                     werkInstructie:
                         body.werkInstructie || null,
 
-                    opdrachtnummerOpdrachtgever:
-                        typeof body.opdrachtnummerOpdrachtgever === "string"
-                        ? (body.opdrachtnummerOpdrachtgever.trim() || null)
-                        : null,
-
 
 
                     internalNotes:
@@ -489,28 +484,29 @@ export async function POST(
 
         };
 
-        let workorder;
-
-        try {
-            workorder = await prisma.workorder.create({
+        const workorder =
+            await prisma.workorder.create({
                 data: createData,
             });
-        } catch (createError) {
-            const tekst = String(
-                createError && typeof createError === "object" && "message" in createError
-                    ? createError.message
-                    : createError
-            );
-            if (!tekst.includes("opdrachtnummerOpdrachtgever")) {
-                throw createError;
+
+        const opdrachtnummerKlant =
+            typeof body.opdrachtnummerOpdrachtgever === "string"
+            ? body.opdrachtnummerOpdrachtgever.trim()
+            : "";
+
+        if (opdrachtnummerKlant) {
+            try {
+                await prisma.workorder.update({
+                    where: { id: workorder.id },
+                    data: { opdrachtnummerOpdrachtgever: opdrachtnummerKlant },
+                });
+                workorder.opdrachtnummerOpdrachtgever = opdrachtnummerKlant;
+            } catch (nummerError) {
+                console.error(
+                    "CREATE WORKORDER OPDRACHTNUMMER ERROR",
+                    nummerError
+                );
             }
-            const {
-                opdrachtnummerOpdrachtgever: _unused,
-                ...zonderOpdrachtnummer
-            } = createData;
-            workorder = await prisma.workorder.create({
-                data: zonderOpdrachtnummer,
-            });
         }
 
 
@@ -594,12 +590,19 @@ export async function POST(
 
 
 
+        const prismaCode =
+            error && typeof error === "object" && "code" in error
+            ? String((error as { code: unknown }).code)
+            : "";
+
         return NextResponse.json(
 
             {
 
                 error:
-                "Opdracht aanmaken mislukt"
+                    prismaCode
+                    ? `Opdracht aanmaken mislukt (${prismaCode})`
+                    : "Opdracht aanmaken mislukt"
 
             },
 
