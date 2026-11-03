@@ -103,7 +103,23 @@ type RecurrencePreset =
     | "weekly"
     | "monthly_weekday"
     | "monthly"
+    | "yearly"
     | "custom";
+
+const MAANDNAMEN_NL = [
+    "januari",
+    "februari",
+    "maart",
+    "april",
+    "mei",
+    "juni",
+    "juli",
+    "augustus",
+    "september",
+    "oktober",
+    "november",
+    "december",
+];
 
 function capitalize(s: string): string {
     return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
@@ -127,7 +143,7 @@ export default function AgendaEventDialog({
     const [assignedUserId, setAssignedUserId] = useState("");
     const [notes, setNotes] = useState("");
     const [recurrenceFreq, setRecurrenceFreq] = useState<
-        "none" | "weekly" | "monthly" | "monthly_weekday"
+        "none" | "weekly" | "monthly" | "monthly_weekday" | "yearly"
     >("none");
     const [recurrenceInterval, setRecurrenceInterval] = useState("1");
     const [recurrenceWeekday, setRecurrenceWeekday] = useState("4");
@@ -153,7 +169,8 @@ export default function AgendaEventDialog({
             const freq =
                 event.recurrenceFreq === "weekly" ||
                 event.recurrenceFreq === "monthly" ||
-                event.recurrenceFreq === "monthly_weekday"
+                event.recurrenceFreq === "monthly_weekday" ||
+                event.recurrenceFreq === "yearly"
                     ? event.recurrenceFreq
                     : "none";
             setRecurrenceFreq(freq);
@@ -191,10 +208,14 @@ export default function AgendaEventDialog({
             const isSimpleMonthly =
                 freq === "monthly" &&
                 Math.max(1, event.recurrenceInterval || 1) === 1;
+            const isSimpleYearly =
+                freq === "yearly" &&
+                Math.max(1, event.recurrenceInterval || 1) === 1;
             setCustomRecurrence(
                 freq !== "none" &&
                     !isSimpleWeekly &&
                     !isSimpleMonthly &&
+                    !isSimpleYearly &&
                     freq !== "monthly_weekday"
                     ? true
                     : freq === "weekly" &&
@@ -505,7 +526,9 @@ export default function AgendaEventDialog({
                                           ? "monthly_weekday"
                                           : recurrenceFreq === "monthly"
                                             ? "monthly"
-                                            : "custom";
+                                            : recurrenceFreq === "yearly"
+                                              ? "yearly"
+                                              : "custom";
 
                             return (
                                 <>
@@ -577,6 +600,16 @@ export default function AgendaEventDialog({
                                                     setRecurrenceInterval(
                                                         "1"
                                                     );
+                                                } else if (v === "yearly") {
+                                                    setCustomRecurrence(
+                                                        false
+                                                    );
+                                                    setRecurrenceFreq(
+                                                        "yearly"
+                                                    );
+                                                    setRecurrenceInterval(
+                                                        "1"
+                                                    );
                                                 } else {
                                                     setCustomRecurrence(
                                                         true
@@ -614,6 +647,21 @@ export default function AgendaEventDialog({
                                                 Maandelijks op dag{" "}
                                                 {dayNum || "…"}
                                             </option>
+                                            <option value="yearly">
+                                                Jaarlijks op {dayNum || "…"}{" "}
+                                                {date
+                                                    ? MAANDNAMEN_NL[
+                                                          Math.max(
+                                                              0,
+                                                              Number(
+                                                                  date.split(
+                                                                      "-"
+                                                                  )[1]
+                                                              ) - 1
+                                                          )
+                                                      ] || ""
+                                                    : ""}
+                                            </option>
                                             <option value="custom">
                                                 Aangepast…
                                             </option>
@@ -640,6 +688,7 @@ export default function AgendaEventDialog({
                                                                 | "weekly"
                                                                 | "monthly"
                                                                 | "monthly_weekday"
+                                                                | "yearly"
                                                         )
                                                     }
                                                     className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
@@ -652,6 +701,9 @@ export default function AgendaEventDialog({
                                                     </option>
                                                     <option value="monthly">
                                                         Maandelijks (datum)
+                                                    </option>
+                                                    <option value="yearly">
+                                                        Jaarlijks
                                                     </option>
                                                 </select>
                                             </label>
@@ -739,14 +791,19 @@ export default function AgendaEventDialog({
 
                                             {(recurrenceFreq === "weekly" ||
                                                 recurrenceFreq ===
-                                                    "monthly") && (
+                                                    "monthly" ||
+                                                recurrenceFreq ===
+                                                    "yearly") && (
                                                 <label className="block">
                                                     <span className="text-xs font-medium text-slate-600">
                                                         Elke N{" "}
                                                         {recurrenceFreq ===
                                                         "weekly"
                                                             ? "weken"
-                                                            : "maanden"}
+                                                            : recurrenceFreq ===
+                                                                "yearly"
+                                                              ? "jaren"
+                                                              : "maanden"}
                                                     </span>
                                                     <input
                                                         type="number"
@@ -768,7 +825,10 @@ export default function AgendaEventDialog({
                                                         {recurrenceFreq ===
                                                         "weekly"
                                                             ? "week"
-                                                            : "maand"}
+                                                            : recurrenceFreq ===
+                                                              "yearly"
+                                                              ? "jaar"
+                                                              : "maand"}
                                                     </span>
                                                 </label>
                                             )}

@@ -15,7 +15,8 @@ export type RecurrenceFreq =
     | "none"
     | "weekly"
     | "monthly"
-    | "monthly_weekday";
+    | "monthly_weekday"
+    | "yearly";
 
 /** ISO: 1=ma … 7=zo */
 export const WEEKDAY_LABELS_NL: Record<number, string> = {
@@ -281,7 +282,7 @@ export function expandPlanningEvents(
             continue;
         }
 
-        // weekly / monthly: start vanaf startAt, eventueel uitgelijnd op weekdag
+        // weekly / monthly / yearly: start vanaf startAt, eventueel uitgelijnd op weekdag
         let cursor =
             freq === "weekly"
                 ? alignDateToWeekday(new Date(startAt), weekday)
@@ -292,6 +293,8 @@ export function expandPlanningEvents(
         ) {
             if (freq === "weekly") {
                 cursor = addDays(cursor, 7 * interval);
+            } else if (freq === "yearly") {
+                cursor = addMonthsClamped(cursor, 12 * interval);
             } else {
                 cursor = addMonthsClamped(cursor, interval);
             }
@@ -312,6 +315,8 @@ export function expandPlanningEvents(
 
             if (freq === "weekly") {
                 cursor = addDays(cursor, 7 * interval);
+            } else if (freq === "yearly") {
+                cursor = addMonthsClamped(cursor, 12 * interval);
             } else {
                 cursor = addMonthsClamped(cursor, interval);
             }
@@ -364,7 +369,8 @@ export function parseRecurrenceBody(body: Record<string, unknown>):
     const recurrenceFreq =
         rawFreq === "weekly" ||
         rawFreq === "monthly" ||
-        rawFreq === "monthly_weekday"
+        rawFreq === "monthly_weekday" ||
+        rawFreq === "yearly"
             ? rawFreq
             : "none";
 
@@ -442,7 +448,7 @@ export function parseRecurrenceBody(body: Record<string, unknown>):
         }
     }
 
-    if (recurrenceFreq === "monthly") {
+    if (recurrenceFreq === "monthly" || recurrenceFreq === "yearly") {
         recurrenceWeekday = null;
         recurrenceNth = null;
     }

@@ -458,7 +458,7 @@ model PlanningEvent {
   startAt            DateTime
   endAt              DateTime?
   allDay             Boolean   @default(false)
-  /// none | weekly | monthly | monthly_weekday
+  /// none | weekly | monthly | monthly_weekday | yearly
   recurrenceFreq     String    @default("none")
   /// Elke N weken/maanden (1 = elke week/maand)
   recurrenceInterval Int       @default(1)
