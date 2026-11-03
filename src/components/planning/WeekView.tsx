@@ -16,6 +16,11 @@ import {
     parseStaffKind,
     type StaffKind,
 } from "@/constants/staffKind";
+import {
+    formatAmsterdamDateIso,
+    formatAmsterdamHHmm,
+    getAmsterdamParts,
+} from "@/lib/datetime/amsterdam";
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
@@ -225,6 +230,12 @@ export default function WeekView({
         onBusyChange?.(isDragging || !!resizeOverride);
     }, [isDragging, resizeOverride, onBusyChange]);
 
+    const [nu, setNu] = useState(() => new Date());
+    useEffect(() => {
+        const tick = window.setInterval(() => setNu(new Date()), 30_000);
+        return () => window.clearInterval(tick);
+    }, []);
+
     function syncHorizontalScroll(source: "header" | "body") {
         if (syncingScroll.current) return;
         const from =
@@ -390,8 +401,11 @@ export default function WeekView({
         };
     }, [focusDateIso, weekStart]);
 
-    const today = new Date();
-    const todayIso = toIsoDate(today);
+    const today = nu;
+    const todayIso = formatAmsterdamDateIso(today);
+    const nuDelen = getAmsterdamParts(nu);
+    const nuUur = nuDelen.hour + nuDelen.minute / 60;
+    const nuLabel = formatAmsterdamHHmm(nu);
 
     const startOfWeek = weekStart
         ? new Date(weekStart)
@@ -428,6 +442,11 @@ export default function WeekView({
         { length: DAG_EIND_UUR - DAG_START_UUR + 1 },
         (_, i) => DAG_START_UUR + i
     );
+
+    const toonNuLijn =
+        nuUur >= DAG_START_UUR && nuUur <= DAG_EIND_UUR;
+    const nuLijnTop =
+        (nuUur - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
 
     function heeftKloktijd(d: Date): boolean {
         return d.getHours() !== 0 || d.getMinutes() !== 0;
@@ -1462,6 +1481,24 @@ export default function WeekView({
                                                 );
                                                                 }
                                                             )}
+
+                                                        {isToday && toonNuLijn ? (
+                                                            <div
+                                                                className="absolute left-0 right-0 z-30 pointer-events-none"
+                                                                style={{
+                                                                    top: `${nuLijnTop}px`,
+                                                                }}
+                                                                aria-hidden
+                                                            >
+                                                                <div className="relative">
+                                                                    <span className="absolute -left-0.5 -top-2.5 pl-1 text-[10px] font-semibold tabular-nums text-[#0066FF] bg-[#fff5fa]/90 rounded-sm leading-none">
+                                                                        {nuLabel}
+                                                                    </span>
+                                                                    <div className="absolute left-0 top-0 -translate-y-1/2 w-2 h-2 rounded-full bg-[#0066FF]" />
+                                                                    <div className="h-px w-full bg-[#0066FF]" />
+                                                                </div>
+                                                            </div>
+                                                        ) : null}
 
                                                         {verlof ? (
                                                             <div
