@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole, requireApiUser } from "@/lib/auth/guard";
-import { ensureNamedArchiveFolder } from "@/lib/archive/ensureArchiveFolders";
+import {
+    ensureNamedArchiveFolder,
+    syncCompletedProjectArchiveFolders,
+} from "@/lib/archive/ensureArchiveFolders";
 
 function serializeFile(file: {
     id: string;
@@ -29,6 +32,10 @@ export async function GET() {
     }
 
     try {
+        await syncCompletedProjectArchiveFolders().catch((error) => {
+            console.error("ARCHIVE PROJECT FOLDERS SYNC ERROR", error);
+        });
+
         const folders = await prisma.archiveFolder.findMany({
             where: { kind: { not: "workorder" } },
             orderBy: { name: "asc" },

@@ -265,7 +265,7 @@ model Workorder {
 
 model ArchiveFolder {
   id           String          @id @default(cuid())
-  /// customer | location | workorder | custom
+  /// customer | location | workorder | project | custom
   kind         String
   name         String
   nasPath      String          @unique

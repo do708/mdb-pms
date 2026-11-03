@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 import { requireApiUser } from "@/lib/auth/guard";
+import { archiveCompletedProject } from "@/lib/archive/archiveCompletedProject";
 import {
     loadProjectDetail,
     serializeProjectDetail,
@@ -220,7 +221,7 @@ export async function PATCH(
 
         const existing = await prisma.project.findUnique({
             where: { id },
-            select: { id: true },
+            select: { id: true, status: true },
         });
 
         if (!existing) {
@@ -234,6 +235,19 @@ export async function PATCH(
             where: { id },
             data,
         });
+
+        if (
+            data.status === "afgerond" &&
+            existing.status !== "afgerond"
+        ) {
+            after(async () => {
+                try {
+                    await archiveCompletedProject(id);
+                } catch (error) {
+                    console.error("ARCHIVE PROJECT ERROR", id, error);
+                }
+            });
+        }
 
         const project = await loadProjectDetail(id);
 

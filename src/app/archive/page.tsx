@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 import ArchiveTree, {
+    type ArchiveProject,
     type ArchiveWorkorder,
     type StoredFolder,
 } from "@/components/archive/ArchiveTree";
@@ -50,6 +51,7 @@ export default function ArchivePage() {
     const [to, setTo] = useState("");
     const [type, setType] = useState("");
     const [workorders, setWorkorders] = useState<ArchiveWorkorder[]>([]);
+    const [projects, setProjects] = useState<ArchiveProject[]>([]);
     const [storedFolders, setStoredFolders] = useState<StoredFolder[]>([]);
     const [forms, setForms] = useState<Form[]>([]);
     const [loading, setLoading] = useState(true);
@@ -85,6 +87,7 @@ export default function ArchivePage() {
         if (archiveRes.ok) {
             const data = await archiveRes.json();
             setWorkorders(data.workorders ?? []);
+            setProjects(data.projects ?? []);
             setForms(data.forms ?? []);
         }
 
@@ -202,6 +205,7 @@ export default function ArchivePage() {
                         >
                             <option value="">Alles</option>
                             <option value="werkbon">Opdrachten</option>
+                            <option value="project">Projecten</option>
                             <option value="formulier">Formulieren</option>
                         </select>
                     </label>
@@ -234,6 +238,9 @@ export default function ArchivePage() {
                 <SpecPageCard>
                     <h2 className="font-semibold text-sm text-gray-800">
                         Opdrachten ({workorders.length})
+                        {projects.length > 0
+                            ? ` · Projecten (${projects.length})`
+                            : ""}
                     </h2>
 
                     {canManage ? (
@@ -244,7 +251,8 @@ export default function ArchivePage() {
                     ) : null}
 
                     <ArchiveTree
-                        workorders={workorders}
+                        workorders={type === "project" ? [] : workorders}
+                        projects={type === "werkbon" ? [] : projects}
                         storedFolders={storedFolders}
                         canManage={canManage}
                         onRefresh={async () => {
@@ -252,7 +260,7 @@ export default function ArchivePage() {
                         }}
                     />
 
-                    {!loading && workorders.length === 0 && storedFolders.length === 0 && (
+                    {!loading && workorders.length === 0 && projects.length === 0 && storedFolders.length === 0 && (
                         <p className="text-sm text-gray-400">
                             Geen opdrachten gevonden.
                         </p>

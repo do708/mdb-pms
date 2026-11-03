@@ -408,7 +408,7 @@ export default function ProjectDetailPage() {
     async function markeerProjectAfgerond() {
         if (
             !confirm(
-                `Project "${project?.name}" als afgerond markeren? Het komt dan onder Afgeronde projecten op de projectenpagina.`
+                `Project "${project?.name}" als afgerond markeren? Het komt in het archief onder ${project?.customer?.name || "de opdrachtgever"}.`
             )
         ) {
             return;

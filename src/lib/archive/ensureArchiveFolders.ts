@@ -96,6 +96,76 @@ export async function ensureLocationArchiveFolder(
     });
 }
 
+export function projectArchiveLocationKey(projectId: string): string {
+    return `project:${projectId}`;
+}
+
+export async function ensureProjectArchiveFolder(project: {
+    id: string;
+    number: string;
+    name: string;
+    customerId: string;
+}) {
+    const customerFolder = await ensureCustomerArchiveFolder(
+        project.customerId
+    );
+    const locationKey = projectArchiveLocationKey(project.id);
+    const name = `${project.number} ${project.name}`.trim();
+    const slug = archiveSlug(name);
+
+    const existing = await prisma.archiveFolder.findFirst({
+        where: {
+            kind: "project",
+            customerId: project.customerId,
+            locationKey,
+        },
+    });
+
+    if (existing) {
+        return existing;
+    }
+
+    const nasPath = await uniqueNasPath(
+        joinNasPath(customerFolder.nasPath, slug)
+    );
+
+    if (isNasArchiveEnabled()) {
+        await synologyEnsureFolder(nasPath);
+    }
+
+    return prisma.archiveFolder.create({
+        data: {
+            kind: "project",
+            name,
+            slug,
+            nasPath,
+            customerId: project.customerId,
+            locationKey,
+            parentId: customerFolder.id,
+        },
+    });
+}
+
+export async function syncCompletedProjectArchiveFolders() {
+    const projects = await prisma.project.findMany({
+        where: { status: "afgerond" },
+        select: {
+            id: true,
+            number: true,
+            name: true,
+            customerId: true,
+        },
+    });
+
+    const folders = [];
+
+    for (const project of projects) {
+        folders.push(await ensureProjectArchiveFolder(project));
+    }
+
+    return folders;
+}
+
 export async function ensureWorkorderArchiveFolder(
     workorderId: string,
     locationFolderId: string,

@@ -21,6 +21,15 @@ import { SpecListRow, SpecPanel } from "@/components/ui/SpecLayout";
 
 const FILE_DRAG = "application/x-mdb-archive-file";
 
+export interface ArchiveProject {
+    id: string;
+    number: string;
+    name: string;
+    location: string | null;
+    plaats: string | null;
+    customer: { name: string } | null;
+}
+
 export interface ArchiveWorkorder {
     id: string;
     number: string;
@@ -55,6 +64,7 @@ interface TreeNode {
     folderId?: string;
     files: ArchiveStoredFile[];
     workorders: ArchiveWorkorder[];
+    projects: ArchiveProject[];
     children: TreeNode[];
 }
 
@@ -83,6 +93,7 @@ function emptyNode(name: string, path: string[]): TreeNode {
         path,
         files: [],
         workorders: [],
+        projects: [],
         children: [],
     };
 }
@@ -105,7 +116,10 @@ function getOrCreate(
     return node;
 }
 
-function buildWorkorderTree(workorders: ArchiveWorkorder[]): TreeNode[] {
+function buildArchiveTree(
+    workorders: ArchiveWorkorder[],
+    projects: ArchiveProject[]
+): TreeNode[] {
     const roots: TreeNode[] = [];
 
     for (const workorder of workorders) {
@@ -127,6 +141,18 @@ function buildWorkorderTree(workorders: ArchiveWorkorder[]): TreeNode[] {
         path.push(tree.location);
         const location = getOrCreate(siblings, tree.location, [...path]);
         location.workorders.push(workorder);
+    }
+
+    for (const project of projects) {
+        const company = formatCompanyName(project.customer?.name ?? "");
+        const path = [company];
+        const customerNode = getOrCreate(roots, company, path);
+        const projectName = `${project.number} ${project.name}`.trim();
+        const projectNode = getOrCreate(customerNode.children, projectName, [
+            ...path,
+            projectName,
+        ]);
+        projectNode.projects.push(project);
     }
 
     function sortNodes(nodes: TreeNode[]) {
@@ -164,15 +190,17 @@ function countFolderContents(node: TreeNode) {
     let files = node.files.length;
     let subfolders = node.children.length;
     let workorders = node.workorders.length;
+    let projects = node.projects.length;
 
     for (const child of node.children) {
         const nested = countFolderContents(child);
         files += nested.files;
         subfolders += nested.subfolders;
         workorders += nested.workorders;
+        projects += nested.projects;
     }
 
-    return { files, subfolders, workorders };
+    return { files, subfolders, workorders, projects };
 }
 
 function dutchCount(count: number, one: string, many: string) {
@@ -195,6 +223,10 @@ function folderContentParts(node: TreeNode) {
         parts.push(dutchCount(counts.workorders, "opdracht", "opdrachten"));
     }
 
+    if (counts.projects > 0) {
+        parts.push(dutchCount(counts.projects, "project", "projecten"));
+    }
+
     return {
         ...counts,
         parts,
@@ -204,11 +236,13 @@ function folderContentParts(node: TreeNode) {
 
 export default function ArchiveTree({
     workorders,
+    projects = [],
     storedFolders,
     canManage,
     onRefresh,
 }: {
     workorders: ArchiveWorkorder[];
+    projects?: ArchiveProject[];
     storedFolders: StoredFolder[];
     canManage: boolean;
     onRefresh: () => Promise<void> | void;
@@ -240,8 +274,9 @@ export default function ArchiveTree({
     }, [pendingDelete, busy]);
 
     const tree = useMemo(
-        () => mergeStored(buildWorkorderTree(workorders), storedFolders),
-        [workorders, storedFolders]
+        () =>
+            mergeStored(buildArchiveTree(workorders, projects), storedFolders),
+        [workorders, projects, storedFolders]
     );
 
     function toggleFolder(key: string) {
@@ -422,6 +457,34 @@ export default function ArchiveTree({
         }
     }
 
+    function renderProject(project: ArchiveProject) {
+        const plaats = [project.location, project.plaats]
+            .filter(Boolean)
+            .join(", ");
+
+        return (
+            <a
+                key={project.id}
+                href={`/projects/${project.id}`}
+                className="block"
+            >
+                <SpecListRow className="flex justify-between items-center hover:bg-gray-50 py-2">
+                    <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">
+                            {project.number} — {project.name}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                            {plaats || "Project"}
+                        </p>
+                    </div>
+                    <span className="shrink-0 ml-2 px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
+                        Afgerond
+                    </span>
+                </SpecListRow>
+            </a>
+        );
+    }
+
     function renderWorkorder(workorder: ArchiveWorkorder) {
         return (
             <a
@@ -482,7 +545,7 @@ export default function ArchiveTree({
 
     function renderNode(node: TreeNode, depth: number) {
         const open = openFolders[node.key] === true;
-        const locationCount = node.children.length;
+        const contents = folderContentParts(node);
         const isDrop = dropKey === node.key;
 
         return (
@@ -549,17 +612,9 @@ export default function ArchiveTree({
                                 {node.name}
                             </p>
                             <p className="text-xs text-gray-500">
-                                {node.children.length > 0
-                                    ? `${locationCount} locatie${locationCount === 1 ? "" : "s"}`
-                                    : `${node.workorders.length} opdracht${
-                                        node.workorders.length === 1 ? "" : "en"
-                                    }${
-                                        node.files.length
-                                            ? ` · ${node.files.length} bestand${
-                                                node.files.length === 1 ? "" : "en"
-                                            }`
-                                            : ""
-                                    }`}
+                                {contents.hasContent
+                                    ? contents.parts.join(" · ")
+                                    : "Leeg"}
                             </p>
                         </div>
                     </button>
@@ -604,9 +659,10 @@ export default function ArchiveTree({
                 {open ? (
                     <div className="border-t px-2 py-2 space-y-2">
                         {node.files.map(renderFile)}
+                        {node.projects.map(renderProject)}
                         {node.workorders.map(renderWorkorder)}
                         {node.children.map((child) => renderNode(child, depth + 1))}
-                        {canManage && node.children.length === 0 && node.workorders.length === 0 && node.files.length === 0 ? (
+                        {canManage && node.children.length === 0 && node.workorders.length === 0 && node.projects.length === 0 && node.files.length === 0 ? (
                             <p className="text-xs text-gray-400 px-3 py-2">
                                 Sleep bestanden hierheen
                             </p>

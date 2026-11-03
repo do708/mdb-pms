@@ -130,7 +130,7 @@ export async function GET(
 
 
         const workorders =
-            type === "formulier"
+            type === "formulier" || type === "project"
             ?
             []
             :
@@ -236,9 +236,55 @@ export async function GET(
 
 
 
+        const projectFilters: object[] = [{ status: "afgerond" }];
+
+        if (q) {
+            projectFilters.push({
+                OR: [
+                    { name: { contains: q, mode: "insensitive" } },
+                    { number: { contains: q, mode: "insensitive" } },
+                    { location: { contains: q, mode: "insensitive" } },
+                ],
+            });
+        }
+
+        if (customer) {
+            projectFilters.push({
+                customer: {
+                    name: { contains: customer, mode: "insensitive" },
+                },
+            });
+        }
+
+        if (from || to) {
+            const range: { gte?: Date; lte?: Date } = {};
+            if (from) {
+                range.gte = new Date(from);
+            }
+            if (to) {
+                const end = new Date(to);
+                end.setHours(23, 59, 59, 999);
+                range.lte = end;
+            }
+            projectFilters.push({ updatedAt: range });
+        }
+
+        const projects =
+            isEngineer || type === "formulier" || type === "werkbon"
+                ? []
+                : await prisma.project.findMany({
+                      where: { AND: projectFilters },
+                      orderBy: { updatedAt: "desc" },
+                      include: {
+                          customer: { select: { id: true, name: true } },
+                      },
+                      take: 200,
+                  });
+
         return NextResponse.json({
             workorders,
-            forms
+            forms,
+            projects,
         });
 
 
