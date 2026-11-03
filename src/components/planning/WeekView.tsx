@@ -1196,6 +1196,22 @@ export default function WeekView({
                                         ))}
                 </div>
 
+                                        <div className="relative flex flex-nowrap gap-2 flex-1 min-w-0">
+                                        {isToday ? (
+                                            <div
+                                                className="absolute left-0 right-0 z-40 pointer-events-none"
+                                                style={{
+                                                    top: `${nuLijnTop}px`,
+                                                }}
+                                                aria-hidden
+                                            >
+                                                <span className="absolute right-full -translate-y-1/2 pr-1.5 text-[10px] font-bold tabular-nums text-[#0066FF] bg-white px-1 py-0.5 rounded shadow-sm leading-none whitespace-nowrap">
+                                                    {nuLabel}
+                                                </span>
+                                                <div className="absolute -left-1 top-0 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#0066FF] ring-2 ring-white" />
+                                                <div className="h-[2px] w-full bg-[#0066FF]" />
+                                            </div>
+                                        ) : null}
                                         {users.map((user) => {
                                             const verlof = leaveOn(
                                                 user.id,
@@ -1478,24 +1494,6 @@ export default function WeekView({
                                                 );
                                                                 }
                                                             )}
-
-                                                        {isToday ? (
-                                                            <div
-                                                                className="absolute left-0 right-0 z-40 pointer-events-none"
-                                                                style={{
-                                                                    top: `${nuLijnTop}px`,
-                                                                }}
-                                                                aria-hidden
-                                                            >
-                                                                <div className="relative">
-                                                                    <span className="absolute left-1 -top-2.5 text-[10px] font-bold tabular-nums text-[#0066FF] bg-white px-1 rounded leading-none shadow-sm">
-                                                                        {nuLabel}
-                                                                    </span>
-                                                                    <div className="absolute -left-0.5 top-0 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#0066FF] ring-2 ring-white" />
-                                                                    <div className="h-[2px] w-full bg-[#0066FF]" />
-                                                                </div>
-                                                            </div>
-                                                        ) : null}
 
                                                         {verlof ? (
                                                             <div
@@ -2365,6 +2363,7 @@ export default function WeekView({
                                     </div>
                                             );
                                         })}
+                                        </div>
                         </div>
                                 );
                             })}
