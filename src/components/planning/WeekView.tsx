@@ -143,6 +143,11 @@ interface WeekViewProps {
     conflictEventIds?: string[];
 }
 
+const DAG_START_UUR = 7;
+const DAG_EIND_UUR = 20;
+const PX_PER_UUR = 26;
+const DAG_PADDING_TOP = 10;
+
 function toIsoDate(d: Date): string {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -430,11 +435,7 @@ export default function WeekView({
         [isoDate(days[0]), isoDate(days[days.length - 1])]
     );
 
-    // De dag loopt van 07:00 tot 18:00. Elk uur is PX_PER_UUR hoog.
-    const DAG_START_UUR = 7;
-    const DAG_EIND_UUR = 18;
-    const PX_PER_UUR = 26;
-    const DAG_PADDING_TOP = 10;
+    // De dag loopt van 07:00 tot 20:00. Elk uur is PX_PER_UUR hoog.
     const DAG_HOOGTE =
         (DAG_EIND_UUR - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
 
@@ -443,10 +444,12 @@ export default function WeekView({
         (_, i) => DAG_START_UUR + i
     );
 
-    const toonNuLijn =
-        nuUur >= DAG_START_UUR && nuUur <= DAG_EIND_UUR;
+    const nuUurOpGrid = Math.min(
+        DAG_EIND_UUR,
+        Math.max(DAG_START_UUR, nuUur)
+    );
     const nuLijnTop =
-        (nuUur - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
+        (nuUurOpGrid - DAG_START_UUR) * PX_PER_UUR + DAG_PADDING_TOP;
 
     function heeftKloktijd(d: Date): boolean {
         return d.getHours() !== 0 || d.getMinutes() !== 0;
@@ -1448,12 +1451,6 @@ export default function WeekView({
                                                         {!verlof &&
                                                             uurLijnen.map(
                                                                 (uur) => {
-                                                                    if (
-                                                                        uur ===
-                                                                        DAG_EIND_UUR
-                                                                    ) {
-                                                    return null;
-                                                }
                                                                     const top =
                                                                         (uur -
                                                                             DAG_START_UUR) *
@@ -1482,20 +1479,20 @@ export default function WeekView({
                                                                 }
                                                             )}
 
-                                                        {isToday && toonNuLijn ? (
+                                                        {isToday ? (
                                                             <div
-                                                                className="absolute left-0 right-0 z-30 pointer-events-none"
+                                                                className="absolute left-0 right-0 z-40 pointer-events-none"
                                                                 style={{
                                                                     top: `${nuLijnTop}px`,
                                                                 }}
                                                                 aria-hidden
                                                             >
                                                                 <div className="relative">
-                                                                    <span className="absolute -left-0.5 -top-2.5 pl-1 text-[10px] font-semibold tabular-nums text-[#0066FF] bg-[#fff5fa]/90 rounded-sm leading-none">
+                                                                    <span className="absolute left-1 -top-2.5 text-[10px] font-bold tabular-nums text-[#0066FF] bg-white px-1 rounded leading-none shadow-sm">
                                                                         {nuLabel}
                                                                     </span>
-                                                                    <div className="absolute left-0 top-0 -translate-y-1/2 w-2 h-2 rounded-full bg-[#0066FF]" />
-                                                                    <div className="h-px w-full bg-[#0066FF]" />
+                                                                    <div className="absolute -left-0.5 top-0 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#0066FF] ring-2 ring-white" />
+                                                                    <div className="h-[2px] w-full bg-[#0066FF]" />
                                                                 </div>
                                                             </div>
                                                         ) : null}
