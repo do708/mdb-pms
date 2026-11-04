@@ -353,6 +353,9 @@ export default function UserDetailPage(){
                     <option value="engineer">
                         👷 Monteur
                     </option>
+                    <option value="magazijn">
+                        📦 Magazijn
+                    </option>
 
 
                 </select>

@@ -444,6 +444,12 @@ export default function EditUserPage(){
 
                         </option>
 
+                        <option value="magazijn">
+
+                            📦 Magazijn
+
+                        </option>
+
                     </select>
 
                 </label>

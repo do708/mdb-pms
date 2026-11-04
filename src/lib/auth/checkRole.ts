@@ -1,10 +1,22 @@
-export type UserRole =
+export const USER_ROLES = [
+    "admin",
+    "office",
+    "engineer",
+    "magazijn",
+] as const;
 
-    | "admin"
+export type UserRole = (typeof USER_ROLES)[number];
 
-    | "office"
+export const USER_ROLE_LABELS: Record<UserRole, string> = {
+    admin: "Administrator",
+    office: "Kantoor",
+    engineer: "Monteur",
+    magazijn: "Magazijn",
+};
 
-    | "engineer";
+export function isUserRole(value: string): value is UserRole {
+    return (USER_ROLES as readonly string[]).includes(value);
+}
 
 
 

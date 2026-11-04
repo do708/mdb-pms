@@ -85,7 +85,7 @@ export async function POST(request: Request) {
             );
         }
 
-        if (!["admin", "office", "engineer"].includes(role)) {
+        if (!["admin", "office", "engineer", "magazijn"].includes(role)) {
             return NextResponse.json(
                 { error: "Ongeldige rol" },
                 { status: 400 }

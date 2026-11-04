@@ -49,7 +49,7 @@ const menu:MenuItem[] = [
         href:"/dashboard",
         icon:LayoutDashboard,
         title:"Centraal overzicht, notificaties en snelle inzicht",
-        roles:["admin","office"]
+        roles:["admin","office","magazijn"]
     },
 
     {
@@ -65,7 +65,15 @@ const menu:MenuItem[] = [
         href:"/planning",
         icon:CalendarDays,
         title:"Het inplannen van monteurs en werkzaamheden",
-        roles:["admin","office","engineer"]
+        roles:["admin","office","engineer","magazijn"]
+    },
+
+    {
+        name:"Pakbon uploaden",
+        href:"/pakbonnen",
+        icon:FileText,
+        title:"Pakbonnen uploaden en koppelen aan klussen",
+        roles:["admin","office","magazijn"]
     },
 
     {
@@ -367,6 +375,7 @@ export default function Sidebar({
                         if (
                             item.href.startsWith("/planning") &&
                             role !== "engineer" &&
+                            role !== "magazijn" &&
                             (pathname === "/planning" ||
                                 pathname.startsWith("/planning/"))
                         ) {

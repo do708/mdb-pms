@@ -86,7 +86,8 @@ export const authConfig = {
 
             // Landingspagina: stuur door op basis van rol
             if (pathname === "/") {
-                const target = role === "engineer" ? "/engineer" : "/dashboard";
+                const target =
+                    role === "engineer" ? "/engineer" : "/dashboard";
                 return Response.redirect(new URL(target, request.nextUrl));
             }
 
@@ -123,6 +124,23 @@ export const authConfig = {
                 }
 
                 return Response.redirect(new URL("/engineer", request.nextUrl));
+            }
+
+            if (role === "magazijn") {
+                const allowed = [
+                    "/dashboard",
+                    "/planning",
+                    "/pakbonnen",
+                    "/settings",
+                ];
+
+                if (allowed.some((p) => pathname.startsWith(p))) {
+                    return true;
+                }
+
+                return Response.redirect(
+                    new URL("/dashboard", request.nextUrl)
+                );
             }
 
             // Alleen admin bij gebruikersbeheer.

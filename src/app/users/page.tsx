@@ -15,6 +15,7 @@ import {
     STAFF_KIND_LABELS,
     parseStaffKind,
 } from "@/constants/staffKind";
+import { USER_ROLE_LABELS } from "@/lib/auth/checkRole";
 
 interface User {
     id: string;
@@ -102,7 +103,9 @@ export default function UsersPage() {
                                         </span>
 
                                         <span className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5">
-                                            {user.role}
+                                            {USER_ROLE_LABELS[
+                                                user.role as keyof typeof USER_ROLE_LABELS
+                                            ] ?? user.role}
                                         </span>
 
                                         {user.role === "engineer" &&

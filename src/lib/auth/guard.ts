@@ -43,7 +43,7 @@ export async function requireApiRole(
 
 /** Alleen ingelogd zijn is genoeg. */
 export async function requireApiUser(): Promise<GuardResult> {
-    return requireApiRole(["admin", "office", "engineer"]);
+    return requireApiRole(["admin", "office", "engineer", "magazijn"]);
 }
 
 /**

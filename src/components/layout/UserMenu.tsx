@@ -4,11 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { LogOut, RefreshCw } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
-const ROLE_LABELS: Record<string, string> = {
-    admin: "Administrator",
-    office: "Kantoor",
-    engineer: "Monteur",
-};
+import { USER_ROLE_LABELS } from "@/lib/auth/checkRole";
+
+const ROLE_LABELS: Record<string, string> = USER_ROLE_LABELS;
 
 export default function UserMenu() {
     const [open, setOpen] = useState(false);

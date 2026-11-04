@@ -12,6 +12,7 @@ model User {
   name        String?
   email       String           @unique
   password    String
+  /// admin | office | engineer | magazijn
   role        String           @default("user")
   /// monteur | inlener | stagiaire — alleen relevant bij role=engineer
   staffKind   String           @default("monteur")

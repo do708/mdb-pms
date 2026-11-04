@@ -99,6 +99,7 @@ export default function NewUserPage() {
                     <option value="admin">👑 Admin</option>
                     <option value="office">🏢 Kantoor</option>
                     <option value="engineer">👷 Monteur</option>
+                    <option value="magazijn">📦 Magazijn</option>
                 </select>
 
                 {role === "engineer" ? (

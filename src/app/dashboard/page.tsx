@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { canAccessOffice } from "@/lib/auth/checkRole";
+import MagazijnDashboard from "./MagazijnDashboard";
 import { getStatus } from "@/constants/workorderStatus";
 import { FORM_DEFINITIONS } from "@/constants/formDefinitions";
 import {
@@ -363,6 +364,11 @@ export default function DashboardPage() {
     const userRole = session?.user?.role ?? "";
 
     useEffect(() => {
+        if (userRole === "magazijn") {
+            setLoading(false);
+            return;
+        }
+
         async function load() {
             try {
                 const response = await fetch("/api/dashboard");
@@ -379,10 +385,16 @@ export default function DashboardPage() {
             }
         }
 
-        load();
-    }, []);
+        if (status !== "loading") {
+            load();
+        }
+    }, [status, userRole]);
 
-    if (loading) {
+    if (userRole === "magazijn") {
+        return <MagazijnDashboard />;
+    }
+
+    if (loading || status === "loading") {
         return (
             <PageShell>
                 <p className="text-sm text-gray-500">Dashboard laden...</p>
@@ -390,7 +402,7 @@ export default function DashboardPage() {
         );
     }
 
-    if (status !== "loading" && !canAccessOffice(userRole)) {
+    if (!canAccessOffice(userRole)) {
         return (
             <PageShell>
                 <p className="text-sm text-gray-500">Geen toegang</p>

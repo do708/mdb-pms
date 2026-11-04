@@ -79,7 +79,7 @@ export async function PUT(request: NextRequest, context: Ctx) {
         }
 
         if (body.role !== undefined) {
-            if (!["admin", "office", "engineer"].includes(body.role)) {
+            if (!["admin", "office", "engineer", "magazijn"].includes(body.role)) {
                 return NextResponse.json(
                     { error: "Ongeldige rol" },
                     { status: 400 }

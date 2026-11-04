@@ -162,9 +162,10 @@ function PlanningPageContent(){
         useSession();
 
 
-    // Monteur mag de planning inzien maar niet wijzigen
+    // Monteur en magazijn mogen de planning inzien maar niet wijzigen
     const canEdit =
-        session?.user?.role !== "engineer";
+        session?.user?.role === "admin" ||
+        session?.user?.role === "office";
 
     const isEngineer =
         session?.user?.role === "engineer";
