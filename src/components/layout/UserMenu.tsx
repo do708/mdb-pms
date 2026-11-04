@@ -92,7 +92,7 @@ export default function UserMenu() {
             {open ? (
                 <div
                     ref={menuRef}
-                    className="fixed z-[200] w-56 bg-white border border-gray-200 rounded-xl shadow-lg p-2 space-y-2"
+                    className="fixed z-[110] w-56 bg-white border border-gray-200 rounded-xl shadow-lg p-2 space-y-2"
                     style={{ top: menuPos.top, right: menuPos.right }}
                 >
                     <button

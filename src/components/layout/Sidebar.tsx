@@ -210,7 +210,7 @@ export default function Sidebar({
             max-lg:fixed
             max-lg:inset-y-0
             max-lg:left-0
-            max-lg:z-50
+            max-lg:z-[100]
             max-lg:shadow-xl
             max-lg:transition-transform
             max-lg:duration-200
