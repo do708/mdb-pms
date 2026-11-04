@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import DeleteButton from "@/components/DeleteButton";
 import DocumentDropzone from "@/components/documents/DocumentDropzone";
 import {
     PageHeader,
     PageShell,
+    SpecFieldLabel,
     SpecListRow,
     SpecPageCard,
     SpecPanel,
+    specSelectClassName,
 } from "@/components/ui/SpecLayout";
 
 import {
@@ -60,6 +62,26 @@ export default function DocumentsPage(){
     const canUpload =
         role === "admin" ||
         role === "office";
+
+    const [sort, setSort] = useState<"name" | "createdAt">("name");
+
+    const sortedDocuments = useMemo(() => {
+        const list = Array.isArray(documents) ? [...documents] : [];
+
+        if (sort === "name") {
+            list.sort((a, b) =>
+                a.name.localeCompare(b.name, "nl", { sensitivity: "base" })
+            );
+        } else {
+            list.sort(
+                (a, b) =>
+                    new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime()
+            );
+        }
+
+        return list;
+    }, [documents, sort]);
 
 
     async function loadDocuments(){
@@ -120,6 +142,26 @@ export default function DocumentsPage(){
 
                 <SpecPanel title="Document overzicht">
 
+                    <label className="block max-w-xs">
+                        <SpecFieldLabel>Sorteren</SpecFieldLabel>
+                        <select
+                            value={sort}
+                            onChange={(e) =>
+                                setSort(
+                                    e.target.value === "createdAt"
+                                        ? "createdAt"
+                                        : "name"
+                                )
+                            }
+                            className={specSelectClassName}
+                        >
+                            <option value="name">Alfabetisch (A–Z)</option>
+                            <option value="createdAt">
+                                Datum toegevoegd (nieuwste eerst)
+                            </option>
+                        </select>
+                    </label>
+
                     {loading && (
                         <p className="text-sm text-gray-500">
                             Laden...
@@ -134,7 +176,7 @@ export default function DocumentsPage(){
 
                     <div className="space-y-2">
 
-                        {documents.map((doc)=>(
+                        {sortedDocuments.map((doc)=>(
 
                             <SpecListRow
                                 key={doc.id}
