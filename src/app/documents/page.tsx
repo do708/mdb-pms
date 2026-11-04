@@ -203,7 +203,7 @@ export default function DocumentsPage(){
                                 <div className="flex gap-3 items-center shrink-0">
 
                                     <a
-                                        href={doc.url}
+                                        href={`/api/documents/${doc.id}`}
                                         target="_blank"
                                         className="
                                             text-sm text-sky-700

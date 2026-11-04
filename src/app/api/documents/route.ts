@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiUser, requireApiRole } from "@/lib/auth/guard";
 import { createClient } from "@supabase/supabase-js";
+import { contentTypeForFilename } from "@/lib/attachments/contentType";
+import {
+    supabaseStoragePathFromUrl,
+    uploadDocumentenboxToNas,
+} from "@/lib/documents/documentenboxStorage";
+import { isNasConfigured } from "@/lib/nas/synologyConfig";
 
 
 
@@ -11,7 +17,52 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+async function migrateDocumentenboxToNas(document: {
+    id: string;
+    name: string;
+    type: string;
+    url: string;
+    workorderId: string | null;
+    createdAt: Date;
+}) {
+    if (!isNasConfigured()) {
+        return document;
+    }
 
+    if (document.url.startsWith("nas:")) {
+        return document;
+    }
+
+    const path = supabaseStoragePathFromUrl(document.url);
+
+    if (!path) {
+        return document;
+    }
+
+    const download = await supabase.storage
+        .from("workorder-files")
+        .download(path);
+
+    if (download.error || !download.data) {
+        return document;
+    }
+
+    const buffer = Buffer.from(await download.data.arrayBuffer());
+    const nasUrl = await uploadDocumentenboxToNas(
+        document.name,
+        buffer,
+        contentTypeForFilename(document.name)
+    );
+
+    const updated = await prisma.document.update({
+        where: { id: document.id },
+        data: { url: nasUrl },
+    });
+
+    await supabase.storage.from("workorder-files").remove([path]).catch(() => {});
+
+    return updated;
+}
 
 export async function GET() {
 
@@ -41,13 +92,27 @@ export async function GET() {
 
         });
 
+        const migrated = [];
 
+        for (const document of documents) {
+            const next = await migrateDocumentenboxToNas(document).catch(
+                (error) => {
+                    console.error(
+                        "DOCUMENT NAS MIGRATE ERROR",
+                        document.id,
+                        error
+                    );
+                    return document;
+                }
+            );
 
-        return NextResponse.json(
+            migrated.push({
+                ...next,
+                url: `/api/documents/${next.id}`,
+            });
+        }
 
-            documents
-
-        );
+        return NextResponse.json(migrated);
 
 
 
@@ -139,37 +204,44 @@ export async function POST(
             Buffer.from(bytes);
 
 
-        const filename =
-            `documenten/${Date.now()}-${file.name}`;
+        const contentType =
+            file.type || contentTypeForFilename(file.name);
 
+        let url: string;
 
-        const upload =
-            await supabase.storage
-            .from("workorder-files")
-            .upload(
-                filename,
+        if (!workorderId) {
+            if (!isNasConfigured()) {
+                return NextResponse.json(
+                    {
+                        error:
+                            "NAS is niet ingesteld. Documenten horen op de NAS, niet in Supabase.",
+                    },
+                    { status: 503 }
+                );
+            }
+
+            url = await uploadDocumentenboxToNas(
+                file.name,
                 buffer,
-                {
-                    contentType:
-                        file.type || "application/octet-stream",
-                    upsert:false
-                }
+                contentType
             );
+        } else {
+            const filename = `documenten/${Date.now()}-${file.name}`;
+            const upload = await supabase.storage
+                .from("workorder-files")
+                .upload(filename, buffer, {
+                    contentType,
+                    upsert: false,
+                });
 
+            if (upload.error) {
+                throw upload.error;
+            }
 
-        if(upload.error){
-
-            throw upload.error;
-
+            url = supabase.storage
+                .from("workorder-files")
+                .getPublicUrl(filename).data.publicUrl;
         }
-
-
-        const url =
-            supabase.storage
-            .from("workorder-files")
-            .getPublicUrl(filename)
-            .data
-            .publicUrl;
 
 
 
