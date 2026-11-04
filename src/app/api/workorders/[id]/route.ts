@@ -530,15 +530,9 @@ export async function PUT(
             || migrateStatus(nextStatus) === "ontvangen"
             || migrateStatus(nextStatus) === "afspraak";
 
-        const previousIsPlanning =
-            migrateStatus(existingWorkorder.status) === "ingepland"
-            || migrateStatus(existingWorkorder.status) === "ontvangen"
-            || migrateStatus(existingWorkorder.status) === "afspraak";
-
         const reopenToPlanning =
             session.user.role !== "engineer"
-            && nextIsPlanning
-            && (!previousIsPlanning || existingWorkorder.sentAt != null);
+            && nextIsPlanning;
 
 
 
