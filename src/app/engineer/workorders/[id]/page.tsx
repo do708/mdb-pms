@@ -1949,7 +1949,7 @@ async function completeWorkorder(){
 
                                             const res =
                                                 await fetch(
-                                                    "/api/upload",
+                                                    `/api/workorders/${id}/pakbon`,
                                                     {
                                                         method:"POST",
                                                         body
@@ -1988,7 +1988,7 @@ async function completeWorkorder(){
                         {
                             materiaal.pakbonUrl && (
                                 <a
-                                    href={materiaal.pakbonUrl}
+                                    href={`/api/workorders/${id}/pakbon`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="
