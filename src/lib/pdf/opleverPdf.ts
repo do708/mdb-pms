@@ -909,9 +909,9 @@ export async function generateOpleverPdf(
                             formaat || "",
                             scherm.merk || splitMerkType(scherm.merkType || "").merk,
                             scherm.type || splitMerkType(scherm.merkType || "").type,
+                            bevestiging,
                             scherm.serienummer || "",
                             scherm.mac || "",
-                            bevestiging,
                         ]);
                         const aansturing =
                             scherm.aansturing === "Anders"
@@ -942,16 +942,16 @@ export async function generateOpleverPdf(
                     }
                 }
                 drawDataTable(
-                    ["Scherm","Locatie","Formaat","Merk","Type","SN","MAC","Bevestiging"],
+                    ["Scherm","Locatie","Formaat","Merk","Type","Bevestiging","S/N","MAC"],
                     schermRows,
-                    [0.08, 0.13, 0.07, 0.12, 0.12, 0.13, 0.13, 0.22]
+                    [0.08, 0.12, 0.07, 0.11, 0.11, 0.23, 0.14, 0.14]
                 );
                 if (playerRows.length > 0) {
                     text("Player / aansturing",{ useBold:true, gap:2 });
                     drawDataTable(
-                        ["Scherm","Aansturing","Merk","Type","SN","MAC"],
+                        ["Scherm","Aansturing","Merk","Type","S/N","MAC"],
                         playerRows,
-                        [0.10, 0.18, 0.16, 0.16, 0.18, 0.22]
+                        [0.10, 0.16, 0.14, 0.14, 0.23, 0.23]
                     );
                 }
             }

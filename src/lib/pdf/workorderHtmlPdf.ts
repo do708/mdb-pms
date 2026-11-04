@@ -440,9 +440,9 @@ function schermTabel(
                 formaat,
                 scherm.merk || splitMerkType(scherm.merkType || "").merk,
                 scherm.type || splitMerkType(scherm.merkType || "").type,
+                bevestiging,
                 scherm.serienummer,
                 scherm.mac,
-                bevestiging,
             ]);
 
             const aansturing =
@@ -474,17 +474,17 @@ function schermTabel(
 
     return [
         dataTable(
-            ["Scherm","Locatie","Formaat","Merk","Type","SN","MAC","Bevestiging"],
+            ["Scherm","Locatie","Formaat","Merk","Type","Bevestiging","S/N","MAC"],
             schermRows,
             "data-table screen-table",
-            ["8%","13%","7%","12%","12%","13%","13%","22%"]
+            ["8%","12%","7%","11%","11%","23%","14%","14%"]
         ),
         playerRows.length > 0
             ? `<p class="table-sub">Player / aansturing</p>${dataTable(
-                ["Scherm","Aansturing","Merk","Type","SN","MAC"],
+                ["Scherm","Aansturing","Merk","Type","S/N","MAC"],
                 playerRows,
                 "data-table player-table",
-                ["10%","18%","16%","16%","18%","22%"]
+                ["10%","16%","14%","14%","23%","23%"]
               )}`
             : "",
     ].join("");
@@ -1446,10 +1446,20 @@ function generateHtml(
   .hardware-table th { background: #eef3f9; text-align: left; padding: 6px 9px; font-weight: 700; color: #334155; border: 1px solid #e6ebf2; }
   .hardware-table td { padding: 6px 9px; border: 1px solid #e6ebf2; color: #1f2937; }
   .data-table { table-layout: fixed; border-collapse: collapse; width: 100%; }
-  .data-table th { background: #0a2540; color: #fff; padding: 5px 4px; font-size: 7px; }
-  .data-table td { padding: 5px 4px; border: 1px solid #e6ebf2; font-size: 7.5px; overflow-wrap: anywhere; vertical-align: top; }
+  .data-table th { background: #0a2540; color: #fff; padding: 5px 4px; font-size: 7px; white-space: nowrap; }
+  .data-table td { padding: 5px 4px; border: 1px solid #e6ebf2; font-size: 7.5px; vertical-align: top; overflow-wrap: break-word; word-break: normal; }
   .screen-table td:nth-child(3), .screen-table th:nth-child(3) { white-space: nowrap; }
-  .screen-table td:nth-child(8), .screen-table th:nth-child(8) { overflow-wrap: break-word; }
+  .screen-table td:nth-child(6) { overflow-wrap: break-word; }
+  .screen-table td:nth-child(7),
+  .screen-table td:nth-child(8),
+  .player-table td:nth-child(5),
+  .player-table td:nth-child(6) {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 6.5px;
+  }
   .txt { font-weight: 600; color: #1f2937; }
   .pill { display: inline-block; padding: 2px 10px; border-radius: 8px; font-size: 8.5px; font-weight: 600; }
   .chip {
