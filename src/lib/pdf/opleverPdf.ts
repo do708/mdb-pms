@@ -326,23 +326,39 @@ export async function generateOpleverPdf(
     }
 
 
-    function drawDataTable(headers:string[], rows:string[][]){
+    function drawDataTable(
+        headers:string[],
+        rows:string[][],
+        colFractions?:number[]
+    ){
 
         if(rows.length === 0){
             return;
         }
 
         const cols = headers.length;
-        const colW = CONTENT_WIDTH / cols;
+        const fractions = colFractions && colFractions.length === cols
+            ? colFractions
+            : headers.map(()=>1 / cols);
+        const colStarts:number[] = [];
+        const colWidths:number[] = [];
+        let xAcc = 0;
+        fractions.forEach((fraction, index)=>{
+            const w = CONTENT_WIDTH * fraction;
+            colStarts[index] = xAcc;
+            colWidths[index] = w;
+            xAcc += w;
+        });
+        const colWAt = (i:number)=>colWidths[i];
         const size = 7;
         const pad = 2;
 
         function rowHeight(cells:string[]){
             let h = 14;
-            for(const cell of cells){
-                const n = wrap(cell || "—", size, font, Math.max(12, colW - pad * 2)).length;
+            cells.forEach((cell, i)=>{
+                const n = wrap(cell || "—", size, font, Math.max(12, colWAt(i) - pad * 2)).length;
                 h = Math.max(h, n * 9 + 6);
-            }
+            });
             return h;
         }
 
@@ -355,9 +371,9 @@ export async function generateOpleverPdf(
             color:MDB_NAVY
         });
         headers.forEach((header, i)=>{
-            const clipped = wrap(header, size, bold, Math.max(12, colW - pad * 2))[0] || header;
+            const clipped = wrap(header, size, bold, Math.max(12, colWAt(i) - pad * 2))[0] || header;
             page.drawText(clipped,{
-                x:MARGIN + i * colW + pad,
+                x:MARGIN + colStarts[i] + pad,
                 y:y - 8,
                 size,
                 font:bold,
@@ -379,9 +395,9 @@ export async function generateOpleverPdf(
                 });
             }
             cells.forEach((cell, i)=>{
-                wrap(cell || "—", size, font, Math.max(12, colW - pad * 2)).forEach((line, li)=>{
+                wrap(cell || "—", size, font, Math.max(12, colWAt(i) - pad * 2)).forEach((line, li)=>{
                     page.drawText(line,{
-                        x:MARGIN + i * colW + pad,
+                        x:MARGIN + colStarts[i] + pad,
                         y:y - 8 - li * 9,
                         size,
                         font,
@@ -894,6 +910,7 @@ export async function generateOpleverPdf(
                             scherm.merk || splitMerkType(scherm.merkType || "").merk,
                             scherm.type || splitMerkType(scherm.merkType || "").type,
                             scherm.serienummer || "",
+                            scherm.mac || "",
                             bevestiging,
                         ]);
                         const aansturing =
@@ -911,6 +928,7 @@ export async function generateOpleverPdf(
                             || playerMerk
                             || playerType
                             || scherm.playerSerienummer
+                            || scherm.playerMac
                         ) {
                             playerRows.push([
                                 schermLabel,
@@ -918,19 +936,22 @@ export async function generateOpleverPdf(
                                 playerMerk,
                                 playerType,
                                 scherm.playerSerienummer || "",
+                                scherm.playerMac || "",
                             ]);
                         }
                     }
                 }
                 drawDataTable(
-                    ["Scherm","Locatie","Formaat","Merk","Type","SN","Bevestiging"],
-                    schermRows
+                    ["Scherm","Locatie","Formaat","Merk","Type","SN","MAC","Bevestiging"],
+                    schermRows,
+                    [0.08, 0.13, 0.07, 0.12, 0.12, 0.13, 0.13, 0.22]
                 );
                 if (playerRows.length > 0) {
                     text("Player / aansturing",{ useBold:true, gap:2 });
                     drawDataTable(
-                        ["Scherm","Aansturing","Merk","Type","SN"],
-                        playerRows
+                        ["Scherm","Aansturing","Merk","Type","SN","MAC"],
+                        playerRows,
+                        [0.10, 0.18, 0.16, 0.16, 0.18, 0.22]
                     );
                 }
             }
@@ -1214,6 +1235,144 @@ export async function generateOpleverPdf(
 
 
 
+    // ================= Foto's =================
+
+    if(input.photos.length > 0){
+
+        sectionBar("Foto's:");
+
+
+        const photoWidth =
+            (CONTENT_WIDTH - 20) / 2;
+
+        let column = 0;
+
+        let rowHeight = 0;
+
+
+        for(const photo of input.photos){
+
+
+            let image:PDFImage | null = null;
+
+
+            try {
+
+                const response =
+                    await fetch(photo.url);
+
+                if(!response.ok){
+                    continue;
+                }
+
+                const bytes =
+                    new Uint8Array(
+                        await response.arrayBuffer()
+                    );
+
+                try {
+                    image = await pdf.embedJpg(bytes);
+                } catch {
+                    image = await pdf.embedPng(bytes);
+                }
+
+            } catch {
+
+                continue;
+
+            }
+
+
+            const scale =
+                photoWidth / image.width;
+
+            const height =
+                Math.min(
+                    image.height * scale,
+                    240
+                );
+
+            const width =
+                image.width *
+                (height / image.height);
+
+            const captionLines = photo.caption
+                ? wrap(photo.caption, 8, font, photoWidth).slice(0, 3)
+                : [];
+            const itemHeight = height + (captionLines.length ? captionLines.length * 10 + 5 : 0);
+
+            if(column === 1 && y - itemHeight < FOOTER_SPACE){
+                y -= rowHeight + 12;
+                column = 0;
+                rowHeight = 0;
+            }
+
+            if(column === 0){
+
+                ensure(itemHeight + 12);
+
+                rowHeight = itemHeight;
+
+            } else {
+
+                rowHeight =
+                    Math.max(rowHeight,itemHeight);
+
+            }
+
+
+            page.drawImage(image,{
+                x:
+                    MARGIN +
+                    column * (photoWidth + 20) +
+                    (photoWidth - width) / 2,
+                y:y - height,
+                width,
+                height
+            });
+
+            captionLines.forEach((line,index)=>{
+                const lineWidth = font.widthOfTextAtSize(line, 8);
+                page.drawText(line,{
+                    x:
+                        MARGIN +
+                        column * (photoWidth + 20) +
+                        Math.max(0, (photoWidth - lineWidth) / 2),
+                    y:y - height - 11 - index * 10,
+                    size:8,
+                    font,
+                    color:BLACK
+                });
+            });
+
+            if(column === 1){
+
+                y -= rowHeight + 12;
+
+                column = 0;
+
+                rowHeight = 0;
+
+            } else {
+
+                column = 1;
+
+            }
+
+        }
+
+
+        if(column === 1){
+
+            y -= rowHeight + 12;
+
+        }
+
+    }
+
+
+
+
     // ================= Checklist =================
 
     const checklist = data.checklist;
@@ -1299,147 +1458,10 @@ export async function generateOpleverPdf(
 
 
 
-    // ================= Foto's =================
-
-    if(input.photos.length > 0){
-
-        sectionBar("Foto's:");
-
-
-        const photoWidth =
-            (CONTENT_WIDTH - 20) / 2;
-
-        let column = 0;
-
-        let rowHeight = 0;
-
-
-        for(const photo of input.photos){
-
-
-            let image:PDFImage | null = null;
-
-
-            try {
-
-                const response =
-                    await fetch(photo.url);
-
-                if(!response.ok){
-                    continue;
-                }
-
-                const bytes =
-                    new Uint8Array(
-                        await response.arrayBuffer()
-                    );
-
-                try {
-                    image = await pdf.embedJpg(bytes);
-                } catch {
-                    image = await pdf.embedPng(bytes);
-                }
-
-            } catch {
-
-                continue;
-
-            }
-
-
-            const scale =
-                photoWidth / image.width;
-
-            const height =
-                Math.min(
-                    image.height * scale,
-                    240
-                );
-
-            const width =
-                image.width *
-                (height / image.height);
-
-            const captionLines = photo.caption
-                ? wrap(photo.caption, 8, font, photoWidth).slice(0, 3)
-                : [];
-            const itemHeight = height + (captionLines.length ? captionLines.length * 10 + 5 : 0);
-
-            if(column === 1 && y - itemHeight < FOOTER_SPACE){
-                y -= rowHeight + 12;
-                column = 0;
-                rowHeight = 0;
-            }
-
-            if(column === 0){
-
-                ensure(itemHeight + 12);
-
-                rowHeight = itemHeight;
-
-            } else {
-
-                // tweede kolom kan lager zijn; hoogste telt
-                rowHeight =
-                    Math.max(rowHeight,itemHeight);
-
-            }
-
-
-            page.drawImage(image,{
-                x:
-                    MARGIN +
-                    column * (photoWidth + 20) +
-                    (photoWidth - width) / 2,
-                y:y - height,
-                width,
-                height
-            });
-
-            captionLines.forEach((line,index)=>{
-                const lineWidth = font.widthOfTextAtSize(line, 8);
-                page.drawText(line,{
-                    x:
-                        MARGIN +
-                        column * (photoWidth + 20) +
-                        Math.max(0, (photoWidth - lineWidth) / 2),
-                    y:y - height - 11 - index * 10,
-                    size:8,
-                    font,
-                    color:BLACK
-                });
-            });
-
-            if(column === 1){
-
-                y -= rowHeight + 12;
-
-                column = 0;
-
-                rowHeight = 0;
-
-            } else {
-
-                column = 1;
-
-            }
-
-        }
-
-
-        if(column === 1){
-
-            y -= rowHeight + 12;
-
-        }
-
-    }
-
-
-
 
     // ================= Afronding =================
     {
+        newPage();
         const gereed = data.afronding.werkzaamhedenGereed;
         sectionBar("Afronding:");
         if (gereed === "gereed") {
@@ -1458,6 +1480,7 @@ export async function generateOpleverPdf(
     // ================= Handtekening =================
 
     if(input.signatureUrl || input.signedBy){
+    newPage();
     sectionBar("Handtekening:");
 
 

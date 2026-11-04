@@ -371,7 +371,8 @@ function valueOrEmpty(value:unknown):string {
 function dataTable(
     headers:string[],
     rows:(string | number | null | undefined)[][],
-    className = "data-table"
+    className = "data-table",
+    colWidths:string[] = []
 ):string {
     const filledRows = rows.filter((cells)=>
         cells.some((cell)=>valueOrEmpty(cell))
@@ -381,7 +382,12 @@ function dataTable(
         return "";
     }
 
+    const colgroup = colWidths.length === headers.length
+        ? `<colgroup>${colWidths.map((width)=>`<col style="width:${width}" />`).join("")}</colgroup>`
+        : "";
+
     return `<table class="${className}">
+      ${colgroup}
       <thead><tr>${headers.map((header)=>`<th>${esc(header)}</th>`).join("")}</tr></thead>
       <tbody>
         ${filledRows.map((cells)=>`<tr>${cells.map((cell)=>`<td>${esc(valueOrEmpty(cell))}</td>`).join("")}</tr>`).join("")}
@@ -423,6 +429,7 @@ function schermTabel(
                 bevestigingSoortWeergave(scherm.beugel) || scherm.beugel,
                 bevestigingDetailWeergave(scherm.bevestigingDetail),
                 scherm.bevestigingAnders,
+                scherm.plafondHoogte,
                 ruimteBevestiging,
             ].filter(Boolean).join(" · ");
             const schermLabel = scherm.label || `Scherm ${schermIndex + 1}`;
@@ -434,8 +441,8 @@ function schermTabel(
                 scherm.merk || splitMerkType(scherm.merkType || "").merk,
                 scherm.type || splitMerkType(scherm.merkType || "").type,
                 scherm.serienummer,
+                scherm.mac,
                 bevestiging,
-                scherm.orientatie || ruimte.orientatie,
             ]);
 
             const aansturing =
@@ -467,15 +474,17 @@ function schermTabel(
 
     return [
         dataTable(
-            ["Scherm","Locatie","Formaat","Merk","Type","Serienummer","Bevestiging","Oriëntatie"],
+            ["Scherm","Locatie","Formaat","Merk","Type","SN","MAC","Bevestiging"],
             schermRows,
-            "data-table"
+            "data-table screen-table",
+            ["8%","13%","7%","12%","12%","13%","13%","22%"]
         ),
         playerRows.length > 0
             ? `<p class="table-sub">Player / aansturing</p>${dataTable(
-                ["Scherm","Aansturing","Merk","Type","Serienummer","MAC"],
+                ["Scherm","Aansturing","Merk","Type","SN","MAC"],
                 playerRows,
-                "data-table"
+                "data-table player-table",
+                ["10%","18%","16%","16%","18%","22%"]
               )}`
             : "",
     ].join("");
@@ -485,7 +494,7 @@ function schermTabel(
 function qaBlock(
     title:string,
     rowsHtml:string,
-    pageBreak = false
+    keepPage = false
 ):string {
 
     if(!rowsHtml.includes("<tr>")){
@@ -493,7 +502,7 @@ function qaBlock(
     }
 
     return `
-  <div class="section${pageBreak ? " page-break" : ""}">
+  <div class="section${keepPage ? " keep-page" : ""}">
     <div class="section-title">${title}</div>
     <table class="qa">
       ${rowsHtml}
@@ -521,8 +530,9 @@ function textAnswer(
 function opleverSections(
     data:OpleverData,
     monteur1:string | null,
-    extraEngineerNames:string[] = []
-):string {
+    extraEngineerNames:string[] = [],
+    photosHtml = ""
+):{ modules:string; checklist:string } {
 
     const t = data.tarief;
 
@@ -998,7 +1008,7 @@ function opleverSections(
         ].join("") : "");
 
 
-    return `
+    const modules = `
   ${qaBlock("Tarief &amp; Uren", `
       ${t.voorrijtarief === true ? row("Voorrijtarief?", chipSvg("Vast","yes")) : ""}
       ${t.voorrijtarief === false && (t.kilometers || t.reisuren) ? row("Voorrijtarief?", chipSvg("KM's + Uren","no")) : ""}
@@ -1013,6 +1023,7 @@ function opleverSections(
   ${kioskPdfBlocks}
   ${mediaplayersPdfBlocks}
   ${audioPdfBlocks}
+  ${photosHtml}
 
   ${qaBlock("Overig", `
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
@@ -1180,7 +1191,9 @@ function opleverSections(
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>` : ""}
 
-  ${qaBlock("Checklist", `
+`;
+
+    const checklist = qaBlock("Checklist", `
       ${c.werkendOpgeleverd !== null ? row("Is de installatie werkend opgeleverd?",pill(c.werkendOpgeleverd)) : ""}
       ${c.werkendOpgeleverd === false && c.redenWerkend ? row("Reden",textAnswer(c.redenWerkend)) : ""}
       ${c.lichtnetSchakelbaar !== null ? row("Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar)) : ""}
@@ -1203,7 +1216,9 @@ function opleverSections(
         return "";
       })()}
       ${c.afvalverwijdering !== null ? row("Afval verwijderd?",pill(c.afvalverwijdering)) : ""}
-  `, true)}`;
+  `, true);
+
+    return { modules, checklist };
 
 }
 
@@ -1379,6 +1394,15 @@ function generateHtml(
   /* Sections */
   .section { margin-top: 16px; margin-bottom: 15px; }
   .page-break { break-before: page; page-break-before: always; }
+  .keep-page {
+    break-before: page;
+    page-break-before: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .keep-page .qa td { padding: 3px 8px; }
+  .keep-page .sig-img { max-height: 72px; }
+  .keep-page .sig-box, .keep-page .sig-inner { min-height: 70px; }
   .module-card { border: 1px solid #e6ebf2; border-radius: 9px; padding: 9px; }
   .module-card .section-title { margin: -9px -9px 9px; border-radius: 8px 8px 0 0; }
   .section-title {
@@ -1421,10 +1445,11 @@ function generateHtml(
   .hardware-table { width: 100%; border-collapse: collapse; font-size: 9px; }
   .hardware-table th { background: #eef3f9; text-align: left; padding: 6px 9px; font-weight: 700; color: #334155; border: 1px solid #e6ebf2; }
   .hardware-table td { padding: 6px 9px; border: 1px solid #e6ebf2; color: #1f2937; }
-  .data-table { table-layout: auto; border-collapse: collapse; }
-  .data-table th { background: #0a2540; color: #fff; padding: 6px; font-size: 7.5px; }
-  .data-table td { padding: 6px; border: 1px solid #e6ebf2; font-size: 7.5px; overflow-wrap: anywhere; }
-  .screen-table { table-layout: fixed; }
+  .data-table { table-layout: fixed; border-collapse: collapse; width: 100%; }
+  .data-table th { background: #0a2540; color: #fff; padding: 5px 4px; font-size: 7px; }
+  .data-table td { padding: 5px 4px; border: 1px solid #e6ebf2; font-size: 7.5px; overflow-wrap: anywhere; vertical-align: top; }
+  .screen-table td:nth-child(3), .screen-table th:nth-child(3) { white-space: nowrap; }
+  .screen-table td:nth-child(8), .screen-table th:nth-child(8) { overflow-wrap: break-word; }
   .txt { font-weight: 600; color: #1f2937; }
   .pill { display: inline-block; padding: 2px 10px; border-radius: 8px; font-size: 8.5px; font-weight: 600; }
   .chip {
@@ -1587,13 +1612,33 @@ function generateHtml(
   </div>` : ""}
 
   <!-- OPLEVERFORMULIER -->
-  ${opleverSections(oplever,data.engineerName,data.extraEngineerNames ?? [])}
-
-  <!-- KLANT-SPECIFIEKE VELDEN -->
-  ${customFieldsSection(data.customerSchema, oplever.custom)}
+  ${(() => {
+        const fotos = veiligeFotos.length > 0 ? `
+  <div class="section">
+    <div class="section-title">Foto's van de installatie</div>
+    <div class="photo-grid">
+      ${veiligeFotos.map(foto=>{
+        const afbeelding = `<img src="${esc(foto.url)}" alt="Werkbonfoto" onerror="const item=this.closest('.photo-item');const section=item.closest('.section');item.remove();if(!section.querySelector('.photo-item'))section.remove()" />`;
+        return `
+        <div class="photo-item">
+          <a href="${esc(foto.url)}" target="_blank" rel="noopener noreferrer" class="photo-link">${afbeelding}</a>
+          ${foto.caption ? `<div class="photo-caption">${esc(foto.caption)}</div>` : ""}
+          <div class="photo-original">Klik voor origineel ↗</div>
+        </div>
+      `}).join("")}
+    </div>
+  </div>` : "";
+        const { modules, checklist } = opleverSections(
+            oplever,
+            data.engineerName,
+            data.extraEngineerNames ?? [],
+            fotos
+        );
+        return `${modules}${customFieldsSection(data.customerSchema, oplever.custom)}${checklist}`;
+    })()}
 
   <!-- AFRONDING -->
-  <div class="section">
+  <div class="section keep-page">
     <div class="section-title">Afronding</div>
     <table class="qa">
       ${row(
@@ -1617,25 +1662,8 @@ function generateHtml(
     </table>
   </div>
 
-  <!-- FOTO'S -->
-  ${veiligeFotos.length > 0 ? `
-  <div class="section">
-    <div class="section-title">Foto's van de installatie</div>
-    <div class="photo-grid">
-      ${veiligeFotos.map(foto=>{
-        const afbeelding = `<img src="${esc(foto.url)}" alt="Werkbonfoto" onerror="const item=this.closest('.photo-item');const section=item.closest('.section');item.remove();if(!section.querySelector('.photo-item'))section.remove()" />`;
-        return `
-        <div class="photo-item">
-          <a href="${esc(foto.url)}" target="_blank" rel="noopener noreferrer" class="photo-link">${afbeelding}</a>
-          ${foto.caption ? `<div class="photo-caption">${esc(foto.caption)}</div>` : ""}
-          <div class="photo-original">Klik voor origineel ↗</div>
-        </div>
-      `}).join("")}
-    </div>
-  </div>` : ""}
-
   <!-- HANDTEKENING -->
-  ${(handtekeningUrl || data.signedBy || oplever.afronding.contactpersoon) ? `<div class="section">
+  ${(handtekeningUrl || data.signedBy || oplever.afronding.contactpersoon) ? `<div class="section keep-page">
     <div class="section-title">Handtekening</div>
     <div>
       <div class="info-value" style="margin-bottom:6px"><strong>Ondertekend door:</strong> ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "Onbekend"}${data.signedAt ? ` · ${formatDateTime(data.signedAt)}` : ""}</div>
