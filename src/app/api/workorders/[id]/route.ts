@@ -18,6 +18,7 @@ import { ontbrekendeVerplichteLocatieVelden } from "@/lib/workorders/address";
 import { ensureWorkorderOpdrachtnummerKolom } from "@/lib/prismaEnsure";
 import { parseOpleverModules } from "@/lib/workorders/opleverModules";
 import { syncWorkorderForms } from "@/lib/workorders/syncForms";
+import { removeGeneratedWorkorderPdfs } from "@/lib/workorders/removeGeneratedPdfs";
 
 
 
@@ -517,6 +518,28 @@ export async function PUT(
         const previousPlannedDate =
             existingWorkorder.plannedDate;
 
+        const nextStatus =
+            session.user.role === "engineer"
+            ?
+            existingWorkorder.status
+            :
+            body.status ?? existingWorkorder.status;
+
+        const nextIsPlanning =
+            migrateStatus(nextStatus) === "ingepland"
+            || migrateStatus(nextStatus) === "ontvangen"
+            || migrateStatus(nextStatus) === "afspraak";
+
+        const previousIsPlanning =
+            migrateStatus(existingWorkorder.status) === "ingepland"
+            || migrateStatus(existingWorkorder.status) === "ontvangen"
+            || migrateStatus(existingWorkorder.status) === "afspraak";
+
+        const reopenToPlanning =
+            session.user.role !== "engineer"
+            && nextIsPlanning
+            && (!previousIsPlanning || existingWorkorder.sentAt != null);
+
 
 
         const workorder =
@@ -727,25 +750,13 @@ export async function PUT(
                         existingWorkorder.status,
 
                     sentAt:
-                        session.user.role === "engineer"
-                        ?
-                        existingWorkorder.sentAt
-                        :
-                        migrateStatus(
-                            body.status ?? existingWorkorder.status
-                        ) === "ingepland"
-                        ||
-                        migrateStatus(
-                            body.status ?? existingWorkorder.status
-                        ) === "ontvangen"
-                        ||
-                        migrateStatus(
-                            body.status ?? existingWorkorder.status
-                        ) === "afspraak"
+                        reopenToPlanning
                         ?
                         null
                         :
                         existingWorkorder.sentAt,
+
+                    ...(reopenToPlanning ? { pdfData: null } : {}),
 
 
 
@@ -968,6 +979,13 @@ export async function PUT(
 
 
 
+
+        if (reopenToPlanning) {
+            await removeGeneratedWorkorderPdfs(
+                id,
+                existingWorkorder.number
+            );
+        }
 
         if (
             isNasArchiveEnabled()

@@ -10,6 +10,7 @@ import { createClient } from "@supabase/supabase-js";
 
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
+import { removeGeneratedWorkorderPdfs } from "@/lib/workorders/removeGeneratedPdfs";
 
 export const maxDuration = 60;
 
@@ -258,6 +259,8 @@ customer:true,
 
 
 
+
+        await removeGeneratedWorkorderPdfs(id, workorder.number);
 
         const filename =
             `workorders/${workorder.number}.pdf`;
