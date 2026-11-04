@@ -410,8 +410,7 @@ function schermTabel(
     const schermRows:(string | number)[][] = [];
     const playerRows:(string | number)[][] = [];
 
-    for(const [ruimteIndex, ruimte] of ruimtes.entries()){
-        const ruimteNaam = valueOrEmpty(ruimte.naam) || `Ruimte ${ruimteIndex + 1}`;
+    for(const ruimte of ruimtes){
         const ruimteBevestiging = ruimte.beugelType
             ? `${beugelLabel(ruimte.beugelType)}${ruimte.beugelMaat ? ` (${ruimte.beugelMaat})` : ""}`
             : "";
@@ -429,7 +428,6 @@ function schermTabel(
             const schermLabel = scherm.label || `Scherm ${schermIndex + 1}`;
 
             schermRows.push([
-                ruimteNaam,
                 schermLabel,
                 scherm.locatie,
                 formaat,
@@ -469,7 +467,7 @@ function schermTabel(
 
     return [
         dataTable(
-            ["Ruimte","Scherm","Locatie","Formaat","Merk","Type","Serienummer","Bevestiging","Oriëntatie"],
+            ["Scherm","Locatie","Formaat","Merk","Type","Serienummer","Bevestiging","Oriëntatie"],
             schermRows,
             "data-table"
         ),
@@ -1002,7 +1000,8 @@ function opleverSections(
 
     return `
   ${qaBlock("Tarief &amp; Uren", `
-      ${t.voorrijtarief !== null ? row("Voorrijtarief?", t.voorrijtarief ? chipSvg("Vast","yes") : chipSvg("KM's + Uren","no")) : ""}
+      ${t.voorrijtarief === true ? row("Voorrijtarief?", chipSvg("Vast","yes")) : ""}
+      ${t.voorrijtarief === false && (t.kilometers || t.reisuren) ? row("Voorrijtarief?", chipSvg("KM's + Uren","no")) : ""}
       ${t.voorrijtarief === false && t.kilometers ? row("Aantal gereden kilometers",textAnswer(t.kilometers)) : ""}
       ${t.voorrijtarief === false && t.reisuren ? row("Reisuren",textAnswer(t.reisuren)) : ""}
       ${urenRows}
@@ -1392,6 +1391,18 @@ function generateHtml(
   .info-box { background: #f8fafc; border: 1px solid #e6ebf2; border-radius: 8px; padding: 11px; break-inside: avoid; page-break-inside: avoid; }
   .info-label { font-size: 8px; font-weight: 700; color: #8a97a8; text-transform: uppercase; letter-spacing: 0.6px; }
   .info-value { font-size: 10px; color: #1f2937; margin-top: 3px; font-weight: 500; }
+  .meta-grid { width: 100%; border-collapse: collapse; }
+  .meta-grid td { width: 50%; vertical-align: top; padding: 2px 0 10px; border: none; }
+  .meta-grid .meta-right { text-align: right; }
+  .meta-grid .info-label { margin-bottom: 2px; }
+  .engineer-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 4px;
+  }
+  .engineer-cell .info-label { margin-bottom: 2px; }
   /* Tables */
   table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 9px; border-radius: 8px; }
   thead { display: table-header-group; }
@@ -1482,31 +1493,37 @@ function generateHtml(
         );
         const uitgevoerd = data.workDate || data.plannedDate;
         const opdrachtnummerKlant = (data.customerOrderNumber || "").trim();
-        const infoBox = (label:string, value:string)=>
-            value.trim()
-            ? `<div class="info-box"><div class="info-label">${esc(label)}</div><div class="info-value">${esc(value)}</div></div>`
+        const metaCell = (label:string, value:string, right = false)=>
+            `<td class="${right ? "meta-right" : ""}">
+              <div class="info-label">${esc(label)}</div>
+              <div class="info-value">${value.trim() ? esc(value) : "—"}</div>
+            </td>`;
+        const monteurs = alleMonteurs.slice(0, 5);
+        const monteurRow = monteurs.length
+            ? `<div class="engineer-row" style="grid-template-columns:repeat(${Math.max(monteurs.length, 1)}, 1fr)">${
+                monteurs.map((naam, index) =>
+                    `<div class="engineer-cell">
+                      <div class="info-label">Monteur ${index + 1}</div>
+                      <div class="info-value">${esc(naam)}</div>
+                    </div>`
+                ).join("")
+              }</div>`
             : "";
-        const links = [
-            infoBox("Project- / werkbonnaam", data.title),
-            infoBox("Opdrachtgever", opdrachtgever || data.customer.name),
-            opdrachtnummerKlant
-                ? infoBox("Opdrachtnummer opdrachtgever", opdrachtnummerKlant)
-                : "",
-        ].filter(Boolean).join("");
-        const rechts = [
-            data.customer.address ? infoBox("Adres / locatie", data.customer.address) : "",
-            uitgevoerd ? infoBox("Datum", formatDate(data.workDate ?? data.plannedDate)) : "",
-            data.status ? infoBox("Status", data.status) : "",
-            alleMonteurs.length
-                ? infoBox(alleMonteurs.length === 1 ? "Monteur" : "Monteurs", alleMonteurs.join(", "))
-                : "",
-        ].filter(Boolean).join("");
         return `<div class="section">
     <div class="section-title">Project- en werkbongegevens</div>
-    <div class="grid-2" style="gap:10px">
-      <div style="display:grid;gap:8px">${links}</div>
-      <div style="display:grid;gap:8px">${rechts}</div>
-    </div>
+    <table class="meta-grid">
+      <tr>
+        ${metaCell("Project- / werkbonnaam", data.title)}
+        ${metaCell("Datum", uitgevoerd ? formatDate(data.workDate ?? data.plannedDate) : "", true)}
+      </tr>
+      <tr>
+        ${metaCell("Opdrachtgever", opdrachtgever || data.customer.name)}
+        ${opdrachtnummerKlant
+            ? metaCell("Opdrachtnummer opdrachtgever", opdrachtnummerKlant, true)
+            : `<td class="meta-right"></td>`}
+      </tr>
+    </table>
+    ${monteurRow}
   </div>`;
     })()}
 

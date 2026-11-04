@@ -14,7 +14,6 @@ import {
 import {
     schermHeeftGegevens,
     splitMerkType,
-    summarizeRuimtes,
     summarizeVoorziening,
 } from "@/types/installatieRuimtes";
 import {
@@ -665,56 +664,79 @@ export async function generateOpleverPdf(
     });
 
 
-    // klantnaam-balk zoals in het origineel
+    const opdrachtnummerKlant = (input.customerOrderNumber || "").trim();
 
-    ensure(30);
+    function metaPair(
+        leftLabel:string,
+        leftValue:string,
+        rightLabel:string,
+        rightValue:string
+    ){
+        ensure(28);
 
-    page.drawRectangle({
-        x:MARGIN,
-        y:y - 6,
-        width:CONTENT_WIDTH,
-        height:20,
-        color:MDB_SECTION_BG
-    });
+        page.drawText(leftLabel,{
+            x:MARGIN,
+            y,
+            size:8,
+            font,
+            color:GRAY_TEXT
+        });
 
-    page.drawText(input.title,{
-        x:MARGIN + 8,
-        y,
-        size:12,
-        font:bold,
-        color:BLACK
-    });
+        if(rightLabel){
+            const labelWidth = font.widthOfTextAtSize(rightLabel, 8);
+            page.drawText(rightLabel,{
+                x:MARGIN + CONTENT_WIDTH - labelWidth,
+                y,
+                size:8,
+                font,
+                color:GRAY_TEXT
+            });
+        }
 
-    y -= 34;
+        y -= 12;
 
+        page.drawText((leftValue || "—").slice(0, 60),{
+            x:MARGIN,
+            y,
+            size:9,
+            font:bold,
+            color:BLACK
+        });
 
-    labelValue("Project- / werkbonnaam:", input.title);
-    labelValue("Opdrachtgever:", input.customerName);
-    labelValue(
-        "Opdrachtnummer opdrachtgever:",
-        (input.customerOrderNumber || "").trim()
-    );
+        if(rightValue){
+            const valueWidth = bold.widthOfTextAtSize(rightValue, 9);
+            page.drawText(rightValue,{
+                x:MARGIN + CONTENT_WIDTH - valueWidth,
+                y,
+                size:9,
+                font:bold,
+                color:BLACK
+            });
+        }
 
-    labelValue(
-        "Adres:",
-        input.customerAddress ?? ""
-    );
+        y -= 16;
+    }
 
-    labelValue(
+    metaPair(
+        "Project- / werkbonnaam:",
+        input.title,
         "Datum:",
         dateText
     );
+    metaPair(
+        "Opdrachtgever:",
+        input.customerName,
+        opdrachtnummerKlant ? "Opdrachtnummer opdrachtgever:" : "",
+        opdrachtnummerKlant
+    );
 
-
-    y -= 6;
-
-
-    // monteurs naast elkaar — alleen wie op deze opdracht staat
+    y -= 10;
 
     const assignedEngineers =
         input.engineers
         .map((name)=> (name || "").trim())
-        .filter(Boolean);
+        .filter(Boolean)
+        .slice(0, 5);
 
     if(assignedEngineers.length > 0){
 
@@ -722,7 +744,6 @@ export async function generateOpleverPdf(
 
         const engineerColumn =
             CONTENT_WIDTH / Math.max(assignedEngineers.length, 1);
-
 
         for(let index = 0; index < assignedEngineers.length; index++){
 
@@ -732,7 +753,7 @@ export async function generateOpleverPdf(
             page.drawText(`Monteur ${index + 1}:`,{
                 x,
                 y,
-                size:9,
+                size:8,
                 font,
                 color:GRAY_TEXT
             });
@@ -756,53 +777,75 @@ export async function generateOpleverPdf(
 
     // ================= Tarief, uren & installatie =================
 
-    text("Tarief & Uren",{ useBold:true, gap:2 });
+    const tarief = data.tarief;
+    const heeftTarief =
+        tarief.voorrijtarief === true
+        || (tarief.voorrijtarief === false && Boolean(
+            (tarief.kilometers || "").trim()
+            || (tarief.reisuren || "").trim()
+        ))
+        || Boolean((tarief.urenMonteur1 || "").trim())
+        || Boolean((tarief.urenMonteur2 || "").trim())
+        || Boolean((tarief.urenMonteur3 || "").trim())
+        || Boolean((tarief.urenMonteur4 || "").trim())
+        || Boolean(input.hoursTotal)
+        || (tarief.parkeerkosten.actief && Boolean(tarief.parkeerkosten.kosten))
+        || (tarief.materiaalkosten.actief && Boolean(tarief.materiaalkosten.kosten))
+        || (tarief.sejour.actief && Boolean(tarief.sejour.kosten));
 
+    if(heeftTarief){
 
-    jaNee(
-        "Voorrijtarief?",
-        data.tarief.voorrijtarief,
-        ["Vast","KM's + Uren"]
-    );
+        text("Tarief & Uren",{ useBold:true, gap:2 });
 
+        if(tarief.voorrijtarief === true){
+            jaNee(
+                "Voorrijtarief?",
+                true,
+                ["Vast","KM's + Uren"]
+            );
+        }
 
-    if(data.tarief.voorrijtarief === false){
+        if(tarief.voorrijtarief === false && (
+            (tarief.kilometers || "").trim()
+            || (tarief.reisuren || "").trim()
+        )){
+            jaNee(
+                "Voorrijtarief?",
+                false,
+                ["Vast","KM's + Uren"]
+            );
 
-        labelValue(
-            "Aantal gereden kilometers:",
-            data.tarief.kilometers
-        );
+            labelValue(
+                "Aantal gereden kilometers:",
+                tarief.kilometers
+            );
 
-        labelValue(
-            "Reisuren:",
-            data.tarief.reisuren
-        );
+            labelValue(
+                "Reisuren:",
+                tarief.reisuren
+            );
+        }
+
+        if(input.hoursTotal){
+            labelValue(
+                `Uren (regiebasis, totaal geregistreerd):`,
+                `${input.hoursTotal} uur`
+            );
+        }
+
+        if(tarief.parkeerkosten.actief && tarief.parkeerkosten.kosten){
+            labelValue("Parkeerkosten:", tarief.parkeerkosten.kosten);
+        }
+
+        if(tarief.materiaalkosten.actief && tarief.materiaalkosten.kosten){
+            labelValue("Materiaalkosten:", tarief.materiaalkosten.kosten);
+        }
+
+        if(tarief.sejour.actief && tarief.sejour.kosten){
+            labelValue("Hotel / sejour:", tarief.sejour.kosten);
+        }
 
     }
-
-    labelValue(
-        `Uren (regiebasis, totaal geregistreerd):`,
-        input.hoursTotal
-        ?
-        `${input.hoursTotal} uur`
-        :
-        ""
-    );
-
-    labelValue(
-        "Parkeerkosten:",
-        data.tarief.parkeerkosten.kosten
-    );
-
-    labelValue(
-        "Materiaalkosten:",
-        data.tarief.materiaalkosten.kosten
-    );
-
-    labelValue(
-        "Hotel / sejour:",
-        data.tarief.sejour.kosten
-    );
 
 
     text("Installatie werkzaamheden",{ useBold:true, gap:2 });
@@ -827,13 +870,9 @@ export async function generateOpleverPdf(
                     continue;
                 }
                 text(vakTitel("Scherm", item.key),{ useBold:true, gap:2 });
-                for (const regel of summarizeRuimtes(vanType)) {
-                    text(`• ${regel}`, { gap: 1 });
-                }
                 const schermRows:string[][] = [];
                 const playerRows:string[][] = [];
-                for (const [ruimteIndex, ruimte] of vanType.entries()) {
-                    const ruimteNaam = (ruimte.naam || "").trim() || `Ruimte ${ruimteIndex + 1}`;
+                for (const ruimte of vanType) {
                     for (const [schermIndex, scherm] of (ruimte.schermen || []).entries()) {
                         if (!schermHeeftGegevens(scherm)) {
                             continue;
@@ -849,7 +888,6 @@ export async function generateOpleverPdf(
                             scherm.plafondHoogte,
                         ].filter(Boolean).join(" · ");
                         schermRows.push([
-                            ruimteNaam,
                             schermLabel,
                             scherm.locatie || "",
                             formaat || "",
@@ -885,7 +923,7 @@ export async function generateOpleverPdf(
                     }
                 }
                 drawDataTable(
-                    ["Ruimte","Scherm","Locatie","Formaat","Merk","Type","SN","Bevestiging"],
+                    ["Scherm","Locatie","Formaat","Merk","Type","SN","Bevestiging"],
                     schermRows
                 );
                 if (playerRows.length > 0) {
