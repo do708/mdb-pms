@@ -3015,14 +3015,9 @@ export default function OpleverForm({
 
 
 
-            {/* ================= Installatiegegevens ================= */}
+            {/* ================= Tarief, uren & installatie ================= */}
 
             <div>
-
-                <div className="hidden sm:block">
-                    <Kop>Installatiegegevens</Kop>
-                </div>
-
 
                 {
                     (toonUren || toonKilometers) && (

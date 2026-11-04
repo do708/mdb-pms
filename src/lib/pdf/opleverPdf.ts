@@ -754,10 +754,7 @@ export async function generateOpleverPdf(
 
 
 
-    // ================= Installatiegegevens =================
-
-    sectionBar("Installatiegegevens:");
-
+    // ================= Tarief, uren & installatie =================
 
     text("Tarief & Uren",{ useBold:true, gap:2 });
 
