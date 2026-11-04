@@ -43,7 +43,7 @@ async function setPakbonUrl(workorderId: string, formData: unknown, url: string)
 
     await prisma.workorder.update({
         where: { id: workorderId },
-        data: { formData: next },
+        data: { formData: JSON.parse(JSON.stringify(next)) },
     });
 }
 

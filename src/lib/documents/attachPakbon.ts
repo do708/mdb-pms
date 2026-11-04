@@ -38,6 +38,6 @@ export async function attachPakbonUrlToWorkorder(
 
     await prisma.workorder.update({
         where: { id: workorderId },
-        data: { formData: next },
+        data: { formData: JSON.parse(JSON.stringify(next)) },
     });
 }
