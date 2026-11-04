@@ -1390,9 +1390,10 @@ export async function generateOpleverPdf(
             && Object.keys(checklist.mediaplayerLocaties).length > 0
         );
 
+    newPage();
+
     if(heeftChecklist){
 
-    newPage();
     sectionBar("Checklist:");
 
 
@@ -1461,7 +1462,6 @@ export async function generateOpleverPdf(
 
     // ================= Afronding =================
     {
-        newPage();
         const gereed = data.afronding.werkzaamhedenGereed;
         sectionBar("Afronding:");
         if (gereed === "gereed") {
@@ -1480,11 +1480,10 @@ export async function generateOpleverPdf(
     // ================= Handtekening =================
 
     if(input.signatureUrl || input.signedBy){
-    newPage();
     sectionBar("Handtekening:");
 
 
-    ensure(140);
+    ensure(90);
 
 
     page.drawText("Ondertekend door:",{

@@ -1216,7 +1216,7 @@ function opleverSections(
         return "";
       })()}
       ${c.afvalverwijdering !== null ? row("Afval verwijderd?",pill(c.afvalverwijdering)) : ""}
-  `, true);
+  `);
 
     return { modules, checklist };
 
@@ -1394,15 +1394,17 @@ function generateHtml(
   /* Sections */
   .section { margin-top: 16px; margin-bottom: 15px; }
   .page-break { break-before: page; page-break-before: always; }
-  .keep-page {
+  .last-page {
     break-before: page;
     page-break-before: always;
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  .keep-page .qa td { padding: 3px 8px; }
-  .keep-page .sig-img { max-height: 72px; }
-  .keep-page .sig-box, .keep-page .sig-inner { min-height: 70px; }
+  .last-page .section { margin-top: 8px; margin-bottom: 8px; }
+  .last-page .qa td { padding: 3px 8px; }
+  .last-page .sig-img { max-height: 64px; }
+  .last-page .sig-box, .last-page .sig-inner { min-height: 58px; }
+  .last-page .footer { margin-top: 12px; }
   .module-card { border: 1px solid #e6ebf2; border-radius: 9px; padding: 9px; }
   .module-card .section-title { margin: -9px -9px 9px; border-radius: 8px 8px 0 0; }
   .section-title {
@@ -1644,11 +1646,10 @@ function generateHtml(
             data.extraEngineerNames ?? [],
             fotos
         );
-        return `${modules}${customFieldsSection(data.customerSchema, oplever.custom)}${checklist}`;
-    })()}
-
-  <!-- AFRONDING -->
-  <div class="section keep-page">
+        return `${modules}${customFieldsSection(data.customerSchema, oplever.custom)}
+  <div class="last-page">
+    ${checklist}
+    <div class="section">
     <div class="section-title">Afronding</div>
     <table class="qa">
       ${row(
@@ -1670,10 +1671,8 @@ function generateHtml(
       ${oplever.afronding.meerwerkInOpdrachtVan ? row("Meerarbeid en -materialen geleverd in opdracht van", textAnswer(oplever.afronding.meerwerkInOpdrachtVan)) : ""}
       ${oplever.afronding.netwerkGecontroleerdDoor ? row("Netwerkverbinding mediaspelers gecontroleerd door", textAnswer(oplever.afronding.netwerkGecontroleerdDoor)) : ""}
     </table>
-  </div>
-
-  <!-- HANDTEKENING -->
-  ${(handtekeningUrl || data.signedBy || oplever.afronding.contactpersoon) ? `<div class="section keep-page">
+    </div>
+    ${(handtekeningUrl || data.signedBy || oplever.afronding.contactpersoon) ? `<div class="section">
     <div class="section-title">Handtekening</div>
     <div>
       <div class="info-value" style="margin-bottom:6px"><strong>Ondertekend door:</strong> ${esc(data.signedBy) || esc(oplever.afronding.contactpersoon) || "Onbekend"}${data.signedAt ? ` · ${formatDateTime(data.signedAt)}` : ""}</div>
@@ -1687,15 +1686,15 @@ function generateHtml(
       </div>
     </div>
   </div>` : ""}
-
-  <!-- FOOTER -->
-  <div class="footer">
+    <div class="footer">
     <div class="footer-meta">
       <div style="font-weight:700;color:#1e293b;margin-bottom:2px">MDB Networks</div>
       <div>Opdrachtnummer: ${esc(data.number)}</div>
       <div>Gegenereerd: ${formatDateTime(new Date())}</div>
     </div>
   </div>
+  </div>`;
+    })()}
 
 </div>
 </body>
