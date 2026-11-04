@@ -38,7 +38,10 @@ import {
     mergeKlaarzetPrefill,
 } from "@/lib/aanvraag/klaarzetVanSpecificaties";
 import { leesSchermAansturing } from "@/lib/klaarzetMateriaal";
-import { heeftUitgevoerdeWerkbon } from "@/constants/workorderStatus";
+import {
+    heeftUitgevoerdeWerkbon,
+    migrateStatus,
+} from "@/constants/workorderStatus";
 import {
     formatAmsterdamDateIso,
     formatAmsterdamHHmm,
@@ -2161,7 +2164,9 @@ async function completeWorkorder(){
             beforeHandtekening={
                 <PhotosForm
                     workorderId={id}
-                    readOnly={!!workorder.sentAt}
+                    readOnly={heeftUitgevoerdeWerkbon(
+                        status || workorder.status
+                    )}
                 />
             }
 
@@ -2194,7 +2199,9 @@ async function completeWorkorder(){
                 isOffice && (
                     <PhotosForm
                         workorderId={id}
-                        readOnly={!!workorder.sentAt}
+                        readOnly={heeftUitgevoerdeWerkbon(
+                            status || workorder.status
+                        )}
                     />
                 )
             }
@@ -2244,12 +2251,9 @@ async function completeWorkorder(){
 
 
             {
-                /* Monteur verstuurt zolang de werkbon nog niet is afgerond. */
+                /* Monteur mag altijd versturen zolang de werkbon ingepland staat. */
                 !isOffice
-                && !workorder.sentAt
-                && !["uitgevoerd", "gefactureerd"].includes(
-                    status || workorder.status
-                )
+                && migrateStatus(status || workorder.status) === "ingepland"
                 && (
 
                     <button

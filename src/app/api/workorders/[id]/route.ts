@@ -40,6 +40,8 @@ export async function GET(
 
     try {
 
+        await ensureWorkorderOpdrachtnummerKolom();
+
 
         const session =
             await auth();
@@ -723,6 +725,27 @@ export async function PUT(
                         body.status
                         ??
                         existingWorkorder.status,
+
+                    sentAt:
+                        session.user.role === "engineer"
+                        ?
+                        existingWorkorder.sentAt
+                        :
+                        migrateStatus(
+                            body.status ?? existingWorkorder.status
+                        ) === "ingepland"
+                        ||
+                        migrateStatus(
+                            body.status ?? existingWorkorder.status
+                        ) === "ontvangen"
+                        ||
+                        migrateStatus(
+                            body.status ?? existingWorkorder.status
+                        ) === "afspraak"
+                        ?
+                        null
+                        :
+                        existingWorkorder.sentAt,
 
 
 
