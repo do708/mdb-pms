@@ -16,7 +16,8 @@ import {
 
 import {
     FileText,
-    ExternalLink
+    ExternalLink,
+    Pencil,
 } from "lucide-react";
 
 
@@ -84,6 +85,32 @@ export default function DocumentsPage(){
     }, [documents, sort]);
 
 
+    async function renameDocument(doc: DocumentItem) {
+        const next = window.prompt("Bestandsnaam wijzigen", doc.name)?.trim();
+
+        if (!next || next === doc.name) {
+            return;
+        }
+
+        const response = await fetch(`/api/documents/${doc.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: next }),
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            alert(
+                typeof data.error === "string"
+                    ? data.error
+                    : "Hernoemen mislukt"
+            );
+            return;
+        }
+
+        await loadDocuments();
+    }
+
     async function loadDocuments(){
 
 
@@ -121,7 +148,6 @@ export default function DocumentsPage(){
 
             <PageHeader
                 title="Documenten"
-                subtitle="Handleidingen, certificaten en algemene bestanden. Bijlagen van opdrachten staan op de werkbon."
             />
 
 
@@ -214,6 +240,19 @@ export default function DocumentsPage(){
                                         Open
                                         <ExternalLink size={14}/>
                                     </a>
+
+                                    {canUpload && (
+                                        <button
+                                            type="button"
+                                            title="Naam wijzigen"
+                                            onClick={() =>
+                                                void renameDocument(doc)
+                                            }
+                                            className="p-1.5 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100"
+                                        >
+                                            <Pencil size={14} />
+                                        </button>
+                                    )}
 
                                     <DeleteButton
                                         url={`/api/documents/${doc.id}`}

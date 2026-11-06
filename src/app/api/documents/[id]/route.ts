@@ -93,6 +93,77 @@ export async function GET(
     }
 }
 
+function sanitizeDocumentName(raw: string, currentName: string): string | null {
+    const trimmed = raw.trim().replace(/[/\\]/g, "-");
+
+    if (!trimmed) {
+        return null;
+    }
+
+    const currentExt = currentName.includes(".")
+        ? currentName.slice(currentName.lastIndexOf("."))
+        : "";
+    const hasExt = /\.[a-zA-Z0-9]{1,8}$/.test(trimmed);
+
+    return hasExt || !currentExt ? trimmed : `${trimmed}${currentExt}`;
+}
+
+export async function PATCH(
+    request: Request,
+    context: {
+        params: Promise<{
+            id: string;
+        }>;
+    }
+) {
+    const guard = await requireApiRole(["admin", "office"]);
+
+    if (!guard.ok) {
+        return guard.response;
+    }
+
+    try {
+        const { id } = await context.params;
+        const body = await request.json().catch(() => ({}));
+        const document = await prisma.document.findUnique({
+            where: { id },
+        });
+
+        if (!document) {
+            return NextResponse.json(
+                { error: "Document niet gevonden" },
+                { status: 404 }
+            );
+        }
+
+        const name = sanitizeDocumentName(
+            String(body.name ?? ""),
+            document.name
+        );
+
+        if (!name) {
+            return NextResponse.json(
+                { error: "Vul een bestandsnaam in" },
+                { status: 400 }
+            );
+        }
+
+        const updated = await prisma.document.update({
+            where: { id },
+            data: { name },
+        });
+
+        return NextResponse.json(updated);
+    } catch (error) {
+        console.error("DOCUMENT RENAME ERROR", error);
+
+        return NextResponse.json(
+            { error: "Document hernoemen mislukt" },
+            { status: 500 }
+        );
+    }
+}
+
 export async function DELETE(
     request:Request,
     context:{
