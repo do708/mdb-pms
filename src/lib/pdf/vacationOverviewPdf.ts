@@ -1,6 +1,6 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
-import { holidayMap } from "@/lib/holidays";
+import { dutchHolidays, holidayMap } from "@/lib/holidays";
 import { loadMdbLogoPng, MDB_NAVY, MDB_PINK } from "@/lib/pdf/mdbBrand";
 import type { TakenLeaveDay, VacationBalance } from "@/lib/reports/vacation";
 
@@ -39,6 +39,52 @@ function monthCells(year: number, month: number): (number | null)[] {
         cells.push(null);
     }
     return cells;
+}
+
+const MONTH_SHORT = [
+    "jan",
+    "feb",
+    "mrt",
+    "apr",
+    "mei",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+    "dec",
+];
+
+function holidayDateLabel(isoDate: string): string {
+    const [, month, day] = isoDate.split("-").map(Number);
+    return `${day} ${MONTH_SHORT[month - 1]}`;
+}
+
+function wrapPdfLine(
+    text: string,
+    maxWidth: number,
+    size: number,
+    usedFont: { widthOfTextAtSize: (t: string, s: number) => number }
+): string[] {
+    const words = text.split(" ");
+    const lines: string[] = [];
+    let current = "";
+    for (const word of words) {
+        const next = current ? `${current} ${word}` : word;
+        if (usedFont.widthOfTextAtSize(next, size) <= maxWidth) {
+            current = next;
+            continue;
+        }
+        if (current) {
+            lines.push(current);
+        }
+        current = word;
+    }
+    if (current) {
+        lines.push(current);
+    }
+    return lines;
 }
 
 function dateKey(year: number, month: number, day: number): string {
@@ -154,7 +200,7 @@ export async function generateVacationOverviewPdf(args: {
 
     const marginX = 28;
     const top = saldoY - 16;
-    const bottom = 28;
+    const bottom = 86;
     const cols = 3;
     const rows = 4;
     const gapX = 10;
@@ -258,6 +304,30 @@ export async function generateVacationOverviewPdf(args: {
             });
         });
     }
+
+    const holidayItems = dutchHolidays(args.year)
+        .slice()
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .map((h) => `${holidayDateLabel(h.date)} ${h.name}`);
+    const holidayLine = holidayItems.join("  ·  ");
+
+    page.drawText("Feestdagen", {
+        x: marginX,
+        y: 68,
+        size: 8,
+        font: bold,
+        color: MDB_NAVY,
+    });
+    const wrapped = wrapPdfLine(holidayLine, 595.28 - marginX * 2, 7, font);
+    wrapped.slice(0, 3).forEach((line, i) => {
+        page.drawText(line, {
+            x: marginX,
+            y: 56 - i * 10,
+            size: 7,
+            font,
+            color: rgb(0.25, 0.28, 0.32),
+        });
+    });
 
     return pdf.save();
 }
