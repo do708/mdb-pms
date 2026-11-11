@@ -34,13 +34,6 @@ import {
     type ReportDayRow,
     type ReportLeaveRange,
 } from "@/lib/reports/periods";
-import {
-    applyVacationToEngineers,
-    VACATION_DAYS_PER_YEAR,
-    vacationBalances,
-    vacationYearForPeriod,
-} from "@/lib/reports/vacation";
-import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
 
 interface ReportData {
     totals: {
@@ -173,30 +166,15 @@ export default function ReportsPage() {
         () => groupTimeline(filtered, groupBy),
         [filtered, groupBy]
     );
-    const vacationYear = useMemo(
-        () =>
-            vacationYearForPeriod(
-                periodPreset,
-                customMonth,
-                yearFilter,
-                range
-            ),
-        [periodPreset, customMonth, yearFilter, range]
-    );
     const perMonteur = useMemo(
         () =>
-            applyVacationToEngineers(
-                engineersTotalsWithLeave(
-                    filtered,
-                    leave,
-                    engineerFilter,
-                    range
-                ),
+            engineersTotalsWithLeave(
+                filtered,
                 leave,
-                vacationYear,
-                engineerFilter
+                engineerFilter,
+                range
             ),
-        [filtered, leave, engineerFilter, range, vacationYear]
+        [filtered, leave, engineerFilter, range]
     );
     const leaveDaysTotal = useMemo(
         () => perMonteur.reduce((sum, row) => sum + row.leaveDays, 0),
@@ -206,14 +184,6 @@ export default function ReportsPage() {
         () => customersTotals(filtered),
         [filtered]
     );
-    const vakantieBalken = useMemo(() => {
-        const rows = vacationBalances(leave, vacationYear);
-        if (engineerFilter === "alle") {
-            return rows;
-        }
-        return rows.filter((row) => row.userId === engineerFilter);
-    }, [leave, vacationYear, engineerFilter]);
-
     if (loading) {
         return (
             <PageShell>
@@ -546,12 +516,6 @@ export default function ReportsPage() {
                                         <th className="py-2 text-right text-xs font-medium text-gray-500">
                                             Verlofdagen
                                         </th>
-                                        <th className="py-2 text-right text-xs font-medium text-gray-500">
-                                            Vakantie {vacationYear}
-                                        </th>
-                                        <th className="py-2 text-right text-xs font-medium text-gray-500">
-                                            Vakantie over
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -595,43 +559,10 @@ export default function ReportsPage() {
                                             <td className="py-2 text-right text-gray-900">
                                                 {engineer.leaveDays}
                                             </td>
-                                            <td className="py-2 text-right text-gray-900">
-                                                {engineer.vacationUsed}/
-                                                {engineer.vacationEntitled ||
-                                                    VACATION_DAYS_PER_YEAR}
-                                                {engineer.vacationPending > 0
-                                                    ? ` (${engineer.vacationPending} open)`
-                                                    : ""}
-                                            </td>
-                                            <td className="py-2 text-right text-gray-900">
-                                                {engineer.vacationRemaining}
-                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                        </div>
-                    )}
-                </SpecPanel>
-
-                <SpecPanel title={`Vakantiedagen ${vacationYear}`}>
-                    {vakantieBalken.length === 0 ? (
-                        <p className="text-sm text-gray-500">
-                            Nog geen vakantieaanvragen in {vacationYear}.
-                        </p>
-                    ) : (
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            {vakantieBalken.map((balance) => (
-                                <div
-                                    key={balance.userId}
-                                    className="rounded-xl border border-gray-100 p-3 space-y-2"
-                                >
-                                    <p className="text-sm font-medium text-gray-900">
-                                        {balance.name}
-                                    </p>
-                                    <VacationBalanceBar balance={balance} />
-                                </div>
-                            ))}
                         </div>
                     )}
                 </SpecPanel>
