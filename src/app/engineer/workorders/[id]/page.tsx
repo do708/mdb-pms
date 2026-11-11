@@ -2358,28 +2358,6 @@ async function completeWorkorder(){
             }
 
 
-            {
-                !isOffice
-                && !heeftUitgevoerdeWerkbon(status || workorder.status)
-                && (
-                    <button
-                        type="button"
-                        onClick={completeWorkorder}
-                        disabled={saving}
-                        className="
-                            w-full
-                            bg-[#d6007e] text-white
-                            rounded-lg px-4 py-2.5
-                            text-sm font-semibold
-                            disabled:opacity-50
-                        "
-                    >
-                        {saving ? "Bezig..." : "Verstuur werkbon"}
-                    </button>
-                )
-            }
-
-
 
         </div>
     );
