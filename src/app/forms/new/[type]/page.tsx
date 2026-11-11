@@ -62,7 +62,6 @@ export default function NewFormPage() {
                         <span>{definition.label}</span>
                     </span>
                 }
-                subtitle={definition.description}
                 actions={
                     <Link
                         href="/forms"

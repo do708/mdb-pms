@@ -856,7 +856,7 @@ export default function ProjectDetailPage() {
             <PageHeader
                 title={
                     <>
-                        {project.name}
+                        {project.number} · {project.name}
                         {project.location || project.plaats ? (
                             <span className="text-gray-600 font-normal">
                                 {" "}
@@ -868,7 +868,6 @@ export default function ProjectDetailPage() {
                         ) : null}
                     </>
                 }
-                subtitle={`${project.number} · ${project.customer.name}`}
                 actions={
                     isOffice ? (
                         <>

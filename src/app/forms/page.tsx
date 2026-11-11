@@ -80,7 +80,6 @@ function FormsPageContent() {
         <PageShell>
             <PageHeader
                 title="Formulieren"
-                subtitle="Declaraties, verlofaanvragen en inspecties"
             />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -99,9 +98,6 @@ function FormsPageContent() {
                             <div className="space-y-0.5">
                                 <p className="font-semibold text-sm text-gray-800">
                                     {definition.label}
-                                </p>
-                                <p className="text-xs text-gray-500 leading-snug">
-                                    {definition.description}
                                 </p>
                             </div>
                         </SpecPanel>

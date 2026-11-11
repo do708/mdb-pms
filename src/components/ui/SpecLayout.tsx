@@ -58,7 +58,7 @@ export function PageShell({
 
 export function PageHeader({
     title,
-    subtitle,
+    subtitle: _subtitle,
     actions,
     hideOnMobile = false,
 }: {
@@ -73,9 +73,6 @@ export function PageHeader({
                 <h1 className="text-2xl font-bold text-gray-900">
                     {title}
                 </h1>
-                {subtitle ? (
-                    <p className="text-gray-500 mt-0.5">{subtitle}</p>
-                ) : null}
             </div>
             {actions ? (
                 <div className="shrink-0 flex flex-wrap gap-2">
