@@ -180,6 +180,12 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
             },
 
             {
+                id:"reden",
+                type:"text",
+                label:"Reden"
+            },
+
+            {
                 id:"eersteDag",
                 type:"date",
                 label:"Eerste verlofdag",

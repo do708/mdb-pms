@@ -466,11 +466,13 @@ export default function Calendar({
                                                                     rounded-md px-1.5 py-1
                                                                     truncate leading-tight font-medium
                                                                 "
-                                                                title={`Verlof: ${l.userName ?? ""}`}
+                                                                title={`Verlof: ${[l.userName, l.type, l.reden].filter(Boolean).join(" · ")}`}
                                                             >
                                                                 🌴{" "}
-                                                                {l.userName ??
-                                                                    "Verlof"}
+                                                                {l.reden
+                                                                    ? `${l.userName ?? "Verlof"} · ${l.reden}`
+                                                                    : (l.userName ??
+                                                                      "Verlof")}
                                                             </div>
                                                         ))}
 

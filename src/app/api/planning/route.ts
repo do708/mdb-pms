@@ -160,7 +160,11 @@ export async function GET(){
                     userName:f.user.name,
                     from:(data.eersteDag as string) ?? null,
                     to:(data.laatsteDag as string) ?? null,
-                    type:(data.typeVerlof as string) ?? "Verlof"
+                    type:(data.typeVerlof as string) ?? "Verlof",
+                    reden:
+                        typeof data.reden === "string"
+                            ? data.reden.trim()
+                            : ""
                 };
 
             })

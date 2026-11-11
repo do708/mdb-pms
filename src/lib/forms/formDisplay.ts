@@ -61,17 +61,34 @@ export function buildVerlofTitle(
 export function verlofSubtitle(data?: Record<string, unknown> | null): string {
     const type =
         typeof data?.typeVerlof === "string" ? data.typeVerlof.trim() : "";
+    const reden =
+        typeof data?.reden === "string" ? data.reden.trim() : "";
     const from = nlFormDate(data?.eersteDag);
     const to = nlFormDate(data?.laatsteDag);
 
     const datePart =
         from && to ? `${from} - ${to}` : from || to || "";
 
-    if (type && datePart) {
-        return `${type} | ${datePart}`;
+    const typePart =
+        type && reden ? `${type} · ${reden}` : type || reden;
+
+    if (typePart && datePart) {
+        return `${typePart} | ${datePart}`;
     }
 
-    return type || datePart;
+    return typePart || datePart;
+}
+
+export function verlofPlanningLabel(
+    type?: string | null,
+    reden?: string | null
+): string {
+    const soort = typeof type === "string" ? type.trim() : "";
+    const extra = typeof reden === "string" ? reden.trim() : "";
+    if (soort && extra) {
+        return `${soort} · ${extra}`;
+    }
+    return extra || soort || "Verlof";
 }
 
 export function buildFormTitle(

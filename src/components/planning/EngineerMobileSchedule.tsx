@@ -50,6 +50,8 @@ interface LeaveItem {
     from?: string;
     to?: string;
     userId?: string;
+    type?: string;
+    reden?: string;
 }
 
 interface Props {
@@ -268,7 +270,7 @@ export default function EngineerMobileSchedule({
     }
 
     function leaveOnDay(dayIso: string) {
-        return leave.some((l) => {
+        return leave.find((l) => {
             if (l.userId && l.userId !== engineerId) return false;
             const from = l.from;
             const to = l.to || l.from;
@@ -425,9 +427,9 @@ export default function EngineerMobileSchedule({
     function DayJobs({ dayIso, emptyLabel }: { dayIso: string; emptyLabel: string }) {
         const jobs = jobsForDay(dayIso);
         const dayEvents = eventsForDay(dayIso);
-        const hasLeave = leaveOnDay(dayIso);
+        const dayLeave = leaveOnDay(dayIso);
 
-        if (jobs.length === 0 && dayEvents.length === 0 && !hasLeave) {
+        if (jobs.length === 0 && dayEvents.length === 0 && !dayLeave) {
             return (
                 <p className="text-sm text-gray-500 py-2">{emptyLabel}</p>
             );
@@ -450,12 +452,15 @@ export default function EngineerMobileSchedule({
 
         return (
             <div className="space-y-2">
-                {hasLeave && (
+                {dayLeave && (
                     <div className="
                         rounded-lg border border-amber-200
                         bg-amber-50 px-3 py-2 text-sm text-amber-900
                     ">
-                        Verlof
+                        🌴{" "}
+                        {dayLeave.reden
+                            ? `${dayLeave.type || "Verlof"} · ${dayLeave.reden}`
+                            : dayLeave.type || "Verlof"}
                     </div>
                 )}
                 {timeline.map((entry) =>

@@ -1498,6 +1498,12 @@ export default function WeekView({
 
                                                         {verlof ? (
                                                             <div
+                                                                title={[
+                                                                    verlof.type,
+                                                                    verlof.reden,
+                                                                ]
+                                                                    .filter(Boolean)
+                                                                    .join(" · ")}
                                                                 className="
                                                                     absolute inset-1
                                                                     bg-gradient-to-b from-orange-50 to-orange-100/80
@@ -1511,10 +1517,20 @@ export default function WeekView({
                                                                 <span className="text-base leading-none">
                                                                     🌴
                                                                 </span>
-                                                                <span>
-                                                                    {verlof.type ||
-                                                                        "Verlof"}
+                                                                <span className="leading-tight px-0.5">
+                                                                    {verlof.reden
+                                                                        ? String(
+                                                                              verlof.reden
+                                                                          )
+                                                                        : verlof.type ||
+                                                                          "Verlof"}
                                                                 </span>
+                                                                {verlof.reden &&
+                                                                verlof.type ? (
+                                                                    <span className="text-[10px] font-normal opacity-80 leading-tight px-0.5">
+                                                                        {verlof.type}
+                                                                    </span>
+                                                                ) : null}
                                                             </div>
                                                         ) : null}
 
