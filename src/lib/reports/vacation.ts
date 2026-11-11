@@ -42,6 +42,13 @@ export function isVakantiedagen(type: unknown): boolean {
     return type.trim().toLowerCase().startsWith("vakantiedagen");
 }
 
+export function isKortVerlof(type: unknown): boolean {
+    if (typeof type !== "string") {
+        return false;
+    }
+    return type.trim().toLowerCase().startsWith("kort verlof");
+}
+
 export function parseAftrekVakantie(value: unknown): boolean | null {
     if (typeof value === "boolean") {
         return value;
@@ -94,7 +101,7 @@ export function leaveReasonFromData(
             ? data.redenKortVerlof.trim()
             : "";
     const reden = typeof data?.reden === "string" ? data.reden.trim() : "";
-    if (type.toLowerCase().startsWith("kort verlof")) {
+    if (isKortVerlof(type)) {
         return kort || reden;
     }
     return reden || kort;

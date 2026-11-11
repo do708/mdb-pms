@@ -20,7 +20,10 @@ import {
     verlofSubtitle,
 } from "@/lib/forms/formDisplay";
 import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
-import type { VacationBalance } from "@/lib/reports/vacation";
+import {
+    isKortVerlof,
+    type VacationBalance,
+} from "@/lib/reports/vacation";
 
 
 
@@ -494,51 +497,80 @@ export default function FormDetailPage(){
 
                                     <>
 
-                                        <button
-
-                                            onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:true })}
-
-                                            disabled={busy}
-
-                                            className="
-                                                bg-green-600
-                                                text-white
-                                                rounded-lg
-                                                px-4
-                                                py-2
-                                                text-sm
-                                                disabled:opacity-50
-                                            "
-
-                                        >
-
-                                            Goedkeuren en van vakantiedagen afhalen
-
-                                        </button>
-
-                                        <button
-
-                                            onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:false })}
-
-                                            disabled={busy}
-
-                                            className="
-                                                border
-                                                border-green-600
-                                                text-green-800
-                                                bg-white
-                                                rounded-lg
-                                                px-4
-                                                py-2
-                                                text-sm
-                                                disabled:opacity-50
-                                            "
-
-                                        >
-
-                                            Goedkeuren zonder aftrek
-
-                                        </button>
+                                        {isKortVerlof(
+                                            (form.data as Record<string, unknown> | null)
+                                                ?.typeVerlof
+                                        ) ? (
+                                            <>
+                                                <button
+                                                    onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:false })}
+                                                    disabled={busy}
+                                                    className="
+                                                        bg-green-600
+                                                        text-white
+                                                        rounded-lg
+                                                        px-4
+                                                        py-2
+                                                        text-sm
+                                                        disabled:opacity-50
+                                                    "
+                                                >
+                                                    Goedkeuren zonder aftrek
+                                                </button>
+                                                <button
+                                                    onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:true })}
+                                                    disabled={busy}
+                                                    className="
+                                                        border
+                                                        border-green-600
+                                                        text-green-800
+                                                        bg-white
+                                                        rounded-lg
+                                                        px-4
+                                                        py-2
+                                                        text-sm
+                                                        disabled:opacity-50
+                                                    "
+                                                >
+                                                    Goedkeuren en van vakantiedagen afhalen
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button
+                                                    onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:true })}
+                                                    disabled={busy}
+                                                    className="
+                                                        bg-green-600
+                                                        text-white
+                                                        rounded-lg
+                                                        px-4
+                                                        py-2
+                                                        text-sm
+                                                        disabled:opacity-50
+                                                    "
+                                                >
+                                                    Goedkeuren en van vakantiedagen afhalen
+                                                </button>
+                                                <button
+                                                    onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:false })}
+                                                    disabled={busy}
+                                                    className="
+                                                        border
+                                                        border-green-600
+                                                        text-green-800
+                                                        bg-white
+                                                        rounded-lg
+                                                        px-4
+                                                        py-2
+                                                        text-sm
+                                                        disabled:opacity-50
+                                                    "
+                                                >
+                                                    Goedkeuren zonder aftrek
+                                                </button>
+                                            </>
+                                        )}
 
                                         <button
 

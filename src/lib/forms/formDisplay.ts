@@ -1,4 +1,5 @@
 import { isBlankHoursOrTimeValue } from "@/constants/formDefinitions";
+import { isKortVerlof } from "@/lib/reports/vacation";
 
 export function nlFormDate(value: unknown): string {
     if (!value || typeof value !== "string") {
@@ -72,18 +73,22 @@ export function verlofSubtitle(data?: Record<string, unknown> | null): string {
     const reden = kort || redenRaw;
     const from = nlFormDate(data?.eersteDag);
     const to = nlFormDate(data?.laatsteDag);
+    const showHours = isKortVerlof(type);
     const urenRaw = data?.totaalUren;
-    const uren = isBlankHoursOrTimeValue(urenRaw)
-        ? ""
-        : typeof urenRaw === "number"
-          ? String(urenRaw)
-          : typeof urenRaw === "string"
-            ? urenRaw.trim()
-            : "";
+    const uren =
+        !showHours || isBlankHoursOrTimeValue(urenRaw)
+            ? ""
+            : typeof urenRaw === "number"
+              ? String(urenRaw)
+              : typeof urenRaw === "string"
+                ? urenRaw.trim()
+                : "";
     const vanRaw = typeof data?.vanTijd === "string" ? data.vanTijd.trim() : "";
     const totRaw = typeof data?.totTijd === "string" ? data.totTijd.trim() : "";
-    const van = isBlankHoursOrTimeValue(vanRaw) ? "" : vanRaw;
-    const tot = isBlankHoursOrTimeValue(totRaw) ? "" : totRaw;
+    const van =
+        showHours && !isBlankHoursOrTimeValue(vanRaw) ? vanRaw : "";
+    const tot =
+        showHours && !isBlankHoursOrTimeValue(totRaw) ? totRaw : "";
 
     const datePart =
         from && to ? `${from} - ${to}` : from || to || "";
@@ -110,13 +115,14 @@ export function verlofPlanningLabel(
 ): string {
     const soort = typeof type === "string" ? type.trim() : "";
     const extra = typeof reden === "string" ? reden.trim() : "";
-    const uren = isBlankHoursOrTimeValue(totaalUren)
-        ? ""
-        : typeof totaalUren === "number"
-          ? `${totaalUren} uur`
-          : typeof totaalUren === "string"
-            ? `${totaalUren.trim()} uur`
-            : "";
+    const uren =
+        !isKortVerlof(type) || isBlankHoursOrTimeValue(totaalUren)
+            ? ""
+            : typeof totaalUren === "number"
+              ? `${totaalUren} uur`
+              : typeof totaalUren === "string"
+                ? `${totaalUren.trim()} uur`
+                : "";
     const parts = [soort, extra, uren].filter(Boolean);
     return parts.join(" · ") || "Verlof";
 }

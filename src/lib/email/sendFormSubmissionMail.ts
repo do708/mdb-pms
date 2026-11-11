@@ -11,6 +11,7 @@ import {
 } from "@/lib/email/resendClient";
 import { isBlankHoursOrTimeValue } from "@/constants/formDefinitions";
 import { nlFormDate, verlofMonteurName } from "@/lib/forms/formDisplay";
+import { isKortVerlof } from "@/lib/reports/vacation";
 
 interface FormSubmissionMailData {
     formType: string;
@@ -48,9 +49,13 @@ function buildVerlofMail(data: FormSubmissionMailData, formsUrl: string) {
     const urenRaw = strField(data.data, "totaalUren");
     const vanRaw = strField(data.data, "vanTijd");
     const totRaw = strField(data.data, "totTijd");
-    const uren = isBlankHoursOrTimeValue(urenRaw) ? "" : urenRaw;
-    const vanTijd = isBlankHoursOrTimeValue(vanRaw) ? "" : vanRaw;
-    const totTijd = isBlankHoursOrTimeValue(totRaw) ? "" : totRaw;
+    const showHours = isKortVerlof(typeVerlof);
+    const uren =
+        showHours && !isBlankHoursOrTimeValue(urenRaw) ? urenRaw : "";
+    const vanTijd =
+        showHours && !isBlankHoursOrTimeValue(vanRaw) ? vanRaw : "";
+    const totTijd =
+        showHours && !isBlankHoursOrTimeValue(totRaw) ? totRaw : "";
     const handtekening = strField(data.data, "handtekening");
     const andereInvoerder = !namesMatch(werknemer, data.submitterName);
 
