@@ -2,20 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
-import { createClient } from "@supabase/supabase-js";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { supabase } from "@/lib/supabase/admin";
 
 
 
 
 
-const supabase = createClient(
-
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-);
 
 
 

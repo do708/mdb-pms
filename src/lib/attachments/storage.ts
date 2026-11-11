@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase/admin";
 
 import {
     isNasArchiveEnabled,
@@ -20,11 +20,6 @@ const URL_MARKERS = [
     "/render/image/public/workorder-files/",
     "/workorder-files/",
 ];
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 export class AttachmentNotFoundError extends Error {
     constructor() {

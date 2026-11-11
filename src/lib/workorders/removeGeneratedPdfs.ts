@@ -1,16 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
-
 import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase/admin";
 import {
     deleteDocumentenboxFromNas,
     supabaseStoragePathFromUrl,
 } from "@/lib/documents/documentenboxStorage";
 import { nasPathFromStored } from "@/lib/nas/synologyConfig";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
 
 export function isGeneratedWorkorderPdf(
     name: string,

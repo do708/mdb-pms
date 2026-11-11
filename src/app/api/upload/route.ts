@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createClient } from "@supabase/supabase-js";
 import { requireApiUser } from "@/lib/auth/guard";
+import { supabase } from "@/lib/supabase/admin";
 import {
     compressPhoto,
     photoStorageName,
@@ -9,13 +9,6 @@ import {
 
 
 
-const supabase = createClient(
-
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-);
 
 
 

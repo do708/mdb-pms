@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
 import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase/admin";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 import { contentTypeForFilename } from "@/lib/attachments/contentType";
 import { supabaseStoragePathFromUrl } from "@/lib/documents/documentenboxStorage";
@@ -12,10 +12,6 @@ import {
 } from "@/lib/documents/pakbonStorage";
 import { isNasConfigured, nasPathFromStored } from "@/lib/nas/synologyConfig";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
 
 type FormDataObject = Record<string, unknown>;
 

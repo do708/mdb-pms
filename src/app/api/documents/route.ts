@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiUser, requireApiRole } from "@/lib/auth/guard";
-import { createClient } from "@supabase/supabase-js";
 import { contentTypeForFilename } from "@/lib/attachments/contentType";
+import { supabase } from "@/lib/supabase/admin";
 import {
     supabaseStoragePathFromUrl,
     uploadDocumentenboxToNas,
@@ -11,11 +11,6 @@ import {
 import { isNasConfigured } from "@/lib/nas/synologyConfig";
 
 
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 async function migrateDocumentenboxToNas(document: {
     id: string;

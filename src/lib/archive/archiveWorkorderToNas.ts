@@ -1,6 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
-
 import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase/admin";
 import { formatArchiveLocationLabel } from "@/lib/archive/formatArchiveLocationName";
 import {
     ensureCustomerArchiveFolder,
@@ -17,10 +16,6 @@ import {
     downloadAttachmentBytes,
 } from "@/lib/attachments/storage";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 async function deleteSupabasePaths(paths: string[]) {
     const unique = [...new Set(paths.filter(Boolean))];

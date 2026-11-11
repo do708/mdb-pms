@@ -6,22 +6,14 @@ import { customerName, workorderLocation, resolveCustomer } from "@/lib/workorde
 
 import { generateWorkorderPdf } from "@/lib/pdf/workorder";
 
-import { createClient } from "@supabase/supabase-js";
-
 import { sendWorkorderMail } from "@/lib/mail/sendWorkorderMail";
+import { supabase } from "@/lib/supabase/admin";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 
 
 
 
 
-const supabase = createClient(
-
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-);
 
 
 

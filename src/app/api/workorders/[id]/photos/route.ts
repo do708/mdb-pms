@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
-import { createClient } from "@supabase/supabase-js";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { supabase } from "@/lib/supabase/admin";
 import { zonderInstructieFotos, isInfoFotoVanInstructie } from "@/lib/werkInstructie/parseWerkInstructie";
 import {
     compressPhoto,
@@ -13,10 +13,6 @@ import {
 export const maxDuration = 60;
 export const runtime = "nodejs";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
 
 function isUploadFile(value: FormDataEntryValue): value is File {
     return (

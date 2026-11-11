@@ -6,18 +6,13 @@ import { customerName, workorderLocation, resolveCustomer } from "@/lib/workorde
 
 import { generateWorkorderHtmlPdf } from "@/lib/pdf/workorderHtmlPdf";
 
-import { createClient } from "@supabase/supabase-js";
-
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { supabase } from "@/lib/supabase/admin";
 import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
 import { removeGeneratedWorkorderPdfs } from "@/lib/workorders/removeGeneratedPdfs";
 
 export const maxDuration = 60;
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 
 

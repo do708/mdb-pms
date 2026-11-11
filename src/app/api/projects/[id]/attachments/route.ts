@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createClient } from "@supabase/supabase-js";
-
 import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase/admin";
 import { requireApiRole, requireProjectAccess } from "@/lib/auth/guard";
 import {
     contentTypeForFile,
@@ -17,11 +16,6 @@ import {
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 export async function GET(
     request: NextRequest,

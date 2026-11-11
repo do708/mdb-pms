@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
@@ -8,11 +7,7 @@ import {
     synologyUploadFile,
 } from "@/lib/nas/synologyClient";
 import { isNasArchiveEnabled, joinNasPath } from "@/lib/nas/synologyConfig";
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabase } from "@/lib/supabase/admin";
 
 export async function POST(
     request: NextRequest,
