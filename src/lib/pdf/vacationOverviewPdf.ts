@@ -54,68 +54,68 @@ export async function generateVacationOverviewPdf(args: {
     const font = await pdf.embedFont(StandardFonts.Helvetica);
     const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
 
+    const headerX = 32;
+    let nameX = headerX;
+    const nameY = 802;
+
     try {
         const logo = await pdf.embedPng(loadMdbLogoPng());
-        const logoH = 28;
+        const logoH = 22;
         const logoW = (logo.width / logo.height) * logoH;
         page.drawImage(logo, {
-            x: 32,
-            y: 792,
+            x: headerX,
+            y: nameY - 4,
             width: logoW,
             height: logoH,
         });
+        nameX = headerX + logoW + 10;
     } catch {
         /* logo optioneel */
     }
 
-    page.drawText("Vakantieoverzicht", {
-        x: 32,
-        y: 770,
-        size: 16,
+    page.drawText(`${args.name} · ${args.year}`, {
+        x: nameX,
+        y: nameY,
+        size: 13,
         font: bold,
         color: MDB_NAVY,
     });
-    page.drawText(`${args.name}  ·  ${args.year}`, {
-        x: 32,
-        y: 754,
-        size: 11,
-        font,
-        color: rgb(0.25, 0.25, 0.3),
-    });
 
-    const saldo = `${args.balance.used} opgenomen van ${args.balance.entitled}  ·  ${args.balance.remaining} over`;
+    const saldoY = nameY - 28;
+    const saldo = `${args.balance.used} opgenomen van ${args.balance.entitled} · ${args.balance.remaining} over`;
     page.drawText(saldo, {
-        x: 32,
-        y: 738,
+        x: headerX,
+        y: saldoY,
         size: 10,
         font,
         color: rgb(0.2, 0.2, 0.25),
     });
 
+    const legendX = headerX + font.widthOfTextAtSize(saldo, 10) + 16;
     page.drawRectangle({
-        x: 32,
-        y: 724,
-        width: 8,
-        height: 8,
+        x: legendX,
+        y: saldoY,
+        width: 7,
+        height: 7,
         color: MDB_PINK,
     });
     page.drawText("Vakantiedag", {
-        x: 44,
-        y: 724,
+        x: legendX + 10,
+        y: saldoY,
         size: 8,
         font,
         color: rgb(0.3, 0.3, 0.35),
     });
     page.drawRectangle({
-        x: 118,
-        y: 724,
-        width: 8,
-        height: 8,
+        x: legendX + 78,
+        y: saldoY,
+        width: 7,
+        height: 7,
         color: rgb(1, 0.7, 0.35),
     });
     page.drawText("Ander verlof", {
-        x: 130,
-        y: 724,
+        x: legendX + 88,
+        y: saldoY,
         size: 8,
         font,
         color: rgb(0.3, 0.3, 0.35),
@@ -124,8 +124,8 @@ export async function generateVacationOverviewPdf(args: {
     const takenMap = new Map(args.taken.map((day) => [day.date, day]));
 
     const marginX = 28;
-    const top = 708;
-    const bottom = 48;
+    const top = saldoY - 16;
+    const bottom = 28;
     const cols = 3;
     const rows = 4;
     const gapX = 10;
