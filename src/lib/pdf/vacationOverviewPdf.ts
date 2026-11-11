@@ -1,0 +1,230 @@
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+
+import { loadMdbLogoPng, MDB_NAVY, MDB_PINK } from "@/lib/pdf/mdbBrand";
+import type { TakenLeaveDay, VacationBalance } from "@/lib/reports/vacation";
+
+const MONTHS = [
+    "Januari",
+    "Februari",
+    "Maart",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Augustus",
+    "September",
+    "Oktober",
+    "November",
+    "December",
+];
+
+const WEEKDAYS = ["ma", "di", "wo", "do", "vr", "za", "zo"];
+
+function monthCells(year: number, month: number): (number | null)[] {
+    const first = new Date(Date.UTC(year, month - 1, 1));
+    const offset = (first.getUTCDay() + 6) % 7;
+    const last = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    const cells: (number | null)[] = [];
+    for (let i = 0; i < offset; i += 1) {
+        cells.push(null);
+    }
+    for (let day = 1; day <= last; day += 1) {
+        cells.push(day);
+    }
+    while (cells.length % 7 !== 0) {
+        cells.push(null);
+    }
+    return cells;
+}
+
+function dateKey(year: number, month: number, day: number): string {
+    const mm = String(month).padStart(2, "0");
+    const dd = String(day).padStart(2, "0");
+    return `${year}-${mm}-${dd}`;
+}
+
+export async function generateVacationOverviewPdf(args: {
+    year: number;
+    name: string;
+    balance: VacationBalance;
+    taken: TakenLeaveDay[];
+}): Promise<Uint8Array> {
+    const pdf = await PDFDocument.create();
+    const page = pdf.addPage([595.28, 841.89]);
+    const font = await pdf.embedFont(StandardFonts.Helvetica);
+    const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+
+    try {
+        const logo = await pdf.embedPng(loadMdbLogoPng());
+        const logoH = 28;
+        const logoW = (logo.width / logo.height) * logoH;
+        page.drawImage(logo, {
+            x: 32,
+            y: 792,
+            width: logoW,
+            height: logoH,
+        });
+    } catch {
+        /* logo optioneel */
+    }
+
+    page.drawText("Vakantieoverzicht", {
+        x: 32,
+        y: 770,
+        size: 16,
+        font: bold,
+        color: MDB_NAVY,
+    });
+    page.drawText(`${args.name}  ·  ${args.year}`, {
+        x: 32,
+        y: 754,
+        size: 11,
+        font,
+        color: rgb(0.25, 0.25, 0.3),
+    });
+
+    const saldo = `${args.balance.used} opgenomen van ${args.balance.entitled}  ·  ${args.balance.remaining} over`;
+    page.drawText(saldo, {
+        x: 32,
+        y: 738,
+        size: 10,
+        font,
+        color: rgb(0.2, 0.2, 0.25),
+    });
+
+    page.drawRectangle({
+        x: 32,
+        y: 724,
+        width: 8,
+        height: 8,
+        color: MDB_PINK,
+    });
+    page.drawText("Vakantiedag", {
+        x: 44,
+        y: 724,
+        size: 8,
+        font,
+        color: rgb(0.3, 0.3, 0.35),
+    });
+    page.drawRectangle({
+        x: 118,
+        y: 724,
+        width: 8,
+        height: 8,
+        color: rgb(1, 0.7, 0.35),
+    });
+    page.drawText("Ander verlof", {
+        x: 130,
+        y: 724,
+        size: 8,
+        font,
+        color: rgb(0.3, 0.3, 0.35),
+    });
+
+    const takenMap = new Map(args.taken.map((day) => [day.date, day]));
+
+    const marginX = 28;
+    const top = 708;
+    const bottom = 48;
+    const cols = 3;
+    const rows = 4;
+    const gapX = 10;
+    const gapY = 10;
+    const boxW = (595.28 - marginX * 2 - gapX * (cols - 1)) / cols;
+    const boxH = (top - bottom - gapY * (rows - 1)) / rows;
+
+    for (let month = 1; month <= 12; month += 1) {
+        const col = (month - 1) % cols;
+        const row = Math.floor((month - 1) / cols);
+        const x = marginX + col * (boxW + gapX);
+        const y = top - (row + 1) * boxH - row * gapY;
+
+        page.drawRectangle({
+            x,
+            y,
+            width: boxW,
+            height: boxH,
+            color: rgb(0.97, 0.97, 0.98),
+            borderColor: rgb(0.85, 0.87, 0.9),
+            borderWidth: 0.6,
+        });
+
+        page.drawText(MONTHS[month - 1], {
+            x: x + 6,
+            y: y + boxH - 14,
+            size: 9,
+            font: bold,
+            color: MDB_NAVY,
+        });
+
+        const cellW = (boxW - 12) / 7;
+        const headerY = y + boxH - 26;
+        WEEKDAYS.forEach((label, i) => {
+            page.drawText(label, {
+                x: x + 6 + i * cellW + 2,
+                y: headerY,
+                size: 6,
+                font,
+                color: i >= 5 ? rgb(0.65, 0.65, 0.7) : rgb(0.4, 0.4, 0.45),
+            });
+        });
+
+        const cells = monthCells(args.year, month);
+        const weeks = cells.length / 7;
+        const gridTop = headerY - 4;
+        const gridH = gridTop - (y + 6);
+        const cellH = gridH / weeks;
+
+        cells.forEach((day, index) => {
+            if (day == null) {
+                return;
+            }
+            const c = index % 7;
+            const r = Math.floor(index / 7);
+            const cx = x + 6 + c * cellW;
+            const cy = gridTop - (r + 1) * cellH;
+            const key = dateKey(args.year, month, day);
+            const taken = takenMap.get(key);
+            const weekend = c >= 5;
+
+            if (taken) {
+                page.drawRectangle({
+                    x: cx + 1,
+                    y: cy + 1,
+                    width: Math.max(cellW - 2, 4),
+                    height: Math.max(cellH - 2, 6),
+                    color: taken.isVacation
+                        ? MDB_PINK
+                        : rgb(1, 0.7, 0.35),
+                });
+            }
+
+            const label = String(day);
+            const textW = font.widthOfTextAtSize(label, 7);
+            page.drawText(label, {
+                x: cx + (cellW - textW) / 2,
+                y: cy + Math.max((cellH - 7) / 2, 1),
+                size: 7,
+                font: taken ? bold : font,
+                color: taken
+                    ? rgb(1, 1, 1)
+                    : weekend
+                      ? rgb(0.65, 0.65, 0.7)
+                      : rgb(0.15, 0.15, 0.2),
+            });
+        });
+    }
+
+    page.drawText(
+        "Weekend en feestdagen tellen niet mee. Alleen goedgekeurd verlof is ingekleurd.",
+        {
+            x: 32,
+            y: 32,
+            size: 7,
+            font,
+            color: rgb(0.45, 0.45, 0.5),
+        }
+    );
+
+    return pdf.save();
+}

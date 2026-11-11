@@ -483,6 +483,8 @@ export default function DynamicForm({
 
     const [vacation, setVacation] =
         useState<VacationBalance | null>(null);
+    const [pdfBusy, setPdfBusy] =
+        useState(false);
 
 
     const [values,setValues] =
@@ -593,6 +595,30 @@ export default function DynamicForm({
 
 
 
+
+    async function downloadVacationPdf() {
+        setPdfBusy(true);
+        try {
+            const response = await fetch(
+                `/api/forms/vacation/pdf?year=${vacationYear}`
+            );
+            if (!response.ok) {
+                alert("Overzicht downloaden mislukt");
+                return;
+            }
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `vakantieoverzicht-${vacationYear}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        } finally {
+            setPdfBusy(false);
+        }
+    }
 
     async function submit(){
 
@@ -1081,15 +1107,36 @@ export default function DynamicForm({
                 )
             }
 
-            {definition.type === "verlof" && vacation ? (
-                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                    <VacationBalanceBar
-                        balance={vacation}
-                        thisRequestDays={thisRequestDays}
-                        showThisRequestPending={
-                            isVakantiedagen(values.typeVerlof)
-                        }
-                    />
+            {definition.type === "verlof" ? (
+                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
+                    {vacation ? (
+                        <VacationBalanceBar
+                            balance={vacation}
+                            thisRequestDays={thisRequestDays}
+                            showThisRequestPending={
+                                isVakantiedagen(values.typeVerlof)
+                            }
+                        />
+                    ) : (
+                        <p className="text-sm text-gray-500">
+                            Vakantiedagen laden...
+                        </p>
+                    )}
+                    <button
+                        type="button"
+                        onClick={downloadVacationPdf}
+                        disabled={pdfBusy}
+                        className="
+                            w-full rounded-xl border border-gray-300
+                            bg-white px-4 py-2.5 text-sm font-semibold
+                            text-gray-800 hover:bg-gray-50
+                            disabled:opacity-50
+                        "
+                    >
+                        {pdfBusy
+                            ? "Overzicht maken..."
+                            : "Overzicht PDF (12 maanden)"}
+                    </button>
                 </div>
             ) : null}
 

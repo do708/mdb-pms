@@ -141,12 +141,12 @@ export function toDateKey(value: unknown): string | null {
     return match ? `${match[1]}-${match[2]}-${match[3]}` : null;
 }
 
-/** Werkdagen (ma–vr, geen feestdagen) in het overlap van verlof en periode. */
-export function countWeekdaysInclusive(
+/** Werkdagen (ma–vr, geen feestdagen) als datums YYYY-MM-DD. */
+export function leaveWorkdayKeys(
     fromKey: string,
     toKey: string,
-    range: { from: string; to: string } | null
-): number {
+    range: { from: string; to: string } | null = null
+): string[] {
     let from = fromKey;
     let to = toKey < fromKey ? fromKey : toKey;
 
@@ -160,7 +160,7 @@ export function countWeekdaysInclusive(
     }
 
     if (from > to) {
-        return 0;
+        return [];
     }
 
     const yearFrom = Number(from.slice(0, 4));
@@ -171,7 +171,7 @@ export function countWeekdaysInclusive(
     }
     const feestdagen = holidayMap(years);
 
-    let count = 0;
+    const days: string[] = [];
     for (let day = from; day <= to; day = addDays(day, 1)) {
         const [year, month, date] = day.split("-").map(Number);
         const weekday = new Date(Date.UTC(year, month - 1, date)).getUTCDay();
@@ -181,9 +181,18 @@ export function countWeekdaysInclusive(
         if (feestdagen[day]) {
             continue;
         }
-        count += 1;
+        days.push(day);
     }
-    return count;
+    return days;
+}
+
+/** Werkdagen (ma–vr, geen feestdagen) in het overlap van verlof en periode. */
+export function countWeekdaysInclusive(
+    fromKey: string,
+    toKey: string,
+    range: { from: string; to: string } | null
+): number {
+    return leaveWorkdayKeys(fromKey, toKey, range).length;
 }
 
 export function periodRange(

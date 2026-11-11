@@ -1,5 +1,6 @@
 import {
     countWeekdaysInclusive,
+    leaveWorkdayKeys,
     todayKey,
     toDateKey,
     type EngineerPeriodTotals,
@@ -15,6 +16,7 @@ export type VacationLeaveItem = {
     from: string;
     to: string;
     type?: string | null;
+    reden?: string | null;
     status?: string | null;
 };
 
@@ -82,6 +84,8 @@ export function vacationItemsFromForms(
             to: range.to,
             type:
                 typeof data.typeVerlof === "string" ? data.typeVerlof : null,
+            reden:
+                typeof data.reden === "string" ? data.reden.trim() : "",
             status: form.status,
         });
     }
@@ -109,6 +113,52 @@ export function weekdaysInYear(
         from: `${year}-01-01`,
         to: `${year}-12-31`,
     });
+}
+
+export type TakenLeaveDay = {
+    date: string;
+    type: string;
+    reden: string;
+    isVacation: boolean;
+};
+
+export function takenLeaveDaysInYear(
+    leaves: VacationLeaveItem[],
+    userId: string,
+    year: number
+): TakenLeaveDay[] {
+    const yearRange = {
+        from: `${year}-01-01`,
+        to: `${year}-12-31`,
+    };
+    const days: TakenLeaveDay[] = [];
+    const seen = new Set<string>();
+
+    for (const item of leaves) {
+        if (item.userId !== userId) {
+            continue;
+        }
+        if (item.status && item.status !== "geaccepteerd") {
+            continue;
+        }
+        const type = item.type?.trim() || "Verlof";
+        const reden = item.reden?.trim() || "";
+        const keys = leaveWorkdayKeys(item.from, item.to, yearRange);
+        for (const date of keys) {
+            if (seen.has(date)) {
+                continue;
+            }
+            seen.add(date);
+            days.push({
+                date,
+                type,
+                reden,
+                isVacation: isVakantiedagen(item.type),
+            });
+        }
+    }
+
+    return days.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 function isApproved(status: string | null | undefined): boolean {
