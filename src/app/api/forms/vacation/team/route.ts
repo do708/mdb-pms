@@ -28,8 +28,11 @@ export async function GET(request: NextRequest) {
         const [engineers, vacationForms] = await Promise.all([
             prisma.user.findMany({
                 where: {
-                    role: "engineer",
                     active: true,
+                    OR: [
+                        { role: "office" },
+                        { role: "engineer", staffKind: "monteur" },
+                    ],
                 },
                 select: {
                     id: true,

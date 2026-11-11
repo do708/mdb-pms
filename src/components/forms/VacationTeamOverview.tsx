@@ -77,7 +77,7 @@ export default function VacationTeamOverview() {
     return (
         <SpecPanel
             title={`Vakantiedagen ${data?.year ?? year}`}
-            hint="31 dagen per jaar; restant gaat mee naar het volgende jaar. Aftrek pas na goedkeuring."
+            hint="Alleen eigen monteurs en office. 31 dagen per jaar; restant gaat mee. Aftrek pas na goedkeuring."
             actions={
                 <label className="block min-w-[7rem]">
                     <SpecFieldLabel>Jaar</SpecFieldLabel>
@@ -102,7 +102,9 @@ export default function VacationTeamOverview() {
                 <p className="text-sm text-amber-800">{error}</p>
             ) : null}
             {!loading && data && data.balances.length === 0 ? (
-                <p className="text-sm text-gray-500">Geen monteurs.</p>
+                <p className="text-sm text-gray-500">
+                    Geen eigen monteurs of office-medewerkers.
+                </p>
             ) : null}
             {!loading && data && data.balances.length > 0 ? (
                 <div className="grid gap-4 sm:grid-cols-2">
