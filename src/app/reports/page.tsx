@@ -614,10 +614,7 @@ export default function ReportsPage() {
                     )}
                 </SpecPanel>
 
-                <SpecPanel
-                    title={`Vakantiedagen ${vacationYear}`}
-                    hint="Iedereen heeft 31 vakantiedagen per kalenderjaar. Niet opgenomen dagen gaan mee naar het volgende jaar. Weekend en feestdagen tellen niet mee. Dagen gaan pas van het saldo af als kantoor de aanvraag accepteert."
-                >
+                <SpecPanel title={`Vakantiedagen ${vacationYear}`}>
                     {vakantieBalken.length === 0 ? (
                         <p className="text-sm text-gray-500">
                             Nog geen vakantieaanvragen in {vacationYear}.
