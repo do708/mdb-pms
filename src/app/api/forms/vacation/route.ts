@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiUser } from "@/lib/auth/guard";
 import {
+    leaveDaysFromData,
+    leaveReasonFromData,
+    parseLeaveOmvang,
     vacationBalanceForUser,
     vacationItemsFromForms,
     yearFromDateKey,
@@ -26,12 +29,11 @@ export async function GET(request: NextRequest) {
             where: {
                 type: "verlof",
                 userId: guard.user.id,
-                status: {
-                    in: ["geaccepteerd", "ingediend"],
-                },
             },
             select: {
+                id: true,
                 status: true,
+                createdAt: true,
                 data: true,
                 user: {
                     select: {
@@ -39,6 +41,9 @@ export async function GET(request: NextRequest) {
                         name: true,
                     },
                 },
+            },
+            orderBy: {
+                createdAt: "desc",
             },
         });
 
@@ -52,7 +57,26 @@ export async function GET(request: NextRequest) {
             vacation.name = guard.user.name ?? "Onbekend";
         }
 
-        return NextResponse.json(vacation);
+        const requests = vacationForms.map((form) => {
+            const data = (form.data ?? {}) as Record<string, unknown>;
+            const range = leaveDaysFromData(data);
+            return {
+                id: form.id,
+                status: form.status,
+                createdAt: form.createdAt.toISOString(),
+                from: range?.from ?? "",
+                to: range?.to ?? range?.from ?? "",
+                type:
+                    typeof data.typeVerlof === "string"
+                        ? data.typeVerlof
+                        : "",
+                reden: leaveReasonFromData(data),
+                omvang: parseLeaveOmvang(data.omvang),
+                year: yearFromDateKey(range?.from),
+            };
+        });
+
+        return NextResponse.json({ ...vacation, requests });
     } catch (error) {
         console.error("VACATION BALANCE ERROR", error);
         return NextResponse.json(
