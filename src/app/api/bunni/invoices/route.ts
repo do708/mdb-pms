@@ -4,6 +4,7 @@ import { requireApiRole } from "@/lib/auth/guard";
 import {
     isBunniConfigured,
     listBunniDocuments,
+    listBunniQuotes,
     searchBunniDocuments,
 } from "@/lib/bunni/client";
 
@@ -26,19 +27,22 @@ export async function GET(request: Request) {
         const q = url.searchParams.get("q") || "";
         const kindParam = url.searchParams.get("kind");
 
-        if (kindParam === "offerte") {
-            return NextResponse.json(
-                {
-                    error:
-                        "Offerte zoeken is nog niet beschikbaar. Er is nog geen Bunni-offerte-API.",
-                },
-                { status: 400 }
-            );
-        }
+        const kind =
+            kindParam === "offerte"
+            ? "offerte"
+            : kindParam === "alle"
+              ? "alle"
+              : "factuur";
 
-        const kind = kindParam === "alle" ? "alle" : "factuur";
-
-        const items = await listBunniDocuments();
+        const items =
+            kind === "offerte"
+            ? await listBunniQuotes()
+            : kind === "alle"
+              ? [
+                    ...(await listBunniQuotes()),
+                    ...(await listBunniDocuments()),
+                ]
+              : await listBunniDocuments();
         const results = searchBunniDocuments(items, q, kind);
 
         return NextResponse.json({ items: results });

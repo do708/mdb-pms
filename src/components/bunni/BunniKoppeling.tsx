@@ -56,8 +56,7 @@ export function BunniDocumentPicker({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const boxRef = useRef<HTMLDivElement>(null);
-    // Offertes hebben nog geen Bunni-API; zoeken via facturen toont verkeerde nummers.
-    const searchable = kind === "factuur";
+    const searchable = true;
 
     useEffect(() => {
         function onDoc(e: MouseEvent) {
@@ -78,7 +77,7 @@ export function BunniDocumentPicker({
             setLoading(true);
             setError(null);
             try {
-                const params = new URLSearchParams({ kind: "factuur", q });
+                const params = new URLSearchParams({ kind, q });
                 const res = await fetch(`/api/bunni/invoices?${params}`);
                 const data = await res.json();
                 if (!res.ok) {
@@ -95,7 +94,7 @@ export function BunniDocumentPicker({
         }, 250);
 
         return () => window.clearTimeout(t);
-    }, [q, searchable, open]);
+    }, [q, kind, searchable, open]);
 
     return (
         <div ref={boxRef} className="relative min-w-0">
@@ -142,7 +141,11 @@ export function BunniDocumentPicker({
                             setOpen(true);
                         }}
                         onFocus={() => setOpen(true)}
-                        placeholder="Zoek factuur in Bunni…"
+                        placeholder={
+                            kind === "offerte"
+                                ? "Zoek offerte in Bunni…"
+                                : "Zoek factuur in Bunni…"
+                        }
                         className={
                             compact
                                 ? "mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
@@ -179,7 +182,7 @@ export function BunniDocumentPicker({
                                             {hit.number}
                                         </span>
                                         <span className="ml-2 text-[10px] font-semibold uppercase text-slate-400">
-                                            Factuur
+                                            {kind === "offerte" ? "Offerte" : "Factuur"}
                                         </span>
                                         <span className="block text-xs text-slate-500 truncate">
                                             {[
