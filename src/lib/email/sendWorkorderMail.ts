@@ -40,6 +40,15 @@ export function nederlandseNamenlijst(names: string[]): string {
     return `${unique.slice(0, -1).join(", ")} en ${unique[unique.length - 1]}`;
 }
 
+function aantalMonteurs(names: string[]): number {
+    const seen = new Set<string>();
+    for (const raw of names) {
+        const name = (raw || "").trim().toLowerCase();
+        if (name) seen.add(name);
+    }
+    return seen.size;
+}
+
 export function locatieFiliaalregel(
     locatieFiliaalnaam: string | null | undefined,
     datum: string
@@ -61,6 +70,7 @@ export function adresgegevensregel(
 
 export async function sendWorkorderMail(data: WorkorderMailData) {
     const monteursTekst = nederlandseNamenlijst(data.monteurs);
+    const werkwoord = aantalMonteurs(data.monteurs) > 1 ? "hebben" : "heeft";
     const locatieRegel = locatieFiliaalregel(data.locatieFiliaalnaam, data.datum);
     const adresRegel = adresgegevensregel(data.adres, data.plaats);
     const baseUrl =
@@ -78,7 +88,7 @@ export async function sendWorkorderMail(data: WorkorderMailData) {
 
     const tekst = `Beste Projects,
 
-${monteursTekst} heeft een opdracht afgerond en verstuurd.
+${monteursTekst} ${werkwoord} een opdracht afgerond en verstuurd.
 
 Opdrachtnummer: ${data.workorderNumber}
 Opdrachtgever: ${data.customer}
@@ -96,7 +106,7 @@ Team MDB Networks
 
   <p>Beste Projects,</p>
 
-  <p><strong>${monteursTekst}</strong> heeft een opdracht afgerond en verstuurd.</p>
+  <p><strong>${monteursTekst}</strong> ${werkwoord} een opdracht afgerond en verstuurd.</p>
 
   <p>
     <strong>Opdrachtnummer:</strong> ${data.workorderNumber}<br>
