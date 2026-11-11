@@ -145,7 +145,7 @@ const menu:MenuItem[] = [
         href:"/users",
         icon:UserCog,
         title:"Rechten, accounts en rollen toewijzen",
-        roles:["admin"]
+        roles:["admin","office"]
     },
 
     {

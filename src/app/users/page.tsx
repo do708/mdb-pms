@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import DeleteButton from "@/components/DeleteButton";
 import Link from "next/link";
-import { canAccessAdmin } from "@/lib/auth/checkRole";
+import { canAccessAdmin, canAccessOffice } from "@/lib/auth/checkRole";
 import {
     PageHeader,
     PageShell,
@@ -54,7 +54,7 @@ export default function UsersPage() {
         );
     }
 
-    if (!canAccessAdmin(userRole)) {
+    if (!canAccessOffice(userRole)) {
         return (
             <PageShell>
                 <p className="text-sm text-gray-500">Geen toegang</p>
@@ -62,12 +62,19 @@ export default function UsersPage() {
         );
     }
 
+    const isAdmin = canAccessAdmin(userRole);
+
     return (
         <PageShell>
             <PageHeader
                 title="Gebruikers"
-                subtitle="Beheer medewerkers en rollen"
+                subtitle={
+                    isAdmin
+                        ? "Beheer medewerkers en rollen"
+                        : "Wachtwoorden van medewerkers resetten"
+                }
                 actions={
+                    isAdmin ? (
                     <Link
                         href="/users/new"
                         className="
@@ -77,6 +84,7 @@ export default function UsersPage() {
                     >
                         + Nieuwe gebruiker
                     </Link>
+                    ) : undefined
                 }
             />
 
@@ -144,10 +152,10 @@ export default function UsersPage() {
                                             hover:bg-gray-50
                                         "
                                     >
-                                        Wijzigen
+                                        {isAdmin ? "Wijzigen" : "Wachtwoord"}
                                     </Link>
 
-                                    {session?.user?.id !== user.id && (
+                                    {isAdmin && session?.user?.id !== user.id && (
                                         <DeleteButton
                                             url={`/api/users/${user.id}`}
                                             label={`gebruiker ${user.name || user.email}`}

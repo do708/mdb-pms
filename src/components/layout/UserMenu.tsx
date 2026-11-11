@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LogOut, RefreshCw } from "lucide-react";
+import { KeyRound, LogOut, RefreshCw } from "lucide-react";
+import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 
 import { USER_ROLE_LABELS } from "@/lib/auth/checkRole";
@@ -93,6 +94,14 @@ export default function UserMenu() {
                     className="fixed z-[110] w-56 bg-white border border-gray-200 rounded-xl shadow-lg p-2 space-y-2"
                     style={{ top: menuPos.top, right: menuPos.right }}
                 >
+                    <Link
+                        href="/settings"
+                        onClick={() => setOpen(false)}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 text-gray-800 font-medium text-sm"
+                    >
+                        <KeyRound size={16} />
+                        Wachtwoord wijzigen
+                    </Link>
                     <button
                         type="button"
                         onClick={() => {

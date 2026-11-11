@@ -11,7 +11,7 @@ type Ctx = { params: Promise<{ id: string }> };
 
 export async function GET(request: NextRequest, context: Ctx) {
 
-    const guard = await requireApiRole(["admin"]);
+    const guard = await requireApiRole(["admin", "office"]);
     if (!guard.ok) return guard.response;
 
     try {
@@ -54,13 +54,58 @@ export async function GET(request: NextRequest, context: Ctx) {
 
 export async function PUT(request: NextRequest, context: Ctx) {
 
-    const guard = await requireApiRole(["admin"]);
+    const guard = await requireApiRole(["admin", "office"]);
     if (!guard.ok) return guard.response;
 
     try {
 
         const { id } = await context.params;
         const body = await request.json();
+
+        if (guard.user.role === "office") {
+            const existing = await prisma.user.findUnique({
+                where: { id },
+                select: { id: true, role: true },
+            });
+
+            if (!existing) {
+                return NextResponse.json(
+                    { error: "Gebruiker niet gevonden" },
+                    { status: 404 }
+                );
+            }
+
+            if (existing.role === "admin") {
+                return NextResponse.json(
+                    { error: "Kantoor mag geen admin-wachtwoord wijzigen" },
+                    { status: 403 }
+                );
+            }
+
+            const password = body.password ? String(body.password) : "";
+            if (password.length < 8) {
+                return NextResponse.json(
+                    { error: "Wachtwoord moet minimaal 8 tekens zijn" },
+                    { status: 400 }
+                );
+            }
+
+            const user = await prisma.user.update({
+                where: { id },
+                data: { password: await bcrypt.hash(password, 10) },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    staffKind: true,
+                    stagiaireUntil: true,
+                    active: true,
+                },
+            });
+
+            return NextResponse.json({ success: true, user });
+        }
 
         const data: {
             name?: string | null;

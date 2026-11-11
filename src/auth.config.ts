@@ -143,10 +143,25 @@ export const authConfig = {
                 );
             }
 
-            // Alleen admin bij gebruikersbeheer.
+            // Gebruikersbeheer: admin volledig, kantoor wachtwoorden resetten.
             // /settings is de eigen profielpagina en mag voor iedereen.
-            if (pathname.startsWith("/users") && role !== "admin") {
-                return Response.redirect(new URL("/dashboard", request.nextUrl));
+            if (pathname.startsWith("/users")) {
+                if (role === "admin") {
+                    return true;
+                }
+                if (role === "office") {
+                    if (
+                        pathname.startsWith("/users/new")
+                    ) {
+                        return Response.redirect(
+                            new URL("/users", request.nextUrl)
+                        );
+                    }
+                    return true;
+                }
+                return Response.redirect(
+                    new URL("/dashboard", request.nextUrl)
+                );
             }
 
             // admin + office: rest is toegestaan
