@@ -1,3 +1,5 @@
+import { holidayMap } from "@/lib/holidays";
+
 /** Kalenderdagen in Europe/Amsterdam (rapportage-periodes). */
 
 const TZ = "Europe/Amsterdam";
@@ -139,7 +141,7 @@ export function toDateKey(value: unknown): string | null {
     return match ? `${match[1]}-${match[2]}-${match[3]}` : null;
 }
 
-/** Werkdagen (ma–vr) in het overlap van verlof en rapportageperiode. */
+/** Werkdagen (ma–vr, geen feestdagen) in het overlap van verlof en periode. */
 export function countWeekdaysInclusive(
     fromKey: string,
     toKey: string,
@@ -161,13 +163,25 @@ export function countWeekdaysInclusive(
         return 0;
     }
 
+    const yearFrom = Number(from.slice(0, 4));
+    const yearTo = Number(to.slice(0, 4));
+    const years: number[] = [];
+    for (let year = yearFrom; year <= yearTo; year += 1) {
+        years.push(year);
+    }
+    const feestdagen = holidayMap(years);
+
     let count = 0;
     for (let day = from; day <= to; day = addDays(day, 1)) {
         const [year, month, date] = day.split("-").map(Number);
         const weekday = new Date(Date.UTC(year, month - 1, date)).getUTCDay();
-        if (weekday !== 0 && weekday !== 6) {
-            count += 1;
+        if (weekday === 0 || weekday === 6) {
+            continue;
         }
+        if (feestdagen[day]) {
+            continue;
+        }
+        count += 1;
     }
     return count;
 }

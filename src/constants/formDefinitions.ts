@@ -147,7 +147,7 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
         icon:"🌴",
 
         description:
-            "Vraag vakantiedagen of ander verlof aan",
+            "Vraag vakantiedagen of ander verlof aan. Weekend en feestdagen tellen niet als verlofdag.",
 
         fields:[
 

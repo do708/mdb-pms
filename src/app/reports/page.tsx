@@ -247,7 +247,7 @@ export default function ReportsPage() {
             <SpecPageCard>
                 <SpecPanel
                     title="Filters"
-                    hint="Uren komen uit de planning (niet uit de werkbon). Kilometers en reistijd alleen voor eigen monteurs; inleners en stagiairs staan wel in het urenoverzicht. Kilometers zijn werkelijk gereden (dagroute). Verlof telt werkdagen (ma–vr) van geaccepteerde aanvragen. Vakantiedagen: 28 per kalenderjaar, alleen afgeboekt na goedkeuring."
+                    hint="Uren komen uit de planning (niet uit de werkbon). Kilometers en reistijd alleen voor eigen monteurs; inleners en stagiairs staan wel in het urenoverzicht. Kilometers zijn werkelijk gereden (dagroute). Verlof telt alleen werkdagen (ma–vr), geen weekenden of feestdagen. Vakantiedagen: 28 per kalenderjaar, alleen afgeboekt na goedkeuring."
                 >
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <label className="block">
@@ -613,7 +613,7 @@ export default function ReportsPage() {
 
                 <SpecPanel
                     title={`Vakantiedagen ${vacationYear}`}
-                    hint="Iedereen heeft 28 vakantiedagen per kalenderjaar. Dagen gaan pas van het saldo af als kantoor de aanvraag accepteert."
+                    hint="Iedereen heeft 28 vakantiedagen per kalenderjaar. Weekend en feestdagen tellen niet mee. Dagen gaan pas van het saldo af als kantoor de aanvraag accepteert."
                 >
                     {vakantieBalken.length === 0 ? (
                         <p className="text-sm text-gray-500">

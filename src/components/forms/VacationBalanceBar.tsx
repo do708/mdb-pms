@@ -62,10 +62,12 @@ export default function VacationBalanceBar({
                     </span>
                 ) : null}
             </div>
-            {thisRequestDays != null && thisRequestDays > 0 ? (
+            {thisRequestDays != null ? (
                 <p className="text-xs text-gray-500">
                     Deze aanvraag: {thisRequestDays} werkdag
                     {thisRequestDays === 1 ? "" : "en"}
+                    {" "}
+                    (weekend en feestdagen tellen niet mee)
                     {showThisRequestPending
                         ? " — wordt afgeboekt na goedkeuring door kantoor"
                         : ""}
