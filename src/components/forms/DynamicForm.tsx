@@ -1231,22 +1231,10 @@ export default function DynamicForm({
 
             {definition.type === "verlof" ? (
                 <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
-                    <div>
-                        <h2 className="text-sm font-semibold text-gray-900">
-                            Archief vakantieoverzichten
-                        </h2>
-                        <p className="mt-0.5 text-xs text-gray-500">
-                            Automatisch bewaard. Overzichten vanaf 2026 (maximaal
-                            vier voorgaande jaren), op basis van goedgekeurd
-                            verlof.
-                        </p>
-                    </div>
-                    {archiveYears.length === 0 ? (
-                        <p className="text-sm text-gray-500">
-                            Nog geen archiefjaren. Vanaf 2027 verschijnt 2026
-                            hier.
-                        </p>
-                    ) : (
+                    <h2 className="text-sm font-semibold text-gray-900">
+                        Archief vakantieoverzichten
+                    </h2>
+                    {archiveYears.length > 0 ? (
                     <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
                         {archiveYears.map((year) => (
                             <li
@@ -1274,7 +1262,7 @@ export default function DynamicForm({
                             </li>
                         ))}
                     </ul>
-                    )}
+                    ) : null}
                 </div>
             ) : null}
 
