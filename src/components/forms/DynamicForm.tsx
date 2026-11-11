@@ -515,7 +515,14 @@ export default function DynamicForm({
 
     const archiveYears = useMemo(() => {
         const current = new Date().getFullYear();
-        return [current - 1, current - 2, current - 3, current - 4];
+        const years: number[] = [];
+        for (let year = current; year >= 2026; year -= 1) {
+            years.push(year);
+            if (years.length >= 5) {
+                break;
+            }
+        }
+        return years;
     }, []);
 
     const requestsByYear = useMemo(() => {
@@ -1265,15 +1272,9 @@ export default function DynamicForm({
 
             {definition.type === "verlof" ? (
                 <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
-                    <div>
-                        <h2 className="text-sm font-semibold text-gray-900">
-                            Archief vakantieoverzichten
-                        </h2>
-                        <p className="mt-0.5 text-xs text-gray-500">
-                            Automatisch bewaard. Overzichten van de vorige vier
-                            jaren, op basis van goedgekeurd verlof.
-                        </p>
-                    </div>
+                    <h2 className="text-sm font-semibold text-gray-900">
+                        Archief vakantieoverzichten
+                    </h2>
                     {archiveYears.map((year) => {
                         const yearRequests = requestsByYear.get(year) ?? [];
                         return (
@@ -1300,7 +1301,7 @@ export default function DynamicForm({
                                     >
                                         {pdfBusyYear === year
                                             ? "PDF maken..."
-                                            : "PDF"}
+                                            : "12 maanden PDF"}
                                     </button>
                                 </div>
                                 {yearRequests.length === 0 ? (
