@@ -9,6 +9,14 @@ import { getFormDefinition } from "@/constants/formDefinitions";
 import { excludeArchivedForms } from "@/lib/archive";
 import { buildFormTitle } from "@/lib/forms/formDisplay";
 import { sendFormSubmissionMail } from "@/lib/email/sendFormSubmissionMail";
+import {
+    isVakantiedagen,
+    leaveDaysFromData,
+    vacationBalanceForUser,
+    vacationItemsFromForms,
+    weekdaysInYear,
+    yearFromDateKey,
+} from "@/lib/reports/vacation";
 
 
 
@@ -76,6 +84,7 @@ export async function GET(){
                     user:{
 
                         select:{
+                            id:true,
                             name:true
                         }
 
@@ -85,11 +94,56 @@ export async function GET(){
 
             });
 
+        const vacationForms =
+            await prisma.formSubmission.findMany({
+                where: {
+                    type: "verlof",
+                    status: {
+                        in: ["geaccepteerd", "ingediend"],
+                    },
+                    ...(guard.user.role === "engineer"
+                        ? { userId: guard.user.id }
+                        : {}),
+                },
+                select: {
+                    status: true,
+                    data: true,
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                },
+            });
 
+        const vacationLeaves = vacationItemsFromForms(vacationForms);
 
+        const withVacation = forms.map((form) => {
+            if (form.type !== "verlof") {
+                return form;
+            }
+            const data = (form.data ?? {}) as Record<string, unknown>;
+            const range = leaveDaysFromData(data);
+            const year = yearFromDateKey(range?.from);
+            const vacation = vacationBalanceForUser(
+                vacationLeaves,
+                form.user.id,
+                year
+            );
+            const thisRequestDays =
+                range && isVakantiedagen(data.typeVerlof)
+                    ? weekdaysInYear(range.from, range.to, year)
+                    : 0;
+            return {
+                ...form,
+                vacation,
+                thisRequestDays,
+            };
+        });
 
         return NextResponse.json(
-            forms
+            withVacation
         );
 
 
