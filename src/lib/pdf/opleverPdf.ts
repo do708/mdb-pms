@@ -54,6 +54,9 @@ const NO_TEXT = rgb(185 / 255, 28 / 255, 28 / 255);
 const WARN_FILL = rgb(255 / 255, 237 / 255, 213 / 255);
 const WARN_TEXT = rgb(194 / 255, 65 / 255, 12 / 255);
 
+const EMPTY_FILL = rgb(226 / 255, 232 / 255, 240 / 255);
+const EMPTY_TEXT = rgb(71 / 255, 85 / 255, 101 / 255);
+
 
 function roundedRectPath(
     x:number,
@@ -582,11 +585,28 @@ export async function generateOpleverPdf(
 
 
 
+    function chipColors(kind:"yes" | "no" | "warn" | "empty"){
+        if(kind === "yes"){
+            return { color:YES_FILL, textColor:YES_TEXT };
+        }
+        if(kind === "no"){
+            return { color:NO_FILL, textColor:NO_TEXT };
+        }
+        if(kind === "warn"){
+            return { color:WARN_FILL, textColor:WARN_TEXT };
+        }
+        return { color:EMPTY_FILL, textColor:EMPTY_TEXT };
+    }
+
     function jaNee(
         label:string,
         value:boolean | null,
         labels:[string,string] = ["Ja","Nee"],
-        required = false
+        required = false,
+        tone:{
+            ja?:"yes" | "no" | "warn" | "empty";
+            nee?:"yes" | "no" | "warn" | "empty";
+        } = {}
     ){
 
         if(value === null && !required){
@@ -596,11 +616,11 @@ export async function generateOpleverPdf(
         text(label);
 
         const selected = value === true ? labels[0] : labels[1];
+        const kind = value === true ? (tone.ja ?? "yes") : (tone.nee ?? "no");
         badges([{
             label:selected,
             active:true,
-            color:value === true ? YES_FILL : NO_FILL,
-            textColor:value === true ? YES_TEXT : NO_TEXT
+            ...chipColors(kind)
         }]);
 
         dashedLine();
@@ -623,22 +643,18 @@ export async function generateOpleverPdf(
 
         text(label);
 
-        const negative = value === "Nee" || value === "n.v.t." || value === "Slecht";
+        const kind =
+            value === "n.v.t."
+            ? "empty"
+            : value === "Matig"
+              ? "warn"
+              : value === "Nee" || value === "Slecht"
+                ? "no"
+                : "yes";
         badges([{
             label:value,
             active:true,
-            color:
-                value === "Matig"
-                ? WARN_FILL
-                : negative
-                    ? NO_FILL
-                    : YES_FILL,
-            textColor:
-                value === "Matig"
-                ? WARN_TEXT
-                : negative
-                    ? NO_TEXT
-                    : YES_TEXT
+            ...chipColors(kind)
         }]);
 
         dashedLine();
@@ -1117,11 +1133,10 @@ export async function generateOpleverPdf(
         ["Overig",data.materialen.overigBeugel]
     ];
 
-    const beugelText =
+    const beugelRegels =
         beugels
         .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join("   ·   ");
+        .map(([name,amount])=>[name, amount]);
 
     const patch:[string,string][] = [
         ["1 m",data.materialen.patch1],
@@ -1132,11 +1147,10 @@ export async function generateOpleverPdf(
         ["10 m",data.materialen.patch10]
     ];
 
-    const patchText =
+    const patchRegels =
         patch
         .filter(([,amount])=>amount)
-        .map(([name,amount])=>`Patch kabel ${name}: ${amount}`)
-        .join("   ·   ");
+        .map(([name,amount])=>[`Patchkabel ${name}`, amount]);
 
     const verleng:[string,string][] = [
         ["1,5 m",data.materialen.verleng15],
@@ -1144,13 +1158,12 @@ export async function generateOpleverPdf(
         ["5 m",data.materialen.verleng5]
     ];
 
-    const verlengText =
+    const verlengRegels =
         verleng
         .filter(([,amount])=>amount)
-        .map(([name,amount])=>`3-voudig ${name}: ${amount}`)
-        .join("   ·   ");
+        .map(([name,amount])=>[`Verlengsnoer 3-voudig ${name}`, amount]);
 
-    const hdmiText =
+    const hdmiRegels =
         [
             ["HDMI 1 m",data.materialen.hdmi1m],
             ["HDMI 2 m",data.materialen.hdmi2m],
@@ -1160,50 +1173,29 @@ export async function generateOpleverPdf(
             ["HDMI 10 m",data.materialen.hdmi10m]
         ]
         .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join("   ·   ");
+        .map(([name,amount])=>[name, amount]);
+
+    const materiaalRegels = [
+        ...beugelRegels,
+        ...patchRegels,
+        ...hdmiRegels,
+        ...verlengRegels,
+    ];
 
     const heeftMaterialen =
         input.materials.length > 0
-        || Boolean(beugelText)
-        || Boolean(patchText)
-        || Boolean(verlengText)
-        || Boolean(hdmiText)
+        || materiaalRegels.length > 0
         || Boolean(data.materialen.opmerkingen.trim());
 
     if(heeftMaterialen){
     sectionBar("Gebruikte materialen:");
 
-    if(beugelText){
-
-        text(beugelText,{ gap:2 });
-
-        dashedLine();
-
-    }
-
-    if(patchText){
-
-        text(patchText,{ gap:2 });
-
-        dashedLine();
-
-    }
-
-    if(hdmiText){
-
-        text(hdmiText,{ gap:2 });
-
-        dashedLine();
-
-    }
-
-    if(verlengText){
-
-        text(verlengText,{ gap:2 });
-
-        dashedLine();
-
+    if(materiaalRegels.length > 0){
+        drawDataTable(
+            ["Artikel","Aantal"],
+            materiaalRegels,
+            [0.82, 0.18]
+        );
     }
 
     labelValue(
@@ -1239,6 +1231,7 @@ export async function generateOpleverPdf(
 
     if(input.photos.length > 0){
 
+        newPage();
         sectionBar("Foto's:");
 
 
@@ -1412,7 +1405,9 @@ export async function generateOpleverPdf(
     jaNee(
         "Wifi-verbinding van toepassing?",
         data.checklist.wifiVanToepassing,
-        ["Ja","Nee"]
+        ["Ja","Nee"],
+        false,
+        { ja:"warn", nee:"yes" }
     );
 
     if(data.checklist.wifiVanToepassing === true){
@@ -1451,7 +1446,9 @@ export async function generateOpleverPdf(
     jaNee(
         "Afval verwijderd?",
         data.checklist.afvalverwijdering,
-        ["Ja","Nee"]
+        ["Ja","Nee"],
+        false,
+        { ja:"no", nee:"yes" }
     );
 
     }

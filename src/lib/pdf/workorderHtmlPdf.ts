@@ -312,15 +312,19 @@ function chipSvg(
 
 
 function pill(
-    value:boolean | null
+    value:boolean | null,
+    tone:{
+        ja?:"yes" | "no" | "warn" | "empty";
+        nee?:"yes" | "no" | "warn" | "empty";
+    } = {}
 ):string {
 
     if(value === true){
-        return chipSvg("Ja","yes");
+        return chipSvg("Ja", tone.ja ?? "yes");
     }
 
     if(value === false){
-        return chipSvg("Nee","no");
+        return chipSvg("Nee", tone.nee ?? "no");
     }
 
     return chipSvg("—","empty");
@@ -336,13 +340,16 @@ function choicePill(
         return chipSvg("—","empty");
     }
 
+    if(value === "n.v.t."){
+        return chipSvg(value, "empty");
+    }
+
     if(value === "Matig"){
         return chipSvg(value, "warn");
     }
 
     const negative =
         value === "Nee" ||
-        value === "n.v.t." ||
         value === "Slecht";
 
     return chipSvg(value, negative ? "no" : "yes");
@@ -530,8 +537,7 @@ function textAnswer(
 function opleverSections(
     data:OpleverData,
     monteur1:string | null,
-    extraEngineerNames:string[] = [],
-    photosHtml = ""
+    extraEngineerNames:string[] = []
 ):{ modules:string; checklist:string } {
 
     const t = data.tarief;
@@ -666,122 +672,101 @@ function opleverSections(
     }
 
 
-    const beugels =
-        [
-            ["Muurbeugel",m.muurbeugel],
-            ["Zwenkbeugel",m.zwenkbeugel],
-            ["Plafond 150cm",m.plafond150],
-            ["Plafond 300cm",m.plafond300],
-            ["Vloerstandaard",m.vloerstandaard],
-            ["Overig",m.overigBeugel]
-        ]
-        .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join(" · ");
+    const hoeveelheden = (
+        items:[string, string | number | null | undefined][]
+    ):[string,string][] =>
+        items
+            .filter(([,amount])=>valueOrEmpty(amount))
+            .map(([name,amount])=>[name, String(amount)]);
+
+    const beugelRegels = hoeveelheden([
+        ["Muurbeugel",m.muurbeugel],
+        ["Zwenkbeugel",m.zwenkbeugel],
+        ["Plafondbeugel 150cm",m.plafond150],
+        ["Plafondbeugel 300cm",m.plafond300],
+        ["Vloerstandaard",m.vloerstandaard],
+        ["Beugel overig",m.overigBeugel],
+    ]);
+
+    const patchRegels = hoeveelheden([
+        ["Patchkabel 1 m",m.patch1],
+        ["Patchkabel 2 m",m.patch2],
+        ["Patchkabel 3 m",m.patch3],
+        ["Patchkabel 5 m",m.patch5],
+        ["Patchkabel 7,5 m",m.patch75],
+        ["Patchkabel 10 m",m.patch10],
+    ]);
+
+    const verlengRegels = hoeveelheden([
+        ["Verlengsnoer 3-voudig 1,5 m",m.verleng15],
+        ["Verlengsnoer 3-voudig 3 m",m.verleng3],
+        ["Verlengsnoer 3-voudig 5 m",m.verleng5],
+    ]);
+
+    const hdmiKabelRegels = hoeveelheden([
+        ["HDMI 1 m",m.hdmi1m],
+        ["HDMI 2 m",m.hdmi2m],
+        ["HDMI 3 m",m.hdmi3m],
+        ["HDMI 5 m",m.hdmi5m],
+        ["HDMI 7,5 m",m.hdmi75m],
+        ["HDMI 10 m",m.hdmi10m],
+    ]);
 
 
-    const patch =
-        [
-            ["1 m",m.patch1],
-            ["2 m",m.patch2],
-            ["3 m",m.patch3],
-            ["5 m",m.patch5],
-            ["7,5 m",m.patch75],
-            ["10 m",m.patch10]
-        ]
-        .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join(" · ");
+    const hdmiSplitterRegels = hoeveelheden([
+        ["HDMI splitter 1x2", m.hdmiSplitter1x2],
+        ["HDMI splitter 1x4", m.hdmiSplitter1x4],
+    ]);
 
+    const switchRegels = hoeveelheden([
+        ["Switch 5 poorten gigabit", m.switch5port],
+        ["Switch 8 poorten gigabit", m.switch8port],
+        ["Switch 5 poorten PoE gigabit", m.switch5portPoe],
+    ]);
 
-    const verleng =
-        [
-            ["1,5 m",m.verleng15],
-            ["3 m",m.verleng3],
-            ["5 m",m.verleng5]
-        ]
-        .filter(([,amount])=>amount)
-        .map(([name,amount])=>`3-voudig ${name}: ${amount}`)
-        .join(" · ");
+    const utpRegels = hoeveelheden([
+        ["UTP type 2 (20 m)",m.utpType2],
+        ["UTP type 3 (30 m)",m.utpType3],
+        ["UTP type 4 (40 m)",m.utpType4],
+        ["UTP type 5 (50 m)",m.utpType5],
+        ["UTP type 6 (60 m)",m.utpType6],
+        ["UTP type 7 (70 m)",m.utpType7],
+    ]);
 
+    const stroomRegels = hoeveelheden([
+        ["Stroomkabel type 1 (10 m)",m.stroomType1],
+        ["Stroomkabel type 2 (20 m)",m.stroomType2],
+        ["Stroomkabel type 3 (30 m)",m.stroomType3],
+    ]);
 
-    const hdmiKabels =
-        [
-            ["1 m",m.hdmi1m],
-            ["2 m",m.hdmi2m],
-            ["3 m",m.hdmi3m],
-            ["5 m",m.hdmi5m],
-            ["7,5 m",m.hdmi75m],
-            ["10 m",m.hdmi10m]
-        ]
-        .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join(" · ");
+    const rs232Regels = hoeveelheden([
+        ["RS232 1 m",m.rs232_1m],
+        ["RS232 5 m",m.rs232_5m],
+        ["RS232 10 m",m.rs232_10m],
+    ]);
 
-
-    const hdmiSplitters =
-        (
-            [
-                ["1x2", m.hdmiSplitter1x2, m.hdmiSplitter1x2Items, m.hdmiSplitter1x2Sn],
-                ["1x4", m.hdmiSplitter1x4, m.hdmiSplitter1x4Items, m.hdmiSplitter1x4Sn]
-            ] as [string, string, MateriaalStuk[] | undefined, string[] | undefined][]
-        )
-        .filter(([,amount])=>amount)
-        .map(([name,amount,items,sns])=>
-            `${name}: ${formatMateriaalStukken(amount, items, sns)}`
-        )
-        .join(" · ");
-
-
-    const switches =
-        (
-            [
-                ["5 poorten gigabit", m.switch5port, m.switch5portItems, m.switch5portSn],
-                ["8 poorten gigabit", m.switch8port, m.switch8portItems, m.switch8portSn],
-                ["5 poorten PoE gigabit", m.switch5portPoe, m.switch5portPoeItems, m.switch5portPoeSn]
-            ] as [string, string, MateriaalStuk[] | undefined, string[] | undefined][]
-        )
-        .filter(([,amount])=>amount)
-        .map(([name,amount,items,sns])=>
-            `${name}: ${formatMateriaalStukken(amount, items, sns)}`
-        )
-        .join(" · ");
-
-
-    const utp =
-        [
-            ["Type 2 (20 m)",m.utpType2],
-            ["Type 3 (30 m)",m.utpType3],
-            ["Type 4 (40 m)",m.utpType4],
-            ["Type 5 (50 m)",m.utpType5],
-            ["Type 6 (60 m)",m.utpType6],
-            ["Type 7 (70 m)",m.utpType7]
-        ]
-        .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join(" · ");
-
-
-    const stroom =
-        [
-            ["Type 1 (10 m)",m.stroomType1],
-            ["Type 2 (20 m)",m.stroomType2],
-            ["Type 3 (30 m)",m.stroomType3]
-        ]
-        .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join(" · ");
-
-
-    const rs232 =
-        [
-            ["1 m",m.rs232_1m],
-            ["5 m",m.rs232_5m],
-            ["10 m",m.rs232_10m]
-        ]
-        .filter(([,amount])=>amount)
-        .map(([name,amount])=>`${name}: ${amount}`)
-        .join(" · ");
+    const materiaalRegels:[string,string][] = [
+        ...(m.nieuweBeugels === true
+            ? [[
+                "TV-beugels gemonteerd",
+                m.bestaandeBeugels === true ? "Bestaand" : "Nieuw",
+            ] as [string,string]]
+            : []),
+        ...(m.nieuweBeugels === true ? beugelRegels : []),
+        ...(m.extraHdmiKabels === true ? hdmiKabelRegels : []),
+        ...(m.extraHdmiKabels === true ? hdmiSplitterRegels : []),
+        ...(m.extraPatchkabels === true ? patchRegels : []),
+        ...(m.extraSwitches === true ? switchRegels : []),
+        ...(m.utpGetrokken === true ? utpRegels : []),
+        ...(m.stroomkabelGetrokken === true ? stroomRegels : []),
+        ...(m.verlengsnoeren === true ? verlengRegels : []),
+        ...(m.extraSpeakers === true ? rs232Regels : []),
+        ...(m.extraSpeakers === true ? hoeveelheden([["USB-speakers", m.usbSpeakers]]) : []),
+        ...(m.multicast === true ? hoeveelheden([
+            ["Multicast zenders", m.multicastZenders],
+            ["Multicast ontvangers", m.multicastOntvangers],
+        ]) : []),
+    ];
 
 
     const filledRuimtes =
@@ -1023,7 +1008,6 @@ function opleverSections(
   ${kioskPdfBlocks}
   ${mediaplayersPdfBlocks}
   ${audioPdfBlocks}
-  ${photosHtml}
 
   ${qaBlock("Overig", `
       ${summarizeVoorziening("Stroom", i.stroomBlok) ? row("Stroom", textAnswer(summarizeVoorziening("Stroom", i.stroomBlok).replace(/^Stroom:\s*/,""))) : ""}
@@ -1147,47 +1131,18 @@ function opleverSections(
 
   ${
     (
-        m.nieuweBeugels === true ||
-        (m.extraHdmiKabels === true && Boolean(hdmiKabels || hdmiSplitters)) ||
-        (m.extraPatchkabels === true && Boolean(patch)) ||
-        (m.extraSwitches === true && Boolean(switches)) ||
-        (m.utpGetrokken === true && Boolean(utp)) ||
-        (m.stroomkabelGetrokken === true && Boolean(stroom)) ||
-        (m.verlengsnoeren === true && Boolean(verleng)) ||
-        (m.extraSpeakers === true && Boolean(m.usbSpeakers || rs232)) ||
-        (m.multicast === true && Boolean(m.multicastZenders || m.multicastOntvangers)) ||
-        (m.opmerkingen && String(m.opmerkingen).trim())
+        materiaalRegels.length > 0
+        || (m.opmerkingen && String(m.opmerkingen).trim())
     )
     ? `
   <div class="section">
     <div class="section-title">Gebruikte materialen</div>
-    <table class="qa">
-      ${m.nieuweBeugels === true ? row("TV-beugels gemonteerd",textAnswer(m.bestaandeBeugels === true ? "Bestaand" : "Nieuw")) : ""}
-      ${m.nieuweBeugels === true && beugels ? row("Beugels",textAnswer(beugels)) : ""}
-      ${m.extraHdmiKabels === true && hdmiKabels ? row("HDMI kabels/splitters",textAnswer(hdmiKabels)) : ""}
-      ${m.extraHdmiKabels === true && hdmiSplitters ? row("HDMI splitters",textAnswer(hdmiSplitters)) : ""}
-      ${m.extraPatchkabels === true && patch ? row("Patchkabels",textAnswer(patch)) : ""}
-      ${m.extraSwitches === true && switches ? row("Switches",textAnswer(switches)) : ""}
-      ${m.utpGetrokken === true && utp ? row("UTP-kabels",textAnswer(utp)) : ""}
-      ${m.stroomkabelGetrokken === true && stroom ? row("Stroomkabels",textAnswer(stroom)) : ""}
-      ${m.verlengsnoeren === true && verleng ? row("Verlengsnoeren",textAnswer(verleng)) : ""}
-      ${m.extraSpeakers === true && m.usbSpeakers ? row("USB-speakers (aantal)",textAnswer(m.usbSpeakers)) : ""}
-      ${m.extraSpeakers === true && rs232 ? row("RS232 kabel",textAnswer(rs232)) : ""}
-      ${m.multicast === true && m.multicastZenders ? row("Multicastset — zenders",textAnswer(
-          formatMateriaalStukken(
-              m.multicastZenders,
-              m.multicastZenderItems,
-              m.multicastZenderSns?.length ? m.multicastZenderSns : (m.multicastZenderSn ? [m.multicastZenderSn] : [])
-          )
-      )) : ""}
-      ${m.multicast === true && m.multicastOntvangers ? row("Ontvangers (aantal)",textAnswer(
-          formatMateriaalStukken(
-              m.multicastOntvangers,
-              m.multicastOntvangerItems,
-              m.multicastOntvangerSns?.length ? m.multicastOntvangerSns : (m.multicastOntvangerSn ? [m.multicastOntvangerSn] : [])
-          )
-      )) : ""}
-    </table>
+    ${dataTable(
+        ["Artikel","Aantal"],
+        materiaalRegels,
+        "data-table materials-table",
+        ["82%","18%"]
+    )}
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>` : ""}
 
@@ -1198,7 +1153,7 @@ function opleverSections(
       ${c.werkendOpgeleverd === false && c.redenWerkend ? row("Reden",textAnswer(c.redenWerkend)) : ""}
       ${c.lichtnetSchakelbaar !== null ? row("Hardware op handmatig schakelbaar stroompunt?",pill(c.lichtnetSchakelbaar)) : ""}
       ${c.lichtnetSchakelbaar === true && c.redenLichtnet ? row("Reden",textAnswer(c.redenLichtnet)) : ""}
-      ${c.wifiVanToepassing !== null ? row("Wifi-verbinding van toepassing?",pill(c.wifiVanToepassing)) : ""}
+      ${c.wifiVanToepassing !== null ? row("Wifi-verbinding van toepassing?",pill(c.wifiVanToepassing,{ ja:"warn", nee:"yes" })) : ""}
       ${c.wifiVanToepassing === true && c.wifiSterkte ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
       ${c.remoteServices ? row("Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices)) : ""}
       ${c.remoteServices === "Nee" && c.redenRemote ? row("Reden",textAnswer(c.redenRemote)) : ""}
@@ -1215,7 +1170,7 @@ function opleverSections(
         }
         return "";
       })()}
-      ${c.afvalverwijdering !== null ? row("Afval verwijderd?",pill(c.afvalverwijdering)) : ""}
+      ${c.afvalverwijdering !== null ? row("Afval verwijderd?",pill(c.afvalverwijdering,{ ja:"no", nee:"yes" })) : ""}
   `);
 
     return { modules, checklist };
@@ -1394,6 +1349,8 @@ function generateHtml(
   /* Sections */
   .section { margin-top: 16px; margin-bottom: 15px; }
   .page-break { break-before: page; page-break-before: always; }
+  .photos-page { break-before: page; page-break-before: always; }
+  .materials-table td:last-child, .materials-table th:last-child { text-align: right; white-space: nowrap; }
   .last-page {
     break-before: page;
     page-break-before: always;
@@ -1626,7 +1583,7 @@ function generateHtml(
   <!-- OPLEVERFORMULIER -->
   ${(() => {
         const fotos = veiligeFotos.length > 0 ? `
-  <div class="section">
+  <div class="section photos-page">
     <div class="section-title">Foto's van de installatie</div>
     <div class="photo-grid">
       ${veiligeFotos.map(foto=>{
@@ -1643,10 +1600,9 @@ function generateHtml(
         const { modules, checklist } = opleverSections(
             oplever,
             data.engineerName,
-            data.extraEngineerNames ?? [],
-            fotos
+            data.extraEngineerNames ?? []
         );
-        return `${modules}${customFieldsSection(data.customerSchema, oplever.custom)}
+        return `${modules}${customFieldsSection(data.customerSchema, oplever.custom)}${fotos}
   <div class="last-page">
     ${checklist}
     <div class="section">
