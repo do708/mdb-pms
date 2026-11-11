@@ -275,10 +275,13 @@ export async function GET(){
             await prisma.formSubmission.findMany({
                 where: {
                     type: "verlof",
-                    status: "geaccepteerd",
+                    status: {
+                        in: ["geaccepteerd", "ingediend"],
+                    },
                 },
                 select: {
                     data: true,
+                    status: true,
                     user: {
                         select: {
                             id: true,
@@ -879,7 +882,12 @@ export async function GET(){
                         userName:
                             form.user.name ?? "Onbekend",
                         from,
-                        to
+                        to,
+                        type:
+                            typeof data.typeVerlof === "string"
+                                ? data.typeVerlof
+                                : null,
+                        status: form.status,
                     };
                 })
                 .filter((row): row is {
@@ -887,6 +895,8 @@ export async function GET(){
                     userName: string;
                     from: string;
                     to: string;
+                    type: string | null;
+                    status: string;
                 } => row !== null)
 
         });

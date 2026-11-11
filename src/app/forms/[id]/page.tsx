@@ -16,6 +16,8 @@ import {
     nlFormDate,
     verlofSubtitle,
 } from "@/lib/forms/formDisplay";
+import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
+import type { VacationBalance } from "@/lib/reports/vacation";
 
 
 
@@ -35,9 +37,15 @@ interface FormDetail {
 
     user:{
 
+        id?:string;
+
         name:string | null;
 
     };
+
+    vacation?: VacationBalance | null;
+
+    thisRequestDays?: number;
 
 }
 
@@ -175,10 +183,16 @@ export default function FormDetailPage(){
                 );
 
             if(response.ok){
-                setForm({
-                    ...form,
-                    status:newStatus
-                });
+                const refreshed =
+                    await fetch(`/api/forms/${form.id}`);
+                if (refreshed.ok) {
+                    setForm(await refreshed.json());
+                } else {
+                    setForm({
+                        ...form,
+                        status:newStatus
+                    });
+                }
             } else {
                 const data =
                     await response.json().catch(()=>({}));
@@ -431,6 +445,18 @@ export default function FormDetailPage(){
                     </span>
 
                 </p>
+
+                {form.vacation ? (
+                    <div className="mt-4 max-w-lg">
+                        <VacationBalanceBar
+                            balance={form.vacation}
+                            thisRequestDays={form.thisRequestDays}
+                            showThisRequestPending={
+                                form.status === "ingediend"
+                            }
+                        />
+                    </div>
+                ) : null}
 
 
                 {

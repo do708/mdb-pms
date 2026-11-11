@@ -43,6 +43,8 @@ export type ReportLeaveRange = {
     userName: string;
     from: string;
     to: string;
+    type?: string | null;
+    status?: string | null;
 };
 
 export type YearMonthFilter = {
@@ -59,6 +61,9 @@ export type EngineerPeriodTotals = {
     kilometers: number;
     workorders: number;
     leaveDays: number;
+    vacationUsed: number;
+    vacationRemaining: number;
+    vacationPending: number;
 };
 
 export const MONTH_FILTER_OPTIONS: { value: string; label: string }[] = [
@@ -390,6 +395,9 @@ export function leaveDaysByEngineer(
         if (engineerId !== "alle" && item.userId !== engineerId) {
             continue;
         }
+        if (item.status && item.status !== "geaccepteerd") {
+            continue;
+        }
         const days = countWeekdaysInclusive(item.from, item.to, range);
         if (days <= 0) {
             continue;
@@ -419,6 +427,9 @@ export function engineersTotalsWithLeave(
         map.set(row.id, {
             ...row,
             leaveDays: leaveMap.get(row.id)?.days ?? 0,
+            vacationUsed: 0,
+            vacationRemaining: 0,
+            vacationPending: 0,
         });
     }
 
@@ -435,6 +446,9 @@ export function engineersTotalsWithLeave(
             kilometers: 0,
             workorders: 0,
             leaveDays: item.days,
+            vacationUsed: 0,
+            vacationRemaining: 0,
+            vacationPending: 0,
         });
     }
 

@@ -34,6 +34,12 @@ import {
     type ReportDayRow,
     type ReportLeaveRange,
 } from "@/lib/reports/periods";
+import {
+    applyVacationToEngineers,
+    vacationBalances,
+    vacationYearForPeriod,
+} from "@/lib/reports/vacation";
+import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
 
 interface ReportData {
     totals: {
@@ -166,15 +172,30 @@ export default function ReportsPage() {
         () => groupTimeline(filtered, groupBy),
         [filtered, groupBy]
     );
-    const perMonteur = useMemo(
+    const vacationYear = useMemo(
         () =>
-            engineersTotalsWithLeave(
-                filtered,
-                leave,
-                engineerFilter,
+            vacationYearForPeriod(
+                periodPreset,
+                customMonth,
+                yearFilter,
                 range
             ),
-        [filtered, leave, engineerFilter, range]
+        [periodPreset, customMonth, yearFilter, range]
+    );
+    const perMonteur = useMemo(
+        () =>
+            applyVacationToEngineers(
+                engineersTotalsWithLeave(
+                    filtered,
+                    leave,
+                    engineerFilter,
+                    range
+                ),
+                leave,
+                vacationYear,
+                engineerFilter
+            ),
+        [filtered, leave, engineerFilter, range, vacationYear]
     );
     const leaveDaysTotal = useMemo(
         () => perMonteur.reduce((sum, row) => sum + row.leaveDays, 0),
@@ -184,6 +205,13 @@ export default function ReportsPage() {
         () => customersTotals(filtered),
         [filtered]
     );
+    const vakantieBalken = useMemo(() => {
+        const rows = vacationBalances(leave, vacationYear);
+        if (engineerFilter === "alle") {
+            return rows;
+        }
+        return rows.filter((row) => row.userId === engineerFilter);
+    }, [leave, vacationYear, engineerFilter]);
 
     if (loading) {
         return (
@@ -219,7 +247,7 @@ export default function ReportsPage() {
             <SpecPageCard>
                 <SpecPanel
                     title="Filters"
-                    hint="Uren komen uit de planning (niet uit de werkbon). Kilometers en reistijd alleen voor eigen monteurs; inleners en stagiairs staan wel in het urenoverzicht. Kilometers zijn werkelijk gereden (dagroute). Verlof telt werkdagen (ma–vr) van geaccepteerde aanvragen."
+                    hint="Uren komen uit de planning (niet uit de werkbon). Kilometers en reistijd alleen voor eigen monteurs; inleners en stagiairs staan wel in het urenoverzicht. Kilometers zijn werkelijk gereden (dagroute). Verlof telt werkdagen (ma–vr) van geaccepteerde aanvragen. Vakantiedagen: 28 per kalenderjaar, alleen afgeboekt na goedkeuring."
                 >
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <label className="block">
@@ -517,6 +545,12 @@ export default function ReportsPage() {
                                         <th className="py-2 text-right text-xs font-medium text-gray-500">
                                             Verlofdagen
                                         </th>
+                                        <th className="py-2 text-right text-xs font-medium text-gray-500">
+                                            Vakantie {vacationYear}
+                                        </th>
+                                        <th className="py-2 text-right text-xs font-medium text-gray-500">
+                                            Vakantie over
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -560,10 +594,44 @@ export default function ReportsPage() {
                                             <td className="py-2 text-right text-gray-900">
                                                 {engineer.leaveDays}
                                             </td>
+                                            <td className="py-2 text-right text-gray-900">
+                                                {engineer.vacationUsed}/28
+                                                {engineer.vacationPending > 0
+                                                    ? ` (${engineer.vacationPending} open)`
+                                                    : ""}
+                                            </td>
+                                            <td className="py-2 text-right text-gray-900">
+                                                {engineer.vacationRemaining}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+                    )}
+                </SpecPanel>
+
+                <SpecPanel
+                    title={`Vakantiedagen ${vacationYear}`}
+                    hint="Iedereen heeft 28 vakantiedagen per kalenderjaar. Dagen gaan pas van het saldo af als kantoor de aanvraag accepteert."
+                >
+                    {vakantieBalken.length === 0 ? (
+                        <p className="text-sm text-gray-500">
+                            Nog geen vakantieaanvragen in {vacationYear}.
+                        </p>
+                    ) : (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            {vakantieBalken.map((balance) => (
+                                <div
+                                    key={balance.userId}
+                                    className="rounded-xl border border-gray-100 p-3 space-y-2"
+                                >
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {balance.name}
+                                    </p>
+                                    <VacationBalanceBar balance={balance} />
+                                </div>
+                            ))}
                         </div>
                     )}
                 </SpecPanel>

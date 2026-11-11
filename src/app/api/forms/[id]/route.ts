@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { requireApiUser, requireApiRole } from "@/lib/auth/guard";
+import {
+    isVakantiedagen,
+    leaveDaysFromData,
+    vacationBalanceForUser,
+    vacationItemsFromForms,
+    weekdaysInYear,
+    yearFromDateKey,
+} from "@/lib/reports/vacation";
 
 
 
@@ -48,6 +56,7 @@ export async function GET(
                     user:{
 
                         select:{
+                            id:true,
                             name:true
                         }
 
@@ -101,9 +110,49 @@ export async function GET(
 
 
 
-        return NextResponse.json(
-            form
-        );
+        let vacation = null;
+        let thisRequestDays = 0;
+
+        if (form.type === "verlof") {
+            const data = (form.data ?? {}) as Record<string, unknown>;
+            const range = leaveDaysFromData(data);
+            const year = yearFromDateKey(range?.from);
+            const vacationForms =
+                await prisma.formSubmission.findMany({
+                    where: {
+                        type: "verlof",
+                        userId: form.userId,
+                        status: {
+                            in: ["geaccepteerd", "ingediend"],
+                        },
+                    },
+                    select: {
+                        status: true,
+                        data: true,
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                });
+            vacation = vacationBalanceForUser(
+                vacationItemsFromForms(vacationForms),
+                form.userId,
+                year
+            );
+            thisRequestDays =
+                range && isVakantiedagen(data.typeVerlof)
+                    ? weekdaysInYear(range.from, range.to, year)
+                    : 0;
+        }
+
+        return NextResponse.json({
+            ...form,
+            vacation,
+            thisRequestDays,
+        });
 
 
     } catch(error){

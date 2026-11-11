@@ -16,6 +16,8 @@ import {
     buildVerlofTitle,
     verlofSubtitle,
 } from "@/lib/forms/formDisplay";
+import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
+import type { VacationBalance } from "@/lib/reports/vacation";
 
 interface FormItem {
     id: string;
@@ -25,8 +27,11 @@ interface FormItem {
     createdAt: string;
     data?: Record<string, unknown>;
     user: {
+        id?: string;
         name: string | null;
     };
+    vacation?: VacationBalance;
+    thisRequestDays?: number;
 }
 
 export default function FormsPage() {
@@ -153,8 +158,9 @@ function FormsPageContent() {
                                 href={`/forms/${form.id}`}
                                 className="flex-1 min-w-0"
                             >
-                                <SpecListRow className="flex justify-between items-center hover:bg-gray-50">
-                                    <div className="min-w-0">
+                                <SpecListRow className="flex justify-between items-start hover:bg-gray-50">
+                                    <div className="min-w-0 flex-1 space-y-2">
+                                        <div>
                                         <p className="font-semibold text-sm text-gray-900">
                                             {definition?.icon && (
                                                 <span aria-hidden>
@@ -166,6 +172,18 @@ function FormsPageContent() {
                                         <p className="text-xs text-gray-500 mt-0.5">
                                             {subtitle}
                                         </p>
+                                        </div>
+                                        {form.vacation ? (
+                                            <VacationBalanceBar
+                                                balance={form.vacation}
+                                                thisRequestDays={
+                                                    form.thisRequestDays
+                                                }
+                                                showThisRequestPending={
+                                                    form.status === "ingediend"
+                                                }
+                                            />
+                                        ) : null}
                                     </div>
 
                                     <span className="text-xs bg-gray-100 text-gray-700 rounded-full px-2.5 py-0.5 shrink-0">

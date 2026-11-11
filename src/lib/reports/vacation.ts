@@ -1,0 +1,213 @@
+import {
+    countWeekdaysInclusive,
+    todayKey,
+    toDateKey,
+    type EngineerPeriodTotals,
+    type PeriodPreset,
+    type YearMonthFilter,
+} from "@/lib/reports/periods";
+
+export const VACATION_DAYS_PER_YEAR = 28;
+
+export type VacationLeaveItem = {
+    userId: string;
+    userName: string;
+    from: string;
+    to: string;
+    type?: string | null;
+    status?: string | null;
+};
+
+export type VacationBalance = {
+    userId: string;
+    name: string;
+    year: number;
+    entitled: number;
+    used: number;
+    remaining: number;
+    pending: number;
+};
+
+export function isVakantiedagen(type: unknown): boolean {
+    if (typeof type !== "string") {
+        return false;
+    }
+    return type.trim().toLowerCase().startsWith("vakantiedagen");
+}
+
+export function yearFromDateKey(dateKey: string | null | undefined): number {
+    if (!dateKey || dateKey.length < 4) {
+        return Number(todayKey().slice(0, 4));
+    }
+    const year = Number(dateKey.slice(0, 4));
+    return Number.isFinite(year) ? year : Number(todayKey().slice(0, 4));
+}
+
+export function vacationYearForPeriod(
+    preset: PeriodPreset,
+    customMonth: string,
+    yearFilter?: YearMonthFilter,
+    range?: { from: string; to: string } | null
+): number {
+    if (preset === "year") {
+        return yearFilter?.year ?? Number(todayKey().slice(0, 4));
+    }
+    if (preset === "custom" && /^\d{4}-\d{2}$/.test(customMonth)) {
+        return Number(customMonth.slice(0, 4));
+    }
+    if (range?.from) {
+        return yearFromDateKey(range.from);
+    }
+    return Number(todayKey().slice(0, 4));
+}
+
+export function vacationItemsFromForms(
+    forms: Array<{
+        status: string;
+        data: unknown;
+        user: { id: string; name: string | null };
+    }>
+): VacationLeaveItem[] {
+    const items: VacationLeaveItem[] = [];
+    for (const form of forms) {
+        const data = (form.data ?? {}) as Record<string, unknown>;
+        const range = leaveDaysFromData(data);
+        if (!range) {
+            continue;
+        }
+        items.push({
+            userId: form.user.id,
+            userName: form.user.name ?? "Onbekend",
+            from: range.from,
+            to: range.to,
+            type:
+                typeof data.typeVerlof === "string" ? data.typeVerlof : null,
+            status: form.status,
+        });
+    }
+    return items;
+}
+
+export function leaveDaysFromData(data: Record<string, unknown> | null | undefined): {
+    from: string;
+    to: string;
+} | null {
+    const from = toDateKey(data?.eersteDag);
+    const to = toDateKey(data?.laatsteDag) ?? from;
+    if (!from || !to) {
+        return null;
+    }
+    return { from, to };
+}
+
+export function weekdaysInYear(
+    from: string,
+    to: string,
+    year: number
+): number {
+    return countWeekdaysInclusive(from, to, {
+        from: `${year}-01-01`,
+        to: `${year}-12-31`,
+    });
+}
+
+function isApproved(status: string | null | undefined): boolean {
+    return !status || status === "geaccepteerd";
+}
+
+export function vacationBalanceForUser(
+    leaves: VacationLeaveItem[],
+    userId: string,
+    year: number
+): VacationBalance {
+    let used = 0;
+    let pending = 0;
+    let name = "Onbekend";
+
+    for (const item of leaves) {
+        if (item.userId !== userId) {
+            continue;
+        }
+        name = item.userName || name;
+        if (!isVakantiedagen(item.type)) {
+            continue;
+        }
+        const days = weekdaysInYear(item.from, item.to, year);
+        if (days <= 0) {
+            continue;
+        }
+        if (item.status === "ingediend") {
+            pending += days;
+        } else if (isApproved(item.status)) {
+            used += days;
+        }
+    }
+
+    return {
+        userId,
+        name,
+        year,
+        entitled: VACATION_DAYS_PER_YEAR,
+        used,
+        remaining: Math.max(0, VACATION_DAYS_PER_YEAR - used),
+        pending,
+    };
+}
+
+export function vacationBalances(
+    leaves: VacationLeaveItem[],
+    year: number
+): VacationBalance[] {
+    const ids = new Set<string>();
+    for (const item of leaves) {
+        if (isVakantiedagen(item.type)) {
+            ids.add(item.userId);
+        }
+    }
+
+    return [...ids]
+        .map((id) => vacationBalanceForUser(leaves, id, year))
+        .sort((a, b) => a.name.localeCompare(b.name, "nl"));
+}
+
+export function applyVacationToEngineers(
+    engineers: EngineerPeriodTotals[],
+    leaves: VacationLeaveItem[],
+    year: number,
+    engineerFilter: string
+): EngineerPeriodTotals[] {
+    const map = new Map(engineers.map((row) => [row.id, { ...row }]));
+    const filteredLeaves =
+        engineerFilter === "alle"
+            ? leaves
+            : leaves.filter((item) => item.userId === engineerFilter);
+
+    for (const balance of vacationBalances(filteredLeaves, year)) {
+        const existing = map.get(balance.userId);
+        if (existing) {
+            existing.vacationUsed = balance.used;
+            existing.vacationRemaining = balance.remaining;
+            existing.vacationPending = balance.pending;
+            continue;
+        }
+        map.set(balance.userId, {
+            id: balance.userId,
+            name: balance.name,
+            hours: 0,
+            travel: 0,
+            kilometers: 0,
+            workorders: 0,
+            leaveDays: 0,
+            vacationUsed: balance.used,
+            vacationRemaining: balance.remaining,
+            vacationPending: balance.pending,
+        });
+    }
+
+    return [...map.values()].sort((a, b) => {
+        if (b.hours !== a.hours) {
+            return b.hours - a.hours;
+        }
+        return a.name.localeCompare(b.name, "nl");
+    });
+}
