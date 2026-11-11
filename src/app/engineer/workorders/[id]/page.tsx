@@ -46,6 +46,11 @@ import {
     formatAmsterdamDateIso,
     formatAmsterdamHHmm,
 } from "@/lib/datetime/amsterdam";
+import {
+    clearOpleverDraft,
+    readOpleverDraft,
+    writeOpleverDraft,
+} from "@/lib/workorders/opleverDraftCache";
 
 interface Workorder {
 
@@ -474,6 +479,8 @@ export default function EngineerWorkorderPage(){
     const opleverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const werkzaamhedenGeladen = useRef(false);
     const werkzaamhedenTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const opleverDataRef = useRef<OpleverData | null>(null);
+    const materiaalRef = useRef(materiaal);
 
 
 
@@ -597,12 +604,32 @@ export default function EngineerWorkorderPage(){
                 );
             }
 
+            const draft =
+                !heeftUitgevoerdeWerkbon(data.status)
+                ? readOpleverDraft(id)
+                : null;
+            const formBron =
+                draft?.formData ?? data.formData;
+            const draftMateriaal =
+                formBron
+                && typeof formBron === "object"
+                && "klaarzetMateriaal" in (formBron as object)
+                ? (formBron as { klaarzetMateriaal?: unknown }).klaarzetMateriaal
+                : null;
+
+            if (draftMateriaal && typeof draftMateriaal === "object") {
+                startMateriaal = {
+                    ...startMateriaal,
+                    ...draftMateriaal,
+                };
+            }
+
             setMateriaal(startMateriaal);
 
             setOpleverData(
-                data.formData
+                formBron
                 ?
-                mergeOpleverData(data.formData)
+                mergeOpleverData(formBron)
                 :
                 null
             );
@@ -622,6 +649,64 @@ export default function EngineerWorkorderPage(){
 
 
     },[id]);
+
+    opleverDataRef.current = opleverData;
+    materiaalRef.current = materiaal;
+
+    useEffect(() => {
+        if (
+            loading
+            || !id
+            || !opleverData
+            || heeftUitgevoerdeWerkbon(status)
+        ) {
+            return;
+        }
+
+        writeOpleverDraft(id, {
+            ...opleverData,
+            klaarzetMateriaal: materiaal,
+        });
+    }, [id, loading, opleverData, materiaal, status]);
+
+    useEffect(() => {
+        if (!id) {
+            return;
+        }
+
+        const flush = () => {
+            const current = opleverDataRef.current;
+            if (!current) {
+                return;
+            }
+
+            const formData = {
+                ...current,
+                klaarzetMateriaal: materiaalRef.current,
+            };
+            writeOpleverDraft(id, formData);
+            fetch(`/api/workorders/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ formData }),
+                keepalive: true,
+            }).catch(() => {});
+        };
+
+        const onVisibility = () => {
+            if (document.visibilityState === "hidden") {
+                flush();
+            }
+        };
+
+        document.addEventListener("visibilitychange", onVisibility);
+        window.addEventListener("pagehide", flush);
+
+        return () => {
+            document.removeEventListener("visibilitychange", onVisibility);
+            window.removeEventListener("pagehide", flush);
+        };
+    }, [id]);
 
 
     // Materiaal automatisch bewaren zodra er iets verandert (met korte
@@ -1116,6 +1201,8 @@ async function completeWorkorder(){
 
         // Bedankscherm tonen; na 5 seconden automatisch terug naar het
         // monteur-dashboard.
+        clearOpleverDraft(id);
+
         setVerstuurd(true);
 
         setTimeout(()=>{

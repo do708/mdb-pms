@@ -38,6 +38,7 @@ import InstallatieRuimtesSectie, {
     HardwareKenmerkenTabel
 } from "./InstallatieRuimtesSectie";
 import { prefillRuimtesVanAanvraag } from "@/lib/aanvraag/prefillRuimtesVanAanvraag";
+import { writeOpleverDraft } from "@/lib/workorders/opleverDraftCache";
 import {
     NATIVE_OS_AANSTURING_OPTIES,
     aansturingWeergave,
@@ -2256,8 +2257,12 @@ export default function OpleverForm({
     // om "setState tijdens render" te voorkomen.
     useEffect(()=>{
 
+        const next = normalizeOpleverMacs(structuredClone(data));
         if(onChange){
-            onChange(normalizeOpleverMacs(structuredClone(data)));
+            onChange(next);
+        }
+        if(workorderId){
+            writeOpleverDraft(workorderId, next);
         }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
