@@ -534,6 +534,7 @@ export async function GET(){
             hours:number;
             travel:number;
             kilometers:number;
+            workorderIds:Set<string>;
             customers:Map<string,{
                 id:string;
                 name:string;
@@ -566,6 +567,7 @@ export async function GET(){
                 hours:0,
                 travel:0,
                 kilometers:0,
+                workorderIds:new Set(),
                 customers:new Map()
             };
             byDay.set(key, created);
@@ -639,6 +641,7 @@ export async function GET(){
                     );
 
                 day.hours += uren;
+                day.workorderIds.add(workorder.id);
                 addDayCustomerHours(day, customer, uren);
 
                 const existingCustomer =
@@ -694,6 +697,7 @@ export async function GET(){
                     );
 
                 day.hours += uren;
+                day.workorderIds.add(workorder.id);
                 addDayCustomerHours(day, customer, uren);
             }
 
@@ -843,6 +847,7 @@ export async function GET(){
                     hours:row.hours,
                     travel:row.travel,
                     kilometers:Math.round(row.kilometers),
+                    workorderIds:Array.from(row.workorderIds),
                     customers:
                         Array.from(row.customers.values())
                         .sort((a,b)=>b.hours - a.hours)
