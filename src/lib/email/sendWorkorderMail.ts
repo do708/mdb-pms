@@ -3,12 +3,17 @@ import {
     sendResendEmail,
 } from "@/lib/email/resendClient";
 
-interface WorkorderMailData {
+export interface WorkorderMailData {
     workorderNumber: string;
     customer: string;
     project: string;
-    location?: string | null;
-    monteur: string;
+    /** Locatie / filiaalnaam (`title`); leeg wordt `*`. */
+    locatieFiliaalnaam?: string | null;
+    /** Straat + huisnummer. */
+    adres?: string | null;
+    plaats?: string | null;
+    /** Alle uitvoerende monteurs (assigned + extra engineers). */
+    monteurs: string[];
     datum: string;
     /** Deep link naar de werkbon in PMS (kantoor). */
     workorderUrl?: string | null;
@@ -16,28 +21,73 @@ interface WorkorderMailData {
     zipBuffer?: Buffer | null;
 }
 
+export function nederlandseNamenlijst(names: string[]): string {
+    const unique: string[] = [];
+    const seen = new Set<string>();
+
+    for (const raw of names) {
+        const name = (raw || "").trim();
+        const key = name.toLowerCase();
+        if (!name || seen.has(key)) continue;
+        seen.add(key);
+        unique.push(name);
+    }
+
+    if (unique.length === 0) return "Een monteur";
+    if (unique.length === 1) return unique[0];
+    if (unique.length === 2) return `${unique[0]} en ${unique[1]}`;
+
+    return `${unique.slice(0, -1).join(", ")} en ${unique[unique.length - 1]}`;
+}
+
+export function locatieFiliaalregel(
+    locatieFiliaalnaam: string | null | undefined,
+    datum: string
+): string {
+    const naam = (locatieFiliaalnaam || "").trim() || "*";
+    return `Locatie / filiaalnaam: ${naam} — ${datum}`;
+}
+
+export function adresgegevensregel(
+    adres: string | null | undefined,
+    plaats: string | null | undefined
+): string | null {
+    const street = (adres || "").trim();
+    const city = (plaats || "").trim();
+    const value = [street, city].filter(Boolean).join(" - ");
+    if (!value) return null;
+    return `Adresgegevens: ${value}`;
+}
+
 export async function sendWorkorderMail(data: WorkorderMailData) {
-    const locatie = (data.location || "").trim() || "—";
+    const monteursTekst = nederlandseNamenlijst(data.monteurs);
+    const locatieRegel = locatieFiliaalregel(data.locatieFiliaalnaam, data.datum);
+    const adresRegel = adresgegevensregel(data.adres, data.plaats);
     const baseUrl =
         process.env.NEXT_PUBLIC_APP_URL || "https://pms.mdb-networks.nl";
     const werkbonUrl =
         (data.workorderUrl || "").trim()
         || `${baseUrl.replace(/\/$/, "")}/workorders`;
 
+    const pdfZin = data.pdfBuffer
+        ? "De opdracht-PDF is als bijlage toegevoegd."
+        : "De PDF-bijlage kon niet worden gegenereerd; open de opdracht in PMS.";
+    const zipZin = data.zipBuffer
+        ? "De foto's staan in een aparte ZIP-bijlage."
+        : "";
+
     const tekst = `Beste Projects,
 
-${data.monteur} heeft een opdracht afgerond en verstuurd.
+${monteursTekst} heeft een opdracht afgerond en verstuurd.
 
 Opdrachtnummer: ${data.workorderNumber}
 Opdrachtgever: ${data.customer}
-Opdracht: ${data.project} - ${data.datum}
-Locatie: ${locatie}
+${locatieRegel}${adresRegel ? `\n${adresRegel}` : ""}
 
 Opdracht openen:
 ${werkbonUrl}
 
-${data.pdfBuffer ? "De opdracht-PDF is als bijlage toegevoegd." : "De PDF-bijlage kon niet worden gegenereerd; open de opdracht in PMS."}
-${data.zipBuffer ? "De foto's staan in een aparte ZIP-bijlage, elk bestand met de naam die de monteur gaf." : ""}
+${pdfZin}${zipZin ? `\n${zipZin}` : ""}
 
 Team MDB Networks
 `;
@@ -46,13 +96,17 @@ Team MDB Networks
 
   <p>Beste Projects,</p>
 
-  <p><strong>${data.monteur}</strong> heeft een opdracht afgerond en verstuurd.</p>
+  <p><strong>${monteursTekst}</strong> heeft een opdracht afgerond en verstuurd.</p>
 
   <p>
     <strong>Opdrachtnummer:</strong> ${data.workorderNumber}<br>
     <strong>Opdrachtgever:</strong> ${data.customer}<br>
-    <strong>Opdracht:</strong> ${data.project} &mdash; ${data.datum}<br>
-    <strong>Locatie:</strong> ${locatie}
+    <strong>Locatie / filiaalnaam:</strong> ${(data.locatieFiliaalnaam || "").trim() || "*"} &mdash; ${data.datum}${
+        adresRegel
+            ? `<br>
+    <strong>Adresgegevens:</strong> ${[ (data.adres || "").trim(), (data.plaats || "").trim() ].filter(Boolean).join(" - ")}`
+            : ""
+    }
   </p>
 
   <p>
@@ -63,16 +117,7 @@ Team MDB Networks
   </p>
 
   <p style="color:#64748b;font-size:13px">
-    ${
-        data.pdfBuffer
-            ? "De opdracht-PDF is als bijlage toegevoegd."
-            : "De PDF-bijlage kon niet worden gegenereerd; open de opdracht in PMS."
-    }
-    ${
-        data.zipBuffer
-            ? "<br>De foto's staan in een aparte ZIP-bijlage, elk bestand met de naam die de monteur gaf."
-            : ""
-    }
+    ${pdfZin}${zipZin ? `<br>${zipZin}` : ""}
   </p>
 
   <p>Team MDB Networks</p>

@@ -12,6 +12,8 @@ import { sendNietGereedMail } from "@/lib/email/sendNietGereedMail";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
 import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
 import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
+import { combineStreetAddress } from "@/lib/workorders/address";
+import { jobCrewMembers } from "@/lib/planning/jobCrew";
 
 export const maxDuration = 60;
 
@@ -87,6 +89,7 @@ export async function POST(
                         include:{
                             user:{
                                 select:{
+                                    id:true,
                                     name:true
                                 }
                             }
@@ -336,12 +339,6 @@ export async function POST(
         // Altijd mailen naar projects@ na succesvolle afronding,
         // ook als de PDF of ZIP niet lukte. Mail mag afronden niet blokkeren.
         try {
-            const locatie =
-                workorderLocation(workorder)
-                || [workorder.straat, workorder.huisnummer].filter(Boolean).join(" ")
-                || [workorder.location, workorder.city].filter(Boolean).join(", ")
-                || null;
-
             await sendWorkorderMail({
                 workorderNumber:
                     workorder.number,
@@ -349,10 +346,15 @@ export async function POST(
                     customerName(workorder),
                 project:
                     (workorder.project?.name ?? customerName(workorder)),
-                location:
-                    locatie,
-                monteur:
-                    (workorder.assignedUser?.name ?? "Een monteur"),
+                locatieFiliaalnaam:
+                    workorder.title,
+                adres:
+                    combineStreetAddress(workorder.straat, workorder.huisnummer)
+                    || (workorder.location?.trim() || null),
+                plaats:
+                    workorder.city,
+                monteurs:
+                    jobCrewMembers(workorder).map((person) => person.name),
                 datum:
                     (()=>{
                         const d =
