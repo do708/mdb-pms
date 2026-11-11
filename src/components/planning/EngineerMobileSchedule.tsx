@@ -10,6 +10,7 @@ import {
     vacationChipClass,
     yearsAround,
 } from "@/lib/calendarMarks";
+import { jobCrewLine } from "@/lib/planning/jobCrew";
 
 interface PlanningItem {
     id: string;
@@ -23,8 +24,10 @@ interface PlanningItem {
     huisnummer?: string | null;
     city: string | null;
     assignedUserId?: string | null;
-    assignedUser?: { id: string } | null;
-    extraEngineers?: { user?: { id: string } | null }[];
+    assignedUser?: { id: string; name?: string | null } | null;
+    extraEngineers?: {
+        user?: { id: string; name?: string | null } | null;
+    }[];
     customer?: { name: string; color?: string } | null;
     project?: {
         name: string;
@@ -355,6 +358,23 @@ export default function EngineerMobileSchedule({
                     <p className="text-xs text-gray-500 leading-snug">
                         {klant}
                     </p>
+                    {(() => {
+                        const crew = jobCrewLine(item, engineerId);
+                        return (
+                            <p
+                                className={`
+                                    text-xs leading-snug
+                                    ${
+                                        crew.solo
+                                            ? "text-gray-500"
+                                            : "text-gray-800 font-semibold"
+                                    }
+                                `}
+                            >
+                                {crew.text}
+                            </p>
+                        );
+                    })()}
 
                     <Link
                         href={`/engineer/workorders/${item.id}`}

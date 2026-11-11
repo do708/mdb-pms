@@ -21,6 +21,7 @@ import {
     formatAmsterdamHHmm,
     getAmsterdamParts,
 } from "@/lib/datetime/amsterdam";
+import { jobCrewLine } from "@/lib/planning/jobCrew";
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
@@ -1888,6 +1889,34 @@ export default function WeekView({
                                                                                     }
                                                                                 </span>
                                                                             ) : null}
+
+                                                                            {(() => {
+                                                                                const crew =
+                                                                                    jobCrewLine(
+                                                                                        item,
+                                                                                        user.id,
+                                                                                        true
+                                                                                    );
+                                                                                return (
+                                                                                    <span
+                                                                                        className={`
+                                                                                            text-[10px] block truncate mt-0.5
+                                                                                            ${
+                                                                                                crew.solo
+                                                                                                    ? "opacity-80"
+                                                                                                    : "font-semibold opacity-95"
+                                                                                            }
+                                                                                        `}
+                                                                                        title={
+                                                                                            crew.text
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            crew.text
+                                                                                        }
+                                                                                    </span>
+                                                                                );
+                                                                            })()}
                                                                         </div>
                                                                     </div>
                                                                 );
