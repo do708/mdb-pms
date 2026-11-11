@@ -1,6 +1,3 @@
-import { isBlankHoursOrTimeValue } from "@/constants/formDefinitions";
-import { isKortVerlof } from "@/lib/reports/vacation";
-
 export function nlFormDate(value: unknown): string {
     if (!value || typeof value !== "string") {
         return "";
@@ -60,6 +57,23 @@ export function buildVerlofTitle(
     return `Verlofaanvraag, ${verlofMonteurName(data, userName)}`;
 }
 
+function leaveOmvangLabel(omvang: unknown): string {
+    if (typeof omvang !== "string") {
+        return "";
+    }
+    const text = omvang.trim();
+    if (!text) {
+        return "";
+    }
+    if (text.toLowerCase().startsWith("halve")) {
+        return "Halve dag";
+    }
+    if (text.toLowerCase().startsWith("hele")) {
+        return "";
+    }
+    return text;
+}
+
 /** Ondertitel: "type verlof | datum van - datum tot" */
 export function verlofSubtitle(data?: Record<string, unknown> | null): string {
     const type =
@@ -73,33 +87,15 @@ export function verlofSubtitle(data?: Record<string, unknown> | null): string {
     const reden = kort || redenRaw;
     const from = nlFormDate(data?.eersteDag);
     const to = nlFormDate(data?.laatsteDag);
-    const showHours = isKortVerlof(type);
-    const urenRaw = data?.totaalUren;
-    const uren =
-        !showHours || isBlankHoursOrTimeValue(urenRaw)
-            ? ""
-            : typeof urenRaw === "number"
-              ? String(urenRaw)
-              : typeof urenRaw === "string"
-                ? urenRaw.trim()
-                : "";
-    const vanRaw = typeof data?.vanTijd === "string" ? data.vanTijd.trim() : "";
-    const totRaw = typeof data?.totTijd === "string" ? data.totTijd.trim() : "";
-    const van =
-        showHours && !isBlankHoursOrTimeValue(vanRaw) ? vanRaw : "";
-    const tot =
-        showHours && !isBlankHoursOrTimeValue(totRaw) ? totRaw : "";
+    const omvang = leaveOmvangLabel(data?.omvang);
 
     const datePart =
         from && to ? `${from} - ${to}` : from || to || "";
-    const timePart = [van, tot].filter(Boolean).join("–");
-    const hoursPart = uren ? `${uren} uur` : "";
 
     const typePart =
         type && reden ? `${type} · ${reden}` : type || reden;
 
-    const extra = [hoursPart, timePart].filter(Boolean).join(" · ");
-    const head = [typePart, extra].filter(Boolean).join(" · ");
+    const head = [typePart, omvang].filter(Boolean).join(" · ");
 
     if (head && datePart) {
         return `${head} | ${datePart}`;
@@ -111,19 +107,12 @@ export function verlofSubtitle(data?: Record<string, unknown> | null): string {
 export function verlofPlanningLabel(
     type?: string | null,
     reden?: string | null,
-    totaalUren?: string | number | null
+    omvang?: string | null
 ): string {
     const soort = typeof type === "string" ? type.trim() : "";
     const extra = typeof reden === "string" ? reden.trim() : "";
-    const uren =
-        !isKortVerlof(type) || isBlankHoursOrTimeValue(totaalUren)
-            ? ""
-            : typeof totaalUren === "number"
-              ? `${totaalUren} uur`
-              : typeof totaalUren === "string"
-                ? `${totaalUren.trim()} uur`
-                : "";
-    const parts = [soort, extra, uren].filter(Boolean);
+    const size = leaveOmvangLabel(omvang);
+    const parts = [soort, extra, size].filter(Boolean);
     return parts.join(" · ") || "Verlof";
 }
 

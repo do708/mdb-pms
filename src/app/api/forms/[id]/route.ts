@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireApiUser, requireApiRole } from "@/lib/auth/guard";
 import {
     leaveDaysFromData,
-    parseTotaalUren,
+    parseLeaveOmvang,
     vacationBalanceForUser,
     vacationDaysForRequest,
     vacationItemsFromForms,
@@ -147,7 +147,7 @@ export async function GET(
                       range.from,
                       range.to,
                       year,
-                      parseTotaalUren(data.totaalUren)
+                      parseLeaveOmvang(data.omvang)
                   )
                 : 0;
         }

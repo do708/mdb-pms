@@ -7,7 +7,6 @@ import {
     FormDefinition,
     FormField,
     fieldIsVisible,
-    isBlankHoursOrTimeValue,
     isOptionalHoursOrTimeField
 } from "@/constants/formDefinitions";
 import {
@@ -18,7 +17,6 @@ import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
 import {
     isVakantiedagen,
     leaveDaysFromData,
-    parseTotaalUren,
     vacationDaysForRequest,
     yearFromDateKey,
     type VacationBalance,
@@ -527,6 +525,10 @@ export default function DynamicForm({
                     start[field.id] = lokaleDatum;
                 }
 
+                if(field.defaultValue){
+                    start[field.id] = field.defaultValue;
+                }
+
             }
 
             return start;
@@ -580,14 +582,14 @@ export default function DynamicForm({
             range.from,
             range.to,
             vacationYear,
-            parseTotaalUren(values.totaalUren)
+            values.omvang
         );
     }, [
         definition.type,
         values.typeVerlof,
         values.eersteDag,
         values.laatsteDag,
-        values.totaalUren,
+        values.omvang,
         vacationYear,
     ]);
 
@@ -598,48 +600,15 @@ export default function DynamicForm({
 
 
 
-    function hoursBetweenTimes(from: string, to: string): string | null {
-        const parse = (time: string) => {
-            const match = /^(\d{1,2}):(\d{2})/.exec(time.trim());
-            if (!match) {
-                return null;
-            }
-            return Number(match[1]) * 60 + Number(match[2]);
-        };
-        const start = parse(from);
-        const end = parse(to);
-        if (start == null || end == null || end <= start) {
-            return null;
-        }
-        const hours = (end - start) / 60;
-        return Number.isInteger(hours)
-            ? String(hours)
-            : String(Math.round(hours * 100) / 100);
-    }
-
     function set(
         id:string,
         value:string
     ){
 
-        setValues(previous=>{
-            const next = {
-                ...previous,
-                [id]:value
-            };
-
-            if (id === "vanTijd" || id === "totTijd") {
-                const suggested = hoursBetweenTimes(
-                    id === "vanTijd" ? value : previous.vanTijd ?? "",
-                    id === "totTijd" ? value : previous.totTijd ?? ""
-                );
-                if (suggested && !parseTotaalUren(previous.totaalUren)) {
-                    next.totaalUren = suggested;
-                }
-            }
-
-            return next;
-        });
+        setValues(previous=>({
+            ...previous,
+            [id]:value
+        }));
 
         setError("");
 
@@ -713,14 +682,11 @@ export default function DynamicForm({
             }
         }
 
-        for (const field of definition.fields) {
-            if (
-                isOptionalHoursOrTimeField(field) &&
-                (!fieldIsVisible(field, teVersturen) ||
-                    isBlankHoursOrTimeValue(teVersturen[field.id]))
-            ) {
-                delete teVersturen[field.id];
-            }
+        for (const id of ["totaalUren", "vanTijd", "totTijd"] as const) {
+            delete teVersturen[id];
+        }
+        if (!teVersturen.omvang) {
+            teVersturen.omvang = "Hele dag";
         }
 
         await onSubmit(teVersturen);

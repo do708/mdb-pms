@@ -6,7 +6,6 @@ import { requireApiUser } from "@/lib/auth/guard";
 
 import {
     getFormDefinition,
-    isBlankHoursOrTimeValue,
 } from "@/constants/formDefinitions";
 
 import { excludeArchivedForms } from "@/lib/archive";
@@ -15,7 +14,7 @@ import { sendFormSubmissionMail } from "@/lib/email/sendFormSubmissionMail";
 import {
     isVakantiedagen,
     leaveDaysFromData,
-    parseTotaalUren,
+    parseLeaveOmvang,
     vacationBalanceForUser,
     vacationDaysForRequest,
     vacationItemsFromForms,
@@ -141,7 +140,7 @@ export async function GET(){
                           range.from,
                           range.to,
                           year,
-                          parseTotaalUren(data.totaalUren)
+                          parseLeaveOmvang(data.omvang)
                       )
                     : 0;
             return {
@@ -242,9 +241,10 @@ export async function POST(
                 : {}) as Record<string, unknown>;
 
         for (const id of ["totaalUren", "vanTijd", "totTijd"] as const) {
-            if (isBlankHoursOrTimeValue(formData[id])) {
-                delete formData[id];
-            }
+            delete formData[id];
+        }
+        if (body.type === "verlof") {
+            formData.omvang = parseLeaveOmvang(formData.omvang);
         }
 
         const title = buildFormTitle(
