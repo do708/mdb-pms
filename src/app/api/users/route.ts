@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 
 export async function GET() {
 
-    const guard = await requireApiRole(["admin"]);
+    const guard = await requireApiRole(["admin", "office"]);
     if (!guard.ok) return guard.response;
 
     try {

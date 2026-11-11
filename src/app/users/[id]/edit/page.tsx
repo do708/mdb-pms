@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import {
     STAFF_KIND_LABELS,
@@ -10,6 +11,7 @@ import {
     parseStaffKind,
     type StaffKind,
 } from "@/constants/staffKind";
+import { canAccessAdmin } from "@/lib/auth/checkRole";
 
 
 
@@ -18,6 +20,9 @@ export default function EditUserPage(){
 
     const router =
         useRouter();
+
+    const { data: session } = useSession();
+    const isAdmin = canAccessAdmin(session?.user?.role ?? "");
 
 
     const params =
@@ -153,7 +158,9 @@ export default function EditUserPage(){
                             "Content-Type":"application/json"
                         },
 
-                        body:JSON.stringify({
+                        body:JSON.stringify(
+                            isAdmin
+                                ? {
 
                             name,
 
@@ -183,7 +190,9 @@ export default function EditUserPage(){
                                 {}
                             )
 
-                        })
+                                }
+                                : { password }
+                        )
 
                     }
 
@@ -254,12 +263,12 @@ export default function EditUserPage(){
 
             <header>
 
-                <h1 className="
+                    <h1 className="
                     text-2xl
                     font-bold
                 ">
 
-                    Gebruiker wijzigen
+                    {isAdmin ? "Gebruiker wijzigen" : "Wachtwoord wijzigen"}
 
                 </h1>
 
@@ -315,12 +324,16 @@ export default function EditUserPage(){
                             setName(e.target.value)
                         }
 
+                        disabled={!isAdmin}
+
                         className="
                             w-full
                             border
                             rounded-xl
                             p-3
                             mt-1
+                            disabled:bg-gray-50
+                            disabled:text-gray-500
                         "
 
                     />
@@ -346,12 +359,16 @@ export default function EditUserPage(){
 
                         type="email"
 
+                        disabled={!isAdmin}
+
                         className="
                             w-full
                             border
                             rounded-xl
                             p-3
                             mt-1
+                            disabled:bg-gray-50
+                            disabled:text-gray-500
                         "
 
                     />
@@ -379,26 +396,32 @@ export default function EditUserPage(){
 
                         placeholder="Laat leeg om ongewijzigd te laten"
 
+                        disabled={!isAdmin && role === "admin"}
+
                         className="
                             w-full
                             border
                             rounded-xl
                             p-3
                             mt-1
+                            disabled:bg-gray-50
                         "
 
                     />
 
                     <span className="text-xs text-gray-400">
 
-                        Vul alleen in als het wachtwoord gereset moet worden
-                        (minimaal 8 tekens).
+                        {!isAdmin && role === "admin"
+                            ? "Kantoor mag geen admin-wachtwoord wijzigen."
+                            : isAdmin
+                            ? "Vul alleen in als het wachtwoord gereset moet worden (minimaal 8 tekens)."
+                            : "Nieuw wachtwoord, minimaal 8 tekens."}
 
                     </span>
 
                 </label>
 
-
+                {isAdmin ? (
                 <label className="block">
 
                     <span className="text-sm text-gray-600">
@@ -546,6 +569,7 @@ export default function EditUserPage(){
                     </span>
 
                 </label>
+                ) : null}
 
             </section>
 
@@ -575,7 +599,11 @@ export default function EditUserPage(){
 
                 >
 
-                    {saving ? "Bezig..." : "Opslaan"}
+                    {saving
+                        ? "Bezig..."
+                        : isAdmin
+                          ? "Opslaan"
+                          : "Wachtwoord opslaan"}
 
                 </button>
 
