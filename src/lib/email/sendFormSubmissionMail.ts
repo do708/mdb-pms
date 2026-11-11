@@ -56,7 +56,6 @@ function buildVerlofMail(data: FormSubmissionMailData, formsUrl: string) {
         showHours && !isBlankHoursOrTimeValue(vanRaw) ? vanRaw : "";
     const totTijd =
         showHours && !isBlankHoursOrTimeValue(totRaw) ? totRaw : "";
-    const handtekening = strField(data.data, "handtekening");
     const andereInvoerder = !namesMatch(werknemer, data.submitterName);
 
     const extraLines: string[] = [];
@@ -78,12 +77,6 @@ function buildVerlofMail(data: FormSubmissionMailData, formsUrl: string) {
     if (vanTijd || totTijd) {
         extraLines.push(
             `Tijd: ${[vanTijd, totTijd].filter(Boolean).join(" – ")}`
-        );
-    }
-
-    if (handtekening) {
-        extraLines.push(
-            "Handtekening medewerker: Handtekening ontvangen"
         );
     }
 

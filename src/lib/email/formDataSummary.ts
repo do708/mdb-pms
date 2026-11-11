@@ -22,7 +22,7 @@ function displayValue(field: FormField, raw: unknown): string | null {
     const val = String(raw);
 
     if (field.type === "handtekening") {
-        return val.startsWith("data:") ? "Handtekening ontvangen" : val;
+        return null;
     }
 
     if (field.type === "foto") {
@@ -50,6 +50,10 @@ export function summarizeFormData(
         if (field.type === "kop") {
             lines.push("");
             lines.push(`--- ${field.label} ---`);
+            continue;
+        }
+
+        if (field.type === "handtekening") {
             continue;
         }
 
