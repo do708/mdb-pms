@@ -422,6 +422,7 @@ export default function EditUserPage(){
                 </label>
 
                 {isAdmin ? (
+                <>
                 <label className="block">
 
                     <span className="text-sm text-gray-600">
@@ -569,6 +570,7 @@ export default function EditUserPage(){
                     </span>
 
                 </label>
+                </>
                 ) : null}
 
             </section>
