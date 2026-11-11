@@ -215,16 +215,5 @@ export async function generateVacationOverviewPdf(args: {
         });
     }
 
-    page.drawText(
-        "Weekend en feestdagen tellen niet mee. Alleen goedgekeurd verlof is ingekleurd.",
-        {
-            x: 32,
-            y: 32,
-            size: 7,
-            font,
-            color: rgb(0.45, 0.45, 0.5),
-        }
-    );
-
     return pdf.save();
 }
