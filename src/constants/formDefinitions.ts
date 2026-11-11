@@ -42,6 +42,8 @@ export interface FormField {
     // date: standaard op de datum van vandaag zetten
     defaultToday?:boolean;
 
+    defaultValue?:string;
+
     when?: FormFieldWhen;
 
 }
@@ -67,12 +69,7 @@ export function isBlankHoursOrTimeValue(value: unknown): boolean {
 }
 
 export function isOptionalHoursOrTimeField(field: FormField): boolean {
-    return (
-        field.id === "totaalUren" ||
-        field.id === "vanTijd" ||
-        field.id === "totTijd" ||
-        field.type === "time"
-    );
+    return field.type === "time";
 }
 
 export function fieldIsVisible(
@@ -282,33 +279,15 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
             },
 
             {
-                id:"totaalUren",
-                type:"number",
-                label:"Totaal aantal uren",
-                when:{
-                    fieldId:"typeVerlof",
-                    equalsPrefix:"Kort verlof"
-                }
-            },
-
-            {
-                id:"vanTijd",
-                type:"time",
-                label:"Van",
-                when:{
-                    fieldId:"typeVerlof",
-                    equalsPrefix:"Kort verlof"
-                }
-            },
-
-            {
-                id:"totTijd",
-                type:"time",
-                label:"Tot",
-                when:{
-                    fieldId:"typeVerlof",
-                    equalsPrefix:"Kort verlof"
-                }
+                id:"omvang",
+                type:"keuze",
+                label:"Omvang",
+                required:true,
+                defaultValue:"Hele dag",
+                options:[
+                    "Hele dag",
+                    "Halve dag"
+                ]
             },
 
             {
