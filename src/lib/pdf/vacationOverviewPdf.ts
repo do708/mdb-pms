@@ -1,7 +1,11 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
+import { holidayMap } from "@/lib/holidays";
 import { loadMdbLogoPng, MDB_NAVY, MDB_PINK } from "@/lib/pdf/mdbBrand";
 import type { TakenLeaveDay, VacationBalance } from "@/lib/reports/vacation";
+
+const HOLIDAY_FILL = rgb(0.25, 0.72, 0.82);
+const OTHER_LEAVE = rgb(1, 0.7, 0.35);
 
 const MONTHS = [
     "Januari",
@@ -121,7 +125,7 @@ export async function generateVacationOverviewPdf(args: {
         y: saldoY,
         width: 7,
         height: 7,
-        color: rgb(1, 0.7, 0.35),
+        color: OTHER_LEAVE,
     });
     page.drawText("Ander verlof", {
         x: legendX + 88,
@@ -130,8 +134,23 @@ export async function generateVacationOverviewPdf(args: {
         font,
         color: rgb(0.3, 0.3, 0.35),
     });
+    page.drawRectangle({
+        x: legendX + 154,
+        y: saldoY,
+        width: 7,
+        height: 7,
+        color: HOLIDAY_FILL,
+    });
+    page.drawText("Feestdag", {
+        x: legendX + 164,
+        y: saldoY,
+        size: 8,
+        font,
+        color: rgb(0.3, 0.3, 0.35),
+    });
 
     const takenMap = new Map(args.taken.map((day) => [day.date, day]));
+    const holidays = holidayMap([args.year]);
 
     const marginX = 28;
     const top = saldoY - 16;
@@ -196,16 +215,31 @@ export async function generateVacationOverviewPdf(args: {
             const key = dateKey(args.year, month, day);
             const taken = takenMap.get(key);
             const weekend = c >= 5;
+            const isHoliday = Boolean(holidays[key]);
+            const cellWFill = Math.max(cellW - 2, 4);
+            const cellHFill = Math.max(cellH - 2, 6);
 
             if (taken) {
                 page.drawRectangle({
                     x: cx + 1,
                     y: cy + 1,
-                    width: Math.max(cellW - 2, 4),
-                    height: Math.max(cellH - 2, 6),
-                    color: taken.isVacation
-                        ? MDB_PINK
-                        : rgb(1, 0.7, 0.35),
+                    width: cellWFill,
+                    height: cellHFill,
+                    color: taken.isVacation ? MDB_PINK : OTHER_LEAVE,
+                    ...(isHoliday
+                        ? {
+                              borderColor: HOLIDAY_FILL,
+                              borderWidth: 1.2,
+                          }
+                        : {}),
+                });
+            } else if (isHoliday) {
+                page.drawRectangle({
+                    x: cx + 1,
+                    y: cy + 1,
+                    width: cellWFill,
+                    height: cellHFill,
+                    color: HOLIDAY_FILL,
                 });
             }
 
@@ -216,7 +250,7 @@ export async function generateVacationOverviewPdf(args: {
                 y: cy + Math.max((cellH - 7) / 2, 1),
                 size: 7,
                 font: taken ? bold : font,
-                color: taken
+                color: taken || isHoliday
                     ? rgb(1, 1, 1)
                     : weekend
                       ? rgb(0.65, 0.65, 0.7)
