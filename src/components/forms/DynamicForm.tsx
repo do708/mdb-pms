@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 
 import {
@@ -11,6 +11,14 @@ import {
     SpecFieldLabel,
     specInputClassName,
 } from "@/components/ui/SpecLayout";
+import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
+import {
+    isVakantiedagen,
+    leaveDaysFromData,
+    weekdaysInYear,
+    yearFromDateKey,
+    type VacationBalance,
+} from "@/lib/reports/vacation";
 
 
 
@@ -473,6 +481,9 @@ export default function DynamicForm({
     const monteurNaam =
         session?.user?.name ?? "";
 
+    const [vacation, setVacation] =
+        useState<VacationBalance | null>(null);
+
 
     const [values,setValues] =
         useState<FormValues>(()=>{
@@ -506,6 +517,58 @@ export default function DynamicForm({
             return start;
 
         });
+
+    const vacationYear = yearFromDateKey(values.eersteDag);
+
+    useEffect(() => {
+        if (definition.type !== "verlof") {
+            return;
+        }
+
+        let cancelled = false;
+
+        async function loadVacation() {
+            const response = await fetch(
+                `/api/forms/vacation?year=${vacationYear}`
+            );
+            if (!response.ok || cancelled) {
+                return;
+            }
+            const data = await response.json();
+            if (!cancelled) {
+                setVacation(data);
+            }
+        }
+
+        loadVacation();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [definition.type, vacationYear]);
+
+    const thisRequestDays = useMemo(() => {
+        if (definition.type !== "verlof") {
+            return undefined;
+        }
+        if (!isVakantiedagen(values.typeVerlof)) {
+            return undefined;
+        }
+        const range = leaveDaysFromData({
+            eersteDag: values.eersteDag,
+            laatsteDag: values.laatsteDag,
+        });
+        if (!range) {
+            return 0;
+        }
+        return weekdaysInYear(range.from, range.to, vacationYear);
+    }, [
+        definition.type,
+        values.typeVerlof,
+        values.eersteDag,
+        values.laatsteDag,
+        vacationYear,
+    ]);
 
 
     const [error,setError] =
@@ -1017,6 +1080,18 @@ export default function DynamicForm({
 
                 )
             }
+
+            {definition.type === "verlof" && vacation ? (
+                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <VacationBalanceBar
+                        balance={vacation}
+                        thisRequestDays={thisRequestDays}
+                        showThisRequestPending={
+                            isVakantiedagen(values.typeVerlof)
+                        }
+                    />
+                </div>
+            ) : null}
 
 
             {
