@@ -26,6 +26,7 @@ export type ReportDayRow = {
     hours: number;
     travel: number;
     kilometers: number;
+    workorderIds?: string[];
     customers: ReportCustomerHours[];
 };
 
@@ -56,6 +57,7 @@ export type EngineerPeriodTotals = {
     hours: number;
     travel: number;
     kilometers: number;
+    workorders: number;
     leaveDays: number;
 };
 
@@ -431,6 +433,7 @@ export function engineersTotalsWithLeave(
             hours: 0,
             travel: 0,
             kilometers: 0,
+            workorders: 0,
             leaveDays: item.days,
         });
     }
@@ -450,6 +453,7 @@ export function engineersTotals(rows: ReportDayRow[]): {
     hours: number;
     travel: number;
     kilometers: number;
+    workorders: number;
 }[] {
     const map = new Map<
         string,
@@ -460,6 +464,7 @@ export function engineersTotals(rows: ReportDayRow[]): {
             hours: number;
             travel: number;
             kilometers: number;
+            workorderIds: Set<string>;
         }
     >();
 
@@ -471,17 +476,26 @@ export function engineersTotals(rows: ReportDayRow[]): {
             hours: 0,
             travel: 0,
             kilometers: 0,
+            workorderIds: new Set<string>(),
         };
         existing.hours += row.hours;
         existing.travel += row.travel;
         existing.kilometers += row.kilometers;
+        for (const id of row.workorderIds ?? []) {
+            existing.workorderIds.add(id);
+        }
         if (!existing.staffKind && row.staffKind) {
             existing.staffKind = row.staffKind;
         }
         map.set(row.engineerId, existing);
     }
 
-    return [...map.values()].sort((a, b) => b.hours - a.hours);
+    return [...map.values()]
+        .map(({ workorderIds, ...rest }) => ({
+            ...rest,
+            workorders: workorderIds.size,
+        }))
+        .sort((a, b) => b.hours - a.hours);
 }
 
 export function customersTotals(rows: ReportDayRow[]): {

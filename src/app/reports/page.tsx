@@ -491,8 +491,8 @@ export default function ReportsPage() {
                 <SpecPanel title="Uren per monteur">
                     {perMonteur.length === 0 ? (
                         <p className="text-sm text-gray-500">
-                            Nog geen uren, kilometers of verlof in deze
-                            selectie.
+                            Nog geen uren, opdrachten, kilometers of verlof
+                            in deze selectie.
                         </p>
                     ) : (
                         <div className="overflow-x-auto">
@@ -501,6 +501,9 @@ export default function ReportsPage() {
                                     <tr className="text-left border-b border-gray-200">
                                         <th className="py-2 text-xs font-medium text-gray-500">
                                             Monteur
+                                        </th>
+                                        <th className="py-2 text-right text-xs font-medium text-gray-500">
+                                            Opdrachten
                                         </th>
                                         <th className="py-2 text-right text-xs font-medium text-gray-500">
                                             Uren
@@ -533,6 +536,9 @@ export default function ReportsPage() {
                                                         )}
                                                     </span>
                                                 ) : null}
+                                            </td>
+                                            <td className="py-2 text-right text-gray-900">
+                                                {engineer.workorders}
                                             </td>
                                             <td className="py-2 text-right text-gray-900">
                                                 {formatClockHours(
