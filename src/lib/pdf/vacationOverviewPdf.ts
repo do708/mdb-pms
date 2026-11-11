@@ -152,11 +152,11 @@ export async function generateVacationOverviewPdf(args: {
     });
 
     const legendX = headerX + font.widthOfTextAtSize(saldo, 10) + 16;
-    page.drawRectangle({
-        x: legendX,
-        y: saldoY,
-        width: 7,
-        height: 7,
+    const legendCy = saldoY + 3;
+    page.drawCircle({
+        x: legendX + 3.5,
+        y: legendCy,
+        size: 3.5,
         color: MDB_PINK,
     });
     page.drawText("Vakantiedag", {
@@ -166,11 +166,10 @@ export async function generateVacationOverviewPdf(args: {
         font,
         color: rgb(0.3, 0.3, 0.35),
     });
-    page.drawRectangle({
-        x: legendX + 78,
-        y: saldoY,
-        width: 7,
-        height: 7,
+    page.drawCircle({
+        x: legendX + 81.5,
+        y: legendCy,
+        size: 3.5,
         color: OTHER_LEAVE,
     });
     page.drawText("Ander verlof", {
@@ -180,11 +179,10 @@ export async function generateVacationOverviewPdf(args: {
         font,
         color: rgb(0.3, 0.3, 0.35),
     });
-    page.drawRectangle({
-        x: legendX + 154,
-        y: saldoY,
-        width: 7,
-        height: 7,
+    page.drawCircle({
+        x: legendX + 157.5,
+        y: legendCy,
+        size: 3.5,
         color: HOLIDAY_FILL,
     });
     page.drawText("Feestdag", {
@@ -262,15 +260,18 @@ export async function generateVacationOverviewPdf(args: {
             const taken = takenMap.get(key);
             const weekend = c >= 5;
             const isHoliday = Boolean(holidays[key]);
-            const cellWFill = Math.max(cellW - 2, 4);
-            const cellHFill = Math.max(cellH - 2, 6);
+            const radius = Math.max(
+                Math.min(cellW, cellH) / 2 - 1.2,
+                4
+            );
+            const centerX = cx + cellW / 2;
+            const centerY = cy + cellH / 2;
 
             if (taken) {
-                page.drawRectangle({
-                    x: cx + 1,
-                    y: cy + 1,
-                    width: cellWFill,
-                    height: cellHFill,
+                page.drawCircle({
+                    x: centerX,
+                    y: centerY,
+                    size: radius,
                     color: taken.isVacation ? MDB_PINK : OTHER_LEAVE,
                     ...(isHoliday
                         ? {
@@ -280,11 +281,10 @@ export async function generateVacationOverviewPdf(args: {
                         : {}),
                 });
             } else if (isHoliday) {
-                page.drawRectangle({
-                    x: cx + 1,
-                    y: cy + 1,
-                    width: cellWFill,
-                    height: cellHFill,
+                page.drawCircle({
+                    x: centerX,
+                    y: centerY,
+                    size: radius,
                     color: HOLIDAY_FILL,
                 });
             }
