@@ -9,9 +9,8 @@ import {
     projectMailbox,
     sendResendEmail,
 } from "@/lib/email/resendClient";
-import { isBlankHoursOrTimeValue } from "@/constants/formDefinitions";
 import { nlFormDate, verlofMonteurName } from "@/lib/forms/formDisplay";
-import { isKortVerlof } from "@/lib/reports/vacation";
+import { parseLeaveOmvang } from "@/lib/reports/vacation";
 
 interface FormSubmissionMailData {
     formType: string;
@@ -46,16 +45,7 @@ function buildVerlofMail(data: FormSubmissionMailData, formsUrl: string) {
     const typeVerlof = strField(data.data, "typeVerlof");
     const redenKort = strField(data.data, "redenKortVerlof");
     const reden = strField(data.data, "reden");
-    const urenRaw = strField(data.data, "totaalUren");
-    const vanRaw = strField(data.data, "vanTijd");
-    const totRaw = strField(data.data, "totTijd");
-    const showHours = isKortVerlof(typeVerlof);
-    const uren =
-        showHours && !isBlankHoursOrTimeValue(urenRaw) ? urenRaw : "";
-    const vanTijd =
-        showHours && !isBlankHoursOrTimeValue(vanRaw) ? vanRaw : "";
-    const totTijd =
-        showHours && !isBlankHoursOrTimeValue(totRaw) ? totRaw : "";
+    const omvang = parseLeaveOmvang(data.data.omvang);
     const andereInvoerder = !namesMatch(werknemer, data.submitterName);
 
     const extraLines: string[] = [];
@@ -70,15 +60,7 @@ function buildVerlofMail(data: FormSubmissionMailData, formsUrl: string) {
         extraLines.push(`Reden: ${reden}`);
     }
 
-    if (uren) {
-        extraLines.push(`Totaal aantal uren: ${uren}`);
-    }
-
-    if (vanTijd || totTijd) {
-        extraLines.push(
-            `Tijd: ${[vanTijd, totTijd].filter(Boolean).join(" – ")}`
-        );
-    }
+    extraLines.push(`Omvang: ${omvang}`);
 
     const invoerLine = andereInvoerder
         ? `Ingevoerd door: ${data.submitterName}\n`

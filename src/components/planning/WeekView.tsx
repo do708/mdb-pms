@@ -1502,7 +1502,7 @@ export default function WeekView({
                                                                 title={verlofPlanningLabel(
                                                                     verlof.type,
                                                                     verlof.reden,
-                                                                    verlof.totaalUren
+                                                                    verlof.omvang
                                                                 )}
                                                                 className="
                                                                     absolute inset-1
@@ -1521,7 +1521,7 @@ export default function WeekView({
                                                                     {verlofPlanningLabel(
                                                                         verlof.type,
                                                                         verlof.reden,
-                                                                        verlof.totaalUren
+                                                                        verlof.omvang
                                                                     )}
                                                                 </span>
                                                             </div>

@@ -53,7 +53,7 @@ interface LeaveItem {
     userId?: string;
     type?: string;
     reden?: string;
-    totaalUren?: string | number | null;
+    omvang?: string | null;
 }
 
 interface Props {
@@ -463,7 +463,7 @@ export default function EngineerMobileSchedule({
                         {verlofPlanningLabel(
                             dayLeave.type,
                             dayLeave.reden,
-                            dayLeave.totaalUren
+                            dayLeave.omvang
                         )}
                     </div>
                 )}

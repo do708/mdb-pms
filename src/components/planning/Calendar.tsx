@@ -467,10 +467,10 @@ export default function Calendar({
                                                                     rounded-md px-1.5 py-1
                                                                     truncate leading-tight font-medium
                                                                 "
-                                                                title={`Verlof: ${[l.userName, verlofPlanningLabel(l.type, l.reden, l.totaalUren)].filter(Boolean).join(" · ")}`}
+                                                                title={`Verlof: ${[l.userName, verlofPlanningLabel(l.type, l.reden, l.omvang)].filter(Boolean).join(" · ")}`}
                                                             >
                                                                 🌴{" "}
-                                                                {`${l.userName ?? "Verlof"} · ${verlofPlanningLabel(l.type, l.reden, l.totaalUren)}`}
+                                                                {`${l.userName ?? "Verlof"} · ${verlofPlanningLabel(l.type, l.reden, l.omvang)}`}
                                                             </div>
                                                         ))}
 
