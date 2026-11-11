@@ -204,40 +204,14 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
                 required:true,
                 options:[
                     "Vakantiedagen / ADV",
-                    "Kort verlof",
-                    "Calamiteiten- & Kort verzuimverlof",
-                    "Geboorteverlof / Aanvullend geboorteverlof (WIEG)",
-                    "Ouderschapsverlof (betaald/onbetaald)",
-                    "Onbetaald verlof",
                     "Anders..."
-                ]
-            },
-
-            {
-                id:"redenKortVerlof",
-                type:"keuze",
-                label:"Reden kort verlof",
-                required:true,
-                when:{
-                    fieldId:"typeVerlof",
-                    equalsPrefix:"Kort verlof"
-                },
-                options:[
-                    "Overlijden / Uitvaart (inwonend gezinslid / bloedverwant / aanverwant)",
-                    "Huwelijk / Jubileum (eigen huwelijk / (schoon)ouders / kinderen)",
-                    "Examen / Opleiding (erkend vakexamen)",
-                    "Overig CAO-recht"
                 ]
             },
 
             {
                 id:"reden",
                 type:"text",
-                label:"Reden",
-                when:{
-                    fieldId:"typeVerlof",
-                    notEqualsPrefix:"Kort verlof"
-                }
+                label:"Reden"
             },
 
             {

@@ -159,7 +159,12 @@ export default function FormDetailPage(){
         getFormDefinition(form.type);
 
 
-    async function setStatus(newStatus:string){
+    async function setStatus(
+        newStatus:string,
+        extra?:{
+            aftrekVakantie?:boolean;
+        }
+    ){
 
         if(!form){
             return;
@@ -178,7 +183,12 @@ export default function FormDetailPage(){
                             "Content-Type":"application/json"
                         },
                         body:JSON.stringify({
-                            status:newStatus
+                            status:newStatus,
+                            ...(
+                                extra?.aftrekVakantie !== undefined
+                                ? { aftrekVakantie: extra.aftrekVakantie }
+                                : {}
+                            )
                         })
                     }
                 );
@@ -477,7 +487,7 @@ export default function FormDetailPage(){
 
                                         <button
 
-                                            onClick={()=>setStatus("geaccepteerd")}
+                                            onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:true })}
 
                                             disabled={busy}
 
@@ -493,7 +503,31 @@ export default function FormDetailPage(){
 
                                         >
 
-                                            ✓ Accepteren
+                                            Goedkeuren en van vakantiedagen afhalen
+
+                                        </button>
+
+                                        <button
+
+                                            onClick={()=>setStatus("geaccepteerd",{ aftrekVakantie:false })}
+
+                                            disabled={busy}
+
+                                            className="
+                                                border
+                                                border-green-600
+                                                text-green-800
+                                                bg-white
+                                                rounded-lg
+                                                px-4
+                                                py-2
+                                                text-sm
+                                                disabled:opacity-50
+                                            "
+
+                                        >
+
+                                            Goedkeuren zonder aftrek
 
                                         </button>
 

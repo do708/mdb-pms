@@ -706,16 +706,6 @@ export default function DynamicForm({
             }
         }
 
-        if (
-            definition.type === "verlof" &&
-            typeof teVersturen.typeVerlof === "string" &&
-            teVersturen.typeVerlof.trim().toLowerCase().startsWith("kort verlof") &&
-            teVersturen.redenKortVerlof
-        ) {
-            teVersturen.reden = teVersturen.redenKortVerlof;
-        }
-
-
         await onSubmit(teVersturen);
 
 

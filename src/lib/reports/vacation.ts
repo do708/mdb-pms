@@ -20,6 +20,8 @@ export type VacationLeaveItem = {
     reden?: string | null;
     totaalUren?: number | null;
     status?: string | null;
+    /** true/false na kantoorbeslissing; null = oude aanvraag zonder vlag */
+    aftrekVakantie?: boolean | null;
 };
 
 export type VacationBalance = {
@@ -38,6 +40,34 @@ export function isVakantiedagen(type: unknown): boolean {
         return false;
     }
     return type.trim().toLowerCase().startsWith("vakantiedagen");
+}
+
+export function parseAftrekVakantie(value: unknown): boolean | null {
+    if (typeof value === "boolean") {
+        return value;
+    }
+    if (value === "true") {
+        return true;
+    }
+    if (value === "false") {
+        return false;
+    }
+    return null;
+}
+
+/** Goedgekeurd verlof telt alleen mee voor saldo bij expliciete aftrek; oude records: vakantiedagen wel, overig niet. */
+export function deductsFromVacationBalance(
+    type: unknown,
+    status: string | null | undefined,
+    aftrekVakantie: boolean | null | undefined
+): boolean {
+    if (status && status !== "geaccepteerd") {
+        return false;
+    }
+    if (typeof aftrekVakantie === "boolean") {
+        return aftrekVakantie;
+    }
+    return isVakantiedagen(type);
 }
 
 export function parseTotaalUren(value: unknown): number | null {
@@ -147,6 +177,7 @@ export function vacationItemsFromForms(
             reden: leaveReasonFromData(data),
             totaalUren: parseTotaalUren(data.totaalUren),
             status: form.status,
+            aftrekVakantie: parseAftrekVakantie(data.aftrekVakantie),
         });
     }
     return items;
@@ -213,16 +244,16 @@ export function takenLeaveDaysInYear(
                 date,
                 type,
                 reden,
-                isVacation: isVakantiedagen(item.type),
+                isVacation: deductsFromVacationBalance(
+                    item.type,
+                    item.status,
+                    item.aftrekVakantie
+                ),
             });
         }
     }
 
     return days.sort((a, b) => a.date.localeCompare(b.date));
-}
-
-function isApproved(status: string | null | undefined): boolean {
-    return !status || status === "geaccepteerd";
 }
 
 function usedAndPendingVacationInYear(
@@ -239,9 +270,6 @@ function usedAndPendingVacationInYear(
             continue;
         }
         name = item.userName || name;
-        if (!isVakantiedagen(item.type)) {
-            continue;
-        }
         const days = vacationDaysForRequest(
             item.from,
             item.to,
@@ -252,8 +280,18 @@ function usedAndPendingVacationInYear(
             continue;
         }
         if (item.status === "ingediend") {
-            pending += days;
-        } else if (isApproved(item.status)) {
+            if (isVakantiedagen(item.type) && item.aftrekVakantie !== false) {
+                pending += days;
+            }
+            continue;
+        }
+        if (
+            deductsFromVacationBalance(
+                item.type,
+                item.status,
+                item.aftrekVakantie
+            )
+        ) {
             used += days;
         }
     }
@@ -267,7 +305,19 @@ function earliestVacationYear(
 ): number | null {
     let earliest: number | null = null;
     for (const item of leaves) {
-        if (item.userId !== userId || !isVakantiedagen(item.type)) {
+        if (item.userId !== userId) {
+            continue;
+        }
+        const counts =
+            deductsFromVacationBalance(
+                item.type,
+                item.status,
+                item.aftrekVakantie
+            ) ||
+            (item.status === "ingediend" &&
+                isVakantiedagen(item.type) &&
+                item.aftrekVakantie !== false);
+        if (!counts) {
             continue;
         }
         for (const key of [item.from, item.to]) {
@@ -328,7 +378,16 @@ export function vacationBalances(
 ): VacationBalance[] {
     const ids = new Set<string>();
     for (const item of leaves) {
-        if (isVakantiedagen(item.type)) {
+        const counts =
+            deductsFromVacationBalance(
+                item.type,
+                item.status,
+                item.aftrekVakantie
+            ) ||
+            (item.status === "ingediend" &&
+                isVakantiedagen(item.type) &&
+                item.aftrekVakantie !== false);
+        if (counts) {
             ids.add(item.userId);
         }
     }

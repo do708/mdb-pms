@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiUser, requireApiRole } from "@/lib/auth/guard";
 import {
-    isVakantiedagen,
     leaveDaysFromData,
     parseTotaalUren,
     vacationBalanceForUser,
@@ -143,15 +142,14 @@ export async function GET(
                 form.userId,
                 year
             );
-            thisRequestDays =
-                range && isVakantiedagen(data.typeVerlof)
-                    ? vacationDaysForRequest(
-                          range.from,
-                          range.to,
-                          year,
-                          parseTotaalUren(data.totaalUren)
-                      )
-                    : 0;
+            thisRequestDays = range
+                ? vacationDaysForRequest(
+                      range.from,
+                      range.to,
+                      year,
+                      parseTotaalUren(data.totaalUren)
+                  )
+                : 0;
         }
 
         return NextResponse.json({
@@ -373,6 +371,34 @@ export async function PUT(
         }
 
 
+        const existing =
+            await prisma.formSubmission.findUnique({
+                where:{
+                    id
+                },
+                select:{
+                    data:true
+                }
+            });
+
+        if(!existing){
+            return NextResponse.json(
+                {
+                    error:"Formulier niet gevonden"
+                },
+                {
+                    status:404
+                }
+            );
+        }
+
+        const current =
+            existing.data &&
+            typeof existing.data === "object" &&
+            !Array.isArray(existing.data)
+                ? (existing.data as Record<string, unknown>)
+                : {};
+
         const form =
             await prisma.formSubmission.update({
 
@@ -380,8 +406,19 @@ export async function PUT(
                     id
                 },
 
-                data:{
-                    status
+                data: {
+                    status,
+                    ...(
+                        status === "geaccepteerd" &&
+                        typeof body.aftrekVakantie === "boolean"
+                            ? {
+                                data: {
+                                    ...current,
+                                    aftrekVakantie: body.aftrekVakantie,
+                                } as object,
+                            }
+                            : {}
+                    ),
                 }
 
             });
