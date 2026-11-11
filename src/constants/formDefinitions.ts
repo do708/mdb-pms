@@ -257,11 +257,7 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
             {
                 id:"reden",
                 type:"text",
-                label:"Reden",
-                when:{
-                    fieldId:"typeVerlof",
-                    notEqualsPrefix:"Vakantiedagen"
-                }
+                label:"Reden"
             },
 
             {
