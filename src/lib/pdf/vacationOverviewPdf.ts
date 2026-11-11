@@ -88,7 +88,11 @@ export async function generateVacationOverviewPdf(args: {
     const remainingLabel = args.balance.remaining.toLocaleString("nl-NL", {
         maximumFractionDigits: 2,
     });
-    const saldo = `${usedLabel} opgenomen van ${args.balance.entitled} · ${remainingLabel} over`;
+    const carry =
+        args.balance.remainingFromPreviousYear > 0
+            ? ` (waarvan ${args.balance.remainingFromPreviousYear.toLocaleString("nl-NL", { maximumFractionDigits: 2 })} meegenomen)`
+            : "";
+    const saldo = `${usedLabel} opgenomen van ${args.balance.entitled}${carry} · ${remainingLabel} over`;
     page.drawText(saldo, {
         x: headerX,
         y: saldoY,

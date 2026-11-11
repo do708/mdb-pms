@@ -62,6 +62,16 @@ export default function VacationBalanceBar({
                     })}{" "}
                     over
                 </span>
+                {balance.remainingFromPreviousYear > 0 ? (
+                    <span className="text-xs text-gray-500">
+                        waarvan{" "}
+                        {balance.remainingFromPreviousYear.toLocaleString(
+                            "nl-NL",
+                            { maximumFractionDigits: 2 }
+                        )}{" "}
+                        meegenomen
+                    </span>
+                ) : null}
                 {balance.pending > 0 ? (
                     <span className="text-xs text-gray-500">
                         {balance.pending.toLocaleString("nl-NL", {

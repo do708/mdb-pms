@@ -66,6 +66,7 @@ export type EngineerPeriodTotals = {
     vacationUsed: number;
     vacationRemaining: number;
     vacationPending: number;
+    vacationEntitled: number;
 };
 
 export const MONTH_FILTER_OPTIONS: { value: string; label: string }[] = [
@@ -453,6 +454,7 @@ export function engineersTotalsWithLeave(
             vacationUsed: 0,
             vacationRemaining: 0,
             vacationPending: 0,
+            vacationEntitled: 0,
         });
     }
 
@@ -472,6 +474,7 @@ export function engineersTotalsWithLeave(
             vacationUsed: 0,
             vacationRemaining: 0,
             vacationPending: 0,
+            vacationEntitled: 0,
         });
     }
 

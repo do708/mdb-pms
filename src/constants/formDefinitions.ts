@@ -204,7 +204,7 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
                 required:true,
                 options:[
                     "Vakantiedagen / ADV",
-                    "Kort verlof (CAO art. 61)",
+                    "Kort verlof",
                     "Calamiteiten- & Kort verzuimverlof",
                     "Geboorteverlof / Aanvullend geboorteverlof (WIEG)",
                     "Ouderschapsverlof (betaald/onbetaald)",

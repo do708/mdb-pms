@@ -8,7 +8,7 @@ import {
     type YearMonthFilter,
 } from "@/lib/reports/periods";
 
-export const VACATION_DAYS_PER_YEAR = 28;
+export const VACATION_DAYS_PER_YEAR = 31;
 export const HOURS_PER_VACATION_DAY = 8;
 
 export type VacationLeaveItem = {
@@ -30,6 +30,7 @@ export type VacationBalance = {
     used: number;
     remaining: number;
     pending: number;
+    remainingFromPreviousYear: number;
 };
 
 export function isVakantiedagen(type: unknown): boolean {
@@ -224,11 +225,11 @@ function isApproved(status: string | null | undefined): boolean {
     return !status || status === "geaccepteerd";
 }
 
-export function vacationBalanceForUser(
+function usedAndPendingVacationInYear(
     leaves: VacationLeaveItem[],
     userId: string,
     year: number
-): VacationBalance {
+): { used: number; pending: number; name: string } {
     let used = 0;
     let pending = 0;
     let name = "Onbekend";
@@ -257,14 +258,67 @@ export function vacationBalanceForUser(
         }
     }
 
+    return { used, pending, name };
+}
+
+function earliestVacationYear(
+    leaves: VacationLeaveItem[],
+    userId: string
+): number | null {
+    let earliest: number | null = null;
+    for (const item of leaves) {
+        if (item.userId !== userId || !isVakantiedagen(item.type)) {
+            continue;
+        }
+        for (const key of [item.from, item.to]) {
+            const year = yearFromDateKey(key);
+            if (earliest == null || year < earliest) {
+                earliest = year;
+            }
+        }
+    }
+    return earliest;
+}
+
+function remainingFromPreviousYear(
+    leaves: VacationLeaveItem[],
+    userId: string,
+    year: number
+): number {
+    const earliest = earliestVacationYear(leaves, userId);
+    const walkFrom = earliest == null ? year : Math.min(earliest, year);
+
+    let remainingPrev = 0;
+    for (let y = walkFrom; y < year; y += 1) {
+        const { used } = usedAndPendingVacationInYear(leaves, userId, y);
+        const entitled = VACATION_DAYS_PER_YEAR + remainingPrev;
+        remainingPrev = Math.max(0, entitled - used);
+    }
+    return remainingPrev;
+}
+
+export function vacationBalanceForUser(
+    leaves: VacationLeaveItem[],
+    userId: string,
+    year: number
+): VacationBalance {
+    const { used, pending, name } = usedAndPendingVacationInYear(
+        leaves,
+        userId,
+        year
+    );
+    const carried = remainingFromPreviousYear(leaves, userId, year);
+    const entitled = VACATION_DAYS_PER_YEAR + carried;
+
     return {
         userId,
         name,
         year,
-        entitled: VACATION_DAYS_PER_YEAR,
+        entitled,
         used,
-        remaining: Math.max(0, VACATION_DAYS_PER_YEAR - used),
+        remaining: Math.max(0, entitled - used),
         pending,
+        remainingFromPreviousYear: carried,
     };
 }
 
@@ -302,6 +356,7 @@ export function applyVacationToEngineers(
             existing.vacationUsed = balance.used;
             existing.vacationRemaining = balance.remaining;
             existing.vacationPending = balance.pending;
+            existing.vacationEntitled = balance.entitled;
             continue;
         }
         map.set(balance.userId, {
@@ -315,6 +370,7 @@ export function applyVacationToEngineers(
             vacationUsed: balance.used,
             vacationRemaining: balance.remaining,
             vacationPending: balance.pending,
+            vacationEntitled: balance.entitled,
         });
     }
 
