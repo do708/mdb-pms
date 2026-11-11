@@ -61,32 +61,6 @@ function holidayDateLabel(isoDate: string): string {
     return `${day} ${MONTH_SHORT[month - 1]}`;
 }
 
-function wrapPdfLine(
-    text: string,
-    maxWidth: number,
-    size: number,
-    usedFont: { widthOfTextAtSize: (t: string, s: number) => number }
-): string[] {
-    const words = text.split(" ");
-    const lines: string[] = [];
-    let current = "";
-    for (const word of words) {
-        const next = current ? `${current} ${word}` : word;
-        if (usedFont.widthOfTextAtSize(next, size) <= maxWidth) {
-            current = next;
-            continue;
-        }
-        if (current) {
-            lines.push(current);
-        }
-        current = word;
-    }
-    if (current) {
-        lines.push(current);
-    }
-    return lines;
-}
-
 function dateKey(year: number, month: number, day: number): string {
     const mm = String(month).padStart(2, "0");
     const dd = String(day).padStart(2, "0");
@@ -198,7 +172,7 @@ export async function generateVacationOverviewPdf(args: {
 
     const marginX = 28;
     const top = saldoY - 16;
-    const bottom = 86;
+    const bottom = 128;
     const cols = 3;
     const rows = 4;
     const gapX = 10;
@@ -307,23 +281,41 @@ export async function generateVacationOverviewPdf(args: {
 
     const holidayItems = dutchHolidays(args.year)
         .slice()
-        .sort((a, b) => a.date.localeCompare(b.date))
-        .map((h) => `${holidayDateLabel(h.date)} ${h.name}`);
-    const holidayLine = holidayItems.join("  ·  ");
+        .sort((a, b) => a.date.localeCompare(b.date));
 
     page.drawText("Feestdagen", {
         x: marginX,
-        y: 68,
+        y: 110,
         size: 8,
         font: bold,
         color: MDB_NAVY,
     });
-    const wrapped = wrapPdfLine(holidayLine, 595.28 - marginX * 2, 7, font);
-    wrapped.slice(0, 3).forEach((line, i) => {
-        page.drawText(line, {
-            x: marginX,
-            y: 56 - i * 10,
-            size: 7,
+
+    const holidayCols = 3;
+    const holidayColW = (595.28 - marginX * 2) / holidayCols;
+    const dateColW = 38;
+    holidayItems.forEach((h, i) => {
+        const col = i % holidayCols;
+        const row = Math.floor(i / holidayCols);
+        const x = marginX + col * holidayColW;
+        const y = 92 - row * 16;
+        page.drawCircle({
+            x: x + 3,
+            y: y + 2.5,
+            size: 2.5,
+            color: HOLIDAY_FILL,
+        });
+        page.drawText(holidayDateLabel(h.date), {
+            x: x + 10,
+            y,
+            size: 8,
+            font: bold,
+            color: MDB_NAVY,
+        });
+        page.drawText(h.name, {
+            x: x + 10 + dateColW,
+            y,
+            size: 8,
             font,
             color: rgb(0.25, 0.28, 0.32),
         });
