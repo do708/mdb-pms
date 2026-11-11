@@ -415,13 +415,19 @@ export async function PUT(
 
 
 
+        const isAssignedEngineer =
+            existingWorkorder.assignedUserId === session.user.id
+            || existingWorkorder.extraEngineers.some(
+                (extra) => extra.userId === session.user.id
+            );
+
         if(
 
             session.user.role === "engineer"
 
             &&
 
-            existingWorkorder.assignedUserId !== session.user.id
+            !isAssignedEngineer
 
         ){
 

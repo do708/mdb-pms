@@ -120,6 +120,9 @@ interface Props {
     /** Bijv. foto's: tussen afronding en handtekening. */
     beforeHandtekening?:ReactNode;
 
+    /** Bijv. Verstuur-knop onder de handtekening. */
+    afterHandtekening?:ReactNode;
+
 }
 
 
@@ -2057,7 +2060,9 @@ export default function OpleverForm({
 
     error,
 
-    beforeHandtekening
+    beforeHandtekening,
+
+    afterHandtekening
 
 }:Props){
 
@@ -5103,6 +5108,8 @@ export default function OpleverForm({
 
             </div>
 
+
+            {afterHandtekening}
 
             {
                 !embedded && message && (

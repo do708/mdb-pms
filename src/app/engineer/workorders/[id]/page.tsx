@@ -2190,6 +2190,27 @@ async function completeWorkorder(){
                 workorder.plannedReisuren
             }
 
+            afterHandtekening={
+                !heeftUitgevoerdeWerkbon(status || workorder.status)
+                ? (
+                    <button
+                        type="button"
+                        onClick={completeWorkorder}
+                        disabled={saving}
+                        className="
+                            w-full
+                            bg-[#d6007e] text-white
+                            rounded-lg px-4 py-2.5
+                            text-sm font-semibold
+                            disabled:opacity-50
+                        "
+                    >
+                        {saving ? "Bezig..." : "Verstuur werkbon"}
+                    </button>
+                )
+                : null
+            }
+
         />
     )
 }
@@ -2251,11 +2272,9 @@ async function completeWorkorder(){
 
 
             {
-                /* Monteur mag altijd versturen zolang de werkbon ingepland staat. */
                 !isOffice
-                && migrateStatus(status || workorder.status) === "ingepland"
+                && !heeftUitgevoerdeWerkbon(status || workorder.status)
                 && (
-
                     <button
                         type="button"
                         onClick={completeWorkorder}
@@ -2270,7 +2289,6 @@ async function completeWorkorder(){
                     >
                         {saving ? "Bezig..." : "Verstuur werkbon"}
                     </button>
-
                 )
             }
 
