@@ -66,27 +66,28 @@ export default function UsersPage() {
 
     return (
         <PageShell>
-            <PageHeader
-                title="Gebruikers"
-                subtitle={
-                    isAdmin
-                        ? "Beheer medewerkers en rollen"
-                        : "Wachtwoorden van medewerkers resetten"
-                }
-                actions={
-                    isAdmin ? (
-                    <Link
-                        href="/users/new"
-                        className="
-                            bg-[#d6007e] text-white
-                            px-5 py-3 rounded-xl font-semibold
-                        "
-                    >
-                        + Nieuwe gebruiker
-                    </Link>
-                    ) : undefined
-                }
-            />
+            <div>
+                <PageHeader
+                    title="Gebruikers"
+                    actions={
+                        isAdmin ? (
+                        <Link
+                            href="/users/new"
+                            className="
+                                bg-[#d6007e] text-white
+                                px-5 py-3 rounded-xl font-semibold
+                            "
+                        >
+                            + Nieuwe gebruiker
+                        </Link>
+                        ) : undefined
+                    }
+                />
+                <p className="mt-1 text-sm text-gray-500">
+                    {users.length}{" "}
+                    {users.length === 1 ? "gebruiker" : "gebruikers"}
+                </p>
+            </div>
 
             <SpecPageCard>
                 {users.length === 0 ? (
