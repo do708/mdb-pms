@@ -20,6 +20,7 @@ import {
     verlofSubtitle,
 } from "@/lib/forms/formDisplay";
 import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
+import VacationTeamOverview from "@/components/forms/VacationTeamOverview";
 import {
     isKortVerlof,
     type VacationBalance,
@@ -478,6 +479,12 @@ export default function FormDetailPage(){
                                 form.status === "ingediend"
                             }
                         />
+                    </div>
+                ) : null}
+
+                {canManage ? (
+                    <div className="mt-4">
+                        <VacationTeamOverview />
                     </div>
                 ) : null}
 

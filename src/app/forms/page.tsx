@@ -17,6 +17,7 @@ import {
     verlofSubtitle,
 } from "@/lib/forms/formDisplay";
 import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
+import VacationTeamOverview from "@/components/forms/VacationTeamOverview";
 import type { VacationBalance } from "@/lib/reports/vacation";
 
 interface FormItem {
@@ -104,6 +105,8 @@ function FormsPageContent() {
                     </Link>
                 ))}
             </div>
+
+            <VacationTeamOverview />
 
             <SpecPageCard>
                 {statusFilter === "ingediend" && (
