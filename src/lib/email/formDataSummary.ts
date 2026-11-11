@@ -1,5 +1,6 @@
 import {
-    fieldIsVisible,
+    fieldShowsOnSubmission,
+    isBlankHoursOrTimeValue,
     type FormDefinition,
     type FormField,
 } from "@/constants/formDefinitions";
@@ -7,6 +8,10 @@ import { nlFormDate } from "@/lib/forms/formDisplay";
 
 function displayValue(field: FormField, raw: unknown): string | null {
     if (raw === undefined || raw === null || raw === "") {
+        return null;
+    }
+
+    if (isBlankHoursOrTimeValue(raw)) {
         return null;
     }
 
@@ -38,7 +43,7 @@ export function summarizeFormData(
     const lines: string[] = [];
 
     for (const field of definition.fields) {
-        if (!fieldIsVisible(field, data)) {
+        if (!fieldShowsOnSubmission(field, data)) {
             continue;
         }
 

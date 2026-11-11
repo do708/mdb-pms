@@ -8,8 +8,10 @@ import { useSession } from "next-auth/react";
 
 import {
     FormField,
-    fieldIsVisible,
-    getFormDefinition
+    fieldShowsOnSubmission,
+    getFormDefinition,
+    isBlankHoursOrTimeValue,
+    isOptionalHoursOrTimeField,
 } from "@/constants/formDefinitions";
 
 import {
@@ -226,6 +228,13 @@ export default function FormDetailPage(){
 
         const value =
             form?.data?.[field.id] ?? "";
+
+        if (
+            isOptionalHoursOrTimeField(field) &&
+            isBlankHoursOrTimeValue(value)
+        ) {
+            return null;
+        }
 
 
         if(field.type === "kop"){
@@ -637,7 +646,7 @@ export default function FormDetailPage(){
                 {
                     definition?.fields.map(field=>{
 
-                        if(!fieldIsVisible(field, form.data)){
+                        if(!fieldShowsOnSubmission(field, form.data)){
                             return null;
                         }
 

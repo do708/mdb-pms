@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { requireApiUser } from "@/lib/auth/guard";
+import { isBlankHoursOrTimeValue } from "@/constants/formDefinitions";
 import { leaveReasonFromData } from "@/lib/reports/vacation";
 import {
     defaultPlanningEventRange,
@@ -164,8 +165,9 @@ export async function GET(){
                     type:(data.typeVerlof as string) ?? "Verlof",
                     reden: leaveReasonFromData(data),
                     totaalUren:
-                        typeof data.totaalUren === "string" ||
-                        typeof data.totaalUren === "number"
+                        (typeof data.totaalUren === "string" ||
+                            typeof data.totaalUren === "number") &&
+                        !isBlankHoursOrTimeValue(data.totaalUren)
                             ? data.totaalUren
                             : null,
                 };

@@ -9,6 +9,7 @@ import {
     projectMailbox,
     sendResendEmail,
 } from "@/lib/email/resendClient";
+import { isBlankHoursOrTimeValue } from "@/constants/formDefinitions";
 import { nlFormDate, verlofMonteurName } from "@/lib/forms/formDisplay";
 
 interface FormSubmissionMailData {
@@ -44,9 +45,12 @@ function buildVerlofMail(data: FormSubmissionMailData, formsUrl: string) {
     const typeVerlof = strField(data.data, "typeVerlof");
     const redenKort = strField(data.data, "redenKortVerlof");
     const reden = strField(data.data, "reden");
-    const uren = strField(data.data, "totaalUren");
-    const vanTijd = strField(data.data, "vanTijd");
-    const totTijd = strField(data.data, "totTijd");
+    const urenRaw = strField(data.data, "totaalUren");
+    const vanRaw = strField(data.data, "vanTijd");
+    const totRaw = strField(data.data, "totTijd");
+    const uren = isBlankHoursOrTimeValue(urenRaw) ? "" : urenRaw;
+    const vanTijd = isBlankHoursOrTimeValue(vanRaw) ? "" : vanRaw;
+    const totTijd = isBlankHoursOrTimeValue(totRaw) ? "" : totRaw;
     const handtekening = strField(data.data, "handtekening");
     const andereInvoerder = !namesMatch(werknemer, data.submitterName);
 

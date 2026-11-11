@@ -1,3 +1,5 @@
+import { isBlankHoursOrTimeValue } from "@/constants/formDefinitions";
+
 export function nlFormDate(value: unknown): string {
     if (!value || typeof value !== "string") {
         return "";
@@ -70,20 +72,22 @@ export function verlofSubtitle(data?: Record<string, unknown> | null): string {
     const reden = kort || redenRaw;
     const from = nlFormDate(data?.eersteDag);
     const to = nlFormDate(data?.laatsteDag);
-    const uren =
-        typeof data?.totaalUren === "string"
-            ? data.totaalUren.trim()
-            : typeof data?.totaalUren === "number"
-              ? String(data.totaalUren)
-              : "";
-    const van =
-        typeof data?.vanTijd === "string" ? data.vanTijd.trim() : "";
-    const tot =
-        typeof data?.totTijd === "string" ? data.totTijd.trim() : "";
+    const urenRaw = data?.totaalUren;
+    const uren = isBlankHoursOrTimeValue(urenRaw)
+        ? ""
+        : typeof urenRaw === "number"
+          ? String(urenRaw)
+          : typeof urenRaw === "string"
+            ? urenRaw.trim()
+            : "";
+    const vanRaw = typeof data?.vanTijd === "string" ? data.vanTijd.trim() : "";
+    const totRaw = typeof data?.totTijd === "string" ? data.totTijd.trim() : "";
+    const van = isBlankHoursOrTimeValue(vanRaw) ? "" : vanRaw;
+    const tot = isBlankHoursOrTimeValue(totRaw) ? "" : totRaw;
 
     const datePart =
         from && to ? `${from} - ${to}` : from || to || "";
-    const timePart = van && tot ? `${van}–${tot}` : "";
+    const timePart = [van, tot].filter(Boolean).join("–");
     const hoursPart = uren ? `${uren} uur` : "";
 
     const typePart =
@@ -106,12 +110,13 @@ export function verlofPlanningLabel(
 ): string {
     const soort = typeof type === "string" ? type.trim() : "";
     const extra = typeof reden === "string" ? reden.trim() : "";
-    const uren =
-        typeof totaalUren === "number" && Number.isFinite(totaalUren)
-            ? `${totaalUren} uur`
-            : typeof totaalUren === "string" && totaalUren.trim()
-              ? `${totaalUren.trim()} uur`
-              : "";
+    const uren = isBlankHoursOrTimeValue(totaalUren)
+        ? ""
+        : typeof totaalUren === "number"
+          ? `${totaalUren} uur`
+          : typeof totaalUren === "string"
+            ? `${totaalUren.trim()} uur`
+            : "";
     const parts = [soort, extra, uren].filter(Boolean);
     return parts.join(" · ") || "Verlof";
 }

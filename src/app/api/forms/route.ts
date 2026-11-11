@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiUser } from "@/lib/auth/guard";
 
-import { getFormDefinition } from "@/constants/formDefinitions";
+import {
+    getFormDefinition,
+    isBlankHoursOrTimeValue,
+} from "@/constants/formDefinitions";
 
 import { excludeArchivedForms } from "@/lib/archive";
 import { buildFormTitle } from "@/lib/forms/formDisplay";
@@ -235,8 +238,14 @@ export async function POST(
 
         const formData =
             (body.data && typeof body.data === "object"
-                ? body.data
+                ? { ...(body.data as Record<string, unknown>) }
                 : {}) as Record<string, unknown>;
+
+        for (const id of ["totaalUren", "vanTijd", "totTijd"] as const) {
+            if (isBlankHoursOrTimeValue(formData[id])) {
+                delete formData[id];
+            }
+        }
 
         const title = buildFormTitle(
             body.type,

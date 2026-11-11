@@ -6,7 +6,9 @@ import { useSession } from "next-auth/react";
 import {
     FormDefinition,
     FormField,
-    fieldIsVisible
+    fieldIsVisible,
+    isBlankHoursOrTimeValue,
+    isOptionalHoursOrTimeField
 } from "@/constants/formDefinitions";
 import {
     SpecFieldLabel,
@@ -681,6 +683,7 @@ export default function DynamicForm({
 
             if(
                 field.required &&
+                !isOptionalHoursOrTimeField(field) &&
                 !values[field.id]
             ){
 
@@ -707,6 +710,16 @@ export default function DynamicForm({
         for(const field of definition.fields){
             if(field.type === "monteur"){
                 teVersturen[field.id] = monteurNaam;
+            }
+        }
+
+        for (const field of definition.fields) {
+            if (
+                isOptionalHoursOrTimeField(field) &&
+                (!fieldIsVisible(field, teVersturen) ||
+                    isBlankHoursOrTimeValue(teVersturen[field.id]))
+            ) {
+                delete teVersturen[field.id];
             }
         }
 

@@ -46,6 +46,35 @@ export interface FormField {
 
 }
 
+export function isBlankHoursOrTimeValue(value: unknown): boolean {
+    if (value === undefined || value === null) {
+        return true;
+    }
+
+    if (typeof value === "number") {
+        return !Number.isFinite(value);
+    }
+
+    const text = String(value).trim();
+
+    if (!text) {
+        return true;
+    }
+
+    const compact = text.replace(/\s/g, "");
+
+    return /^[-–—.:]+$/.test(compact);
+}
+
+export function isOptionalHoursOrTimeField(field: FormField): boolean {
+    return (
+        field.id === "totaalUren" ||
+        field.id === "vanTijd" ||
+        field.id === "totTijd" ||
+        field.type === "time"
+    );
+}
+
 export function fieldIsVisible(
     field: FormField,
     values: Record<string, unknown> | null | undefined
@@ -65,6 +94,25 @@ export function fieldIsVisible(
         return !current.startsWith(
             field.when.notEqualsPrefix.trim().toLowerCase()
         );
+    }
+
+    return true;
+}
+
+/** Read-only: hide empty hours/times on a submitted aanvraag. Keep them on the fill form. */
+export function fieldShowsOnSubmission(
+    field: FormField,
+    values: Record<string, unknown> | null | undefined
+): boolean {
+    if (!fieldIsVisible(field, values)) {
+        return false;
+    }
+
+    if (
+        isOptionalHoursOrTimeField(field) &&
+        isBlankHoursOrTimeValue(values?.[field.id])
+    ) {
+        return false;
     }
 
     return true;
@@ -204,6 +252,7 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
                 required:true,
                 options:[
                     "Vakantiedagen / ADV",
+                    "Kort verlof",
                     "Anders..."
                 ]
             },
@@ -211,7 +260,11 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
             {
                 id:"reden",
                 type:"text",
-                label:"Reden"
+                label:"Reden",
+                when:{
+                    fieldId:"typeVerlof",
+                    notEqualsPrefix:"Vakantiedagen"
+                }
             },
 
             {
@@ -231,19 +284,31 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
             {
                 id:"totaalUren",
                 type:"number",
-                label:"Totaal aantal uren"
+                label:"Totaal aantal uren",
+                when:{
+                    fieldId:"typeVerlof",
+                    equalsPrefix:"Kort verlof"
+                }
             },
 
             {
                 id:"vanTijd",
                 type:"time",
-                label:"Van"
+                label:"Van",
+                when:{
+                    fieldId:"typeVerlof",
+                    equalsPrefix:"Kort verlof"
+                }
             },
 
             {
                 id:"totTijd",
                 type:"time",
-                label:"Tot"
+                label:"Tot",
+                when:{
+                    fieldId:"typeVerlof",
+                    equalsPrefix:"Kort verlof"
+                }
             },
 
             {
