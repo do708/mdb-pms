@@ -37,7 +37,10 @@ export default function VacationBalanceBar({
                     Vakantiedagen {balance.year}
                 </span>
                 <span className="font-medium text-gray-900">
-                    {balance.used} / {balance.entitled}
+                    {balance.used.toLocaleString("nl-NL", {
+                        maximumFractionDigits: 2,
+                    })}{" "}
+                    / {balance.entitled}
                 </span>
             </div>
             <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
@@ -54,17 +57,27 @@ export default function VacationBalanceBar({
                         ${signalClasses(signal)}
                     `}
                 >
-                    {balance.remaining} over
+                    {balance.remaining.toLocaleString("nl-NL", {
+                        maximumFractionDigits: 2,
+                    })}{" "}
+                    over
                 </span>
                 {balance.pending > 0 ? (
                     <span className="text-xs text-gray-500">
-                        {balance.pending} aangevraagd, nog niet goedgekeurd
+                        {balance.pending.toLocaleString("nl-NL", {
+                            maximumFractionDigits: 2,
+                        })}{" "}
+                        aangevraagd, nog niet goedgekeurd
                     </span>
                 ) : null}
             </div>
             {thisRequestDays != null ? (
                 <p className="text-xs text-gray-500">
-                    Deze aanvraag: {thisRequestDays} werkdag
+                    Deze aanvraag:{" "}
+                    {thisRequestDays.toLocaleString("nl-NL", {
+                        maximumFractionDigits: 2,
+                    })}{" "}
+                    werkdag
                     {thisRequestDays === 1 ? "" : "en"}
                     {" "}
                     (weekend en feestdagen tellen niet mee)

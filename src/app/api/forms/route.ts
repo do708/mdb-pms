@@ -12,9 +12,10 @@ import { sendFormSubmissionMail } from "@/lib/email/sendFormSubmissionMail";
 import {
     isVakantiedagen,
     leaveDaysFromData,
+    parseTotaalUren,
     vacationBalanceForUser,
+    vacationDaysForRequest,
     vacationItemsFromForms,
-    weekdaysInYear,
     yearFromDateKey,
 } from "@/lib/reports/vacation";
 
@@ -133,7 +134,12 @@ export async function GET(){
             );
             const thisRequestDays =
                 range && isVakantiedagen(data.typeVerlof)
-                    ? weekdaysInYear(range.from, range.to, year)
+                    ? vacationDaysForRequest(
+                          range.from,
+                          range.to,
+                          year,
+                          parseTotaalUren(data.totaalUren)
+                      )
                     : 0;
             return {
                 ...form,

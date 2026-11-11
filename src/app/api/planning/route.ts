@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { requireApiUser } from "@/lib/auth/guard";
+import { leaveReasonFromData } from "@/lib/reports/vacation";
 import {
     defaultPlanningEventRange,
     expandPlanningEvents,
@@ -161,10 +162,12 @@ export async function GET(){
                     from:(data.eersteDag as string) ?? null,
                     to:(data.laatsteDag as string) ?? null,
                     type:(data.typeVerlof as string) ?? "Verlof",
-                    reden:
-                        typeof data.reden === "string"
-                            ? data.reden.trim()
-                            : ""
+                    reden: leaveReasonFromData(data),
+                    totaalUren:
+                        typeof data.totaalUren === "string" ||
+                        typeof data.totaalUren === "number"
+                            ? data.totaalUren
+                            : null,
                 };
 
             })

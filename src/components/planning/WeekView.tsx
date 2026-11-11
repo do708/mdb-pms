@@ -22,6 +22,7 @@ import {
     getAmsterdamParts,
 } from "@/lib/datetime/amsterdam";
 import { jobCrewLine } from "@/lib/planning/jobCrew";
+import { verlofPlanningLabel } from "@/lib/forms/formDisplay";
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
@@ -1498,12 +1499,11 @@ export default function WeekView({
 
                                                         {verlof ? (
                                                             <div
-                                                                title={[
+                                                                title={verlofPlanningLabel(
                                                                     verlof.type,
                                                                     verlof.reden,
-                                                                ]
-                                                                    .filter(Boolean)
-                                                                    .join(" · ")}
+                                                                    verlof.totaalUren
+                                                                )}
                                                                 className="
                                                                     absolute inset-1
                                                                     bg-gradient-to-b from-orange-50 to-orange-100/80
@@ -1518,19 +1518,12 @@ export default function WeekView({
                                                                     🌴
                                                                 </span>
                                                                 <span className="leading-tight px-0.5">
-                                                                    {verlof.reden
-                                                                        ? String(
-                                                                              verlof.reden
-                                                                          )
-                                                                        : verlof.type ||
-                                                                          "Verlof"}
+                                                                    {verlofPlanningLabel(
+                                                                        verlof.type,
+                                                                        verlof.reden,
+                                                                        verlof.totaalUren
+                                                                    )}
                                                                 </span>
-                                                                {verlof.reden &&
-                                                                verlof.type ? (
-                                                                    <span className="text-[10px] font-normal opacity-80 leading-tight px-0.5">
-                                                                        {verlof.type}
-                                                                    </span>
-                                                                ) : null}
                                                             </div>
                                                         ) : null}
 

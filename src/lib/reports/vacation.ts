@@ -9,6 +9,7 @@ import {
 } from "@/lib/reports/periods";
 
 export const VACATION_DAYS_PER_YEAR = 28;
+export const HOURS_PER_VACATION_DAY = 8;
 
 export type VacationLeaveItem = {
     userId: string;
@@ -17,6 +18,7 @@ export type VacationLeaveItem = {
     to: string;
     type?: string | null;
     reden?: string | null;
+    totaalUren?: number | null;
     status?: string | null;
 };
 
@@ -35,6 +37,63 @@ export function isVakantiedagen(type: unknown): boolean {
         return false;
     }
     return type.trim().toLowerCase().startsWith("vakantiedagen");
+}
+
+export function parseTotaalUren(value: unknown): number | null {
+    if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+        return value;
+    }
+    if (typeof value !== "string") {
+        return null;
+    }
+    const parsed = Number(value.trim().replace(",", "."));
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+        return null;
+    }
+    return parsed;
+}
+
+export function leaveReasonFromData(
+    data: Record<string, unknown> | null | undefined
+): string {
+    const type =
+        typeof data?.typeVerlof === "string" ? data.typeVerlof.trim() : "";
+    const kort =
+        typeof data?.redenKortVerlof === "string"
+            ? data.redenKortVerlof.trim()
+            : "";
+    const reden = typeof data?.reden === "string" ? data.reden.trim() : "";
+    if (type.toLowerCase().startsWith("kort verlof")) {
+        return kort || reden;
+    }
+    return reden || kort;
+}
+
+export function vacationDaysForRequest(
+    from: string,
+    to: string,
+    year: number,
+    totaalUren: number | null | undefined
+): number {
+    const daysInYear = weekdaysInYear(from, to, year);
+    if (daysInYear <= 0) {
+        return 0;
+    }
+    if (totaalUren == null) {
+        return daysInYear;
+    }
+    const used = totaalUren / HOURS_PER_VACATION_DAY;
+    const allDays = weekdaysInYear(from, to, yearFromDateKey(from));
+    const toYear = yearFromDateKey(to);
+    const totalSpan =
+        toYear === yearFromDateKey(from)
+            ? allDays
+            : weekdaysInYear(from, to, yearFromDateKey(from)) +
+              weekdaysInYear(from, to, toYear);
+    if (totalSpan <= 0) {
+        return used;
+    }
+    return used * (daysInYear / totalSpan);
 }
 
 export function yearFromDateKey(dateKey: string | null | undefined): number {
@@ -84,8 +143,8 @@ export function vacationItemsFromForms(
             to: range.to,
             type:
                 typeof data.typeVerlof === "string" ? data.typeVerlof : null,
-            reden:
-                typeof data.reden === "string" ? data.reden.trim() : "",
+            reden: leaveReasonFromData(data),
+            totaalUren: parseTotaalUren(data.totaalUren),
             status: form.status,
         });
     }
@@ -182,7 +241,12 @@ export function vacationBalanceForUser(
         if (!isVakantiedagen(item.type)) {
             continue;
         }
-        const days = weekdaysInYear(item.from, item.to, year);
+        const days = vacationDaysForRequest(
+            item.from,
+            item.to,
+            year,
+            item.totaalUren
+        );
         if (days <= 0) {
             continue;
         }

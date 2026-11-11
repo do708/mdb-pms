@@ -11,6 +11,7 @@ import {
     yearsAround,
 } from "@/lib/calendarMarks";
 import { jobCrewLine } from "@/lib/planning/jobCrew";
+import { verlofPlanningLabel } from "@/lib/forms/formDisplay";
 
 interface PlanningItem {
     id: string;
@@ -52,6 +53,7 @@ interface LeaveItem {
     userId?: string;
     type?: string;
     reden?: string;
+    totaalUren?: string | number | null;
 }
 
 interface Props {
@@ -458,9 +460,11 @@ export default function EngineerMobileSchedule({
                         bg-amber-50 px-3 py-2 text-sm text-amber-900
                     ">
                         🌴{" "}
-                        {dayLeave.reden
-                            ? `${dayLeave.type || "Verlof"} · ${dayLeave.reden}`
-                            : dayLeave.type || "Verlof"}
+                        {verlofPlanningLabel(
+                            dayLeave.type,
+                            dayLeave.reden,
+                            dayLeave.totaalUren
+                        )}
                     </div>
                 )}
                 {timeline.map((entry) =>

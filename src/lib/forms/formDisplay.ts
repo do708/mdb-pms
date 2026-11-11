@@ -61,34 +61,59 @@ export function buildVerlofTitle(
 export function verlofSubtitle(data?: Record<string, unknown> | null): string {
     const type =
         typeof data?.typeVerlof === "string" ? data.typeVerlof.trim() : "";
-    const reden =
+    const kort =
+        typeof data?.redenKortVerlof === "string"
+            ? data.redenKortVerlof.trim()
+            : "";
+    const redenRaw =
         typeof data?.reden === "string" ? data.reden.trim() : "";
+    const reden = kort || redenRaw;
     const from = nlFormDate(data?.eersteDag);
     const to = nlFormDate(data?.laatsteDag);
+    const uren =
+        typeof data?.totaalUren === "string"
+            ? data.totaalUren.trim()
+            : typeof data?.totaalUren === "number"
+              ? String(data.totaalUren)
+              : "";
+    const van =
+        typeof data?.vanTijd === "string" ? data.vanTijd.trim() : "";
+    const tot =
+        typeof data?.totTijd === "string" ? data.totTijd.trim() : "";
 
     const datePart =
         from && to ? `${from} - ${to}` : from || to || "";
+    const timePart = van && tot ? `${van}–${tot}` : "";
+    const hoursPart = uren ? `${uren} uur` : "";
 
     const typePart =
         type && reden ? `${type} · ${reden}` : type || reden;
 
-    if (typePart && datePart) {
-        return `${typePart} | ${datePart}`;
+    const extra = [hoursPart, timePart].filter(Boolean).join(" · ");
+    const head = [typePart, extra].filter(Boolean).join(" · ");
+
+    if (head && datePart) {
+        return `${head} | ${datePart}`;
     }
 
-    return typePart || datePart;
+    return head || datePart;
 }
 
 export function verlofPlanningLabel(
     type?: string | null,
-    reden?: string | null
+    reden?: string | null,
+    totaalUren?: string | number | null
 ): string {
     const soort = typeof type === "string" ? type.trim() : "";
     const extra = typeof reden === "string" ? reden.trim() : "";
-    if (soort && extra) {
-        return `${soort} · ${extra}`;
-    }
-    return extra || soort || "Verlof";
+    const uren =
+        typeof totaalUren === "number" && Number.isFinite(totaalUren)
+            ? `${totaalUren} uur`
+            : typeof totaalUren === "string" && totaalUren.trim()
+              ? `${totaalUren.trim()} uur`
+              : "";
+    const parts = [soort, extra, uren].filter(Boolean);
+    return parts.join(" · ") || "Verlof";
 }
 
 export function buildFormTitle(

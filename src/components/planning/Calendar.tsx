@@ -10,6 +10,7 @@ import {
     vacationChipClass,
     vacationToneClass,
 } from "@/lib/calendarMarks";
+import { verlofPlanningLabel } from "@/lib/forms/formDisplay";
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
@@ -466,13 +467,10 @@ export default function Calendar({
                                                                     rounded-md px-1.5 py-1
                                                                     truncate leading-tight font-medium
                                                                 "
-                                                                title={`Verlof: ${[l.userName, l.type, l.reden].filter(Boolean).join(" · ")}`}
+                                                                title={`Verlof: ${[l.userName, verlofPlanningLabel(l.type, l.reden, l.totaalUren)].filter(Boolean).join(" · ")}`}
                                                             >
                                                                 🌴{" "}
-                                                                {l.reden
-                                                                    ? `${l.userName ?? "Verlof"} · ${l.reden}`
-                                                                    : (l.userName ??
-                                                                      "Verlof")}
+                                                                {`${l.userName ?? "Verlof"} · ${verlofPlanningLabel(l.type, l.reden, l.totaalUren)}`}
                                                             </div>
                                                         ))}
 

@@ -5,7 +5,8 @@ import { useSession } from "next-auth/react";
 
 import {
     FormDefinition,
-    FormField
+    FormField,
+    fieldIsVisible
 } from "@/constants/formDefinitions";
 import {
     SpecFieldLabel,
@@ -15,7 +16,8 @@ import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
 import {
     isVakantiedagen,
     leaveDaysFromData,
-    weekdaysInYear,
+    parseTotaalUren,
+    vacationDaysForRequest,
     yearFromDateKey,
     type VacationBalance,
 } from "@/lib/reports/vacation";
@@ -483,8 +485,13 @@ export default function DynamicForm({
 
     const [vacation, setVacation] =
         useState<VacationBalance | null>(null);
-    const [pdfBusy, setPdfBusy] =
-        useState(false);
+    const [pdfBusyYear, setPdfBusyYear] =
+        useState<number | null>(null);
+
+    const archiveYears = useMemo(() => {
+        const current = new Date().getFullYear();
+        return [current - 1, current - 2, current - 3, current - 4];
+    }, []);
 
 
     const [values,setValues] =
@@ -563,12 +570,18 @@ export default function DynamicForm({
         if (!range) {
             return 0;
         }
-        return weekdaysInYear(range.from, range.to, vacationYear);
+        return vacationDaysForRequest(
+            range.from,
+            range.to,
+            vacationYear,
+            parseTotaalUren(values.totaalUren)
+        );
     }, [
         definition.type,
         values.typeVerlof,
         values.eersteDag,
         values.laatsteDag,
+        values.totaalUren,
         vacationYear,
     ]);
 
@@ -579,15 +592,48 @@ export default function DynamicForm({
 
 
 
+    function hoursBetweenTimes(from: string, to: string): string | null {
+        const parse = (time: string) => {
+            const match = /^(\d{1,2}):(\d{2})/.exec(time.trim());
+            if (!match) {
+                return null;
+            }
+            return Number(match[1]) * 60 + Number(match[2]);
+        };
+        const start = parse(from);
+        const end = parse(to);
+        if (start == null || end == null || end <= start) {
+            return null;
+        }
+        const hours = (end - start) / 60;
+        return Number.isInteger(hours)
+            ? String(hours)
+            : String(Math.round(hours * 100) / 100);
+    }
+
     function set(
         id:string,
         value:string
     ){
 
-        setValues(previous=>({
-            ...previous,
-            [id]:value
-        }));
+        setValues(previous=>{
+            const next = {
+                ...previous,
+                [id]:value
+            };
+
+            if (id === "vanTijd" || id === "totTijd") {
+                const suggested = hoursBetweenTimes(
+                    id === "vanTijd" ? value : previous.vanTijd ?? "",
+                    id === "totTijd" ? value : previous.totTijd ?? ""
+                );
+                if (suggested && !parseTotaalUren(previous.totaalUren)) {
+                    next.totaalUren = suggested;
+                }
+            }
+
+            return next;
+        });
 
         setError("");
 
@@ -596,11 +642,11 @@ export default function DynamicForm({
 
 
 
-    async function downloadVacationPdf() {
-        setPdfBusy(true);
+    async function downloadVacationPdf(year: number) {
+        setPdfBusyYear(year);
         try {
             const response = await fetch(
-                `/api/forms/vacation/pdf?year=${vacationYear}`
+                `/api/forms/vacation/pdf?year=${year}`
             );
             if (!response.ok) {
                 alert("Overzicht downloaden mislukt");
@@ -610,13 +656,13 @@ export default function DynamicForm({
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = `vakantieoverzicht-${vacationYear}.pdf`;
+            link.download = `vakantieoverzicht-${year}.pdf`;
             document.body.appendChild(link);
             link.click();
             link.remove();
             URL.revokeObjectURL(url);
         } finally {
-            setPdfBusy(false);
+            setPdfBusyYear(null);
         }
     }
 
@@ -625,6 +671,9 @@ export default function DynamicForm({
 
         for(const field of definition.fields){
 
+            if(!fieldIsVisible(field, values)){
+                continue;
+            }
 
             if(
                 field.required &&
@@ -655,6 +704,15 @@ export default function DynamicForm({
             if(field.type === "monteur"){
                 teVersturen[field.id] = monteurNaam;
             }
+        }
+
+        if (
+            definition.type === "verlof" &&
+            typeof teVersturen.typeVerlof === "string" &&
+            teVersturen.typeVerlof.trim().toLowerCase().startsWith("kort verlof") &&
+            teVersturen.redenKortVerlof
+        ) {
+            teVersturen.reden = teVersturen.redenKortVerlof;
         }
 
 
@@ -749,6 +807,7 @@ export default function DynamicForm({
 
 
             case "text":
+            case "number":
 
                 return (
 
@@ -760,6 +819,14 @@ export default function DynamicForm({
                         </SpecFieldLabel>
 
                         <input
+
+                            type={field.type === "number" ? "number" : "text"}
+
+                            inputMode={field.type === "number" ? "decimal" : undefined}
+
+                            step={field.type === "number" ? "0.25" : undefined}
+
+                            min={field.type === "number" ? "0" : undefined}
 
                             value={value}
 
@@ -804,6 +871,7 @@ export default function DynamicForm({
 
 
             case "date":
+            case "time":
 
                 return (
 
@@ -816,7 +884,7 @@ export default function DynamicForm({
 
                         <input
 
-                            type="date"
+                            type={field.type === "time" ? "time" : "date"}
 
                             value={value}
 
@@ -1124,8 +1192,8 @@ export default function DynamicForm({
                     )}
                     <button
                         type="button"
-                        onClick={downloadVacationPdf}
-                        disabled={pdfBusy}
+                        onClick={() => downloadVacationPdf(vacationYear)}
+                        disabled={pdfBusyYear !== null}
                         className="
                             w-full rounded-xl border border-gray-300
                             bg-white px-4 py-2.5 text-sm font-semibold
@@ -1133,7 +1201,7 @@ export default function DynamicForm({
                             disabled:opacity-50
                         "
                     >
-                        {pdfBusy
+                        {pdfBusyYear === vacationYear
                             ? "Overzicht maken..."
                             : "Overzicht PDF (12 maanden)"}
                     </button>
@@ -1142,7 +1210,9 @@ export default function DynamicForm({
 
 
             {
-                definition.fields.map((field)=>(
+                definition.fields.filter((field)=>
+                    fieldIsVisible(field, values)
+                ).map((field)=>(
 
                     <div key={field.id}>
 
@@ -1185,6 +1255,47 @@ export default function DynamicForm({
                 }
 
             </button>
+
+            {definition.type === "verlof" ? (
+                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
+                    <div>
+                        <h2 className="text-sm font-semibold text-gray-900">
+                            Archief vakantieoverzichten
+                        </h2>
+                        <p className="mt-0.5 text-xs text-gray-500">
+                            Automatisch bewaard. Overzichten van de vorige vier
+                            jaren, op basis van goedgekeurd verlof.
+                        </p>
+                    </div>
+                    <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
+                        {archiveYears.map((year) => (
+                            <li
+                                key={year}
+                                className="flex items-center justify-between gap-3 px-3 py-2"
+                            >
+                                <span className="text-sm font-medium text-gray-800">
+                                    {year}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => downloadVacationPdf(year)}
+                                    disabled={pdfBusyYear !== null}
+                                    className="
+                                        shrink-0 rounded-lg border border-gray-300
+                                        bg-white px-3 py-1.5 text-xs font-semibold
+                                        text-gray-800 hover:bg-gray-50
+                                        disabled:opacity-50
+                                    "
+                                >
+                                    {pdfBusyYear === year
+                                        ? "PDF maken..."
+                                        : "PDF"}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ) : null}
 
 
         </div>

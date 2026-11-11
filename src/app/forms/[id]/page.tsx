@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 
 import {
     FormField,
+    fieldIsVisible,
     getFormDefinition
 } from "@/constants/formDefinitions";
 
@@ -601,6 +602,10 @@ export default function FormDetailPage(){
 
                 {
                     definition?.fields.map(field=>{
+
+                        if(!fieldIsVisible(field, form.data)){
+                            return null;
+                        }
 
 
                         if(field.type === "kop"){

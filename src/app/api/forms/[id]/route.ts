@@ -6,9 +6,10 @@ import { requireApiUser, requireApiRole } from "@/lib/auth/guard";
 import {
     isVakantiedagen,
     leaveDaysFromData,
+    parseTotaalUren,
     vacationBalanceForUser,
+    vacationDaysForRequest,
     vacationItemsFromForms,
-    weekdaysInYear,
     yearFromDateKey,
 } from "@/lib/reports/vacation";
 
@@ -144,7 +145,12 @@ export async function GET(
             );
             thisRequestDays =
                 range && isVakantiedagen(data.typeVerlof)
-                    ? weekdaysInYear(range.from, range.to, year)
+                    ? vacationDaysForRequest(
+                          range.from,
+                          range.to,
+                          year,
+                          parseTotaalUren(data.totaalUren)
+                      )
                     : 0;
         }
 

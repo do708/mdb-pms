@@ -5,8 +5,10 @@
 export type FormFieldType =
     | "kop"
     | "text"
+    | "number"
     | "textarea"
     | "date"
+    | "time"
     | "datetime"
     | "money"
     | "janee"
@@ -15,7 +17,11 @@ export type FormFieldType =
     | "handtekening"
     | "monteur";
 
-
+export type FormFieldWhen = {
+    fieldId: string;
+    equalsPrefix?: string;
+    notEqualsPrefix?: string;
+};
 
 export interface FormField {
 
@@ -36,6 +42,32 @@ export interface FormField {
     // date: standaard op de datum van vandaag zetten
     defaultToday?:boolean;
 
+    when?: FormFieldWhen;
+
+}
+
+export function fieldIsVisible(
+    field: FormField,
+    values: Record<string, unknown> | null | undefined
+): boolean {
+    if (!field.when) {
+        return true;
+    }
+
+    const raw = values?.[field.when.fieldId];
+    const current = typeof raw === "string" ? raw.trim().toLowerCase() : "";
+
+    if (field.when.equalsPrefix) {
+        return current.startsWith(field.when.equalsPrefix.trim().toLowerCase());
+    }
+
+    if (field.when.notEqualsPrefix) {
+        return !current.startsWith(
+            field.when.notEqualsPrefix.trim().toLowerCase()
+        );
+    }
+
+    return true;
 }
 
 
@@ -171,18 +203,41 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
                 label:"Type verlof",
                 required:true,
                 options:[
-                    "Vakantiedagen",
-                    "Bijzonder verlof (huwelijk, verhuizing, overlijden, doktersbezoek)",
+                    "Vakantiedagen / ADV",
+                    "Kort verlof (CAO art. 61)",
+                    "Calamiteiten- & Kort verzuimverlof",
+                    "Geboorteverlof / Aanvullend geboorteverlof (WIEG)",
+                    "Ouderschapsverlof (betaald/onbetaald)",
                     "Onbetaald verlof",
-                    "Ouderschapsverlof",
                     "Anders..."
+                ]
+            },
+
+            {
+                id:"redenKortVerlof",
+                type:"keuze",
+                label:"Reden kort verlof",
+                required:true,
+                when:{
+                    fieldId:"typeVerlof",
+                    equalsPrefix:"Kort verlof"
+                },
+                options:[
+                    "Overlijden / Uitvaart (inwonend gezinslid / bloedverwant / aanverwant)",
+                    "Huwelijk / Jubileum (eigen huwelijk / (schoon)ouders / kinderen)",
+                    "Examen / Opleiding (erkend vakexamen)",
+                    "Overig CAO-recht"
                 ]
             },
 
             {
                 id:"reden",
                 type:"text",
-                label:"Reden"
+                label:"Reden",
+                when:{
+                    fieldId:"typeVerlof",
+                    notEqualsPrefix:"Kort verlof"
+                }
             },
 
             {
@@ -197,6 +252,24 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
                 type:"date",
                 label:"Laatste verlofdag",
                 required:true
+            },
+
+            {
+                id:"totaalUren",
+                type:"number",
+                label:"Totaal aantal uren"
+            },
+
+            {
+                id:"vanTijd",
+                type:"time",
+                label:"Van"
+            },
+
+            {
+                id:"totTijd",
+                type:"time",
+                label:"Tot"
             },
 
             {

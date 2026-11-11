@@ -1,4 +1,8 @@
-import type { FormDefinition, FormField } from "@/constants/formDefinitions";
+import {
+    fieldIsVisible,
+    type FormDefinition,
+    type FormField,
+} from "@/constants/formDefinitions";
 import { nlFormDate } from "@/lib/forms/formDisplay";
 
 function displayValue(field: FormField, raw: unknown): string | null {
@@ -34,6 +38,10 @@ export function summarizeFormData(
     const lines: string[] = [];
 
     for (const field of definition.fields) {
+        if (!fieldIsVisible(field, data)) {
+            continue;
+        }
+
         if (field.type === "kop") {
             lines.push("");
             lines.push(`--- ${field.label} ---`);
