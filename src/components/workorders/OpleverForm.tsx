@@ -761,10 +761,12 @@ function MateriaalStukkenOnderAantal({
 
 function AudioVakInhoud({
     blok,
-    onChange
+    onChange,
+    toonSpeakerKabel = false
 }:{
     blok:AudioTypeBlok;
     onChange:(next:AudioTypeBlok)=>void;
+    toonSpeakerKabel?:boolean;
 }){
     function patch(next:Partial<AudioTypeBlok>){
         onChange({
@@ -862,6 +864,24 @@ function AudioVakInhoud({
                     </div>
                 ) : null}
             </div>
+            {toonSpeakerKabel ? (
+                <div className={`${nestedCardClassName} p-3 space-y-2`}>
+                    <span className="text-sm text-slate-700 block">
+                        Zelf speakerkabel getrokken?
+                    </span>
+                    <JaNee
+                        value={blok.speakerKabelZelf}
+                        onChange={(v)=>patch({ speakerKabelZelf:v })}
+                    />
+                    {blok.speakerKabelZelf === true ? (
+                        <AudioRegel
+                            label="Aantal meter"
+                            value={blok.speakerKabelMeter}
+                            onChange={(v)=>patch({ speakerKabelMeter:v })}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
         </div>
     );
 }
@@ -1208,6 +1228,8 @@ function audioBlokVanLegacy(
         speakersWand:i.audioSpeakersWand,
         speakersPlafond:i.audioSpeakersPlafond,
         speakersSubwoofers:i.audioSpeakersSubwoofers,
+        speakerKabelZelf:i.audioSpeakerKabelZelf,
+        speakerKabelMeter:i.audioSpeakerKabelMeter,
         spelerItems:i.audioSpelerItems,
         versterkerItems:i.audioVersterkerItems,
         volumeregelaarItems:i.audioVolumeregelaarItems
@@ -1225,6 +1247,8 @@ function schrijfAudioBlokNaarLegacy(
     draft.installatie.audioSpeakersWand = blok.speakersWand;
     draft.installatie.audioSpeakersPlafond = blok.speakersPlafond;
     draft.installatie.audioSpeakersSubwoofers = blok.speakersSubwoofers;
+    draft.installatie.audioSpeakerKabelZelf = blok.speakerKabelZelf;
+    draft.installatie.audioSpeakerKabelMeter = blok.speakerKabelMeter;
     draft.installatie.audioSpelerItems = blok.spelerItems;
     draft.installatie.audioVersterkerItems = blok.versterkerItems;
     draft.installatie.audioVolumeregelaarItems = blok.volumeregelaarItems;
@@ -1252,6 +1276,8 @@ function audioVoorType(
             || i.audioSpeakersWand
             || i.audioSpeakersPlafond
             || i.audioSpeakersSubwoofers
+            || i.audioSpeakerKabelZelf !== null
+            || i.audioSpeakerKabelMeter
         );
 
     if(!heeftLegacy){
@@ -3729,6 +3755,7 @@ export default function OpleverForm({
                     >
                         <AudioVakInhoud
                             blok={blok}
+                            toonSpeakerKabel={type === "montage"}
                             onChange={(next)=>
                                 update(draft=>{
                                     draft.installatie.audio = true;

@@ -205,6 +205,8 @@ export interface OpleverData {
         audioSpeakersWand:string;
         audioSpeakersPlafond:string;
         audioSpeakersSubwoofers:string;
+        audioSpeakerKabelZelf:boolean | null;
+        audioSpeakerKabelMeter:string;
         audioAndersTekst:string;
         audioAndersAantal:string;
         audioOmschrijving:string;
@@ -426,6 +428,8 @@ export interface AudioTypeBlok {
     speakersWand:string;
     speakersPlafond:string;
     speakersSubwoofers:string;
+    speakerKabelZelf:boolean | null;
+    speakerKabelMeter:string;
     spelerItems:MateriaalStuk[];
     versterkerItems:MateriaalStuk[];
     volumeregelaarItems:MateriaalStuk[];
@@ -511,6 +515,8 @@ export function emptyAudioTypeBlok():AudioTypeBlok {
         speakersWand:"",
         speakersPlafond:"",
         speakersSubwoofers:"",
+        speakerKabelZelf:null,
+        speakerKabelMeter:"",
         spelerItems:[],
         versterkerItems:[],
         volumeregelaarItems:[]
@@ -609,6 +615,8 @@ export function emptyOpleverData():OpleverData {
             audioSpeakersWand:"",
             audioSpeakersPlafond:"",
             audioSpeakersSubwoofers:"",
+            audioSpeakerKabelZelf:null,
+            audioSpeakerKabelMeter:"",
             audioAndersTekst:"",
             audioAndersAantal:"",
             audioOmschrijving:"",
@@ -883,6 +891,16 @@ function mergeAudioTypeBlok(raw:unknown):AudioTypeBlok {
         speakersSubwoofers:
             typeof data.speakersSubwoofers === "string"
                 ? data.speakersSubwoofers
+                : "",
+        speakerKabelZelf:
+            data.speakerKabelZelf === true
+                ? true
+                : data.speakerKabelZelf === false
+                    ? false
+                    : null,
+        speakerKabelMeter:
+            typeof data.speakerKabelMeter === "string"
+                ? data.speakerKabelMeter
                 : "",
         spelerItems: mergeItemsMetSn(data.spelerItems, parseAantal(data.speler), []),
         versterkerItems: mergeItemsMetSn(

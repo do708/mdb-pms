@@ -966,7 +966,16 @@ function opleverSections(
         blok.versterker ? row("Versterker",textAnswer(formatMateriaalStukken(blok.versterker, blok.versterkerItems, []))) : "",
         blok.volumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(blok.volumeregelaar, blok.volumeregelaarItems, []))) : "",
         blok.speakers ? row("Speakers (aantal)",textAnswer(blok.speakers)) : "",
-        speakerDetailRows(blok)
+        speakerDetailRows(blok),
+        blok.speakerKabelZelf === true
+            ? row("Zelf speakerkabel getrokken",textAnswer(
+                blok.speakerKabelMeter
+                    ? `Ja · ${blok.speakerKabelMeter} m`
+                    : "Ja"
+              ))
+            : blok.speakerKabelZelf === false
+                ? row("Zelf speakerkabel getrokken",textAnswer("Nee"))
+                : ""
     ].join("");
 
     const audioTypes = OPLEVER_WERKZAAMHEDEN
@@ -975,7 +984,9 @@ function opleverSections(
             const blok = i.audioPerType?.[type];
             return Boolean(
                 blok &&
-                (blok.speler || blok.versterker || blok.volumeregelaar || blok.speakers)
+                (blok.speler || blok.versterker || blok.volumeregelaar || blok.speakers
+                    || blok.speakersWand || blok.speakersPlafond || blok.speakersSubwoofers
+                    || blok.speakerKabelZelf !== null || blok.speakerKabelMeter)
             );
         });
 
@@ -999,6 +1010,15 @@ function opleverSections(
             i.audioSpeakersWand ? row("Aantal wand",textAnswer(i.audioSpeakersWand)) : "",
             i.audioSpeakersPlafond ? row("Aantal plafond",textAnswer(i.audioSpeakersPlafond)) : "",
             i.audioSpeakersSubwoofers ? row("Aantal subwoofers",textAnswer(i.audioSpeakersSubwoofers)) : "",
+            i.audioSpeakerKabelZelf === true
+                ? row("Zelf speakerkabel getrokken",textAnswer(
+                    i.audioSpeakerKabelMeter
+                        ? `Ja · ${i.audioSpeakerKabelMeter} m`
+                        : "Ja"
+                  ))
+                : i.audioSpeakerKabelZelf === false
+                    ? row("Zelf speakerkabel getrokken",textAnswer("Nee"))
+                    : "",
             i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""
         ].join("") : "");
 
