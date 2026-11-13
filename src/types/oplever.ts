@@ -1661,8 +1661,8 @@ export function ontbrekendeMateriaalSerienummers(
     }
 
     if(m.multicast === true){
-        if(!alleSnVeldenIngevuld(m.multicastZenders, m.multicastZenderSns)){
-            onderdelen.push("multicast zenders");
+        if(!alleSnVeldenIngevuld(m.multicastZenders || "1", m.multicastZenderSns)){
+            onderdelen.push("multicast zender");
         }
 
         if(!alleSnVeldenIngevuld(m.multicastOntvangers, m.multicastOntvangerSns)){

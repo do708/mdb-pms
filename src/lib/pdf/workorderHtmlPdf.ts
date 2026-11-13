@@ -10,6 +10,7 @@ import {
     SchermBlok,
     mergeOpleverData,
     parseAantal,
+    resizeMateriaalItems,
     resizeMediaplayerItems,
     type AudioTypeBlok,
 } from "@/types/oplever";
@@ -210,6 +211,63 @@ function formatMateriaalStukken(
 
     return details.length ? `${amount} (${details.join("; ")})` : amount;
 
+}
+
+function materiaalStukTabelrijen(
+    onderdeel:string,
+    aantal:string,
+    items:MateriaalStuk[] | undefined
+):(string)[][] {
+    if(!(aantal || "").trim() && !(items && items.some((row)=>row.merk || row.type || row.sn))){
+        return [];
+    }
+    const n = Math.max(parseAantal(aantal), items?.length ?? 0, 1);
+    const rows = resizeMateriaalItems(items, n);
+    return rows.map((row, i)=>[
+        i === 0 ? onderdeel : "",
+        i === 0 ? (aantal || String(n)) : "",
+        row.merk,
+        row.type,
+        row.sn,
+    ]);
+}
+
+function audioMontageTabel(blok:AudioTypeBlok):string {
+    const rows:(string)[][] = [
+        ...materiaalStukTabelrijen("Audiospeler", blok.speler, blok.spelerItems),
+        ...materiaalStukTabelrijen("Versterker", blok.versterker, blok.versterkerItems),
+        ...materiaalStukTabelrijen("Volumeregelaar", blok.volumeregelaar, blok.volumeregelaarItems),
+    ];
+    if((blok.speakers || "").trim()){
+        rows.push(["Speakers", blok.speakers, "", "", ""]);
+    }
+    if((blok.speakersWand || "").trim()){
+        rows.push(["Aantal wand", blok.speakersWand, "", "", ""]);
+    }
+    if((blok.speakersPlafond || "").trim()){
+        rows.push(["Aantal plafond", blok.speakersPlafond, "", "", ""]);
+    }
+    if((blok.speakersSubwoofers || "").trim()){
+        rows.push(["Aantal subwoofers", blok.speakersSubwoofers, "", "", ""]);
+    }
+    if(blok.speakerKabelZelf === true){
+        rows.push([
+            "Speakerkabel (zelf getrokken)",
+            blok.speakerKabelMeter ? `${blok.speakerKabelMeter} m` : "Ja",
+            "",
+            "",
+            "",
+        ]);
+    } else if(blok.speakerKabelZelf === false){
+        rows.push(["Speakerkabel (zelf getrokken)", "Nee", "", "", ""]);
+    }
+
+    return dataTable(
+        ["Onderdeel","Aantal","Merk","Type","S/N"],
+        rows,
+        "data-table",
+        ["24%","12%","20%","22%","22%"]
+    );
 }
 
 
@@ -763,7 +821,7 @@ function opleverSections(
         ...(m.extraSpeakers === true ? rs232Regels : []),
         ...(m.extraSpeakers === true ? hoeveelheden([["USB-speakers", m.usbSpeakers]]) : []),
         ...(m.multicast === true ? hoeveelheden([
-            ["Multicast zenders", m.multicastZenders],
+            ["Multicast zender", m.multicastZenders || "1"],
             ["Multicast ontvangers", m.multicastOntvangers],
         ]) : []),
     ];
@@ -954,73 +1012,67 @@ function opleverSections(
             i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""
         ].join(""));
 
-    const speakerDetailRows = (blok:AudioTypeBlok)=>[
-        blok.speakersWand ? row("Aantal wand",textAnswer(blok.speakersWand)) : "",
-        blok.speakersPlafond ? row("Aantal plafond",textAnswer(blok.speakersPlafond)) : "",
-        blok.speakersSubwoofers ? row("Aantal subwoofers",textAnswer(blok.speakersSubwoofers)) : ""
-    ].join("");
+    const audioBlokHeeftGegevens = (blok:AudioTypeBlok | undefined)=>
+        Boolean(
+            blok &&
+            (blok.speler || blok.versterker || blok.volumeregelaar || blok.speakers
+                || blok.speakersWand || blok.speakersPlafond || blok.speakersSubwoofers
+                || blok.speakerKabelZelf !== null || blok.speakerKabelMeter)
+        );
 
-    const audioRowsVanBlok = (blok:AudioTypeBlok, status?:string)=>[
-        status ? row("Audio status",textAnswer(status)) : "",
-        blok.speler ? row("Audiospeler",textAnswer(formatMateriaalStukken(blok.speler, blok.spelerItems, []))) : "",
-        blok.versterker ? row("Versterker",textAnswer(formatMateriaalStukken(blok.versterker, blok.versterkerItems, []))) : "",
-        blok.volumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(blok.volumeregelaar, blok.volumeregelaarItems, []))) : "",
-        blok.speakers ? row("Speakers (aantal)",textAnswer(blok.speakers)) : "",
-        speakerDetailRows(blok),
-        blok.speakerKabelZelf === true
-            ? row("Zelf speakerkabel getrokken",textAnswer(
-                blok.speakerKabelMeter
-                    ? `Ja · ${blok.speakerKabelMeter} m`
-                    : "Ja"
-              ))
-            : blok.speakerKabelZelf === false
-                ? row("Zelf speakerkabel getrokken",textAnswer("Nee"))
-                : ""
-    ].join("");
+    const audioPdfVanBlok = (blok:AudioTypeBlok, titel:string, status?:string)=>
+        cardSection(
+            titel,
+            [
+                status ? `<p class="table-sub">${esc(status)}</p>` : "",
+                audioMontageTabel(blok)
+            ].join("")
+        );
 
     const audioTypes = OPLEVER_WERKZAAMHEDEN
         .map((item)=>item.key)
         .filter((type)=>{
             const blok = i.audioPerType?.[type];
-            return Boolean(
-                blok &&
-                (blok.speler || blok.versterker || blok.volumeregelaar || blok.speakers
-                    || blok.speakersWand || blok.speakersPlafond || blok.speakersSubwoofers
-                    || blok.speakerKabelZelf !== null || blok.speakerKabelMeter)
-            );
+            return audioBlokHeeftGegevens(blok);
         });
 
     const audioPdfBlocks =
         audioTypes.length > 0
         ? audioTypes.map((type)=>
-            qaBlock(
+            audioPdfVanBlok(
+                i.audioPerType?.[type] as AudioTypeBlok,
                 vakTitel("Audio", type),
-                audioRowsVanBlok(
-                    i.audioPerType?.[type] as AudioTypeBlok,
-                    installatieStatusVanWerkzaamheid(type)
-                )
+                installatieStatusVanWerkzaamheid(type)
             )
           ).join("")
-        : qaBlock("Audio", i.audio === true ? [
-            i.audioStatus ? row("Audio status",textAnswer(i.audioStatus)) : "",
-            i.audioSpeler ? row("Audiospeler",textAnswer(formatMateriaalStukken(i.audioSpeler, i.audioSpelerItems, []))) : "",
-            i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : "",
-            i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : "",
-            i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : "",
-            i.audioSpeakersWand ? row("Aantal wand",textAnswer(i.audioSpeakersWand)) : "",
-            i.audioSpeakersPlafond ? row("Aantal plafond",textAnswer(i.audioSpeakersPlafond)) : "",
-            i.audioSpeakersSubwoofers ? row("Aantal subwoofers",textAnswer(i.audioSpeakersSubwoofers)) : "",
-            i.audioSpeakerKabelZelf === true
-                ? row("Zelf speakerkabel getrokken",textAnswer(
-                    i.audioSpeakerKabelMeter
-                        ? `Ja · ${i.audioSpeakerKabelMeter} m`
-                        : "Ja"
-                  ))
-                : i.audioSpeakerKabelZelf === false
-                    ? row("Zelf speakerkabel getrokken",textAnswer("Nee"))
-                    : "",
-            i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""
-        ].join("") : "");
+        : i.audio === true
+        ? audioPdfVanBlok(
+            {
+                speler: i.audioSpeler,
+                versterker: i.audioVersterker,
+                volumeregelaar: i.audioVolumeregelaar,
+                speakers: i.audioSpeakers,
+                speakersWand: i.audioSpeakersWand,
+                speakersPlafond: i.audioSpeakersPlafond,
+                speakersSubwoofers: i.audioSpeakersSubwoofers,
+                speakerKabelZelf: i.audioSpeakerKabelZelf,
+                speakerKabelMeter: i.audioSpeakerKabelMeter,
+                spelerItems: i.audioSpelerItems,
+                versterkerItems: i.audioVersterkerItems,
+                volumeregelaarItems: i.audioVolumeregelaarItems,
+            },
+            "Audio",
+            i.audioStatus
+          )
+        : qaBlock(
+            "Audio",
+            i.audioAndersTekst
+                ? row(
+                    i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""),
+                    textAnswer(i.audioAndersAantal || "Ja")
+                  )
+                : ""
+          );
 
 
     const modules = `
@@ -1173,6 +1225,36 @@ function opleverSections(
         "data-table materials-table",
         ["82%","18%"]
     )}
+    ${m.multicast === true ? (()=>{
+        const zender = (m.multicastZenderItems && m.multicastZenderItems[0]) || {
+            merk:"",
+            type:"",
+            sn: m.multicastZenderSn || ""
+        };
+        const ontvangers = resizeMateriaalItems(
+            m.multicastOntvangerItems,
+            parseAantal(m.multicastOntvangers)
+        ).map((row)=>({
+            ...row,
+            merk: row.merk || zender.merk,
+            type: row.type || zender.type,
+        }));
+        return `<p class="table-sub">Multicast set</p>${dataTable(
+            ["Onderdeel","Aantal","Merk","Type","S/N"],
+            [
+                ["Zender 1", m.multicastZenders || "1", zender.merk, zender.type, zender.sn],
+                ...ontvangers.map((row, i)=>[
+                    `Ontvanger ${i + 1}`,
+                    i === 0 ? (m.multicastOntvangers || "") : "",
+                    row.merk,
+                    row.type,
+                    row.sn,
+                ]),
+            ],
+            "data-table",
+            ["24%","12%","20%","22%","22%"]
+        )}`;
+    })() : ""}
     ${m.opmerkingen ? `<div class="description-box" style="margin-top:6px">${esc(m.opmerkingen)}</div>` : ""}
   </div>` : ""}
 

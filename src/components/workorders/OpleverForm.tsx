@@ -680,12 +680,14 @@ function MateriaalStukkenOnderAantal({
     aantal,
     items,
     onChange,
-    requiredSn = true
+    requiredSn = true,
+    snOnly = false
 }:{
     aantal:string;
     items:MateriaalStuk[] | undefined;
     onChange:(next:MateriaalStuk[])=>void;
     requiredSn?:boolean;
+    snOnly?:boolean;
 }){
     const n = parseAantal(aantal);
 
@@ -700,8 +702,9 @@ function MateriaalStukkenOnderAantal({
             {fields.map((stuk, i)=>(
                 <div
                     key={i}
-                    className="grid grid-cols-1 gap-2 md:grid-cols-3 md:items-end"
+                    className={`grid grid-cols-1 gap-2 md:items-end ${snOnly ? "md:grid-cols-1" : "md:grid-cols-3"}`}
                 >
+                    {snOnly ? null : (
                     <label className="flex-1 min-w-0">
                         <span className="text-xs text-gray-600">
                             Merk
@@ -732,6 +735,7 @@ function MateriaalStukkenOnderAantal({
                             className={`w-full border rounded-lg p-1.5 mt-0.5 text-sm ${pastelInputClassName}`}
                         />
                     </label>
+                    )}
                     <label className="flex-1 min-w-0">
                         <span className="text-xs text-gray-600">
                             S/N {i + 1}:
@@ -4581,33 +4585,39 @@ export default function OpleverForm({
                     onToggle={(v)=>
                         update(draft=>{
                             draft.materialen.multicast = v ? true : false;
+                            if(v){
+                                draft.materialen.multicastZenders = "1";
+                                draft.materialen.multicastZenderItems =
+                                    resizeMateriaalItems(
+                                        draft.materialen.multicastZenderItems,
+                                        1
+                                    );
+                                draft.materialen.multicastZenderSns = snsVanItems(
+                                    draft.materialen.multicastZenderItems
+                                );
+                            }
                         })
                     }
                 >
-                    <AudioRegel
-                        label="Zenders"
-                        value={m.multicastZenders}
-                        onChange={(v)=>update(draft=>{
-                            draft.materialen.multicastZenders=v;
-                            draft.materialen.multicastZenderItems=resizeMateriaalItems(
-                                draft.materialen.multicastZenderItems,
-                                parseAantal(v)
-                            );
-                            draft.materialen.multicastZenderSns=snsVanItems(
-                                draft.materialen.multicastZenderItems
-                            );
-                            draft.materialen.multicastZenderSn=
-                                draft.materialen.multicastZenderSns.find((s)=>s.trim()) || "";
-                        })}
-                    />
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 pt-1">
+                        Zender 1 — merk, type en S/N
+                    </p>
                     <MateriaalStukkenOnderAantal
-                        aantal={m.multicastZenders}
+                        aantal="1"
                         items={m.multicastZenderItems}
                         onChange={(items)=>update((d)=>{
+                            d.materialen.multicastZenders = "1";
                             d.materialen.multicastZenderItems=items;
                             d.materialen.multicastZenderSns=snsVanItems(items);
                             d.materialen.multicastZenderSn=
                                 items.find((s)=>s.sn.trim())?.sn || "";
+                            const zender = items[0];
+                            d.materialen.multicastOntvangerItems =
+                                d.materialen.multicastOntvangerItems.map((row)=>({
+                                    ...row,
+                                    merk: zender?.merk || "",
+                                    type: zender?.type || ""
+                                }));
                         })}
                     />
                     <AudioRegel
@@ -4615,10 +4625,17 @@ export default function OpleverForm({
                         value={m.multicastOntvangers}
                         onChange={(v)=>update(draft=>{
                             draft.materialen.multicastOntvangers=v;
-                            draft.materialen.multicastOntvangerItems=resizeMateriaalItems(
-                                draft.materialen.multicastOntvangerItems,
-                                parseAantal(v)
-                            );
+                            const zender =
+                                draft.materialen.multicastZenderItems[0];
+                            draft.materialen.multicastOntvangerItems=
+                                resizeMateriaalItems(
+                                    draft.materialen.multicastOntvangerItems,
+                                    parseAantal(v)
+                                ).map((row)=>({
+                                    ...row,
+                                    merk: zender?.merk || row.merk,
+                                    type: zender?.type || row.type
+                                }));
                             draft.materialen.multicastOntvangerSns=snsVanItems(
                                 draft.materialen.multicastOntvangerItems
                             );
@@ -4626,14 +4643,25 @@ export default function OpleverForm({
                                 draft.materialen.multicastOntvangerSns.find((s)=>s.trim()) || "";
                         })}
                     />
+                    <p className="text-xs text-slate-500">
+                        Alleen S/N — merk en type zijn gelijk aan de zender.
+                    </p>
                     <MateriaalStukkenOnderAantal
                         aantal={m.multicastOntvangers}
                         items={m.multicastOntvangerItems}
+                        snOnly
                         onChange={(items)=>update((d)=>{
-                            d.materialen.multicastOntvangerItems=items;
-                            d.materialen.multicastOntvangerSns=snsVanItems(items);
+                            const zender =
+                                d.materialen.multicastZenderItems[0];
+                            const next = items.map((row)=>({
+                                ...row,
+                                merk: zender?.merk || "",
+                                type: zender?.type || ""
+                            }));
+                            d.materialen.multicastOntvangerItems=next;
+                            d.materialen.multicastOntvangerSns=snsVanItems(next);
                             d.materialen.multicastOntvangerSn=
-                                items.find((s)=>s.sn.trim())?.sn || "";
+                                next.find((s)=>s.sn.trim())?.sn || "";
                         })}
                     />
                 </UitklapVraag>
