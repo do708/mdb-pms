@@ -1071,6 +1071,16 @@ async function completeWorkorder(){
                 || cl.lichtnetSchakelbaar === null
                 || cl.wifiVanToepassing === null
                 || !cl.remoteServices
+                || (
+                    cl.remoteServices === "Ja"
+                    && (
+                        !cl.remoteServicesVerbinding
+                        || (
+                            cl.remoteServicesVerbinding === "WiFi"
+                            && cl.remoteServicesWifiAdapter === null
+                        )
+                    )
+                )
                 || cl.afvalverwijdering === null
             );
 

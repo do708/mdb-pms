@@ -1374,6 +1374,8 @@ export async function generateOpleverPdf(
         || checklist.lichtnetSchakelbaar !== null
         || checklist.wifiVanToepassing !== null
         || Boolean(checklist.remoteServices)
+        || Boolean(checklist.remoteServicesVerbinding)
+        || checklist.remoteServicesWifiAdapter !== null
         || Boolean(checklist.locatieMediaplayer)
         || Boolean(checklist.aantalMediaplayers)
         || checklist.afvalverwijdering !== null
@@ -1421,10 +1423,26 @@ export async function generateOpleverPdf(
     }
 
     keuze(
-        "Zijn de schermen gekoppeld aan Remote Services?",
+        "Zijn de schermen gekoppeld aan remote services?",
         data.checklist.remoteServices,
         ["Ja","Nee","n.v.t."]
     );
+
+    if(data.checklist.remoteServices === "Ja"){
+        keuze(
+            "Bekabeld of WiFi",
+            data.checklist.remoteServicesVerbinding,
+            ["Bekabeld","WiFi"]
+        );
+
+        if(data.checklist.remoteServicesVerbinding === "WiFi"){
+            jaNee(
+                "Heb je hiervoor een wifi-adapter geplaatst?",
+                data.checklist.remoteServicesWifiAdapter,
+                ["Ja","Nee"]
+            );
+        }
+    }
 
     keuze(
         "Wat is de locatie van de mediaplayer(s)?",

@@ -4805,22 +4805,76 @@ export default function OpleverForm({
 
                 {/* 4. Remote Services */}
                 <ChecklistVraag
-                    label="4. Zijn de schermen gekoppeld aan Remote Services?"
+                    label="4. Zijn de schermen gekoppeld aan remote services?"
                     kleur="bg-violet-50 border-violet-200"
                 >
-                    <Keuze
-                        value={c.remoteServices}
-                        options={["Ja","Nee","n.v.t."]}
-                        kleuren={{
-                            "Ja":"green",
-                            "Nee":"red",
-                            "n.v.t.":"yellow"
-                        }}
+                    <JaNee
+                        value={
+                            c.remoteServices === "Ja"
+                            ? true
+                            : c.remoteServices === "Nee"
+                                ? false
+                                : null
+                        }
+                        jaKleur="green"
+                        neeKleur="red"
                         onChange={(v)=>update(draft=>{
-                            draft.checklist.remoteServices =
-                                v as OpleverData["checklist"]["remoteServices"];
+                            draft.checklist.remoteServices = v ? "Ja" : "Nee";
+                            if(!v){
+                                draft.checklist.remoteServicesVerbinding = "";
+                                draft.checklist.remoteServicesWifiAdapter = null;
+                            }
                         })}
                     />
+                    {
+                        c.remoteServices === "Ja" && (
+                            <div className="
+                                mt-3
+                                rounded-xl
+                                bg-slate-50
+                                border
+                                border-slate-100
+                                p-3
+                                space-y-3
+                            ">
+                                <p className="text-sm text-slate-600">
+                                    Bekabeld of WiFi
+                                </p>
+                                <Keuze
+                                    value={c.remoteServicesVerbinding}
+                                    options={["Bekabeld","WiFi"]}
+                                    kleuren={{
+                                        "Bekabeld":"sky",
+                                        "WiFi":"orange"
+                                    }}
+                                    onChange={(v)=>update(draft=>{
+                                        draft.checklist.remoteServicesVerbinding =
+                                            v as OpleverData["checklist"]["remoteServicesVerbinding"];
+                                        if(v !== "WiFi"){
+                                            draft.checklist.remoteServicesWifiAdapter = null;
+                                        }
+                                    })}
+                                />
+                                {
+                                    c.remoteServicesVerbinding === "WiFi" && (
+                                        <div className="space-y-2">
+                                            <p className="text-sm text-slate-600">
+                                                Heb je hiervoor een wifi-adapter geplaatst?
+                                            </p>
+                                            <JaNee
+                                                value={c.remoteServicesWifiAdapter}
+                                                jaKleur="green"
+                                                neeKleur="red"
+                                                onChange={(v)=>update(draft=>{
+                                                    draft.checklist.remoteServicesWifiAdapter = v;
+                                                })}
+                                            />
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        )
+                    }
                     {
                         c.remoteServices === "Nee" && (
                             <RedenVeld

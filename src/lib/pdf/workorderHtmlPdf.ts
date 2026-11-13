@@ -1267,7 +1267,9 @@ function opleverSections(
       ${c.lichtnetSchakelbaar === true && c.redenLichtnet ? row("Reden",textAnswer(c.redenLichtnet)) : ""}
       ${c.wifiVanToepassing !== null ? row("Wifi-verbinding van toepassing?",pill(c.wifiVanToepassing,{ ja:"warn", nee:"yes" })) : ""}
       ${c.wifiVanToepassing === true && c.wifiSterkte ? row("WiFi verbinding sterk genoeg?",choicePill(c.wifiSterkte)) : ""}
-      ${c.remoteServices ? row("Schermen gekoppeld aan Remote Services?",choicePill(c.remoteServices)) : ""}
+      ${c.remoteServices ? row("Schermen gekoppeld aan remote services?",choicePill(c.remoteServices)) : ""}
+      ${c.remoteServices === "Ja" && c.remoteServicesVerbinding ? row("Bekabeld of WiFi",choicePill(c.remoteServicesVerbinding)) : ""}
+      ${c.remoteServices === "Ja" && c.remoteServicesVerbinding === "WiFi" && c.remoteServicesWifiAdapter !== null && c.remoteServicesWifiAdapter !== undefined ? row("Wifi-adapter geplaatst?",pill(c.remoteServicesWifiAdapter)) : ""}
       ${c.remoteServices === "Nee" && c.redenRemote ? row("Reden",textAnswer(c.redenRemote)) : ""}
       ${(()=>{
         const loc = c.mediaplayerLocaties && typeof c.mediaplayerLocaties === "object" ? c.mediaplayerLocaties : {};

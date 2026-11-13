@@ -310,6 +310,8 @@ export interface OpleverData {
         wifiSterkte:"" | "Ja" | "Matig" | "Slecht";
         remoteServices:"" | "Ja" | "Nee" | "n.v.t.";
         redenRemote:string;
+        remoteServicesVerbinding:"" | "Bekabeld" | "WiFi";
+        remoteServicesWifiAdapter:boolean | null;
         locatieMediaplayer:
             "" |
             "Achter het scherm" |
@@ -718,6 +720,8 @@ export function emptyOpleverData():OpleverData {
             wifiSterkte:"",
             remoteServices:"",
             redenRemote:"",
+            remoteServicesVerbinding:"",
+            remoteServicesWifiAdapter:null,
             locatieMediaplayer:"",
             aantalMediaplayers:"",
             mediaplayerLocaties:{},
