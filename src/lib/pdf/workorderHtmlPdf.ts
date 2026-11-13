@@ -954,12 +954,19 @@ function opleverSections(
             i.mediaplayers && i.aantalMediaplayers ? row("Aantal mediaplayers",textAnswer(i.aantalMediaplayers)) : ""
         ].join(""));
 
+    const speakerDetailRows = (blok:AudioTypeBlok)=>[
+        blok.speakersWand ? row("Aantal wand",textAnswer(blok.speakersWand)) : "",
+        blok.speakersPlafond ? row("Aantal plafond",textAnswer(blok.speakersPlafond)) : "",
+        blok.speakersSubwoofers ? row("Aantal subwoofers",textAnswer(blok.speakersSubwoofers)) : ""
+    ].join("");
+
     const audioRowsVanBlok = (blok:AudioTypeBlok, status?:string)=>[
         status ? row("Audio status",textAnswer(status)) : "",
         blok.speler ? row("Audiospeler",textAnswer(formatMateriaalStukken(blok.speler, blok.spelerItems, []))) : "",
         blok.versterker ? row("Versterker",textAnswer(formatMateriaalStukken(blok.versterker, blok.versterkerItems, []))) : "",
         blok.volumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(blok.volumeregelaar, blok.volumeregelaarItems, []))) : "",
-        blok.speakers ? row("Speakers (aantal)",textAnswer(blok.speakers)) : ""
+        blok.speakers ? row("Speakers (aantal)",textAnswer(blok.speakers)) : "",
+        speakerDetailRows(blok)
     ].join("");
 
     const audioTypes = OPLEVER_WERKZAAMHEDEN
@@ -989,6 +996,9 @@ function opleverSections(
             i.audioVersterker ? row("Versterker",textAnswer(formatMateriaalStukken(i.audioVersterker, i.audioVersterkerItems, []))) : "",
             i.audioVolumeregelaar ? row("Volumeregelaar",textAnswer(formatMateriaalStukken(i.audioVolumeregelaar, i.audioVolumeregelaarItems, []))) : "",
             i.audioSpeakers ? row("Speakers (aantal)",textAnswer(i.audioSpeakers)) : "",
+            i.audioSpeakersWand ? row("Aantal wand",textAnswer(i.audioSpeakersWand)) : "",
+            i.audioSpeakersPlafond ? row("Aantal plafond",textAnswer(i.audioSpeakersPlafond)) : "",
+            i.audioSpeakersSubwoofers ? row("Aantal subwoofers",textAnswer(i.audioSpeakersSubwoofers)) : "",
             i.audioAndersTekst ? row(i.audioAndersTekst + (i.audioAndersAantal ? " (aantal)" : ""), textAnswer(i.audioAndersAantal || "Ja")) : ""
         ].join("") : "");
 

@@ -202,6 +202,9 @@ export interface OpleverData {
         audioVersterker:string;
         audioVolumeregelaar:string;
         audioSpeakers:string;
+        audioSpeakersWand:string;
+        audioSpeakersPlafond:string;
+        audioSpeakersSubwoofers:string;
         audioAndersTekst:string;
         audioAndersAantal:string;
         audioOmschrijving:string;
@@ -420,6 +423,9 @@ export interface AudioTypeBlok {
     versterker:string;
     volumeregelaar:string;
     speakers:string;
+    speakersWand:string;
+    speakersPlafond:string;
+    speakersSubwoofers:string;
     spelerItems:MateriaalStuk[];
     versterkerItems:MateriaalStuk[];
     volumeregelaarItems:MateriaalStuk[];
@@ -502,6 +508,9 @@ export function emptyAudioTypeBlok():AudioTypeBlok {
         versterker:"",
         volumeregelaar:"",
         speakers:"",
+        speakersWand:"",
+        speakersPlafond:"",
+        speakersSubwoofers:"",
         spelerItems:[],
         versterkerItems:[],
         volumeregelaarItems:[]
@@ -597,6 +606,9 @@ export function emptyOpleverData():OpleverData {
             audioVersterker:"",
             audioVolumeregelaar:"",
             audioSpeakers:"",
+            audioSpeakersWand:"",
+            audioSpeakersPlafond:"",
+            audioSpeakersSubwoofers:"",
             audioAndersTekst:"",
             audioAndersAantal:"",
             audioOmschrijving:"",
@@ -862,6 +874,16 @@ function mergeAudioTypeBlok(raw:unknown):AudioTypeBlok {
         volumeregelaar:
             typeof data.volumeregelaar === "string" ? data.volumeregelaar : "",
         speakers: typeof data.speakers === "string" ? data.speakers : "",
+        speakersWand:
+            typeof data.speakersWand === "string" ? data.speakersWand : "",
+        speakersPlafond:
+            typeof data.speakersPlafond === "string"
+                ? data.speakersPlafond
+                : "",
+        speakersSubwoofers:
+            typeof data.speakersSubwoofers === "string"
+                ? data.speakersSubwoofers
+                : "",
         spelerItems: mergeItemsMetSn(data.spelerItems, parseAantal(data.speler), []),
         versterkerItems: mergeItemsMetSn(
             data.versterkerItems,

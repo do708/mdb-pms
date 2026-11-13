@@ -842,6 +842,25 @@ function AudioVakInhoud({
                     value={blok.speakers}
                     onChange={(v)=>patch({ speakers:v })}
                 />
+                {parseInt(String(blok.speakers ?? "").trim(), 10) > 0 ? (
+                    <div className="pl-2 ml-1 border-l-2 border-slate-200 space-y-0.5">
+                        <AudioRegel
+                            label="Aantal wand"
+                            value={blok.speakersWand}
+                            onChange={(v)=>patch({ speakersWand:v })}
+                        />
+                        <AudioRegel
+                            label="Aantal plafond"
+                            value={blok.speakersPlafond}
+                            onChange={(v)=>patch({ speakersPlafond:v })}
+                        />
+                        <AudioRegel
+                            label="Aantal subwoofers"
+                            value={blok.speakersSubwoofers}
+                            onChange={(v)=>patch({ speakersSubwoofers:v })}
+                        />
+                    </div>
+                ) : null}
             </div>
         </div>
     );
@@ -1186,6 +1205,9 @@ function audioBlokVanLegacy(
         versterker:i.audioVersterker,
         volumeregelaar:i.audioVolumeregelaar,
         speakers:i.audioSpeakers,
+        speakersWand:i.audioSpeakersWand,
+        speakersPlafond:i.audioSpeakersPlafond,
+        speakersSubwoofers:i.audioSpeakersSubwoofers,
         spelerItems:i.audioSpelerItems,
         versterkerItems:i.audioVersterkerItems,
         volumeregelaarItems:i.audioVolumeregelaarItems
@@ -1200,6 +1222,9 @@ function schrijfAudioBlokNaarLegacy(
     draft.installatie.audioVersterker = blok.versterker;
     draft.installatie.audioVolumeregelaar = blok.volumeregelaar;
     draft.installatie.audioSpeakers = blok.speakers;
+    draft.installatie.audioSpeakersWand = blok.speakersWand;
+    draft.installatie.audioSpeakersPlafond = blok.speakersPlafond;
+    draft.installatie.audioSpeakersSubwoofers = blok.speakersSubwoofers;
     draft.installatie.audioSpelerItems = blok.spelerItems;
     draft.installatie.audioVersterkerItems = blok.versterkerItems;
     draft.installatie.audioVolumeregelaarItems = blok.volumeregelaarItems;
@@ -1219,7 +1244,15 @@ function audioVoorType(
     }
 
     const heeftLegacy =
-        Boolean(i.audioSpeler || i.audioVersterker || i.audioVolumeregelaar || i.audioSpeakers);
+        Boolean(
+            i.audioSpeler
+            || i.audioVersterker
+            || i.audioVolumeregelaar
+            || i.audioSpeakers
+            || i.audioSpeakersWand
+            || i.audioSpeakersPlafond
+            || i.audioSpeakersSubwoofers
+        );
 
     if(!heeftLegacy){
         return emptyAudioTypeBlok();
