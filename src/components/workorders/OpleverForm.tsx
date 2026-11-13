@@ -4633,8 +4633,8 @@ export default function OpleverForm({
                                     parseAantal(v)
                                 ).map((row)=>({
                                     ...row,
-                                    merk: zender?.merk || row.merk,
-                                    type: zender?.type || row.type
+                                    merk: zender?.merk || "",
+                                    type: zender?.type || ""
                                 }));
                             draft.materialen.multicastOntvangerSns=snsVanItems(
                                 draft.materialen.multicastOntvangerItems

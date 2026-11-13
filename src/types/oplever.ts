@@ -1765,7 +1765,10 @@ function mergeMateriaalSerienummers(
     const n5 = parseAantal(raw.switch5port);
     const n8 = parseAantal(raw.switch8port);
     const nPoe = parseAantal(raw.switch5portPoe);
-    const nZender = parseAantal(raw.multicastZenders);
+    const nZender =
+        raw.multicast === true || parseAantal(raw.multicastZenders) > 0
+            ? 1
+            : 0;
     const nOntvanger = parseAantal(raw.multicastOntvangers);
 
     const storedSwitchArrs = {
@@ -1841,11 +1844,16 @@ function mergeMateriaalSerienummers(
         nZender,
         multicastZenderSns
     );
+    const zenderMerkType = multicastZenderItems[0];
     const multicastOntvangerItems = mergeItemsMetSn(
         raw.multicastOntvangerItems,
         nOntvanger,
         multicastOntvangerSns
-    );
+    ).map((row)=>({
+        ...row,
+        merk: zenderMerkType?.merk || "",
+        type: zenderMerkType?.type || ""
+    }));
 
     return {
         hdmiSplitter1x2Sn: snsVanItems(hdmiSplitter1x2Items),

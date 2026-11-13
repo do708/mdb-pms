@@ -1234,20 +1234,16 @@ function opleverSections(
         const ontvangers = resizeMateriaalItems(
             m.multicastOntvangerItems,
             parseAantal(m.multicastOntvangers)
-        ).map((row)=>({
-            ...row,
-            merk: row.merk || zender.merk,
-            type: row.type || zender.type,
-        }));
-        return `<p class="table-sub">Multicast set</p>${dataTable(
+        );
+        return `<p class="table-sub">Multicast set — merk/type van de zender geldt voor alle ontvangers</p>${dataTable(
             ["Onderdeel","Aantal","Merk","Type","S/N"],
             [
                 ["Zender 1", m.multicastZenders || "1", zender.merk, zender.type, zender.sn],
                 ...ontvangers.map((row, i)=>[
                     `Ontvanger ${i + 1}`,
                     i === 0 ? (m.multicastOntvangers || "") : "",
-                    row.merk,
-                    row.type,
+                    "",
+                    "",
                     row.sn,
                 ]),
             ],
