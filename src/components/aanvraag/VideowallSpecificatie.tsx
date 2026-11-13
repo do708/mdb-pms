@@ -5,6 +5,7 @@ import {
     chipIdleClassName,
     chipSelectedClassName,
     nestedCardClassName,
+    pastelInputClassName,
 } from "@/components/ui/SpecLayout";
 import {
     AANSTURING_OPTIES,
@@ -68,7 +69,7 @@ function LocatieVeld({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName}`}
             />
         </label>
     );
@@ -107,7 +108,7 @@ function AansturingBlok({
                             aansturingAnders: "",
                         })
                     }
-                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                    className={`w-full border border-black/10 rounded-lg p-2.5 ${pastelInputClassName} text-sm`}
                 >
                     <option value="">Kies aansturing</option>
                     {AANSTURING_OPTIES.map((optie) => (
@@ -309,7 +310,7 @@ export default function VideowallSpecificatie({
                                 });
                             }}
                             placeholder="Bijv. 2x2, 3x3"
-                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                            className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName}`}
                         />
                     </label>
                     {showOpleverDetails ? (
@@ -339,7 +340,7 @@ export default function VideowallSpecificatie({
                                     onChange={(e) =>
                                         onChange("formaat", e.target.value)
                                     }
-                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                                    className={`w-full border border-black/10 rounded-lg p-2.5 ${pastelInputClassName} text-sm`}
                                 >
                                     <option value="">
                                         Kies formaat
@@ -360,7 +361,7 @@ export default function VideowallSpecificatie({
                                             )
                                         }
                                         placeholder="Anders formaat (inch)"
-                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70"
+                                        className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName}`}
                                     />
                                 ) : null}
                             </>
@@ -400,7 +401,7 @@ export default function VideowallSpecificatie({
                                     )
                                 }
                                 placeholder="Anders formaat (inch)"
-                                className="w-full border border-black/10 rounded-lg p-2 bg-white/70"
+                                className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName}`}
                             />
                         ) : null}
                             </>
@@ -479,7 +480,7 @@ export default function VideowallSpecificatie({
                                                             ? false
                                                             : undefined
                                                     }
-                                                    className="mt-1 w-full min-w-0 rounded-lg border border-black/10 bg-white/70 p-2.5 text-sm"
+                                                    className={`mt-1 w-full min-w-0 rounded-lg border border-black/10 ${pastelInputClassName} p-2.5 text-sm`}
                                                 />
                                             </label>
                                         ))}
@@ -532,7 +533,7 @@ export default function VideowallSpecificatie({
                                                         }
                                                         placeholder="Merk"
                                                         aria-required
-                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                                        className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                                     />
                                                 </td>
                                                 <td className="p-1.5 align-top">
@@ -545,7 +546,7 @@ export default function VideowallSpecificatie({
                                                         }
                                                         placeholder="Type"
                                                         aria-required
-                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                                        className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                                     />
                                                 </td>
                                                 <td className="p-1.5 align-top">
@@ -561,7 +562,7 @@ export default function VideowallSpecificatie({
                                                         }
                                                         placeholder="Serienummer"
                                                         aria-required
-                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                                        className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                                     />
                                                 </td>
                                                 <td className="p-1.5 align-top">
@@ -582,7 +583,7 @@ export default function VideowallSpecificatie({
                                                         placeholder="Optioneel"
                                                         autoCapitalize="characters"
                                                         spellCheck={false}
-                                                        className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                                        className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                                     />
                                                 </td>
                                             </tr>
@@ -664,7 +665,7 @@ export default function VideowallSpecificatie({
                                 onChange("afmeting", e.target.value)
                             }
                             placeholder="Bijv. 3 × 2 meter"
-                            className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                            className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName}`}
                         />
                     </label>
 
@@ -683,7 +684,7 @@ export default function VideowallSpecificatie({
                                         )
                                     }
                                     placeholder="Bijv. 500 × 500 mm"
-                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                                    className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName}`}
                                 />
                             </label>
 
@@ -702,7 +703,7 @@ export default function VideowallSpecificatie({
                                         )
                                     }
                                     placeholder="Bijv. 128 × 128"
-                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                                    className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName}`}
                                 />
                             </label>
 
@@ -719,7 +720,7 @@ export default function VideowallSpecificatie({
                                         )
                                     }
                                     placeholder="Bijv. 24"
-                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                                    className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName}`}
                                 />
                             </label>
                         </>

@@ -26,6 +26,7 @@ import {
     chipIdleClassName,
     chipSelectedClassName,
     nestedCardClassName,
+    pastelInputClassName,
 } from "@/components/ui/SpecLayout";
 import {
     InstallatieRuimte,
@@ -183,7 +184,7 @@ export function HardwareKenmerkenTabel({
     ];
 
     return (
-        <div className="rounded-xl border border-black/10 bg-white overflow-hidden">
+        <div className={`${nestedCardClassName} overflow-hidden`}>
             <p className="px-3 py-2 text-xs font-semibold text-slate-700 bg-black/5 border-b border-black/10">
                 {titel}
             </p>
@@ -218,7 +219,7 @@ export function HardwareKenmerkenTabel({
                                 spellCheck={
                                     veld.key === "mac" ? false : undefined
                                 }
-                                className="w-full min-w-0 rounded-lg border border-black/10 bg-white/70 p-2.5 text-sm"
+                                className={`w-full min-w-0 rounded-lg border border-black/10 ${pastelInputClassName} p-2.5 text-sm`}
                             />
                             {veld.key === "serienummer" ? (
                                 <SerialScanButton
@@ -273,7 +274,7 @@ export function HardwareKenmerkenTabel({
                                     }
                                     placeholder="Merk"
                                     aria-required={requiredKenmerken || undefined}
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                    className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                 />
                             </td>
                             <td className="p-1.5 align-top">
@@ -284,7 +285,7 @@ export function HardwareKenmerkenTabel({
                                     }
                                     placeholder="Type"
                                     aria-required={requiredKenmerken || undefined}
-                                    className="w-full border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                    className={`w-full border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                 />
                             </td>
                             <td className="p-1.5 align-top">
@@ -298,7 +299,7 @@ export function HardwareKenmerkenTabel({
                                         }
                                         placeholder="Serienummer"
                                         aria-required={requiredKenmerken || undefined}
-                                        className="w-full min-w-0 border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                        className={`w-full min-w-0 border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                     />
                                     <SerialScanButton
                                         onScan={(waarde) =>
@@ -327,7 +328,7 @@ export function HardwareKenmerkenTabel({
                                     placeholder={vierdePlaceholder}
                                     autoCapitalize="characters"
                                     spellCheck={false}
-                                    className="w-full min-w-0 border border-black/10 rounded-lg p-2 bg-white/70 text-sm"
+                                    className={`w-full min-w-0 border border-black/10 rounded-lg p-2 ${pastelInputClassName} text-sm`}
                                 />
                                 {scanMac ? (
                                     <SerialScanButton
@@ -581,7 +582,7 @@ export default function InstallatieRuimtesSectie({
                                         })
                                     }
                                     placeholder="Bijv. Entree / Vergaderruimte 1"
-                                    className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
+                                    className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName} text-sm`}
                                 />
                             </label>
                             {bronnen.length > 0 ? (
@@ -620,7 +621,7 @@ export default function InstallatieRuimtesSectie({
                                             formaatAnders: "",
                                         })
                                     }
-                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                                    className={`w-full border border-black/10 rounded-lg p-2.5 ${pastelInputClassName} text-sm`}
                                 >
                                     <option value="">Kies formaat</option>
                                     {SCHERM_FORMATEN.map((f) => (
@@ -640,7 +641,7 @@ export default function InstallatieRuimtesSectie({
                                             })
                                         }
                                         placeholder='Afwijkend formaat, bijv. 22"'
-                                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                                        className={`w-full rounded-lg border border-gray-300 px-3 py-2 text-sm ${pastelInputClassName}`}
                                     />
                                 ) : null}
                             </div>
@@ -682,7 +683,7 @@ export default function InstallatieRuimtesSectie({
                                             plafondHoogte: "",
                                         })
                                     }
-                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                                    className={`w-full border border-black/10 rounded-lg p-2.5 ${pastelInputClassName} text-sm`}
                                 >
                                     <option value="">Kies bevestiging</option>
                                     {BEVESTIGING_OPTIES.map((b) => (
@@ -702,7 +703,7 @@ export default function InstallatieRuimtesSectie({
                                                 bevestigingAnders: "",
                                             })
                                         }
-                                        className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                                        className={`w-full border border-black/10 rounded-lg p-2.5 ${pastelInputClassName} text-sm`}
                                     >
                                         <option value="">
                                             Kies type
@@ -724,7 +725,7 @@ export default function InstallatieRuimtesSectie({
                                             })
                                         }
                                         placeholder="Welke bevestiging?"
-                                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                                        className={`w-full rounded-lg border border-gray-300 px-3 py-2 text-sm ${pastelInputClassName}`}
                                     />
                                 ) : null}
                                 {normaliseerBevestiging(scherm.beugel) ===
@@ -736,7 +737,7 @@ export default function InstallatieRuimtesSectie({
                                                 plafondHoogte: e.target.value,
                                             })
                                         }
-                                        className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                                        className={`w-full border border-black/10 rounded-lg p-2.5 ${pastelInputClassName} text-sm`}
                                     >
                                         <option value="">
                                             Lengte plafondbeugel
@@ -767,7 +768,7 @@ export default function InstallatieRuimtesSectie({
                                             aansturingAnders: "",
                                         })
                                     }
-                                    className="w-full border border-black/10 rounded-lg p-2.5 bg-white/70 text-sm"
+                                    className={`w-full border border-black/10 rounded-lg p-2.5 ${pastelInputClassName} text-sm`}
                                 >
                                     <option value="">Kies aansturing</option>
                                     {AANSTURING_OPTIES.map((a) => (
@@ -786,7 +787,7 @@ export default function InstallatieRuimtesSectie({
                                             })
                                         }
                                         placeholder="Welke aansturing?"
-                                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                                        className={`w-full rounded-lg border border-gray-300 px-3 py-2 text-sm ${pastelInputClassName}`}
                                     />
                                 ) : null}
                             </div>
@@ -901,7 +902,7 @@ export default function InstallatieRuimtesSectie({
                                                             )
                                                         }
                                                         placeholder="Bijv. 8"
-                                                        className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
+                                                        className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName} text-sm`}
                                                     />
                                                 </label>
                                                 <Chips
@@ -980,7 +981,7 @@ export default function InstallatieRuimtesSectie({
                                                             )
                                                         }
                                                         placeholder="Bijv. 8"
-                                                        className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70 text-sm"
+                                                        className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName} text-sm`}
                                                     />
                                                 </label>
                                                 <Chips
@@ -1028,7 +1029,7 @@ export default function InstallatieRuimtesSectie({
                             onOpmerkingenChange(e.target.value)
                         }
                         placeholder="Bijzonderheden, oplevernotities of afwijkingen"
-                        className="w-full border rounded-xl p-3 mt-1"
+                        className={`w-full border rounded-xl p-3 mt-1 ${pastelInputClassName}`}
                     />
                 </label>
             ) : null}

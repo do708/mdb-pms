@@ -56,7 +56,8 @@ import {
     CHIP_SELECTED_TONE,
     chipIdleClassName,
     chipSelectedClassName,
-    nestedCardClassName
+    nestedCardClassName,
+    pastelInputClassName
 } from "@/components/ui/SpecLayout";
 import {
     actieveWerkzaamheden,
@@ -668,7 +669,7 @@ function AudioRegel({
                 value={value}
                 placeholder="Aantal"
                 onChange={(e)=>onChange(e.target.value)}
-                className="w-20 border border-black/10 rounded-lg p-1.5 text-sm bg-white/70"
+                className={`w-20 border border-black/10 rounded-lg p-1.5 text-sm ${pastelInputClassName}`}
             />
         </div>
     );
@@ -713,7 +714,7 @@ function MateriaalStukkenOnderAantal({
                                 onChange(next);
                             }}
                             placeholder="Merk"
-                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white/80 text-sm"
+                            className={`w-full border rounded-lg p-1.5 mt-0.5 text-sm ${pastelInputClassName}`}
                         />
                     </label>
                     <label className="flex-1 min-w-0">
@@ -728,7 +729,7 @@ function MateriaalStukkenOnderAantal({
                                 onChange(next);
                             }}
                             placeholder="Type"
-                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white/80 text-sm"
+                            className={`w-full border rounded-lg p-1.5 mt-0.5 text-sm ${pastelInputClassName}`}
                         />
                     </label>
                     <label className="flex-1 min-w-0">
@@ -749,7 +750,7 @@ function MateriaalStukkenOnderAantal({
                                 onChange(next);
                             }}
                             placeholder="Serienummer"
-                            className="w-full border rounded-lg p-1.5 mt-0.5 bg-white/80 text-sm"
+                            className={`w-full border rounded-lg p-1.5 mt-0.5 text-sm ${pastelInputClassName}`}
                         />
                     </label>
                 </div>
@@ -941,12 +942,13 @@ function Veld({
 
                 onChange={(e)=>onChange(e.target.value)}
 
-                className="
+                className={`
                     w-full
                     border
                     rounded-xl
                     p-2
-                "
+                    ${pastelInputClassName}
+                `}
 
             />
 
@@ -1396,7 +1398,7 @@ function RedenVeld({
                 rows={2}
                 value={value}
                 onChange={(e)=>onChange(e.target.value)}
-                className="w-full border border-black/10 rounded-xl p-2.5 text-sm bg-white/70"
+                className={`w-full border border-black/10 rounded-xl p-2.5 text-sm ${pastelInputClassName}`}
             />
         </div>
     );
@@ -1454,7 +1456,7 @@ function ExtraDienstenKeuzes({
                                     [aantalKey]: e.target.value,
                                 })
                             }
-                            className="w-20 shrink-0 border border-black/10 rounded-lg p-1.5 text-sm bg-white/70"
+                            className={`w-20 shrink-0 border border-black/10 rounded-lg p-1.5 text-sm ${pastelInputClassName}`}
                         />
                     ) : null}
                 </div>
@@ -1590,7 +1592,7 @@ function ExtraKostenDetails({
                                 kosten:e.target.value
                             })
                         }
-                        className="w-24 max-w-full border rounded-lg p-1.5 text-sm"
+                        className={`w-24 max-w-full border rounded-lg p-1.5 text-sm ${pastelInputClassName}`}
                     />
                 </div>
                 <div className="flex items-center gap-1.5 min-w-0">
@@ -1688,7 +1690,7 @@ function KioskBlokken({
                                         omschrijving:e.target.value
                                     })
                                 }
-                                className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white/80"
+                                className={`w-full border rounded-lg p-2 mt-0.5 text-sm ${pastelInputClassName}`}
                             />
                         </label>
                         {
@@ -1732,7 +1734,7 @@ function KioskBlokken({
                                                 formaatAnders:e.target.value
                                             })
                                         }
-                                        className="w-full border rounded-lg p-2 text-sm bg-white/80"
+                                        className={`w-full border rounded-lg p-2 text-sm ${pastelInputClassName}`}
                                     />
                                 )
                             }
@@ -1941,7 +1943,7 @@ function SchermBlokken({
                                     onChange={(e)=>
                                         update(index,{ formaat:e.target.value })
                                     }
-                                    className="w-full border rounded-xl p-2 bg-white"
+                                    className={`w-full border rounded-xl p-2 ${pastelInputClassName}`}
                                 >
                                     <option value="">— Kies —</option>
                                     {
@@ -1959,7 +1961,7 @@ function SchermBlokken({
                                             onChange={(e)=>
                                                 update(index,{ formaatAnders:e.target.value })
                                             }
-                                            className="w-full border rounded-xl p-2 mt-2"
+                                            className={`w-full border rounded-xl p-2 mt-2 ${pastelInputClassName}`}
                                         />
                                     )
                                 }
@@ -2034,7 +2036,7 @@ function SchermBlokken({
                                         onChange={(e)=>
                                             update(index,{ beugelAnders:e.target.value })
                                         }
-                                        className="w-full sm:w-72 border rounded-xl p-2"
+                                        className={`w-full sm:w-72 border rounded-xl p-2 ${pastelInputClassName}`}
                                     />
                                 )
                             }
@@ -3672,7 +3674,7 @@ export default function OpleverForm({
                                         }
                                     })
                                 }
-                                className="w-24 border border-black/10 rounded-lg p-2 text-sm bg-white/80"
+                                className={`w-24 border border-black/10 rounded-lg p-2 text-sm ${pastelInputClassName}`}
                             />
                         </label>
                         {items.map((item, index)=>(
@@ -3707,7 +3709,7 @@ export default function OpleverForm({
                                                 };
                                             });
                                         }}
-                                        className="w-full border rounded-lg p-2 mt-0.5 text-sm bg-white/80"
+                                        className={`w-full border rounded-lg p-2 mt-0.5 text-sm ${pastelInputClassName}`}
                                     />
                                 </label>
                                 <HardwareKenmerkenTabel
@@ -3811,7 +3813,7 @@ export default function OpleverForm({
                                                     e.target.value;
                                             })
                                         }
-                                        className="w-full border border-black/10 rounded-lg p-2 mt-0.5 bg-white/70"
+                                        className={`w-full border border-black/10 rounded-lg p-2 mt-0.5 ${pastelInputClassName}`}
                                     />
                                 </label>
                             )
@@ -3955,7 +3957,7 @@ export default function OpleverForm({
                             })
                         }
 
-                        className="w-full border border-black/10 rounded-xl p-3 min-h-24 bg-white/70"
+                        className={`w-full border border-black/10 rounded-xl p-3 min-h-24 ${pastelInputClassName}`}
 
                     />
                 </ModuleKaart>
@@ -4652,7 +4654,7 @@ export default function OpleverForm({
                             })
                         }
 
-                        className="w-full border rounded-xl p-3 min-h-24 bg-white/80"
+                        className={`w-full border rounded-xl p-3 min-h-24 ${pastelInputClassName}`}
 
                     />
                 </ModuleKaart>
@@ -4892,7 +4894,7 @@ export default function OpleverForm({
                                                         [locatie]:e.target.value
                                                     };
                                                 })}
-                                                className="w-20 shrink-0 border border-black/10 rounded-lg p-1.5 text-sm bg-white/70"
+                                                className={`w-20 shrink-0 border border-black/10 rounded-lg p-1.5 text-sm ${pastelInputClassName}`}
                                             />
                                         ) : null}
                                     </div>
@@ -5089,7 +5091,7 @@ export default function OpleverForm({
                                             onChange={(e)=>update(draft=>{
                                                 draft.afronding.meerwerkOpmerkingen = e.target.value;
                                             })}
-                                            className="w-full border rounded-xl p-3"
+                                            className={`w-full border rounded-xl p-3 ${pastelInputClassName}`}
                                         />
                                     </label>
                                 </>

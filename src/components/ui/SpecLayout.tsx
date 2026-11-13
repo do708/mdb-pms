@@ -24,6 +24,9 @@ export const chipSelectedClassName =
 export const nestedCardClassName =
     "rounded-xl border border-black/10 bg-white/75";
 
+/** Invulvelden op pastelkaarten: iets lichter dan de kaart, pastel schemert door. */
+export const pastelInputClassName = "bg-white/40";
+
 export const CHIP_SELECTED_TONE = {
     green: "bg-emerald-600 text-white border-emerald-600 shadow-sm",
     red: "bg-red-600 text-white border-red-600 shadow-sm",
