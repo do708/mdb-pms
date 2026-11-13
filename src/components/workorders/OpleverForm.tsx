@@ -705,6 +705,7 @@ function MateriaalStukkenOnderAantal({
                     className={`grid grid-cols-1 gap-2 md:items-end ${snOnly ? "md:grid-cols-1" : "md:grid-cols-3"}`}
                 >
                     {snOnly ? null : (
+                    <>
                     <label className="flex-1 min-w-0">
                         <span className="text-xs text-gray-600">
                             Merk
@@ -735,6 +736,7 @@ function MateriaalStukkenOnderAantal({
                             className={`w-full border rounded-lg p-1.5 mt-0.5 text-sm ${pastelInputClassName}`}
                         />
                     </label>
+                    </>
                     )}
                     <label className="flex-1 min-w-0">
                         <span className="text-xs text-gray-600">
