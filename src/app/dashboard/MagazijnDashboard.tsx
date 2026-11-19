@@ -38,7 +38,7 @@ export default function MagazijnDashboard() {
         <PageShell>
             <PageHeader
                 title="Magazijn"
-                subtitle="Bekijk geplande klussen en upload pakbonnen."
+                subtitle="Klussen zonder pakbon. Upload één pakbon en koppel die aan een of meer klussen."
                 actions={
                     <Link
                         href="/pakbonnen"
@@ -51,12 +51,14 @@ export default function MagazijnDashboard() {
 
             <SpecPageCard>
                 <h2 className="font-semibold text-sm text-gray-800">
-                    Open klussen
+                    Open klussen zonder pakbon
                 </h2>
                 {loading ? (
                     <p className="text-sm text-gray-500">Laden…</p>
                 ) : klussen.length === 0 ? (
-                    <p className="text-sm text-gray-400">Geen open klussen.</p>
+                    <p className="text-sm text-gray-400">
+                        Geen klussen zonder pakbon.
+                    </p>
                 ) : (
                     <div className="space-y-1">
                         {klussen.slice(0, 30).map((klus) => (

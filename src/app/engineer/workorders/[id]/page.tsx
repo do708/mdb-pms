@@ -77,6 +77,13 @@ interface Workorder {
 
     }[];
 
+    pakbonnen?:{
+        id:string;
+        originalName:string | null;
+        filename:string | null;
+        viewUrl:string;
+    }[];
+
     formData:unknown;
 
     aanvraagSpecificaties?:unknown;
@@ -465,6 +472,14 @@ export default function EngineerWorkorderPage(){
     const [pakbonUploaden,setPakbonUploaden] =
         useState(false);
 
+    const [pakbonnen,setPakbonnen] =
+        useState<{
+            id:string;
+            originalName:string | null;
+            filename:string | null;
+            viewUrl:string;
+        }[]>([]);
+
 
     // Bezig-vlag voor het versturen van de afspraakmail.
     const [afspraakBezig,setAfspraakBezig] =
@@ -540,6 +555,7 @@ export default function EngineerWorkorderPage(){
 
 
             setWorkorder(data);
+            setPakbonnen(Array.isArray(data.pakbonnen) ? data.pakbonnen : []);
 
             setNotes(
                 data.description || ""
@@ -2020,9 +2036,9 @@ async function completeWorkorder(){
                                     "Bezig..."
                                     :
                                     (
-                                        materiaal.pakbonUrl
+                                        (pakbonnen.length > 0 || materiaal.pakbonUrl)
                                         ?
-                                        "Pakbon vervangen"
+                                        "Pakbon toevoegen"
                                         :
                                         "Pakbon uploaden"
                                     )
@@ -2064,6 +2080,17 @@ async function completeWorkorder(){
                                                     ...m,
                                                     pakbonUrl:data.url
                                                 }));
+                                                if(data.pakbonId && data.viewUrl){
+                                                    setPakbonnen(prev=>[
+                                                        ...prev,
+                                                        {
+                                                            id:data.pakbonId,
+                                                            originalName:file.name,
+                                                            filename:file.name,
+                                                            viewUrl:data.viewUrl
+                                                        }
+                                                    ]);
+                                                }
                                             } else {
                                                 alert(
                                                     data?.error
@@ -2086,7 +2113,28 @@ async function completeWorkorder(){
 
 
                         {
-                            materiaal.pakbonUrl && (
+                            pakbonnen.length > 0 ? (
+                                <div className="space-y-1">
+                                    {pakbonnen.map((pakbon, index) => (
+                                        <a
+                                            key={pakbon.id}
+                                            href={pakbon.viewUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="
+                                                block
+                                                text-xs font-medium
+                                                text-sky-700 hover:underline
+                                            "
+                                        >
+                                            {pakbon.originalName ||
+                                                pakbon.filename ||
+                                                `Pakbon ${index + 1}`}{" "}
+                                            bekijken
+                                        </a>
+                                    ))}
+                                </div>
+                            ) : materiaal.pakbonUrl ? (
                                 <a
                                     href={`/api/workorders/${id}/pakbon`}
                                     target="_blank"
@@ -2099,7 +2147,7 @@ async function completeWorkorder(){
                                 >
                                     Geüploade pakbon bekijken
                                 </a>
-                            )
+                            ) : null
                         }
 
                         {heeftNativeOsAansturing ? (

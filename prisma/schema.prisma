@@ -253,6 +253,7 @@ model Workorder {
   signature      WorkorderSignature?
   extraEngineers WorkorderEngineer[]
   forms          WorkorderForm[]
+  pakbonnen      PakbonWorkorder[]
   archiveFolder  ArchiveFolder?
   /// NAS-pad na archivering (gefactureerd)
   archiveNasPath       String?
@@ -347,6 +348,28 @@ model WorkorderAttachment {
   contentType  String?
   createdAt    DateTime  @default(now())
   workorder    Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+}
+
+/// Magazijn-pakbon; één bestand kan bij meerdere klussen horen.
+model Pakbon {
+  id           String            @id @default(cuid())
+  url          String
+  filename     String?
+  originalName String?
+  contentType  String?
+  createdAt    DateTime          @default(now())
+  workorders   PakbonWorkorder[]
+}
+
+model PakbonWorkorder {
+  pakbonId    String
+  workorderId String
+  createdAt   DateTime  @default(now())
+  pakbon      Pakbon    @relation(fields: [pakbonId], references: [id], onDelete: Cascade)
+  workorder   Workorder @relation(fields: [workorderId], references: [id], onDelete: Cascade)
+
+  @@id([pakbonId, workorderId])
+  @@index([workorderId])
 }
 
 model WorkorderSignature {

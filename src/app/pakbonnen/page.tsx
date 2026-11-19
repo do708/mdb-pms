@@ -23,6 +23,13 @@ interface Klus {
     assignedUser: { name: string | null } | null;
 }
 
+interface TeKoppelenPakbon {
+    id: string;
+    originalName: string | null;
+    filename: string | null;
+    createdAt: string;
+}
+
 export default function PakbonnenPage() {
     const { data: session } = useSession();
     const role = session?.user?.role ?? "";
@@ -33,21 +40,26 @@ export default function PakbonnenPage() {
     const [dragging, setDragging] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [klussen, setKlussen] = useState<Klus[]>([]);
+    const [teKoppelen, setTeKoppelen] = useState<TeKoppelenPakbon[]>([]);
+    const [actievePakbonId, setActievePakbonId] = useState<string | null>(null);
     const [selected, setSelected] = useState<Record<string, boolean>>({});
     const [q, setQ] = useState("");
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
     const [ok, setOk] = useState("");
 
+    async function laadLijst() {
+        const response = await fetch("/api/pakbonnen");
+        if (!response.ok) {
+            return;
+        }
+        const data = await response.json();
+        setKlussen(data.workorders ?? []);
+        setTeKoppelen(data.teKoppelen ?? []);
+    }
+
     useEffect(() => {
-        (async () => {
-            const response = await fetch("/api/pakbonnen");
-            if (!response.ok) {
-                return;
-            }
-            const data = await response.json();
-            setKlussen(data.workorders ?? []);
-        })();
+        void laadLijst();
     }, []);
 
     const gefilterd = useMemo(() => {
@@ -80,6 +92,48 @@ export default function PakbonnenPage() {
             setFile(next);
             setError("");
             setOk("");
+        }
+    }
+
+    async function koppelBestaande() {
+        if (!actievePakbonId) {
+            setError("Kies eerst een pakbon om te koppelen");
+            return;
+        }
+        if (gekozen.length === 0) {
+            setError("Selecteer minstens één klus");
+            return;
+        }
+
+        setBusy(true);
+        setError("");
+        setOk("");
+
+        try {
+            const response = await fetch(`/api/pakbonnen/${actievePakbonId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ workorderIds: gekozen }),
+            });
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                setError(data.error || "Koppelen mislukt");
+                return;
+            }
+
+            setOk(
+                `Pakbon gekoppeld aan ${data.count} klus${
+                    data.count === 1 ? "" : "sen"
+                }. Die klussen staan niet meer in de lijst hieronder.`
+            );
+            setActievePakbonId(null);
+            setSelected({});
+            await laadLijst();
+        } catch {
+            setError("Koppelen mislukt");
+        } finally {
+            setBusy(false);
         }
     }
 
@@ -118,10 +172,11 @@ export default function PakbonnenPage() {
             setOk(
                 `Pakbon gekoppeld aan ${data.count} klus${
                     data.count === 1 ? "" : "sen"
-                }.`
+                }. Die klussen staan niet meer in de lijst hieronder.`
             );
             setFile(null);
             setSelected({});
+            await laadLijst();
         } catch {
             setError("Uploaden mislukt");
         } finally {
@@ -141,7 +196,7 @@ export default function PakbonnenPage() {
         <PageShell>
             <PageHeader
                 title="Pakbon uploaden"
-                subtitle="Sleep de pakbon hierheen en koppel die aan een of meer klussen. Het bestand gaat naar de NAS."
+                subtitle="Sleep de pakbon hierheen en koppel die aan een of meer klussen. Eén pakbon mag bij meerdere klussen horen. Gekoppelde klussen verdwijnen uit deze lijst; de pakbon blijft zichtbaar op elke gekoppelde werkbon."
             />
 
             <SpecPanel title="Pakbon" tone="slate">
@@ -190,10 +245,73 @@ export default function PakbonnenPage() {
                 </div>
             </SpecPanel>
 
+            {teKoppelen.length > 0 ? (
+                <SpecPageCard>
+                    <h2 className="font-semibold text-sm text-gray-800">
+                        Nog te koppelen pakbonnen
+                    </h2>
+                    <p className="text-xs text-gray-500">
+                        Deze bestanden horen nog bij geen klus. Kies er één en
+                        koppel hieronder aan een of meer opdrachten.
+                    </p>
+                    <div className="space-y-1">
+                        {teKoppelen.map((pakbon) => {
+                            const active = actievePakbonId === pakbon.id;
+                            return (
+                                <button
+                                    key={pakbon.id}
+                                    type="button"
+                                    onClick={() => {
+                                        setActievePakbonId(
+                                            active ? null : pakbon.id
+                                        );
+                                        setFile(null);
+                                        setOk("");
+                                        setError("");
+                                    }}
+                                    className={`
+                                        w-full text-left rounded-xl border px-3 py-2 text-sm
+                                        ${
+                                            active
+                                                ? "border-sky-400 bg-sky-50"
+                                                : "border-slate-200 bg-white"
+                                        }
+                                    `}
+                                >
+                                    {pakbon.originalName ||
+                                        pakbon.filename ||
+                                        "Pakbon"}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    {actievePakbonId ? (
+                        <button
+                            type="button"
+                            onClick={() => void koppelBestaande()}
+                            disabled={busy}
+                            className="bg-[#d6007e] text-white rounded-xl px-5 py-2.5 font-semibold disabled:opacity-50"
+                        >
+                            {busy
+                                ? "Bezig…"
+                                : `Bestaande pakbon koppelen${
+                                      gekozen.length
+                                          ? ` (${gekozen.length})`
+                                          : ""
+                                  }`}
+                        </button>
+                    ) : null}
+                </SpecPageCard>
+            ) : null}
+
             <SpecPageCard>
                 <h2 className="font-semibold text-sm text-gray-800">
                     Koppelen aan klus(sen)
                 </h2>
+                <p className="text-xs text-gray-500">
+                    Alleen klussen zonder pakbon. Vink alle klussen aan die bij
+                    dezelfde pakbon horen.
+                </p>
                 <label className="block max-w-md">
                     <SpecFieldLabel>Zoeken</SpecFieldLabel>
                     <input
@@ -249,7 +367,7 @@ export default function PakbonnenPage() {
                     })}
                     {gefilterd.length === 0 ? (
                         <p className="text-sm text-gray-400 px-1">
-                            Geen klussen gevonden.
+                            Geen klussen zonder pakbon gevonden.
                         </p>
                     ) : null}
                 </div>

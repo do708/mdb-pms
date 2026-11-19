@@ -6,45 +6,18 @@ import { requireWorkorderAccess } from "@/lib/auth/guard";
 import { contentTypeForFilename } from "@/lib/attachments/contentType";
 import { supabaseStoragePathFromUrl } from "@/lib/documents/documentenboxStorage";
 import {
-    deletePakbonFromNas,
+    attachPakbonUrlToWorkorder,
+    createPakbonForWorkorders,
+    pakbonUrlFromFormData,
+} from "@/lib/documents/attachPakbon";
+import {
     downloadPakbonFromNas,
     uploadPakbonToNas,
 } from "@/lib/documents/pakbonStorage";
 import { isNasConfigured, nasPathFromStored } from "@/lib/nas/synologyConfig";
 
-
-type FormDataObject = Record<string, unknown>;
-
-function asObject(value: unknown): FormDataObject {
-    if (value && typeof value === "object" && !Array.isArray(value)) {
-        return { ...(value as FormDataObject) };
-    }
-
-    return {};
-}
-
-function pakbonUrlFromFormData(formData: unknown): string {
-    const km = asObject(asObject(formData).klaarzetMateriaal);
-    return typeof km.pakbonUrl === "string" ? km.pakbonUrl : "";
-}
-
-async function setPakbonUrl(workorderId: string, formData: unknown, url: string) {
-    const next = asObject(formData);
-    const km = asObject(next.klaarzetMateriaal);
-
-    next.klaarzetMateriaal = {
-        ...km,
-        pakbonUrl: url,
-    };
-
-    await prisma.workorder.update({
-        where: { id: workorderId },
-        data: { formData: JSON.parse(JSON.stringify(next)) },
-    });
-}
-
 export async function GET(
-    _request: NextRequest,
+    request: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) {
     const { id } = await context.params;
@@ -55,9 +28,21 @@ export async function GET(
     }
 
     try {
+        const pakbonId = request.nextUrl.searchParams.get("pakbonId");
+
         const workorder = await prisma.workorder.findUnique({
             where: { id },
-            select: { id: true, number: true, formData: true },
+            select: {
+                id: true,
+                number: true,
+                formData: true,
+                pakbonnen: {
+                    include: {
+                        pakbon: true,
+                    },
+                    orderBy: { createdAt: "asc" },
+                },
+            },
         });
 
         if (!workorder) {
@@ -67,7 +52,11 @@ export async function GET(
             );
         }
 
-        let stored = pakbonUrlFromFormData(workorder.formData);
+        const linked = pakbonId
+            ? workorder.pakbonnen.find((row) => row.pakbonId === pakbonId)
+            : workorder.pakbonnen[0];
+
+        let stored = linked?.pakbon.url || pakbonUrlFromFormData(workorder.formData);
 
         if (!stored) {
             return NextResponse.json(
@@ -77,7 +66,10 @@ export async function GET(
         }
 
         let buffer: Buffer;
-        let filename = "pakbon";
+        let filename =
+            linked?.pakbon.originalName ||
+            linked?.pakbon.filename ||
+            "pakbon";
 
         if (nasPathFromStored(stored)) {
             buffer = await downloadPakbonFromNas(stored);
@@ -114,7 +106,15 @@ export async function GET(
                         buffer,
                         contentTypeForFilename(filename)
                     );
-                    await setPakbonUrl(id, workorder.formData, nasUrl);
+
+                    if (linked) {
+                        await prisma.pakbon.update({
+                            where: { id: linked.pakbonId },
+                            data: { url: nasUrl },
+                        });
+                    }
+
+                    await attachPakbonUrlToWorkorder(id, nasUrl);
                     await supabase.storage
                         .from("workorder-files")
                         .remove([path])
@@ -165,7 +165,7 @@ export async function POST(
     try {
         const workorder = await prisma.workorder.findUnique({
             where: { id },
-            select: { id: true, number: true, formData: true },
+            select: { id: true, number: true },
         });
 
         if (!workorder) {
@@ -185,7 +185,6 @@ export async function POST(
             );
         }
 
-        const previous = pakbonUrlFromFormData(workorder.formData);
         const buffer = Buffer.from(await file.arrayBuffer());
         const url = await uploadPakbonToNas(
             workorder.number,
@@ -194,26 +193,18 @@ export async function POST(
             file.type || contentTypeForFilename(file.name)
         );
 
-        await setPakbonUrl(id, workorder.formData, url);
-
-        if (previous && previous !== url) {
-            if (nasPathFromStored(previous)) {
-                await deletePakbonFromNas(previous);
-            } else {
-                const path = supabaseStoragePathFromUrl(previous);
-                if (path) {
-                    await supabase.storage
-                        .from("workorder-files")
-                        .remove([path])
-                        .catch(() => {});
-                }
-            }
-        }
+        const pakbon = await createPakbonForWorkorders([id], {
+            url,
+            originalName: file.name,
+            filename: file.name,
+            contentType: file.type || contentTypeForFilename(file.name),
+        });
 
         return NextResponse.json({
             success: true,
             url,
-            viewUrl: `/api/workorders/${id}/pakbon`,
+            pakbonId: pakbon.id,
+            viewUrl: `/api/workorders/${id}/pakbon?pakbonId=${encodeURIComponent(pakbon.id)}`,
         });
     } catch (error) {
         console.error("PAKBON UPLOAD ERROR", error);

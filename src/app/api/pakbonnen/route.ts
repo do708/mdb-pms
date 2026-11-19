@@ -3,12 +3,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 import { contentTypeForFilename } from "@/lib/attachments/contentType";
-import { attachPakbonUrlToWorkorder } from "@/lib/documents/attachPakbon";
+import { createPakbonForWorkorders } from "@/lib/documents/attachPakbon";
 import { uploadPakbonToNas } from "@/lib/documents/pakbonStorage";
 import { isNasConfigured } from "@/lib/nas/synologyConfig";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const workorderSelect = {
+    id: true,
+    number: true,
+    title: true,
+    status: true,
+    plannedDate: true,
+    city: true,
+    customer: { select: { name: true } },
+    assignedUser: { select: { name: true } },
+} as const;
 
 export async function GET() {
     const guard = await requireApiRole(["admin", "office", "magazijn"]);
@@ -17,25 +28,29 @@ export async function GET() {
         return guard.response;
     }
 
-    const workorders = await prisma.workorder.findMany({
-        where: {
-            NOT: { status: { in: ["gefactureerd"] } },
-        },
-        orderBy: [{ plannedDate: "asc" }, { number: "desc" }],
-        take: 250,
-        select: {
-            id: true,
-            number: true,
-            title: true,
-            status: true,
-            plannedDate: true,
-            city: true,
-            customer: { select: { name: true } },
-            assignedUser: { select: { name: true } },
-        },
-    });
+    const [workorders, teKoppelen] = await Promise.all([
+        prisma.workorder.findMany({
+            where: {
+                NOT: { status: { in: ["gefactureerd"] } },
+                pakbonnen: { none: {} },
+            },
+            orderBy: [{ plannedDate: "asc" }, { number: "desc" }],
+            take: 250,
+            select: workorderSelect,
+        }),
+        prisma.pakbon.findMany({
+            where: { workorders: { none: {} } },
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                originalName: true,
+                filename: true,
+                createdAt: true,
+            },
+        }),
+    ]);
 
-    return NextResponse.json({ workorders });
+    return NextResponse.json({ workorders, teKoppelen });
 }
 
 export async function POST(request: NextRequest) {
@@ -100,13 +115,17 @@ export async function POST(request: NextRequest) {
             file.type || contentTypeForFilename(file.name)
         );
 
-        for (const id of workorderIds) {
-            await attachPakbonUrlToWorkorder(id, url);
-        }
+        const pakbon = await createPakbonForWorkorders(workorderIds, {
+            url,
+            originalName: file.name,
+            filename: file.name,
+            contentType: file.type || contentTypeForFilename(file.name),
+        });
 
         return NextResponse.json({
             success: true,
             url,
+            pakbonId: pakbon.id,
             workorderIds,
             count: workorderIds.length,
         });
