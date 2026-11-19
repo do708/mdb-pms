@@ -57,7 +57,7 @@ export function buildVerlofTitle(
     return `Verlofaanvraag, ${verlofMonteurName(data, userName)}`;
 }
 
-function leaveOmvangLabel(omvang: unknown): string {
+function leaveOmvangLabel(omvang: unknown, dagdeel?: unknown): string {
     if (typeof omvang !== "string") {
         return "";
     }
@@ -66,6 +66,14 @@ function leaveOmvangLabel(omvang: unknown): string {
         return "";
     }
     if (text.toLowerCase().startsWith("halve")) {
+        const deel =
+            typeof dagdeel === "string" ? dagdeel.trim().toLowerCase() : "";
+        if (deel.startsWith("ochtend")) {
+            return "Halve dag ochtend";
+        }
+        if (deel.startsWith("middag")) {
+            return "Halve dag middag";
+        }
         return "Halve dag";
     }
     if (text.toLowerCase().startsWith("hele")) {
@@ -87,7 +95,7 @@ export function verlofSubtitle(data?: Record<string, unknown> | null): string {
     const reden = kort || redenRaw;
     const from = nlFormDate(data?.eersteDag);
     const to = nlFormDate(data?.laatsteDag);
-    const omvang = leaveOmvangLabel(data?.omvang);
+    const omvang = leaveOmvangLabel(data?.omvang, data?.dagdeel);
 
     const datePart =
         from && to ? `${from} - ${to}` : from || to || "";
@@ -107,11 +115,12 @@ export function verlofSubtitle(data?: Record<string, unknown> | null): string {
 export function verlofPlanningLabel(
     type?: string | null,
     reden?: string | null,
-    omvang?: string | null
+    omvang?: string | null,
+    dagdeel?: string | null
 ): string {
     const soort = typeof type === "string" ? type.trim() : "";
     const extra = typeof reden === "string" ? reden.trim() : "";
-    const size = leaveOmvangLabel(omvang);
+    const size = leaveOmvangLabel(omvang, dagdeel);
     const parts = [soort, extra, size].filter(Boolean);
     return parts.join(" · ") || "Verlof";
 }

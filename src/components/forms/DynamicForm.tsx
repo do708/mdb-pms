@@ -32,6 +32,7 @@ type VacationRequestRow = {
     type: string;
     reden: string;
     omvang: string;
+    dagdeel?: string;
     year: number;
 };
 
@@ -729,6 +730,9 @@ export default function DynamicForm({
         if (!teVersturen.omvang) {
             teVersturen.omvang = "Hele dag";
         }
+        if (!teVersturen.omvang.toLowerCase().startsWith("halve")) {
+            delete teVersturen.dagdeel;
+        }
 
         await onSubmit(teVersturen);
 
@@ -1322,6 +1326,7 @@ export default function DynamicForm({
                                                                 row.type,
                                                             reden: row.reden,
                                                             omvang: row.omvang,
+                                                            dagdeel: row.dagdeel,
                                                             eersteDag: row.from,
                                                             laatsteDag: row.to,
                                                         })}

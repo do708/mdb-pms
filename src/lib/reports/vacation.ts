@@ -87,6 +87,48 @@ export function isHalveDag(omvang: unknown): boolean {
     return parseLeaveOmvang(omvang).toLowerCase().startsWith("halve");
 }
 
+export type LeaveDagdeel = "ochtend" | "middag" | null;
+
+export function parseLeaveDagdeel(value: unknown): LeaveDagdeel {
+    if (typeof value !== "string") {
+        return null;
+    }
+    const text = value.trim().toLowerCase();
+    if (text.startsWith("ochtend")) {
+        return "ochtend";
+    }
+    if (text.startsWith("middag")) {
+        return "middag";
+    }
+    return null;
+}
+
+/** Halve dag zonder dagdeel telt als hele dag in de planning. */
+export function leaveBlocksHour(
+    omvang: unknown,
+    dagdeel: unknown,
+    hour: number
+): boolean {
+    if (!isHalveDag(omvang)) {
+        return true;
+    }
+    const deel = parseLeaveDagdeel(dagdeel);
+    if (!deel) {
+        return true;
+    }
+    if (deel === "ochtend") {
+        return hour < 12;
+    }
+    return hour >= 12;
+}
+
+export function isFullDayLeave(omvang: unknown, dagdeel: unknown): boolean {
+    if (!isHalveDag(omvang)) {
+        return true;
+    }
+    return parseLeaveDagdeel(dagdeel) == null;
+}
+
 export function leaveReasonFromData(
     data: Record<string, unknown> | null | undefined
 ): string {

@@ -164,6 +164,10 @@ export async function GET(){
                     type:(data.typeVerlof as string) ?? "Verlof",
                     reden: leaveReasonFromData(data),
                     omvang: parseLeaveOmvang(data.omvang),
+                    dagdeel:
+                        typeof data.dagdeel === "string"
+                            ? data.dagdeel
+                            : null,
                 };
 
             })

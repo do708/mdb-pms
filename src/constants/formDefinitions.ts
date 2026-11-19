@@ -287,6 +287,21 @@ export const FORM_DEFINITIONS:FormDefinition[] = [
             },
 
             {
+                id:"dagdeel",
+                type:"keuze",
+                label:"Ochtend of middag",
+                required:true,
+                options:[
+                    "Ochtend",
+                    "Middag"
+                ],
+                when:{
+                    fieldId:"omvang",
+                    equalsPrefix:"Halve"
+                }
+            },
+
+            {
                 id:"handtekening",
                 type:"handtekening",
                 label:"Handtekening medewerker",

@@ -14,6 +14,7 @@ import { sendFormSubmissionMail } from "@/lib/email/sendFormSubmissionMail";
 import {
     isVakantiedagen,
     leaveDaysFromData,
+    isHalveDag,
     parseLeaveOmvang,
     vacationBalanceForUser,
     vacationDaysForRequest,
@@ -245,6 +246,9 @@ export async function POST(
         }
         if (body.type === "verlof") {
             formData.omvang = parseLeaveOmvang(formData.omvang);
+            if (!isHalveDag(formData.omvang)) {
+                delete formData.dagdeel;
+            }
         }
 
         const title = buildFormTitle(

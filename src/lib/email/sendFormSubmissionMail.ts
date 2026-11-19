@@ -60,7 +60,14 @@ function buildVerlofMail(data: FormSubmissionMailData, formsUrl: string) {
         extraLines.push(`Reden: ${reden}`);
     }
 
-    extraLines.push(`Omvang: ${omvang}`);
+    extraLines.push(
+        `Omvang: ${omvang}${
+            omvang.toLowerCase().startsWith("halve")
+            && strField(data.data, "dagdeel")
+                ? ` ${strField(data.data, "dagdeel")}`
+                : ""
+        }`
+    );
 
     const invoerLine = andereInvoerder
         ? `Ingevoerd door: ${data.submitterName}\n`

@@ -72,6 +72,8 @@ export async function GET(request: NextRequest) {
                         : "",
                 reden: leaveReasonFromData(data),
                 omvang: parseLeaveOmvang(data.omvang),
+                dagdeel:
+                    typeof data.dagdeel === "string" ? data.dagdeel : "",
                 year: yearFromDateKey(range?.from),
             };
         });

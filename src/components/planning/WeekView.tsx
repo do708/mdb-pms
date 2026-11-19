@@ -23,6 +23,11 @@ import {
 } from "@/lib/datetime/amsterdam";
 import { jobCrewLine } from "@/lib/planning/jobCrew";
 import { verlofPlanningLabel } from "@/lib/forms/formDisplay";
+import {
+    isFullDayLeave,
+    leaveBlocksHour,
+    parseLeaveDagdeel,
+} from "@/lib/reports/vacation";
 
 // ISO 8601 weeknummer (weken beginnen op maandag)
 function isoWeek(date: Date) {
@@ -147,6 +152,7 @@ interface WeekViewProps {
 
 const DAG_START_UUR = 7;
 const DAG_EIND_UUR = 20;
+const VERLOF_MIDDAG_UUR = 12;
 const PX_PER_UUR = 26;
 const DAG_PADDING_TOP = 10;
 
@@ -555,6 +561,41 @@ export default function WeekView({
             DAG_EIND_UUR - 0.25,
             Math.max(DAG_START_UUR, snapped)
         );
+    }
+
+    function verlofBezetHeleDag(verlof: { omvang?: string; dagdeel?: string } | null | undefined) {
+        if (!verlof) {
+            return false;
+        }
+        return isFullDayLeave(verlof.omvang, verlof.dagdeel);
+    }
+
+    function verlofBezetUur(
+        verlof: { omvang?: string; dagdeel?: string } | null | undefined,
+        hour: number
+    ) {
+        if (!verlof) {
+            return false;
+        }
+        return leaveBlocksHour(verlof.omvang, verlof.dagdeel, hour);
+    }
+
+    function verlofBlokStijl(
+        verlof: { omvang?: string; dagdeel?: string }
+    ): { top: number; height: number } {
+        const deel = parseLeaveDagdeel(verlof.dagdeel);
+        if (isFullDayLeave(verlof.omvang, verlof.dagdeel) || !deel) {
+            return { top: 4, height: DAG_HOOGTE - 8 };
+        }
+        const ochtendHoogte =
+            (VERLOF_MIDDAG_UUR - DAG_START_UUR) * PX_PER_UUR;
+        if (deel === "ochtend") {
+            return { top: DAG_PADDING_TOP, height: ochtendHoogte };
+        }
+        return {
+            top: DAG_PADDING_TOP + ochtendHoogte,
+            height: (DAG_EIND_UUR - VERLOF_MIDDAG_UUR) * PX_PER_UUR,
+        };
     }
 
     function leaveOn(userId: string, day: Date) {
@@ -1253,9 +1294,9 @@ export default function WeekView({
                                                             ${
                                                                 pendingSchedule
                                                                 && onSchedulePending
-                                                                && !verlof
+                                                                && !verlofBezetHeleDag(verlof)
                                                                     ? "cursor-pointer ring-1 ring-[#0066FF]/20 hover:ring-[#0066FF]/45"
-                                                                    : onCreateAgenda && !verlof
+                                                                    : onCreateAgenda && !verlofBezetHeleDag(verlof)
                                                                     ? "cursor-pointer"
                                                                     : ""
                                                             }
@@ -1266,7 +1307,7 @@ export default function WeekView({
                                                         onClick={
                                                             pendingSchedule
                                                             && onSchedulePending
-                                                            && !verlof
+                                                            && !verlofBezetHeleDag(verlof)
                                                                 ? (e) => {
                                                                       const target =
                                                                           e.target as HTMLElement;
@@ -1291,6 +1332,14 @@ export default function WeekView({
                                                                               e.clientY,
                                                                               e.currentTarget
                                                                           );
+                                                                      if (
+                                                                          verlofBezetUur(
+                                                                              verlof,
+                                                                              hour
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
                                                                       onSchedulePending(
                                                                           {
                                                                               dateIso:
@@ -1301,7 +1350,7 @@ export default function WeekView({
                                                                           }
                                                                       );
                                                                   }
-                                                                : onCreateAgenda && !verlof
+                                                                : onCreateAgenda && !verlofBezetHeleDag(verlof)
                                                                 ? (e) => {
                                                                       const target =
                                                                           e.target as HTMLElement;
@@ -1326,6 +1375,14 @@ export default function WeekView({
                                                                               e.clientY,
                                                                               e.currentTarget
                                                                           );
+                                                                      if (
+                                                                          verlofBezetUur(
+                                                                              verlof,
+                                                                              hour
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
                                                                       onCreateAgenda({
                                                                           dateIso: iso,
                                                                           hour,
@@ -1337,7 +1394,7 @@ export default function WeekView({
                                                         onDragOver={
                                                             (onMovePlan ||
                                                                 onMoveAgenda) &&
-                                                            !verlof
+                                                            !verlofBezetHeleDag(verlof)
                                                                 ? (e) => {
                                                                       e.preventDefault();
                                                                       e.dataTransfer.dropEffect =
@@ -1377,7 +1434,7 @@ export default function WeekView({
                                                         onDragLeave={
                                                             (onMovePlan ||
                                                                 onMoveAgenda) &&
-                                                            !verlof
+                                                            !verlofBezetHeleDag(verlof)
                                                                 ? (e) => {
                                                                       const related =
                                                                           e.relatedTarget as Node | null;
@@ -1404,7 +1461,7 @@ export default function WeekView({
                                                         onDrop={
                                                             (onMovePlan ||
                                                                 onMoveAgenda) &&
-                                                            !verlof
+                                                            !verlofBezetHeleDag(verlof)
                                                                 ? (e) => {
                                                                       e.preventDefault();
                                                                       setDragPreview(
@@ -1415,6 +1472,14 @@ export default function WeekView({
                                                                               e.clientY,
                                                                               e.currentTarget
                                                                           );
+                                                                      if (
+                                                                          verlofBezetUur(
+                                                                              verlof,
+                                                                              hour
+                                                                          )
+                                                                      ) {
+                                                                          return;
+                                                                      }
                                                                       const agendaEventId =
                                                                           e.dataTransfer.getData(
                                                                               "agendaEventId"
@@ -1466,7 +1531,7 @@ export default function WeekView({
                                                                 : undefined
                                                         }
                                                     >
-                                                        {!verlof &&
+                                                        {!verlofBezetHeleDag(verlof) &&
                                                             uurLijnen.map(
                                                                 (uur) => {
                                                                     const top =
@@ -1502,10 +1567,11 @@ export default function WeekView({
                                                                 title={verlofPlanningLabel(
                                                                     verlof.type,
                                                                     verlof.reden,
-                                                                    verlof.omvang
+                                                                    verlof.omvang,
+                                                                    verlof.dagdeel
                                                                 )}
                                                                 className="
-                                                                    absolute inset-1
+                                                                    absolute left-1 right-1
                                                                     bg-gradient-to-b from-orange-50 to-orange-100/80
                                                                     text-orange-800 text-xs
                                                                     rounded-lg px-2
@@ -1513,6 +1579,7 @@ export default function WeekView({
                                                                     flex flex-col items-center justify-center gap-0.5
                                                                     z-10
                                                                 "
+                                                                style={verlofBlokStijl(verlof)}
                                                             >
                                                                 <span className="text-base leading-none">
                                                                     🌴
@@ -1521,7 +1588,8 @@ export default function WeekView({
                                                                     {verlofPlanningLabel(
                                                                         verlof.type,
                                                                         verlof.reden,
-                                                                        verlof.omvang
+                                                                        verlof.omvang,
+                                                                        verlof.dagdeel
                                                                     )}
                                                                 </span>
                                                             </div>
@@ -2314,7 +2382,7 @@ export default function WeekView({
                                       </div>
 
                                                     {onMovePlan || onSchedulePending || onCreateAgenda ? (
-                                                        pendingSchedule && onSchedulePending && !verlof ? (
+                                                        pendingSchedule && onSchedulePending && !verlofBezetHeleDag(verlof) ? (
                                                             <button
                                                                 type="button"
                                                                 title={`Inplannen: ${pendingSchedule.label}`}
