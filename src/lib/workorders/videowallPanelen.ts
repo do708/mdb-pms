@@ -90,11 +90,20 @@ export function videowallPaneelCompleet(paneel: VideowallPaneel): boolean {
 
 export function ontbrekendeVideowallPanelen(
     perType: Partial<Record<string, Record<string, string>>> | undefined,
-    fallbackVelden?: Record<string, string>
+    fallbackVelden?: Record<string, string>,
+    itemsPerType?: Partial<Record<string, Record<string, string>[]>>
 ): string | null {
     const bronnen: Record<string, string>[] = [];
 
-    if (perType) {
+    if (itemsPerType) {
+        for (const items of Object.values(itemsPerType)) {
+            if (Array.isArray(items)) {
+                bronnen.push(...items);
+            }
+        }
+    }
+
+    if (bronnen.length === 0 && perType) {
         for (const velden of Object.values(perType)) {
             if (velden) {
                 bronnen.push(velden);
@@ -107,15 +116,16 @@ export function ontbrekendeVideowallPanelen(
     }
 
     const namen: string[] = [];
+    const meerdere = bronnen.length > 1;
 
-    for (const velden of bronnen) {
+    bronnen.forEach((velden, wallIndex) => {
         if ((velden.type || "").trim() !== "LCD") {
-            continue;
+            return;
         }
 
         const count = aantalPanelenVanConfiguratie(velden.configuratie || "");
         if (count <= 0) {
-            continue;
+            return;
         }
 
         const panelen = syncVideowallPanelen(
@@ -127,9 +137,12 @@ export function ontbrekendeVideowallPanelen(
             if (videowallPaneelCompleet(paneel)) {
                 return;
             }
-            namen.push(`Videowall scherm ${i + 1}`);
+            const prefix = meerdere
+                ? `Videowall ${wallIndex + 1} scherm ${i + 1}`
+                : `Videowall scherm ${i + 1}`;
+            namen.push(prefix);
         });
-    }
+    });
 
     if (namen.length === 0) {
         return null;

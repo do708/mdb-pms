@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 import SchermenSpecificatie from "@/components/aanvraag/SchermenSpecificatie";
-import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
+import { VideowallLijst } from "@/components/aanvraag/VideowallSpecificatie";
 import KioskSpecificatie from "@/components/aanvraag/KioskSpecificatie";
 import AudioSpecificatie from "@/components/aanvraag/AudioSpecificatie";
 import Evalue8ProductSpecificatie, {
@@ -160,6 +160,9 @@ function AanvraagFormulier(){
 
     const [kioskItems, setKioskItems] =
         useState<AanvraagKioskItem[]>([]);
+
+    const [videowallItems, setVideowallItems] =
+        useState<Record<string,string>[]>([{}]);
 
     const [evalue8Selectie, setEvalue8Selectie] =
         useState<Evalue8SelectieState>({});
@@ -636,6 +639,11 @@ function AanvraagFormulier(){
                                         },
                                         items:kioskItems
                                     },
+                                    videowall:{
+                                        ...specs.videowall,
+                                        velden:videowallItems[0] || specs.videowall.velden,
+                                        items:videowallItems
+                                    },
                                     project,
                                     projectOmschrijving:
                                         project === "Ja" ? projectOmschrijving : "",
@@ -984,17 +992,18 @@ function AanvraagFormulier(){
                                                         onItemsChange={setSchermenItems}
                                                     />
                                                 ) : o.key === "videowall" ? (
-                                                    <VideowallSpecificatie
-                                                        velden={blok.velden}
-                                                        onChange={(veld, waarde)=>
-                                                            zetVeld("videowall", veld, waarde)
-                                                        }
-                                                        onPatch={(patch)=>
-                                                            zetVelden("videowall", patch)
-                                                        }
-                                                        onToggleFormaat={(optie)=>
-                                                            toggleMeerdereOptie("videowall", "formaat", optie)
-                                                        }
+                                                    <VideowallLijst
+                                                        items={videowallItems}
+                                                        onItemsChange={(next)=>{
+                                                            setVideowallItems(next);
+                                                            setSpecs((s)=>({
+                                                                ...s,
+                                                                videowall:{
+                                                                    ...s.videowall,
+                                                                    velden:next[0] || {}
+                                                                }
+                                                            }));
+                                                        }}
                                                     />
                                                 ) : o.key === "kiosk" ? (
                                                     <KioskSpecificatie

@@ -8,6 +8,10 @@ import {
     normaliseerMonterenKoppeling,
     telBenodigdeBeugels,
 } from "@/lib/aanvraag/installatieTypes";
+import {
+    videowallItemsVanBlok,
+    videowallPaneelAantal,
+} from "@/lib/aanvraag/videowallItems";
 
 export type KlaarzetPrefill = {
     schermenAantal?: string;
@@ -111,6 +115,48 @@ export function klaarzetVanAanvraagSpecificaties(
             .map((rij) => `${rij.aantal}x ${rij.label}`)
             .join(", ");
         if (beugelTekst) out.beugelsAantal = beugelTekst;
+    }
+
+    const videowall = asRecord(specs.videowall);
+    if (videowall?.aan) {
+        const walls = videowallItemsVanBlok(videowall);
+        const formaten: string[] = [];
+        let playerCount = 0;
+        for (const wall of walls) {
+            const type = str(wall.type);
+            if (type === "LCD") {
+                const formaat =
+                    str(wall.formaat) === "Anders"
+                        ? str(wall.formaatAnders) || "Anders"
+                        : str(wall.formaat);
+                const n = videowallPaneelAantal(wall) || 1;
+                const label = [formaat, "LCD videowall"].filter(Boolean).join(" ");
+                for (let i = 0; i < n; i++) {
+                    formaten.push(label);
+                }
+            } else if (type === "LED") {
+                const maat = str(wall.afmeting);
+                formaten.push(
+                    maat ? `LED videowall ${maat}` : "LED videowall"
+                );
+            } else {
+                formaten.push("Videowall");
+            }
+            if (isPlayerAansturing(str(wall.aansturing))) {
+                playerCount += 1;
+            }
+        }
+        const tekst = groepeerTeksten(formaten);
+        if (tekst) {
+            out.schermenAantal = [out.schermenAantal, tekst]
+                .filter(Boolean)
+                .join(", ");
+        }
+        if (playerCount > 0) {
+            const huidig = Number.parseInt(out.playersAantal || "0", 10);
+            const basis = Number.isFinite(huidig) ? huidig : 0;
+            out.playersAantal = String(basis + playerCount);
+        }
     }
 
     const kiosk = asRecord(specs.kiosk);

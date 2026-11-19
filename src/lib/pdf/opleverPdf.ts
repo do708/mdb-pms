@@ -1077,7 +1077,12 @@ export async function generateOpleverPdf(
 
         if(data.installatie.videowall){
             text("Videowall",{ useBold:true, gap:2 });
-            text("Ja",{ gap:2 });
+            const walls =
+                Object.values(data.installatie.videowallItemsPerType || {})
+                    .flat()
+                    .filter((v)=>v && Object.keys(v).length > 0);
+            const n = walls.length > 0 ? walls.length : 1;
+            text(n > 1 ? `Ja (${n} videowalls)` : "Ja",{ gap:2 });
             dashedLine();
         }
 

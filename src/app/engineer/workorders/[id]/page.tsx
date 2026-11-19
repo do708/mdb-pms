@@ -1061,7 +1061,8 @@ async function completeWorkorder(){
         const videowallFout =
             ontbrekendeVideowallPanelen(
                 opleverData.installatie.videowallPerType,
-                opleverData.installatie.videowallVelden
+                opleverData.installatie.videowallVelden,
+                opleverData.installatie.videowallItemsPerType
             );
 
         const kioskFout =

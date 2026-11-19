@@ -51,7 +51,14 @@ import {
     ontbrekendeSchermKenmerken
 } from "@/types/installatieRuimtes";
 import { ontbrekendeVideowallPanelen } from "@/lib/workorders/videowallPanelen";
-import VideowallSpecificatie from "@/components/aanvraag/VideowallSpecificatie";
+import { VideowallLijst } from "@/components/aanvraag/VideowallSpecificatie";
+import {
+    alleVideowallItems,
+    videowallHeeftInhoud,
+    videowallItemsVanBlok,
+    videowallItemsVoorType,
+    videowallPaneelAantal,
+} from "@/lib/aanvraag/videowallItems";
 import {
     CHIP_SELECTED_TONE,
     chipIdleClassName,
@@ -1225,6 +1232,51 @@ function videowallVeldenVoorType(
     return legacy;
 }
 
+function videowallLijstVoorType(
+    i:OpleverData["installatie"],
+    type:OpleverWerkzaamheid,
+    actieve:readonly OpleverWerkzaamheid[]
+):Record<string,string>[] {
+    const stored = videowallItemsVoorType(i, type);
+    if(stored.length > 0){
+        return stored;
+    }
+    const single = videowallVeldenVoorType(i, type, actieve);
+    if(videowallHeeftInhoud(single)){
+        return [single];
+    }
+    return [{}];
+}
+
+function schrijfVideowallLijst(
+    draft:OpleverData,
+    type:OpleverWerkzaamheid,
+    items:Record<string,string>[],
+    videowallTypes:readonly OpleverWerkzaamheid[],
+    status:"" | "Geïnstalleerd" | "Gedemonteerd"
+){
+    const lijst = items.length > 0 ? items : [{}];
+    const eerste = lijst[0] || {};
+    draft.installatie.videowall = true;
+    draft.installatie.videowallStatus = status;
+    draft.installatie.videowallItemsPerType = {
+        ...draft.installatie.videowallItemsPerType,
+        [type]:lijst
+    };
+    draft.installatie.videowallPerType = {
+        ...draft.installatie.videowallPerType,
+        [type]:eerste
+    };
+    if(
+        videowallTypes.length === 1
+        ||
+        type === fallbackWerkzaamheid(videowallTypes)
+    ){
+        draft.installatie.videowallVelden = eerste;
+        patchVideowallVelden(draft, eerste);
+    }
+}
+
 function audioBlokVanLegacy(
     i:OpleverData["installatie"]
 ):AudioTypeBlok {
@@ -2213,6 +2265,42 @@ export default function OpleverForm({
                 }
             }
 
+            const startVideowallTypes =
+                actieveWerkzaamheden("videowall", startModules);
+            if(startVideowallTypes.length > 0 && aanvraagSpecificaties){
+                const envelope =
+                    aanvraagSpecificaties && typeof aanvraagSpecificaties === "object"
+                    ? aanvraagSpecificaties as Record<string, unknown>
+                    : {};
+                const specs =
+                    (envelope.specificaties && typeof envelope.specificaties === "object"
+                        ? envelope.specificaties as Record<string, unknown>
+                        : envelope);
+                const fromAanvraag = videowallItemsVanBlok(specs.videowall);
+                const fallback = fallbackWerkzaamheid(startVideowallTypes);
+                const existing =
+                    merged.installatie.videowallItemsPerType?.[fallback]
+                    || [];
+                const heeftBestaand =
+                    existing.some(videowallHeeftInhoud)
+                    || videowallHeeftInhoud(
+                        merged.installatie.videowallPerType?.[fallback] || {}
+                    )
+                    || videowallHeeftInhoud(merged.installatie.videowallVelden || {});
+                if(!heeftBestaand && fromAanvraag.some(videowallHeeftInhoud)){
+                    merged.installatie.videowall = true;
+                    merged.installatie.videowallItemsPerType = {
+                        ...merged.installatie.videowallItemsPerType,
+                        [fallback]:fromAanvraag
+                    };
+                    merged.installatie.videowallPerType = {
+                        ...merged.installatie.videowallPerType,
+                        [fallback]:fromAanvraag[0] || {}
+                    };
+                    merged.installatie.videowallVelden = fromAanvraag[0] || {};
+                }
+            }
+
             const schermenTypes =
                 actieveWerkzaamheden("schermen", startModules);
 
@@ -2369,21 +2457,22 @@ export default function OpleverForm({
                 }
             }
         }
-        const videowallAansturing =
-            data.installatie.videowallVelden?.aansturing || "";
-        if (videowallAansturing) {
-            const n = Math.max(
-                1,
-                parseAantal(data.installatie.videowallAantal) || 1
-            );
+        for (const wall of alleVideowallItems(data.installatie)) {
+            const aansturing = wall.aansturing || "";
+            if (!aansturing) {
+                continue;
+            }
+            const n = Math.max(1, videowallPaneelAantal(wall) || 1);
             for (let i = 0; i < n; i++) {
-                aansturingen.push(videowallAansturing);
+                aansturingen.push(aansturing);
             }
         }
         return telNativeOsAansturing(aansturingen);
     }, [
         data.installatie.ruimtes,
         data.installatie.videowallVelden,
+        data.installatie.videowallPerType,
+        data.installatie.videowallItemsPerType,
         data.installatie.videowallAantal,
     ]);
 
@@ -2456,7 +2545,8 @@ export default function OpleverForm({
         const videowallFout =
             ontbrekendeVideowallPanelen(
                 data.installatie.videowallPerType,
-                data.installatie.videowallVelden
+                data.installatie.videowallVelden,
+                data.installatie.videowallItemsPerType
             );
 
         const kioskFout =
@@ -3464,10 +3554,10 @@ export default function OpleverForm({
 
                     {
                     videowallTypes.map((type)=>{
-                        const velden =
-                            videowallVeldenVoorType(i, type, videowallTypes);
                         const status =
                             installatieStatusVanWerkzaamheid(type);
+                        const items =
+                            videowallLijstVoorType(i, type, videowallTypes);
 
                         return (
                     <ModuleKaart
@@ -3475,100 +3565,21 @@ export default function OpleverForm({
                         titel={vakTitel("Videowall", type)}
                         kleur="bg-emerald-50 border-emerald-200"
                     >
-                        <VideowallSpecificatie
-                            velden={velden}
+                        <VideowallLijst
+                            items={items}
                             showOpleverDetails
-                            onChange={(veld, waarde)=>
-                                update(draft=>{
-                                    const huidige =
-                                        videowallVeldenVoorType(
-                                            draft.installatie,
-                                            type,
-                                            videowallTypes
-                                        );
-                                    const next = {
-                                        ...huidige,
-                                        [veld]:waarde
-                                    };
-                                    draft.installatie.videowall = true;
-                                    draft.installatie.videowallStatus = status;
-                                    draft.installatie.videowallPerType = {
-                                        ...draft.installatie.videowallPerType,
-                                        [type]:next
-                                    };
-                                    if(
-                                        videowallTypes.length === 1
-                                        ||
-                                        type === fallbackWerkzaamheid(videowallTypes)
-                                    ){
-                                        patchVideowallVelden(draft, { [veld]:waarde });
-                                    }
-                                })
-                            }
-                            onPatch={(patch)=>
-                                update(draft=>{
-                                    const huidige =
-                                        videowallVeldenVoorType(
-                                            draft.installatie,
-                                            type,
-                                            videowallTypes
-                                        );
-                                    const next = {
-                                        ...huidige,
-                                        ...patch
-                                    };
-                                    draft.installatie.videowall = true;
-                                    draft.installatie.videowallStatus = status;
-                                    draft.installatie.videowallPerType = {
-                                        ...draft.installatie.videowallPerType,
-                                        [type]:next
-                                    };
-                                    if(
-                                        videowallTypes.length === 1
-                                        ||
-                                        type === fallbackWerkzaamheid(videowallTypes)
-                                    ){
-                                        patchVideowallVelden(draft, patch);
-                                    }
-                                })
-                            }
-                            onToggleFormaat={(optie)=>
-                                update(draft=>{
-                                    const huidige =
-                                        videowallVeldenVoorType(
-                                            draft.installatie,
-                                            type,
-                                            videowallTypes
-                                        );
-                                    const gekozen = parseGekozenOpties(
-                                        huidige.formaat || ""
-                                    );
-                                    const volgende = gekozen.includes(optie)
-                                        ? gekozen.filter((o)=>o !== optie)
-                                        : [...gekozen, optie];
-                                    const patch = {
-                                        formaat: volgende.join(", ")
-                                    };
-                                    const next = {
-                                        ...huidige,
-                                        ...patch
-                                    };
-                                    draft.installatie.videowall = true;
-                                    draft.installatie.videowallStatus = status;
-                                    draft.installatie.videowallPerType = {
-                                        ...draft.installatie.videowallPerType,
-                                        [type]:next
-                                    };
-                                    if(
-                                        videowallTypes.length === 1
-                                        ||
-                                        type === fallbackWerkzaamheid(videowallTypes)
-                                    ){
-                                        patchVideowallVelden(draft, patch);
-                                    }
-                                })
-                            }
                             formaatAlsSelect
+                            onItemsChange={(volgende)=>
+                                update(draft=>{
+                                    schrijfVideowallLijst(
+                                        draft,
+                                        type,
+                                        volgende,
+                                        videowallTypes,
+                                        status
+                                    );
+                                })
+                            }
                         />
                     </ModuleKaart>
                         );

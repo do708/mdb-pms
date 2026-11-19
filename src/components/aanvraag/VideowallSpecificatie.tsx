@@ -206,6 +206,9 @@ interface Props {
     onToggleFormaat: (optie: string) => void;
     formaatAlsSelect?: boolean;
     showOpleverDetails?: boolean;
+    titel?: string;
+    onRemove?: () => void;
+    onAdd?: () => void;
 }
 
 export default function VideowallSpecificatie({
@@ -215,6 +218,9 @@ export default function VideowallSpecificatie({
     onToggleFormaat,
     formaatAlsSelect = false,
     showOpleverDetails = false,
+    titel,
+    onRemove,
+    onAdd,
 }: Props) {
     const type = velden.type || "";
     const gekozenFormaten = parseGekozenOpties(velden.formaat || "");
@@ -239,8 +245,38 @@ export default function VideowallSpecificatie({
         patchPanelen(next);
     }
 
+    const addKnop = onAdd ? (
+        <button
+            type="button"
+            onClick={onAdd}
+            className="w-full rounded-lg border-2 border-dashed border-emerald-300 bg-white py-2 px-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-50"
+        >
+            Videowall toevoegen
+        </button>
+    ) : null;
+
     return (
         <div className="space-y-3">
+            {titel || onRemove ? (
+                <div className="flex items-center justify-between gap-2">
+                    {titel ? (
+                        <p className="font-semibold text-sm text-gray-800">
+                            {titel}
+                        </p>
+                    ) : (
+                        <span />
+                    )}
+                    {onRemove ? (
+                        <button
+                            type="button"
+                            onClick={onRemove}
+                            className="text-sm font-semibold text-red-600 hover:underline"
+                        >
+                            Verwijderen
+                        </button>
+                    ) : null}
+                </div>
+            ) : null}
             <div className="space-y-1.5">
                 <span className="text-xs text-gray-600 block">
                     Type videowall
@@ -645,6 +681,7 @@ export default function VideowallSpecificatie({
                             }
                         }}
                     />
+                    {addKnop}
                 </div>
             ) : null}
 
@@ -782,8 +819,97 @@ export default function VideowallSpecificatie({
                         }}
                         internetLabel="Internet/data aanwezig binnen 3 meter?"
                     />
+                    {addKnop}
                 </div>
             ) : null}
+        </div>
+    );
+}
+
+function patchItem(
+    items: Record<string, string>[],
+    index: number,
+    patch: Record<string, string>
+): Record<string, string>[] {
+    return items.map((item, i) => (i === index ? { ...item, ...patch } : item));
+}
+
+export function VideowallLijst({
+    items,
+    onItemsChange,
+    formaatAlsSelect = false,
+    showOpleverDetails = false,
+}: {
+    items: Record<string, string>[];
+    onItemsChange: (items: Record<string, string>[]) => void;
+    formaatAlsSelect?: boolean;
+    showOpleverDetails?: boolean;
+}) {
+    const lijst = items.length > 0 ? items : [{}];
+    const meerdere = lijst.length > 1;
+
+    return (
+        <div className="space-y-4">
+            {lijst.map((velden, index) => (
+                <div
+                    key={index}
+                    className={
+                        meerdere
+                            ? `${nestedCardClassName} p-3 space-y-3`
+                            : undefined
+                    }
+                >
+                    <VideowallSpecificatie
+                        velden={velden}
+                        formaatAlsSelect={formaatAlsSelect}
+                        showOpleverDetails={showOpleverDetails}
+                        titel={meerdere ? `Videowall ${index + 1}` : undefined}
+                        onRemove={
+                            meerdere
+                                ? () =>
+                                      onItemsChange(
+                                          lijst.filter((_, i) => i !== index)
+                                      )
+                                : undefined
+                        }
+                        onAdd={
+                            index === lijst.length - 1
+                            && (velden.type === "LCD" || velden.type === "LED")
+                                ? () =>
+                                      onItemsChange([
+                                          ...lijst,
+                                          {},
+                                      ])
+                                : undefined
+                        }
+                        onChange={(veld, waarde) =>
+                            onItemsChange(
+                                patchItem(lijst, index, { [veld]: waarde })
+                            )
+                        }
+                        onPatch={(patch) =>
+                            onItemsChange(patchItem(lijst, index, patch))
+                        }
+                        onToggleFormaat={(optie) => {
+                            const gekozen = parseGekozenOpties(
+                                velden.formaat || ""
+                            );
+                            const volgende = gekozen.includes(optie)
+                                ? gekozen.filter((o) => o !== optie)
+                                : [...gekozen, optie];
+                            onItemsChange(
+                                patchItem(lijst, index, {
+                                    formaat: volgende.join(", "),
+                                    ...(optie === "Anders"
+                                    && !volgende.includes("Anders")
+                                        ? { formaatAnders: "" }
+                                        : {}),
+                                })
+                            );
+                        }}
+                    />
+                </div>
+            ))}
         </div>
     );
 }

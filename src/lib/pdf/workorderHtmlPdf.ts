@@ -34,6 +34,10 @@ import {
     syncVideowallPanelen,
 } from "@/lib/workorders/videowallPanelen";
 import {
+    alleVideowallItems,
+    videowallItemsVoorType,
+} from "@/lib/aanvraag/videowallItems";
+import {
     aansturingWeergave,
     bevestigingDetailWeergave,
     bevestigingSoortWeergave,
@@ -924,16 +928,36 @@ function opleverSections(
     const videowallTypes = OPLEVER_WERKZAAMHEDEN
         .map((item)=>item.key)
         .filter((type)=>{
+            const items = videowallItemsVoorType(i, type);
+            if(items.some((item)=>Object.values(item).some((v)=>String(v || "").trim()))){
+                return true;
+            }
             const velden = i.videowallPerType?.[type];
             return Boolean(velden && Object.values(velden).some((v)=>String(v || "").trim()));
         });
 
     const videowallPdfBlocks =
         videowallTypes.length > 0
-        ? videowallTypes.map((type)=>
+        ? videowallTypes.map((type)=>{
+            const items = videowallItemsVoorType(i, type);
+            const lijst = items.length > 0
+                ? items
+                : [i.videowallPerType?.[type] || {}];
+            const meerdere = lijst.length > 1;
+            return lijst.map((velden, index)=>
+                qaBlock(
+                    meerdere
+                        ? `${vakTitel("Videowall", type)} ${index + 1}`
+                        : vakTitel("Videowall", type),
+                    videowallRowsVanVelden(velden)
+                )
+            ).join("");
+          }).join("")
+        : alleVideowallItems(i).length > 0
+        ? alleVideowallItems(i).map((velden, index, all)=>
             qaBlock(
-                vakTitel("Videowall", type),
-                videowallRowsVanVelden(i.videowallPerType?.[type] || {})
+                all.length > 1 ? `Videowall ${index + 1}` : "Videowall",
+                videowallRowsVanVelden(velden)
             )
           ).join("")
         : qaBlock(

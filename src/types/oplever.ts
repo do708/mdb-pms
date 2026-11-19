@@ -184,6 +184,7 @@ export interface OpleverData {
         videowallOrientatie:"" | "Landscape" | "Portrait";
         videowallVelden:Record<string,string>;
         videowallPerType:Partial<Record<OpleverWerkzaamheid, Record<string,string>>>;
+        videowallItemsPerType:Partial<Record<OpleverWerkzaamheid, Record<string,string>[]>>;
 
         kiosk:boolean | null;
         kioskStatus:"" | "Geïnstalleerd" | "Gedemonteerd";
@@ -599,6 +600,7 @@ export function emptyOpleverData():OpleverData {
             videowallOrientatie:"",
             videowallVelden:{},
             videowallPerType:{},
+            videowallItemsPerType:{},
             kiosk:null,
             kioskStatus:"",
             kioskOmschrijving:"",
@@ -812,6 +814,25 @@ function mergeVideowallPerType(
         if(isOpleverWerkzaamheid(key)){
             next[key] = asStringRecord(value);
         }
+    }
+
+    return next;
+}
+
+function mergeVideowallItemsPerType(
+    raw:unknown
+):Partial<Record<OpleverWerkzaamheid, Record<string,string>[]>> {
+    if(!raw || typeof raw !== "object"){
+        return {};
+    }
+
+    const next:Partial<Record<OpleverWerkzaamheid, Record<string,string>[]>> = {};
+
+    for(const [key, value] of Object.entries(raw as Record<string,unknown>)){
+        if(!isOpleverWerkzaamheid(key) || !Array.isArray(value) || value.length === 0){
+            continue;
+        }
+        next[key] = value.map((item)=>asStringRecord(item));
     }
 
     return next;
@@ -1110,6 +1131,9 @@ export function mergeOpleverData(
 
             videowallPerType:
                 mergeVideowallPerType(data.installatie?.videowallPerType),
+
+            videowallItemsPerType:
+                mergeVideowallItemsPerType(data.installatie?.videowallItemsPerType),
 
             mediaplayersPerType:
                 mergeMediaplayersPerType(

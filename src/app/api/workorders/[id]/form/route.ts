@@ -61,7 +61,8 @@ export async function PUT(
                 ontbrekendeSchermKenmerken(formData.installatie.ruimtes),
                 ontbrekendeVideowallPanelen(
                     formData.installatie.videowallPerType,
-                    formData.installatie.videowallVelden
+                    formData.installatie.videowallVelden,
+                    formData.installatie.videowallItemsPerType
                 ),
                 ontbrekendeKioskKenmerken(formData.installatie.kioskBlokken),
                 ontbrekendeMediaplayerKenmerken(

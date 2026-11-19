@@ -25,7 +25,9 @@ import {
 } from "@/lib/aanvraag/installatieTypes";
 import BeugelkeuzeOverzicht, {
     naarBeugelkeuzeSchermRij,
+    type BeugelkeuzeSchermRij,
 } from "@/components/aanvraag/BeugelkeuzeOverzicht";
+import { videowallItemsVanBlok } from "@/lib/aanvraag/videowallItems";
 import { combineStreetAddress } from "@/lib/workorders/address";
 
 export interface AanvraagOverzichtSnapshot {
@@ -268,7 +270,8 @@ function VeldenGrid({
 }) {
     if (!velden) return null;
 
-    const entries = Object.entries(velden).filter(([, v]) => {
+    const entries = Object.entries(velden).filter(([k, v]) => {
+        if (k === "panelenJson") return false;
         if (v === null || v === undefined) return false;
         if (typeof v === "string") return v.trim().length > 0;
         if (typeof v === "number" || typeof v === "boolean") return true;
@@ -428,6 +431,61 @@ function SchermenBlok({
     );
 }
 
+function videowallBeugelRij(
+    velden: Record<string, unknown>,
+    index: number
+): BeugelkeuzeSchermRij {
+    const type = str(velden.type);
+    const formaat =
+        type === "LED"
+            ? str(velden.afmeting) || "LED"
+            : formaatWeergave(velden);
+    return {
+        key: `videowall-${index}`,
+        scherm: `Videowall ${index + 1}`,
+        formaat,
+        installatie:
+            [type === "LED" ? "LED videowall" : type === "LCD" ? "LCD videowall" : "Videowall", str(velden.configuratie)]
+                .filter(Boolean)
+                .join(" · "),
+        advies: "",
+        override: null,
+        typeLabel: type || "—",
+        plaatsing: str(velden.locatie) || str(velden.opmerking) || "—",
+    };
+}
+
+function VideowallBlok({ blok }: { blok: Record<string, unknown> | null }) {
+    if (!blok?.aan) return null;
+
+    const items = videowallItemsVanBlok(blok);
+    const meerdere = items.length > 1;
+
+    return (
+        <Section
+            title={ONDERDEEL_META.videowall.titel}
+            kleur={ONDERDEEL_META.videowall.kleur}
+        >
+            <div className="space-y-3">
+                {items.map((velden, i) => (
+                    <Card
+                        key={i}
+                        title={meerdere ? `Videowall ${i + 1}` : "Specificatie"}
+                    >
+                        <VeldenGrid velden={velden} />
+                    </Card>
+                ))}
+                <BeugelkeuzeOverzicht
+                    schermen={items
+                        .filter((v) => str(v.type) || str(v.configuratie) || str(v.afmeting) || str(v.formaat))
+                        .map((v, i) => videowallBeugelRij(v, i))
+                    }
+                />
+            </div>
+        </Section>
+    );
+}
+
 function KioskBlok({ blok }: { blok: Record<string, unknown> | null }) {
     if (!blok?.aan) return null;
 
@@ -548,10 +606,11 @@ export default function AanvraagSpecificatiesOverzicht({
 
     const schermenBlok = asRecord(specs.schermen);
     const kioskBlok = asRecord(specs.kiosk);
+    const videowallBlok = asRecord(specs.videowall);
 
     const overigeOnderdelen = Object.entries(specs).filter(([k, v]) => {
         if (META_KEYS.has(k)) return false;
-        if (k === "schermen" || k === "kiosk") return false;
+        if (k === "schermen" || k === "kiosk" || k === "videowall") return false;
         const blok = asRecord(v);
         return !!(blok && blok.aan);
     });
@@ -575,6 +634,7 @@ export default function AanvraagSpecificatiesOverzicht({
         || schermenBlok?.aan
         || snapshot?.schermen
         || kioskBlok?.aan
+        || videowallBlok?.aan
         || overigeOnderdelen.length > 0
         || evalue8.length > 0
         || specs.project === "Ja"
@@ -762,6 +822,8 @@ export default function AanvraagSpecificatiesOverzicht({
                 blok={schermenBlok}
                 legacySamenvatting={snapshot?.schermen}
             />
+
+            <VideowallBlok blok={videowallBlok} />
 
             <KioskBlok blok={kioskBlok} />
 

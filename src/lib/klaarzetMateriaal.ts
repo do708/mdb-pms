@@ -405,6 +405,30 @@ export function leesSchermAansturing(
         }
     }
 
+    const videowall = asRecord(specs.videowall);
+    if(videowall?.aan){
+        const walls =
+            Array.isArray(videowall.items) && videowall.items.length > 0
+            ? videowall.items
+            : [videowall.velden];
+        for(const item of walls){
+            const r = asRecord(item);
+            if(!r) continue;
+            const aansturing = str(r.aansturing);
+            if(!aansturing) continue;
+            const label =
+                aansturing === "Anders"
+                ? (str(r.aansturingAnders) || "Anders")
+                : aansturingWeergave(aansturing);
+            if(!labels.includes(label)){
+                labels.push(label);
+            }
+            if(isNativeOsAansturing(aansturing)){
+                heeftNativeOs = true;
+            }
+        }
+    }
+
     return { labels, heeftNativeOs };
 }
 

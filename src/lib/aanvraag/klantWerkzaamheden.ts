@@ -101,9 +101,16 @@ function audioSamenvatting(velden: Record<string, string>): string {
 }
 
 function videowallSamenvatting(velden: Record<string, string>): string {
-    const formaat = (velden.formaat || velden.formaatAnders || "").trim();
+    const type =
+        velden.type === "LED"
+            ? "LED"
+            : velden.type === "LCD"
+              ? "LCD"
+              : "";
+    const formaat = (velden.formaat || velden.formaatAnders || velden.afmeting || "").trim();
+    const config = (velden.configuratie || "").trim();
     const loc = locatieZin(velden.locatie || velden.opmerking);
-    const basis = formaat ? `Videowall ${formaat}` : "Videowall";
+    const basis = ["Videowall", type, config, formaat].filter(Boolean).join(" ");
     return [basis, loc].filter(Boolean).join(" ");
 }
 
@@ -189,10 +196,20 @@ export function bouwKlantWerkzaamheden(
 
     const videowall =
         specs.videowall && typeof specs.videowall === "object"
-            ? (specs.videowall as { aan?: boolean; velden?: Record<string, string> })
+            ? (specs.videowall as {
+                  aan?: boolean;
+                  velden?: Record<string, string>;
+                  items?: Record<string, string>[];
+              })
             : null;
     if (videowall?.aan) {
-        delen.push(videowallSamenvatting(videowall.velden || {}));
+        const walls =
+            Array.isArray(videowall.items) && videowall.items.length > 0
+                ? videowall.items
+                : [videowall.velden || {}];
+        for (const wall of walls) {
+            delen.push(videowallSamenvatting(wall || {}));
+        }
     }
 
     const audio =
