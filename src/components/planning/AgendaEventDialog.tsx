@@ -344,7 +344,6 @@ export default function AgendaEventDialog({
         const p = projects.find((row) => row.id === id);
         if (p) {
             setTitle(`${p.number} · ${p.name}`);
-            setAllDay(false);
             setStartTime((t) => t || PROJECT_PLAN_START);
             setEndTime((t) => t || PROJECT_PLAN_END);
             setRecurrenceFreq("none");
@@ -395,15 +394,14 @@ export default function AgendaEventDialog({
                 title: title.trim() || undefined,
                 date: chosenDates[0],
                 dates: chosenDates,
-                allDay: isProjectPlan ? false : allDay,
-                startTime:
-                    isProjectPlan || !allDay
-                        ? startTime || (isProjectPlan ? PROJECT_PLAN_START : null)
-                        : null,
-                endTime:
-                    isProjectPlan || !allDay
-                        ? endTime || (isProjectPlan ? PROJECT_PLAN_END : null)
-                        : null,
+                allDay,
+                startTime: allDay
+                    ? null
+                    : startTime ||
+                      (isProjectPlan ? PROJECT_PLAN_START : null),
+                endTime: allDay
+                    ? null
+                    : endTime || (isProjectPlan ? PROJECT_PLAN_END : null),
                 assignedUserId: chosenUsers[0] || null,
                 userIds: chosenUsers,
                 projectId: projectId || null,
@@ -690,7 +688,6 @@ export default function AgendaEventDialog({
                         </div>
                     )}
 
-                    {!isProjectPlan ? (
                     <label className="flex items-center gap-2 text-sm text-slate-700">
                         <input
                             type="checkbox"
@@ -700,9 +697,8 @@ export default function AgendaEventDialog({
                         />
                         Hele dag
                     </label>
-                    ) : null}
 
-                    {(!allDay || isProjectPlan) && (
+                    {!allDay && (
                         <div className="grid grid-cols-2 gap-3">
                             <label className="block">
                                 <span className="text-xs font-medium text-slate-600">

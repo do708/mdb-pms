@@ -790,12 +790,12 @@ export default function WeekView({
             const iso = isoDate(new Date(ev.startAt));
             const [y, m, d] = iso.split("-").map(Number);
             const start = ev.allDay
-                ? new Date(y, m - 1, d, 8, 0, 0)
+                ? new Date(y, m - 1, d, DAG_START_UUR, 0, 0)
                 : new Date(ev.startAt);
             const end =
                 ev.endAt && !ev.allDay
                     ? new Date(ev.endAt)
-                    : new Date(y, m - 1, d, 16, 0, 0);
+                    : new Date(y, m - 1, d, DAG_EIND_UUR, 0, 0);
             return {
                 plannedDate: start,
                 plannedEndDate: end,
@@ -2055,8 +2055,7 @@ export default function WeekView({
                                                                 : basePos;
                                                             const timeLabel =
                                                                 !override &&
-                                                                ev.allDay &&
-                                                                !ev.projectId
+                                                                ev.allDay
                                                                     ? "Hele dag"
                                                                     : `${formatUurLabel(pos.beginUur)}${
                                                                           ev.endAt ||

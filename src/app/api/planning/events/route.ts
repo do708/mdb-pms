@@ -134,17 +134,17 @@ export async function POST(req: Request) {
         }
 
         const isProject = Boolean(linkedProject);
-        const allDay = isProject ? false : Boolean(body.allDay);
+        const allDay = Boolean(body.allDay);
         const startTime =
             typeof body.startTime === "string" && body.startTime.trim()
                 ? body.startTime.trim()
-                : isProject
+                : isProject && !allDay
                   ? "08:00"
                   : null;
         const endTime =
             typeof body.endTime === "string" && body.endTime.trim()
                 ? body.endTime.trim()
-                : isProject
+                : isProject && !allDay
                   ? "16:00"
                   : null;
         const notes =
