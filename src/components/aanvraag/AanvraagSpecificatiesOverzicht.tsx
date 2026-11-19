@@ -18,7 +18,7 @@ import {
     emptySchermItem,
     formatKabelTrajectKeuzes,
     installatieTypeWeergave,
-    mdbBeugelTypeWeergave,
+    effectiefBeugelAdvies,
     normaliseerMonterenKoppeling,
     parseKabelTrajectKeuzes,
     type AanvraagSchermItem,
@@ -240,6 +240,8 @@ function naarSchermItem(item: Record<string, unknown>): AanvraagSchermItem {
         monterenKoppeling: normaliseerMonterenKoppeling(
             str(item.monterenKoppeling)
         ),
+        beugelAdvies:
+            typeof item.beugelAdvies === "string" ? item.beugelAdvies : null,
     };
 }
 
@@ -389,8 +391,9 @@ function SchermenBlok({
                                 />
                                 <Field
                                     label="Type beugel"
-                                    value={mdbBeugelTypeWeergave(
-                                        naarSchermItem(s)
+                                    value={effectiefBeugelAdvies(
+                                        naarSchermItem(s),
+                                        schermItems
                                     )}
                                     className="sm:col-start-1 sm:row-start-5"
                                 />

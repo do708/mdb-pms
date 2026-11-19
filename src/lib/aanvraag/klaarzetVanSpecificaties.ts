@@ -100,6 +100,10 @@ export function klaarzetVanAanvraagSpecificaties(
                     monterenKoppeling: normaliseerMonterenKoppeling(
                         str(r.monterenKoppeling)
                     ),
+                    beugelAdvies:
+                        typeof r.beugelAdvies === "string"
+                            ? r.beugelAdvies
+                            : null,
                 };
             })
             .filter((item): item is NonNullable<typeof item> => item !== null);

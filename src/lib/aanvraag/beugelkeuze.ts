@@ -17,6 +17,8 @@ export type BeugelKeuzeScherm = {
     orientatie?: string;
     naastSchermId?: string;
     monterenKoppeling?: "" | "naast" | "b2b";
+    /** null/undefined = generator-advies; string = eigen tekst (mag leeg). */
+    beugelAdvies?: string | null;
 };
 
 export type BeugelArtikelRegel = {
@@ -498,8 +500,7 @@ export function schermBeugelArtikelen(
  * `1× PFW 4510, Muurbeugel kantelbaar`.
  * Leeg tot formaat + bevestiging een match (of legacy-label) geven.
  */
-export function schermBeugelArtikelWeergave(item: BeugelKeuzeScherm): string {
-    const rijen = schermBeugelArtikelen(item);
+export function beugelArtikelenTekst(rijen: BeugelArtikelKolom[]): string {
     if (rijen.length === 0) return "";
     return rijen
         .map((a) => {
@@ -509,6 +510,24 @@ export function schermBeugelArtikelWeergave(item: BeugelKeuzeScherm): string {
             return a.naam ? `${artikel}, ${a.naam}` : artikel;
         })
         .join(" + ");
+}
+
+export function schermBeugelArtikelWeergave(
+    item: BeugelKeuzeScherm,
+    alle?: BeugelKeuzeScherm[]
+): string {
+    return beugelArtikelenTekst(schermBeugelArtikelen(item, alle));
+}
+
+/** Eigen tekst als gezet, anders het generator-advies. */
+export function effectiefBeugelAdvies(
+    item: BeugelKeuzeScherm,
+    alle?: BeugelKeuzeScherm[]
+): string {
+    if (typeof item.beugelAdvies === "string") {
+        return item.beugelAdvies;
+    }
+    return schermBeugelArtikelWeergave(item, alle);
 }
 
 /**
@@ -547,6 +566,22 @@ export function telBenodigdeBeugels(
     const counts = new Map<string, BenodigdeBeugelRij>();
 
     for (const item of items) {
+        if (typeof item.beugelAdvies === "string") {
+            const label = item.beugelAdvies.trim();
+            if (!label) continue;
+            const bestaand = counts.get(label);
+            if (bestaand) {
+                bestaand.aantal += 1;
+            } else {
+                counts.set(label, {
+                    label,
+                    aantal: 1,
+                    artikel: "",
+                    naam: label,
+                });
+            }
+            continue;
+        }
         for (const rij of schermBeugelArtikelen(item, items)) {
             const label = rij.artikel
                 ? rij.naam

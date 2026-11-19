@@ -782,6 +782,9 @@ export default function SchermenSpecificatie({
                         schermen={items.map((s, i) =>
                             naarBeugelkeuzeSchermRij(s, items, i)
                         )}
+                        onBeugelAdviesChange={(id, value) =>
+                            updateItem(id, { beugelAdvies: value })
+                        }
                     />
                 </div>
             ) : null}

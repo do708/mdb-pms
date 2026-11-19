@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import {
+    beugelArtikelenTekst,
     beugelTypeWeergave,
     berekendInstallatieType,
     formaatWeergaveScherm,
@@ -9,7 +10,6 @@ import {
     isHoofdType,
     schermBeugelArtikelen,
     type AanvraagSchermItem,
-    type BeugelArtikelKolom,
 } from "@/lib/aanvraag/installatieTypes";
 
 export type BeugelkeuzeSchermRij = {
@@ -17,7 +17,8 @@ export type BeugelkeuzeSchermRij = {
     scherm: string;
     formaat: string;
     installatie: string;
-    artikelen: BeugelArtikelKolom[];
+    advies: string;
+    override: string | null;
     typeLabel: string;
     plaatsing: string;
 };
@@ -40,7 +41,9 @@ export function naarBeugelkeuzeSchermRij(
         scherm: `Scherm ${index + 1}`,
         formaat: formaatWeergaveScherm(item),
         installatie: beugelTypeWeergave(item),
-        artikelen: schermBeugelArtikelen(item, alle),
+        advies: beugelArtikelenTekst(schermBeugelArtikelen(item, alle)),
+        override:
+            typeof item.beugelAdvies === "string" ? item.beugelAdvies : null,
         typeLabel: installatieTypeWeergave(typeCode),
         plaatsing: typeCode
             ? isHoofdType(item, alle)
@@ -50,35 +53,6 @@ export function naarBeugelkeuzeSchermRij(
                     : "Vervolginstallatie"
             : "—",
     };
-}
-
-function ArtikelRegels({
-    artikelen,
-    veld,
-}: {
-    artikelen: BeugelArtikelKolom[];
-    veld: "artikel" | "naam";
-}) {
-    if (artikelen.length === 0) {
-        return <span className="text-gray-400">—</span>;
-    }
-    return (
-        <div className="space-y-0.5">
-            {artikelen.map((a, i) => {
-                const tekst =
-                    veld === "artikel"
-                        ? a.artikel
-                            ? `${a.aantal}× ${a.artikel}`
-                            : "—"
-                        : a.naam || "—";
-                return (
-                    <p key={`${veld}-${i}`} className="leading-tight">
-                        {tekst}
-                    </p>
-                );
-            })}
-        </div>
-    );
 }
 
 function ExcelTabel({
@@ -136,10 +110,58 @@ function rijKleur(index: number): string {
     return index % 2 === 1 ? "bg-[#F4F7FA]" : "bg-[#FCFDFE]";
 }
 
+function GeadviseerdeBeugelsVeld({
+    advies,
+    override,
+    onChange,
+}: {
+    advies: string;
+    override: string | null;
+    onChange?: (value: string | null) => void;
+}) {
+    const eigenTekst = override !== null;
+    const waarde = eigenTekst ? override : advies;
+
+    if (!onChange) {
+        return waarde ? (
+            <p className="leading-tight">{waarde}</p>
+        ) : (
+            <span className="text-gray-400">—</span>
+        );
+    }
+
+    const toonKruis = eigenTekst || Boolean(waarde);
+
+    return (
+        <div className="relative min-w-0 pt-3">
+            {toonKruis ? (
+                <button
+                    type="button"
+                    onClick={() => onChange(eigenTekst ? null : "")}
+                    title={eigenTekst ? "Terug naar advies" : "Wissen"}
+                    aria-label={eigenTekst ? "Terug naar advies" : "Wissen"}
+                    className="absolute top-0 right-0 z-10 text-slate-400 hover:text-red-500 text-base leading-none px-0.5"
+                >
+                    ×
+                </button>
+            ) : null}
+            <textarea
+                value={waarde}
+                rows={2}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={advies || "Geen advies — zelf invullen"}
+                className="w-full min-h-[2.5rem] resize-y rounded border border-[#C5D4E8] bg-white px-1.5 py-1 text-xs text-gray-900 leading-tight"
+            />
+        </div>
+    );
+}
+
 export default function BeugelkeuzeOverzicht({
     schermen,
+    onBeugelAdviesChange,
 }: {
     schermen: BeugelkeuzeSchermRij[];
+    onBeugelAdviesChange?: (key: string, value: string | null) => void;
 }) {
     if (schermen.length === 0) return null;
 
@@ -151,8 +173,7 @@ export default function BeugelkeuzeOverzicht({
                     "Scherm",
                     "Formaat",
                     "Installatie",
-                    "Artikel",
-                    "Beugel",
+                    "Geadviseerde beugels",
                     "Type",
                     "Plaatsing",
                 ]}
@@ -168,16 +189,16 @@ export default function BeugelkeuzeOverzicht({
                         <td className="border border-[#C5D4E8] bg-[#ECF6F2]/60 px-2 py-1 text-gray-800">
                             {s.installatie || "—"}
                         </td>
-                        <td className="border border-[#C5D4E8] bg-[#F1F8F0]/60 px-2 py-1 font-medium text-[#1F4E79]">
-                            <ArtikelRegels
-                                artikelen={s.artikelen}
-                                veld="artikel"
-                            />
-                        </td>
-                        <td className="border border-[#C5D4E8] bg-[#F5F0FA]/60 px-2 py-1 text-gray-800">
-                            <ArtikelRegels
-                                artikelen={s.artikelen}
-                                veld="naam"
+                        <td className="border border-[#C5D4E8] bg-[#F1F8F0]/60 px-2 py-1 font-medium text-[#1F4E79] align-top">
+                            <GeadviseerdeBeugelsVeld
+                                advies={s.advies}
+                                override={s.override}
+                                onChange={
+                                    onBeugelAdviesChange
+                                        ? (value) =>
+                                              onBeugelAdviesChange(s.key, value)
+                                        : undefined
+                                }
                             />
                         </td>
                         <td className="border border-[#C5D4E8] bg-[#FAF0F6]/60 px-2 py-1 text-gray-800">

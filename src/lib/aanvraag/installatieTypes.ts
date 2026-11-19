@@ -403,6 +403,11 @@ export interface AanvraagSchermItem {
     internetAfstand: string;
     /** Traject: Systeemplafond | Langs de wand (alleen bij internetMdb === "Ja") */
     internetTraject: string;
+    /**
+     * Vrije tekst i.p.v. het berekende beugeladvies (PFS/PFW).
+     * null = toon generator-advies.
+     */
+    beugelAdvies: string | null;
 }
 
 /** Alleen naast/b2b; overige waarden (o.a. uit JSON) worden leeg. */
@@ -439,6 +444,7 @@ export function emptySchermItem(): AanvraagSchermItem {
         internetMdb: "",
         internetAfstand: "",
         internetTraject: "",
+        beugelAdvies: null,
     };
 }
 
@@ -951,6 +957,8 @@ export {
     mdbBeugelTypeWeergave,
     schermBeugelArtikelen,
     schermBeugelArtikelWeergave,
+    effectiefBeugelAdvies,
+    beugelArtikelenTekst,
     telBenodigdeBeugels,
 } from "./beugelkeuze";
 export type { BeugelArtikelKolom, BenodigdeBeugelRij } from "./beugelkeuze";
