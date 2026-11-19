@@ -49,7 +49,16 @@ export async function GET(
             );
         }
 
-        let linked: { pakbon: { url: string; originalName: string | null; filename: string | null } } | undefined;
+        let linked:
+            | {
+                  pakbon: {
+                      id: string;
+                      url: string;
+                      originalName: string | null;
+                      filename: string | null;
+                  };
+              }
+            | undefined;
         try {
             const rows = await prisma.pakbonWorkorder.findMany({
                 where: { workorderId: id },
@@ -116,7 +125,7 @@ export async function GET(
 
                     if (linked) {
                         await prisma.pakbon.update({
-                            where: { id: linked.pakbonId },
+                            where: { id: linked.pakbon.id },
                             data: { url: nasUrl },
                         });
                     }
