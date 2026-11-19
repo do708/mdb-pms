@@ -18,7 +18,7 @@ import {
 import {
     PROJECT_PLAN_END,
     PROJECT_PLAN_START,
-} from "@/lib/projects/ensurePlanningEvent";
+} from "@/lib/planning/projectPlanHours";
 
 export interface PlanningAgendaEvent {
     id: string;

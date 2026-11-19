@@ -3,9 +3,10 @@ import {
     amsterdamLocalToDate,
     addAmsterdamCalendarDays,
 } from "@/lib/datetime/amsterdam";
-
-export const PROJECT_PLAN_START = "08:00";
-export const PROJECT_PLAN_END = "16:00";
+import {
+    PROJECT_PLAN_END,
+    PROJECT_PLAN_START,
+} from "@/lib/planning/projectPlanHours";
 
 export async function ensureProjectPlanningEvent(args: {
     projectId: string;
