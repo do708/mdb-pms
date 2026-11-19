@@ -18,6 +18,7 @@ const SOORT_STYLE: Record<OfficeNotificationSoort, string> = {
     materiaal: "bg-orange-100 text-orange-800",
     planningsconflict: "bg-pink-100 text-[#d6007e]",
     niet_gereed: "bg-red-100 text-red-800",
+    projecturen: "bg-violet-100 text-violet-800",
 };
 
 export default function NotificationBell() {

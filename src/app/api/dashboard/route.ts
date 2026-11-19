@@ -9,6 +9,7 @@ import {
     loadMateriaalKlaarzettenUrgent,
     loadNietGereedMeldingen,
 } from "@/lib/officeNotifications";
+import { loadForgottenProjectHours } from "@/lib/projects/forgottenHours";
 
 
 
@@ -266,6 +267,8 @@ export async function GET(){
 
         const nietGereed = await loadNietGereedMeldingen();
 
+        const vergetenProjectUren = await loadForgottenProjectHours();
+
 
         return NextResponse.json({
 
@@ -292,6 +295,8 @@ export async function GET(){
 
                 nietGereed:nietGereed.length,
 
+                projectUrenVergeten: vergetenProjectUren.length,
+
 
             },
 
@@ -300,6 +305,8 @@ export async function GET(){
 
 
             nietGereed,
+
+            vergetenProjectUren,
 
 
             teLaat,

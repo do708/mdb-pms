@@ -140,6 +140,7 @@ model Project {
   uren             ProjectUur[]
   materialen       ProjectMateriaal[]
   bijlagen         ProjectAttachment[]
+  planningEvents   PlanningEvent[]
 }
 
 model ProjectUur {
@@ -152,6 +153,8 @@ model ProjectUur {
   uren           Decimal  @db.Decimal(6, 2)
   omschrijving   String?
   kilometers     Float?
+  /// Optionele parkeerkosten (euro) bij deze urenregel
+  parkeerkosten  Decimal? @db.Decimal(10, 2)
   createdAt      DateTime @default(now())
   project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   user           User     @relation("ProjectUurMonteur", fields: [userId], references: [id], onDelete: Cascade)
@@ -492,14 +495,18 @@ model PlanningEvent {
   recurrenceNth      Int?
   recurrenceUntil    DateTime?
   assignedUserId     String?
+  /// Optioneel gekoppeld project: monteur staat die dag op het project
+  projectId          String?
   createdById        String
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   assignedUser       User?     @relation("PlanningEventAssigned", fields: [assignedUserId], references: [id], onDelete: SetNull)
   createdBy          User      @relation("PlanningEventCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  project            Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([startAt])
   @@index([assignedUserId])
+  @@index([projectId])
 }
 
 

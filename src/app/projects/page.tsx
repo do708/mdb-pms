@@ -92,6 +92,7 @@ export default function ProjectsPage() {
     const [urenDatum, setUrenDatum] = useState(todayIso());
     const [urenAantal, setUrenAantal] = useState("");
     const [urenOmschrijving, setUrenOmschrijving] = useState("");
+    const [urenParkeer, setUrenParkeer] = useState("");
     const [urenSaving, setUrenSaving] = useState(false);
     const [engineers, setEngineers] = useState<
         {
@@ -216,6 +217,7 @@ export default function ProjectsPage() {
                         uren: urenAantal,
                         omschrijving: urenOmschrijving,
                         userIds: geselecteerdeMonteurs,
+                        parkeerkosten: urenParkeer,
                     }),
                 }
             );
@@ -228,6 +230,7 @@ export default function ProjectsPage() {
 
             setUrenAantal("");
             setUrenOmschrijving("");
+            setUrenParkeer("");
             if (session?.user?.id) {
                 setGeselecteerdeMonteurs([session.user.id]);
             }
@@ -544,6 +547,22 @@ export default function ProjectsPage() {
                                         setUrenOmschrijving(e.target.value)
                                     }
                                     placeholder="Wat heb je gedaan?"
+                                    className={`${specInputClassName} min-h-[48px]`}
+                                />
+                            </label>
+
+                            <label className="block">
+                                <SpecFieldLabel>
+                                    Parkeerkosten (optioneel)
+                                </SpecFieldLabel>
+                                <input
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={urenParkeer}
+                                    onChange={(e) =>
+                                        setUrenParkeer(e.target.value)
+                                    }
+                                    placeholder="Bijv. 12,50"
                                     className={`${specInputClassName} min-h-[48px]`}
                                 />
                             </label>

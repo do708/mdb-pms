@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { assignedToEngineer } from "@/lib/archive";
 import { ENGINEER_OPDRACHT_STATUS_KEYS } from "@/constants/workorderStatus";
+import { loadForgottenProjectHours } from "@/lib/projects/forgottenHours";
 
 
 
@@ -100,8 +101,15 @@ export async function GET(){
 
 
 
+        const vergetenProjectUren = await loadForgottenProjectHours({
+            userId: session.user.id,
+        });
+
         return NextResponse.json(
-            workorders,
+            {
+                workorders,
+                vergetenProjectUren,
+            },
             {
                 headers: {
                     "Cache-Control": "no-store",

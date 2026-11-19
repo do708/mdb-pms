@@ -119,14 +119,22 @@ export function ProjectResultaatTotaal({
     uren,
     materiaal,
     offerte,
+    parkeer = 0,
 }: {
     uren: number;
     materiaal: number;
     offerte: number;
+    parkeer?: number;
 }) {
     const urenKosten = projectUrenKosten(uren);
     const heeftOfferte = offerte > 0;
-    const eindbedrag = projectEindbedrag(uren, materiaal, offerte);
+    const eindbedrag = projectEindbedrag(
+        uren,
+        materiaal,
+        offerte,
+        undefined,
+        parkeer
+    );
     const signal = projectEindbedragSignal(eindbedrag, heeftOfferte);
     const label =
         signal === "rood"
@@ -148,6 +156,12 @@ export function ProjectResultaatTotaal({
                     <dt className="text-gray-600">Materiaalkosten</dt>
                     <dd className="font-medium">{formatEuro(materiaal)}</dd>
                 </div>
+                {parkeer > 0 ? (
+                    <div className="flex justify-between gap-4">
+                        <dt className="text-gray-600">Parkeerkosten</dt>
+                        <dd className="font-medium">{formatEuro(parkeer)}</dd>
+                    </div>
+                ) : null}
                 <div className="flex justify-between gap-4">
                     <dt className="text-gray-600">Offertebedrag</dt>
                     <dd className="font-medium">

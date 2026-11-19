@@ -9,6 +9,14 @@ import {
     SpecPageCard,
 } from "@/components/ui/SpecLayout";
 
+interface ForgottenProjectHour {
+    id: string;
+    projectId: string;
+    projectNumber: string;
+    projectName: string;
+    dateIso: string;
+}
+
 interface EngineerWorkorder {
     id: string;
     number: string;
@@ -50,6 +58,9 @@ function formatDayLabel(dateStr: string): { label: string; overdue: boolean } {
 
 export default function EngineerPage() {
     const [workorders, setWorkorders] = useState<EngineerWorkorder[]>([]);
+    const [vergetenProjectUren, setVergetenProjectUren] = useState<
+        ForgottenProjectHour[]
+    >([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -58,7 +69,16 @@ export default function EngineerPage() {
                 cache: "no-store",
             });
             const data = await response.json();
-            if (Array.isArray(data)) setWorkorders(data);
+            if (Array.isArray(data)) {
+                setWorkorders(data);
+            } else if (data && Array.isArray(data.workorders)) {
+                setWorkorders(data.workorders);
+                setVergetenProjectUren(
+                    Array.isArray(data.vergetenProjectUren)
+                        ? data.vergetenProjectUren
+                        : []
+                );
+            }
             setLoading(false);
         }
         load();
@@ -87,6 +107,40 @@ export default function EngineerPage() {
                 subtitle="Werkbonnen die nog ingevuld moeten worden"
                 hideOnMobile
             />
+
+            {vergetenProjectUren.length > 0 ? (
+                <SpecPageCard>
+                    <div className="space-y-2">
+                        <h2 className="text-sm font-semibold text-orange-700">
+                            Uren vergeten te boeken
+                        </h2>
+                        <p className="text-xs text-gray-500">
+                            Je stond op de planning voor deze projecten, maar
+                            er zijn nog geen uren geboekt.
+                        </p>
+                        {vergetenProjectUren.map((row) => (
+                            <Link
+                                key={row.id}
+                                href={`/projects/${row.projectId}`}
+                                className="block rounded-lg border border-orange-200 bg-orange-50 px-3 py-2.5"
+                            >
+                                <p className="font-semibold text-sm text-gray-900">
+                                    {row.projectNumber} · {row.projectName}
+                                </p>
+                                <p className="text-xs text-orange-800 mt-0.5">
+                                    {new Date(
+                                        `${row.dateIso}T12:00:00`
+                                    ).toLocaleDateString("nl-NL", {
+                                        weekday: "long",
+                                        day: "numeric",
+                                        month: "long",
+                                    })}
+                                </p>
+                            </Link>
+                        ))}
+                    </div>
+                </SpecPageCard>
+            ) : null}
 
             {workorders.length === 0 ? (
                 <SpecPageCard>

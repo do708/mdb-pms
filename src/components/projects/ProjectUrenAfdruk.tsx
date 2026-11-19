@@ -13,6 +13,7 @@ export type ProjectUrenAfdrukRow = {
     uren: number;
     omschrijving: string | null;
     kilometers: number | null;
+    parkeerkosten?: number | null;
     createdAt: string;
     user: UrenPersoon;
     bookedBy: UrenPersoon | null;
@@ -23,6 +24,7 @@ export type ProjectUrenAfdrukMonteur = {
     totaal: number;
     regels: number;
     km: number;
+    parkeer: number;
 };
 
 function persoonLabel(user: UrenPersoon): string {
@@ -47,6 +49,13 @@ function formatDatumTijd(value: string): string {
     });
 }
 
+function formatEuroPrint(value: number): string {
+    return new Intl.NumberFormat("nl-NL", {
+        style: "currency",
+        currency: "EUR",
+    }).format(value);
+}
+
 function formatKm(value: number | null | undefined): string {
     if (value == null || !Number.isFinite(value)) {
         return "—";
@@ -67,6 +76,7 @@ export default function ProjectUrenAfdruk({
     uren,
     perMonteur,
     totaalUren,
+    totaalParkeer = 0,
 }: {
     number: string;
     name: string;
@@ -76,6 +86,7 @@ export default function ProjectUrenAfdruk({
     uren: ProjectUrenAfdrukRow[];
     perMonteur: ProjectUrenAfdrukMonteur[];
     totaalUren: number;
+    totaalParkeer?: number;
 }) {
     if (uren.length === 0) {
         return null;
@@ -83,6 +94,9 @@ export default function ProjectUrenAfdruk({
 
     const adres = [location, plaats].filter(Boolean).join(", ");
     const totaalKm = perMonteur.reduce((sum, row) => sum + row.km, 0);
+    const parkeerSom =
+        totaalParkeer ||
+        perMonteur.reduce((sum, row) => sum + (row.parkeer ?? 0), 0);
     const gedruktOp = new Date().toLocaleDateString("nl-NL", {
         day: "numeric",
         month: "long",
@@ -138,6 +152,9 @@ export default function ProjectUrenAfdruk({
                                 Uren
                             </th>
                             <th className="py-1.5 pr-3 font-semibold">Km</th>
+                            <th className="py-1.5 pr-3 font-semibold">
+                                Parkeren
+                            </th>
                             <th className="py-1.5 font-semibold">Regels</th>
                         </tr>
                     </thead>
@@ -154,6 +171,11 @@ export default function ProjectUrenAfdruk({
                                 <td className="py-1.5 pr-3">
                                     {row.km > 0 ? formatKm(row.km) : "—"}
                                 </td>
+                                <td className="py-1.5 pr-3">
+                                    {(row.parkeer ?? 0) > 0
+                                        ? formatEuroPrint(row.parkeer)
+                                        : "—"}
+                                </td>
                                 <td className="py-1.5">{row.regels}</td>
                             </tr>
                         ))}
@@ -166,6 +188,11 @@ export default function ProjectUrenAfdruk({
                             </td>
                             <td className="py-1.5 pr-3">
                                 {totaalKm > 0 ? formatKm(totaalKm) : "—"}
+                            </td>
+                            <td className="py-1.5 pr-3">
+                                {parkeerSom > 0
+                                    ? formatEuroPrint(parkeerSom)
+                                    : "—"}
                             </td>
                             <td className="py-1.5">{uren.length}</td>
                         </tr>
@@ -192,6 +219,9 @@ export default function ProjectUrenAfdruk({
                                 Uren
                             </th>
                             <th className="py-1.5 pr-3 font-semibold">Km</th>
+                            <th className="py-1.5 pr-3 font-semibold">
+                                Parkeren
+                            </th>
                             <th className="py-1.5 pr-3 font-semibold">
                                 Geboekt door
                             </th>
@@ -225,6 +255,13 @@ export default function ProjectUrenAfdruk({
                                     </td>
                                     <td className="py-1.5 pr-3">
                                         {formatKm(row.kilometers)}
+                                    </td>
+                                    <td className="py-1.5 pr-3">
+                                        {(row.parkeerkosten ?? 0) > 0
+                                            ? formatEuroPrint(
+                                                  row.parkeerkosten ?? 0
+                                              )
+                                            : "—"}
                                     </td>
                                     <td className="py-1.5 pr-3">
                                         {geboektDoor}

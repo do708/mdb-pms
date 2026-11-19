@@ -1213,8 +1213,12 @@ export default function WeekView({
                                                 }}
                                                 className={`
                                                     w-full text-left rounded-lg px-1.5 py-1
-                                                    bg-[#FFCC00] border-2 border-[#e6b800]
-                                                    text-slate-900 text-[10px] font-bold
+                                                    ${
+                                                        ev.projectId
+                                                            ? "bg-[#fce7f3] border-2 border-[#d6007e] text-[#9d1760]"
+                                                            : "bg-[#FFCC00] border-2 border-[#e6b800] text-slate-900"
+                                                    }
+                                                    text-[10px] font-bold
                                                     shadow-sm ring-1 ring-black/10
                                                     hover:brightness-95 transition
                                                     whitespace-normal break-words leading-snug
@@ -2095,7 +2099,9 @@ export default function WeekView({
                                                                                           kind: "agenda",
                                                                                           id: ev.id,
                                                                                           durationHours,
-                                                                                          color: "#FFCC00",
+                                                                                          color: ev.projectId
+                                                                                              ? "#d6007e"
+                                                                                              : "#FFCC00",
                                                                                           title: ev.title,
                                                                                           subtitle:
                                                                                               ev.notes ||
@@ -2144,7 +2150,11 @@ export default function WeekView({
                                                                         absolute text-left
                                                                         rounded-lg px-2 py-1
                                                                         leading-tight
-                                                                        bg-[#FFCC00] text-slate-900
+                                                                        ${
+                                                                            ev.projectId
+                                                                                ? "bg-[#fce7f3] text-[#9d1760]"
+                                                                                : "bg-[#FFCC00] text-slate-900"
+                                                                        }
                                                                         border-2
                                                                         shadow-sm
                                                                         hover:brightness-95 hover:shadow-md
@@ -2152,7 +2162,9 @@ export default function WeekView({
                                                                         ${
                                                                             hasConflict
                                                                                 ? "border-[#d6007e] ring-2 ring-[#d6007e] z-[6]"
-                                                                                : "border-[#e6b800] ring-1 ring-black/10"
+                                                                                : ev.projectId
+                                                                                  ? "border-[#d6007e] ring-1 ring-[#d6007e]/30"
+                                                                                  : "border-[#e6b800] ring-1 ring-black/10"
                                                                         }
                                                                         ${
                                                                             onMoveAgenda

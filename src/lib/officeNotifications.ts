@@ -7,6 +7,7 @@ import {
     leesSchermAansturing,
 } from "@/lib/klaarzetMateriaal";
 import { loadUpcomingPlanningConflicts } from "@/lib/planning/loadUpcomingConflicts";
+import { loadForgottenProjectHours } from "@/lib/projects/forgottenHours";
 import type { OfficeNotification } from "@/lib/officeNotificationTypes";
 
 const NOG_IN_TE_VULLEN = ["ontvangen", "afspraak", "ingepland"] as const;
@@ -18,6 +19,7 @@ export interface OfficeNotificationCounters {
     materiaal: number;
     planningsconflicten: number;
     nietGereed: number;
+    projectUrenVergeten: number;
 }
 
 export interface NietGereedMelding {
@@ -168,7 +170,15 @@ async function safe<T>(label: string, fn: () => Promise<T>, fallback: T): Promis
 export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayload> {
     const startVandaag = startOfToday();
 
-    const [aanvragen, formulieren, teLaat, materiaalUrgent, conflicten, nietGereed] =
+    const [
+        aanvragen,
+        formulieren,
+        teLaat,
+        materiaalUrgent,
+        conflicten,
+        nietGereed,
+        vergetenProjectUren,
+    ] =
         await Promise.all([
             safe(
                 "aanvragen",
@@ -223,6 +233,8 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
             safe("planningsconflicten", () => loadUpcomingPlanningConflicts(), []),
 
             loadNietGereedMeldingen(),
+
+            safe("projecturen-vergeten", () => loadForgottenProjectHours(), []),
         ]);
 
     const materiaalItems: OfficeNotification[] = materiaalUrgent.map((w) => ({
@@ -284,6 +296,14 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
             subtitle: `${c.date} · ${c.items.join(" ↔ ")}`,
             href: "/planning",
         })),
+
+        ...vergetenProjectUren.map((row): OfficeNotification => ({
+            id: `projecturen-${row.id}`,
+            soort: "projecturen",
+            title: `${row.userName} — uren niet geboekt`,
+            subtitle: `${row.projectNumber} · ${row.projectName} · ${nlDate(row.dateIso)}`,
+            href: `/projects/${row.projectId}`,
+        })),
     ];
 
     const counters: OfficeNotificationCounters = {
@@ -293,6 +313,7 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
         materiaal: materiaalItems.length,
         planningsconflicten: conflicten.length,
         nietGereed: nietGereed.length,
+        projectUrenVergeten: vergetenProjectUren.length,
     };
 
     const count =
@@ -301,7 +322,8 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
         + counters.teLaat
         + counters.materiaal
         + counters.planningsconflicten
-        + counters.nietGereed;
+        + counters.nietGereed
+        + counters.projectUrenVergeten;
 
     return { items, counters, count };
 }

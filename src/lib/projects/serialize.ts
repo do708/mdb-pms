@@ -105,6 +105,16 @@ export function serializeProjectDetail(
         0
     );
 
+    const parkeerKosten = project.uren.reduce(
+        (sum, row) =>
+            sum +
+            decimalToNumber(
+                (row as { parkeerkosten?: { toString(): string } | number | null })
+                    .parkeerkosten
+            ),
+        0
+    );
+
     const materiaalKosten = project.materialen.reduce(
         (sum, row) => sum + decimalToNumber(row.kosten),
         0
@@ -116,6 +126,10 @@ export function serializeProjectDetail(
         uren: decimalToNumber(row.uren),
         omschrijving: row.omschrijving,
         kilometers: row.kilometers,
+        parkeerkosten: decimalToNumber(
+            (row as { parkeerkosten?: { toString(): string } | number | null })
+                .parkeerkosten
+        ),
         createdAt: row.createdAt,
         user: row.user,
         bookedBy: row.bookedBy,
@@ -173,6 +187,7 @@ export function serializeProjectDetail(
             intakeTekst,
             createdAt: project.createdAt,
             gebruikteUren,
+            parkeerKosten,
             materiaalKosten: 0,
             uren,
             bijlagen,
@@ -218,6 +233,7 @@ export function serializeProjectDetail(
         intakeTekst,
         createdAt: project.createdAt,
         gebruikteUren,
+        parkeerKosten,
         materiaalKosten,
         uren,
         bijlagen,

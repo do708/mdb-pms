@@ -294,6 +294,7 @@ interface DashboardData {
         openAanvragen?: number;
         materiaal?: number;
         nietGereed?: number;
+        projectUrenVergeten?: number;
     };
     nietGereed?: Array<{
         id: string;
@@ -301,6 +302,15 @@ interface DashboardData {
         message: string | null;
         workorderId: string | null;
         createdAt: string;
+    }>;
+    vergetenProjectUren?: Array<{
+        id: string;
+        projectId: string;
+        projectNumber: string;
+        projectName: string;
+        customerName: string | null;
+        userName: string;
+        dateIso: string;
     }>;
     teLaat: Array<{
         id: string;
@@ -621,6 +631,48 @@ export default function DashboardPage() {
                                     </div>
                                     <span className="text-xs font-medium text-amber-800 shrink-0">
                                         Materiaal klaarzetten →
+                                    </span>
+                                </SpecListRow>
+                            </a>
+                        ))}
+                    </div>
+                </SpecPanel>
+            )}
+
+            {(data?.vergetenProjectUren?.length ?? 0) > 0 && (
+                <SpecPanel
+                    title={`Projecturen niet geboekt (${data?.vergetenProjectUren?.length})`}
+                    hint="Monteur stond op de planning voor dit project, maar heeft die dag geen uren geboekt."
+                    tone="amber"
+                >
+                    <div className="space-y-2">
+                        {data?.vergetenProjectUren?.map((row) => (
+                            <a
+                                key={row.id}
+                                href={`/projects/${row.projectId}`}
+                            >
+                                <SpecListRow
+                                    className="
+                                        flex justify-between items-center gap-3
+                                        hover:bg-gray-50
+                                    "
+                                >
+                                    <div className="min-w-0">
+                                        <p className="font-semibold text-sm text-gray-900 truncate">
+                                            {row.userName} — uren vergeten
+                                        </p>
+                                        <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                            {row.projectNumber} ·{" "}
+                                            {row.projectName}
+                                            {row.customerName
+                                                ? ` · ${row.customerName}`
+                                                : ""}
+                                        </p>
+                                    </div>
+                                    <span className="text-xs text-amber-800 font-medium shrink-0">
+                                        {new Date(
+                                            `${row.dateIso}T12:00:00`
+                                        ).toLocaleDateString("nl-NL")}
                                     </span>
                                 </SpecListRow>
                             </a>

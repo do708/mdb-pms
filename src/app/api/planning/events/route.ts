@@ -101,6 +101,10 @@ export async function POST(req: Request) {
             body.assignedUserId.trim()
                 ? body.assignedUserId.trim()
                 : null;
+        const projectId =
+            typeof body.projectId === "string" && body.projectId.trim()
+                ? body.projectId.trim()
+                : null;
 
         if (assignedUserId) {
             const engineer = await prisma.user.findFirst({
@@ -156,6 +160,19 @@ export async function POST(req: Request) {
             endAt = new Date(startAt.getTime() + duration);
         }
 
+        if (projectId) {
+            const linked = await prisma.project.findUnique({
+                where: { id: projectId },
+                select: { id: true },
+            });
+            if (!linked) {
+                return NextResponse.json(
+                    { error: "Project niet gevonden" },
+                    { status: 400 }
+                );
+            }
+        }
+
         const event = await prisma.planningEvent.create({
             data: {
                 title,
@@ -164,6 +181,7 @@ export async function POST(req: Request) {
                 endAt,
                 allDay,
                 assignedUserId,
+                projectId,
                 createdById: guard.user.id,
                 recurrenceFreq: recurrence.recurrenceFreq,
                 recurrenceInterval: recurrence.recurrenceInterval,

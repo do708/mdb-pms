@@ -177,9 +177,10 @@ export function projectUrenKosten(
 export function projectKostenTotaal(
     uren: number,
     materiaal: number,
-    tarief = PROJECT_UUR_TARIEF
+    tarief = PROJECT_UUR_TARIEF,
+    parkeer = 0
 ): number {
-    return projectUrenKosten(uren, tarief) + materiaal;
+    return projectUrenKosten(uren, tarief) + materiaal + parkeer;
 }
 
 /** Kosten − offerte. Positief = over budget (rood), negatief of 0 = binnen budget (groen). */
@@ -187,9 +188,10 @@ export function projectEindbedrag(
     uren: number,
     materiaal: number,
     offerte: number,
-    tarief = PROJECT_UUR_TARIEF
+    tarief = PROJECT_UUR_TARIEF,
+    parkeer = 0
 ): number {
-    return projectKostenTotaal(uren, materiaal, tarief) - offerte;
+    return projectKostenTotaal(uren, materiaal, tarief, parkeer) - offerte;
 }
 
 export function projectEindbedragSignal(

@@ -30,6 +30,36 @@ export function minutesToHours(minutes: number): number {
  * - Anders decimaal: 1.5, 0.25, 8 (ook met komma)
  * Nooit klokstrings optellen — altijd eerst deze functie.
  */
+/** Parseert euro-invoer (12,50 of 12.5). Leeg → null. */
+export function parseEuroInput(value: unknown): number | null {
+    if (value == null || value === "") {
+        return null;
+    }
+
+    if (typeof value === "number") {
+        if (!Number.isFinite(value) || value < 0) {
+            return null;
+        }
+        return Math.round(value * 100) / 100;
+    }
+
+    if (typeof value !== "string") {
+        return null;
+    }
+
+    const trimmed = value.trim().replace(/\s/g, "").replace(",", ".");
+    if (!trimmed) {
+        return null;
+    }
+
+    const n = Number(trimmed);
+    if (!Number.isFinite(n) || n < 0) {
+        return null;
+    }
+
+    return Math.round(n * 100) / 100;
+}
+
 export function parseHoursInput(value: unknown): number {
     if (typeof value === "number" && Number.isFinite(value)) {
         return value > 0 ? value : 0;

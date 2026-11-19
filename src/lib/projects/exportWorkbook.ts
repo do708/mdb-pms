@@ -31,6 +31,7 @@ type ProjectExportInput = {
         datum: Date;
         uren: { toString(): string } | number;
         kilometers: number | null;
+        parkeerkosten?: { toString(): string } | number | null;
         omschrijving: string | null;
         createdAt?: Date;
         user: {
@@ -194,7 +195,8 @@ export async function buildProjectExportWorkbook(
         { key: "d", width: 12 },
         { key: "e", width: 22 },
         { key: "f", width: 18 },
-        { key: "g", width: 28 },
+        { key: "g", width: 22 },
+        { key: "h", width: 28 },
     ];
 
     const gebruikteUren = project.uren.reduce(
@@ -207,6 +209,10 @@ export async function buildProjectExportWorkbook(
     );
     const materiaalKosten = project.materialen.reduce(
         (sum, row) => sum + decimalToNumber(row.kosten),
+        0
+    );
+    const totaalParkeer = project.uren.reduce(
+        (sum, row) => sum + decimalToNumber(row.parkeerkosten),
         0
     );
     const geoffreerd = decimalToNumber(project.geoffreerdeUren);
@@ -302,6 +308,7 @@ export async function buildProjectExportWorkbook(
         ],
         ["Geoffreerd bedrag", bedrag > 0 ? money(bedrag) : "—"],
         ["Kilometers totaal", String(Math.round(totaalKm))],
+        ["Parkeerkosten", money(totaalParkeer)],
         ["Materiaalkosten", money(materiaalKosten)],
         ["Urenregels", String(project.uren.length)],
         ["Materiaalregels", String(project.materialen.length)],
@@ -332,7 +339,7 @@ export async function buildProjectExportWorkbook(
 
     const perMonteur = new Map<
         string,
-        { naam: string; uren: number; km: number; regels: number }
+        { naam: string; uren: number; km: number; parkeer: number; regels: number }
     >();
 
     for (const u of project.uren) {
@@ -341,16 +348,18 @@ export async function buildProjectExportWorkbook(
             naam,
             uren: 0,
             km: 0,
+            parkeer: 0,
             regels: 0,
         };
         bestaand.uren += decimalToNumber(u.uren);
         bestaand.km += u.kilometers ?? 0;
+        bestaand.parkeer += decimalToNumber(u.parkeerkosten);
         bestaand.regels += 1;
         perMonteur.set(naam, bestaand);
     }
 
     const monteurHeader = sheet.getRow(row);
-    ["Monteur", "Uren", "Kilometers", "Aantal regels", "", ""].forEach(
+    ["Monteur", "Uren", "Kilometers", "Parkeerkosten", "Aantal regels", ""].forEach(
         (v, i) => {
             monteurHeader.getCell(i + 1).value = v;
         }
@@ -372,12 +381,13 @@ export async function buildProjectExportWorkbook(
             sheet.getCell(`A${row}`).value = m.naam;
             sheet.getCell(`B${row}`).value = hoursDisplay(m.uren);
             sheet.getCell(`C${row}`).value = Math.round(m.km);
-            sheet.getCell(`D${row}`).value = m.regels;
-            ["A", "B", "C", "D"].forEach((col) =>
+            sheet.getCell(`D${row}`).value = money(m.parkeer);
+            sheet.getCell(`E${row}`).value = m.regels;
+            ["A", "B", "C", "D", "E"].forEach((col) =>
                 styleValue(sheet.getCell(`${col}${row}`))
             );
             if (alt) {
-                styleAltRow(sheet, row, ["A", "B", "C", "D"]);
+                styleAltRow(sheet, row, ["A", "B", "C", "D", "E"]);
             }
             alt = !alt;
             row += 1;
@@ -399,6 +409,7 @@ export async function buildProjectExportWorkbook(
         "Monteur",
         "Uren",
         "Kilometers",
+        "Parkeerkosten",
         "Geboekt door",
         "Geboekt op",
         "Omschrijving",
@@ -426,16 +437,19 @@ export async function buildProjectExportWorkbook(
             );
             sheet.getCell(`D${row}`).value =
                 u.kilometers != null ? Math.round(u.kilometers) : "—";
-            sheet.getCell(`E${row}`).value = geboektDoor;
-            sheet.getCell(`F${row}`).value = u.createdAt
+            sheet.getCell(`E${row}`).value = money(
+                decimalToNumber(u.parkeerkosten)
+            );
+            sheet.getCell(`F${row}`).value = geboektDoor;
+            sheet.getCell(`G${row}`).value = u.createdAt
                 ? formatDateTimeNl(u.createdAt)
                 : "—";
-            sheet.getCell(`G${row}`).value = u.omschrijving || "—";
-            ["A", "B", "C", "D", "E", "F", "G"].forEach((col) =>
+            sheet.getCell(`H${row}`).value = u.omschrijving || "—";
+            ["A", "B", "C", "D", "E", "F", "G", "H"].forEach((col) =>
                 styleValue(sheet.getCell(`${col}${row}`))
             );
             if (alt) {
-                styleAltRow(sheet, row, ["A", "B", "C", "D", "E", "F", "G"]);
+                styleAltRow(sheet, row, ["A", "B", "C", "D", "E", "F", "G", "H"]);
             }
             alt = !alt;
             row += 1;
@@ -445,7 +459,8 @@ export async function buildProjectExportWorkbook(
         sheet.getCell(`B${row}`).value = "";
         sheet.getCell(`C${row}`).value = hoursDisplay(gebruikteUren);
         sheet.getCell(`D${row}`).value = Math.round(totaalKm);
-        styleTotalRow(sheet, row, ["A", "B", "C", "D"]);
+        sheet.getCell(`E${row}`).value = money(totaalParkeer);
+        styleTotalRow(sheet, row, ["A", "B", "C", "D", "E"]);
         row += 1;
     }
 

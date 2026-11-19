@@ -50,7 +50,15 @@ export type PlanningEventMaster = {
     recurrenceNth?: number | null;
     recurrenceUntil?: Date | string | null;
     assignedUserId?: string | null;
-    assignedUser?: { id: string; name: string | null } | null;
+    assignedUser?: { id: string; name: string | null; email?: string | null } | null;
+    projectId?: string | null;
+    project?: {
+        id: string;
+        number: string;
+        name: string;
+        status?: string;
+        customer?: { name: string; color?: string | null } | null;
+    } | null;
     createdById?: string;
     createdBy?: { id: string; name: string | null } | null;
     createdAt?: Date | string;

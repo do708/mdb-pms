@@ -71,6 +71,7 @@ interface ProjectDetail {
     termijn4Factuurnummer: string | null;
     intakeTekst: string | null;
     gebruikteUren: number;
+    parkeerKosten?: number;
     materiaalKosten: number;
     uren: {
         id: string;
@@ -78,6 +79,7 @@ interface ProjectDetail {
         uren: number;
         omschrijving: string | null;
         kilometers: number | null;
+        parkeerkosten?: number | null;
         createdAt: string;
         user: { id: string; name: string | null; email: string };
         bookedBy: {
@@ -198,6 +200,21 @@ export default function ProjectDetailPage() {
     const [urenDatum, setUrenDatum] = useState(todayIso());
     const [urenAantal, setUrenAantal] = useState("");
     const [urenOmschrijving, setUrenOmschrijving] = useState("");
+    const [urenParkeer, setUrenParkeer] = useState("");
+    const [planDatum, setPlanDatum] = useState(todayIso());
+    const [planMonteurs, setPlanMonteurs] = useState<string[]>([]);
+    const [planSaving, setPlanSaving] = useState(false);
+    const [planEvents, setPlanEvents] = useState<
+        {
+            id: string;
+            dateIso: string;
+            assignedUser: {
+                id: string;
+                name: string | null;
+                email: string | null;
+            } | null;
+        }[]
+    >([]);
     const [geselecteerdeMonteurs, setGeselecteerdeMonteurs] = useState<
         string[]
     >([]);
@@ -264,6 +281,17 @@ export default function ProjectDetailPage() {
             resetFormFromProject(data);
         }
         setLoading(false);
+        void loadPlanning();
+    }
+
+    async function loadPlanning() {
+        try {
+            const response = await fetch(`/api/projects/${id}/planning`);
+            const data = await response.json();
+            setPlanEvents(Array.isArray(data) ? data : []);
+        } catch {
+            setPlanEvents([]);
+        }
     }
 
     useEffect(() => {
@@ -324,7 +352,13 @@ export default function ProjectDetailPage() {
 
         const map = new Map<
             string,
-            { naam: string; totaal: number; regels: number; km: number }
+            {
+                naam: string;
+                totaal: number;
+                regels: number;
+                km: number;
+                parkeer: number;
+            }
         >();
 
         for (const row of project.uren) {
@@ -334,11 +368,13 @@ export default function ProjectDetailPage() {
                 totaal: 0,
                 regels: 0,
                 km: 0,
+                parkeer: 0,
             };
 
             bestaand.totaal += row.uren;
             bestaand.regels += 1;
             bestaand.km += row.kilometers ?? 0;
+            bestaand.parkeer += row.parkeerkosten ?? 0;
             map.set(key, bestaand);
         }
 
@@ -732,6 +768,7 @@ export default function ProjectDetailPage() {
                 uren: urenAantal,
                 omschrijving: urenOmschrijving,
                 userIds: geselecteerdeMonteurs,
+                parkeerkosten: urenParkeer,
             }),
         });
 
@@ -745,10 +782,65 @@ export default function ProjectDetailPage() {
         setProject(data);
         setUrenAantal("");
         setUrenOmschrijving("");
+        setUrenParkeer("");
+        void loadPlanning();
         if (role === "engineer" && session?.user?.id) {
             setGeselecteerdeMonteurs([session.user.id]);
         } else if (isOffice) {
             setGeselecteerdeMonteurs([]);
+        }
+    }
+
+    function togglePlanMonteur(userId: string) {
+        setPlanMonteurs((prev) =>
+            prev.includes(userId)
+                ? prev.filter((id) => id !== userId)
+                : [...prev, userId]
+        );
+    }
+
+    async function zetOpPlanning() {
+        if (planMonteurs.length === 0) {
+            alert("Selecteer minimaal één monteur");
+            return;
+        }
+
+        setPlanSaving(true);
+        try {
+            const response = await fetch(`/api/projects/${id}/planning`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    datum: planDatum,
+                    userIds: planMonteurs,
+                }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                alert(data.error || "Op planning zetten mislukt");
+                return;
+            }
+            setPlanEvents(Array.isArray(data) ? data : []);
+            setPlanMonteurs([]);
+        } catch (error) {
+            console.error(error);
+            alert("Op planning zetten mislukt");
+        } finally {
+            setPlanSaving(false);
+        }
+    }
+
+    async function verwijderPlanning(eventId: string) {
+        if (!confirm("Deze monteur van de planning halen?")) {
+            return;
+        }
+
+        const response = await fetch(
+            `/api/projects/${id}/planning?eventId=${eventId}`,
+            { method: "DELETE" }
+        );
+        if (response.ok) {
+            setPlanEvents((prev) => prev.filter((ev) => ev.id !== eventId));
         }
     }
 
@@ -1190,6 +1282,7 @@ export default function ProjectDetailPage() {
                                 uren={project.gebruikteUren}
                                 materiaal={project.materiaalKosten}
                                 offerte={project.geoffreerdBedrag}
+                                parkeer={project.parkeerKosten ?? 0}
                             />
                         </SpecPanel>
                     </SpecPageCard>
@@ -1395,6 +1488,117 @@ export default function ProjectDetailPage() {
                 onChanged={loadProject}
             />
 
+            {isOffice ? (
+                <SpecPageCard>
+                    <SpecPanel
+                        title="Op planning zetten"
+                        hint="De geselecteerde monteurs verschijnen die dag in de planning. Zij moeten die dag ook uren op dit project boeken; anders volgt een melding."
+                    >
+                        {project.status === "actief" ||
+                        project.status === "new" ? (
+                            <div className="space-y-3">
+                                <label className="block max-w-xs">
+                                    <SpecFieldLabel>Datum</SpecFieldLabel>
+                                    <input
+                                        type="date"
+                                        value={planDatum}
+                                        onChange={(e) =>
+                                            setPlanDatum(e.target.value)
+                                        }
+                                        className={`${specInputClassName} min-h-[48px]`}
+                                    />
+                                </label>
+                                <div>
+                                    <SpecFieldLabel>
+                                        Monteurs
+                                    </SpecFieldLabel>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {boekbareMonteurs.map((eng) => {
+                                            const checked =
+                                                planMonteurs.includes(eng.id);
+                                            return (
+                                                <label
+                                                    key={eng.id}
+                                                    className={`
+                                                        inline-flex items-center gap-2
+                                                        px-3 py-2 rounded-xl border
+                                                        cursor-pointer text-sm min-h-[44px]
+                                                        ${
+                                                            checked
+                                                                ? "bg-[#e8f0ff] border-[#0066FF] text-[#0066FF]"
+                                                                : "bg-white border-gray-200"
+                                                        }
+                                                    `}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={checked}
+                                                        onChange={() =>
+                                                            togglePlanMonteur(
+                                                                eng.id
+                                                            )
+                                                        }
+                                                        className="rounded"
+                                                    />
+                                                    {eng.name?.trim() ||
+                                                        "Monteur"}
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => void zetOpPlanning()}
+                                    disabled={planSaving}
+                                    className="bg-[#0066FF] text-white rounded-xl px-5 py-3 min-h-[48px] font-bold text-sm disabled:opacity-60"
+                                >
+                                    {planSaving
+                                        ? "Bezig…"
+                                        : "Op planning zetten"}
+                                </button>
+                            </div>
+                        ) : null}
+
+                        {planEvents.length === 0 ? (
+                            <p className="text-sm text-gray-500 mt-3">
+                                Nog geen monteurs op de planning voor dit
+                                project.
+                            </p>
+                        ) : (
+                            <ul className="mt-4 space-y-2">
+                                {planEvents.map((ev) => (
+                                    <li key={ev.id}>
+                                        <SpecListRow className="text-sm flex justify-between gap-2">
+                                            <span>
+                                                {formatDate(ev.dateIso)} ·{" "}
+                                                {ev.assignedUser?.name?.trim() ||
+                                                    ev.assignedUser?.email ||
+                                                    "Monteur"}
+                                            </span>
+                                            {project.status === "actief" ||
+                                            project.status === "new" ? (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        void verwijderPlanning(
+                                                            ev.id
+                                                        )
+                                                    }
+                                                    className="text-red-600 text-xs"
+                                                >
+                                                    Verwijder
+                                                </button>
+                                            ) : null}
+                                        </SpecListRow>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </SpecPanel>
+                </SpecPageCard>
+            ) : null}
+
             <SpecPageCard>
                 <SpecPanel
                     title="Urenlog"
@@ -1425,6 +1629,13 @@ export default function ProjectDetailPage() {
                                                 <span className="text-gray-500">
                                                     {" "}
                                                     · {row.km.toFixed(1)} km
+                                                </span>
+                                            ) : null}
+                                            {row.parkeer > 0 ? (
+                                                <span className="text-gray-500">
+                                                    {" "}
+                                                    · {formatEuro(row.parkeer)}{" "}
+                                                    parkeren
                                                 </span>
                                             ) : null}
                                             <span className="text-gray-400 text-xs ml-1">
@@ -1551,6 +1762,26 @@ export default function ProjectDetailPage() {
                             />
                         </label>
 
+                        <label className="block max-w-xs">
+                            <SpecFieldLabel>
+                                Parkeerkosten (optioneel)
+                            </SpecFieldLabel>
+                            <input
+                                type="text"
+                                inputMode="decimal"
+                                value={urenParkeer}
+                                onChange={(e) =>
+                                    setUrenParkeer(e.target.value)
+                                }
+                                placeholder="Bijv. 12,50"
+                                className={`${specInputClassName} min-h-[48px]`}
+                            />
+                            <p className="text-xs text-gray-500 mt-1">
+                                Eén bedrag voor deze boeking (niet per
+                                extra monteur).
+                            </p>
+                        </label>
+
                         <button
                             type="button"
                             onClick={boekUren}
@@ -1574,6 +1805,7 @@ export default function ProjectDetailPage() {
                                     <th className="py-2 pr-4">Monteur</th>
                                     <th className="py-2 pr-4">Uren</th>
                                     <th className="py-2 pr-4">Km</th>
+                                    <th className="py-2 pr-4">Parkeren</th>
                                     <th className="py-2 pr-4">Geboekt door</th>
                                     <th className="py-2 pr-4">Geboekt op</th>
                                     <th className="py-2 pr-4">Omschrijving</th>
@@ -1603,6 +1835,13 @@ export default function ProjectDetailPage() {
                                         <td className="py-2 pr-4">
                                             {row.kilometers != null
                                                 ? row.kilometers
+                                                : "—"}
+                                        </td>
+                                        <td className="py-2 pr-4">
+                                            {(row.parkeerkosten ?? 0) > 0
+                                                ? formatEuro(
+                                                      row.parkeerkosten ?? 0
+                                                  )
                                                 : "—"}
                                         </td>
                                         <td className="py-2 pr-4">
@@ -1804,6 +2043,7 @@ export default function ProjectDetailPage() {
                 uren={project.uren}
                 perMonteur={urenPerMonteur}
                 totaalUren={project.gebruikteUren}
+                totaalParkeer={project.parkeerKosten ?? 0}
             />
         </PageShell>
     );

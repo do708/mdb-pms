@@ -191,6 +191,16 @@ export async function GET(){
                     createdBy: {
                         select: { id: true, name: true },
                     },
+                    project: {
+                        select: {
+                            id: true,
+                            number: true,
+                            name: true,
+                            customer: {
+                                select: { name: true, color: true },
+                            },
+                        },
+                    },
                 },
             });
 

@@ -7,11 +7,12 @@ import {
     loadProjectDetail,
     serializeProjectDetail,
 } from "@/lib/projects/serialize";
-import { parseHoursInput } from "@/lib/hours";
+import { parseEuroInput, parseHoursInput } from "@/lib/hours";
 import {
     isSchedulableOnDay,
     toIsoDay,
 } from "@/constants/staffKind";
+import { ensureProjectPlanningEvent } from "@/lib/projects/ensurePlanningEvent";
 
 export async function GET(
     request: Request,
@@ -153,6 +154,8 @@ export async function POST(
                 ? body.omschrijving.trim() || null
                 : null;
 
+        const parkeerkosten = parseEuroInput(body.parkeerkosten);
+
         const rawIds: unknown[] = Array.isArray(body.userIds)
             ? body.userIds
             : body.userId
@@ -223,7 +226,7 @@ export async function POST(
         }
 
         await prisma.$transaction(
-            userIds.map((userId) =>
+            userIds.map((userId, index) =>
                 prisma.projectUur.create({
                     data: {
                         projectId: id,
@@ -232,10 +235,29 @@ export async function POST(
                         datum,
                         uren,
                         omschrijving,
+                        parkeerkosten:
+                            index === 0 && parkeerkosten != null
+                                ? parkeerkosten
+                                : null,
                     },
                 })
             )
         );
+
+        if (dayIso) {
+            await Promise.all(
+                userIds.map((userId) =>
+                    ensureProjectPlanningEvent({
+                        projectId: id,
+                        projectNumber: project.number,
+                        projectName: project.name,
+                        userId,
+                        dateIso: dayIso,
+                        createdById: guard.user.id,
+                    })
+                )
+            );
+        }
 
         const detail = await loadProjectDetail(id);
 
