@@ -313,6 +313,10 @@ export interface OpleverData {
         redenRemote:string;
         remoteServicesVerbinding:"" | "Bekabeld" | "WiFi";
         remoteServicesWifiAdapter:boolean | null;
+        schermAanUitTijd:"" | "Ja" | "Nee" | "n.v.t.";
+        schermUitschakelenGeenSignaal:"" | "Ja" | "Nee" | "n.v.t.";
+        schermHelderheidAutomatisch:"" | "Ja" | "Nee" | "n.v.t.";
+        schermStiltemodus:"" | "Ja" | "Nee" | "n.v.t.";
         locatieMediaplayer:
             "" |
             "Achter het scherm" |
@@ -724,6 +728,10 @@ export function emptyOpleverData():OpleverData {
             redenRemote:"",
             remoteServicesVerbinding:"",
             remoteServicesWifiAdapter:null,
+            schermAanUitTijd:"",
+            schermUitschakelenGeenSignaal:"",
+            schermHelderheidAutomatisch:"",
+            schermStiltemodus:"",
             locatieMediaplayer:"",
             aantalMediaplayers:"",
             mediaplayerLocaties:{},

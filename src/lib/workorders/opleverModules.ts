@@ -18,6 +18,7 @@ export const OPLEVER_MODULE_KEYS = [
     "audio_demontage",
     "project",
     "extra_kosten",
+    "evalue8",
 ] as const;
 
 export type OpleverModule = (typeof OPLEVER_MODULE_KEYS)[number];
@@ -78,6 +79,7 @@ export const OPLEVER_MODULE_GROEPEN: {
         items: [
             { key: "project", label: "Project" },
             { key: "extra_kosten", label: "Extra kosten" },
+            { key: "evalue8", label: "eValue8" },
         ],
     },
 ];
@@ -101,6 +103,7 @@ const ALLE_INSTALLATIE: OpleverModule[] = OPLEVER_MODULE_KEYS.filter(
         key !== "uren"
         && key !== "kilometers"
         && key !== "extra_kosten"
+        && key !== "evalue8"
 );
 
 export function modulesVanLegacyForm(
@@ -114,9 +117,7 @@ export function modulesVanLegacyForm(
         return [
             "uren",
             "kilometers",
-            "kiosk_montage",
-            "kiosk_hermontage",
-            "kiosk_demontage",
+            "evalue8",
             "extra_kosten",
         ];
     }
@@ -186,6 +187,7 @@ export function toonInstallatie(modules: readonly string[]): boolean {
         || heeftGroep(modules, "mediaplayers")
         || heeftGroep(modules, "audio")
         || heeftModule(modules, "project")
+        || heeftModule(modules, "evalue8")
     );
 }
 

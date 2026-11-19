@@ -645,6 +645,20 @@ export default function EngineerWorkorderPage(){
                 };
             }
 
+            if (
+                opgeslagenMateriaal &&
+                typeof opgeslagenMateriaal === "object"
+            ) {
+                for (const [key, value] of Object.entries(
+                    opgeslagenMateriaal as Record<string, unknown>
+                )) {
+                    if (value === true) {
+                        (startMateriaal as Record<string, unknown>)[key] =
+                            true;
+                    }
+                }
+            }
+
             setMateriaal(startMateriaal);
 
             setOpleverData(

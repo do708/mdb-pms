@@ -1305,6 +1305,10 @@ function opleverSections(
         return "";
       })()}
       ${c.afvalverwijdering !== null ? row("Afval verwijderd?",pill(c.afvalverwijdering,{ ja:"no", nee:"yes" })) : ""}
+      ${c.schermAanUitTijd ? row("Aan-tijd en uit-tijd op de juiste dagen en tijden",choicePill(c.schermAanUitTijd)) : ""}
+      ${c.schermUitschakelenGeenSignaal ? row("Uitschakelen bij geen signaal staat op UIT",choicePill(c.schermUitschakelenGeenSignaal)) : ""}
+      ${c.schermHelderheidAutomatisch ? row("Helderheidregeling staat op Automatisch",choicePill(c.schermHelderheidAutomatisch)) : ""}
+      ${c.schermStiltemodus ? row("Stiltemodus staat aan",choicePill(c.schermStiltemodus)) : ""}
   `);
 
     return { modules, checklist };

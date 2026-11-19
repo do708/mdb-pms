@@ -243,6 +243,45 @@ function JaNee({
 
 }
 
+type JaNeeNvtWaarde = "" | "Ja" | "Nee" | "n.v.t.";
+
+function JaNeeNvt({
+    value,
+    onChange
+}:{
+    value:JaNeeNvtWaarde;
+    onChange:(value:Exclude<JaNeeNvtWaarde, "">)=>void;
+}){
+    const opties:Exclude<JaNeeNvtWaarde, "">[] = ["Ja", "Nee", "n.v.t."];
+    return (
+        <div className="flex flex-wrap gap-2">
+            {opties.map((optie)=>(
+                <button
+                    key={optie}
+                    type="button"
+                    onClick={()=>onChange(optie)}
+                    className={`
+                        px-4 py-1.5 text-sm rounded-full border font-medium transition
+                        ${
+                            value === optie
+                            ?
+                            optie === "Ja"
+                                ? CHIP_SELECTED_TONE.green
+                                : optie === "Nee"
+                                    ? CHIP_SELECTED_TONE.sky
+                                    : CHIP_SELECTED_TONE.yellow
+                            :
+                            chipIdleClassName
+                        }
+                    `}
+                >
+                    {optie}
+                </button>
+            ))}
+        </div>
+    );
+}
+
 
 
 const KEUZE_KLEUREN:Record<string,string> = {
@@ -3548,6 +3587,33 @@ export default function OpleverForm({
                             }
                             uploadFile={uploadSchermFoto}
                         />
+                        {type === "montage" ? (
+                            <div className="mt-4 space-y-3 border-t border-sky-200 pt-3">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    Extra controles
+                                </p>
+                                {(
+                                    [
+                                        ["schermAanUitTijd", "Aan-tijd en uit-tijd staan op de juiste dagen en tijden"],
+                                        ["schermUitschakelenGeenSignaal", "Uitschakelen bij geen signaal staat op UIT"],
+                                        ["schermHelderheidAutomatisch", "Helderheidregeling staat op Automatisch"],
+                                        ["schermStiltemodus", "Stiltemodus staat aan"],
+                                    ] as const
+                                ).map(([veld, label])=>(
+                                    <div key={veld} className="space-y-1.5">
+                                        <p className="text-sm text-slate-700">{label}</p>
+                                        <JaNeeNvt
+                                            value={c[veld]}
+                                            onChange={(v)=>
+                                                update(draft=>{
+                                                    draft.checklist[veld] = v;
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : null}
                     </ModuleKaart>
                     ))
                     }
@@ -3835,6 +3901,19 @@ export default function OpleverForm({
                                 </label>
                             )
                         }
+                    </ModuleKaart>
+                    )
+                    }
+
+                    {
+                    heeftModule(modules, "evalue8") && (
+                    <ModuleKaart
+                        titel="eValue8"
+                        kleur="bg-indigo-50 border-indigo-200"
+                    >
+                        <p className="text-sm text-slate-600">
+                            Invullen volgt.
+                        </p>
                     </ModuleKaart>
                     )
                     }
