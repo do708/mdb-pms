@@ -69,8 +69,36 @@ export async function POST(req: Request) {
         if (!guard.ok) return guard.response;
 
         const body = await req.json();
+
+        const projectId =
+            typeof body.projectId === "string" && body.projectId.trim()
+                ? body.projectId.trim()
+                : null;
+
+        let linkedProject: {
+            id: string;
+            number: string;
+            name: string;
+        } | null = null;
+        if (projectId) {
+            linkedProject = await prisma.project.findUnique({
+                where: { id: projectId },
+                select: { id: true, number: true, name: true },
+            });
+            if (!linkedProject) {
+                return NextResponse.json(
+                    { error: "Project niet gevonden" },
+                    { status: 400 }
+                );
+            }
+        }
+
         const title =
-            typeof body.title === "string" ? body.title.trim() : "";
+            typeof body.title === "string" && body.title.trim()
+                ? body.title.trim()
+                : linkedProject
+                  ? `${linkedProject.number} · ${linkedProject.name}`
+                  : "";
         if (!title) {
             return NextResponse.json(
                 { error: "Titel is verplicht" },
@@ -78,43 +106,86 @@ export async function POST(req: Request) {
             );
         }
 
-        const dateIso =
-            typeof body.date === "string" ? body.date.trim() : "";
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateIso)) {
+        const dateSet = new Set<string>();
+        const pushDate = (value: unknown) => {
+            if (
+                typeof value === "string" &&
+                /^\d{4}-\d{2}-\d{2}$/.test(value.trim())
+            ) {
+                dateSet.add(value.trim());
+            }
+        };
+        pushDate(body.date);
+        if (Array.isArray(body.dates)) {
+            for (const d of body.dates) pushDate(d);
+        }
+        const dates = [...dateSet].sort();
+        if (dates.length === 0) {
             return NextResponse.json(
                 { error: "Datum is verplicht (JJJJ-MM-DD)" },
                 { status: 400 }
             );
         }
+        if (dates.length > 21) {
+            return NextResponse.json(
+                { error: "Kies maximaal 21 dagen tegelijk" },
+                { status: 400 }
+            );
+        }
 
-        const allDay = Boolean(body.allDay);
+        const isProject = Boolean(linkedProject);
+        const allDay = isProject ? false : Boolean(body.allDay);
         const startTime =
-            typeof body.startTime === "string" ? body.startTime : null;
+            typeof body.startTime === "string" && body.startTime.trim()
+                ? body.startTime.trim()
+                : isProject
+                  ? "08:00"
+                  : null;
         const endTime =
-            typeof body.endTime === "string" ? body.endTime : null;
+            typeof body.endTime === "string" && body.endTime.trim()
+                ? body.endTime.trim()
+                : isProject
+                  ? "16:00"
+                  : null;
         const notes =
             typeof body.notes === "string" && body.notes.trim()
                 ? body.notes.trim()
-                : null;
-        const assignedUserId =
+                : isProject
+                  ? "Project"
+                  : null;
+
+        const userIdSet = new Set<string>();
+        if (Array.isArray(body.userIds)) {
+            for (const uid of body.userIds) {
+                if (typeof uid === "string" && uid.trim()) {
+                    userIdSet.add(uid.trim());
+                }
+            }
+        }
+        if (
             typeof body.assignedUserId === "string" &&
             body.assignedUserId.trim()
-                ? body.assignedUserId.trim()
-                : null;
-        const projectId =
-            typeof body.projectId === "string" && body.projectId.trim()
-                ? body.projectId.trim()
-                : null;
+        ) {
+            userIdSet.add(body.assignedUserId.trim());
+        }
+        const userIds = [...userIdSet];
 
-        if (assignedUserId) {
-            const engineer = await prisma.user.findFirst({
+        if (isProject && userIds.length === 0) {
+            return NextResponse.json(
+                { error: "Selecteer minimaal één monteur" },
+                { status: 400 }
+            );
+        }
+
+        if (userIds.length > 0) {
+            const engineers = await prisma.user.findMany({
                 where: {
-                    id: assignedUserId,
+                    id: { in: userIds },
                     role: "engineer",
                 },
                 select: { id: true },
             });
-            if (!engineer) {
+            if (engineers.length !== userIds.length) {
                 return NextResponse.json(
                     { error: "Monteur niet gevonden" },
                     { status: 400 }
@@ -129,7 +200,11 @@ export async function POST(req: Request) {
             );
         }
 
-        const recurrence = parseRecurrenceBody(body);
+        const recurrence = parseRecurrenceBody(
+            dates.length > 1 || isProject
+                ? { ...body, recurrenceFreq: "none" }
+                : body
+        );
         if ("error" in recurrence) {
             return NextResponse.json(
                 { error: recurrence.error },
@@ -137,69 +212,77 @@ export async function POST(req: Request) {
             );
         }
 
-        let startAt = parseDateTime(dateIso, startTime, allDay);
-        if (Number.isNaN(startAt.getTime())) {
-            return NextResponse.json(
-                { error: "Ongeldige datum" },
-                { status: 400 }
-            );
-        }
-        startAt = applyRecurrenceStart(startAt, recurrence);
+        const assignees: (string | null)[] =
+            userIds.length > 0 ? userIds : [null];
 
-        let endAt: Date | null = null;
-        if (!allDay && endTime) {
-            const rawEnd = parseDateTime(dateIso, endTime, false);
-            const rawStart = parseDateTime(dateIso, startTime, false);
-            const duration = rawEnd.getTime() - rawStart.getTime();
-            if (duration <= 0) {
+        const created = [];
+        for (const dateIso of dates) {
+            let startAt = parseDateTime(dateIso, startTime, allDay);
+            if (Number.isNaN(startAt.getTime())) {
                 return NextResponse.json(
-                    { error: "Eindtijd moet na starttijd liggen" },
+                    { error: "Ongeldige datum" },
                     { status: 400 }
                 );
             }
-            endAt = new Date(startAt.getTime() + duration);
-        }
+            if (dates.length === 1) {
+                startAt = applyRecurrenceStart(startAt, recurrence);
+            }
 
-        if (projectId) {
-            const linked = await prisma.project.findUnique({
-                where: { id: projectId },
-                select: { id: true },
-            });
-            if (!linked) {
-                return NextResponse.json(
-                    { error: "Project niet gevonden" },
-                    { status: 400 }
-                );
+            let endAt: Date | null = null;
+            if (!allDay && endTime) {
+                const rawEnd = parseDateTime(dateIso, endTime, false);
+                const rawStart = parseDateTime(dateIso, startTime, false);
+                const duration = rawEnd.getTime() - rawStart.getTime();
+                if (duration <= 0) {
+                    return NextResponse.json(
+                        { error: "Eindtijd moet na starttijd liggen" },
+                        { status: 400 }
+                    );
+                }
+                endAt = new Date(startAt.getTime() + duration);
+            }
+
+            for (const assignedUserId of assignees) {
+                const event = await prisma.planningEvent.create({
+                    data: {
+                        title,
+                        notes,
+                        startAt,
+                        endAt,
+                        allDay,
+                        assignedUserId,
+                        projectId,
+                        createdById: guard.user.id,
+                        recurrenceFreq:
+                            dates.length > 1 || isProject
+                                ? "none"
+                                : recurrence.recurrenceFreq,
+                        recurrenceInterval: recurrence.recurrenceInterval,
+                        recurrenceWeekday: recurrence.recurrenceWeekday,
+                        recurrenceNth: recurrence.recurrenceNth,
+                        recurrenceUntil: recurrence.recurrenceUntil,
+                    },
+                    include: {
+                        assignedUser: {
+                            select: { id: true, name: true },
+                        },
+                        createdBy: {
+                            select: { id: true, name: true },
+                        },
+                    },
+                });
+                created.push(event);
             }
         }
 
-        const event = await prisma.planningEvent.create({
-            data: {
-                title,
-                notes,
-                startAt,
-                endAt,
-                allDay,
-                assignedUserId,
-                projectId,
-                createdById: guard.user.id,
-                recurrenceFreq: recurrence.recurrenceFreq,
-                recurrenceInterval: recurrence.recurrenceInterval,
-                recurrenceWeekday: recurrence.recurrenceWeekday,
-                recurrenceNth: recurrence.recurrenceNth,
-                recurrenceUntil: recurrence.recurrenceUntil,
-            },
-            include: {
-                assignedUser: {
-                    select: { id: true, name: true },
-                },
-                createdBy: {
-                    select: { id: true, name: true },
-                },
-            },
-        });
+        if (created.length === 1) {
+            return NextResponse.json(created[0], { status: 201 });
+        }
 
-        return NextResponse.json(event, { status: 201 });
+        return NextResponse.json(
+            { count: created.length, events: created },
+            { status: 201 }
+        );
     } catch (error) {
         console.error("PLANNING EVENT POST ERROR", error);
         const message =

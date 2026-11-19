@@ -95,6 +95,7 @@ export async function PATCH(
             endAt?: Date | null;
             allDay?: boolean;
             assignedUserId?: string | null;
+            projectId?: string | null;
             recurrenceFreq?: string;
             recurrenceInterval?: number;
             recurrenceWeekday?: number | null;
@@ -142,6 +143,26 @@ export async function PATCH(
                 }
             }
             data.assignedUserId = assignedUserId;
+        }
+
+        if ("projectId" in body) {
+            const nextProjectId =
+                typeof body.projectId === "string" && body.projectId.trim()
+                    ? body.projectId.trim()
+                    : null;
+            if (nextProjectId) {
+                const linked = await prisma.project.findUnique({
+                    where: { id: nextProjectId },
+                    select: { id: true },
+                });
+                if (!linked) {
+                    return NextResponse.json(
+                        { error: "Project niet gevonden" },
+                        { status: 400 }
+                    );
+                }
+            }
+            data.projectId = nextProjectId;
         }
 
         let recurrenceForAlign: {

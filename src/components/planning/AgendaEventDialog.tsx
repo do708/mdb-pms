@@ -9,11 +9,16 @@ import {
     NTH_LABELS_NL,
 } from "@/lib/planning/expandPlanningEvents";
 import {
+    addAmsterdamCalendarDays,
     amsterdamIsoWeekday,
     amsterdamLocalToDate,
     formatAmsterdamDateIso,
     formatAmsterdamHHmm,
 } from "@/lib/datetime/amsterdam";
+import {
+    PROJECT_PLAN_END,
+    PROJECT_PLAN_START,
+} from "@/lib/projects/ensurePlanningEvent";
 
 export interface PlanningAgendaEvent {
     id: string;
@@ -24,6 +29,7 @@ export interface PlanningAgendaEvent {
     allDay: boolean;
     assignedUserId: string | null;
     assignedUser?: { id: string; name: string | null } | null;
+    projectId?: string | null;
     recurrenceFreq?: string | null;
     recurrenceInterval?: number | null;
     recurrenceWeekday?: number | null;
@@ -38,6 +44,13 @@ export interface PlanningAgendaEvent {
 interface EngineerOption {
     id: string;
     name: string | null;
+}
+
+interface ProjectOption {
+    id: string;
+    number: string;
+    name: string;
+    status: string;
 }
 
 export interface AgendaEventPrefill {
@@ -70,6 +83,23 @@ function toDateInput(iso: string | null | undefined): string {
     if (isNaN(d.getTime())) return "";
     return formatAmsterdamDateIso(d);
 }
+
+function addDaysIso(iso: string, days: number): string {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso;
+    return formatAmsterdamDateIso(
+        addAmsterdamCalendarDays(amsterdamLocalToDate(iso, "12:00"), days)
+    );
+}
+
+function mondayOfIso(iso: string): string {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        return formatAmsterdamDateIso(new Date());
+    }
+    const wd = amsterdamIsoWeekday(amsterdamLocalToDate(iso, "12:00"));
+    return addDaysIso(iso, 1 - wd);
+}
+
+const WEEKDAY_SHORT = ["ma", "di", "wo", "do", "vr", "za", "zo"];
 
 function weekdayFromDateIso(dateIso: string): number {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dateIso)) return 1;
@@ -137,10 +167,15 @@ export default function AgendaEventDialog({
 
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
+    const [dates, setDates] = useState<string[]>([]);
+    const [weekAnchor, setWeekAnchor] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [allDay, setAllDay] = useState(false);
     const [assignedUserId, setAssignedUserId] = useState("");
+    const [assignedUserIds, setAssignedUserIds] = useState<string[]>([]);
+    const [projectId, setProjectId] = useState("");
+    const [projects, setProjects] = useState<ProjectOption[]>([]);
     const [notes, setNotes] = useState("");
     const [recurrenceFreq, setRecurrenceFreq] = useState<
         "none" | "weekly" | "monthly" | "monthly_weekday" | "yearly"
@@ -159,12 +194,19 @@ export default function AgendaEventDialog({
         setError(null);
         if (event) {
             const seriesStart = event.seriesStartAt || event.startAt;
+            const dateIso = toDateInput(seriesStart);
             setTitle(event.title || "");
-            setDate(toDateInput(seriesStart));
+            setDate(dateIso);
+            setDates(dateIso ? [dateIso] : []);
+            setWeekAnchor(mondayOfIso(dateIso));
             setAllDay(event.allDay);
             setStartTime(event.allDay ? "" : toTimeInput(seriesStart));
             setEndTime(event.allDay ? "" : toTimeInput(event.endAt));
             setAssignedUserId(event.assignedUserId || "");
+            setAssignedUserIds(
+                event.assignedUserId ? [event.assignedUserId] : []
+            );
+            setProjectId(event.projectId || "");
             setNotes(event.notes || "");
             const freq =
                 event.recurrenceFreq === "weekly" ||
@@ -222,13 +264,20 @@ export default function AgendaEventDialog({
                           Math.max(1, event.recurrenceInterval || 1) > 1
             );
         } else {
-            const prefDate = prefill?.date || "";
+            const prefDate =
+                prefill?.date || formatAmsterdamDateIso(new Date());
             setTitle("");
             setDate(prefDate);
+            setDates(prefDate ? [prefDate] : []);
+            setWeekAnchor(mondayOfIso(prefDate));
             setAllDay(false);
             setStartTime(prefill?.startTime || "");
             setEndTime("");
             setAssignedUserId(prefill?.engineerId || "");
+            setAssignedUserIds(
+                prefill?.engineerId ? [prefill.engineerId] : []
+            );
+            setProjectId("");
             setNotes("");
             setRecurrenceFreq("none");
             setRecurrenceInterval("1");
@@ -238,6 +287,22 @@ export default function AgendaEventDialog({
             setCustomRecurrence(false);
         }
     }, [open, event, prefill]);
+
+    useEffect(() => {
+        if (!open) return;
+        fetch("/api/projects")
+            .then((r) => r.json())
+            .then((list) => {
+                const rows = Array.isArray(list) ? list : [];
+                setProjects(
+                    rows.filter(
+                        (p: ProjectOption) =>
+                            p.status === "actief" || p.status === "new"
+                    )
+                );
+            })
+            .catch(() => setProjects([]));
+    }, [open]);
 
     if (!open) return null;
 
@@ -251,13 +316,70 @@ export default function AgendaEventDialog({
 
     const eventApiId = event?.id ? parseMasterId(event.id) : "";
 
+    const isProjectPlan = Boolean(projectId);
+    const selectedProject = projects.find((p) => p.id === projectId) || null;
+
+    function toggleDate(iso: string) {
+        setDates((prev) => {
+            const next = prev.includes(iso)
+                ? prev.filter((d) => d !== iso)
+                : [...prev, iso].sort();
+            if (next[0]) setDate(next[0]);
+            return next;
+        });
+    }
+
+    function toggleEngineer(id: string) {
+        setAssignedUserIds((prev) => {
+            const next = prev.includes(id)
+                ? prev.filter((x) => x !== id)
+                : [...prev, id];
+            setAssignedUserId(next[0] || "");
+            return next;
+        });
+    }
+
+    function applyProject(id: string) {
+        setProjectId(id);
+        const p = projects.find((row) => row.id === id);
+        if (p) {
+            setTitle(`${p.number} · ${p.name}`);
+            setAllDay(false);
+            setStartTime((t) => t || PROJECT_PLAN_START);
+            setEndTime((t) => t || PROJECT_PLAN_END);
+            setRecurrenceFreq("none");
+            setCustomRecurrence(false);
+        } else {
+            setTitle("");
+        }
+    }
+
     async function save() {
-        if (!title.trim()) {
+        const chosenDates = isEdit
+            ? date
+                ? [date]
+                : []
+            : dates.length > 0
+              ? dates
+              : date
+                ? [date]
+                : [];
+        const chosenUsers = isEdit
+            ? assignedUserId
+                ? [assignedUserId]
+                : []
+            : assignedUserIds;
+
+        if (!isProjectPlan && !title.trim()) {
             setError("Titel is verplicht");
             return;
         }
-        if (!date) {
-            setError("Datum is verplicht");
+        if (chosenDates.length === 0) {
+            setError("Kies minstens één datum");
+            return;
+        }
+        if (isProjectPlan && chosenUsers.length === 0) {
+            setError("Selecteer minimaal één monteur");
             return;
         }
 
@@ -270,14 +392,26 @@ export default function AgendaEventDialog({
         setError(null);
         try {
             const payload = {
-                title: title.trim(),
-                date,
-                allDay,
-                startTime: allDay ? null : startTime || null,
-                endTime: allDay ? null : endTime || null,
-                assignedUserId: assignedUserId || null,
+                title: title.trim() || undefined,
+                date: chosenDates[0],
+                dates: chosenDates,
+                allDay: isProjectPlan ? false : allDay,
+                startTime:
+                    isProjectPlan || !allDay
+                        ? startTime || (isProjectPlan ? PROJECT_PLAN_START : null)
+                        : null,
+                endTime:
+                    isProjectPlan || !allDay
+                        ? endTime || (isProjectPlan ? PROJECT_PLAN_END : null)
+                        : null,
+                assignedUserId: chosenUsers[0] || null,
+                userIds: chosenUsers,
+                projectId: projectId || null,
                 notes: notes.trim() || null,
-                recurrenceFreq,
+                recurrenceFreq:
+                    isProjectPlan || chosenDates.length > 1
+                        ? "none"
+                        : recurrenceFreq,
                 recurrenceInterval: recurrenceFreq === "none" ? 1 : interval,
                 recurrenceWeekday:
                     recurrenceFreq === "weekly" ||
@@ -369,7 +503,7 @@ export default function AgendaEventDialog({
             onClick={onClose}
         >
             <div
-                className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl"
+                className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-xl"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="sticky top-0 z-10 border-b border-slate-100 bg-white">
@@ -415,31 +549,148 @@ export default function AgendaEventDialog({
 
                     <label className="block">
                         <span className="text-xs font-medium text-slate-600">
-                            Titel *
+                            Lopende projecten
                         </span>
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            autoComplete="off"
-                            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                            autoFocus
-                        />
+                        <select
+                            value={projectId}
+                            onChange={(e) => applyProject(e.target.value)}
+                            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+                        >
+                            <option value="">Geen project (vrij item)</option>
+                            {projects.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                    {p.number} · {p.name}
+                                </option>
+                            ))}
+                        </select>
+                        {isProjectPlan ? (
+                            <p className="mt-1 text-xs text-slate-500">
+                                Komt in de urenvakken van de gekozen monteurs
+                                (niet in de dagbalk).
+                            </p>
+                        ) : null}
                     </label>
 
-                    <label className="block">
-                        <span className="text-xs font-medium text-slate-600">
-                            Datum *
-                        </span>
-                        <input
-                            type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            autoComplete="off"
-                            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                        />
-                    </label>
+                    {!isProjectPlan ? (
+                        <label className="block">
+                            <span className="text-xs font-medium text-slate-600">
+                                Titel *
+                            </span>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                autoComplete="off"
+                                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                autoFocus
+                            />
+                        </label>
+                    ) : selectedProject ? (
+                        <p className="text-sm font-semibold text-slate-800">
+                            {selectedProject.number} · {selectedProject.name}
+                        </p>
+                    ) : null}
 
+                    {isEdit ? (
+                        <label className="block">
+                            <span className="text-xs font-medium text-slate-600">
+                                Datum *
+                            </span>
+                            <input
+                                type="date"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                autoComplete="off"
+                                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                            />
+                        </label>
+                    ) : (
+                        <div>
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="text-xs font-medium text-slate-600">
+                                    Dagen *
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setWeekAnchor(
+                                                addDaysIso(
+                                                    weekAnchor ||
+                                                        mondayOfIso(date),
+                                                    -7
+                                                )
+                                            )
+                                        }
+                                        className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                                    >
+                                        Vorige week
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setWeekAnchor(
+                                                addDaysIso(
+                                                    weekAnchor ||
+                                                        mondayOfIso(date),
+                                                    7
+                                                )
+                                            )
+                                        }
+                                        className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                                    >
+                                        Volgende
+                                    </button>
+                                </div>
+                            </div>
+                            <p className="mt-1 text-xs text-slate-500">
+                                Klik dagen aan. Meerdere dagen tegelijk
+                                mogelijk.
+                            </p>
+                            <div className="mt-2 grid grid-cols-7 gap-1.5">
+                                {Array.from({ length: 14 }, (_, i) => {
+                                    const iso = addDaysIso(
+                                        weekAnchor || mondayOfIso(date),
+                                        i
+                                    );
+                                    const selected = dates.includes(iso);
+                                    const wd = i % 7;
+                                    const dayNum = iso.slice(8);
+                                    return (
+                                        <button
+                                            key={iso}
+                                            type="button"
+                                            onClick={() => toggleDate(iso)}
+                                            className={`
+                                                rounded-xl border px-1 py-2 text-center
+                                                min-h-[52px]
+                                                ${
+                                                    selected
+                                                        ? "bg-[#0066FF] border-[#0066FF] text-white"
+                                                        : "bg-white border-slate-200 text-slate-800 hover:bg-slate-50"
+                                                }
+                                            `}
+                                        >
+                                            <span className="block text-[10px] uppercase opacity-80">
+                                                {WEEKDAY_SHORT[wd]}
+                                            </span>
+                                            <span className="block text-sm font-bold leading-none mt-0.5">
+                                                {Number(dayNum)}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {dates.length > 0 ? (
+                                <p className="mt-1.5 text-xs text-slate-500">
+                                    {dates.length} dag
+                                    {dates.length === 1 ? "" : "en"} gekozen
+                                </p>
+                            ) : null}
+                        </div>
+                    )}
+
+                    {!isProjectPlan ? (
                     <label className="flex items-center gap-2 text-sm text-slate-700">
                         <input
                             type="checkbox"
@@ -449,8 +700,9 @@ export default function AgendaEventDialog({
                         />
                         Hele dag
                     </label>
+                    ) : null}
 
-                    {!allDay && (
+                    {(!allDay || isProjectPlan) && (
                         <div className="grid grid-cols-2 gap-3">
                             <label className="block">
                                 <span className="text-xs font-medium text-slate-600">
@@ -481,6 +733,7 @@ export default function AgendaEventDialog({
                         </div>
                     )}
 
+                    {isEdit ? (
                     <label className="block">
                         <span className="text-xs font-medium text-slate-600">
                             Monteur (optioneel)
@@ -500,7 +753,71 @@ export default function AgendaEventDialog({
                             ))}
                         </select>
                     </label>
+                    ) : (
+                    <div>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="text-xs font-medium text-slate-600">
+                                Monteurs
+                                {isProjectPlan ? " *" : " (meerdere mogelijk)"}
+                            </span>
+                            {engineers.length > 0 ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const ids = engineers.map((e) => e.id);
+                                        const all =
+                                            assignedUserIds.length ===
+                                            ids.length;
+                                        setAssignedUserIds(all ? [] : ids);
+                                        setAssignedUserId(
+                                            all ? "" : ids[0] || ""
+                                        );
+                                    }}
+                                    className="text-xs font-medium text-[#d6007e]"
+                                >
+                                    {assignedUserIds.length ===
+                                    engineers.length
+                                        ? "Niets selecteren"
+                                        : "Alles selecteren"}
+                                </button>
+                            ) : null}
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            {engineers.map((eng) => {
+                                const checked = assignedUserIds.includes(
+                                    eng.id
+                                );
+                                return (
+                                    <label
+                                        key={eng.id}
+                                        className={`
+                                            inline-flex items-center gap-2
+                                            px-3 py-2 rounded-xl border
+                                            cursor-pointer text-sm min-h-[44px]
+                                            ${
+                                                checked
+                                                    ? "bg-[#e8f0ff] border-[#0066FF] text-[#0066FF]"
+                                                    : "bg-white border-slate-200"
+                                            }
+                                        `}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            onChange={() =>
+                                                toggleEngineer(eng.id)
+                                            }
+                                            className="rounded"
+                                        />
+                                        {eng.name || "Monteur"}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    )}
 
+                    {isEdit || (!isProjectPlan && dates.length <= 1) ? (
                     <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
                         {(() => {
                             const wd = weekdayFromDateIso(date || "");
@@ -856,6 +1173,7 @@ export default function AgendaEventDialog({
                             );
                         })()}
                     </div>
+                    ) : null}
 
                     <label className="block">
                         <span className="text-xs font-medium text-slate-600">

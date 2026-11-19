@@ -786,6 +786,21 @@ export default function WeekView({
     }
 
     function eventAsBlock(ev: any) {
+        if (ev.projectId && ev.assignedUserId) {
+            const iso = isoDate(new Date(ev.startAt));
+            const [y, m, d] = iso.split("-").map(Number);
+            const start = ev.allDay
+                ? new Date(y, m - 1, d, 8, 0, 0)
+                : new Date(ev.startAt);
+            const end =
+                ev.endAt && !ev.allDay
+                    ? new Date(ev.endAt)
+                    : new Date(y, m - 1, d, 16, 0, 0);
+            return {
+                plannedDate: start,
+                plannedEndDate: end,
+            };
+        }
         return {
             plannedDate: ev.startAt,
             plannedEndDate: ev.endAt ?? (ev.allDay ? ev.startAt : null),
@@ -2040,7 +2055,8 @@ export default function WeekView({
                                                                 : basePos;
                                                             const timeLabel =
                                                                 !override &&
-                                                                ev.allDay
+                                                                ev.allDay &&
+                                                                !ev.projectId
                                                                     ? "Hele dag"
                                                                     : `${formatUurLabel(pos.beginUur)}${
                                                                           ev.endAt ||
