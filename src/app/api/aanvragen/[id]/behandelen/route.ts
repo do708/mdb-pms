@@ -104,8 +104,13 @@ export async function POST(
 
         // Prefill klaarzet-materiaal uit specs, zodat controle/dashboard
         // meteen regels ziet (niet pas na openen van de werkbon).
-        const klaarzetPrefill =
-            klaarzetVanAanvraagSpecificaties(aanvraagSpecificaties);
+        let klaarzetPrefill: ReturnType<typeof klaarzetVanAanvraagSpecificaties> = {};
+        try {
+            klaarzetPrefill =
+                klaarzetVanAanvraagSpecificaties(aanvraagSpecificaties);
+        } catch (prefillError) {
+            console.error("AANVRAAG KLAARZET PREFILL ERROR", prefillError);
+        }
 
         const werkorder =
             await prisma.workorder.create({

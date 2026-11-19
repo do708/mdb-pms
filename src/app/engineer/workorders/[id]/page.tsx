@@ -543,6 +543,7 @@ export default function EngineerWorkorderPage(){
             opleverGeladen.current = false;
             werkzaamhedenGeladen.current = false;
 
+            try {
             const response =
                 await fetch(
                     `/api/workorders/${id}`
@@ -552,7 +553,11 @@ export default function EngineerWorkorderPage(){
             const data =
                 await response.json();
 
-
+            if (!response.ok || !data?.id) {
+                setWorkorder(null);
+                setLoading(false);
+                return;
+            }
 
             setWorkorder(data);
             setPakbonnen(Array.isArray(data.pakbonnen) ? data.pakbonnen : []);
@@ -656,6 +661,12 @@ export default function EngineerWorkorderPage(){
 
 
             setLoading(false);
+
+            } catch (loadError) {
+                console.error(loadError);
+                setWorkorder(null);
+                setLoading(false);
+            }
 
 
         }

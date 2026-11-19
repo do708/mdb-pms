@@ -163,7 +163,8 @@ alleen zichtbaar via sidebar → Werkbonnen.
 ## 9. Deploy
 
 - Code: GitHub `do708/mdb-pms` → Vercel (auto-deploy op push naar main).
-- Migraties online: `DATABASE_URL="$ONLINE_DB" npx prisma migrate deploy`
+- Migraties: `prisma migrate deploy` draait in `npm run build` (Vercel).
+  Handmatig: `DATABASE_URL="$ONLINE_DB" npx prisma migrate deploy`
   (pooler poort 5432 voor migraties; app gebruikt poort 6543 + `?pgbouncer=true`).
 - `NEXTAUTH_URL` online = `https://pms.mdb-networks.nl`.
 

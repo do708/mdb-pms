@@ -38,10 +38,12 @@
 
 ## Migraties draaien
 - Lokaal: `npx prisma migrate dev --name <naam>`.
-- Online: `DATABASE_URL="$ONLINE_DB" npx prisma migrate deploy`
+- Online: `prisma migrate deploy` via `npm run build` op Vercel, of
+  `DATABASE_URL="$ONLINE_DB" npx prisma migrate deploy`
   (migraties via pooler poort 5432; app runtime poort 6543 + `?pgbouncer=true`).
 
 ## Migratielog
 - `20260729000000_add_aanvraag` — Aanvraag-model + `Customer.publicToken`.
 - `20260729100000_aanvraag_specificaties` — `aanvragerNaam` + `specificaties`.
+- `20261119100000_pakbon_workorder_many_to_many` — `Pakbon` + `PakbonWorkorder`.
 - _(voeg nieuwe migraties hier toe met datum + korte omschrijving)_

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ensurePakbonTables } from "@/lib/prismaEnsure";
 
 type FormDataObject = Record<string, unknown>;
 
@@ -126,4 +127,29 @@ export function serializePakbonLinks(
         createdAt: link.pakbon.createdAt,
         viewUrl: pakbonViewUrl(workorderId, link.pakbon.id),
     }));
+}
+
+/** Pakbonnen voor een werkbon; leeg bij schema-mismatch i.p.v. de hele GET te laten crashen. */
+export async function loadSerializedPakbonnen(workorderId: string) {
+    try {
+        await ensurePakbonTables();
+        const links = await prisma.pakbonWorkorder.findMany({
+            where: { workorderId },
+            include: {
+                pakbon: {
+                    select: {
+                        id: true,
+                        originalName: true,
+                        filename: true,
+                        createdAt: true,
+                    },
+                },
+            },
+            orderBy: { createdAt: "asc" },
+        });
+        return serializePakbonLinks(workorderId, links);
+    } catch (error) {
+        console.error("PAKBON LINKS LOAD ERROR", error);
+        return [];
+    }
 }

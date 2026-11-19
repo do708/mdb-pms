@@ -19,7 +19,7 @@ import { ensureWorkorderOpdrachtnummerKolom } from "@/lib/prismaEnsure";
 import { parseOpleverModules } from "@/lib/workorders/opleverModules";
 import { syncWorkorderForms } from "@/lib/workorders/syncForms";
 import { removeGeneratedWorkorderPdfs } from "@/lib/workorders/removeGeneratedPdfs";
-import { serializePakbonLinks } from "@/lib/documents/attachPakbon";
+import { loadSerializedPakbonnen } from "@/lib/documents/attachPakbon";
 
 
 
@@ -127,20 +127,6 @@ customer:true,
                         include:{
                             formType:true
                         }
-                    },
-
-                    pakbonnen:{
-                        include:{
-                            pakbon:{
-                                select:{
-                                    id:true,
-                                    originalName:true,
-                                    filename:true,
-                                    createdAt:true
-                                }
-                            }
-                        },
-                        orderBy:{ createdAt:"asc" }
                     }
 
 
@@ -270,10 +256,7 @@ customer:true,
             {
                 ...workorder,
                 formData:formDataForClient,
-                pakbonnen: serializePakbonLinks(
-                    workorder.id,
-                    workorder.pakbonnen
-                )
+                pakbonnen: await loadSerializedPakbonnen(workorder.id)
             }
 
         );

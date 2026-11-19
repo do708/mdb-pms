@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
+import { ensurePakbonTables } from "@/lib/prismaEnsure";
 import { contentTypeForFilename } from "@/lib/attachments/contentType";
 import { createPakbonForWorkorders } from "@/lib/documents/attachPakbon";
 import { uploadPakbonToNas } from "@/lib/documents/pakbonStorage";
@@ -28,29 +29,42 @@ export async function GET() {
         return guard.response;
     }
 
-    const [workorders, teKoppelen] = await Promise.all([
-        prisma.workorder.findMany({
-            where: {
-                NOT: { status: { in: ["gefactureerd"] } },
-                pakbonnen: { none: {} },
-            },
+    try {
+        await ensurePakbonTables();
+
+        const [workorders, teKoppelen] = await Promise.all([
+            prisma.workorder.findMany({
+                where: {
+                    NOT: { status: { in: ["gefactureerd"] } },
+                    pakbonnen: { none: {} },
+                },
+                orderBy: [{ plannedDate: "asc" }, { number: "desc" }],
+                take: 250,
+                select: workorderSelect,
+            }),
+            prisma.pakbon.findMany({
+                where: { workorders: { none: {} } },
+                orderBy: { createdAt: "desc" },
+                select: {
+                    id: true,
+                    originalName: true,
+                    filename: true,
+                    createdAt: true,
+                },
+            }),
+        ]);
+
+        return NextResponse.json({ workorders, teKoppelen });
+    } catch (error) {
+        console.error("PAKBONNEN LIST ERROR", error);
+        const workorders = await prisma.workorder.findMany({
+            where: { NOT: { status: { in: ["gefactureerd"] } } },
             orderBy: [{ plannedDate: "asc" }, { number: "desc" }],
             take: 250,
             select: workorderSelect,
-        }),
-        prisma.pakbon.findMany({
-            where: { workorders: { none: {} } },
-            orderBy: { createdAt: "desc" },
-            select: {
-                id: true,
-                originalName: true,
-                filename: true,
-                createdAt: true,
-            },
-        }),
-    ]);
-
-    return NextResponse.json({ workorders, teKoppelen });
+        });
+        return NextResponse.json({ workorders, teKoppelen: [] });
+    }
 }
 
 export async function POST(request: NextRequest) {

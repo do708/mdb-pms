@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { supabase } from "@/lib/supabase/admin";
 import { requireWorkorderAccess } from "@/lib/auth/guard";
+import { ensurePakbonTables } from "@/lib/prismaEnsure";
 import { contentTypeForFilename } from "@/lib/attachments/contentType";
 import { supabaseStoragePathFromUrl } from "@/lib/documents/documentenboxStorage";
 import {
@@ -30,18 +31,14 @@ export async function GET(
     try {
         const pakbonId = request.nextUrl.searchParams.get("pakbonId");
 
+        await ensurePakbonTables();
+
         const workorder = await prisma.workorder.findUnique({
             where: { id },
             select: {
                 id: true,
                 number: true,
                 formData: true,
-                pakbonnen: {
-                    include: {
-                        pakbon: true,
-                    },
-                    orderBy: { createdAt: "asc" },
-                },
             },
         });
 
@@ -52,9 +49,19 @@ export async function GET(
             );
         }
 
-        const linked = pakbonId
-            ? workorder.pakbonnen.find((row) => row.pakbonId === pakbonId)
-            : workorder.pakbonnen[0];
+        let linked: { pakbon: { url: string; originalName: string | null; filename: string | null } } | undefined;
+        try {
+            const rows = await prisma.pakbonWorkorder.findMany({
+                where: { workorderId: id },
+                include: { pakbon: true },
+                orderBy: { createdAt: "asc" },
+            });
+            linked = pakbonId
+                ? rows.find((row) => row.pakbonId === pakbonId)
+                : rows[0];
+        } catch (pakbonError) {
+            console.error("PAKBON RELATION LOAD ERROR", pakbonError);
+        }
 
         let stored = linked?.pakbon.url || pakbonUrlFromFormData(workorder.formData);
 
