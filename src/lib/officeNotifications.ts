@@ -28,6 +28,16 @@ export interface NietGereedMelding {
     createdAt: Date;
 }
 
+/** Zelfde filter als de alarmbel: volgende werkdag, nog in te vullen, materiaal open. */
+export interface MateriaalKlaarzettenItem {
+    id: string;
+    number: string;
+    title: string;
+    plannedDate: Date | null;
+    customer: string | null;
+    engineer: string | null;
+}
+
 export async function loadNietGereedMeldingen(): Promise<NietGereedMelding[]> {
     return safe(
         "niet-gereed",
@@ -62,6 +72,82 @@ function startOfToday(): Date {
     return d;
 }
 
+function volgendeWerkdagVenster(vanaf: Date): { start: Date; eind: Date } {
+    const start = new Date(vanaf);
+    start.setDate(start.getDate() + 1);
+    const volgWerkdag = volgendeWerkdag(vanaf);
+    const eind = new Date(volgWerkdag);
+    eind.setDate(eind.getDate() + 1);
+    return { start, eind };
+}
+
+function isMateriaalKlaarzettenOpen(
+    formData: unknown,
+    aanvraagSpecificaties: unknown
+): boolean {
+    try {
+        const km = leesKlaarzetMateriaal(formData);
+        const aansturing = leesSchermAansturing(aanvraagSpecificaties);
+        return Boolean(
+            heeftMateriaal(km)
+            && !materiaalCompleet(km, { heeftNativeOs: aansturing.heeftNativeOs })
+        );
+    } catch (error) {
+        console.error("OFFICE NOTIFICATIONS (materiaal-check)", error);
+        return false;
+    }
+}
+
+export async function loadMateriaalKlaarzettenUrgent(): Promise<
+    MateriaalKlaarzettenItem[]
+> {
+    const { start, eind } = volgendeWerkdagVenster(startOfToday());
+
+    const kandidaten = await safe(
+        "materiaal-kandidaten",
+        () =>
+            prisma.workorder.findMany({
+                where: {
+                    plannedDate: {
+                        gte: start,
+                        lt: eind,
+                    },
+                    status: { in: [...NOG_IN_TE_VULLEN] },
+                },
+                orderBy: { plannedDate: "asc" },
+                include: {
+                    customer: { select: { name: true } },
+                    project: {
+                        include: {
+                            customer: { select: { name: true } },
+                        },
+                    },
+                    assignedUser: { select: { name: true } },
+                },
+            }),
+        []
+    );
+
+    const items: MateriaalKlaarzettenItem[] = [];
+    for (const w of kandidaten) {
+        if (!isMateriaalKlaarzettenOpen(w.formData, w.aanvraagSpecificaties)) {
+            continue;
+        }
+        items.push({
+            id: w.id,
+            number: w.number,
+            title: w.title,
+            plannedDate: w.plannedDate,
+            customer:
+                w.customer?.name
+                ?? w.project?.customer?.name
+                ?? null,
+            engineer: w.assignedUser?.name ?? null,
+        });
+    }
+    return items;
+}
+
 function nlDate(value: Date | string | null | undefined): string {
     if (!value) return "—";
     const d = value instanceof Date ? value : new Date(value);
@@ -82,14 +168,7 @@ async function safe<T>(label: string, fn: () => Promise<T>, fallback: T): Promis
 export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayload> {
     const startVandaag = startOfToday();
 
-    const startMorgen = new Date(startVandaag);
-    startMorgen.setDate(startMorgen.getDate() + 1);
-
-    const volgWerkdag = volgendeWerkdag(startVandaag);
-    const eindMorgen = new Date(volgWerkdag);
-    eindMorgen.setDate(eindMorgen.getDate() + 1);
-
-    const [aanvragen, formulieren, teLaat, morgenKlussen, conflicten, nietGereed] =
+    const [aanvragen, formulieren, teLaat, materiaalUrgent, conflicten, nietGereed] =
         await Promise.all([
             safe(
                 "aanvragen",
@@ -139,59 +218,20 @@ export async function loadOfficeNotifications(): Promise<OfficeNotificationsPayl
                 []
             ),
 
-            safe(
-                "materiaal-kandidaten",
-                () =>
-                    prisma.workorder.findMany({
-                        where: {
-                            plannedDate: {
-                                gte: startMorgen,
-                                lt: eindMorgen,
-                            },
-                            status: { in: [...NOG_IN_TE_VULLEN] },
-                        },
-                        orderBy: { plannedDate: "asc" },
-                        include: {
-                            customer: { select: { name: true } },
-                            project: {
-                                include: {
-                                    customer: { select: { name: true } },
-                                },
-                            },
-                            assignedUser: { select: { name: true } },
-                        },
-                    }),
-                []
-            ),
+            loadMateriaalKlaarzettenUrgent(),
 
             safe("planningsconflicten", () => loadUpcomingPlanningConflicts(), []),
 
             loadNietGereedMeldingen(),
         ]);
 
-    const materiaalItems: OfficeNotification[] = [];
-    for (const w of morgenKlussen) {
-        try {
-            const km = leesKlaarzetMateriaal(w.formData);
-            const aansturing = leesSchermAansturing(w.aanvraagSpecificaties);
-            if (!(heeftMateriaal(km) && !materiaalCompleet(km, { heeftNativeOs: aansturing.heeftNativeOs }))) {
-                continue;
-            }
-            const klant =
-                w.customer?.name ??
-                w.project?.customer?.name ??
-                "—";
-            materiaalItems.push({
-                id: `materiaal-${w.id}`,
-                soort: "materiaal",
-                title: `${w.number} — ${w.title}`,
-                subtitle: `Materiaal controleren · ${klant} · gepland ${nlDate(w.plannedDate)}`,
-                href: `/workorders/${w.id}/edit`,
-            });
-        } catch (error) {
-            console.error("OFFICE NOTIFICATIONS (materiaal-item)", w.id, error);
-        }
-    }
+    const materiaalItems: OfficeNotification[] = materiaalUrgent.map((w) => ({
+        id: `materiaal-${w.id}`,
+        soort: "materiaal",
+        title: `${w.number} — ${w.title}`,
+        subtitle: `Materiaal controleren · ${w.customer ?? "—"} · gepland ${nlDate(w.plannedDate)}`,
+        href: `/workorders/${w.id}/edit`,
+    }));
 
     const items: OfficeNotification[] = [
         ...aanvragen.map((a): OfficeNotification => {

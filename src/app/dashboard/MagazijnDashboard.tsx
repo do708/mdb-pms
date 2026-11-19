@@ -7,6 +7,7 @@ import {
     PageShell,
     SpecListRow,
     SpecPageCard,
+    SpecPanel,
 } from "@/components/ui/SpecLayout";
 
 interface Klus {
@@ -19,16 +20,40 @@ interface Klus {
     assignedUser: { name: string | null } | null;
 }
 
+interface MateriaalItem {
+    id: string;
+    number: string;
+    title: string;
+    plannedDate: string | null;
+    customer: string | null;
+    engineer: string | null;
+}
+
+function nlDate(value: string | null): string {
+    if (!value) return "";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleDateString("nl-NL");
+}
+
 export default function MagazijnDashboard() {
     const [klussen, setKlussen] = useState<Klus[]>([]);
+    const [materiaal, setMateriaal] = useState<MateriaalItem[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         (async () => {
-            const response = await fetch("/api/pakbonnen");
-            if (response.ok) {
-                const data = await response.json();
+            const [pakbonRes, dashRes] = await Promise.all([
+                fetch("/api/pakbonnen"),
+                fetch("/api/dashboard"),
+            ]);
+            if (pakbonRes.ok) {
+                const data = await pakbonRes.json();
                 setKlussen(data.workorders ?? []);
+            }
+            if (dashRes.ok) {
+                const data = await dashRes.json();
+                setMateriaal(data.materiaalWaarschuwing ?? []);
             }
             setLoading(false);
         })();
@@ -48,6 +73,38 @@ export default function MagazijnDashboard() {
                     </Link>
                 }
             />
+
+            {materiaal.length > 0 && (
+                <SpecPanel
+                    title={`Materiaal klaarzetten (${materiaal.length})`}
+                    hint="Opdrachten voor de volgende werkdag waarvan het materiaal nog klaargezet moet worden."
+                    tone="amber"
+                >
+                    <div className="space-y-2">
+                        {materiaal.map((workorder) => (
+                            <SpecListRow
+                                key={workorder.id}
+                                className="flex justify-between items-center gap-3"
+                            >
+                                <div className="min-w-0">
+                                    <p className="font-semibold text-sm text-gray-900 truncate">
+                                        {workorder.number} — {workorder.title}
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                        {workorder.customer ?? "—"}
+                                        {workorder.engineer
+                                            ? ` · ${workorder.engineer}`
+                                            : ""}
+                                        {workorder.plannedDate
+                                            ? ` · gepland ${nlDate(workorder.plannedDate)}`
+                                            : ""}
+                                    </p>
+                                </div>
+                            </SpecListRow>
+                        ))}
+                    </div>
+                </SpecPanel>
+            )}
 
             <SpecPageCard>
                 <h2 className="font-semibold text-sm text-gray-800">

@@ -315,6 +315,7 @@ interface DashboardData {
         id: string;
         number: string;
         title: string;
+        plannedDate?: string | null;
         customer?: string | null;
         engineer?: string | null;
     }>;
@@ -588,14 +589,14 @@ export default function DashboardPage() {
             {(data?.materiaalWaarschuwing?.length ?? 0) > 0 && (
                 <SpecPanel
                     title={`Materiaal klaarzetten (${data?.materiaalWaarschuwing?.length})`}
-                    hint="Ingeplande klussen waarbij materiaal nog openstaat (ook verderop in de planning)."
+                    hint="Opdrachten voor de volgende werkdag waarvan het materiaal nog klaargezet moet worden. Zelfde meldingen als in de alarmbel."
                     tone="amber"
                 >
                     <div className="space-y-2">
                         {data?.materiaalWaarschuwing?.map((workorder) => (
                             <a
                                 key={workorder.id}
-                                href="/dashboard/materiaal-controle"
+                                href={`/workorders/${workorder.id}/edit`}
                             >
                                 <SpecListRow
                                     className="
@@ -613,10 +614,13 @@ export default function DashboardPage() {
                                             {workorder.engineer
                                                 ? ` · ${workorder.engineer}`
                                                 : ""}
+                                            {workorder.plannedDate
+                                                ? ` · gepland ${nlDate(workorder.plannedDate)}`
+                                                : ""}
                                         </p>
                                     </div>
                                     <span className="text-xs font-medium text-amber-800 shrink-0">
-                                        Controleer materiaal →
+                                        Materiaal klaarzetten →
                                     </span>
                                 </SpecListRow>
                             </a>

@@ -4,11 +4,11 @@ import { prisma } from "@/lib/prisma";
 
 import { requireApiRole } from "@/lib/auth/guard";
 
-import { excludeArchivedWorkorders, excludeArchivedForms } from "@/lib/archive";
+import { excludeArchivedForms } from "@/lib/archive";
 import {
-    moetOpMateriaalControle,
-} from "@/lib/klaarzetMateriaal";
-import { loadNietGereedMeldingen } from "@/lib/officeNotifications";
+    loadMateriaalKlaarzettenUrgent,
+    loadNietGereedMeldingen,
+} from "@/lib/officeNotifications";
 
 
 
@@ -17,12 +17,22 @@ import { loadNietGereedMeldingen } from "@/lib/officeNotifications";
 export async function GET(){
 
 
-    const guard = await requireApiRole(["admin","office"]);
+    const guard = await requireApiRole(["admin","office","magazijn"]);
     if(!guard.ok) return guard.response;
 
 
 
     try {
+
+        if (guard.user.role === "magazijn") {
+            const materiaalWaarschuwing = await loadMateriaalKlaarzettenUrgent();
+            return NextResponse.json({
+                counters: {
+                    materiaal: materiaalWaarschuwing.length,
+                },
+                materiaalWaarschuwing,
+            });
+        }
 
 
         // Vandaag om middernacht: alles daarvoor is "verstreken"
@@ -251,49 +261,8 @@ export async function GET(){
 
 
 
-        // Alle ingeplande klussen met open/leeg materiaal (ook over 1–2 weken).
-        const ingeplandKlussen =
-            await prisma.workorder.findMany({
-                where: {
-                    status: "ingepland",
-                    ...excludeArchivedWorkorders(),
-                },
-                orderBy: {
-                    plannedDate: "asc",
-                },
-                omit: {
-                    pdfData: true,
-                },
-                include: {
-                    customer: true,
-                    project: {
-                        include: {
-                            customer: true,
-                        },
-                    },
-                    assignedUser: true,
-                },
-            });
-
-        const materiaalWaarschuwing =
-            ingeplandKlussen
-                .filter((w) =>
-                    moetOpMateriaalControle(
-                        w.formData,
-                        w.aanvraagSpecificaties
-                    )
-                )
-                .map((w) => ({
-                    id: w.id,
-                    number: w.number,
-                    title: w.title,
-                    plannedDate: w.plannedDate,
-                    customer:
-                        w.customer?.name
-                        ?? w.project?.customer?.name
-                        ?? null,
-                    engineer: w.assignedUser?.name ?? null,
-                }));
+        // Zelfde bron als de alarmbel: volgende werkdag, open materiaal.
+        const materiaalWaarschuwing = await loadMateriaalKlaarzettenUrgent();
 
         const nietGereed = await loadNietGereedMeldingen();
 
