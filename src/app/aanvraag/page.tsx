@@ -32,6 +32,10 @@ import {
     isUrenOnlyOpdrachtgever,
 } from "@/lib/aanvraag/opdrachtgeverVorm";
 import {
+    CONTACT_EMAIL_OF_TELEFOON_FOUT,
+    heeftEmailOfTelefoon,
+} from "@/lib/aanvraag/contactVelden";
+import {
     PROJECT_HARDWARE_STATUS_OPTIONS,
     ProjectHardwareStatus,
     isProjectHardwareBesteld,
@@ -474,8 +478,8 @@ function AanvraagFormulier(){
             setFout("Vul de contactpersoon op locatie in.");
             return;
         }
-        if(!contactEmail.trim() && !contactPhone.trim()){
-            setFout("Vul minimaal een e-mailadres of telefoonnummer in.");
+        if(!heeftEmailOfTelefoon(contactEmail, contactPhone)){
+            setFout(CONTACT_EMAIL_OF_TELEFOON_FOUT);
             return;
         }
         if(!aanvragerNaam.trim()){
@@ -831,8 +835,7 @@ function AanvraagFormulier(){
                         <div className="flex flex-wrap gap-3">
                             <label className="block flex-1 min-w-[180px]">
                                 <span className="text-sm text-gray-600">
-                                    E-mailadres{" "}
-                                    <span className="text-red-500">*</span>
+                                    E-mailadres
                                 </span>
                                 <input
                                     type="email"
@@ -844,8 +847,7 @@ function AanvraagFormulier(){
                             </label>
                             <label className="block flex-1 min-w-[150px]">
                                 <span className="text-sm text-gray-600">
-                                    Telefoonnummer{" "}
-                                    <span className="text-red-500">*</span>
+                                    Telefoonnummer
                                 </span>
                                 <input
                                     value={contactPhone}
@@ -856,7 +858,8 @@ function AanvraagFormulier(){
                             </label>
                         </div>
                         <p className="text-xs text-gray-500 -mt-2">
-                            Vul minimaal e-mail of telefoon in.
+                            Vul e-mail of telefoon in.{" "}
+                            <span className="text-red-500">*</span>
                         </p>
 
                     </div>

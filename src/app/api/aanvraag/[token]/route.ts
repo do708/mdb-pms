@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendAanvraagMail } from "@/lib/email/sendAanvraagMail";
 import { straatHuisnummerUitPayload } from "@/lib/workorders/address";
+import {
+    CONTACT_EMAIL_OF_TELEFOON_FOUT,
+    heeftEmailOfTelefoon,
+} from "@/lib/aanvraag/contactVelden";
 
 
 
@@ -93,6 +97,26 @@ export async function POST(
 
         const { straat, huisnummer } =
             straatHuisnummerUitPayload(body);
+
+        const specs =
+            body.specificaties && typeof body.specificaties === "object"
+            ? (body.specificaties as Record<string, unknown>)
+            : null;
+        const contact =
+            specs?.contact && typeof specs.contact === "object"
+            ? (specs.contact as { email?: unknown; telefoon?: unknown })
+            : null;
+        if(
+            !heeftEmailOfTelefoon(
+                typeof contact?.email === "string" ? contact.email : "",
+                typeof contact?.telefoon === "string" ? contact.telefoon : ""
+            )
+        ){
+            return NextResponse.json(
+                { error: CONTACT_EMAIL_OF_TELEFOON_FOUT },
+                { status: 400 }
+            );
+        }
 
 
         const aanvraag =

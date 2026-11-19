@@ -145,6 +145,21 @@ function dbOrientatie(ori: string): "Landscape" | "Portrait" {
     return "Landscape";
 }
 
+/**
+ * Portrait 55"+ heeft een langere VESA-as: standaard PFS 3304 (korte strip)
+ * → PFS 3306. Heavy-duty 3208 bij 75"+ blijft ongewijzigd.
+ */
+function portraitInterfacestrip(type: string, inch: number, ori: string): string {
+    if (
+        type === "PFS 3304" &&
+        inch >= 55 &&
+        dbOrientatie(ori) === "Portrait"
+    ) {
+        return "PFS 3306";
+    }
+    return type;
+}
+
 /** Exact inch als die in de tabel staat, anders dichtstbijzijnde. */
 export function databaseInch(inch: number): number {
     if (!inch || inch < 1) return 0;
@@ -172,10 +187,13 @@ export function zoekBeugelCombinatie(item: BeugelKeuzeScherm): {
     if (!sleutel) return null;
     const rec = COMBINATIES[sleutel];
     if (!rec) return null;
+    const inch = databaseInch(inchVanScherm(item));
+    const ori = item.orientatie || "";
     return {
         sleutel,
         status: rec.status,
-        artikelen: rec.artikelen.map(([type, aantal]) => {
+        artikelen: rec.artikelen.map(([rawType, aantal]) => {
+            const type = portraitInterfacestrip(rawType, inch, ori);
             const meta = ARTIKELEN[type];
             return {
                 type,
