@@ -6,7 +6,7 @@ import {
     archiveWorkorderToNas,
     processPendingArchives,
 } from "@/lib/archive/archiveWorkorderToNas";
-import { isNasArchiveEnabled } from "@/lib/nas/synologyConfig";
+import { isArchiveStorageReady } from "@/lib/nas/synologyConfig";
 import { prisma } from "@/lib/prisma";
 
 export const maxDuration = 120;
@@ -18,11 +18,11 @@ export async function POST(request: Request) {
         return guard.response;
     }
 
-    if (!isNasArchiveEnabled()) {
+    if (!isArchiveStorageReady()) {
         return NextResponse.json(
             {
                 error:
-                    "NAS-archief staat uit (STORAGE_ARCHIVE_ENABLED=false)",
+                    "NAS-archief niet klaar (STORAGE_ARCHIVE_ENABLED + Synology-credentials of NAS_MOUNT_PATH)",
             },
             { status: 503 }
         );

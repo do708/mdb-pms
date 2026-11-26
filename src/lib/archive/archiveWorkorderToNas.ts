@@ -6,7 +6,10 @@ import {
     ensureLocationArchiveFolder,
     ensureWorkorderArchiveFolder,
 } from "@/lib/archive/ensureArchiveFolders";
-import { isNasArchiveEnabled, joinNasPath } from "@/lib/nas/synologyConfig";
+import {
+    isArchiveStorageReady,
+    joinNasPath,
+} from "@/lib/nas/synologyConfig";
 import { synologyUploadFile } from "@/lib/nas/synologyClient";
 import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
 import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
@@ -112,8 +115,12 @@ async function resolveIntakePdf(
 }
 
 export async function archiveWorkorderToNas(workorderId: string) {
-    if (!isNasArchiveEnabled()) {
-        return { skipped: true as const, reason: "STORAGE_ARCHIVE_ENABLED=false" };
+    if (!isArchiveStorageReady()) {
+        return {
+            skipped: true as const,
+            reason:
+                "NAS-archief niet klaar (STORAGE_ARCHIVE_ENABLED + Synology-credentials of NAS_MOUNT_PATH)",
+        };
     }
 
     const workorder = await prisma.workorder.findUnique({
@@ -349,7 +356,7 @@ export async function processPendingArchives(limit = 10) {
     const pending = await prisma.workorder.findMany({
         where: {
             archiveStatus: "pending",
-            status: "gefactureerd",
+            status: { in: ["uitgevoerd", "gefactureerd"] },
         },
         take: limit,
         select: { id: true },

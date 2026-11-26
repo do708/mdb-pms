@@ -52,6 +52,7 @@ export interface ArchiveStoredFile {
 export interface StoredFolder {
     id: string;
     name: string;
+    kind?: string;
     parentId: string | null;
     files: ArchiveStoredFile[];
     children: StoredFolder[];
@@ -62,10 +63,30 @@ interface TreeNode {
     name: string;
     path: string[];
     folderId?: string;
+    /** customer | location | workorder | project | custom */
+    kind?: string;
     files: ArchiveStoredFile[];
     workorders: ArchiveWorkorder[];
     projects: ArchiveProject[];
     children: TreeNode[];
+}
+
+/** Zelfgemaakte/lege archiefmappen (of mappen met uploads) mogen weg. */
+function isUserManagedFolder(node: TreeNode): boolean {
+    if (node.folderId) {
+        return true;
+    }
+
+    if (node.files.length > 0) {
+        return true;
+    }
+
+    if (node.kind === "custom") {
+        return true;
+    }
+
+    // Lege map zonder opdrachten/projecten: zelf aangemaakt of van NAS geïmporteerd.
+    return node.workorders.length === 0 && node.projects.length === 0;
 }
 
 function icoonVoor(naam: string): string {
@@ -173,10 +194,36 @@ function mergeStored(
     const nodes = [...virtual];
 
     for (const folder of stored) {
+        const dash = folder.name.indexOf(" - ");
+        const brand = dash > 0 ? folder.name.slice(0, dash).trim() : "";
+        const rest = dash > 0 ? folder.name.slice(dash + 3).trim() : "";
+        const brandNode =
+            brand && rest
+                ? nodes.find(
+                    (node) => normalizeKey(node.name) === normalizeKey(brand)
+                )
+                : undefined;
+
+        // Locatie "Merk - Plaats" koppelen aan virtuele boom Merk → Plaats.
+        if (brandNode && rest) {
+            const path = [...parentPath, brandNode.name, rest];
+            const locationNode = getOrCreate(brandNode.children, rest, path);
+            locationNode.folderId = folder.id;
+            locationNode.kind = folder.kind || locationNode.kind || "location";
+            locationNode.files = folder.files;
+            locationNode.children = mergeStored(
+                locationNode.children,
+                folder.children,
+                path
+            );
+            continue;
+        }
+
         const path = [...parentPath, folder.name];
         const node = getOrCreate(nodes, folder.name, path);
         node.name = formatCompanyName(folder.name);
         node.folderId = folder.id;
+        node.kind = folder.kind || node.kind || "custom";
         node.files = folder.files;
         node.children = mergeStored(node.children, folder.children, path);
     }
@@ -255,7 +302,9 @@ export default function ArchiveTree({
     const pendingContents = pendingDelete
         ? folderContentParts(pendingDelete)
         : null;
-    const canDeleteStored = Boolean(pendingDelete?.folderId);
+    const canDeleteStored = pendingDelete
+        ? isUserManagedFolder(pendingDelete)
+        : false;
 
     useEffect(() => {
         if (!pendingDelete) {
@@ -373,7 +422,7 @@ export default function ArchiveTree({
     }
 
     async function deleteFolder(node: TreeNode) {
-        if (!node.folderId) {
+        if (!isUserManagedFolder(node)) {
             setPendingDelete(null);
             alert(
                 "Deze map komt automatisch van opdrachten en kan niet worden verwijderd."
@@ -384,7 +433,9 @@ export default function ArchiveTree({
         setBusy(true);
 
         try {
-            const res = await fetch(`/api/archive/folders/${node.folderId}`, {
+            // Zelfgemaakte/lege map zonder DB-id: eerst materialiseren, dan wissen.
+            const folderId = node.folderId || (await ensureFolderId(node));
+            const res = await fetch(`/api/archive/folders/${folderId}`, {
                 method: "DELETE",
             });
             const data = await res.json().catch(() => null);
@@ -396,6 +447,12 @@ export default function ArchiveTree({
 
             setPendingDelete(null);
             await onRefresh();
+        } catch (error) {
+            alert(
+                error instanceof Error
+                    ? error.message
+                    : "Verwijderen mislukt"
+            );
         } finally {
             setBusy(false);
         }
@@ -743,10 +800,10 @@ export default function ArchiveTree({
                             </div>
                             {!canDeleteStored ? (
                                 <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
-                                    Deze map komt automatisch van opdrachten.
-                                    Alleen mappen die je zelf hebt aangemaakt,
-                                    of mappen met geüploade bestanden, kun je
-                                    wissen. Opdrachten zelf blijven altijd
+                                    Deze map komt automatisch van openstaande
+                                    of gearchiveerde opdrachten. Zelf aangemaakte
+                                    mappen, NAS-mappen en mappen met uploads kun
+                                    je wissen. Opdrachten zelf blijven altijd
                                     bestaan.
                                 </p>
                             ) : pendingContents?.hasContent ? (
@@ -757,7 +814,11 @@ export default function ArchiveTree({
                                     verwijderd. Opdrachten zelf blijven
                                     bestaan.
                                 </p>
-                            ) : null}
+                            ) : (
+                                <p className="text-sm text-gray-500 leading-relaxed">
+                                    Lege archiefmap — veilig te wissen.
+                                </p>
+                            )}
                         </div>
 
                         <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">

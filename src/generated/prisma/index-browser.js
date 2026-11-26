@@ -24,11 +24,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.9.1
+ * Prisma Client JS version: 7.9.0
  * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 Prisma.prismaVersion = {
-  client: "7.9.1",
+  client: "7.9.0",
   engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
@@ -146,6 +146,19 @@ exports.Prisma.CustomerScalarFieldEnum = {
   publicToken: 'publicToken'
 };
 
+exports.Prisma.ArchiveFileScalarFieldEnum = {
+  id: 'id',
+  folderId: 'folderId',
+  name: 'name',
+  storage: 'storage',
+  storagePath: 'storagePath',
+  url: 'url',
+  contentType: 'contentType',
+  size: 'size',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AanvraagScalarFieldEnum = {
   id: 'id',
   customerId: 'customerId',
@@ -178,7 +191,14 @@ exports.Prisma.ProjectScalarFieldEnum = {
   geoffreerdBedrag: 'geoffreerdBedrag',
   offerteUrl: 'offerteUrl',
   offerteFilename: 'offerteFilename',
+  bunniOfferteId: 'bunniOfferteId',
+  bunniOfferteNummer: 'bunniOfferteNummer',
+  bunniOffertePdfUrl: 'bunniOffertePdfUrl',
+  bunniFactuurId: 'bunniFactuurId',
+  bunniFactuurNummer: 'bunniFactuurNummer',
+  bunniFactuurPdfUrl: 'bunniFactuurPdfUrl',
   status: 'status',
+  termijnAantal: 'termijnAantal',
   termijn1Gefactureerd: 'termijn1Gefactureerd',
   termijn2Gefactureerd: 'termijn2Gefactureerd',
   termijn3Gefactureerd: 'termijn3Gefactureerd',
@@ -191,6 +211,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
   termijn2Factuurnummer: 'termijn2Factuurnummer',
   termijn3Factuurnummer: 'termijn3Factuurnummer',
   termijn4Factuurnummer: 'termijn4Factuurnummer',
+  intakeTekst: 'intakeTekst',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -204,6 +225,7 @@ exports.Prisma.ProjectUurScalarFieldEnum = {
   uren: 'uren',
   omschrijving: 'omschrijving',
   kilometers: 'kilometers',
+  parkeerkosten: 'parkeerkosten',
   createdAt: 'createdAt'
 };
 
@@ -215,6 +237,17 @@ exports.Prisma.ProjectMateriaalScalarFieldEnum = {
   leverancier: 'leverancier',
   kosten: 'kosten',
   ingekochtOp: 'ingekochtOp',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProjectAttachmentScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  url: 'url',
+  filename: 'filename',
+  originalName: 'originalName',
+  contentType: 'contentType',
+  kind: 'kind',
   createdAt: 'createdAt'
 };
 
@@ -236,10 +269,17 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   updatedAt: 'updatedAt',
   description: 'description',
   werkInstructie: 'werkInstructie',
+  opdrachtnummerOpdrachtgever: 'opdrachtnummerOpdrachtgever',
   workDate: 'workDate',
   internalNotes: 'internalNotes',
   onHoldNotes: 'onHoldNotes',
   number: 'number',
+  bunniOfferteId: 'bunniOfferteId',
+  bunniOfferteNummer: 'bunniOfferteNummer',
+  bunniOffertePdfUrl: 'bunniOffertePdfUrl',
+  bunniFactuurId: 'bunniFactuurId',
+  bunniFactuurNummer: 'bunniFactuurNummer',
+  bunniFactuurPdfUrl: 'bunniFactuurPdfUrl',
   assignedUserId: 'assignedUserId',
   plannedDate: 'plannedDate',
   plannedEndDate: 'plannedEndDate',
@@ -248,10 +288,30 @@ exports.Prisma.WorkorderScalarFieldEnum = {
   plannedReisuren: 'plannedReisuren',
   assignmentId: 'assignmentId',
   formData: 'formData',
+  opleverModules: 'opleverModules',
   aanvraagSpecificaties: 'aanvraagSpecificaties',
   pdfData: 'pdfData',
   pdfGeneratedAt: 'pdfGeneratedAt',
-  sentAt: 'sentAt'
+  sentAt: 'sentAt',
+  archiveNasPath: 'archiveNasPath',
+  archiveLocationLabel: 'archiveLocationLabel',
+  archivedAt: 'archivedAt',
+  archiveStatus: 'archiveStatus',
+  archiveError: 'archiveError'
+};
+
+exports.Prisma.ArchiveFolderScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  name: 'name',
+  nasPath: 'nasPath',
+  slug: 'slug',
+  parentId: 'parentId',
+  customerId: 'customerId',
+  locationKey: 'locationKey',
+  workorderId: 'workorderId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.WorkorderHourScalarFieldEnum = {
@@ -305,6 +365,21 @@ exports.Prisma.WorkorderAttachmentScalarFieldEnum = {
   filename: 'filename',
   originalName: 'originalName',
   contentType: 'contentType',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PakbonScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  filename: 'filename',
+  originalName: 'originalName',
+  contentType: 'contentType',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PakbonWorkorderScalarFieldEnum = {
+  pakbonId: 'pakbonId',
+  workorderId: 'workorderId',
   createdAt: 'createdAt'
 };
 
@@ -408,6 +483,7 @@ exports.Prisma.PlanningEventScalarFieldEnum = {
   recurrenceNth: 'recurrenceNth',
   recurrenceUntil: 'recurrenceUntil',
   assignedUserId: 'assignedUserId',
+  projectId: 'projectId',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -474,16 +550,21 @@ exports.Prisma.JsonNullValueFilter = {
 exports.Prisma.ModelName = {
   User: 'User',
   Customer: 'Customer',
+  ArchiveFile: 'ArchiveFile',
   Aanvraag: 'Aanvraag',
   Project: 'Project',
   ProjectUur: 'ProjectUur',
   ProjectMateriaal: 'ProjectMateriaal',
+  ProjectAttachment: 'ProjectAttachment',
   Workorder: 'Workorder',
+  ArchiveFolder: 'ArchiveFolder',
   WorkorderHour: 'WorkorderHour',
   WorkorderMaterial: 'WorkorderMaterial',
   WorkorderHardware: 'WorkorderHardware',
   WorkorderPhoto: 'WorkorderPhoto',
   WorkorderAttachment: 'WorkorderAttachment',
+  Pakbon: 'Pakbon',
+  PakbonWorkorder: 'PakbonWorkorder',
   WorkorderSignature: 'WorkorderSignature',
   Document: 'Document',
   Notification: 'Notification',

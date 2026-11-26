@@ -6,6 +6,7 @@ import {
     ensureNamedArchiveFolder,
     syncCompletedProjectArchiveFolders,
 } from "@/lib/archive/ensureArchiveFolders";
+import { syncArchiveFoldersFromNas } from "@/lib/archive/syncArchiveFromNas";
 
 function serializeFile(file: {
     id: string;
@@ -34,6 +35,10 @@ export async function GET() {
     try {
         await syncCompletedProjectArchiveFolders().catch((error) => {
             console.error("ARCHIVE PROJECT FOLDERS SYNC ERROR", error);
+        });
+
+        await syncArchiveFoldersFromNas().catch((error) => {
+            console.error("ARCHIVE NAS FOLDERS SYNC ERROR", error);
         });
 
         const folders = await prisma.archiveFolder.findMany({

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 
@@ -14,6 +14,8 @@ import { buildWorkorderPhotosZip } from "@/lib/workorders/buildPhotosZip";
 import { zonderInstructieFotos } from "@/lib/werkInstructie/parseWerkInstructie";
 import { combineStreetAddress } from "@/lib/workorders/address";
 import { jobCrewMembers } from "@/lib/planning/jobCrew";
+import { archiveWorkorderToNas } from "@/lib/archive/archiveWorkorderToNas";
+import { isArchiveStorageReady } from "@/lib/nas/synologyConfig";
 
 export const maxDuration = 60;
 
@@ -451,6 +453,26 @@ export async function POST(
             console.error("MELDING AANMAKEN MISLUKT (afronden gaat door)", notifyError);
         }
 
+
+        // NAS-archief: PDF/ZIP/bijlagen klaarzetten zodra de opdracht voltooid is,
+        // zodat kantoor ze direct vanaf de NAS kan pakken (niet pas bij facturatie).
+        if (isArchiveStorageReady()) {
+            await prisma.workorder.update({
+                where: { id },
+                data: {
+                    archiveStatus: "pending",
+                    archiveError: null,
+                },
+            });
+
+            after(async () => {
+                try {
+                    await archiveWorkorderToNas(id);
+                } catch (error) {
+                    console.error("NAS ARCHIVE ERROR (complete)", id, error);
+                }
+            });
+        }
 
         return NextResponse.json({
 

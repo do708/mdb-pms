@@ -1,12 +1,26 @@
 import https from "node:https";
 
 import {
+    fsDeletePath,
+    fsDownloadFile,
+    fsEnsureFolder,
+    fsListFiles,
+    fsMove,
+    fsRename,
+    fsUploadFile,
+} from "@/lib/nas/archiveFsStore";
+import {
+    archiveStorageMode,
     joinNasPath,
     synologyArchiveRoot,
     synologyBaseUrl,
     synologyCredentials,
     synologyQuickConnectReferer,
 } from "@/lib/nas/synologyConfig";
+
+function useFsStore(): boolean {
+    return archiveStorageMode() === "fs";
+}
 
 type SynoResponse = {
     success: boolean;
@@ -105,8 +119,13 @@ async function synoApi(
     return json;
 }
 
-/** Verwijder een bestand of map op de NAS. */
+/** Verwijder een bestand of map op de NAS (of lokale mount/mock). */
 export async function synologyDeleteFile(nasPath: string): Promise<void> {
+    if (useFsStore()) {
+        await fsDeletePath(nasPath);
+        return;
+    }
+
     await withSid({
         api: "SYNO.FileStation.Delete",
         version: "2",
@@ -192,6 +211,11 @@ async function withSid(
 
 /** Maakt map op NAS (inclusief parents indien nodig). */
 export async function synologyEnsureFolder(nasPath: string): Promise<void> {
+    if (useFsStore()) {
+        await fsEnsureFolder(nasPath);
+        return;
+    }
+
     const parts = joinNasPath(nasPath).split("/").filter(Boolean);
 
     if (parts.length === 0) {
@@ -230,6 +254,10 @@ export async function synologyUploadFile(
     buffer: Buffer,
     contentType = "application/octet-stream"
 ): Promise<string> {
+    if (useFsStore()) {
+        return fsUploadFile(destFolder, filename, buffer);
+    }
+
     await synologyEnsureFolder(destFolder);
 
     const base = synologyBaseUrl();
@@ -283,6 +311,10 @@ export async function synologyRename(
     nasPath: string,
     newName: string
 ): Promise<string> {
+    if (useFsStore()) {
+        return fsRename(nasPath, newName);
+    }
+
     await withSid({
         api: "SYNO.FileStation.Rename",
         version: "2",
@@ -301,6 +333,10 @@ export async function synologyMove(
     nasPath: string,
     destFolder: string
 ): Promise<string> {
+    if (useFsStore()) {
+        return fsMove(nasPath, destFolder);
+    }
+
     await synologyEnsureFolder(destFolder);
 
     await withSid({
@@ -322,6 +358,10 @@ export async function synologyMove(
 export async function synologyListFiles(
     folderPath: string
 ): Promise<Array<{ name: string; path: string; isDir: boolean }>> {
+    if (useFsStore()) {
+        return fsListFiles(folderPath);
+    }
+
     try {
         const json = await withSid({
             api: "SYNO.FileStation.List",
@@ -352,6 +392,10 @@ export async function synologyListFiles(
 
 /** Download bestand van NAS. */
 export async function synologyDownloadFile(nasPath: string): Promise<Buffer> {
+    if (useFsStore()) {
+        return fsDownloadFile(nasPath);
+    }
+
     const sid = await login();
     const base = synologyBaseUrl();
     const query = new URLSearchParams({

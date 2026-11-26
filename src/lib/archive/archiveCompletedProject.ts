@@ -6,7 +6,7 @@ import {
     downloadAttachmentBytes,
 } from "@/lib/attachments/storage";
 import { synologyUploadFile } from "@/lib/nas/synologyClient";
-import { isNasArchiveEnabled } from "@/lib/nas/synologyConfig";
+import { isArchiveStorageReady } from "@/lib/nas/synologyConfig";
 
 function uniqueFilename(used: Set<string>, preferred: string): string {
     const cleaned =
@@ -67,7 +67,7 @@ export async function archiveCompletedProject(projectId: string) {
             const contentType =
                 attachment.contentType || "application/octet-stream";
 
-            if (!isNasArchiveEnabled()) {
+            if (!isArchiveStorageReady()) {
                 await prisma.archiveFile.create({
                     data: {
                         folderId: folder.id,
