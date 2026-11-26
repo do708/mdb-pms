@@ -4,6 +4,8 @@
 **Migraties staan niet in de Vercel-build** — Preview kan zo zonder `DATABASE_URL` bouwen.
 
 Prisma 7 leest de datasource-URL uit `prisma.config.ts` (niet uit `schema.prisma`).
+De app-client (`src/lib/prisma.ts`) is **lazy**: geen `PrismaClient` bij module-load,
+dus page-data collectie tijdens build faalt niet zonder URL.
 
 ## Migraties (apart van de build)
 
