@@ -7,6 +7,7 @@ import AssetFilters, {
     EMPTY_FILTERS,
     type AssetFilterState,
 } from "@/components/gereedschap/AssetFilters";
+import GereedschapPhotoField from "@/components/gereedschap/GereedschapPhotoField";
 import StatusBadge from "@/components/gereedschap/StatusBadge";
 import {
     PageShell,
@@ -358,17 +359,11 @@ export default function BeheerPortaalPage() {
                                 ))}
                             </select>
                         </label>
-                        <label className="text-sm block sm:col-span-2">
-                            <span className="text-gray-600">
-                                Foto-URL (optioneel)
-                            </span>
-                            <input
-                                className={specInputClassName}
-                                value={photoUrl}
-                                onChange={(e) => setPhotoUrl(e.target.value)}
-                                placeholder="https://… of /uploads/…"
-                            />
-                        </label>
+                        <GereedschapPhotoField
+                            value={photoUrl}
+                            onChange={setPhotoUrl}
+                            disabled={saving}
+                        />
                         <label className="flex items-center gap-2 text-sm">
                             <input
                                 type="checkbox"
@@ -409,11 +404,18 @@ export default function BeheerPortaalPage() {
                         <table className="min-w-full text-sm">
                             <thead>
                                 <tr className="text-left text-slate-500 border-b">
+                                    <th className="py-2 pr-2 w-12">Foto</th>
                                     <th className="py-2 pr-3">Code</th>
                                     <th className="py-2 pr-3">Naam</th>
-                                    <th className="py-2 pr-3">Status</th>
-                                    <th className="py-2 pr-3">Bus</th>
-                                    <th className="py-2 pr-3">Locatie</th>
+                                    <th className="py-2 pr-3 hidden sm:table-cell">
+                                        Status
+                                    </th>
+                                    <th className="py-2 pr-3 hidden md:table-cell">
+                                        Bus
+                                    </th>
+                                    <th className="py-2 pr-3 hidden md:table-cell">
+                                        Locatie
+                                    </th>
                                     <th className="py-2 pr-3">Acties</th>
                                 </tr>
                             </thead>
@@ -427,17 +429,34 @@ export default function BeheerPortaalPage() {
                                                 : ""
                                         }`}
                                     >
+                                        <td className="py-2 pr-2 align-middle">
+                                            {a.photoUrl ? (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img
+                                                    src={a.photoUrl}
+                                                    alt=""
+                                                    className="h-10 w-10 rounded-lg border border-slate-200 object-cover bg-white"
+                                                />
+                                            ) : (
+                                                <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-dashed border-slate-200 text-[10px] text-slate-400">
+                                                    —
+                                                </span>
+                                            )}
+                                        </td>
                                         <td className="py-2 pr-3 font-mono text-[#0066FF]">
                                             <Link href={a.qrPath}>{a.code}</Link>
+                                            <div className="sm:hidden mt-1">
+                                                <StatusBadge status={a.status} />
+                                            </div>
                                         </td>
                                         <td className="py-2 pr-3">{a.name}</td>
-                                        <td className="py-2 pr-3">
+                                        <td className="py-2 pr-3 hidden sm:table-cell">
                                             <StatusBadge status={a.status} />
                                         </td>
-                                        <td className="py-2 pr-3">
+                                        <td className="py-2 pr-3 hidden md:table-cell">
                                             {a.busKenteken || "—"}
                                         </td>
-                                        <td className="py-2 pr-3">
+                                        <td className="py-2 pr-3 hidden md:table-cell">
                                             {a.kantoor
                                                 ? "Kantoor"
                                                 : a.assignedUser?.name || "—"}
