@@ -104,18 +104,7 @@ export async function buildRegisterPdf(
             font: bold,
             color: rgb(0, 0.4, 1),
         });
-        y -= 18;
-        page.drawText(
-            `Overzicht · ${rows.length} items · ${new Date().toLocaleString("nl-NL")}`,
-            {
-                x: margin,
-                y,
-                size: 8,
-                font,
-                color: rgb(0.35, 0.4, 0.45),
-            }
-        );
-        y -= 16;
+        y -= 22;
 
         let x = margin;
         page.drawRectangle({
