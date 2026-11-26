@@ -70,11 +70,11 @@ const menu:MenuItem[] = [
     },
 
     {
-        name:"Pakbon uploaden",
-        href:"/pakbonnen",
-        icon:FileText,
-        title:"Pakbonnen uploaden en koppelen aan klussen",
-        roles:["admin","office","magazijn"]
+        name:"Opdrachten",
+        href:"/workorders",
+        icon:ClipboardList,
+        title:"Overzicht van actieve en afgeronde opdrachten",
+        roles:["admin","office","engineer"]
     },
 
     {
@@ -82,14 +82,6 @@ const menu:MenuItem[] = [
         href:"/workorders/new",
         icon:PlusCircle,
         title:"Opdracht voorbereiden en inplannen",
-        roles:["admin","office","engineer"]
-    },
-
-    {
-        name:"Opdrachten",
-        href:"/workorders",
-        icon:ClipboardList,
-        title:"Overzicht van actieve en afgeronde opdrachten",
         roles:["admin","office","engineer"]
     },
 
@@ -110,14 +102,6 @@ const menu:MenuItem[] = [
     },
 
     {
-        name:"Gereedschap",
-        href:"/gereedschap",
-        icon:Wrench,
-        title:"Digitaal gereedschapsbeheer, keuringen en QR-status",
-        roles:["admin","office","engineer","magazijn"]
-    },
-
-    {
         name:"Rapportages",
         href:"/reports",
         icon:BarChart3,
@@ -131,6 +115,22 @@ const menu:MenuItem[] = [
         icon:Archive,
         title:"Historie van afgeronde projecten en oude dossiers",
         roles:["admin","office","engineer"]
+    },
+
+    {
+        name:"Pakbon uploaden",
+        href:"/pakbonnen",
+        icon:FileText,
+        title:"Pakbonnen uploaden en koppelen aan klussen",
+        roles:["admin","office","magazijn"]
+    },
+
+    {
+        name:"Gereedschap",
+        href:"/gereedschap",
+        icon:Wrench,
+        title:"Digitaal gereedschapsbeheer, keuringen en QR-status",
+        roles:["admin","office","engineer","magazijn"]
     },
 
     {
