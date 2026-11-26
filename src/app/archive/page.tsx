@@ -53,6 +53,7 @@ export default function ArchivePage() {
     const [workorders, setWorkorders] = useState<ArchiveWorkorder[]>([]);
     const [projects, setProjects] = useState<ArchiveProject[]>([]);
     const [storedFolders, setStoredFolders] = useState<StoredFolder[]>([]);
+    const [hiddenPaths, setHiddenPaths] = useState<string[]>([]);
     const [forms, setForms] = useState<Form[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -65,6 +66,9 @@ export default function ArchivePage() {
 
         const data = await response.json();
         setStoredFolders(data.folders ?? []);
+        setHiddenPaths(
+            Array.isArray(data.hiddenPaths) ? data.hiddenPaths : []
+        );
     }
 
     async function search() {
@@ -254,6 +258,7 @@ export default function ArchivePage() {
                         workorders={type === "project" ? [] : workorders}
                         projects={type === "werkbon" ? [] : projects}
                         storedFolders={storedFolders}
+                        hiddenPaths={hiddenPaths}
                         canManage={canManage}
                         onRefresh={async () => {
                             await loadFolders();

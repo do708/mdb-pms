@@ -15,6 +15,7 @@ import {
     archiveCompanyKey,
     archiveWorkorderTree,
     formatCompanyName,
+    isArchivePathHidden,
     normalizeKey,
 } from "@/lib/archive/formatArchiveLocationName";
 import { SpecListRow, SpecPanel } from "@/components/ui/SpecLayout";
@@ -69,24 +70,6 @@ interface TreeNode {
     workorders: ArchiveWorkorder[];
     projects: ArchiveProject[];
     children: TreeNode[];
-}
-
-/** Zelfgemaakte/lege archiefmappen (of mappen met uploads) mogen weg. */
-function isUserManagedFolder(node: TreeNode): boolean {
-    if (node.folderId) {
-        return true;
-    }
-
-    if (node.files.length > 0) {
-        return true;
-    }
-
-    if (node.kind === "custom") {
-        return true;
-    }
-
-    // Lege map zonder opdrachten/projecten: zelf aangemaakt of van NAS geïmporteerd.
-    return node.workorders.length === 0 && node.projects.length === 0;
 }
 
 function icoonVoor(naam: string): string {
@@ -281,16 +264,40 @@ function folderContentParts(node: TreeNode) {
     };
 }
 
+/** Filter verborgen paden en ruim lege virtuele ouders op. */
+function applyHiddenPaths(
+    nodes: TreeNode[],
+    hiddenKeys: Set<string>
+): TreeNode[] {
+    return nodes
+        .filter((node) => !isArchivePathHidden(node.path, hiddenKeys))
+        .map((node) => ({
+            ...node,
+            children: applyHiddenPaths(node.children, hiddenKeys),
+        }))
+        .filter(
+            (node) =>
+                Boolean(node.folderId)
+                || node.files.length > 0
+                || node.workorders.length > 0
+                || node.projects.length > 0
+                || node.children.length > 0
+        );
+}
+
 export default function ArchiveTree({
     workorders,
     projects = [],
     storedFolders,
+    hiddenPaths = [],
     canManage,
     onRefresh,
 }: {
     workorders: ArchiveWorkorder[];
     projects?: ArchiveProject[];
     storedFolders: StoredFolder[];
+    /** Genormaliseerde paden die de gebruiker heeft gewist. */
+    hiddenPaths?: string[];
     canManage: boolean;
     onRefresh: () => Promise<void> | void;
 }) {
@@ -302,9 +309,6 @@ export default function ArchiveTree({
     const pendingContents = pendingDelete
         ? folderContentParts(pendingDelete)
         : null;
-    const canDeleteStored = pendingDelete
-        ? isUserManagedFolder(pendingDelete)
-        : false;
 
     useEffect(() => {
         if (!pendingDelete) {
@@ -322,11 +326,13 @@ export default function ArchiveTree({
         return () => window.removeEventListener("keydown", onKey);
     }, [pendingDelete, busy]);
 
-    const tree = useMemo(
-        () =>
+    const tree = useMemo(() => {
+        const hidden = new Set(hiddenPaths);
+        return applyHiddenPaths(
             mergeStored(buildArchiveTree(workorders, projects), storedFolders),
-        [workorders, projects, storedFolders]
-    );
+            hidden
+        );
+    }, [workorders, projects, storedFolders, hiddenPaths]);
 
     function toggleFolder(key: string) {
         setOpenFolders((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -422,21 +428,18 @@ export default function ArchiveTree({
     }
 
     async function deleteFolder(node: TreeNode) {
-        if (!isUserManagedFolder(node)) {
-            setPendingDelete(null);
-            alert(
-                "Deze map komt automatisch van opdrachten en kan niet worden verwijderd."
-            );
-            return;
-        }
-
         setBusy(true);
 
         try {
-            // Zelfgemaakte/lege map zonder DB-id: eerst materialiseren, dan wissen.
-            const folderId = node.folderId || (await ensureFolderId(node));
-            const res = await fetch(`/api/archive/folders/${folderId}`, {
+            // Pad altijd verbergen zodat de virtuele opdracht-boom de map
+            // niet opnieuw toont. Opdrachten zelf blijven bestaan.
+            const res = await fetch("/api/archive/folders", {
                 method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    folderId: node.folderId ?? null,
+                    path: node.path,
+                }),
             });
             const data = await res.json().catch(() => null);
 
@@ -779,44 +782,27 @@ export default function ArchiveTree({
                                 >
                                     Map verwijderen?
                                 </h2>
-                                {canDeleteStored ? (
-                                    <p className="text-sm text-gray-600 leading-relaxed break-words">
-                                        Weet je zeker dat je map{" "}
-                                        <span className="font-medium text-gray-900">
-                                            {pendingDelete.name}
-                                        </span>{" "}
-                                        wilt verwijderen? Dit kan niet ongedaan
-                                        worden gemaakt.
-                                    </p>
-                                ) : (
-                                    <p className="text-sm text-gray-600 leading-relaxed break-words">
-                                        Map{" "}
-                                        <span className="font-medium text-gray-900">
-                                            {pendingDelete.name}
-                                        </span>{" "}
-                                        kan niet worden verwijderd.
-                                    </p>
-                                )}
-                            </div>
-                            {!canDeleteStored ? (
-                                <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
-                                    Deze map komt automatisch van openstaande
-                                    of gearchiveerde opdrachten. Zelf aangemaakte
-                                    mappen, NAS-mappen en mappen met uploads kun
-                                    je wissen. Opdrachten zelf blijven altijd
-                                    bestaan.
+                                <p className="text-sm text-gray-600 leading-relaxed break-words">
+                                    Weet je zeker dat je map{" "}
+                                    <span className="font-medium text-gray-900">
+                                        {pendingDelete.name}
+                                    </span>{" "}
+                                    wilt verwijderen? Dit kan niet ongedaan
+                                    worden gemaakt.
                                 </p>
-                            ) : pendingContents?.hasContent ? (
+                            </div>
+                            {pendingContents?.hasContent ? (
                                 <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
                                     Deze map bevat{" "}
                                     {pendingContents.parts.join(", ")}.
                                     Bestanden en submappen worden definitief
-                                    verwijderd. Opdrachten zelf blijven
-                                    bestaan.
+                                    verwijderd. De map verdwijnt uit Archief/NAS;
+                                    opdrachten zelf blijven bestaan.
                                 </p>
                             ) : (
                                 <p className="text-sm text-gray-500 leading-relaxed">
                                     Lege archiefmap — veilig te wissen.
+                                    Opdrachten zelf blijven bestaan.
                                 </p>
                             )}
                         </div>
@@ -834,29 +820,27 @@ export default function ArchiveTree({
                                     disabled:opacity-50
                                 "
                             >
-                                {canDeleteStored ? "Annuleren" : "Sluiten"}
+                                Annuleren
                             </button>
 
-                            {canDeleteStored ? (
-                                <button
-                                    type="button"
-                                    onClick={() => void deleteFolder(pendingDelete)}
-                                    disabled={busy}
-                                    className="
-                                        text-sm font-semibold
-                                        rounded-xl px-4 py-2.5 min-h-[44px]
-                                        bg-red-600 text-white
-                                        hover:bg-red-700
-                                        disabled:opacity-50
-                                    "
-                                >
-                                    {busy
-                                        ? "Bezig…"
-                                        : pendingContents?.hasContent
-                                          ? "Map én inhoud verwijderen"
-                                          : "Verwijderen"}
-                                </button>
-                            ) : null}
+                            <button
+                                type="button"
+                                onClick={() => void deleteFolder(pendingDelete)}
+                                disabled={busy}
+                                className="
+                                    text-sm font-semibold
+                                    rounded-xl px-4 py-2.5 min-h-[44px]
+                                    bg-red-600 text-white
+                                    hover:bg-red-700
+                                    disabled:opacity-50
+                                "
+                            >
+                                {busy
+                                    ? "Bezig…"
+                                    : pendingContents?.hasContent
+                                      ? "Map én inhoud verwijderen"
+                                      : "Verwijderen"}
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -3,10 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiRole, requireApiUser } from "@/lib/auth/guard";
 import {
+    deleteArchiveFolder,
     ensureNamedArchiveFolder,
     syncCompletedProjectArchiveFolders,
 } from "@/lib/archive/ensureArchiveFolders";
+import {
+    hideArchiveFolderPath,
+    listArchiveHiddenPathKeys,
+} from "@/lib/archive/ensureArchiveHiddenPaths";
 import { syncArchiveFoldersFromNas } from "@/lib/archive/syncArchiveFromNas";
+import { supabase } from "@/lib/supabase/admin";
 
 function serializeFile(file: {
     id: string;
@@ -69,8 +75,11 @@ export async function GET() {
             };
         }
 
+        const hiddenPaths = await listArchiveHiddenPathKeys();
+
         return NextResponse.json({
             folders: (byParent.get(null) ?? []).map(toNode),
+            hiddenPaths,
         });
     } catch (error) {
         console.error("ARCHIVE FOLDERS ERROR", error);
@@ -125,5 +134,68 @@ export async function POST(request: NextRequest) {
             error instanceof Error ? error.message : "Map aanmaken mislukt";
 
         return NextResponse.json({ error: message }, { status: 400 });
+    }
+}
+
+/**
+ * Verwijder een archiefmap (DB + NAS) en/of verberg een virtueel pad
+ * uit de boom. Opdrachten zelf blijven bestaan.
+ */
+export async function DELETE(request: NextRequest) {
+    const guard = await requireApiRole(["admin", "office"]);
+
+    if (!guard.ok) {
+        return guard.response;
+    }
+
+    try {
+        const body = (await request.json().catch(() => null)) as {
+            folderId?: string | null;
+            path?: string[];
+        } | null;
+
+        const folderId = body?.folderId?.trim() || null;
+        const path = Array.isArray(body?.path)
+            ? body.path.filter((part): part is string => typeof part === "string")
+            : [];
+
+        if (!folderId && path.length === 0) {
+            return NextResponse.json(
+                { error: "Map of pad ontbreekt" },
+                { status: 400 }
+            );
+        }
+
+        if (path.length > 0) {
+            await hideArchiveFolderPath(path);
+        }
+
+        let files: Awaited<ReturnType<typeof deleteArchiveFolder>> = [];
+
+        if (folderId) {
+            files = await deleteArchiveFolder(folderId);
+        }
+
+        const supabasePaths = files
+            .filter((file) => file.storage !== "nas")
+            .map((file) => file.storagePath)
+            .filter(Boolean);
+
+        if (supabasePaths.length > 0) {
+            await supabase.storage
+                .from("workorder-files")
+                .remove(supabasePaths)
+                .catch(() => {});
+        }
+
+        return NextResponse.json({ ok: true });
+    } catch (error) {
+        console.error("ARCHIVE FOLDER DELETE ERROR", error);
+
+        const message =
+            error instanceof Error ? error.message : "Verwijderen mislukt";
+        const status = message === "Map niet gevonden" ? 404 : 400;
+
+        return NextResponse.json({ error: message }, { status });
     }
 }

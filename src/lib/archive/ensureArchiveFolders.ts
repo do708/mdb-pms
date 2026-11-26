@@ -2,10 +2,12 @@ import { prisma } from "@/lib/prisma";
 import {
     archiveCustomerSlug,
     archiveSlug,
+    archiveWorkorderTree,
     formatArchiveLocationName,
     formatCompanyName,
     normalizeKey,
 } from "@/lib/archive/formatArchiveLocationName";
+import { clearArchiveHiddenPath } from "@/lib/archive/ensureArchiveHiddenPaths";
 import {
     defaultArchiveRoot,
     synologyDeleteFile,
@@ -45,7 +47,7 @@ export async function ensureCustomerArchiveFolder(customerId: string) {
         await synologyEnsureFolder(nasPath);
     }
 
-    return prisma.archiveFolder.create({
+    const created = await prisma.archiveFolder.create({
         data: {
             kind: "customer",
             name: formatCompanyName(customer.name),
@@ -54,6 +56,11 @@ export async function ensureCustomerArchiveFolder(customerId: string) {
             customerId: customer.id,
         },
     });
+
+    // Alleen bij nieuwe map: eerder gewist pad weer zichtbaar maken.
+    await clearArchiveHiddenPath([created.name]).catch(() => {});
+
+    return created;
 }
 
 export async function ensureLocationArchiveFolder(
@@ -76,7 +83,25 @@ export async function ensureLocationArchiveFolder(
         },
     });
 
+    async function clearHiddenForLocation() {
+        const tree = archiveWorkorderTree({
+            customerName: customerFolder.name,
+            locatieRaw,
+            plaatsRaw,
+        });
+
+        await clearArchiveHiddenPath([
+            ...tree.companies,
+            tree.location,
+        ]).catch(() => {});
+        await clearArchiveHiddenPath([
+            customerFolder.name,
+            label,
+        ]).catch(() => {});
+    }
+
     if (existing) {
+        await clearHiddenForLocation();
         return existing;
     }
 
@@ -86,7 +111,7 @@ export async function ensureLocationArchiveFolder(
         await synologyEnsureFolder(nasPath);
     }
 
-    return prisma.archiveFolder.create({
+    const created = await prisma.archiveFolder.create({
         data: {
             kind: "location",
             name: label,
@@ -97,6 +122,10 @@ export async function ensureLocationArchiveFolder(
             parentId: customerFolder.id,
         },
     });
+
+    await clearHiddenForLocation();
+
+    return created;
 }
 
 export function projectArchiveLocationKey(projectId: string): string {
@@ -284,7 +313,27 @@ export async function ensureNamedArchiveFolder(opts: {
             || normalizeKey(folder.name) === normalizeKey(name)
     );
 
+    // Herbouw van een eerder gewiste map → verborgen-markering opheffen.
+    async function clearHiddenForFolder(folderName: string) {
+        const ancestorNames: string[] = [];
+        let cursor = parent;
+
+        while (cursor) {
+            ancestorNames.unshift(cursor.name);
+            cursor = cursor.parentId
+                ? await prisma.archiveFolder.findUnique({
+                    where: { id: cursor.parentId },
+                })
+                : null;
+        }
+
+        await clearArchiveHiddenPath([...ancestorNames, folderName]).catch(
+            () => {}
+        );
+    }
+
     if (existing) {
+        await clearHiddenForFolder(existing.name);
         return existing;
     }
 
@@ -296,7 +345,7 @@ export async function ensureNamedArchiveFolder(opts: {
         await synologyEnsureFolder(nasPath);
     }
 
-    return prisma.archiveFolder.create({
+    const created = await prisma.archiveFolder.create({
         data: {
             kind: opts.kind || (parent ? "custom" : "custom"),
             name,
@@ -305,6 +354,10 @@ export async function ensureNamedArchiveFolder(opts: {
             parentId: parent?.id ?? null,
         },
     });
+
+    await clearHiddenForFolder(name);
+
+    return created;
 }
 
 export async function renameArchiveFolder(
@@ -391,38 +444,17 @@ export async function renameArchiveFolder(
 }
 
 /**
- * Mag deze archiefmap gewist worden?
- * - custom / lege mappen: ja
- * - mappen met uploads: ja
- * - workorder-mappen gekoppeld aan nog openstaande (niet-gefactureerde) klussen: nee
- * Opdrachten in de UI blijven sowieso zichtbaar via de virtuele boom.
+ * Map ophalen voor verwijderen.
+ * Alle archiefmappen (incl. auto-gegenereerde opdracht-/locatiemappen) mogen weg.
+ * De opdracht zelf blijft bestaan; alleen map + bestanden verdwijnen.
  */
 export async function assertArchiveFolderDeletable(folderId: string) {
     const folder = await prisma.archiveFolder.findUnique({
         where: { id: folderId },
-        include: {
-            workorder: { select: { id: true, status: true, number: true } },
-            files: { select: { id: true }, take: 1 },
-            children: { select: { id: true }, take: 1 },
-        },
     });
 
     if (!folder) {
         throw new Error("Map niet gevonden");
-    }
-
-    if (folder.kind === "workorder" && folder.workorder) {
-        const status = folder.workorder.status;
-        const closed =
-            status === "gefactureerd"
-            || status === "afgerond"
-            || status === "betaald";
-
-        if (!closed) {
-            throw new Error(
-                `Map van openstaande opdracht ${folder.workorder.number} kan niet worden verwijderd`
-            );
-        }
     }
 
     return folder;
@@ -439,18 +471,8 @@ export async function deleteArchiveFolder(folderId: string) {
                 { nasPath: { startsWith: `${folder.nasPath}/` } },
             ],
         },
-        select: { id: true, kind: true, workorderId: true },
+        select: { id: true },
     });
-
-    for (const child of folders) {
-        if (child.id === folder.id) {
-            continue;
-        }
-
-        if (child.kind === "workorder" && child.workorderId) {
-            await assertArchiveFolderDeletable(child.id);
-        }
-    }
 
     const files = await prisma.archiveFile.findMany({
         where: { folderId: { in: folders.map((item) => item.id) } },
