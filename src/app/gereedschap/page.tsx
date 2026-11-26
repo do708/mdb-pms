@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
     ClipboardCheck,
+    Package,
     QrCode,
     Shield,
     FileSpreadsheet,
@@ -48,13 +49,36 @@ export default function GereedschapHubPage() {
             );
     }, []);
 
+    const isFieldOnly =
+        caps !== null &&
+        !caps.canManage &&
+        !caps.canInspect &&
+        !caps.canViewAll;
+
     const cards = [
+        {
+            href: "/gereedschap/mijn",
+            title: "Mijn gereedschap",
+            desc: "Totaaloverzicht van wat op jouw naam staat",
+            icon: Package,
+            show: true,
+            primary: isFieldOnly,
+        },
+        {
+            href: "/gereedschap/keuring?scan=1",
+            title: "QR scannen",
+            desc: "Camera of code — open status van een asset",
+            icon: QrCode,
+            show: true,
+            primary: isFieldOnly,
+        },
         {
             href: "/gereedschap/keuring",
             title: "Keuringsportaal",
             desc: "Scan, keur, bekijk gepland en historie",
             icon: ClipboardCheck,
-            show: true,
+            show: Boolean(caps?.canInspect || !isFieldOnly),
+            primary: false,
         },
         {
             href: "/gereedschap/beheer",
@@ -62,6 +86,7 @@ export default function GereedschapHubPage() {
             desc: "Register, toewijzing, QR en filters",
             icon: Shield,
             show: Boolean(caps?.canManage || caps?.canViewAll),
+            primary: false,
         },
         {
             href: "/gereedschap/audit",
@@ -69,13 +94,7 @@ export default function GereedschapHubPage() {
             desc: "CSV, Excel of PDF-overzicht van het register",
             icon: FileSpreadsheet,
             show: Boolean(caps?.canViewAll),
-        },
-        {
-            href: "/gereedschap/keuring?scan=1",
-            title: "QR scannen",
-            desc: "Open status via camerascanner of code",
-            icon: QrCode,
-            show: true,
+            primary: false,
         },
     ];
 
@@ -89,6 +108,12 @@ export default function GereedschapHubPage() {
                     <Wrench className="h-7 w-7 text-[#0066FF]" />
                     Gereedschap
                 </h1>
+                {isFieldOnly ? (
+                    <p className="text-sm text-slate-500">
+                        Scan QR-codes en bekijk wat er op jouw naam staat.
+                        Beheer en keuringen blijven bij kantoor / keurmeester.
+                    </p>
+                ) : null}
             </header>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -100,11 +125,15 @@ export default function GereedschapHubPage() {
                             <Link
                                 key={card.href + card.title}
                                 href={card.href}
-                                className="
-                                    rounded-2xl border border-slate-200 bg-white
-                                    p-5 shadow-sm hover:border-[#0066FF]/40
-                                    hover:bg-sky-50/40 transition
-                                "
+                                className={`
+                                    rounded-2xl border bg-white
+                                    p-5 shadow-sm transition
+                                    ${
+                                        card.primary
+                                            ? "border-[#0066FF]/50 hover:border-[#0066FF] hover:bg-sky-50/50 ring-1 ring-[#0066FF]/15"
+                                            : "border-slate-200 hover:border-[#0066FF]/40 hover:bg-sky-50/40"
+                                    }
+                                `}
                             >
                                 <Icon className="h-8 w-8 text-[#0066FF] mb-3" />
                                 <h2 className="font-semibold text-slate-900">
@@ -118,10 +147,10 @@ export default function GereedschapHubPage() {
                     })}
             </div>
 
-            {!caps?.canManage && !caps?.canInspect && caps !== null ? (
+            {isFieldOnly ? (
                 <p className="text-sm text-slate-500 rounded-xl border border-slate-200 bg-white p-4">
-                    Je ziet alleen assets die aan jou zijn toegewezen. Scan een
-                    QR of open je eigen rapporten via het keuringsportaal.
+                    Je ziet alleen assets die aan jou zijn toegewezen. Via QR
+                    kun je van elk stuk de publieke keuringsstatus openen.
                 </p>
             ) : null}
         </PageShell>

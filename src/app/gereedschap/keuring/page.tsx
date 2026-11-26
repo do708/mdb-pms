@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+import GereedschapQrScanner from "@/components/gereedschap/GereedschapQrScanner";
 import StatusBadge from "@/components/gereedschap/StatusBadge";
 import {
     PageShell,
@@ -16,6 +17,7 @@ import {
     isToolCategory,
     type ToolCategory,
 } from "@/constants/gereedschap";
+import { parseToolQrPayload } from "@/lib/gereedschap/parseQr";
 
 type Asset = {
     id: string;
@@ -104,12 +106,20 @@ function KeuringInner() {
 
     async function openCode(code: string) {
         setError("");
-        const cleaned = code.trim().toUpperCase();
+        const cleaned =
+            parseToolQrPayload(code) || code.trim().toUpperCase();
         if (!cleaned) return;
+        setCodeInput(cleaned);
         const res = await fetch(
             `/api/gereedschap/assets/${encodeURIComponent(cleaned)}`
         );
         const data = await res.json().catch(() => ({}));
+        if (res.status === 403) {
+            // Niet van jou / geen overzicht: publieke QR-statuspagina
+            setAsset(null);
+            window.location.href = `/asset/${encodeURIComponent(cleaned)}`;
+            return;
+        }
         if (!res.ok) {
             setAsset(null);
             setError(data.error || "Niet gevonden");
@@ -168,15 +178,23 @@ function KeuringInner() {
                         keuring.
                     </p>
                 </div>
-                <Link
-                    href="/gereedschap"
-                    className="text-sm text-[#0066FF] underline"
-                >
-                    ← Hub
-                </Link>
+                <div className="flex flex-wrap gap-3 text-sm">
+                    <Link
+                        href="/gereedschap/mijn"
+                        className="text-[#0066FF] underline"
+                    >
+                        Mijn gereedschap
+                    </Link>
+                    <Link
+                        href="/gereedschap"
+                        className="text-[#0066FF] underline"
+                    >
+                        ← Hub
+                    </Link>
+                </div>
             </header>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 items-center">
                 {(
                     [
                         ["zoek", "Zoeken / scannen"],
@@ -200,6 +218,12 @@ function KeuringInner() {
                         {label}
                     </button>
                 ))}
+                <Link
+                    href="/gereedschap/mijn"
+                    className="rounded-full border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 hover:border-[#0066FF]/40"
+                >
+                    Volledig overzicht
+                </Link>
             </div>
 
             {error ? (
@@ -220,31 +244,33 @@ function KeuringInner() {
                             placeholder="MDB-G-00001 of plak QR-URL"
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    const raw = codeInput.includes("/asset/")
-                                        ? codeInput.split("/asset/").pop() ||
-                                          codeInput
-                                        : codeInput;
-                                    void openCode(raw);
+                                    void openCode(codeInput);
                                 }
                             }}
                         />
                         <button
                             type="button"
                             className="rounded-xl bg-[#0066FF] px-5 py-2.5 text-white font-semibold"
-                            onClick={() => {
-                                const raw = codeInput.includes("/asset/")
-                                    ? codeInput.split("/asset/").pop() ||
-                                      codeInput
-                                    : codeInput;
-                                void openCode(raw);
-                            }}
+                            onClick={() => void openCode(codeInput)}
                         >
                             Openen
                         </button>
+                        <GereedschapQrScanner
+                            onScan={(code) => void openCode(code)}
+                            autoOpen={wantScan && !initialCode}
+                            className="
+                                inline-flex items-center justify-center gap-2
+                                rounded-xl border border-[#0066FF] bg-white
+                                px-4 py-2.5 text-sm font-semibold text-[#0066FF]
+                                hover:bg-sky-50 transition
+                            "
+                            label="Camera"
+                        />
                     </div>
                     <p className="text-xs text-slate-400 mt-2">
-                        Camera-QR volgt later; plak de code of{" "}
-                        <code>/asset/…</code>-URL uit de QR.
+                        Gebruik de camera, of plak de code /{" "}
+                        <code>/asset/…</code>-URL uit de QR. Tools die niet van
+                        jou zijn openen de publieke statuspagina.
                     </p>
                 </SpecPanel>
             ) : null}
