@@ -181,7 +181,24 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
     }
 
     return (
-        <section className="@container w-full min-w-0 space-y-4 rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
+        // Full-bleed t.o.v. AppShell-padding zodat Type|Nummer|Verloop|Bestand|Acties
+        // in de content-kolom passen zonder horizontale scroll.
+        <section
+            className="
+                @container
+                relative
+                -mx-4 sm:-mx-6 lg:-mx-8
+                w-auto
+                space-y-4
+                rounded-none sm:rounded-2xl
+                border-y sm:border
+                border-slate-200
+                bg-white
+                px-4 py-4
+                sm:px-6 sm:py-5
+                lg:px-8 lg:py-6
+            "
+        >
             <header className="space-y-1">
                 <h2 className="text-lg font-bold text-slate-900">
                     Documenten
@@ -288,11 +305,11 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
             ) : (
                 <>
                     {/*
-                      Tabel alleen als het Documenten-vak zelf breed genoeg is
-                      (~53rem). Viewport-lg is misleidend: na sidebar blijft
-                      te weinig ruimte → stack/scrollbar. Pagina is max-w-none.
+                      Compacte grid (~46rem + gaps). Container-query drempel
+                      LIGT BOVEN die breedte, anders toont de tabel te vroeg
+                      en ontstaat juist een horizontale scrollbar.
                     */}
-                    <div className="hidden w-full @[53rem]:block">
+                    <div className="hidden w-full @[48rem]:block">
                         <div
                             className={`${DOC_ROW_GRID} border-b border-slate-200 pb-2 text-xs uppercase tracking-wide text-slate-500`}
                             role="row"
@@ -318,7 +335,7 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
                     </div>
 
                     {/* Te smal: kaarten i.p.v. geperste tabel */}
-                    <ul className="space-y-3 @[53rem]:hidden">
+                    <ul className="space-y-3 @[48rem]:hidden">
                         {docs.map((doc) => (
                             <li
                                 key={doc.id}
@@ -340,9 +357,12 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
     );
 }
 
-/** Vaste kolommen zodat Verloop nooit knijpt/stackt (min. ~53rem). */
+/**
+ * Type 9 + Nummer 7 + Verloop 20 + Bestand 7 + Acties 2.5 = 45.5rem
+ * + 4× gap-x-2 (0.5rem) = 47.5rem → container @[48rem] past.
+ */
 const DOC_ROW_GRID =
-    "grid w-full grid-cols-[10rem_8rem_minmax(24rem,1fr)_minmax(8rem,12rem)_2.75rem] items-center gap-x-3";
+    "grid w-full grid-cols-[9rem_7rem_minmax(20rem,1fr)_minmax(7rem,1fr)_2.5rem] items-center gap-x-2";
 
 function DocumentTableRow(props: {
     doc: UserDocumentDto;
@@ -380,7 +400,7 @@ function DocumentTableRow(props: {
                     onCommit={(number) => void onPatch(doc.id, { number })}
                 />
             </div>
-            <div className="min-w-0">
+            <div className="overflow-visible">
                 <ExpiryFields
                     doc={doc}
                     disabled={!canEdit || busy}
@@ -388,7 +408,7 @@ function DocumentTableRow(props: {
                     singleRow
                 />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 overflow-hidden">
                 <FileLink doc={doc} />
             </div>
             <div>
@@ -589,7 +609,7 @@ function ExpiryFields(props: {
     const monthNum = Number(month) || 1;
     const maxDay = daysInMonth(yearNum, monthNum);
     const selectClass =
-        "h-9 rounded-lg border bg-white px-1.5 text-sm disabled:bg-slate-50";
+        "h-9 shrink-0 rounded-lg border bg-white px-1 text-sm disabled:bg-slate-50";
 
     function commitParts(nextYear: string, nextMonth: string, nextDay: string) {
         // Pas opslaan als dag/maand/jaar compleet zijn; tussentijds wissen
@@ -647,7 +667,7 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(year, month, nextDay);
                         }}
-                        className={`${selectClass} w-[3.25rem]`}
+                        className={`${selectClass} w-[3rem]`}
                     >
                         <option value="">dag</option>
                         {Array.from({ length: maxDay }, (_, i) => {
@@ -677,7 +697,7 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(year, nextMonth, nextDay);
                         }}
-                        className={`${selectClass} w-[3.75rem]`}
+                        className={`${selectClass} w-[3.5rem]`}
                     >
                         <option value="">mnd</option>
                         {MONTH_LABELS_NL.map((label, i) => {
@@ -707,7 +727,7 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(nextYear, month, nextDay);
                         }}
-                        className={`${selectClass} w-[4.25rem]`}
+                        className={`${selectClass} w-[4rem]`}
                     >
                         <option value="">jaar</option>
                         {buildYearOptions(year).map((y) => (

@@ -296,7 +296,7 @@ export default function EditUserPage(){
             </header>
 
             {savedOk ? (
-                <p className="max-w-3xl rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
                     Opgeslagen. Je blijft op deze pagina; documenten staan hieronder.
                 </p>
             ) : null}
@@ -332,7 +332,8 @@ export default function EditUserPage(){
                 rounded-2xl
                 p-5
                 space-y-4
-                max-w-3xl
+                w-full
+                max-w-none
             ">
 
 
