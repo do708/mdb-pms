@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, type SessionUser } from "./session";
 import { prisma } from "@/lib/prisma";
+import { ensureProductionSchema } from "@/lib/prismaEnsure";
 
 type GuardResult =
     | { ok: true; user: SessionUser }
@@ -37,6 +38,10 @@ export async function requireApiRole(
             ),
         };
     }
+
+    // Vangnet: ontbrekende migraties (o.a. User.gereedschap*) laten
+    // Prisma-includes als assignedUser:true crashen → dashboard rood.
+    await ensureProductionSchema();
 
     return { ok: true, user };
 }

@@ -3,8 +3,30 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 import { parseStaffKind } from "@/constants/staffKind";
+import { ensureGereedschapSchema } from "@/lib/prismaEnsure";
 
 import bcrypt from "bcryptjs";
+
+const USER_LIST_SELECT = {
+    id: true,
+    name: true,
+    email: true,
+    role: true,
+    staffKind: true,
+    active: true,
+    gereedschapBeheer: true,
+    keurmeester: true,
+    overzichtAlleAssets: true,
+} as const;
+
+const USER_LIST_SELECT_LEGACY = {
+    id: true,
+    name: true,
+    email: true,
+    role: true,
+    staffKind: true,
+    active: true,
+} as const;
 
 export async function GET() {
 
@@ -12,23 +34,30 @@ export async function GET() {
     if (!guard.ok) return guard.response;
 
     try {
+        await ensureGereedschapSchema();
 
-        const users = await prisma.user.findMany({
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                staffKind: true,
-                active: true,
-                gereedschapBeheer: true,
-                keurmeester: true,
-                overzichtAlleAssets: true,
-            },
-            orderBy: { name: "asc" },
-        });
-
-        return NextResponse.json(users);
+        try {
+            const users = await prisma.user.findMany({
+                select: USER_LIST_SELECT,
+                orderBy: { name: "asc" },
+            });
+            return NextResponse.json(users);
+        } catch (inner) {
+            // Fallback als capability-kolommen nog ontbreken (pre-migrate).
+            console.warn("USERS GET fallback zonder gereedschap-flags", inner);
+            const users = await prisma.user.findMany({
+                select: USER_LIST_SELECT_LEGACY,
+                orderBy: { name: "asc" },
+            });
+            return NextResponse.json(
+                users.map((u) => ({
+                    ...u,
+                    gereedschapBeheer: false,
+                    keurmeester: false,
+                    overzichtAlleAssets: false,
+                }))
+            );
+        }
 
     } catch (error) {
 
@@ -48,6 +77,7 @@ export async function POST(request: Request) {
     if (!guard.ok) return guard.response;
 
     try {
+        await ensureGereedschapSchema();
 
         const body = await request.json();
 

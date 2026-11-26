@@ -426,8 +426,11 @@ export default function DashboardPage() {
             <PageShell>
                 <p className="text-sm text-red-600">
                     Dashboardgegevens konden niet worden geladen. Vernieuw de
-                    pagina of controleer of de database-migraties zijn
-                    uitgevoerd.
+                    pagina. Blijft dit zo, dan ontbreekt waarschijnlijk een
+                    database-migratie — draai lokaal{" "}
+                    <code className="text-xs">npm run db:migrate</code> met de
+                    Production <code className="text-xs">DATABASE_URL</code>{" "}
+                    (zie docs/vercel-database-env.md).
                 </p>
             </PageShell>
         );

@@ -50,12 +50,16 @@ export async function GET(request: NextRequest, context: Ctx) {
             errorCorrectionLevel: "M",
         });
 
+        const download =
+            request.nextUrl.searchParams.get("download") === "1" ||
+            request.nextUrl.searchParams.get("download") === "true";
+
         return new NextResponse(new Uint8Array(png), {
             status: 200,
             headers: {
                 "Content-Type": "image/png",
                 "Cache-Control": "private, max-age=3600",
-                "Content-Disposition": `inline; filename="${asset.code}-qr.png"`,
+                "Content-Disposition": `${download ? "attachment" : "inline"}; filename="${asset.code}-qr.png"`,
             },
         });
     } catch (error) {

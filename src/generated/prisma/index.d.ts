@@ -40103,6 +40103,7 @@ export namespace Prisma {
     status: string | null
     nextInspectionAt: Date | null
     lastInspectionAt: Date | null
+    purchasedAt: Date | null
     archivedAt: Date | null
     notes: string | null
     createdById: string | null
@@ -40123,6 +40124,7 @@ export namespace Prisma {
     status: string | null
     nextInspectionAt: Date | null
     lastInspectionAt: Date | null
+    purchasedAt: Date | null
     archivedAt: Date | null
     notes: string | null
     createdById: string | null
@@ -40143,6 +40145,7 @@ export namespace Prisma {
     status: number
     nextInspectionAt: number
     lastInspectionAt: number
+    purchasedAt: number
     archivedAt: number
     notes: number
     createdById: number
@@ -40165,6 +40168,7 @@ export namespace Prisma {
     status?: true
     nextInspectionAt?: true
     lastInspectionAt?: true
+    purchasedAt?: true
     archivedAt?: true
     notes?: true
     createdById?: true
@@ -40185,6 +40189,7 @@ export namespace Prisma {
     status?: true
     nextInspectionAt?: true
     lastInspectionAt?: true
+    purchasedAt?: true
     archivedAt?: true
     notes?: true
     createdById?: true
@@ -40205,6 +40210,7 @@ export namespace Prisma {
     status?: true
     nextInspectionAt?: true
     lastInspectionAt?: true
+    purchasedAt?: true
     archivedAt?: true
     notes?: true
     createdById?: true
@@ -40298,6 +40304,7 @@ export namespace Prisma {
     status: string
     nextInspectionAt: Date | null
     lastInspectionAt: Date | null
+    purchasedAt: Date | null
     archivedAt: Date | null
     notes: string | null
     createdById: string | null
@@ -40335,6 +40342,7 @@ export namespace Prisma {
     status?: boolean
     nextInspectionAt?: boolean
     lastInspectionAt?: boolean
+    purchasedAt?: boolean
     archivedAt?: boolean
     notes?: boolean
     createdById?: boolean
@@ -40359,6 +40367,7 @@ export namespace Prisma {
     status?: boolean
     nextInspectionAt?: boolean
     lastInspectionAt?: boolean
+    purchasedAt?: boolean
     archivedAt?: boolean
     notes?: boolean
     createdById?: boolean
@@ -40381,6 +40390,7 @@ export namespace Prisma {
     status?: boolean
     nextInspectionAt?: boolean
     lastInspectionAt?: boolean
+    purchasedAt?: boolean
     archivedAt?: boolean
     notes?: boolean
     createdById?: boolean
@@ -40403,6 +40413,7 @@ export namespace Prisma {
     status?: boolean
     nextInspectionAt?: boolean
     lastInspectionAt?: boolean
+    purchasedAt?: boolean
     archivedAt?: boolean
     notes?: boolean
     createdById?: boolean
@@ -40410,7 +40421,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ToolAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "category" | "name" | "serialNumber" | "photoUrl" | "assignedUserId" | "busKenteken" | "kantoor" | "status" | "nextInspectionAt" | "lastInspectionAt" | "archivedAt" | "notes" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["toolAsset"]>
+  export type ToolAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "category" | "name" | "serialNumber" | "photoUrl" | "assignedUserId" | "busKenteken" | "kantoor" | "status" | "nextInspectionAt" | "lastInspectionAt" | "purchasedAt" | "archivedAt" | "notes" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["toolAsset"]>
   export type ToolAssetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedUser?: boolean | ToolAsset$assignedUserArgs<ExtArgs>
     createdBy?: boolean | ToolAsset$createdByArgs<ExtArgs>
@@ -40461,6 +40472,10 @@ export namespace Prisma {
       status: string
       nextInspectionAt: Date | null
       lastInspectionAt: Date | null
+      /**
+       * Aanschafdatum (optioneel; default = createdAt in UI/export)
+       */
+      purchasedAt: Date | null
       archivedAt: Date | null
       notes: string | null
       createdById: string | null
@@ -40904,6 +40919,7 @@ export namespace Prisma {
     readonly status: FieldRef<"ToolAsset", 'String'>
     readonly nextInspectionAt: FieldRef<"ToolAsset", 'DateTime'>
     readonly lastInspectionAt: FieldRef<"ToolAsset", 'DateTime'>
+    readonly purchasedAt: FieldRef<"ToolAsset", 'DateTime'>
     readonly archivedAt: FieldRef<"ToolAsset", 'DateTime'>
     readonly notes: FieldRef<"ToolAsset", 'String'>
     readonly createdById: FieldRef<"ToolAsset", 'String'>
@@ -44042,6 +44058,7 @@ export namespace Prisma {
     status: 'status',
     nextInspectionAt: 'nextInspectionAt',
     lastInspectionAt: 'lastInspectionAt',
+    purchasedAt: 'purchasedAt',
     archivedAt: 'archivedAt',
     notes: 'notes',
     createdById: 'createdById',
@@ -46866,6 +46883,7 @@ export namespace Prisma {
     status?: StringFilter<"ToolAsset"> | string
     nextInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     lastInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    purchasedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     archivedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     notes?: StringNullableFilter<"ToolAsset"> | string | null
     createdById?: StringNullableFilter<"ToolAsset"> | string | null
@@ -46889,6 +46907,7 @@ export namespace Prisma {
     status?: SortOrder
     nextInspectionAt?: SortOrderInput | SortOrder
     lastInspectionAt?: SortOrderInput | SortOrder
+    purchasedAt?: SortOrderInput | SortOrder
     archivedAt?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -46915,6 +46934,7 @@ export namespace Prisma {
     status?: StringFilter<"ToolAsset"> | string
     nextInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     lastInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    purchasedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     archivedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     notes?: StringNullableFilter<"ToolAsset"> | string | null
     createdById?: StringNullableFilter<"ToolAsset"> | string | null
@@ -46938,6 +46958,7 @@ export namespace Prisma {
     status?: SortOrder
     nextInspectionAt?: SortOrderInput | SortOrder
     lastInspectionAt?: SortOrderInput | SortOrder
+    purchasedAt?: SortOrderInput | SortOrder
     archivedAt?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -46964,6 +46985,7 @@ export namespace Prisma {
     status?: StringWithAggregatesFilter<"ToolAsset"> | string
     nextInspectionAt?: DateTimeNullableWithAggregatesFilter<"ToolAsset"> | Date | string | null
     lastInspectionAt?: DateTimeNullableWithAggregatesFilter<"ToolAsset"> | Date | string | null
+    purchasedAt?: DateTimeNullableWithAggregatesFilter<"ToolAsset"> | Date | string | null
     archivedAt?: DateTimeNullableWithAggregatesFilter<"ToolAsset"> | Date | string | null
     notes?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
     createdById?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
@@ -50018,6 +50040,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -50040,6 +50063,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdById?: string | null
@@ -50060,6 +50084,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50082,6 +50107,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50103,6 +50129,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdById?: string | null
@@ -50122,6 +50149,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50141,6 +50169,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52353,6 +52382,7 @@ export namespace Prisma {
     status?: SortOrder
     nextInspectionAt?: SortOrder
     lastInspectionAt?: SortOrder
+    purchasedAt?: SortOrder
     archivedAt?: SortOrder
     notes?: SortOrder
     createdById?: SortOrder
@@ -52373,6 +52403,7 @@ export namespace Prisma {
     status?: SortOrder
     nextInspectionAt?: SortOrder
     lastInspectionAt?: SortOrder
+    purchasedAt?: SortOrder
     archivedAt?: SortOrder
     notes?: SortOrder
     createdById?: SortOrder
@@ -52393,6 +52424,7 @@ export namespace Prisma {
     status?: SortOrder
     nextInspectionAt?: SortOrder
     lastInspectionAt?: SortOrder
+    purchasedAt?: SortOrder
     archivedAt?: SortOrder
     notes?: SortOrder
     createdById?: SortOrder
@@ -55507,6 +55539,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -55527,6 +55560,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdById?: string | null
@@ -55557,6 +55591,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -55578,6 +55613,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -55912,6 +55948,7 @@ export namespace Prisma {
     status?: StringFilter<"ToolAsset"> | string
     nextInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     lastInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    purchasedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     archivedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
     notes?: StringNullableFilter<"ToolAsset"> | string | null
     createdById?: StringNullableFilter<"ToolAsset"> | string | null
@@ -63757,6 +63794,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -63778,6 +63816,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdById?: string | null
@@ -63870,6 +63909,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63891,6 +63931,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64102,6 +64143,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdById?: string | null
@@ -64122,6 +64164,7 @@ export namespace Prisma {
     status?: string
     nextInspectionAt?: Date | string | null
     lastInspectionAt?: Date | string | null
+    purchasedAt?: Date | string | null
     archivedAt?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -64561,6 +64604,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64581,6 +64625,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64601,6 +64646,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64620,6 +64666,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64641,6 +64688,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64661,6 +64709,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    purchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

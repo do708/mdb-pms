@@ -31,11 +31,20 @@ type Asset = {
     kantoor: boolean;
     photoUrl: string | null;
     serialNumber: string | null;
+    purchasedAt?: string | null;
     assignedUser: { id: string; name: string | null; email: string } | null;
     qrPath: string;
+    qrPngPath?: string;
 };
 
 type UserOpt = { id: string; name: string | null; email: string };
+
+type CreatedAsset = {
+    id: string;
+    code: string;
+    qrPath: string;
+    qrPngPath: string;
+};
 
 export default function BeheerPortaalPage() {
     const [filters, setFilters] = useState<AssetFilterState>(EMPTY_FILTERS);
@@ -46,6 +55,7 @@ export default function BeheerPortaalPage() {
     const [canManage, setCanManage] = useState(false);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [created, setCreated] = useState<CreatedAsset | null>(null);
 
     const [name, setName] = useState("");
     const [category, setCategory] = useState<ToolCategory>("G");
@@ -54,6 +64,7 @@ export default function BeheerPortaalPage() {
     const [kantoor, setKantoor] = useState(false);
     const [assignedUserId, setAssignedUserId] = useState("");
     const [photoUrl, setPhotoUrl] = useState("");
+    const [purchasedAt, setPurchasedAt] = useState("");
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
     const load = useCallback(async () => {
@@ -120,6 +131,7 @@ export default function BeheerPortaalPage() {
     async function createAsset() {
         setSaving(true);
         setError("");
+        setCreated(null);
         try {
             const res = await fetch("/api/gereedschap/assets", {
                 method: "POST",
@@ -132,6 +144,7 @@ export default function BeheerPortaalPage() {
                     kantoor,
                     assignedUserId: assignedUserId || null,
                     photoUrl: photoUrl || null,
+                    purchasedAt: purchasedAt || null,
                 }),
             });
             const data = await res.json().catch(() => ({}));
@@ -139,13 +152,25 @@ export default function BeheerPortaalPage() {
                 setError(data.error || "Aanmaken mislukt");
                 return;
             }
+            const asset = data.asset as Asset | undefined;
+            if (asset?.id && asset.code) {
+                setCreated({
+                    id: asset.id,
+                    code: asset.code,
+                    qrPath: asset.qrPath || `/asset/${asset.code}`,
+                    qrPngPath:
+                        asset.qrPngPath ||
+                        `/api/gereedschap/assets/${asset.id}/qr`,
+                });
+                setSelectedId(asset.id);
+            }
             setName("");
             setSerialNumber("");
             setBusKenteken("");
             setKantoor(false);
             setAssignedUserId("");
             setPhotoUrl("");
-            setSelectedId(data.asset?.id ?? null);
+            setPurchasedAt("");
             await load();
         } finally {
             setSaving(false);
@@ -193,16 +218,24 @@ export default function BeheerPortaalPage() {
                     </p>
                     <h1 className="text-2xl font-bold">Gereedschapsregister</h1>
                     <p className="text-sm text-slate-500">
-                        Filters: naam, bus-kenteken, kantoor. QR:{" "}
+                        Toevoegen, toewijzen, QR exporteren. Publieke status:{" "}
                         <code className="text-xs">/asset/MDB-G-00001</code>
                     </p>
                 </div>
-                <Link
-                    href="/gereedschap"
-                    className="text-sm text-[#0066FF] underline"
-                >
-                    ← Hub
-                </Link>
+                <div className="flex flex-wrap gap-3 items-center">
+                    <a
+                        href="/api/gereedschap/export?format=pdf"
+                        className="text-sm rounded-lg border border-slate-200 px-3 py-1.5 hover:bg-slate-50"
+                    >
+                        PDF-overzicht
+                    </a>
+                    <Link
+                        href="/gereedschap"
+                        className="text-sm text-[#0066FF] underline"
+                    >
+                        ← Hub
+                    </Link>
+                </div>
             </header>
 
             {error ? (
@@ -211,91 +244,151 @@ export default function BeheerPortaalPage() {
                 </p>
             ) : null}
 
+            {created ? (
+                <SpecPanel title="Gereedschap toegevoegd">
+                    <p className="text-sm text-slate-700">
+                        Code{" "}
+                        <span className="font-mono font-semibold text-[#0066FF]">
+                            {created.code}
+                        </span>{" "}
+                        is actief. QR wijst naar de publieke statuspagina.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-4 items-start">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src={created.qrPngPath}
+                            alt={`QR ${created.code}`}
+                            width={160}
+                            height={160}
+                            className="rounded-lg border border-slate-200 bg-white"
+                        />
+                        <div className="flex flex-col gap-2 text-sm">
+                            <Link
+                                href={created.qrPath}
+                                className="text-[#0066FF] underline"
+                                target="_blank"
+                            >
+                                Open statuspagina ({created.qrPath})
+                            </Link>
+                            <a
+                                href={`${created.qrPngPath}?download=1`}
+                                className="rounded-xl bg-[#0066FF] px-4 py-2 text-white font-semibold text-center"
+                                download={`${created.code}-qr.png`}
+                            >
+                                QR als PNG downloaden
+                            </a>
+                            <button
+                                type="button"
+                                className="text-slate-500 underline text-left"
+                                onClick={() => setCreated(null)}
+                            >
+                                Sluiten
+                            </button>
+                        </div>
+                    </div>
+                </SpecPanel>
+            ) : null}
+
             {canManage ? (
-            <SpecPanel title="Nieuw asset registreren">
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="text-sm block sm:col-span-2">
-                        <span className="text-gray-600">Naam *</span>
-                        <input
-                            className={specInputClassName}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </label>
-                    <label className="text-sm block">
-                        <span className="text-gray-600">Categorie</span>
-                        <select
-                            className={specSelectClassName}
-                            value={category}
-                            onChange={(e) =>
-                                setCategory(e.target.value as ToolCategory)
-                            }
-                        >
-                            {TOOL_CATEGORIES.map((c) => (
-                                <option key={c} value={c}>
-                                    MDB-{c} — {TOOL_CATEGORY_LABELS[c]}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                    <label className="text-sm block">
-                        <span className="text-gray-600">Serienummer</span>
-                        <input
-                            className={specInputClassName}
-                            value={serialNumber}
-                            onChange={(e) => setSerialNumber(e.target.value)}
-                        />
-                    </label>
-                    <label className="text-sm block">
-                        <span className="text-gray-600">Bus-kenteken</span>
-                        <input
-                            className={specInputClassName}
-                            value={busKenteken}
-                            onChange={(e) => setBusKenteken(e.target.value)}
-                        />
-                    </label>
-                    <label className="text-sm block">
-                        <span className="text-gray-600">Toegewezen aan</span>
-                        <select
-                            className={specSelectClassName}
-                            value={assignedUserId}
-                            onChange={(e) => setAssignedUserId(e.target.value)}
-                        >
-                            <option value="">— niemand —</option>
-                            {users.map((u) => (
-                                <option key={u.id} value={u.id}>
-                                    {u.name || u.email}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                    <label className="text-sm block sm:col-span-2">
-                        <span className="text-gray-600">Foto-URL (optioneel)</span>
-                        <input
-                            className={specInputClassName}
-                            value={photoUrl}
-                            onChange={(e) => setPhotoUrl(e.target.value)}
-                            placeholder="https://… of /uploads/…"
-                        />
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                        <input
-                            type="checkbox"
-                            checked={kantoor}
-                            onChange={(e) => setKantoor(e.target.checked)}
-                        />
-                        Staat op kantoor
-                    </label>
-                </div>
-                <button
-                    type="button"
-                    disabled={saving || !name.trim()}
-                    onClick={createAsset}
-                    className="mt-4 rounded-xl bg-[#0066FF] px-5 py-3 text-white font-semibold disabled:opacity-50"
-                >
-                    {saving ? "Opslaan…" : "Registreren + QR-code"}
-                </button>
-            </SpecPanel>
+                <SpecPanel title="Gereedschap toevoegen">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                        <label className="text-sm block sm:col-span-2">
+                            <span className="text-gray-600">Naam *</span>
+                            <input
+                                className={specInputClassName}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </label>
+                        <label className="text-sm block">
+                            <span className="text-gray-600">Categorie</span>
+                            <select
+                                className={specSelectClassName}
+                                value={category}
+                                onChange={(e) =>
+                                    setCategory(e.target.value as ToolCategory)
+                                }
+                            >
+                                {TOOL_CATEGORIES.map((c) => (
+                                    <option key={c} value={c}>
+                                        MDB-{c} — {TOOL_CATEGORY_LABELS[c]}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <label className="text-sm block">
+                            <span className="text-gray-600">Aanschafdatum</span>
+                            <input
+                                type="date"
+                                className={specInputClassName}
+                                value={purchasedAt}
+                                onChange={(e) => setPurchasedAt(e.target.value)}
+                            />
+                        </label>
+                        <label className="text-sm block">
+                            <span className="text-gray-600">Serienummer</span>
+                            <input
+                                className={specInputClassName}
+                                value={serialNumber}
+                                onChange={(e) => setSerialNumber(e.target.value)}
+                            />
+                        </label>
+                        <label className="text-sm block">
+                            <span className="text-gray-600">Bus-kenteken</span>
+                            <input
+                                className={specInputClassName}
+                                value={busKenteken}
+                                onChange={(e) => setBusKenteken(e.target.value)}
+                            />
+                        </label>
+                        <label className="text-sm block">
+                            <span className="text-gray-600">Toegewezen aan</span>
+                            <select
+                                className={specSelectClassName}
+                                value={assignedUserId}
+                                onChange={(e) =>
+                                    setAssignedUserId(e.target.value)
+                                }
+                            >
+                                <option value="">— niemand —</option>
+                                {users.map((u) => (
+                                    <option key={u.id} value={u.id}>
+                                        {u.name || u.email}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <label className="text-sm block sm:col-span-2">
+                            <span className="text-gray-600">
+                                Foto-URL (optioneel)
+                            </span>
+                            <input
+                                className={specInputClassName}
+                                value={photoUrl}
+                                onChange={(e) => setPhotoUrl(e.target.value)}
+                                placeholder="https://… of /uploads/…"
+                            />
+                        </label>
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={kantoor}
+                                onChange={(e) => setKantoor(e.target.checked)}
+                            />
+                            Staat op kantoor
+                        </label>
+                    </div>
+                    <button
+                        type="button"
+                        disabled={saving || !name.trim()}
+                        onClick={createAsset}
+                        className="mt-4 rounded-xl bg-[#0066FF] px-5 py-3 text-white font-semibold disabled:opacity-50"
+                    >
+                        {saving
+                            ? "Opslaan…"
+                            : "Gereedschap toevoegen + QR"}
+                    </button>
+                </SpecPanel>
             ) : (
                 <p className="text-sm text-slate-500 rounded-xl border border-slate-200 bg-white p-4">
                     Alleen-lezen overzicht (geen beheer-capability). Filters
@@ -352,11 +445,10 @@ export default function BeheerPortaalPage() {
                                         <td className="py-2 pr-3 space-x-2 whitespace-nowrap">
                                             <a
                                                 className="text-[#0066FF] underline"
-                                                href={`/api/gereedschap/assets/${a.id}/qr`}
-                                                target="_blank"
-                                                rel="noreferrer"
+                                                href={`/api/gereedschap/assets/${a.id}/qr?download=1`}
+                                                download={`${a.code}-qr.png`}
                                             >
-                                                QR
+                                                QR PNG
                                             </a>
                                             <Link
                                                 className="text-[#0066FF] underline"
@@ -365,15 +457,15 @@ export default function BeheerPortaalPage() {
                                                 Keur
                                             </Link>
                                             {canManage ? (
-                                            <button
-                                                type="button"
-                                                className="text-red-600 underline"
-                                                onClick={() =>
-                                                    archiveAsset(a.id)
-                                                }
-                                            >
-                                                Archiveer
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    className="text-red-600 underline"
+                                                    onClick={() =>
+                                                        archiveAsset(a.id)
+                                                    }
+                                                >
+                                                    Archiveer
+                                                </button>
                                             ) : null}
                                         </td>
                                     </tr>
