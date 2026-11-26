@@ -572,6 +572,8 @@ model ToolAsset {
   status           String           @default("nog_te_keuren")
   nextInspectionAt DateTime?
   lastInspectionAt DateTime?
+  /// Aanschafdatum (optioneel; default = createdAt in UI/export)
+  purchasedAt      DateTime?
   archivedAt       DateTime?
   notes            String?
   createdById      String?

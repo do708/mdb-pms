@@ -34,13 +34,34 @@ export default function UsersPage() {
 
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
 
     async function load() {
-        const response = await fetch("/api/users");
-        const data = await response.json();
+        setLoadError("");
+        try {
+            const response = await fetch("/api/users");
+            const data = await response.json().catch(() => null);
 
-        setUsers(data);
-        setLoading(false);
+            if (!response.ok || !Array.isArray(data)) {
+                setUsers([]);
+                setLoadError(
+                    data &&
+                        typeof data === "object" &&
+                        "error" in data &&
+                        typeof (data as { error: unknown }).error === "string"
+                        ? (data as { error: string }).error
+                        : "Gebruikers laden mislukt"
+                );
+                return;
+            }
+
+            setUsers(data);
+        } catch {
+            setUsers([]);
+            setLoadError("Gebruikers laden mislukt");
+        } finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -93,7 +114,9 @@ export default function UsersPage() {
             </div>
 
             <SpecPageCard>
-                {users.length === 0 ? (
+                {loadError ? (
+                    <p className="text-sm text-red-600">{loadError}</p>
+                ) : users.length === 0 ? (
                     <p className="text-sm text-gray-500">
                         Nog geen gebruikers.
                     </p>

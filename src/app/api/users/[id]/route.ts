@@ -3,10 +3,34 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiRole } from "@/lib/auth/guard";
 import { parseStaffKind } from "@/constants/staffKind";
+import { ensureGereedschapSchema } from "@/lib/prismaEnsure";
 
 import bcrypt from "bcryptjs";
 
 type Ctx = { params: Promise<{ id: string }> };
+
+const USER_DETAIL_SELECT = {
+    id: true,
+    name: true,
+    email: true,
+    role: true,
+    staffKind: true,
+    stagiaireUntil: true,
+    active: true,
+    gereedschapBeheer: true,
+    keurmeester: true,
+    overzichtAlleAssets: true,
+} as const;
+
+const USER_DETAIL_SELECT_LEGACY = {
+    id: true,
+    name: true,
+    email: true,
+    role: true,
+    staffKind: true,
+    stagiaireUntil: true,
+    active: true,
+} as const;
 
 
 export async function GET(request: NextRequest, context: Ctx) {
@@ -15,24 +39,31 @@ export async function GET(request: NextRequest, context: Ctx) {
     if (!guard.ok) return guard.response;
 
     try {
+        await ensureGereedschapSchema();
 
         const { id } = await context.params;
 
-        const user = await prisma.user.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                staffKind: true,
-                stagiaireUntil: true,
-                active: true,
-                gereedschapBeheer: true,
-                keurmeester: true,
-                overzichtAlleAssets: true,
-            },
-        });
+        let user;
+        try {
+            user = await prisma.user.findUnique({
+                where: { id },
+                select: USER_DETAIL_SELECT,
+            });
+        } catch (inner) {
+            console.warn("USER GET fallback zonder gereedschap-flags", inner);
+            const legacy = await prisma.user.findUnique({
+                where: { id },
+                select: USER_DETAIL_SELECT_LEGACY,
+            });
+            user = legacy
+                ? {
+                      ...legacy,
+                      gereedschapBeheer: false,
+                      keurmeester: false,
+                      overzichtAlleAssets: false,
+                  }
+                : null;
+        }
 
         if (!user) {
             return NextResponse.json(
@@ -61,6 +92,7 @@ export async function PUT(request: NextRequest, context: Ctx) {
     if (!guard.ok) return guard.response;
 
     try {
+        await ensureGereedschapSchema();
 
         const { id } = await context.params;
         const body = await request.json();

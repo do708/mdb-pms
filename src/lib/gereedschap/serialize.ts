@@ -19,6 +19,7 @@ type AssetRow = {
     status: string;
     nextInspectionAt: Date | null;
     lastInspectionAt: Date | null;
+    purchasedAt?: Date | null;
     archivedAt: Date | null;
     notes: string | null;
     createdAt: Date;
@@ -69,6 +70,7 @@ export function serializeAsset(asset: AssetRow, opts?: { public?: boolean }) {
             TOOL_STATUS_LABELS[asset.status as ToolStatus] ?? asset.status,
         nextInspectionAt: asset.nextInspectionAt?.toISOString() ?? null,
         lastInspectionAt: asset.lastInspectionAt?.toISOString() ?? null,
+        purchasedAt: asset.purchasedAt?.toISOString() ?? null,
         archivedAt: asset.archivedAt?.toISOString() ?? null,
         notes: opts?.public ? null : asset.notes,
         createdAt: asset.createdAt.toISOString(),
@@ -81,6 +83,7 @@ export function serializeAsset(asset: AssetRow, opts?: { public?: boolean }) {
               }
             : null,
         qrPath: `/asset/${asset.code}`,
+        qrPngPath: `/api/gereedschap/assets/${asset.id}/qr`,
     };
 
     if (opts?.public) {

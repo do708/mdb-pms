@@ -16,6 +16,12 @@ npm run db:migrate
 
 Benodigd: `DATABASE_URL` (én bij voorkeur `DIRECT_URL` zonder pooler).
 
+**Na merge van gereedschap-features:** zonder `db:migrate` missen o.a. `User.gereedschapBeheer` /
+`keurmeester` / `overzichtAlleAssets` en de `ToolAsset`-tabellen. Dat liet `/gebruikers`
+crashen (API 500 → UI verwachtte een array). De app probeert die kolommen/tabellen
+runtime bij te werken via `ensureGereedschapSchema`, maar **`npm run db:migrate` blijft
+de bron van waarheid** — draai die op Production/Preview na elke schema-PR.
+
 ## Runtime op Vercel
 
 | Variabele | Build | Runtime | Opmerking |

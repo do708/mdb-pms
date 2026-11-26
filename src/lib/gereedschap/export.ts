@@ -19,6 +19,8 @@ export type ExportAssetRow = {
     assignedName: string | null;
     lastInspectionAt: Date | null;
     nextInspectionAt: Date | null;
+    purchasedAt: Date | null;
+    createdAt: Date;
 };
 
 function categoryLabel(cat: string): string {
@@ -31,6 +33,10 @@ function statusLabel(status: string): string {
     return TOOL_STATUS_LABELS[status as ToolStatus] ?? status;
 }
 
+function dateOnly(d: Date | null | undefined): string {
+    return d ? d.toISOString().slice(0, 10) : "";
+}
+
 export function assetsToCsv(rows: ExportAssetRow[]): string {
     const header = [
         "code",
@@ -41,6 +47,7 @@ export function assetsToCsv(rows: ExportAssetRow[]): string {
         "bus_kenteken",
         "kantoor",
         "toegewezen_aan",
+        "aanschaf",
         "laatste_keuring",
         "volgende_keuring",
     ];
@@ -57,8 +64,9 @@ export function assetsToCsv(rows: ExportAssetRow[]): string {
                 r.busKenteken ?? "",
                 r.kantoor ? "ja" : "nee",
                 r.assignedName ?? "",
-                r.lastInspectionAt?.toISOString().slice(0, 10) ?? "",
-                r.nextInspectionAt?.toISOString().slice(0, 10) ?? "",
+                dateOnly(r.purchasedAt ?? r.createdAt),
+                dateOnly(r.lastInspectionAt),
+                dateOnly(r.nextInspectionAt),
             ]
                 .map((v) => `"${String(v).replace(/"/g, '""')}"`)
                 .join(";")
@@ -83,6 +91,7 @@ export async function assetsToExcel(
         { header: "Bus-kenteken", key: "bus", width: 14 },
         { header: "Kantoor", key: "kantoor", width: 10 },
         { header: "Toegewezen aan", key: "assigned", width: 22 },
+        { header: "Aanschaf", key: "purchased", width: 12 },
         { header: "Laatste keuring", key: "last", width: 14 },
         { header: "Volgende keuring", key: "next", width: 16 },
     ];
@@ -105,8 +114,9 @@ export async function assetsToExcel(
             bus: r.busKenteken ?? "",
             kantoor: r.kantoor ? "ja" : "nee",
             assigned: r.assignedName ?? "",
-            last: r.lastInspectionAt?.toISOString().slice(0, 10) ?? "",
-            next: r.nextInspectionAt?.toISOString().slice(0, 10) ?? "",
+            purchased: dateOnly(r.purchasedAt ?? r.createdAt),
+            last: dateOnly(r.lastInspectionAt),
+            next: dateOnly(r.nextInspectionAt),
         });
     }
 

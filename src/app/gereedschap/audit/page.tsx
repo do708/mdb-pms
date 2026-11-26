@@ -39,8 +39,8 @@ export default function AuditPortaalPage() {
                     </p>
                     <h1 className="text-2xl font-bold">Exports</h1>
                     <p className="text-sm text-slate-500">
-                        Eerste slice: CSV en Excel. PDF-audit is een
-                        tekst-stub tot de volledige layout klaar is.
+                        CSV, Excel en PDF-overzicht van het register (code,
+                        naam, toegewezen, bus, aanschaf, keuring).
                     </p>
                 </div>
                 <Link
@@ -70,9 +70,9 @@ export default function AuditPortaalPage() {
                         </a>
                         <a
                             href="/api/gereedschap/export?format=pdf"
-                            className="rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-800"
+                            className="rounded-xl border border-[#0066FF] bg-white px-5 py-3 font-semibold text-[#0066FF]"
                         >
-                            PDF-stub (tekst)
+                            PDF-overzicht
                         </a>
                     </div>
                 </SpecPanel>

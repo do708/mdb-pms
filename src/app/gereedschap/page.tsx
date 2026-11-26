@@ -66,7 +66,7 @@ export default function GereedschapHubPage() {
         {
             href: "/gereedschap/audit",
             title: "Audit / export",
-            desc: "CSV, Excel of tekstexport van het register",
+            desc: "CSV, Excel of PDF-overzicht van het register",
             icon: FileSpreadsheet,
             show: Boolean(caps?.canViewAll),
         },

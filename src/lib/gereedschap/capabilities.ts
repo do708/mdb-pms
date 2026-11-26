@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ensureGereedschapSchema } from "@/lib/prismaEnsure";
 
 export type ToolCapabilities = {
     gereedschapBeheer: boolean;
@@ -15,15 +16,41 @@ export const EMPTY_TOOL_CAPS: ToolCapabilities = {
 export async function loadToolCapabilities(
     userId: string
 ): Promise<ToolCapabilities> {
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-            gereedschapBeheer: true,
-            keurmeester: true,
-            overzichtAlleAssets: true,
-            role: true,
-        },
-    });
+    await ensureGereedschapSchema();
+
+    let user: {
+        gereedschapBeheer: boolean;
+        keurmeester: boolean;
+        overzichtAlleAssets: boolean;
+        role: string;
+    } | null = null;
+
+    try {
+        user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                gereedschapBeheer: true,
+                keurmeester: true,
+                overzichtAlleAssets: true,
+                role: true,
+            },
+        });
+    } catch {
+        // Pre-migrate: alleen role beschikbaar.
+        const legacy = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { role: true },
+        });
+        if (!legacy) return EMPTY_TOOL_CAPS;
+        if (legacy.role === "admin") {
+            return {
+                gereedschapBeheer: true,
+                keurmeester: true,
+                overzichtAlleAssets: true,
+            };
+        }
+        return EMPTY_TOOL_CAPS;
+    }
 
     if (!user) return EMPTY_TOOL_CAPS;
 

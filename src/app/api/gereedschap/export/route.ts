@@ -7,6 +7,7 @@ import {
     assetsToExcel,
     type ExportAssetRow,
 } from "@/lib/gereedschap/export";
+import { buildRegisterPdf } from "@/lib/gereedschap/registerPdf";
 
 export async function GET(request: NextRequest) {
     const guard = await requireOverzicht();
@@ -39,6 +40,8 @@ export async function GET(request: NextRequest) {
                 a.assignedUser?.name ?? a.assignedUser?.email ?? null,
             lastInspectionAt: a.lastInspectionAt,
             nextInspectionAt: a.nextInspectionAt,
+            purchasedAt: a.purchasedAt ?? null,
+            createdAt: a.createdAt,
         }));
 
         if (format === "xlsx" || format === "excel") {
@@ -54,18 +57,14 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        // PDF stub: lever CSV-achtige tekst als eenvoudige audit-export;
-        // volledige PDF-audit volgt later. CSV blijft default.
         if (format === "pdf") {
-            const csv = assetsToCsv(rows);
-            return new NextResponse(csv, {
+            const pdf = await buildRegisterPdf(rows);
+            return new NextResponse(Buffer.from(pdf), {
                 status: 200,
                 headers: {
-                    "Content-Type": "text/plain; charset=utf-8",
+                    "Content-Type": "application/pdf",
                     "Content-Disposition":
-                        'attachment; filename="mdb-gereedschap-audit.txt"',
-                    "X-MDB-Note":
-                        "PDF-audit stub — tekstexport tot volledige PDF klaar is",
+                        'attachment; filename="mdb-gereedschapsregister.pdf"',
                 },
             });
         }

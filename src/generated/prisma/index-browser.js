@@ -532,6 +532,7 @@ exports.Prisma.ToolAssetScalarFieldEnum = {
   status: 'status',
   nextInspectionAt: 'nextInspectionAt',
   lastInspectionAt: 'lastInspectionAt',
+  purchasedAt: 'purchasedAt',
   archivedAt: 'archivedAt',
   notes: 'notes',
   createdById: 'createdById',

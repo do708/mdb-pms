@@ -121,6 +121,14 @@ export async function POST(request: NextRequest) {
 
         const status = computeToolStatus({});
 
+        let purchasedAt: Date | null = null;
+        if (typeof body.purchasedAt === "string" && body.purchasedAt.trim()) {
+            const raw = body.purchasedAt.trim().slice(0, 10);
+            if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+                purchasedAt = new Date(`${raw}T12:00:00`);
+            }
+        }
+
         const asset = await prisma.toolAsset.create({
             data: {
                 code,
@@ -138,6 +146,7 @@ export async function POST(request: NextRequest) {
                     : null,
                 kantoor: Boolean(body.kantoor),
                 notes: body.notes ? String(body.notes) : null,
+                purchasedAt,
                 status,
                 createdById: guard.user.id,
             },
