@@ -53,6 +53,19 @@ function prismaErrorMeta(error: unknown): {
     };
 }
 
+function isConnectionPressure(meta: {
+    code?: string;
+    message: string;
+}): boolean {
+    const m = meta.message.toLowerCase();
+    return (
+        meta.code === "P2039" ||
+        /too many connections|remaining connection slots|connection pool|53300|timeout exceeded when trying to connect|maxclientsinsessionmode/i.test(
+            m
+        )
+    );
+}
+
 async function safeCall<T>(
     label: string,
     fn: () => Promise<T>,
@@ -98,23 +111,14 @@ export async function GET() {
             },
         };
 
-        const [
-            ingepland,
-            uitgevoerd,
-            teLaatCount,
-            teLaat,
-            uitgevoerdLijst,
-            recentForms,
-            openForms,
-            openFormsList,
-            openAanvragen,
-            materiaalWaarschuwing,
-            nietGereed,
-            vergetenProjectUren,
-        ] = await Promise.all([
+        // Kleine batches i.p.v. 12× parallel — spaart Neon/pg-pool (P2039).
+        const [ingepland, uitgevoerd, teLaatCount] = await Promise.all([
             prisma.workorder.count({ where: { status: "ingepland" } }),
             prisma.workorder.count({ where: { status: "uitgevoerd" } }),
             prisma.workorder.count({ where: teLaatWhere }),
+        ]);
+
+        const [teLaat, uitgevoerdLijst] = await Promise.all([
             prisma.workorder.findMany({
                 where: teLaatWhere,
                 orderBy: { plannedDate: "asc" },
@@ -139,31 +143,43 @@ export async function GET() {
                 },
                 include: workorderListInclude,
             }),
-            prisma.formSubmission.findMany({
-                take: 10,
-                where: { ...excludeArchivedForms() },
-                orderBy: { createdAt: "desc" },
-                include: {
-                    user: { select: { name: true } },
-                },
-            }),
-            prisma.formSubmission.count({
-                where: { status: "ingediend" },
-            }),
-            prisma.formSubmission.findMany({
-                where: { status: "ingediend" },
-                orderBy: { createdAt: "desc" },
-                include: {
-                    user: { select: { name: true } },
-                },
-            }),
-            prisma.aanvraag.count({
-                where: { status: "open" },
-            }),
-            safeCall("materiaal", () => loadMateriaalKlaarzettenUrgent(), []),
-            safeCall("niet-gereed", () => loadNietGereedMeldingen(), []),
-            safeCall("projecturen-vergeten", () => loadForgottenProjectHours(), []),
         ]);
+
+        const [recentForms, openForms, openFormsList, openAanvragen] =
+            await Promise.all([
+                prisma.formSubmission.findMany({
+                    take: 10,
+                    where: { ...excludeArchivedForms() },
+                    orderBy: { createdAt: "desc" },
+                    include: {
+                        user: { select: { name: true } },
+                    },
+                }),
+                prisma.formSubmission.count({
+                    where: { status: "ingediend" },
+                }),
+                prisma.formSubmission.findMany({
+                    where: { status: "ingediend" },
+                    orderBy: { createdAt: "desc" },
+                    include: {
+                        user: { select: { name: true } },
+                    },
+                }),
+                prisma.aanvraag.count({
+                    where: { status: "open" },
+                }),
+            ]);
+
+        const [materiaalWaarschuwing, nietGereed, vergetenProjectUren] =
+            await Promise.all([
+                safeCall("materiaal", () => loadMateriaalKlaarzettenUrgent(), []),
+                safeCall("niet-gereed", () => loadNietGereedMeldingen(), []),
+                safeCall(
+                    "projecturen-vergeten",
+                    () => loadForgottenProjectHours(),
+                    []
+                ),
+            ]);
 
         return NextResponse.json({
             counters: {
@@ -189,11 +205,15 @@ export async function GET() {
         console.error("DASHBOARD API ERROR", error);
 
         const isMissingColumn = meta.code === "P2022";
+        const connectionPressure = isConnectionPressure(meta);
+
         return NextResponse.json(
             {
                 error: isMissingColumn
-                    ? "Database-schema mist kolommen. Draai npm run db:migrate tegen Production, of vernieuw na deploy van ensure-schema."
-                    : "Dashboard gegevens ophalen mislukt",
+                    ? "Database-schema mist kolommen. Draai npm run db:migrate tegen Production."
+                    : connectionPressure
+                      ? "Database-verbindingen vol (pooler). Controleer dat DATABASE_URL de Neon -pooler URL is; DIRECT_URL alleen voor migrate."
+                      : "Dashboard gegevens ophalen mislukt",
                 code: meta.code ?? "DASHBOARD_ERROR",
                 detail: meta.message,
                 meta: meta.meta,
