@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { requireApiRole } from "@/lib/auth/guard";
 import { prisma } from "@/lib/prisma";
-import { supabase } from "@/lib/supabase/admin";
 import {
     contentTypeForFile,
     extensionForContentType,
@@ -14,6 +13,8 @@ import {
 import { parseUserDocumentType } from "@/constants/userDocumentTypes";
 import { ensureUserDocumentsTable } from "@/lib/users/ensureUserDocuments";
 import { serializeUserDocument } from "@/lib/users/serializeUserDocument";
+import { uploadUserDocumentToNas } from "@/lib/users/userDocumentStorage";
+import { isNasConfigured } from "@/lib/nas/synologyConfig";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -74,6 +75,16 @@ export async function POST(request: NextRequest, context: Ctx) {
             );
         }
 
+        if (!isNasConfigured()) {
+            return NextResponse.json(
+                {
+                    error:
+                        "NAS is niet ingesteld. Gebruikersdocumenten horen op de NAS, niet in Supabase.",
+                },
+                { status: 503 }
+            );
+        }
+
         const formData = await request.formData();
         const file = formData.get("file");
 
@@ -122,27 +133,13 @@ export async function POST(request: NextRequest, context: Ctx) {
         const veiligeNaam = payload.extension
             ? photoStorageName(upload.name, payload.extension)
             : upload.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        const stamp = Date.now();
-        const path = `user-docs/${id}/${stamp}-${veiligeNaam}`;
 
-        const { data, error } = await supabase.storage
-            .from("workorder-files")
-            .upload(path, payload.buffer, {
-                contentType: payload.contentType || contentType,
-                upsert: false,
-            });
-
-        if (error) {
-            console.error("USER DOC UPLOAD STORAGE", error);
-            return NextResponse.json(
-                { error: error.message || "Upload mislukt" },
-                { status: 500 }
-            );
-        }
-
-        const publicUrl = supabase.storage
-            .from("workorder-files")
-            .getPublicUrl(data.path).data.publicUrl;
+        const stored = await uploadUserDocumentToNas(
+            id,
+            veiligeNaam,
+            payload.buffer,
+            payload.contentType || contentType
+        );
 
         const doc = await prisma.userDocument.create({
             data: {
@@ -151,8 +148,8 @@ export async function POST(request: NextRequest, context: Ctx) {
                 number: numberRaw || null,
                 expiresAt,
                 neverExpires,
-                fileUrl: publicUrl,
-                fileName: data.path,
+                fileUrl: stored.fileUrl,
+                fileName: stored.fileName,
                 originalName: upload.name,
                 contentType: payload.contentType || contentType,
             },
@@ -165,8 +162,8 @@ export async function POST(request: NextRequest, context: Ctx) {
         return NextResponse.json(
             {
                 error:
-                    /supabase|niet geconfigureerd/i.test(message)
-                        ? "Bestandsopslag is niet geconfigureerd"
+                    /nas|niet ingesteld|niet geconfigureerd/i.test(message)
+                        ? "Bestandsopslag (NAS) is niet geconfigureerd"
                         : message || "Document opslaan mislukt",
             },
             { status: 500 }

@@ -1,4 +1,5 @@
 import { userDocumentTypeLabel } from "@/constants/userDocumentTypes";
+import { userDocumentFileApiPath } from "@/lib/users/userDocumentStorage";
 
 export type UserDocumentRow = {
     id: string;
@@ -27,7 +28,9 @@ export function serializeUserDocument(doc: UserDocumentRow) {
             ? doc.expiresAt.toISOString().slice(0, 10)
             : null,
         neverExpires: doc.neverExpires,
-        fileUrl: doc.fileUrl,
+        // Altijd via API: NAS (`nas:…`) is niet browser-bereikbaar; legacy
+        // Supabase-URL's blijven via dezelfde proxy leesbaar.
+        fileUrl: userDocumentFileApiPath(doc.userId, doc.id),
         fileName: doc.fileName,
         originalName: doc.originalName,
         contentType: doc.contentType,

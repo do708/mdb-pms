@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { parseUserDocumentType } from "@/constants/userDocumentTypes";
 import { ensureUserDocumentsTable } from "@/lib/users/ensureUserDocuments";
 import { serializeUserDocument } from "@/lib/users/serializeUserDocument";
+import { deleteUserDocumentFile } from "@/lib/users/userDocumentStorage";
 
 type Ctx = { params: Promise<{ id: string; docId: string }> };
 
@@ -114,7 +115,7 @@ export async function DELETE(_request: NextRequest, context: Ctx) {
 
         const existing = await prisma.userDocument.findFirst({
             where: { id: docId, userId: id },
-            select: { id: true },
+            select: { id: true, fileUrl: true },
         });
 
         if (!existing) {
@@ -122,6 +123,12 @@ export async function DELETE(_request: NextRequest, context: Ctx) {
                 { error: "Document niet gevonden" },
                 { status: 404 }
             );
+        }
+
+        try {
+            await deleteUserDocumentFile(existing.fileUrl);
+        } catch (storageError) {
+            console.error("USER DOCUMENT STORAGE DELETE", storageError);
         }
 
         await prisma.userDocument.delete({ where: { id: docId } });
