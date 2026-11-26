@@ -89,11 +89,6 @@ export default function GereedschapHubPage() {
                     <Wrench className="h-7 w-7 text-[#0066FF]" />
                     Gereedschap
                 </h1>
-                <p className="text-sm text-slate-500 max-w-2xl">
-                    Digitaal register, keuringen en QR-status. Rechten via
-                    capability-flags op de gebruiker (beheer / keurmeester /
-                    overzicht).
-                </p>
             </header>
 
             <div className="grid gap-4 sm:grid-cols-2">
