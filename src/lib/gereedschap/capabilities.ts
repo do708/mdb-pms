@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { ensureGereedschapSchema } from "@/lib/prismaEnsure";
+import {
+    ensureGereedschapSchema,
+    ensureGereedschapUserColumns,
+} from "@/lib/prismaEnsure";
 
 export type ToolCapabilities = {
     gereedschapBeheer: boolean;

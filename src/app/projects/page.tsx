@@ -85,6 +85,7 @@ export default function ProjectsPage() {
 
     const [projects, setProjects] = useState<ProjectSummary[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
     const [search, setSearch] = useState("");
     const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 
@@ -107,11 +108,30 @@ export default function ProjectsPage() {
     >([]);
 
     async function loadProjects() {
-        const response = await fetch("/api/projects");
-        const data = await response.json();
+        setLoadError("");
+        try {
+            const response = await fetch("/api/projects");
+            const data = await response.json().catch(() => null);
 
-        setProjects(data);
-        setLoading(false);
+            if (!response.ok || !Array.isArray(data)) {
+                setProjects([]);
+                setLoadError(
+                    data &&
+                        typeof data === "object" &&
+                        typeof (data as { error?: unknown }).error === "string"
+                        ? (data as { error: string }).error
+                        : "Projecten laden mislukt"
+                );
+                return;
+            }
+
+            setProjects(data);
+        } catch {
+            setProjects([]);
+            setLoadError("Projecten laden mislukt");
+        } finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -588,6 +608,9 @@ export default function ProjectsPage() {
             />
 
             <div className="space-y-6">
+                {loadError ? (
+                    <p className="text-sm text-red-600">{loadError}</p>
+                ) : null}
                 <SpecPageCard>
                     <h2 className="font-semibold text-sm text-gray-800">
                         Lopende projecten

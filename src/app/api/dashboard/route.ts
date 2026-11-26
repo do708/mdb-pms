@@ -10,7 +10,7 @@ import {
     loadNietGereedMeldingen,
 } from "@/lib/officeNotifications";
 import { loadForgottenProjectHours } from "@/lib/projects/forgottenHours";
-import { ensureProductionSchema } from "@/lib/prismaEnsure";
+import { ensureGereedschapUserColumns } from "@/lib/prismaEnsure";
 
 /** Alleen velden die het dashboard nodig heeft — géén gereedschap-flags. */
 const assignedUserSelect = {
@@ -71,9 +71,8 @@ export async function GET() {
     if (!guard.ok) return guard.response;
 
     try {
-        // Vangnet + DDL; queries hieronder gebruiken smalle User-selects
-        // zodat ontbrekende gereedschap-kolommen het dashboard niet meer knallen.
-        await ensureProductionSchema();
+        // Snelle User-cols; queries gebruiken smalle selects (geen gereedschap-flags).
+        await ensureGereedschapUserColumns();
 
         if (guard.user.role === "magazijn") {
             const materiaalWaarschuwing = await loadMateriaalKlaarzettenUrgent();
