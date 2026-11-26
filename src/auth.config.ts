@@ -52,7 +52,10 @@ export const authConfig = {
                 // URL, dus geen login vereist. Let op: alleen de publieke
                 // token- en upload-endpoints, niet /api/aanvragen (dashboard).
                 pathname === "/aanvraag" ||
-                pathname.startsWith("/api/aanvraag/")
+                pathname.startsWith("/api/aanvraag/") ||
+                // Publieke QR-statuspagina + read-only API
+                pathname.startsWith("/asset/") ||
+                pathname.startsWith("/api/asset/")
             ) {
                 // Al ingelogd? Niet nog een keer het loginscherm tonen.
                 if (user && pathname === "/login") {
@@ -117,6 +120,7 @@ export const authConfig = {
                     "/forms",
                     "/archive",
                     "/settings",
+                    "/gereedschap",
                 ];
 
                 if (allowed.some((p) => pathname.startsWith(p))) {
@@ -132,6 +136,7 @@ export const authConfig = {
                     "/planning",
                     "/pakbonnen",
                     "/settings",
+                    "/gereedschap",
                 ];
 
                 if (allowed.some((p) => pathname.startsWith(p))) {

@@ -22,6 +22,12 @@ model User {
   updatedAt              DateTime            @updatedAt
   /// Mag inloggen. Geen filter voor planning-zichtbaarheid.
   active                 Boolean             @default(true)
+  /// Gereedschap: register/QR/archiveren (Dominic + Linda initieel)
+  gereedschapBeheer      Boolean             @default(false)
+  /// Gereedschap: keuringen uitvoeren (Dominic + Linda initieel)
+  keurmeester            Boolean             @default(false)
+  /// Gereedschap: volledig register-overzicht met filters (Dominic + Linda + Michel)
+  overzichtAlleAssets    Boolean             @default(false)
   assignments            AssignmentUser[]
   workorders             Workorder[]
   extraWorkorders        WorkorderEngineer[]
@@ -30,6 +36,9 @@ model User {
   projectUrenGeboekt     ProjectUur[]        @relation("ProjectUurGeboektDoor")
   planningEventsAssigned PlanningEvent[]     @relation("PlanningEventAssigned")
   planningEventsCreated  PlanningEvent[]     @relation("PlanningEventCreatedBy")
+  toolAssetsAssigned     ToolAsset[]         @relation("ToolAssetAssigned")
+  toolAssetsCreated      ToolAsset[]         @relation("ToolAssetCreatedBy")
+  toolInspections        ToolInspection[]    @relation("ToolInspectionInspector")
 }
 
 model Customer {
@@ -542,4 +551,69 @@ model TravelRouteCache {
   durationHours Float
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+/// Digitaal gereedschap / veiligheidsmiddel (MDB-G/L/T/E/M)
+model ToolAsset {
+  id               String           @id @default(cuid())
+  /// Publieke code, bijv. MDB-G-00001
+  code             String           @unique
+  /// G | L | T | E | M
+  category         String
+  name             String
+  serialNumber     String?
+  photoUrl         String?
+  assignedUserId   String?
+  /// Bus-kenteken bij toewijzing aan voertuig
+  busKenteken      String?
+  /// Staat op kantoor (niet op bus/persoon)
+  kantoor          Boolean          @default(false)
+  /// nog_te_keuren | goedgekeurd | binnenkort | verlopen | afgekeurd | gearchiveerd
+  status           String           @default("nog_te_keuren")
+  nextInspectionAt DateTime?
+  lastInspectionAt DateTime?
+  archivedAt       DateTime?
+  notes            String?
+  createdById      String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  assignedUser     User?            @relation("ToolAssetAssigned", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  createdBy        User?            @relation("ToolAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  inspections      ToolInspection[]
+
+  @@index([category])
+  @@index([status])
+  @@index([assignedUserId])
+  @@index([busKenteken])
+  @@index([kantoor])
+  @@index([name])
+}
+
+/// Eén keuring — historie blijft bestaan; nooit overschrijven
+model ToolInspection {
+  id          String    @id @default(cuid())
+  assetId     String
+  inspectedAt DateTime  @default(now())
+  inspectorId String
+  /// goedgekeurd | afgekeurd
+  result      String
+  /// Checklist-antwoorden (JSON)
+  checklist   Json
+  notes       String?
+  validUntil  DateTime?
+  /// Optionele stub-PDF (data-URL of storage-pad)
+  pdfUrl      String?
+  createdAt   DateTime  @default(now())
+  asset       ToolAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  inspector   User      @relation("ToolInspectionInspector", fields: [inspectorId], references: [id], onDelete: Restrict)
+
+  @@index([assetId])
+  @@index([inspectorId])
+  @@index([inspectedAt])
+}
+
+/// Sequentiële nummers per categorieprefix (G/L/T/E/M)
+model ToolIdSequence {
+  category  String @id
+  nextValue Int    @default(1)
 }

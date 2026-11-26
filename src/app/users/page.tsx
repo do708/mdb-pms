@@ -24,6 +24,9 @@ interface User {
     role: string;
     staffKind?: string;
     active: boolean;
+    gereedschapBeheer?: boolean;
+    keurmeester?: boolean;
+    overzichtAlleAssets?: boolean;
 }
 
 export default function UsersPage() {
@@ -136,6 +139,22 @@ export default function UsersPage() {
                                                 Uitgeschakeld
                                             </span>
                                         )}
+
+                                        {user.gereedschapBeheer ? (
+                                            <span className="text-xs bg-sky-100 text-sky-800 rounded-full px-2 py-0.5">
+                                                Gereedschap beheer
+                                            </span>
+                                        ) : null}
+                                        {user.keurmeester ? (
+                                            <span className="text-xs bg-emerald-100 text-emerald-800 rounded-full px-2 py-0.5">
+                                                Keurmeester
+                                            </span>
+                                        ) : null}
+                                        {user.overzichtAlleAssets ? (
+                                            <span className="text-xs bg-violet-100 text-violet-800 rounded-full px-2 py-0.5">
+                                                Asset-overzicht
+                                            </span>
+                                        ) : null}
                                     </div>
 
                                     <p className="text-xs text-gray-500 mt-0.5 truncate">

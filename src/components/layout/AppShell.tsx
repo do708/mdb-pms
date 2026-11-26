@@ -30,7 +30,10 @@ export default function AppShell({
         };
     }, [menuOpen]);
 
-    const bare = pathname === "/login" || pathname === "/aanvraag";
+    const bare =
+        pathname === "/login" ||
+        pathname === "/aanvraag" ||
+        pathname.startsWith("/asset/");
     const isPlanning = pathname.startsWith("/planning");
 
     if (bare) {

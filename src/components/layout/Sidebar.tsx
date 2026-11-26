@@ -17,7 +17,8 @@ import {
     UserCog,
     PlusCircle,
     Archive,
-    Folder
+    Folder,
+    Wrench,
 } from "lucide-react";
 
 import PlanningMiniMonth from "@/components/planning/PlanningMiniMonth";
@@ -106,6 +107,14 @@ const menu:MenuItem[] = [
         icon:ClipboardList,
         title:"Intake- en inspectieformulieren gekoppeld aan opdrachten",
         roles:["admin","office","engineer"]
+    },
+
+    {
+        name:"Gereedschap",
+        href:"/gereedschap",
+        icon:Wrench,
+        title:"Digitaal gereedschapsbeheer, keuringen en QR-status",
+        roles:["admin","office","engineer","magazijn"]
     },
 
     {

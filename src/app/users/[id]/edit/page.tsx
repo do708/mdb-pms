@@ -60,6 +60,15 @@ export default function EditUserPage(){
     const [active,setActive] =
         useState(true);
 
+    const [gereedschapBeheer, setGereedschapBeheer] =
+        useState(false);
+
+    const [keurmeester, setKeurmeester] =
+        useState(false);
+
+    const [overzichtAlleAssets, setOverzichtAlleAssets] =
+        useState(false);
+
 
     const [loading,setLoading] =
         useState(true);
@@ -109,6 +118,12 @@ export default function EditUserPage(){
                 );
 
                 setActive(user.active ?? true);
+
+                setGereedschapBeheer(Boolean(user.gereedschapBeheer));
+
+                setKeurmeester(Boolean(user.keurmeester));
+
+                setOverzichtAlleAssets(Boolean(user.overzichtAlleAssets));
 
 
             } else {
@@ -180,6 +195,12 @@ export default function EditUserPage(){
                                     : null,
 
                             active,
+
+                            gereedschapBeheer,
+
+                            keurmeester,
+
+                            overzichtAlleAssets,
 
                             // Alleen meesturen als er een nieuw wachtwoord is
                             ...(
@@ -570,6 +591,49 @@ export default function EditUserPage(){
                     </span>
 
                 </label>
+
+                {(role === "office" || role === "engineer" || role === "admin") ? (
+                    <fieldset className="space-y-3 rounded-xl border border-slate-200 p-4">
+                        <legend className="px-1 text-sm font-semibold text-slate-700">
+                            Gereedschap-rechten
+                        </legend>
+                        <p className="text-xs text-gray-400">
+                            Capability-flags (niet hard-coded): beheer +
+                            keurmeester voor toevoegen/keuren; overzicht voor
+                            volledig register met filters.
+                        </p>
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={gereedschapBeheer}
+                                onChange={(e) =>
+                                    setGereedschapBeheer(e.target.checked)
+                                }
+                            />
+                            Gereedschap beheer (register / QR / archiveren)
+                        </label>
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={keurmeester}
+                                onChange={(e) =>
+                                    setKeurmeester(e.target.checked)
+                                }
+                            />
+                            Keurmeester (keuringen uitvoeren)
+                        </label>
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={overzichtAlleAssets}
+                                onChange={(e) =>
+                                    setOverzichtAlleAssets(e.target.checked)
+                                }
+                            />
+                            Overzicht alle assets (filters naam / bus / kantoor)
+                        </label>
+                    </fieldset>
+                ) : null}
                 </>
                 ) : null}
 

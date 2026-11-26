@@ -130,7 +130,10 @@ exports.Prisma.UserScalarFieldEnum = {
   stagiaireUntil: 'stagiaireUntil',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  active: 'active'
+  active: 'active',
+  gereedschapBeheer: 'gereedschapBeheer',
+  keurmeester: 'keurmeester',
+  overzichtAlleAssets: 'overzichtAlleAssets'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {
@@ -516,6 +519,44 @@ exports.Prisma.TravelRouteCacheScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ToolAssetScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  category: 'category',
+  name: 'name',
+  serialNumber: 'serialNumber',
+  photoUrl: 'photoUrl',
+  assignedUserId: 'assignedUserId',
+  busKenteken: 'busKenteken',
+  kantoor: 'kantoor',
+  status: 'status',
+  nextInspectionAt: 'nextInspectionAt',
+  lastInspectionAt: 'lastInspectionAt',
+  archivedAt: 'archivedAt',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ToolInspectionScalarFieldEnum = {
+  id: 'id',
+  assetId: 'assetId',
+  inspectedAt: 'inspectedAt',
+  inspectorId: 'inspectorId',
+  result: 'result',
+  checklist: 'checklist',
+  notes: 'notes',
+  validUntil: 'validUntil',
+  pdfUrl: 'pdfUrl',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ToolIdSequenceScalarFieldEnum = {
+  category: 'category',
+  nextValue: 'nextValue'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -577,7 +618,10 @@ exports.Prisma.ModelName = {
   PlanningEvent: 'PlanningEvent',
   WorkorderEngineer: 'WorkorderEngineer',
   TravelGeocodeCache: 'TravelGeocodeCache',
-  TravelRouteCache: 'TravelRouteCache'
+  TravelRouteCache: 'TravelRouteCache',
+  ToolAsset: 'ToolAsset',
+  ToolInspection: 'ToolInspection',
+  ToolIdSequence: 'ToolIdSequence'
 };
 
 /**

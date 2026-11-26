@@ -163,6 +163,21 @@ export type TravelGeocodeCache = $Result.DefaultSelection<Prisma.$TravelGeocodeC
  * Route-cache (OSRM): MD5(vertrek_aankomst) of multi-stop pad
  */
 export type TravelRouteCache = $Result.DefaultSelection<Prisma.$TravelRouteCachePayload>
+/**
+ * Model ToolAsset
+ * Digitaal gereedschap / veiligheidsmiddel (MDB-G/L/T/E/M)
+ */
+export type ToolAsset = $Result.DefaultSelection<Prisma.$ToolAssetPayload>
+/**
+ * Model ToolInspection
+ * Eén keuring — historie blijft bestaan; nooit overschrijven
+ */
+export type ToolInspection = $Result.DefaultSelection<Prisma.$ToolInspectionPayload>
+/**
+ * Model ToolIdSequence
+ * Sequentiële nummers per categorieprefix (G/L/T/E/M)
+ */
+export type ToolIdSequence = $Result.DefaultSelection<Prisma.$ToolIdSequencePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -584,6 +599,36 @@ export class PrismaClient<
     * ```
     */
   get travelRouteCache(): Prisma.TravelRouteCacheDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.toolAsset`: Exposes CRUD operations for the **ToolAsset** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ToolAssets
+    * const toolAssets = await prisma.toolAsset.findMany()
+    * ```
+    */
+  get toolAsset(): Prisma.ToolAssetDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.toolInspection`: Exposes CRUD operations for the **ToolInspection** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ToolInspections
+    * const toolInspections = await prisma.toolInspection.findMany()
+    * ```
+    */
+  get toolInspection(): Prisma.ToolInspectionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.toolIdSequence`: Exposes CRUD operations for the **ToolIdSequence** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ToolIdSequences
+    * const toolIdSequences = await prisma.toolIdSequence.findMany()
+    * ```
+    */
+  get toolIdSequence(): Prisma.ToolIdSequenceDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1060,7 +1105,10 @@ export namespace Prisma {
     PlanningEvent: 'PlanningEvent',
     WorkorderEngineer: 'WorkorderEngineer',
     TravelGeocodeCache: 'TravelGeocodeCache',
-    TravelRouteCache: 'TravelRouteCache'
+    TravelRouteCache: 'TravelRouteCache',
+    ToolAsset: 'ToolAsset',
+    ToolInspection: 'ToolInspection',
+    ToolIdSequence: 'ToolIdSequence'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1076,7 +1124,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "archiveFile" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "projectAttachment" | "workorder" | "archiveFolder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "pakbon" | "pakbonWorkorder" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache"
+      modelProps: "user" | "customer" | "archiveFile" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "projectAttachment" | "workorder" | "archiveFolder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "pakbon" | "pakbonWorkorder" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache" | "toolAsset" | "toolInspection" | "toolIdSequence"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3300,6 +3348,228 @@ export namespace Prisma {
           }
         }
       }
+      ToolAsset: {
+        payload: Prisma.$ToolAssetPayload<ExtArgs>
+        fields: Prisma.ToolAssetFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ToolAssetFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ToolAssetFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>
+          }
+          findFirst: {
+            args: Prisma.ToolAssetFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ToolAssetFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>
+          }
+          findMany: {
+            args: Prisma.ToolAssetFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>[]
+          }
+          create: {
+            args: Prisma.ToolAssetCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>
+          }
+          createMany: {
+            args: Prisma.ToolAssetCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ToolAssetCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>[]
+          }
+          delete: {
+            args: Prisma.ToolAssetDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>
+          }
+          update: {
+            args: Prisma.ToolAssetUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>
+          }
+          deleteMany: {
+            args: Prisma.ToolAssetDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ToolAssetUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ToolAssetUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>[]
+          }
+          upsert: {
+            args: Prisma.ToolAssetUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolAssetPayload>
+          }
+          aggregate: {
+            args: Prisma.ToolAssetAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateToolAsset>
+          }
+          groupBy: {
+            args: Prisma.ToolAssetGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ToolAssetGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ToolAssetCountArgs<ExtArgs>
+            result: $Utils.Optional<ToolAssetCountAggregateOutputType> | number
+          }
+        }
+      }
+      ToolInspection: {
+        payload: Prisma.$ToolInspectionPayload<ExtArgs>
+        fields: Prisma.ToolInspectionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ToolInspectionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ToolInspectionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>
+          }
+          findFirst: {
+            args: Prisma.ToolInspectionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ToolInspectionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>
+          }
+          findMany: {
+            args: Prisma.ToolInspectionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>[]
+          }
+          create: {
+            args: Prisma.ToolInspectionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>
+          }
+          createMany: {
+            args: Prisma.ToolInspectionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ToolInspectionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>[]
+          }
+          delete: {
+            args: Prisma.ToolInspectionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>
+          }
+          update: {
+            args: Prisma.ToolInspectionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>
+          }
+          deleteMany: {
+            args: Prisma.ToolInspectionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ToolInspectionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ToolInspectionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>[]
+          }
+          upsert: {
+            args: Prisma.ToolInspectionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolInspectionPayload>
+          }
+          aggregate: {
+            args: Prisma.ToolInspectionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateToolInspection>
+          }
+          groupBy: {
+            args: Prisma.ToolInspectionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ToolInspectionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ToolInspectionCountArgs<ExtArgs>
+            result: $Utils.Optional<ToolInspectionCountAggregateOutputType> | number
+          }
+        }
+      }
+      ToolIdSequence: {
+        payload: Prisma.$ToolIdSequencePayload<ExtArgs>
+        fields: Prisma.ToolIdSequenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ToolIdSequenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ToolIdSequenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>
+          }
+          findFirst: {
+            args: Prisma.ToolIdSequenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ToolIdSequenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>
+          }
+          findMany: {
+            args: Prisma.ToolIdSequenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>[]
+          }
+          create: {
+            args: Prisma.ToolIdSequenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>
+          }
+          createMany: {
+            args: Prisma.ToolIdSequenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ToolIdSequenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>[]
+          }
+          delete: {
+            args: Prisma.ToolIdSequenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>
+          }
+          update: {
+            args: Prisma.ToolIdSequenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>
+          }
+          deleteMany: {
+            args: Prisma.ToolIdSequenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ToolIdSequenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ToolIdSequenceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>[]
+          }
+          upsert: {
+            args: Prisma.ToolIdSequenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ToolIdSequencePayload>
+          }
+          aggregate: {
+            args: Prisma.ToolIdSequenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateToolIdSequence>
+          }
+          groupBy: {
+            args: Prisma.ToolIdSequenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ToolIdSequenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ToolIdSequenceCountArgs<ExtArgs>
+            result: $Utils.Optional<ToolIdSequenceCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3453,6 +3723,9 @@ export namespace Prisma {
     workorderEngineer?: WorkorderEngineerOmit
     travelGeocodeCache?: TravelGeocodeCacheOmit
     travelRouteCache?: TravelRouteCacheOmit
+    toolAsset?: ToolAssetOmit
+    toolInspection?: ToolInspectionOmit
+    toolIdSequence?: ToolIdSequenceOmit
   }
 
   /* Types for Logging */
@@ -3541,6 +3814,9 @@ export namespace Prisma {
     projectUrenGeboekt: number
     planningEventsAssigned: number
     planningEventsCreated: number
+    toolAssetsAssigned: number
+    toolAssetsCreated: number
+    toolInspections: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3552,6 +3828,9 @@ export namespace Prisma {
     projectUrenGeboekt?: boolean | UserCountOutputTypeCountProjectUrenGeboektArgs
     planningEventsAssigned?: boolean | UserCountOutputTypeCountPlanningEventsAssignedArgs
     planningEventsCreated?: boolean | UserCountOutputTypeCountPlanningEventsCreatedArgs
+    toolAssetsAssigned?: boolean | UserCountOutputTypeCountToolAssetsAssignedArgs
+    toolAssetsCreated?: boolean | UserCountOutputTypeCountToolAssetsCreatedArgs
+    toolInspections?: boolean | UserCountOutputTypeCountToolInspectionsArgs
   }
 
   // Custom InputTypes
@@ -3619,6 +3898,27 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPlanningEventsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PlanningEventWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountToolAssetsAssignedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ToolAssetWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountToolAssetsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ToolAssetWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountToolInspectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ToolInspectionWhereInput
   }
 
 
@@ -4011,6 +4311,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ToolAssetCountOutputType
+   */
+
+  export type ToolAssetCountOutputType = {
+    inspections: number
+  }
+
+  export type ToolAssetCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inspections?: boolean | ToolAssetCountOutputTypeCountInspectionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ToolAssetCountOutputType without action
+   */
+  export type ToolAssetCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAssetCountOutputType
+     */
+    select?: ToolAssetCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ToolAssetCountOutputType without action
+   */
+  export type ToolAssetCountOutputTypeCountInspectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ToolInspectionWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -4035,6 +4366,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     active: boolean | null
+    gereedschapBeheer: boolean | null
+    keurmeester: boolean | null
+    overzichtAlleAssets: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -4048,6 +4382,9 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     active: boolean | null
+    gereedschapBeheer: boolean | null
+    keurmeester: boolean | null
+    overzichtAlleAssets: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -4061,6 +4398,9 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     active: number
+    gereedschapBeheer: number
+    keurmeester: number
+    overzichtAlleAssets: number
     _all: number
   }
 
@@ -4076,6 +4416,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     active?: true
+    gereedschapBeheer?: true
+    keurmeester?: true
+    overzichtAlleAssets?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -4089,6 +4432,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     active?: true
+    gereedschapBeheer?: true
+    keurmeester?: true
+    overzichtAlleAssets?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -4102,6 +4448,9 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     active?: true
+    gereedschapBeheer?: true
+    keurmeester?: true
+    overzichtAlleAssets?: true
     _all?: true
   }
 
@@ -4188,6 +4537,9 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     active: boolean
+    gereedschapBeheer: boolean
+    keurmeester: boolean
+    overzichtAlleAssets: boolean
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -4218,6 +4570,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: boolean | User$assignmentsArgs<ExtArgs>
     workorders?: boolean | User$workordersArgs<ExtArgs>
     extraWorkorders?: boolean | User$extraWorkordersArgs<ExtArgs>
@@ -4226,6 +4581,9 @@ export namespace Prisma {
     projectUrenGeboekt?: boolean | User$projectUrenGeboektArgs<ExtArgs>
     planningEventsAssigned?: boolean | User$planningEventsAssignedArgs<ExtArgs>
     planningEventsCreated?: boolean | User$planningEventsCreatedArgs<ExtArgs>
+    toolAssetsAssigned?: boolean | User$toolAssetsAssignedArgs<ExtArgs>
+    toolAssetsCreated?: boolean | User$toolAssetsCreatedArgs<ExtArgs>
+    toolInspections?: boolean | User$toolInspectionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4240,6 +4598,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4253,6 +4614,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -4266,9 +4630,12 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "staffKind" | "stagiaireUntil" | "createdAt" | "updatedAt" | "active", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "staffKind" | "stagiaireUntil" | "createdAt" | "updatedAt" | "active" | "gereedschapBeheer" | "keurmeester" | "overzichtAlleAssets", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | User$assignmentsArgs<ExtArgs>
     workorders?: boolean | User$workordersArgs<ExtArgs>
@@ -4278,6 +4645,9 @@ export namespace Prisma {
     projectUrenGeboekt?: boolean | User$projectUrenGeboektArgs<ExtArgs>
     planningEventsAssigned?: boolean | User$planningEventsAssignedArgs<ExtArgs>
     planningEventsCreated?: boolean | User$planningEventsCreatedArgs<ExtArgs>
+    toolAssetsAssigned?: boolean | User$toolAssetsAssignedArgs<ExtArgs>
+    toolAssetsCreated?: boolean | User$toolAssetsCreatedArgs<ExtArgs>
+    toolInspections?: boolean | User$toolInspectionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4294,6 +4664,9 @@ export namespace Prisma {
       projectUrenGeboekt: Prisma.$ProjectUurPayload<ExtArgs>[]
       planningEventsAssigned: Prisma.$PlanningEventPayload<ExtArgs>[]
       planningEventsCreated: Prisma.$PlanningEventPayload<ExtArgs>[]
+      toolAssetsAssigned: Prisma.$ToolAssetPayload<ExtArgs>[]
+      toolAssetsCreated: Prisma.$ToolAssetPayload<ExtArgs>[]
+      toolInspections: Prisma.$ToolInspectionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4318,6 +4691,18 @@ export namespace Prisma {
        * Mag inloggen. Geen filter voor planning-zichtbaarheid.
        */
       active: boolean
+      /**
+       * Gereedschap: register/QR/archiveren (Dominic + Linda initieel)
+       */
+      gereedschapBeheer: boolean
+      /**
+       * Gereedschap: keuringen uitvoeren (Dominic + Linda initieel)
+       */
+      keurmeester: boolean
+      /**
+       * Gereedschap: volledig register-overzicht met filters (Dominic + Linda + Michel)
+       */
+      overzichtAlleAssets: boolean
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -4720,6 +5105,9 @@ export namespace Prisma {
     projectUrenGeboekt<T extends User$projectUrenGeboektArgs<ExtArgs> = {}>(args?: Subset<T, User$projectUrenGeboektArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     planningEventsAssigned<T extends User$planningEventsAssignedArgs<ExtArgs> = {}>(args?: Subset<T, User$planningEventsAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     planningEventsCreated<T extends User$planningEventsCreatedArgs<ExtArgs> = {}>(args?: Subset<T, User$planningEventsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    toolAssetsAssigned<T extends User$toolAssetsAssignedArgs<ExtArgs> = {}>(args?: Subset<T, User$toolAssetsAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    toolAssetsCreated<T extends User$toolAssetsCreatedArgs<ExtArgs> = {}>(args?: Subset<T, User$toolAssetsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    toolInspections<T extends User$toolInspectionsArgs<ExtArgs> = {}>(args?: Subset<T, User$toolInspectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4759,6 +5147,9 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly active: FieldRef<"User", 'Boolean'>
+    readonly gereedschapBeheer: FieldRef<"User", 'Boolean'>
+    readonly keurmeester: FieldRef<"User", 'Boolean'>
+    readonly overzichtAlleAssets: FieldRef<"User", 'Boolean'>
   }
     
 
@@ -5341,6 +5732,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PlanningEventScalarFieldEnum | PlanningEventScalarFieldEnum[]
+  }
+
+  /**
+   * User.toolAssetsAssigned
+   */
+  export type User$toolAssetsAssignedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    where?: ToolAssetWhereInput
+    orderBy?: ToolAssetOrderByWithRelationInput | ToolAssetOrderByWithRelationInput[]
+    cursor?: ToolAssetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ToolAssetScalarFieldEnum | ToolAssetScalarFieldEnum[]
+  }
+
+  /**
+   * User.toolAssetsCreated
+   */
+  export type User$toolAssetsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    where?: ToolAssetWhereInput
+    orderBy?: ToolAssetOrderByWithRelationInput | ToolAssetOrderByWithRelationInput[]
+    cursor?: ToolAssetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ToolAssetScalarFieldEnum | ToolAssetScalarFieldEnum[]
+  }
+
+  /**
+   * User.toolInspections
+   */
+  export type User$toolInspectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    where?: ToolInspectionWhereInput
+    orderBy?: ToolInspectionOrderByWithRelationInput | ToolInspectionOrderByWithRelationInput[]
+    cursor?: ToolInspectionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ToolInspectionScalarFieldEnum | ToolInspectionScalarFieldEnum[]
   }
 
   /**
@@ -39618,6 +40081,3452 @@ export namespace Prisma {
 
 
   /**
+   * Model ToolAsset
+   */
+
+  export type AggregateToolAsset = {
+    _count: ToolAssetCountAggregateOutputType | null
+    _min: ToolAssetMinAggregateOutputType | null
+    _max: ToolAssetMaxAggregateOutputType | null
+  }
+
+  export type ToolAssetMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    category: string | null
+    name: string | null
+    serialNumber: string | null
+    photoUrl: string | null
+    assignedUserId: string | null
+    busKenteken: string | null
+    kantoor: boolean | null
+    status: string | null
+    nextInspectionAt: Date | null
+    lastInspectionAt: Date | null
+    archivedAt: Date | null
+    notes: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ToolAssetMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    category: string | null
+    name: string | null
+    serialNumber: string | null
+    photoUrl: string | null
+    assignedUserId: string | null
+    busKenteken: string | null
+    kantoor: boolean | null
+    status: string | null
+    nextInspectionAt: Date | null
+    lastInspectionAt: Date | null
+    archivedAt: Date | null
+    notes: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ToolAssetCountAggregateOutputType = {
+    id: number
+    code: number
+    category: number
+    name: number
+    serialNumber: number
+    photoUrl: number
+    assignedUserId: number
+    busKenteken: number
+    kantoor: number
+    status: number
+    nextInspectionAt: number
+    lastInspectionAt: number
+    archivedAt: number
+    notes: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ToolAssetMinAggregateInputType = {
+    id?: true
+    code?: true
+    category?: true
+    name?: true
+    serialNumber?: true
+    photoUrl?: true
+    assignedUserId?: true
+    busKenteken?: true
+    kantoor?: true
+    status?: true
+    nextInspectionAt?: true
+    lastInspectionAt?: true
+    archivedAt?: true
+    notes?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ToolAssetMaxAggregateInputType = {
+    id?: true
+    code?: true
+    category?: true
+    name?: true
+    serialNumber?: true
+    photoUrl?: true
+    assignedUserId?: true
+    busKenteken?: true
+    kantoor?: true
+    status?: true
+    nextInspectionAt?: true
+    lastInspectionAt?: true
+    archivedAt?: true
+    notes?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ToolAssetCountAggregateInputType = {
+    id?: true
+    code?: true
+    category?: true
+    name?: true
+    serialNumber?: true
+    photoUrl?: true
+    assignedUserId?: true
+    busKenteken?: true
+    kantoor?: true
+    status?: true
+    nextInspectionAt?: true
+    lastInspectionAt?: true
+    archivedAt?: true
+    notes?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ToolAssetAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ToolAsset to aggregate.
+     */
+    where?: ToolAssetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolAssets to fetch.
+     */
+    orderBy?: ToolAssetOrderByWithRelationInput | ToolAssetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ToolAssetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolAssets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolAssets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ToolAssets
+    **/
+    _count?: true | ToolAssetCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ToolAssetMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ToolAssetMaxAggregateInputType
+  }
+
+  export type GetToolAssetAggregateType<T extends ToolAssetAggregateArgs> = {
+        [P in keyof T & keyof AggregateToolAsset]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateToolAsset[P]>
+      : GetScalarType<T[P], AggregateToolAsset[P]>
+  }
+
+
+
+
+  export type ToolAssetGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ToolAssetWhereInput
+    orderBy?: ToolAssetOrderByWithAggregationInput | ToolAssetOrderByWithAggregationInput[]
+    by: ToolAssetScalarFieldEnum[] | ToolAssetScalarFieldEnum
+    having?: ToolAssetScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ToolAssetCountAggregateInputType | true
+    _min?: ToolAssetMinAggregateInputType
+    _max?: ToolAssetMaxAggregateInputType
+  }
+
+  export type ToolAssetGroupByOutputType = {
+    id: string
+    code: string
+    category: string
+    name: string
+    serialNumber: string | null
+    photoUrl: string | null
+    assignedUserId: string | null
+    busKenteken: string | null
+    kantoor: boolean
+    status: string
+    nextInspectionAt: Date | null
+    lastInspectionAt: Date | null
+    archivedAt: Date | null
+    notes: string | null
+    createdById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ToolAssetCountAggregateOutputType | null
+    _min: ToolAssetMinAggregateOutputType | null
+    _max: ToolAssetMaxAggregateOutputType | null
+  }
+
+  type GetToolAssetGroupByPayload<T extends ToolAssetGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ToolAssetGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ToolAssetGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ToolAssetGroupByOutputType[P]>
+            : GetScalarType<T[P], ToolAssetGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ToolAssetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    category?: boolean
+    name?: boolean
+    serialNumber?: boolean
+    photoUrl?: boolean
+    assignedUserId?: boolean
+    busKenteken?: boolean
+    kantoor?: boolean
+    status?: boolean
+    nextInspectionAt?: boolean
+    lastInspectionAt?: boolean
+    archivedAt?: boolean
+    notes?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assignedUser?: boolean | ToolAsset$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | ToolAsset$createdByArgs<ExtArgs>
+    inspections?: boolean | ToolAsset$inspectionsArgs<ExtArgs>
+    _count?: boolean | ToolAssetCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["toolAsset"]>
+
+  export type ToolAssetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    category?: boolean
+    name?: boolean
+    serialNumber?: boolean
+    photoUrl?: boolean
+    assignedUserId?: boolean
+    busKenteken?: boolean
+    kantoor?: boolean
+    status?: boolean
+    nextInspectionAt?: boolean
+    lastInspectionAt?: boolean
+    archivedAt?: boolean
+    notes?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assignedUser?: boolean | ToolAsset$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | ToolAsset$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["toolAsset"]>
+
+  export type ToolAssetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    category?: boolean
+    name?: boolean
+    serialNumber?: boolean
+    photoUrl?: boolean
+    assignedUserId?: boolean
+    busKenteken?: boolean
+    kantoor?: boolean
+    status?: boolean
+    nextInspectionAt?: boolean
+    lastInspectionAt?: boolean
+    archivedAt?: boolean
+    notes?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    assignedUser?: boolean | ToolAsset$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | ToolAsset$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["toolAsset"]>
+
+  export type ToolAssetSelectScalar = {
+    id?: boolean
+    code?: boolean
+    category?: boolean
+    name?: boolean
+    serialNumber?: boolean
+    photoUrl?: boolean
+    assignedUserId?: boolean
+    busKenteken?: boolean
+    kantoor?: boolean
+    status?: boolean
+    nextInspectionAt?: boolean
+    lastInspectionAt?: boolean
+    archivedAt?: boolean
+    notes?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ToolAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "category" | "name" | "serialNumber" | "photoUrl" | "assignedUserId" | "busKenteken" | "kantoor" | "status" | "nextInspectionAt" | "lastInspectionAt" | "archivedAt" | "notes" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["toolAsset"]>
+  export type ToolAssetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assignedUser?: boolean | ToolAsset$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | ToolAsset$createdByArgs<ExtArgs>
+    inspections?: boolean | ToolAsset$inspectionsArgs<ExtArgs>
+    _count?: boolean | ToolAssetCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ToolAssetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assignedUser?: boolean | ToolAsset$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | ToolAsset$createdByArgs<ExtArgs>
+  }
+  export type ToolAssetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    assignedUser?: boolean | ToolAsset$assignedUserArgs<ExtArgs>
+    createdBy?: boolean | ToolAsset$createdByArgs<ExtArgs>
+  }
+
+  export type $ToolAssetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ToolAsset"
+    objects: {
+      assignedUser: Prisma.$UserPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+      inspections: Prisma.$ToolInspectionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * Publieke code, bijv. MDB-G-00001
+       */
+      code: string
+      /**
+       * G | L | T | E | M
+       */
+      category: string
+      name: string
+      serialNumber: string | null
+      photoUrl: string | null
+      assignedUserId: string | null
+      /**
+       * Bus-kenteken bij toewijzing aan voertuig
+       */
+      busKenteken: string | null
+      /**
+       * Staat op kantoor (niet op bus/persoon)
+       */
+      kantoor: boolean
+      /**
+       * nog_te_keuren | goedgekeurd | binnenkort | verlopen | afgekeurd | gearchiveerd
+       */
+      status: string
+      nextInspectionAt: Date | null
+      lastInspectionAt: Date | null
+      archivedAt: Date | null
+      notes: string | null
+      createdById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["toolAsset"]>
+    composites: {}
+  }
+
+  type ToolAssetGetPayload<S extends boolean | null | undefined | ToolAssetDefaultArgs> = $Result.GetResult<Prisma.$ToolAssetPayload, S>
+
+  type ToolAssetCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ToolAssetFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ToolAssetCountAggregateInputType | true
+    }
+
+  export interface ToolAssetDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ToolAsset'], meta: { name: 'ToolAsset' } }
+    /**
+     * Find zero or one ToolAsset that matches the filter.
+     * @param {ToolAssetFindUniqueArgs} args - Arguments to find a ToolAsset
+     * @example
+     * // Get one ToolAsset
+     * const toolAsset = await prisma.toolAsset.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ToolAssetFindUniqueArgs>(args: SelectSubset<T, ToolAssetFindUniqueArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ToolAsset that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ToolAssetFindUniqueOrThrowArgs} args - Arguments to find a ToolAsset
+     * @example
+     * // Get one ToolAsset
+     * const toolAsset = await prisma.toolAsset.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ToolAssetFindUniqueOrThrowArgs>(args: SelectSubset<T, ToolAssetFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ToolAsset that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolAssetFindFirstArgs} args - Arguments to find a ToolAsset
+     * @example
+     * // Get one ToolAsset
+     * const toolAsset = await prisma.toolAsset.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ToolAssetFindFirstArgs>(args?: SelectSubset<T, ToolAssetFindFirstArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ToolAsset that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolAssetFindFirstOrThrowArgs} args - Arguments to find a ToolAsset
+     * @example
+     * // Get one ToolAsset
+     * const toolAsset = await prisma.toolAsset.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ToolAssetFindFirstOrThrowArgs>(args?: SelectSubset<T, ToolAssetFindFirstOrThrowArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ToolAssets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolAssetFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ToolAssets
+     * const toolAssets = await prisma.toolAsset.findMany()
+     * 
+     * // Get first 10 ToolAssets
+     * const toolAssets = await prisma.toolAsset.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const toolAssetWithIdOnly = await prisma.toolAsset.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ToolAssetFindManyArgs>(args?: SelectSubset<T, ToolAssetFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ToolAsset.
+     * @param {ToolAssetCreateArgs} args - Arguments to create a ToolAsset.
+     * @example
+     * // Create one ToolAsset
+     * const ToolAsset = await prisma.toolAsset.create({
+     *   data: {
+     *     // ... data to create a ToolAsset
+     *   }
+     * })
+     * 
+     */
+    create<T extends ToolAssetCreateArgs>(args: SelectSubset<T, ToolAssetCreateArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ToolAssets.
+     * @param {ToolAssetCreateManyArgs} args - Arguments to create many ToolAssets.
+     * @example
+     * // Create many ToolAssets
+     * const toolAsset = await prisma.toolAsset.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ToolAssetCreateManyArgs>(args?: SelectSubset<T, ToolAssetCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ToolAssets and returns the data saved in the database.
+     * @param {ToolAssetCreateManyAndReturnArgs} args - Arguments to create many ToolAssets.
+     * @example
+     * // Create many ToolAssets
+     * const toolAsset = await prisma.toolAsset.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ToolAssets and only return the `id`
+     * const toolAssetWithIdOnly = await prisma.toolAsset.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ToolAssetCreateManyAndReturnArgs>(args?: SelectSubset<T, ToolAssetCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ToolAsset.
+     * @param {ToolAssetDeleteArgs} args - Arguments to delete one ToolAsset.
+     * @example
+     * // Delete one ToolAsset
+     * const ToolAsset = await prisma.toolAsset.delete({
+     *   where: {
+     *     // ... filter to delete one ToolAsset
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ToolAssetDeleteArgs>(args: SelectSubset<T, ToolAssetDeleteArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ToolAsset.
+     * @param {ToolAssetUpdateArgs} args - Arguments to update one ToolAsset.
+     * @example
+     * // Update one ToolAsset
+     * const toolAsset = await prisma.toolAsset.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ToolAssetUpdateArgs>(args: SelectSubset<T, ToolAssetUpdateArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ToolAssets.
+     * @param {ToolAssetDeleteManyArgs} args - Arguments to filter ToolAssets to delete.
+     * @example
+     * // Delete a few ToolAssets
+     * const { count } = await prisma.toolAsset.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ToolAssetDeleteManyArgs>(args?: SelectSubset<T, ToolAssetDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ToolAssets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolAssetUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ToolAssets
+     * const toolAsset = await prisma.toolAsset.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ToolAssetUpdateManyArgs>(args: SelectSubset<T, ToolAssetUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ToolAssets and returns the data updated in the database.
+     * @param {ToolAssetUpdateManyAndReturnArgs} args - Arguments to update many ToolAssets.
+     * @example
+     * // Update many ToolAssets
+     * const toolAsset = await prisma.toolAsset.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ToolAssets and only return the `id`
+     * const toolAssetWithIdOnly = await prisma.toolAsset.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ToolAssetUpdateManyAndReturnArgs>(args: SelectSubset<T, ToolAssetUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ToolAsset.
+     * @param {ToolAssetUpsertArgs} args - Arguments to update or create a ToolAsset.
+     * @example
+     * // Update or create a ToolAsset
+     * const toolAsset = await prisma.toolAsset.upsert({
+     *   create: {
+     *     // ... data to create a ToolAsset
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ToolAsset we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ToolAssetUpsertArgs>(args: SelectSubset<T, ToolAssetUpsertArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ToolAssets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolAssetCountArgs} args - Arguments to filter ToolAssets to count.
+     * @example
+     * // Count the number of ToolAssets
+     * const count = await prisma.toolAsset.count({
+     *   where: {
+     *     // ... the filter for the ToolAssets we want to count
+     *   }
+     * })
+    **/
+    count<T extends ToolAssetCountArgs>(
+      args?: Subset<T, ToolAssetCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ToolAssetCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ToolAsset.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolAssetAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ToolAssetAggregateArgs>(args: Subset<T, ToolAssetAggregateArgs>): Prisma.PrismaPromise<GetToolAssetAggregateType<T>>
+
+    /**
+     * Group by ToolAsset.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolAssetGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ToolAssetGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ToolAssetGroupByArgs['orderBy'] }
+        : { orderBy?: ToolAssetGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ToolAssetGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetToolAssetGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ToolAsset model
+   */
+  readonly fields: ToolAssetFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ToolAsset.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ToolAssetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    assignedUser<T extends ToolAsset$assignedUserArgs<ExtArgs> = {}>(args?: Subset<T, ToolAsset$assignedUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends ToolAsset$createdByArgs<ExtArgs> = {}>(args?: Subset<T, ToolAsset$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    inspections<T extends ToolAsset$inspectionsArgs<ExtArgs> = {}>(args?: Subset<T, ToolAsset$inspectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ToolAsset model
+   */
+  interface ToolAssetFieldRefs {
+    readonly id: FieldRef<"ToolAsset", 'String'>
+    readonly code: FieldRef<"ToolAsset", 'String'>
+    readonly category: FieldRef<"ToolAsset", 'String'>
+    readonly name: FieldRef<"ToolAsset", 'String'>
+    readonly serialNumber: FieldRef<"ToolAsset", 'String'>
+    readonly photoUrl: FieldRef<"ToolAsset", 'String'>
+    readonly assignedUserId: FieldRef<"ToolAsset", 'String'>
+    readonly busKenteken: FieldRef<"ToolAsset", 'String'>
+    readonly kantoor: FieldRef<"ToolAsset", 'Boolean'>
+    readonly status: FieldRef<"ToolAsset", 'String'>
+    readonly nextInspectionAt: FieldRef<"ToolAsset", 'DateTime'>
+    readonly lastInspectionAt: FieldRef<"ToolAsset", 'DateTime'>
+    readonly archivedAt: FieldRef<"ToolAsset", 'DateTime'>
+    readonly notes: FieldRef<"ToolAsset", 'String'>
+    readonly createdById: FieldRef<"ToolAsset", 'String'>
+    readonly createdAt: FieldRef<"ToolAsset", 'DateTime'>
+    readonly updatedAt: FieldRef<"ToolAsset", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ToolAsset findUnique
+   */
+  export type ToolAssetFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolAsset to fetch.
+     */
+    where: ToolAssetWhereUniqueInput
+  }
+
+  /**
+   * ToolAsset findUniqueOrThrow
+   */
+  export type ToolAssetFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolAsset to fetch.
+     */
+    where: ToolAssetWhereUniqueInput
+  }
+
+  /**
+   * ToolAsset findFirst
+   */
+  export type ToolAssetFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolAsset to fetch.
+     */
+    where?: ToolAssetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolAssets to fetch.
+     */
+    orderBy?: ToolAssetOrderByWithRelationInput | ToolAssetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ToolAssets.
+     */
+    cursor?: ToolAssetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolAssets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolAssets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolAssets.
+     */
+    distinct?: ToolAssetScalarFieldEnum | ToolAssetScalarFieldEnum[]
+  }
+
+  /**
+   * ToolAsset findFirstOrThrow
+   */
+  export type ToolAssetFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolAsset to fetch.
+     */
+    where?: ToolAssetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolAssets to fetch.
+     */
+    orderBy?: ToolAssetOrderByWithRelationInput | ToolAssetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ToolAssets.
+     */
+    cursor?: ToolAssetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolAssets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolAssets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolAssets.
+     */
+    distinct?: ToolAssetScalarFieldEnum | ToolAssetScalarFieldEnum[]
+  }
+
+  /**
+   * ToolAsset findMany
+   */
+  export type ToolAssetFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolAssets to fetch.
+     */
+    where?: ToolAssetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolAssets to fetch.
+     */
+    orderBy?: ToolAssetOrderByWithRelationInput | ToolAssetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ToolAssets.
+     */
+    cursor?: ToolAssetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolAssets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolAssets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolAssets.
+     */
+    distinct?: ToolAssetScalarFieldEnum | ToolAssetScalarFieldEnum[]
+  }
+
+  /**
+   * ToolAsset create
+   */
+  export type ToolAssetCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ToolAsset.
+     */
+    data: XOR<ToolAssetCreateInput, ToolAssetUncheckedCreateInput>
+  }
+
+  /**
+   * ToolAsset createMany
+   */
+  export type ToolAssetCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ToolAssets.
+     */
+    data: ToolAssetCreateManyInput | ToolAssetCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ToolAsset createManyAndReturn
+   */
+  export type ToolAssetCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * The data used to create many ToolAssets.
+     */
+    data: ToolAssetCreateManyInput | ToolAssetCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ToolAsset update
+   */
+  export type ToolAssetUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ToolAsset.
+     */
+    data: XOR<ToolAssetUpdateInput, ToolAssetUncheckedUpdateInput>
+    /**
+     * Choose, which ToolAsset to update.
+     */
+    where: ToolAssetWhereUniqueInput
+  }
+
+  /**
+   * ToolAsset updateMany
+   */
+  export type ToolAssetUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ToolAssets.
+     */
+    data: XOR<ToolAssetUpdateManyMutationInput, ToolAssetUncheckedUpdateManyInput>
+    /**
+     * Filter which ToolAssets to update
+     */
+    where?: ToolAssetWhereInput
+    /**
+     * Limit how many ToolAssets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ToolAsset updateManyAndReturn
+   */
+  export type ToolAssetUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * The data used to update ToolAssets.
+     */
+    data: XOR<ToolAssetUpdateManyMutationInput, ToolAssetUncheckedUpdateManyInput>
+    /**
+     * Filter which ToolAssets to update
+     */
+    where?: ToolAssetWhereInput
+    /**
+     * Limit how many ToolAssets to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ToolAsset upsert
+   */
+  export type ToolAssetUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ToolAsset to update in case it exists.
+     */
+    where: ToolAssetWhereUniqueInput
+    /**
+     * In case the ToolAsset found by the `where` argument doesn't exist, create a new ToolAsset with this data.
+     */
+    create: XOR<ToolAssetCreateInput, ToolAssetUncheckedCreateInput>
+    /**
+     * In case the ToolAsset was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ToolAssetUpdateInput, ToolAssetUncheckedUpdateInput>
+  }
+
+  /**
+   * ToolAsset delete
+   */
+  export type ToolAssetDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+    /**
+     * Filter which ToolAsset to delete.
+     */
+    where: ToolAssetWhereUniqueInput
+  }
+
+  /**
+   * ToolAsset deleteMany
+   */
+  export type ToolAssetDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ToolAssets to delete
+     */
+    where?: ToolAssetWhereInput
+    /**
+     * Limit how many ToolAssets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ToolAsset.assignedUser
+   */
+  export type ToolAsset$assignedUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ToolAsset.createdBy
+   */
+  export type ToolAsset$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ToolAsset.inspections
+   */
+  export type ToolAsset$inspectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    where?: ToolInspectionWhereInput
+    orderBy?: ToolInspectionOrderByWithRelationInput | ToolInspectionOrderByWithRelationInput[]
+    cursor?: ToolInspectionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ToolInspectionScalarFieldEnum | ToolInspectionScalarFieldEnum[]
+  }
+
+  /**
+   * ToolAsset without action
+   */
+  export type ToolAssetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolAsset
+     */
+    select?: ToolAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolAsset
+     */
+    omit?: ToolAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolAssetInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ToolInspection
+   */
+
+  export type AggregateToolInspection = {
+    _count: ToolInspectionCountAggregateOutputType | null
+    _min: ToolInspectionMinAggregateOutputType | null
+    _max: ToolInspectionMaxAggregateOutputType | null
+  }
+
+  export type ToolInspectionMinAggregateOutputType = {
+    id: string | null
+    assetId: string | null
+    inspectedAt: Date | null
+    inspectorId: string | null
+    result: string | null
+    notes: string | null
+    validUntil: Date | null
+    pdfUrl: string | null
+    createdAt: Date | null
+  }
+
+  export type ToolInspectionMaxAggregateOutputType = {
+    id: string | null
+    assetId: string | null
+    inspectedAt: Date | null
+    inspectorId: string | null
+    result: string | null
+    notes: string | null
+    validUntil: Date | null
+    pdfUrl: string | null
+    createdAt: Date | null
+  }
+
+  export type ToolInspectionCountAggregateOutputType = {
+    id: number
+    assetId: number
+    inspectedAt: number
+    inspectorId: number
+    result: number
+    checklist: number
+    notes: number
+    validUntil: number
+    pdfUrl: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ToolInspectionMinAggregateInputType = {
+    id?: true
+    assetId?: true
+    inspectedAt?: true
+    inspectorId?: true
+    result?: true
+    notes?: true
+    validUntil?: true
+    pdfUrl?: true
+    createdAt?: true
+  }
+
+  export type ToolInspectionMaxAggregateInputType = {
+    id?: true
+    assetId?: true
+    inspectedAt?: true
+    inspectorId?: true
+    result?: true
+    notes?: true
+    validUntil?: true
+    pdfUrl?: true
+    createdAt?: true
+  }
+
+  export type ToolInspectionCountAggregateInputType = {
+    id?: true
+    assetId?: true
+    inspectedAt?: true
+    inspectorId?: true
+    result?: true
+    checklist?: true
+    notes?: true
+    validUntil?: true
+    pdfUrl?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ToolInspectionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ToolInspection to aggregate.
+     */
+    where?: ToolInspectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolInspections to fetch.
+     */
+    orderBy?: ToolInspectionOrderByWithRelationInput | ToolInspectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ToolInspectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolInspections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolInspections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ToolInspections
+    **/
+    _count?: true | ToolInspectionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ToolInspectionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ToolInspectionMaxAggregateInputType
+  }
+
+  export type GetToolInspectionAggregateType<T extends ToolInspectionAggregateArgs> = {
+        [P in keyof T & keyof AggregateToolInspection]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateToolInspection[P]>
+      : GetScalarType<T[P], AggregateToolInspection[P]>
+  }
+
+
+
+
+  export type ToolInspectionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ToolInspectionWhereInput
+    orderBy?: ToolInspectionOrderByWithAggregationInput | ToolInspectionOrderByWithAggregationInput[]
+    by: ToolInspectionScalarFieldEnum[] | ToolInspectionScalarFieldEnum
+    having?: ToolInspectionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ToolInspectionCountAggregateInputType | true
+    _min?: ToolInspectionMinAggregateInputType
+    _max?: ToolInspectionMaxAggregateInputType
+  }
+
+  export type ToolInspectionGroupByOutputType = {
+    id: string
+    assetId: string
+    inspectedAt: Date
+    inspectorId: string
+    result: string
+    checklist: JsonValue
+    notes: string | null
+    validUntil: Date | null
+    pdfUrl: string | null
+    createdAt: Date
+    _count: ToolInspectionCountAggregateOutputType | null
+    _min: ToolInspectionMinAggregateOutputType | null
+    _max: ToolInspectionMaxAggregateOutputType | null
+  }
+
+  type GetToolInspectionGroupByPayload<T extends ToolInspectionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ToolInspectionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ToolInspectionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ToolInspectionGroupByOutputType[P]>
+            : GetScalarType<T[P], ToolInspectionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ToolInspectionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    assetId?: boolean
+    inspectedAt?: boolean
+    inspectorId?: boolean
+    result?: boolean
+    checklist?: boolean
+    notes?: boolean
+    validUntil?: boolean
+    pdfUrl?: boolean
+    createdAt?: boolean
+    asset?: boolean | ToolAssetDefaultArgs<ExtArgs>
+    inspector?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["toolInspection"]>
+
+  export type ToolInspectionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    assetId?: boolean
+    inspectedAt?: boolean
+    inspectorId?: boolean
+    result?: boolean
+    checklist?: boolean
+    notes?: boolean
+    validUntil?: boolean
+    pdfUrl?: boolean
+    createdAt?: boolean
+    asset?: boolean | ToolAssetDefaultArgs<ExtArgs>
+    inspector?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["toolInspection"]>
+
+  export type ToolInspectionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    assetId?: boolean
+    inspectedAt?: boolean
+    inspectorId?: boolean
+    result?: boolean
+    checklist?: boolean
+    notes?: boolean
+    validUntil?: boolean
+    pdfUrl?: boolean
+    createdAt?: boolean
+    asset?: boolean | ToolAssetDefaultArgs<ExtArgs>
+    inspector?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["toolInspection"]>
+
+  export type ToolInspectionSelectScalar = {
+    id?: boolean
+    assetId?: boolean
+    inspectedAt?: boolean
+    inspectorId?: boolean
+    result?: boolean
+    checklist?: boolean
+    notes?: boolean
+    validUntil?: boolean
+    pdfUrl?: boolean
+    createdAt?: boolean
+  }
+
+  export type ToolInspectionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "assetId" | "inspectedAt" | "inspectorId" | "result" | "checklist" | "notes" | "validUntil" | "pdfUrl" | "createdAt", ExtArgs["result"]["toolInspection"]>
+  export type ToolInspectionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    asset?: boolean | ToolAssetDefaultArgs<ExtArgs>
+    inspector?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ToolInspectionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    asset?: boolean | ToolAssetDefaultArgs<ExtArgs>
+    inspector?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ToolInspectionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    asset?: boolean | ToolAssetDefaultArgs<ExtArgs>
+    inspector?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ToolInspectionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ToolInspection"
+    objects: {
+      asset: Prisma.$ToolAssetPayload<ExtArgs>
+      inspector: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      assetId: string
+      inspectedAt: Date
+      inspectorId: string
+      /**
+       * goedgekeurd | afgekeurd
+       */
+      result: string
+      /**
+       * Checklist-antwoorden (JSON)
+       */
+      checklist: Prisma.JsonValue
+      notes: string | null
+      validUntil: Date | null
+      /**
+       * Optionele stub-PDF (data-URL of storage-pad)
+       */
+      pdfUrl: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["toolInspection"]>
+    composites: {}
+  }
+
+  type ToolInspectionGetPayload<S extends boolean | null | undefined | ToolInspectionDefaultArgs> = $Result.GetResult<Prisma.$ToolInspectionPayload, S>
+
+  type ToolInspectionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ToolInspectionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ToolInspectionCountAggregateInputType | true
+    }
+
+  export interface ToolInspectionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ToolInspection'], meta: { name: 'ToolInspection' } }
+    /**
+     * Find zero or one ToolInspection that matches the filter.
+     * @param {ToolInspectionFindUniqueArgs} args - Arguments to find a ToolInspection
+     * @example
+     * // Get one ToolInspection
+     * const toolInspection = await prisma.toolInspection.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ToolInspectionFindUniqueArgs>(args: SelectSubset<T, ToolInspectionFindUniqueArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ToolInspection that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ToolInspectionFindUniqueOrThrowArgs} args - Arguments to find a ToolInspection
+     * @example
+     * // Get one ToolInspection
+     * const toolInspection = await prisma.toolInspection.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ToolInspectionFindUniqueOrThrowArgs>(args: SelectSubset<T, ToolInspectionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ToolInspection that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolInspectionFindFirstArgs} args - Arguments to find a ToolInspection
+     * @example
+     * // Get one ToolInspection
+     * const toolInspection = await prisma.toolInspection.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ToolInspectionFindFirstArgs>(args?: SelectSubset<T, ToolInspectionFindFirstArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ToolInspection that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolInspectionFindFirstOrThrowArgs} args - Arguments to find a ToolInspection
+     * @example
+     * // Get one ToolInspection
+     * const toolInspection = await prisma.toolInspection.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ToolInspectionFindFirstOrThrowArgs>(args?: SelectSubset<T, ToolInspectionFindFirstOrThrowArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ToolInspections that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolInspectionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ToolInspections
+     * const toolInspections = await prisma.toolInspection.findMany()
+     * 
+     * // Get first 10 ToolInspections
+     * const toolInspections = await prisma.toolInspection.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const toolInspectionWithIdOnly = await prisma.toolInspection.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ToolInspectionFindManyArgs>(args?: SelectSubset<T, ToolInspectionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ToolInspection.
+     * @param {ToolInspectionCreateArgs} args - Arguments to create a ToolInspection.
+     * @example
+     * // Create one ToolInspection
+     * const ToolInspection = await prisma.toolInspection.create({
+     *   data: {
+     *     // ... data to create a ToolInspection
+     *   }
+     * })
+     * 
+     */
+    create<T extends ToolInspectionCreateArgs>(args: SelectSubset<T, ToolInspectionCreateArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ToolInspections.
+     * @param {ToolInspectionCreateManyArgs} args - Arguments to create many ToolInspections.
+     * @example
+     * // Create many ToolInspections
+     * const toolInspection = await prisma.toolInspection.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ToolInspectionCreateManyArgs>(args?: SelectSubset<T, ToolInspectionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ToolInspections and returns the data saved in the database.
+     * @param {ToolInspectionCreateManyAndReturnArgs} args - Arguments to create many ToolInspections.
+     * @example
+     * // Create many ToolInspections
+     * const toolInspection = await prisma.toolInspection.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ToolInspections and only return the `id`
+     * const toolInspectionWithIdOnly = await prisma.toolInspection.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ToolInspectionCreateManyAndReturnArgs>(args?: SelectSubset<T, ToolInspectionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ToolInspection.
+     * @param {ToolInspectionDeleteArgs} args - Arguments to delete one ToolInspection.
+     * @example
+     * // Delete one ToolInspection
+     * const ToolInspection = await prisma.toolInspection.delete({
+     *   where: {
+     *     // ... filter to delete one ToolInspection
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ToolInspectionDeleteArgs>(args: SelectSubset<T, ToolInspectionDeleteArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ToolInspection.
+     * @param {ToolInspectionUpdateArgs} args - Arguments to update one ToolInspection.
+     * @example
+     * // Update one ToolInspection
+     * const toolInspection = await prisma.toolInspection.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ToolInspectionUpdateArgs>(args: SelectSubset<T, ToolInspectionUpdateArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ToolInspections.
+     * @param {ToolInspectionDeleteManyArgs} args - Arguments to filter ToolInspections to delete.
+     * @example
+     * // Delete a few ToolInspections
+     * const { count } = await prisma.toolInspection.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ToolInspectionDeleteManyArgs>(args?: SelectSubset<T, ToolInspectionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ToolInspections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolInspectionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ToolInspections
+     * const toolInspection = await prisma.toolInspection.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ToolInspectionUpdateManyArgs>(args: SelectSubset<T, ToolInspectionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ToolInspections and returns the data updated in the database.
+     * @param {ToolInspectionUpdateManyAndReturnArgs} args - Arguments to update many ToolInspections.
+     * @example
+     * // Update many ToolInspections
+     * const toolInspection = await prisma.toolInspection.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ToolInspections and only return the `id`
+     * const toolInspectionWithIdOnly = await prisma.toolInspection.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ToolInspectionUpdateManyAndReturnArgs>(args: SelectSubset<T, ToolInspectionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ToolInspection.
+     * @param {ToolInspectionUpsertArgs} args - Arguments to update or create a ToolInspection.
+     * @example
+     * // Update or create a ToolInspection
+     * const toolInspection = await prisma.toolInspection.upsert({
+     *   create: {
+     *     // ... data to create a ToolInspection
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ToolInspection we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ToolInspectionUpsertArgs>(args: SelectSubset<T, ToolInspectionUpsertArgs<ExtArgs>>): Prisma__ToolInspectionClient<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ToolInspections.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolInspectionCountArgs} args - Arguments to filter ToolInspections to count.
+     * @example
+     * // Count the number of ToolInspections
+     * const count = await prisma.toolInspection.count({
+     *   where: {
+     *     // ... the filter for the ToolInspections we want to count
+     *   }
+     * })
+    **/
+    count<T extends ToolInspectionCountArgs>(
+      args?: Subset<T, ToolInspectionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ToolInspectionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ToolInspection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolInspectionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ToolInspectionAggregateArgs>(args: Subset<T, ToolInspectionAggregateArgs>): Prisma.PrismaPromise<GetToolInspectionAggregateType<T>>
+
+    /**
+     * Group by ToolInspection.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolInspectionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ToolInspectionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ToolInspectionGroupByArgs['orderBy'] }
+        : { orderBy?: ToolInspectionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ToolInspectionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetToolInspectionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ToolInspection model
+   */
+  readonly fields: ToolInspectionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ToolInspection.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ToolInspectionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    asset<T extends ToolAssetDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ToolAssetDefaultArgs<ExtArgs>>): Prisma__ToolAssetClient<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    inspector<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ToolInspection model
+   */
+  interface ToolInspectionFieldRefs {
+    readonly id: FieldRef<"ToolInspection", 'String'>
+    readonly assetId: FieldRef<"ToolInspection", 'String'>
+    readonly inspectedAt: FieldRef<"ToolInspection", 'DateTime'>
+    readonly inspectorId: FieldRef<"ToolInspection", 'String'>
+    readonly result: FieldRef<"ToolInspection", 'String'>
+    readonly checklist: FieldRef<"ToolInspection", 'Json'>
+    readonly notes: FieldRef<"ToolInspection", 'String'>
+    readonly validUntil: FieldRef<"ToolInspection", 'DateTime'>
+    readonly pdfUrl: FieldRef<"ToolInspection", 'String'>
+    readonly createdAt: FieldRef<"ToolInspection", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ToolInspection findUnique
+   */
+  export type ToolInspectionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolInspection to fetch.
+     */
+    where: ToolInspectionWhereUniqueInput
+  }
+
+  /**
+   * ToolInspection findUniqueOrThrow
+   */
+  export type ToolInspectionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolInspection to fetch.
+     */
+    where: ToolInspectionWhereUniqueInput
+  }
+
+  /**
+   * ToolInspection findFirst
+   */
+  export type ToolInspectionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolInspection to fetch.
+     */
+    where?: ToolInspectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolInspections to fetch.
+     */
+    orderBy?: ToolInspectionOrderByWithRelationInput | ToolInspectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ToolInspections.
+     */
+    cursor?: ToolInspectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolInspections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolInspections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolInspections.
+     */
+    distinct?: ToolInspectionScalarFieldEnum | ToolInspectionScalarFieldEnum[]
+  }
+
+  /**
+   * ToolInspection findFirstOrThrow
+   */
+  export type ToolInspectionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolInspection to fetch.
+     */
+    where?: ToolInspectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolInspections to fetch.
+     */
+    orderBy?: ToolInspectionOrderByWithRelationInput | ToolInspectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ToolInspections.
+     */
+    cursor?: ToolInspectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolInspections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolInspections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolInspections.
+     */
+    distinct?: ToolInspectionScalarFieldEnum | ToolInspectionScalarFieldEnum[]
+  }
+
+  /**
+   * ToolInspection findMany
+   */
+  export type ToolInspectionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * Filter, which ToolInspections to fetch.
+     */
+    where?: ToolInspectionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolInspections to fetch.
+     */
+    orderBy?: ToolInspectionOrderByWithRelationInput | ToolInspectionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ToolInspections.
+     */
+    cursor?: ToolInspectionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolInspections from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolInspections.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolInspections.
+     */
+    distinct?: ToolInspectionScalarFieldEnum | ToolInspectionScalarFieldEnum[]
+  }
+
+  /**
+   * ToolInspection create
+   */
+  export type ToolInspectionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ToolInspection.
+     */
+    data: XOR<ToolInspectionCreateInput, ToolInspectionUncheckedCreateInput>
+  }
+
+  /**
+   * ToolInspection createMany
+   */
+  export type ToolInspectionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ToolInspections.
+     */
+    data: ToolInspectionCreateManyInput | ToolInspectionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ToolInspection createManyAndReturn
+   */
+  export type ToolInspectionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * The data used to create many ToolInspections.
+     */
+    data: ToolInspectionCreateManyInput | ToolInspectionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ToolInspection update
+   */
+  export type ToolInspectionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ToolInspection.
+     */
+    data: XOR<ToolInspectionUpdateInput, ToolInspectionUncheckedUpdateInput>
+    /**
+     * Choose, which ToolInspection to update.
+     */
+    where: ToolInspectionWhereUniqueInput
+  }
+
+  /**
+   * ToolInspection updateMany
+   */
+  export type ToolInspectionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ToolInspections.
+     */
+    data: XOR<ToolInspectionUpdateManyMutationInput, ToolInspectionUncheckedUpdateManyInput>
+    /**
+     * Filter which ToolInspections to update
+     */
+    where?: ToolInspectionWhereInput
+    /**
+     * Limit how many ToolInspections to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ToolInspection updateManyAndReturn
+   */
+  export type ToolInspectionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * The data used to update ToolInspections.
+     */
+    data: XOR<ToolInspectionUpdateManyMutationInput, ToolInspectionUncheckedUpdateManyInput>
+    /**
+     * Filter which ToolInspections to update
+     */
+    where?: ToolInspectionWhereInput
+    /**
+     * Limit how many ToolInspections to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ToolInspection upsert
+   */
+  export type ToolInspectionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ToolInspection to update in case it exists.
+     */
+    where: ToolInspectionWhereUniqueInput
+    /**
+     * In case the ToolInspection found by the `where` argument doesn't exist, create a new ToolInspection with this data.
+     */
+    create: XOR<ToolInspectionCreateInput, ToolInspectionUncheckedCreateInput>
+    /**
+     * In case the ToolInspection was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ToolInspectionUpdateInput, ToolInspectionUncheckedUpdateInput>
+  }
+
+  /**
+   * ToolInspection delete
+   */
+  export type ToolInspectionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+    /**
+     * Filter which ToolInspection to delete.
+     */
+    where: ToolInspectionWhereUniqueInput
+  }
+
+  /**
+   * ToolInspection deleteMany
+   */
+  export type ToolInspectionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ToolInspections to delete
+     */
+    where?: ToolInspectionWhereInput
+    /**
+     * Limit how many ToolInspections to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ToolInspection without action
+   */
+  export type ToolInspectionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolInspection
+     */
+    select?: ToolInspectionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolInspection
+     */
+    omit?: ToolInspectionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ToolInspectionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ToolIdSequence
+   */
+
+  export type AggregateToolIdSequence = {
+    _count: ToolIdSequenceCountAggregateOutputType | null
+    _avg: ToolIdSequenceAvgAggregateOutputType | null
+    _sum: ToolIdSequenceSumAggregateOutputType | null
+    _min: ToolIdSequenceMinAggregateOutputType | null
+    _max: ToolIdSequenceMaxAggregateOutputType | null
+  }
+
+  export type ToolIdSequenceAvgAggregateOutputType = {
+    nextValue: number | null
+  }
+
+  export type ToolIdSequenceSumAggregateOutputType = {
+    nextValue: number | null
+  }
+
+  export type ToolIdSequenceMinAggregateOutputType = {
+    category: string | null
+    nextValue: number | null
+  }
+
+  export type ToolIdSequenceMaxAggregateOutputType = {
+    category: string | null
+    nextValue: number | null
+  }
+
+  export type ToolIdSequenceCountAggregateOutputType = {
+    category: number
+    nextValue: number
+    _all: number
+  }
+
+
+  export type ToolIdSequenceAvgAggregateInputType = {
+    nextValue?: true
+  }
+
+  export type ToolIdSequenceSumAggregateInputType = {
+    nextValue?: true
+  }
+
+  export type ToolIdSequenceMinAggregateInputType = {
+    category?: true
+    nextValue?: true
+  }
+
+  export type ToolIdSequenceMaxAggregateInputType = {
+    category?: true
+    nextValue?: true
+  }
+
+  export type ToolIdSequenceCountAggregateInputType = {
+    category?: true
+    nextValue?: true
+    _all?: true
+  }
+
+  export type ToolIdSequenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ToolIdSequence to aggregate.
+     */
+    where?: ToolIdSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolIdSequences to fetch.
+     */
+    orderBy?: ToolIdSequenceOrderByWithRelationInput | ToolIdSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ToolIdSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolIdSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolIdSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ToolIdSequences
+    **/
+    _count?: true | ToolIdSequenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ToolIdSequenceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ToolIdSequenceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ToolIdSequenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ToolIdSequenceMaxAggregateInputType
+  }
+
+  export type GetToolIdSequenceAggregateType<T extends ToolIdSequenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateToolIdSequence]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateToolIdSequence[P]>
+      : GetScalarType<T[P], AggregateToolIdSequence[P]>
+  }
+
+
+
+
+  export type ToolIdSequenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ToolIdSequenceWhereInput
+    orderBy?: ToolIdSequenceOrderByWithAggregationInput | ToolIdSequenceOrderByWithAggregationInput[]
+    by: ToolIdSequenceScalarFieldEnum[] | ToolIdSequenceScalarFieldEnum
+    having?: ToolIdSequenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ToolIdSequenceCountAggregateInputType | true
+    _avg?: ToolIdSequenceAvgAggregateInputType
+    _sum?: ToolIdSequenceSumAggregateInputType
+    _min?: ToolIdSequenceMinAggregateInputType
+    _max?: ToolIdSequenceMaxAggregateInputType
+  }
+
+  export type ToolIdSequenceGroupByOutputType = {
+    category: string
+    nextValue: number
+    _count: ToolIdSequenceCountAggregateOutputType | null
+    _avg: ToolIdSequenceAvgAggregateOutputType | null
+    _sum: ToolIdSequenceSumAggregateOutputType | null
+    _min: ToolIdSequenceMinAggregateOutputType | null
+    _max: ToolIdSequenceMaxAggregateOutputType | null
+  }
+
+  type GetToolIdSequenceGroupByPayload<T extends ToolIdSequenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ToolIdSequenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ToolIdSequenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ToolIdSequenceGroupByOutputType[P]>
+            : GetScalarType<T[P], ToolIdSequenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ToolIdSequenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    category?: boolean
+    nextValue?: boolean
+  }, ExtArgs["result"]["toolIdSequence"]>
+
+  export type ToolIdSequenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    category?: boolean
+    nextValue?: boolean
+  }, ExtArgs["result"]["toolIdSequence"]>
+
+  export type ToolIdSequenceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    category?: boolean
+    nextValue?: boolean
+  }, ExtArgs["result"]["toolIdSequence"]>
+
+  export type ToolIdSequenceSelectScalar = {
+    category?: boolean
+    nextValue?: boolean
+  }
+
+  export type ToolIdSequenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"category" | "nextValue", ExtArgs["result"]["toolIdSequence"]>
+
+  export type $ToolIdSequencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ToolIdSequence"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      category: string
+      nextValue: number
+    }, ExtArgs["result"]["toolIdSequence"]>
+    composites: {}
+  }
+
+  type ToolIdSequenceGetPayload<S extends boolean | null | undefined | ToolIdSequenceDefaultArgs> = $Result.GetResult<Prisma.$ToolIdSequencePayload, S>
+
+  type ToolIdSequenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ToolIdSequenceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ToolIdSequenceCountAggregateInputType | true
+    }
+
+  export interface ToolIdSequenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ToolIdSequence'], meta: { name: 'ToolIdSequence' } }
+    /**
+     * Find zero or one ToolIdSequence that matches the filter.
+     * @param {ToolIdSequenceFindUniqueArgs} args - Arguments to find a ToolIdSequence
+     * @example
+     * // Get one ToolIdSequence
+     * const toolIdSequence = await prisma.toolIdSequence.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ToolIdSequenceFindUniqueArgs>(args: SelectSubset<T, ToolIdSequenceFindUniqueArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ToolIdSequence that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ToolIdSequenceFindUniqueOrThrowArgs} args - Arguments to find a ToolIdSequence
+     * @example
+     * // Get one ToolIdSequence
+     * const toolIdSequence = await prisma.toolIdSequence.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ToolIdSequenceFindUniqueOrThrowArgs>(args: SelectSubset<T, ToolIdSequenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ToolIdSequence that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolIdSequenceFindFirstArgs} args - Arguments to find a ToolIdSequence
+     * @example
+     * // Get one ToolIdSequence
+     * const toolIdSequence = await prisma.toolIdSequence.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ToolIdSequenceFindFirstArgs>(args?: SelectSubset<T, ToolIdSequenceFindFirstArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ToolIdSequence that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolIdSequenceFindFirstOrThrowArgs} args - Arguments to find a ToolIdSequence
+     * @example
+     * // Get one ToolIdSequence
+     * const toolIdSequence = await prisma.toolIdSequence.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ToolIdSequenceFindFirstOrThrowArgs>(args?: SelectSubset<T, ToolIdSequenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ToolIdSequences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolIdSequenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ToolIdSequences
+     * const toolIdSequences = await prisma.toolIdSequence.findMany()
+     * 
+     * // Get first 10 ToolIdSequences
+     * const toolIdSequences = await prisma.toolIdSequence.findMany({ take: 10 })
+     * 
+     * // Only select the `category`
+     * const toolIdSequenceWithCategoryOnly = await prisma.toolIdSequence.findMany({ select: { category: true } })
+     * 
+     */
+    findMany<T extends ToolIdSequenceFindManyArgs>(args?: SelectSubset<T, ToolIdSequenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ToolIdSequence.
+     * @param {ToolIdSequenceCreateArgs} args - Arguments to create a ToolIdSequence.
+     * @example
+     * // Create one ToolIdSequence
+     * const ToolIdSequence = await prisma.toolIdSequence.create({
+     *   data: {
+     *     // ... data to create a ToolIdSequence
+     *   }
+     * })
+     * 
+     */
+    create<T extends ToolIdSequenceCreateArgs>(args: SelectSubset<T, ToolIdSequenceCreateArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ToolIdSequences.
+     * @param {ToolIdSequenceCreateManyArgs} args - Arguments to create many ToolIdSequences.
+     * @example
+     * // Create many ToolIdSequences
+     * const toolIdSequence = await prisma.toolIdSequence.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ToolIdSequenceCreateManyArgs>(args?: SelectSubset<T, ToolIdSequenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ToolIdSequences and returns the data saved in the database.
+     * @param {ToolIdSequenceCreateManyAndReturnArgs} args - Arguments to create many ToolIdSequences.
+     * @example
+     * // Create many ToolIdSequences
+     * const toolIdSequence = await prisma.toolIdSequence.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ToolIdSequences and only return the `category`
+     * const toolIdSequenceWithCategoryOnly = await prisma.toolIdSequence.createManyAndReturn({
+     *   select: { category: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ToolIdSequenceCreateManyAndReturnArgs>(args?: SelectSubset<T, ToolIdSequenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ToolIdSequence.
+     * @param {ToolIdSequenceDeleteArgs} args - Arguments to delete one ToolIdSequence.
+     * @example
+     * // Delete one ToolIdSequence
+     * const ToolIdSequence = await prisma.toolIdSequence.delete({
+     *   where: {
+     *     // ... filter to delete one ToolIdSequence
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ToolIdSequenceDeleteArgs>(args: SelectSubset<T, ToolIdSequenceDeleteArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ToolIdSequence.
+     * @param {ToolIdSequenceUpdateArgs} args - Arguments to update one ToolIdSequence.
+     * @example
+     * // Update one ToolIdSequence
+     * const toolIdSequence = await prisma.toolIdSequence.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ToolIdSequenceUpdateArgs>(args: SelectSubset<T, ToolIdSequenceUpdateArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ToolIdSequences.
+     * @param {ToolIdSequenceDeleteManyArgs} args - Arguments to filter ToolIdSequences to delete.
+     * @example
+     * // Delete a few ToolIdSequences
+     * const { count } = await prisma.toolIdSequence.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ToolIdSequenceDeleteManyArgs>(args?: SelectSubset<T, ToolIdSequenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ToolIdSequences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolIdSequenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ToolIdSequences
+     * const toolIdSequence = await prisma.toolIdSequence.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ToolIdSequenceUpdateManyArgs>(args: SelectSubset<T, ToolIdSequenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ToolIdSequences and returns the data updated in the database.
+     * @param {ToolIdSequenceUpdateManyAndReturnArgs} args - Arguments to update many ToolIdSequences.
+     * @example
+     * // Update many ToolIdSequences
+     * const toolIdSequence = await prisma.toolIdSequence.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ToolIdSequences and only return the `category`
+     * const toolIdSequenceWithCategoryOnly = await prisma.toolIdSequence.updateManyAndReturn({
+     *   select: { category: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ToolIdSequenceUpdateManyAndReturnArgs>(args: SelectSubset<T, ToolIdSequenceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ToolIdSequence.
+     * @param {ToolIdSequenceUpsertArgs} args - Arguments to update or create a ToolIdSequence.
+     * @example
+     * // Update or create a ToolIdSequence
+     * const toolIdSequence = await prisma.toolIdSequence.upsert({
+     *   create: {
+     *     // ... data to create a ToolIdSequence
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ToolIdSequence we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ToolIdSequenceUpsertArgs>(args: SelectSubset<T, ToolIdSequenceUpsertArgs<ExtArgs>>): Prisma__ToolIdSequenceClient<$Result.GetResult<Prisma.$ToolIdSequencePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ToolIdSequences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolIdSequenceCountArgs} args - Arguments to filter ToolIdSequences to count.
+     * @example
+     * // Count the number of ToolIdSequences
+     * const count = await prisma.toolIdSequence.count({
+     *   where: {
+     *     // ... the filter for the ToolIdSequences we want to count
+     *   }
+     * })
+    **/
+    count<T extends ToolIdSequenceCountArgs>(
+      args?: Subset<T, ToolIdSequenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ToolIdSequenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ToolIdSequence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolIdSequenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ToolIdSequenceAggregateArgs>(args: Subset<T, ToolIdSequenceAggregateArgs>): Prisma.PrismaPromise<GetToolIdSequenceAggregateType<T>>
+
+    /**
+     * Group by ToolIdSequence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ToolIdSequenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ToolIdSequenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ToolIdSequenceGroupByArgs['orderBy'] }
+        : { orderBy?: ToolIdSequenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ToolIdSequenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetToolIdSequenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ToolIdSequence model
+   */
+  readonly fields: ToolIdSequenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ToolIdSequence.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ToolIdSequenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ToolIdSequence model
+   */
+  interface ToolIdSequenceFieldRefs {
+    readonly category: FieldRef<"ToolIdSequence", 'String'>
+    readonly nextValue: FieldRef<"ToolIdSequence", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ToolIdSequence findUnique
+   */
+  export type ToolIdSequenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which ToolIdSequence to fetch.
+     */
+    where: ToolIdSequenceWhereUniqueInput
+  }
+
+  /**
+   * ToolIdSequence findUniqueOrThrow
+   */
+  export type ToolIdSequenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which ToolIdSequence to fetch.
+     */
+    where: ToolIdSequenceWhereUniqueInput
+  }
+
+  /**
+   * ToolIdSequence findFirst
+   */
+  export type ToolIdSequenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which ToolIdSequence to fetch.
+     */
+    where?: ToolIdSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolIdSequences to fetch.
+     */
+    orderBy?: ToolIdSequenceOrderByWithRelationInput | ToolIdSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ToolIdSequences.
+     */
+    cursor?: ToolIdSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolIdSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolIdSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolIdSequences.
+     */
+    distinct?: ToolIdSequenceScalarFieldEnum | ToolIdSequenceScalarFieldEnum[]
+  }
+
+  /**
+   * ToolIdSequence findFirstOrThrow
+   */
+  export type ToolIdSequenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which ToolIdSequence to fetch.
+     */
+    where?: ToolIdSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolIdSequences to fetch.
+     */
+    orderBy?: ToolIdSequenceOrderByWithRelationInput | ToolIdSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ToolIdSequences.
+     */
+    cursor?: ToolIdSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolIdSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolIdSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolIdSequences.
+     */
+    distinct?: ToolIdSequenceScalarFieldEnum | ToolIdSequenceScalarFieldEnum[]
+  }
+
+  /**
+   * ToolIdSequence findMany
+   */
+  export type ToolIdSequenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which ToolIdSequences to fetch.
+     */
+    where?: ToolIdSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ToolIdSequences to fetch.
+     */
+    orderBy?: ToolIdSequenceOrderByWithRelationInput | ToolIdSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ToolIdSequences.
+     */
+    cursor?: ToolIdSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ToolIdSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ToolIdSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ToolIdSequences.
+     */
+    distinct?: ToolIdSequenceScalarFieldEnum | ToolIdSequenceScalarFieldEnum[]
+  }
+
+  /**
+   * ToolIdSequence create
+   */
+  export type ToolIdSequenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ToolIdSequence.
+     */
+    data: XOR<ToolIdSequenceCreateInput, ToolIdSequenceUncheckedCreateInput>
+  }
+
+  /**
+   * ToolIdSequence createMany
+   */
+  export type ToolIdSequenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ToolIdSequences.
+     */
+    data: ToolIdSequenceCreateManyInput | ToolIdSequenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ToolIdSequence createManyAndReturn
+   */
+  export type ToolIdSequenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * The data used to create many ToolIdSequences.
+     */
+    data: ToolIdSequenceCreateManyInput | ToolIdSequenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ToolIdSequence update
+   */
+  export type ToolIdSequenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ToolIdSequence.
+     */
+    data: XOR<ToolIdSequenceUpdateInput, ToolIdSequenceUncheckedUpdateInput>
+    /**
+     * Choose, which ToolIdSequence to update.
+     */
+    where: ToolIdSequenceWhereUniqueInput
+  }
+
+  /**
+   * ToolIdSequence updateMany
+   */
+  export type ToolIdSequenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ToolIdSequences.
+     */
+    data: XOR<ToolIdSequenceUpdateManyMutationInput, ToolIdSequenceUncheckedUpdateManyInput>
+    /**
+     * Filter which ToolIdSequences to update
+     */
+    where?: ToolIdSequenceWhereInput
+    /**
+     * Limit how many ToolIdSequences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ToolIdSequence updateManyAndReturn
+   */
+  export type ToolIdSequenceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * The data used to update ToolIdSequences.
+     */
+    data: XOR<ToolIdSequenceUpdateManyMutationInput, ToolIdSequenceUncheckedUpdateManyInput>
+    /**
+     * Filter which ToolIdSequences to update
+     */
+    where?: ToolIdSequenceWhereInput
+    /**
+     * Limit how many ToolIdSequences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ToolIdSequence upsert
+   */
+  export type ToolIdSequenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ToolIdSequence to update in case it exists.
+     */
+    where: ToolIdSequenceWhereUniqueInput
+    /**
+     * In case the ToolIdSequence found by the `where` argument doesn't exist, create a new ToolIdSequence with this data.
+     */
+    create: XOR<ToolIdSequenceCreateInput, ToolIdSequenceUncheckedCreateInput>
+    /**
+     * In case the ToolIdSequence was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ToolIdSequenceUpdateInput, ToolIdSequenceUncheckedUpdateInput>
+  }
+
+  /**
+   * ToolIdSequence delete
+   */
+  export type ToolIdSequenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+    /**
+     * Filter which ToolIdSequence to delete.
+     */
+    where: ToolIdSequenceWhereUniqueInput
+  }
+
+  /**
+   * ToolIdSequence deleteMany
+   */
+  export type ToolIdSequenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ToolIdSequences to delete
+     */
+    where?: ToolIdSequenceWhereInput
+    /**
+     * Limit how many ToolIdSequences to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ToolIdSequence without action
+   */
+  export type ToolIdSequenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ToolIdSequence
+     */
+    select?: ToolIdSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ToolIdSequence
+     */
+    omit?: ToolIdSequenceOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -39641,7 +43550,10 @@ export namespace Prisma {
     stagiaireUntil: 'stagiaireUntil',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    active: 'active'
+    active: 'active',
+    gereedschapBeheer: 'gereedschapBeheer',
+    keurmeester: 'keurmeester',
+    overzichtAlleAssets: 'overzichtAlleAssets'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -40117,6 +44029,53 @@ export namespace Prisma {
   export type TravelRouteCacheScalarFieldEnum = (typeof TravelRouteCacheScalarFieldEnum)[keyof typeof TravelRouteCacheScalarFieldEnum]
 
 
+  export const ToolAssetScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    category: 'category',
+    name: 'name',
+    serialNumber: 'serialNumber',
+    photoUrl: 'photoUrl',
+    assignedUserId: 'assignedUserId',
+    busKenteken: 'busKenteken',
+    kantoor: 'kantoor',
+    status: 'status',
+    nextInspectionAt: 'nextInspectionAt',
+    lastInspectionAt: 'lastInspectionAt',
+    archivedAt: 'archivedAt',
+    notes: 'notes',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ToolAssetScalarFieldEnum = (typeof ToolAssetScalarFieldEnum)[keyof typeof ToolAssetScalarFieldEnum]
+
+
+  export const ToolInspectionScalarFieldEnum: {
+    id: 'id',
+    assetId: 'assetId',
+    inspectedAt: 'inspectedAt',
+    inspectorId: 'inspectorId',
+    result: 'result',
+    checklist: 'checklist',
+    notes: 'notes',
+    validUntil: 'validUntil',
+    pdfUrl: 'pdfUrl',
+    createdAt: 'createdAt'
+  };
+
+  export type ToolInspectionScalarFieldEnum = (typeof ToolInspectionScalarFieldEnum)[keyof typeof ToolInspectionScalarFieldEnum]
+
+
+  export const ToolIdSequenceScalarFieldEnum: {
+    category: 'category',
+    nextValue: 'nextValue'
+  };
+
+  export type ToolIdSequenceScalarFieldEnum = (typeof ToolIdSequenceScalarFieldEnum)[keyof typeof ToolIdSequenceScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -40292,6 +44251,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     active?: BoolFilter<"User"> | boolean
+    gereedschapBeheer?: BoolFilter<"User"> | boolean
+    keurmeester?: BoolFilter<"User"> | boolean
+    overzichtAlleAssets?: BoolFilter<"User"> | boolean
     assignments?: AssignmentUserListRelationFilter
     workorders?: WorkorderListRelationFilter
     extraWorkorders?: WorkorderEngineerListRelationFilter
@@ -40300,6 +44262,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurListRelationFilter
     planningEventsAssigned?: PlanningEventListRelationFilter
     planningEventsCreated?: PlanningEventListRelationFilter
+    toolAssetsAssigned?: ToolAssetListRelationFilter
+    toolAssetsCreated?: ToolAssetListRelationFilter
+    toolInspections?: ToolInspectionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -40313,6 +44278,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
+    gereedschapBeheer?: SortOrder
+    keurmeester?: SortOrder
+    overzichtAlleAssets?: SortOrder
     assignments?: AssignmentUserOrderByRelationAggregateInput
     workorders?: WorkorderOrderByRelationAggregateInput
     extraWorkorders?: WorkorderEngineerOrderByRelationAggregateInput
@@ -40321,6 +44289,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurOrderByRelationAggregateInput
     planningEventsAssigned?: PlanningEventOrderByRelationAggregateInput
     planningEventsCreated?: PlanningEventOrderByRelationAggregateInput
+    toolAssetsAssigned?: ToolAssetOrderByRelationAggregateInput
+    toolAssetsCreated?: ToolAssetOrderByRelationAggregateInput
+    toolInspections?: ToolInspectionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -40337,6 +44308,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     active?: BoolFilter<"User"> | boolean
+    gereedschapBeheer?: BoolFilter<"User"> | boolean
+    keurmeester?: BoolFilter<"User"> | boolean
+    overzichtAlleAssets?: BoolFilter<"User"> | boolean
     assignments?: AssignmentUserListRelationFilter
     workorders?: WorkorderListRelationFilter
     extraWorkorders?: WorkorderEngineerListRelationFilter
@@ -40345,6 +44319,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurListRelationFilter
     planningEventsAssigned?: PlanningEventListRelationFilter
     planningEventsCreated?: PlanningEventListRelationFilter
+    toolAssetsAssigned?: ToolAssetListRelationFilter
+    toolAssetsCreated?: ToolAssetListRelationFilter
+    toolInspections?: ToolInspectionListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -40358,6 +44335,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
+    gereedschapBeheer?: SortOrder
+    keurmeester?: SortOrder
+    overzichtAlleAssets?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -40377,6 +44357,9 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     active?: BoolWithAggregatesFilter<"User"> | boolean
+    gereedschapBeheer?: BoolWithAggregatesFilter<"User"> | boolean
+    keurmeester?: BoolWithAggregatesFilter<"User"> | boolean
+    overzichtAlleAssets?: BoolWithAggregatesFilter<"User"> | boolean
   }
 
   export type CustomerWhereInput = {
@@ -42867,6 +46850,249 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"TravelRouteCache"> | Date | string
   }
 
+  export type ToolAssetWhereInput = {
+    AND?: ToolAssetWhereInput | ToolAssetWhereInput[]
+    OR?: ToolAssetWhereInput[]
+    NOT?: ToolAssetWhereInput | ToolAssetWhereInput[]
+    id?: StringFilter<"ToolAsset"> | string
+    code?: StringFilter<"ToolAsset"> | string
+    category?: StringFilter<"ToolAsset"> | string
+    name?: StringFilter<"ToolAsset"> | string
+    serialNumber?: StringNullableFilter<"ToolAsset"> | string | null
+    photoUrl?: StringNullableFilter<"ToolAsset"> | string | null
+    assignedUserId?: StringNullableFilter<"ToolAsset"> | string | null
+    busKenteken?: StringNullableFilter<"ToolAsset"> | string | null
+    kantoor?: BoolFilter<"ToolAsset"> | boolean
+    status?: StringFilter<"ToolAsset"> | string
+    nextInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    lastInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    notes?: StringNullableFilter<"ToolAsset"> | string | null
+    createdById?: StringNullableFilter<"ToolAsset"> | string | null
+    createdAt?: DateTimeFilter<"ToolAsset"> | Date | string
+    updatedAt?: DateTimeFilter<"ToolAsset"> | Date | string
+    assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    inspections?: ToolInspectionListRelationFilter
+  }
+
+  export type ToolAssetOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    category?: SortOrder
+    name?: SortOrder
+    serialNumber?: SortOrderInput | SortOrder
+    photoUrl?: SortOrderInput | SortOrder
+    assignedUserId?: SortOrderInput | SortOrder
+    busKenteken?: SortOrderInput | SortOrder
+    kantoor?: SortOrder
+    status?: SortOrder
+    nextInspectionAt?: SortOrderInput | SortOrder
+    lastInspectionAt?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    assignedUser?: UserOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+    inspections?: ToolInspectionOrderByRelationAggregateInput
+  }
+
+  export type ToolAssetWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: ToolAssetWhereInput | ToolAssetWhereInput[]
+    OR?: ToolAssetWhereInput[]
+    NOT?: ToolAssetWhereInput | ToolAssetWhereInput[]
+    category?: StringFilter<"ToolAsset"> | string
+    name?: StringFilter<"ToolAsset"> | string
+    serialNumber?: StringNullableFilter<"ToolAsset"> | string | null
+    photoUrl?: StringNullableFilter<"ToolAsset"> | string | null
+    assignedUserId?: StringNullableFilter<"ToolAsset"> | string | null
+    busKenteken?: StringNullableFilter<"ToolAsset"> | string | null
+    kantoor?: BoolFilter<"ToolAsset"> | boolean
+    status?: StringFilter<"ToolAsset"> | string
+    nextInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    lastInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    notes?: StringNullableFilter<"ToolAsset"> | string | null
+    createdById?: StringNullableFilter<"ToolAsset"> | string | null
+    createdAt?: DateTimeFilter<"ToolAsset"> | Date | string
+    updatedAt?: DateTimeFilter<"ToolAsset"> | Date | string
+    assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    inspections?: ToolInspectionListRelationFilter
+  }, "id" | "code">
+
+  export type ToolAssetOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    category?: SortOrder
+    name?: SortOrder
+    serialNumber?: SortOrderInput | SortOrder
+    photoUrl?: SortOrderInput | SortOrder
+    assignedUserId?: SortOrderInput | SortOrder
+    busKenteken?: SortOrderInput | SortOrder
+    kantoor?: SortOrder
+    status?: SortOrder
+    nextInspectionAt?: SortOrderInput | SortOrder
+    lastInspectionAt?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ToolAssetCountOrderByAggregateInput
+    _max?: ToolAssetMaxOrderByAggregateInput
+    _min?: ToolAssetMinOrderByAggregateInput
+  }
+
+  export type ToolAssetScalarWhereWithAggregatesInput = {
+    AND?: ToolAssetScalarWhereWithAggregatesInput | ToolAssetScalarWhereWithAggregatesInput[]
+    OR?: ToolAssetScalarWhereWithAggregatesInput[]
+    NOT?: ToolAssetScalarWhereWithAggregatesInput | ToolAssetScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ToolAsset"> | string
+    code?: StringWithAggregatesFilter<"ToolAsset"> | string
+    category?: StringWithAggregatesFilter<"ToolAsset"> | string
+    name?: StringWithAggregatesFilter<"ToolAsset"> | string
+    serialNumber?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
+    photoUrl?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
+    assignedUserId?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
+    busKenteken?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
+    kantoor?: BoolWithAggregatesFilter<"ToolAsset"> | boolean
+    status?: StringWithAggregatesFilter<"ToolAsset"> | string
+    nextInspectionAt?: DateTimeNullableWithAggregatesFilter<"ToolAsset"> | Date | string | null
+    lastInspectionAt?: DateTimeNullableWithAggregatesFilter<"ToolAsset"> | Date | string | null
+    archivedAt?: DateTimeNullableWithAggregatesFilter<"ToolAsset"> | Date | string | null
+    notes?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
+    createdById?: StringNullableWithAggregatesFilter<"ToolAsset"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ToolAsset"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ToolAsset"> | Date | string
+  }
+
+  export type ToolInspectionWhereInput = {
+    AND?: ToolInspectionWhereInput | ToolInspectionWhereInput[]
+    OR?: ToolInspectionWhereInput[]
+    NOT?: ToolInspectionWhereInput | ToolInspectionWhereInput[]
+    id?: StringFilter<"ToolInspection"> | string
+    assetId?: StringFilter<"ToolInspection"> | string
+    inspectedAt?: DateTimeFilter<"ToolInspection"> | Date | string
+    inspectorId?: StringFilter<"ToolInspection"> | string
+    result?: StringFilter<"ToolInspection"> | string
+    checklist?: JsonFilter<"ToolInspection">
+    notes?: StringNullableFilter<"ToolInspection"> | string | null
+    validUntil?: DateTimeNullableFilter<"ToolInspection"> | Date | string | null
+    pdfUrl?: StringNullableFilter<"ToolInspection"> | string | null
+    createdAt?: DateTimeFilter<"ToolInspection"> | Date | string
+    asset?: XOR<ToolAssetScalarRelationFilter, ToolAssetWhereInput>
+    inspector?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ToolInspectionOrderByWithRelationInput = {
+    id?: SortOrder
+    assetId?: SortOrder
+    inspectedAt?: SortOrder
+    inspectorId?: SortOrder
+    result?: SortOrder
+    checklist?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    validUntil?: SortOrderInput | SortOrder
+    pdfUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    asset?: ToolAssetOrderByWithRelationInput
+    inspector?: UserOrderByWithRelationInput
+  }
+
+  export type ToolInspectionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ToolInspectionWhereInput | ToolInspectionWhereInput[]
+    OR?: ToolInspectionWhereInput[]
+    NOT?: ToolInspectionWhereInput | ToolInspectionWhereInput[]
+    assetId?: StringFilter<"ToolInspection"> | string
+    inspectedAt?: DateTimeFilter<"ToolInspection"> | Date | string
+    inspectorId?: StringFilter<"ToolInspection"> | string
+    result?: StringFilter<"ToolInspection"> | string
+    checklist?: JsonFilter<"ToolInspection">
+    notes?: StringNullableFilter<"ToolInspection"> | string | null
+    validUntil?: DateTimeNullableFilter<"ToolInspection"> | Date | string | null
+    pdfUrl?: StringNullableFilter<"ToolInspection"> | string | null
+    createdAt?: DateTimeFilter<"ToolInspection"> | Date | string
+    asset?: XOR<ToolAssetScalarRelationFilter, ToolAssetWhereInput>
+    inspector?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ToolInspectionOrderByWithAggregationInput = {
+    id?: SortOrder
+    assetId?: SortOrder
+    inspectedAt?: SortOrder
+    inspectorId?: SortOrder
+    result?: SortOrder
+    checklist?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    validUntil?: SortOrderInput | SortOrder
+    pdfUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ToolInspectionCountOrderByAggregateInput
+    _max?: ToolInspectionMaxOrderByAggregateInput
+    _min?: ToolInspectionMinOrderByAggregateInput
+  }
+
+  export type ToolInspectionScalarWhereWithAggregatesInput = {
+    AND?: ToolInspectionScalarWhereWithAggregatesInput | ToolInspectionScalarWhereWithAggregatesInput[]
+    OR?: ToolInspectionScalarWhereWithAggregatesInput[]
+    NOT?: ToolInspectionScalarWhereWithAggregatesInput | ToolInspectionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ToolInspection"> | string
+    assetId?: StringWithAggregatesFilter<"ToolInspection"> | string
+    inspectedAt?: DateTimeWithAggregatesFilter<"ToolInspection"> | Date | string
+    inspectorId?: StringWithAggregatesFilter<"ToolInspection"> | string
+    result?: StringWithAggregatesFilter<"ToolInspection"> | string
+    checklist?: JsonWithAggregatesFilter<"ToolInspection">
+    notes?: StringNullableWithAggregatesFilter<"ToolInspection"> | string | null
+    validUntil?: DateTimeNullableWithAggregatesFilter<"ToolInspection"> | Date | string | null
+    pdfUrl?: StringNullableWithAggregatesFilter<"ToolInspection"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ToolInspection"> | Date | string
+  }
+
+  export type ToolIdSequenceWhereInput = {
+    AND?: ToolIdSequenceWhereInput | ToolIdSequenceWhereInput[]
+    OR?: ToolIdSequenceWhereInput[]
+    NOT?: ToolIdSequenceWhereInput | ToolIdSequenceWhereInput[]
+    category?: StringFilter<"ToolIdSequence"> | string
+    nextValue?: IntFilter<"ToolIdSequence"> | number
+  }
+
+  export type ToolIdSequenceOrderByWithRelationInput = {
+    category?: SortOrder
+    nextValue?: SortOrder
+  }
+
+  export type ToolIdSequenceWhereUniqueInput = Prisma.AtLeast<{
+    category?: string
+    AND?: ToolIdSequenceWhereInput | ToolIdSequenceWhereInput[]
+    OR?: ToolIdSequenceWhereInput[]
+    NOT?: ToolIdSequenceWhereInput | ToolIdSequenceWhereInput[]
+    nextValue?: IntFilter<"ToolIdSequence"> | number
+  }, "category">
+
+  export type ToolIdSequenceOrderByWithAggregationInput = {
+    category?: SortOrder
+    nextValue?: SortOrder
+    _count?: ToolIdSequenceCountOrderByAggregateInput
+    _avg?: ToolIdSequenceAvgOrderByAggregateInput
+    _max?: ToolIdSequenceMaxOrderByAggregateInput
+    _min?: ToolIdSequenceMinOrderByAggregateInput
+    _sum?: ToolIdSequenceSumOrderByAggregateInput
+  }
+
+  export type ToolIdSequenceScalarWhereWithAggregatesInput = {
+    AND?: ToolIdSequenceScalarWhereWithAggregatesInput | ToolIdSequenceScalarWhereWithAggregatesInput[]
+    OR?: ToolIdSequenceScalarWhereWithAggregatesInput[]
+    NOT?: ToolIdSequenceScalarWhereWithAggregatesInput | ToolIdSequenceScalarWhereWithAggregatesInput[]
+    category?: StringWithAggregatesFilter<"ToolIdSequence"> | string
+    nextValue?: IntWithAggregatesFilter<"ToolIdSequence"> | number
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -42878,6 +47104,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
@@ -42886,6 +47115,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -42899,6 +47131,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
@@ -42907,6 +47142,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUpdateInput = {
@@ -42920,6 +47158,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
@@ -42928,6 +47169,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -42941,6 +47185,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
@@ -42949,6 +47196,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -42962,6 +47212,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
   }
 
   export type UserUpdateManyMutationInput = {
@@ -42975,6 +47228,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -42988,6 +47244,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerCreateInput = {
@@ -45747,6 +50006,272 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ToolAssetCreateInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedUser?: UserCreateNestedOneWithoutToolAssetsAssignedInput
+    createdBy?: UserCreateNestedOneWithoutToolAssetsCreatedInput
+    inspections?: ToolInspectionCreateNestedManyWithoutAssetInput
+  }
+
+  export type ToolAssetUncheckedCreateInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    assignedUserId?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    inspections?: ToolInspectionUncheckedCreateNestedManyWithoutAssetInput
+  }
+
+  export type ToolAssetUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedUser?: UserUpdateOneWithoutToolAssetsAssignedNestedInput
+    createdBy?: UserUpdateOneWithoutToolAssetsCreatedNestedInput
+    inspections?: ToolInspectionUpdateManyWithoutAssetNestedInput
+  }
+
+  export type ToolAssetUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspections?: ToolInspectionUncheckedUpdateManyWithoutAssetNestedInput
+  }
+
+  export type ToolAssetCreateManyInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    assignedUserId?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ToolAssetUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolAssetUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolInspectionCreateInput = {
+    id?: string
+    inspectedAt?: Date | string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+    asset: ToolAssetCreateNestedOneWithoutInspectionsInput
+    inspector: UserCreateNestedOneWithoutToolInspectionsInput
+  }
+
+  export type ToolInspectionUncheckedCreateInput = {
+    id?: string
+    assetId: string
+    inspectedAt?: Date | string
+    inspectorId: string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ToolInspectionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    asset?: ToolAssetUpdateOneRequiredWithoutInspectionsNestedInput
+    inspector?: UserUpdateOneRequiredWithoutToolInspectionsNestedInput
+  }
+
+  export type ToolInspectionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assetId?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspectorId?: StringFieldUpdateOperationsInput | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolInspectionCreateManyInput = {
+    id?: string
+    assetId: string
+    inspectedAt?: Date | string
+    inspectorId: string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ToolInspectionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolInspectionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assetId?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspectorId?: StringFieldUpdateOperationsInput | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolIdSequenceCreateInput = {
+    category: string
+    nextValue?: number
+  }
+
+  export type ToolIdSequenceUncheckedCreateInput = {
+    category: string
+    nextValue?: number
+  }
+
+  export type ToolIdSequenceUpdateInput = {
+    category?: StringFieldUpdateOperationsInput | string
+    nextValue?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ToolIdSequenceUncheckedUpdateInput = {
+    category?: StringFieldUpdateOperationsInput | string
+    nextValue?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ToolIdSequenceCreateManyInput = {
+    category: string
+    nextValue?: number
+  }
+
+  export type ToolIdSequenceUpdateManyMutationInput = {
+    category?: StringFieldUpdateOperationsInput | string
+    nextValue?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ToolIdSequenceUncheckedUpdateManyInput = {
+    category?: StringFieldUpdateOperationsInput | string
+    nextValue?: IntFieldUpdateOperationsInput | number
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -45840,6 +50365,18 @@ export namespace Prisma {
     none?: PlanningEventWhereInput
   }
 
+  export type ToolAssetListRelationFilter = {
+    every?: ToolAssetWhereInput
+    some?: ToolAssetWhereInput
+    none?: ToolAssetWhereInput
+  }
+
+  export type ToolInspectionListRelationFilter = {
+    every?: ToolInspectionWhereInput
+    some?: ToolInspectionWhereInput
+    none?: ToolInspectionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -45869,6 +50406,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ToolAssetOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ToolInspectionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -45880,6 +50425,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
+    gereedschapBeheer?: SortOrder
+    keurmeester?: SortOrder
+    overzichtAlleAssets?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -45893,6 +50441,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
+    gereedschapBeheer?: SortOrder
+    keurmeester?: SortOrder
+    overzichtAlleAssets?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -45906,6 +50457,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     active?: SortOrder
+    gereedschapBeheer?: SortOrder
+    keurmeester?: SortOrder
+    overzichtAlleAssets?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -47786,6 +52340,131 @@ export namespace Prisma {
     durationHours?: SortOrder
   }
 
+  export type ToolAssetCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    category?: SortOrder
+    name?: SortOrder
+    serialNumber?: SortOrder
+    photoUrl?: SortOrder
+    assignedUserId?: SortOrder
+    busKenteken?: SortOrder
+    kantoor?: SortOrder
+    status?: SortOrder
+    nextInspectionAt?: SortOrder
+    lastInspectionAt?: SortOrder
+    archivedAt?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ToolAssetMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    category?: SortOrder
+    name?: SortOrder
+    serialNumber?: SortOrder
+    photoUrl?: SortOrder
+    assignedUserId?: SortOrder
+    busKenteken?: SortOrder
+    kantoor?: SortOrder
+    status?: SortOrder
+    nextInspectionAt?: SortOrder
+    lastInspectionAt?: SortOrder
+    archivedAt?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ToolAssetMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    category?: SortOrder
+    name?: SortOrder
+    serialNumber?: SortOrder
+    photoUrl?: SortOrder
+    assignedUserId?: SortOrder
+    busKenteken?: SortOrder
+    kantoor?: SortOrder
+    status?: SortOrder
+    nextInspectionAt?: SortOrder
+    lastInspectionAt?: SortOrder
+    archivedAt?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ToolAssetScalarRelationFilter = {
+    is?: ToolAssetWhereInput
+    isNot?: ToolAssetWhereInput
+  }
+
+  export type ToolInspectionCountOrderByAggregateInput = {
+    id?: SortOrder
+    assetId?: SortOrder
+    inspectedAt?: SortOrder
+    inspectorId?: SortOrder
+    result?: SortOrder
+    checklist?: SortOrder
+    notes?: SortOrder
+    validUntil?: SortOrder
+    pdfUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ToolInspectionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    assetId?: SortOrder
+    inspectedAt?: SortOrder
+    inspectorId?: SortOrder
+    result?: SortOrder
+    notes?: SortOrder
+    validUntil?: SortOrder
+    pdfUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ToolInspectionMinOrderByAggregateInput = {
+    id?: SortOrder
+    assetId?: SortOrder
+    inspectedAt?: SortOrder
+    inspectorId?: SortOrder
+    result?: SortOrder
+    notes?: SortOrder
+    validUntil?: SortOrder
+    pdfUrl?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ToolIdSequenceCountOrderByAggregateInput = {
+    category?: SortOrder
+    nextValue?: SortOrder
+  }
+
+  export type ToolIdSequenceAvgOrderByAggregateInput = {
+    nextValue?: SortOrder
+  }
+
+  export type ToolIdSequenceMaxOrderByAggregateInput = {
+    category?: SortOrder
+    nextValue?: SortOrder
+  }
+
+  export type ToolIdSequenceMinOrderByAggregateInput = {
+    category?: SortOrder
+    nextValue?: SortOrder
+  }
+
+  export type ToolIdSequenceSumOrderByAggregateInput = {
+    nextValue?: SortOrder
+  }
+
   export type AssignmentUserCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -47842,6 +52521,27 @@ export namespace Prisma {
     connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
   }
 
+  export type ToolAssetCreateNestedManyWithoutAssignedUserInput = {
+    create?: XOR<ToolAssetCreateWithoutAssignedUserInput, ToolAssetUncheckedCreateWithoutAssignedUserInput> | ToolAssetCreateWithoutAssignedUserInput[] | ToolAssetUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutAssignedUserInput | ToolAssetCreateOrConnectWithoutAssignedUserInput[]
+    createMany?: ToolAssetCreateManyAssignedUserInputEnvelope
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+  }
+
+  export type ToolAssetCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ToolAssetCreateWithoutCreatedByInput, ToolAssetUncheckedCreateWithoutCreatedByInput> | ToolAssetCreateWithoutCreatedByInput[] | ToolAssetUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutCreatedByInput | ToolAssetCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ToolAssetCreateManyCreatedByInputEnvelope
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+  }
+
+  export type ToolInspectionCreateNestedManyWithoutInspectorInput = {
+    create?: XOR<ToolInspectionCreateWithoutInspectorInput, ToolInspectionUncheckedCreateWithoutInspectorInput> | ToolInspectionCreateWithoutInspectorInput[] | ToolInspectionUncheckedCreateWithoutInspectorInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutInspectorInput | ToolInspectionCreateOrConnectWithoutInspectorInput[]
+    createMany?: ToolInspectionCreateManyInspectorInputEnvelope
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+  }
+
   export type AssignmentUserUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -47896,6 +52596,27 @@ export namespace Prisma {
     connectOrCreate?: PlanningEventCreateOrConnectWithoutCreatedByInput | PlanningEventCreateOrConnectWithoutCreatedByInput[]
     createMany?: PlanningEventCreateManyCreatedByInputEnvelope
     connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+  }
+
+  export type ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput = {
+    create?: XOR<ToolAssetCreateWithoutAssignedUserInput, ToolAssetUncheckedCreateWithoutAssignedUserInput> | ToolAssetCreateWithoutAssignedUserInput[] | ToolAssetUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutAssignedUserInput | ToolAssetCreateOrConnectWithoutAssignedUserInput[]
+    createMany?: ToolAssetCreateManyAssignedUserInputEnvelope
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+  }
+
+  export type ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ToolAssetCreateWithoutCreatedByInput, ToolAssetUncheckedCreateWithoutCreatedByInput> | ToolAssetCreateWithoutCreatedByInput[] | ToolAssetUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutCreatedByInput | ToolAssetCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ToolAssetCreateManyCreatedByInputEnvelope
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+  }
+
+  export type ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput = {
+    create?: XOR<ToolInspectionCreateWithoutInspectorInput, ToolInspectionUncheckedCreateWithoutInspectorInput> | ToolInspectionCreateWithoutInspectorInput[] | ToolInspectionUncheckedCreateWithoutInspectorInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutInspectorInput | ToolInspectionCreateOrConnectWithoutInspectorInput[]
+    createMany?: ToolInspectionCreateManyInspectorInputEnvelope
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -48030,6 +52751,48 @@ export namespace Prisma {
     deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
   }
 
+  export type ToolAssetUpdateManyWithoutAssignedUserNestedInput = {
+    create?: XOR<ToolAssetCreateWithoutAssignedUserInput, ToolAssetUncheckedCreateWithoutAssignedUserInput> | ToolAssetCreateWithoutAssignedUserInput[] | ToolAssetUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutAssignedUserInput | ToolAssetCreateOrConnectWithoutAssignedUserInput[]
+    upsert?: ToolAssetUpsertWithWhereUniqueWithoutAssignedUserInput | ToolAssetUpsertWithWhereUniqueWithoutAssignedUserInput[]
+    createMany?: ToolAssetCreateManyAssignedUserInputEnvelope
+    set?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    disconnect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    delete?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    update?: ToolAssetUpdateWithWhereUniqueWithoutAssignedUserInput | ToolAssetUpdateWithWhereUniqueWithoutAssignedUserInput[]
+    updateMany?: ToolAssetUpdateManyWithWhereWithoutAssignedUserInput | ToolAssetUpdateManyWithWhereWithoutAssignedUserInput[]
+    deleteMany?: ToolAssetScalarWhereInput | ToolAssetScalarWhereInput[]
+  }
+
+  export type ToolAssetUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ToolAssetCreateWithoutCreatedByInput, ToolAssetUncheckedCreateWithoutCreatedByInput> | ToolAssetCreateWithoutCreatedByInput[] | ToolAssetUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutCreatedByInput | ToolAssetCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ToolAssetUpsertWithWhereUniqueWithoutCreatedByInput | ToolAssetUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ToolAssetCreateManyCreatedByInputEnvelope
+    set?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    disconnect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    delete?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    update?: ToolAssetUpdateWithWhereUniqueWithoutCreatedByInput | ToolAssetUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ToolAssetUpdateManyWithWhereWithoutCreatedByInput | ToolAssetUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ToolAssetScalarWhereInput | ToolAssetScalarWhereInput[]
+  }
+
+  export type ToolInspectionUpdateManyWithoutInspectorNestedInput = {
+    create?: XOR<ToolInspectionCreateWithoutInspectorInput, ToolInspectionUncheckedCreateWithoutInspectorInput> | ToolInspectionCreateWithoutInspectorInput[] | ToolInspectionUncheckedCreateWithoutInspectorInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutInspectorInput | ToolInspectionCreateOrConnectWithoutInspectorInput[]
+    upsert?: ToolInspectionUpsertWithWhereUniqueWithoutInspectorInput | ToolInspectionUpsertWithWhereUniqueWithoutInspectorInput[]
+    createMany?: ToolInspectionCreateManyInspectorInputEnvelope
+    set?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    disconnect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    delete?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    update?: ToolInspectionUpdateWithWhereUniqueWithoutInspectorInput | ToolInspectionUpdateWithWhereUniqueWithoutInspectorInput[]
+    updateMany?: ToolInspectionUpdateManyWithWhereWithoutInspectorInput | ToolInspectionUpdateManyWithWhereWithoutInspectorInput[]
+    deleteMany?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
+  }
+
   export type AssignmentUserUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -48140,6 +52903,48 @@ export namespace Prisma {
     update?: PlanningEventUpdateWithWhereUniqueWithoutCreatedByInput | PlanningEventUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: PlanningEventUpdateManyWithWhereWithoutCreatedByInput | PlanningEventUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
+  }
+
+  export type ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput = {
+    create?: XOR<ToolAssetCreateWithoutAssignedUserInput, ToolAssetUncheckedCreateWithoutAssignedUserInput> | ToolAssetCreateWithoutAssignedUserInput[] | ToolAssetUncheckedCreateWithoutAssignedUserInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutAssignedUserInput | ToolAssetCreateOrConnectWithoutAssignedUserInput[]
+    upsert?: ToolAssetUpsertWithWhereUniqueWithoutAssignedUserInput | ToolAssetUpsertWithWhereUniqueWithoutAssignedUserInput[]
+    createMany?: ToolAssetCreateManyAssignedUserInputEnvelope
+    set?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    disconnect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    delete?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    update?: ToolAssetUpdateWithWhereUniqueWithoutAssignedUserInput | ToolAssetUpdateWithWhereUniqueWithoutAssignedUserInput[]
+    updateMany?: ToolAssetUpdateManyWithWhereWithoutAssignedUserInput | ToolAssetUpdateManyWithWhereWithoutAssignedUserInput[]
+    deleteMany?: ToolAssetScalarWhereInput | ToolAssetScalarWhereInput[]
+  }
+
+  export type ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ToolAssetCreateWithoutCreatedByInput, ToolAssetUncheckedCreateWithoutCreatedByInput> | ToolAssetCreateWithoutCreatedByInput[] | ToolAssetUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutCreatedByInput | ToolAssetCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ToolAssetUpsertWithWhereUniqueWithoutCreatedByInput | ToolAssetUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ToolAssetCreateManyCreatedByInputEnvelope
+    set?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    disconnect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    delete?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    connect?: ToolAssetWhereUniqueInput | ToolAssetWhereUniqueInput[]
+    update?: ToolAssetUpdateWithWhereUniqueWithoutCreatedByInput | ToolAssetUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ToolAssetUpdateManyWithWhereWithoutCreatedByInput | ToolAssetUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ToolAssetScalarWhereInput | ToolAssetScalarWhereInput[]
+  }
+
+  export type ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput = {
+    create?: XOR<ToolInspectionCreateWithoutInspectorInput, ToolInspectionUncheckedCreateWithoutInspectorInput> | ToolInspectionCreateWithoutInspectorInput[] | ToolInspectionUncheckedCreateWithoutInspectorInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutInspectorInput | ToolInspectionCreateOrConnectWithoutInspectorInput[]
+    upsert?: ToolInspectionUpsertWithWhereUniqueWithoutInspectorInput | ToolInspectionUpsertWithWhereUniqueWithoutInspectorInput[]
+    createMany?: ToolInspectionCreateManyInspectorInputEnvelope
+    set?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    disconnect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    delete?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    update?: ToolInspectionUpdateWithWhereUniqueWithoutInspectorInput | ToolInspectionUpdateWithWhereUniqueWithoutInspectorInput[]
+    updateMany?: ToolInspectionUpdateManyWithWhereWithoutInspectorInput | ToolInspectionUpdateManyWithWhereWithoutInspectorInput[]
+    deleteMany?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
   }
 
   export type AssignmentCreateNestedManyWithoutCustomerInput = {
@@ -49878,6 +54683,108 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutExtraWorkordersInput, UserUpdateWithoutExtraWorkordersInput>, UserUncheckedUpdateWithoutExtraWorkordersInput>
   }
 
+  export type UserCreateNestedOneWithoutToolAssetsAssignedInput = {
+    create?: XOR<UserCreateWithoutToolAssetsAssignedInput, UserUncheckedCreateWithoutToolAssetsAssignedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutToolAssetsAssignedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutToolAssetsCreatedInput = {
+    create?: XOR<UserCreateWithoutToolAssetsCreatedInput, UserUncheckedCreateWithoutToolAssetsCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutToolAssetsCreatedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ToolInspectionCreateNestedManyWithoutAssetInput = {
+    create?: XOR<ToolInspectionCreateWithoutAssetInput, ToolInspectionUncheckedCreateWithoutAssetInput> | ToolInspectionCreateWithoutAssetInput[] | ToolInspectionUncheckedCreateWithoutAssetInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutAssetInput | ToolInspectionCreateOrConnectWithoutAssetInput[]
+    createMany?: ToolInspectionCreateManyAssetInputEnvelope
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+  }
+
+  export type ToolInspectionUncheckedCreateNestedManyWithoutAssetInput = {
+    create?: XOR<ToolInspectionCreateWithoutAssetInput, ToolInspectionUncheckedCreateWithoutAssetInput> | ToolInspectionCreateWithoutAssetInput[] | ToolInspectionUncheckedCreateWithoutAssetInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutAssetInput | ToolInspectionCreateOrConnectWithoutAssetInput[]
+    createMany?: ToolInspectionCreateManyAssetInputEnvelope
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneWithoutToolAssetsAssignedNestedInput = {
+    create?: XOR<UserCreateWithoutToolAssetsAssignedInput, UserUncheckedCreateWithoutToolAssetsAssignedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutToolAssetsAssignedInput
+    upsert?: UserUpsertWithoutToolAssetsAssignedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutToolAssetsAssignedInput, UserUpdateWithoutToolAssetsAssignedInput>, UserUncheckedUpdateWithoutToolAssetsAssignedInput>
+  }
+
+  export type UserUpdateOneWithoutToolAssetsCreatedNestedInput = {
+    create?: XOR<UserCreateWithoutToolAssetsCreatedInput, UserUncheckedCreateWithoutToolAssetsCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutToolAssetsCreatedInput
+    upsert?: UserUpsertWithoutToolAssetsCreatedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutToolAssetsCreatedInput, UserUpdateWithoutToolAssetsCreatedInput>, UserUncheckedUpdateWithoutToolAssetsCreatedInput>
+  }
+
+  export type ToolInspectionUpdateManyWithoutAssetNestedInput = {
+    create?: XOR<ToolInspectionCreateWithoutAssetInput, ToolInspectionUncheckedCreateWithoutAssetInput> | ToolInspectionCreateWithoutAssetInput[] | ToolInspectionUncheckedCreateWithoutAssetInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutAssetInput | ToolInspectionCreateOrConnectWithoutAssetInput[]
+    upsert?: ToolInspectionUpsertWithWhereUniqueWithoutAssetInput | ToolInspectionUpsertWithWhereUniqueWithoutAssetInput[]
+    createMany?: ToolInspectionCreateManyAssetInputEnvelope
+    set?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    disconnect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    delete?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    update?: ToolInspectionUpdateWithWhereUniqueWithoutAssetInput | ToolInspectionUpdateWithWhereUniqueWithoutAssetInput[]
+    updateMany?: ToolInspectionUpdateManyWithWhereWithoutAssetInput | ToolInspectionUpdateManyWithWhereWithoutAssetInput[]
+    deleteMany?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
+  }
+
+  export type ToolInspectionUncheckedUpdateManyWithoutAssetNestedInput = {
+    create?: XOR<ToolInspectionCreateWithoutAssetInput, ToolInspectionUncheckedCreateWithoutAssetInput> | ToolInspectionCreateWithoutAssetInput[] | ToolInspectionUncheckedCreateWithoutAssetInput[]
+    connectOrCreate?: ToolInspectionCreateOrConnectWithoutAssetInput | ToolInspectionCreateOrConnectWithoutAssetInput[]
+    upsert?: ToolInspectionUpsertWithWhereUniqueWithoutAssetInput | ToolInspectionUpsertWithWhereUniqueWithoutAssetInput[]
+    createMany?: ToolInspectionCreateManyAssetInputEnvelope
+    set?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    disconnect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    delete?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+    update?: ToolInspectionUpdateWithWhereUniqueWithoutAssetInput | ToolInspectionUpdateWithWhereUniqueWithoutAssetInput[]
+    updateMany?: ToolInspectionUpdateManyWithWhereWithoutAssetInput | ToolInspectionUpdateManyWithWhereWithoutAssetInput[]
+    deleteMany?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
+  }
+
+  export type ToolAssetCreateNestedOneWithoutInspectionsInput = {
+    create?: XOR<ToolAssetCreateWithoutInspectionsInput, ToolAssetUncheckedCreateWithoutInspectionsInput>
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutInspectionsInput
+    connect?: ToolAssetWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutToolInspectionsInput = {
+    create?: XOR<UserCreateWithoutToolInspectionsInput, UserUncheckedCreateWithoutToolInspectionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutToolInspectionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ToolAssetUpdateOneRequiredWithoutInspectionsNestedInput = {
+    create?: XOR<ToolAssetCreateWithoutInspectionsInput, ToolAssetUncheckedCreateWithoutInspectionsInput>
+    connectOrCreate?: ToolAssetCreateOrConnectWithoutInspectionsInput
+    upsert?: ToolAssetUpsertWithoutInspectionsInput
+    connect?: ToolAssetWhereUniqueInput
+    update?: XOR<XOR<ToolAssetUpdateToOneWithWhereWithoutInspectionsInput, ToolAssetUpdateWithoutInspectionsInput>, ToolAssetUncheckedUpdateWithoutInspectionsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutToolInspectionsNestedInput = {
+    create?: XOR<UserCreateWithoutToolInspectionsInput, UserUncheckedCreateWithoutToolInspectionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutToolInspectionsInput
+    upsert?: UserUpsertWithoutToolInspectionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutToolInspectionsInput, UserUpdateWithoutToolInspectionsInput>, UserUncheckedUpdateWithoutToolInspectionsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -50588,6 +55495,140 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ToolAssetCreateWithoutAssignedUserInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutToolAssetsCreatedInput
+    inspections?: ToolInspectionCreateNestedManyWithoutAssetInput
+  }
+
+  export type ToolAssetUncheckedCreateWithoutAssignedUserInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    inspections?: ToolInspectionUncheckedCreateNestedManyWithoutAssetInput
+  }
+
+  export type ToolAssetCreateOrConnectWithoutAssignedUserInput = {
+    where: ToolAssetWhereUniqueInput
+    create: XOR<ToolAssetCreateWithoutAssignedUserInput, ToolAssetUncheckedCreateWithoutAssignedUserInput>
+  }
+
+  export type ToolAssetCreateManyAssignedUserInputEnvelope = {
+    data: ToolAssetCreateManyAssignedUserInput | ToolAssetCreateManyAssignedUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ToolAssetCreateWithoutCreatedByInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedUser?: UserCreateNestedOneWithoutToolAssetsAssignedInput
+    inspections?: ToolInspectionCreateNestedManyWithoutAssetInput
+  }
+
+  export type ToolAssetUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    assignedUserId?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    inspections?: ToolInspectionUncheckedCreateNestedManyWithoutAssetInput
+  }
+
+  export type ToolAssetCreateOrConnectWithoutCreatedByInput = {
+    where: ToolAssetWhereUniqueInput
+    create: XOR<ToolAssetCreateWithoutCreatedByInput, ToolAssetUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ToolAssetCreateManyCreatedByInputEnvelope = {
+    data: ToolAssetCreateManyCreatedByInput | ToolAssetCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ToolInspectionCreateWithoutInspectorInput = {
+    id?: string
+    inspectedAt?: Date | string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+    asset: ToolAssetCreateNestedOneWithoutInspectionsInput
+  }
+
+  export type ToolInspectionUncheckedCreateWithoutInspectorInput = {
+    id?: string
+    assetId: string
+    inspectedAt?: Date | string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ToolInspectionCreateOrConnectWithoutInspectorInput = {
+    where: ToolInspectionWhereUniqueInput
+    create: XOR<ToolInspectionCreateWithoutInspectorInput, ToolInspectionUncheckedCreateWithoutInspectorInput>
+  }
+
+  export type ToolInspectionCreateManyInspectorInputEnvelope = {
+    data: ToolInspectionCreateManyInspectorInput | ToolInspectionCreateManyInspectorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AssignmentUserUpsertWithWhereUniqueWithoutUserInput = {
     where: AssignmentUserWhereUniqueInput
     update: XOR<AssignmentUserUpdateWithoutUserInput, AssignmentUserUncheckedUpdateWithoutUserInput>
@@ -50837,6 +55878,93 @@ export namespace Prisma {
   export type PlanningEventUpdateManyWithWhereWithoutCreatedByInput = {
     where: PlanningEventScalarWhereInput
     data: XOR<PlanningEventUpdateManyMutationInput, PlanningEventUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type ToolAssetUpsertWithWhereUniqueWithoutAssignedUserInput = {
+    where: ToolAssetWhereUniqueInput
+    update: XOR<ToolAssetUpdateWithoutAssignedUserInput, ToolAssetUncheckedUpdateWithoutAssignedUserInput>
+    create: XOR<ToolAssetCreateWithoutAssignedUserInput, ToolAssetUncheckedCreateWithoutAssignedUserInput>
+  }
+
+  export type ToolAssetUpdateWithWhereUniqueWithoutAssignedUserInput = {
+    where: ToolAssetWhereUniqueInput
+    data: XOR<ToolAssetUpdateWithoutAssignedUserInput, ToolAssetUncheckedUpdateWithoutAssignedUserInput>
+  }
+
+  export type ToolAssetUpdateManyWithWhereWithoutAssignedUserInput = {
+    where: ToolAssetScalarWhereInput
+    data: XOR<ToolAssetUpdateManyMutationInput, ToolAssetUncheckedUpdateManyWithoutAssignedUserInput>
+  }
+
+  export type ToolAssetScalarWhereInput = {
+    AND?: ToolAssetScalarWhereInput | ToolAssetScalarWhereInput[]
+    OR?: ToolAssetScalarWhereInput[]
+    NOT?: ToolAssetScalarWhereInput | ToolAssetScalarWhereInput[]
+    id?: StringFilter<"ToolAsset"> | string
+    code?: StringFilter<"ToolAsset"> | string
+    category?: StringFilter<"ToolAsset"> | string
+    name?: StringFilter<"ToolAsset"> | string
+    serialNumber?: StringNullableFilter<"ToolAsset"> | string | null
+    photoUrl?: StringNullableFilter<"ToolAsset"> | string | null
+    assignedUserId?: StringNullableFilter<"ToolAsset"> | string | null
+    busKenteken?: StringNullableFilter<"ToolAsset"> | string | null
+    kantoor?: BoolFilter<"ToolAsset"> | boolean
+    status?: StringFilter<"ToolAsset"> | string
+    nextInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    lastInspectionAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"ToolAsset"> | Date | string | null
+    notes?: StringNullableFilter<"ToolAsset"> | string | null
+    createdById?: StringNullableFilter<"ToolAsset"> | string | null
+    createdAt?: DateTimeFilter<"ToolAsset"> | Date | string
+    updatedAt?: DateTimeFilter<"ToolAsset"> | Date | string
+  }
+
+  export type ToolAssetUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: ToolAssetWhereUniqueInput
+    update: XOR<ToolAssetUpdateWithoutCreatedByInput, ToolAssetUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<ToolAssetCreateWithoutCreatedByInput, ToolAssetUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ToolAssetUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: ToolAssetWhereUniqueInput
+    data: XOR<ToolAssetUpdateWithoutCreatedByInput, ToolAssetUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type ToolAssetUpdateManyWithWhereWithoutCreatedByInput = {
+    where: ToolAssetScalarWhereInput
+    data: XOR<ToolAssetUpdateManyMutationInput, ToolAssetUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type ToolInspectionUpsertWithWhereUniqueWithoutInspectorInput = {
+    where: ToolInspectionWhereUniqueInput
+    update: XOR<ToolInspectionUpdateWithoutInspectorInput, ToolInspectionUncheckedUpdateWithoutInspectorInput>
+    create: XOR<ToolInspectionCreateWithoutInspectorInput, ToolInspectionUncheckedCreateWithoutInspectorInput>
+  }
+
+  export type ToolInspectionUpdateWithWhereUniqueWithoutInspectorInput = {
+    where: ToolInspectionWhereUniqueInput
+    data: XOR<ToolInspectionUpdateWithoutInspectorInput, ToolInspectionUncheckedUpdateWithoutInspectorInput>
+  }
+
+  export type ToolInspectionUpdateManyWithWhereWithoutInspectorInput = {
+    where: ToolInspectionScalarWhereInput
+    data: XOR<ToolInspectionUpdateManyMutationInput, ToolInspectionUncheckedUpdateManyWithoutInspectorInput>
+  }
+
+  export type ToolInspectionScalarWhereInput = {
+    AND?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
+    OR?: ToolInspectionScalarWhereInput[]
+    NOT?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
+    id?: StringFilter<"ToolInspection"> | string
+    assetId?: StringFilter<"ToolInspection"> | string
+    inspectedAt?: DateTimeFilter<"ToolInspection"> | Date | string
+    inspectorId?: StringFilter<"ToolInspection"> | string
+    result?: StringFilter<"ToolInspection"> | string
+    checklist?: JsonFilter<"ToolInspection">
+    notes?: StringNullableFilter<"ToolInspection"> | string | null
+    validUntil?: DateTimeNullableFilter<"ToolInspection"> | Date | string | null
+    pdfUrl?: StringNullableFilter<"ToolInspection"> | string | null
+    createdAt?: DateTimeFilter<"ToolInspection"> | Date | string
   }
 
   export type AssignmentCreateWithoutCustomerInput = {
@@ -52085,6 +57213,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
@@ -52092,6 +57223,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutProjectUrenInput = {
@@ -52105,6 +57239,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
@@ -52112,6 +57249,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutProjectUrenInput = {
@@ -52130,6 +57270,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
@@ -52137,6 +57280,9 @@ export namespace Prisma {
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutProjectUrenGeboektInput = {
@@ -52150,6 +57296,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
@@ -52157,6 +57306,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutProjectUrenGeboektInput = {
@@ -52277,6 +57429,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
@@ -52284,6 +57439,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectUrenInput = {
@@ -52297,6 +57455,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
@@ -52304,6 +57465,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUpsertWithoutProjectUrenGeboektInput = {
@@ -52328,6 +57492,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
@@ -52335,6 +57502,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectUrenGeboektInput = {
@@ -52348,6 +57518,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
@@ -52355,6 +57528,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type ProjectCreateWithoutMaterialenInput = {
@@ -52746,6 +57922,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
@@ -52753,6 +57932,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutWorkordersInput = {
@@ -52766,6 +57948,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -52773,6 +57958,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutWorkordersInput = {
@@ -53261,6 +58449,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
@@ -53268,6 +58459,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWorkordersInput = {
@@ -53281,6 +58475,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -53288,6 +58485,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type AssignmentUpsertWithoutWorkordersInput = {
@@ -57109,6 +62309,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
@@ -57116,6 +62319,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutAssignmentsInput = {
@@ -57129,6 +62335,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -57136,6 +62345,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutAssignmentsInput = {
@@ -57210,6 +62422,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
@@ -57217,6 +62432,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignmentsInput = {
@@ -57230,6 +62448,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -57237,6 +62458,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type AssignmentCreateWithoutInvoicesInput = {
@@ -57334,6 +62558,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
@@ -57341,6 +62568,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutFormsInput = {
@@ -57354,6 +62584,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
@@ -57361,6 +62594,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutFormsInput = {
@@ -57390,6 +62626,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
@@ -57397,6 +62636,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFormsInput = {
@@ -57410,6 +62652,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
@@ -57417,6 +62662,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserCreateWithoutPlanningEventsAssignedInput = {
@@ -57430,6 +62678,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
@@ -57437,6 +62688,9 @@ export namespace Prisma {
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutPlanningEventsAssignedInput = {
@@ -57450,6 +62704,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
@@ -57457,6 +62714,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutPlanningEventsAssignedInput = {
@@ -57475,6 +62735,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
@@ -57482,6 +62745,9 @@ export namespace Prisma {
     projectUren?: ProjectUurCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutPlanningEventsCreatedInput = {
@@ -57495,6 +62761,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
@@ -57502,6 +62771,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutPlanningEventsCreatedInput = {
@@ -57616,6 +62888,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
@@ -57623,6 +62898,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPlanningEventsAssignedInput = {
@@ -57636,6 +62914,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
@@ -57643,6 +62924,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUpsertWithoutPlanningEventsCreatedInput = {
@@ -57667,6 +62951,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
@@ -57674,6 +62961,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPlanningEventsCreatedInput = {
@@ -57687,6 +62977,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
@@ -57694,6 +62987,9 @@ export namespace Prisma {
     projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type ProjectUpsertWithoutPlanningEventsInput = {
@@ -57921,6 +63217,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserCreateNestedManyWithoutUserInput
     workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
     forms?: FormSubmissionCreateNestedManyWithoutUserInput
@@ -57928,6 +63227,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
   }
 
   export type UserUncheckedCreateWithoutExtraWorkordersInput = {
@@ -57941,6 +63243,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
     assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
     forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -57948,6 +63253,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
     planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
   }
 
   export type UserCreateOrConnectWithoutExtraWorkordersInput = {
@@ -58106,6 +63414,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
     forms?: FormSubmissionUpdateManyWithoutUserNestedInput
@@ -58113,6 +63424,9 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExtraWorkordersInput = {
@@ -58126,6 +63440,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
     assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
     forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -58133,6 +63450,515 @@ export namespace Prisma {
     projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+  }
+
+  export type UserCreateWithoutToolAssetsAssignedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+  }
+
+  export type UserUncheckedCreateWithoutToolAssetsAssignedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+  }
+
+  export type UserCreateOrConnectWithoutToolAssetsAssignedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutToolAssetsAssignedInput, UserUncheckedCreateWithoutToolAssetsAssignedInput>
+  }
+
+  export type UserCreateWithoutToolAssetsCreatedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+  }
+
+  export type UserUncheckedCreateWithoutToolAssetsCreatedInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+  }
+
+  export type UserCreateOrConnectWithoutToolAssetsCreatedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutToolAssetsCreatedInput, UserUncheckedCreateWithoutToolAssetsCreatedInput>
+  }
+
+  export type ToolInspectionCreateWithoutAssetInput = {
+    id?: string
+    inspectedAt?: Date | string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+    inspector: UserCreateNestedOneWithoutToolInspectionsInput
+  }
+
+  export type ToolInspectionUncheckedCreateWithoutAssetInput = {
+    id?: string
+    inspectedAt?: Date | string
+    inspectorId: string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ToolInspectionCreateOrConnectWithoutAssetInput = {
+    where: ToolInspectionWhereUniqueInput
+    create: XOR<ToolInspectionCreateWithoutAssetInput, ToolInspectionUncheckedCreateWithoutAssetInput>
+  }
+
+  export type ToolInspectionCreateManyAssetInputEnvelope = {
+    data: ToolInspectionCreateManyAssetInput | ToolInspectionCreateManyAssetInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutToolAssetsAssignedInput = {
+    update: XOR<UserUpdateWithoutToolAssetsAssignedInput, UserUncheckedUpdateWithoutToolAssetsAssignedInput>
+    create: XOR<UserCreateWithoutToolAssetsAssignedInput, UserUncheckedCreateWithoutToolAssetsAssignedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutToolAssetsAssignedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutToolAssetsAssignedInput, UserUncheckedUpdateWithoutToolAssetsAssignedInput>
+  }
+
+  export type UserUpdateWithoutToolAssetsAssignedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutToolAssetsAssignedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+  }
+
+  export type UserUpsertWithoutToolAssetsCreatedInput = {
+    update: XOR<UserUpdateWithoutToolAssetsCreatedInput, UserUncheckedUpdateWithoutToolAssetsCreatedInput>
+    create: XOR<UserCreateWithoutToolAssetsCreatedInput, UserUncheckedCreateWithoutToolAssetsCreatedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutToolAssetsCreatedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutToolAssetsCreatedInput, UserUncheckedUpdateWithoutToolAssetsCreatedInput>
+  }
+
+  export type UserUpdateWithoutToolAssetsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutToolAssetsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+  }
+
+  export type ToolInspectionUpsertWithWhereUniqueWithoutAssetInput = {
+    where: ToolInspectionWhereUniqueInput
+    update: XOR<ToolInspectionUpdateWithoutAssetInput, ToolInspectionUncheckedUpdateWithoutAssetInput>
+    create: XOR<ToolInspectionCreateWithoutAssetInput, ToolInspectionUncheckedCreateWithoutAssetInput>
+  }
+
+  export type ToolInspectionUpdateWithWhereUniqueWithoutAssetInput = {
+    where: ToolInspectionWhereUniqueInput
+    data: XOR<ToolInspectionUpdateWithoutAssetInput, ToolInspectionUncheckedUpdateWithoutAssetInput>
+  }
+
+  export type ToolInspectionUpdateManyWithWhereWithoutAssetInput = {
+    where: ToolInspectionScalarWhereInput
+    data: XOR<ToolInspectionUpdateManyMutationInput, ToolInspectionUncheckedUpdateManyWithoutAssetInput>
+  }
+
+  export type ToolAssetCreateWithoutInspectionsInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedUser?: UserCreateNestedOneWithoutToolAssetsAssignedInput
+    createdBy?: UserCreateNestedOneWithoutToolAssetsCreatedInput
+  }
+
+  export type ToolAssetUncheckedCreateWithoutInspectionsInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    assignedUserId?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ToolAssetCreateOrConnectWithoutInspectionsInput = {
+    where: ToolAssetWhereUniqueInput
+    create: XOR<ToolAssetCreateWithoutInspectionsInput, ToolAssetUncheckedCreateWithoutInspectionsInput>
+  }
+
+  export type UserCreateWithoutToolInspectionsInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutToolInspectionsInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutToolInspectionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutToolInspectionsInput, UserUncheckedCreateWithoutToolInspectionsInput>
+  }
+
+  export type ToolAssetUpsertWithoutInspectionsInput = {
+    update: XOR<ToolAssetUpdateWithoutInspectionsInput, ToolAssetUncheckedUpdateWithoutInspectionsInput>
+    create: XOR<ToolAssetCreateWithoutInspectionsInput, ToolAssetUncheckedCreateWithoutInspectionsInput>
+    where?: ToolAssetWhereInput
+  }
+
+  export type ToolAssetUpdateToOneWithWhereWithoutInspectionsInput = {
+    where?: ToolAssetWhereInput
+    data: XOR<ToolAssetUpdateWithoutInspectionsInput, ToolAssetUncheckedUpdateWithoutInspectionsInput>
+  }
+
+  export type ToolAssetUpdateWithoutInspectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedUser?: UserUpdateOneWithoutToolAssetsAssignedNestedInput
+    createdBy?: UserUpdateOneWithoutToolAssetsCreatedNestedInput
+  }
+
+  export type ToolAssetUncheckedUpdateWithoutInspectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutToolInspectionsInput = {
+    update: XOR<UserUpdateWithoutToolInspectionsInput, UserUncheckedUpdateWithoutToolInspectionsInput>
+    create: XOR<UserCreateWithoutToolInspectionsInput, UserUncheckedCreateWithoutToolInspectionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutToolInspectionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutToolInspectionsInput, UserUncheckedUpdateWithoutToolInspectionsInput>
+  }
+
+  export type UserUpdateWithoutToolInspectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutToolInspectionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type AssignmentUserCreateManyUserInput = {
@@ -58262,6 +64088,56 @@ export namespace Prisma {
     projectId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ToolAssetCreateManyAssignedUserInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ToolAssetCreateManyCreatedByInput = {
+    id?: string
+    code: string
+    category: string
+    name: string
+    serialNumber?: string | null
+    photoUrl?: string | null
+    assignedUserId?: string | null
+    busKenteken?: string | null
+    kantoor?: boolean
+    status?: string
+    nextInspectionAt?: Date | string | null
+    lastInspectionAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ToolInspectionCreateManyInspectorInput = {
+    id?: string
+    assetId: string
+    inspectedAt?: Date | string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
   }
 
   export type AssignmentUserUpdateWithoutUserInput = {
@@ -58671,6 +64547,160 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolAssetUpdateWithoutAssignedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutToolAssetsCreatedNestedInput
+    inspections?: ToolInspectionUpdateManyWithoutAssetNestedInput
+  }
+
+  export type ToolAssetUncheckedUpdateWithoutAssignedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspections?: ToolInspectionUncheckedUpdateManyWithoutAssetNestedInput
+  }
+
+  export type ToolAssetUncheckedUpdateManyWithoutAssignedUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolAssetUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedUser?: UserUpdateOneWithoutToolAssetsAssignedNestedInput
+    inspections?: ToolInspectionUpdateManyWithoutAssetNestedInput
+  }
+
+  export type ToolAssetUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspections?: ToolInspectionUncheckedUpdateManyWithoutAssetNestedInput
+  }
+
+  export type ToolAssetUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    busKenteken?: NullableStringFieldUpdateOperationsInput | string | null
+    kantoor?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    nextInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInspectionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolInspectionUpdateWithoutInspectorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    asset?: ToolAssetUpdateOneRequiredWithoutInspectionsNestedInput
+  }
+
+  export type ToolInspectionUncheckedUpdateWithoutInspectorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assetId?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolInspectionUncheckedUpdateManyWithoutInspectorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assetId?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AssignmentCreateManyCustomerInput = {
@@ -60373,6 +66403,54 @@ export namespace Prisma {
     archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
     archiveError?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ToolInspectionCreateManyAssetInput = {
+    id?: string
+    inspectedAt?: Date | string
+    inspectorId: string
+    result: string
+    checklist: JsonNullValueInput | InputJsonValue
+    notes?: string | null
+    validUntil?: Date | string | null
+    pdfUrl?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ToolInspectionUpdateWithoutAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspector?: UserUpdateOneRequiredWithoutToolInspectionsNestedInput
+  }
+
+  export type ToolInspectionUncheckedUpdateWithoutAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspectorId?: StringFieldUpdateOperationsInput | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ToolInspectionUncheckedUpdateManyWithoutAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inspectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inspectorId?: StringFieldUpdateOperationsInput | string
+    result?: StringFieldUpdateOperationsInput | string
+    checklist?: JsonNullValueInput | InputJsonValue
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
