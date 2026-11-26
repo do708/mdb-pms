@@ -289,7 +289,7 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
                 <>
                     {/* Desktop / tablet table */}
                     <div className="hidden overflow-x-auto md:block">
-                        <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
+                        <table className="w-full min-w-[48rem] border-collapse text-left text-sm">
                             <thead>
                                 <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
                                     <th className="py-2 pr-2 font-semibold">
@@ -365,7 +365,7 @@ function DocumentTableRow(props: {
     const { doc, canEdit, busy, onPatch, onRemove } = props;
 
     return (
-        <tr className="border-b border-slate-100 align-top">
+        <tr className="border-b border-slate-100 align-middle">
             <td className="py-3 pr-2">
                 <TypeSelect
                     value={doc.type}
@@ -513,6 +513,51 @@ function NumberInput(props: {
     );
 }
 
+const MONTH_LABELS_NL = [
+    "jan",
+    "feb",
+    "mrt",
+    "apr",
+    "mei",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "okt",
+    "nov",
+    "dec",
+] as const;
+
+function daysInMonth(year: number, month: number): number {
+    return new Date(year, month, 0).getDate();
+}
+
+function parseYmd(value: string | null): {
+    year: string;
+    month: string;
+    day: string;
+} {
+    if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return { year: "", month: "", day: "" };
+    }
+    const [year, month, day] = value.split("-");
+    return { year, month, day };
+}
+
+function buildYearOptions(selectedYear: string): number[] {
+    const now = new Date().getFullYear();
+    const start = now - 2;
+    const end = now + 15;
+    const years: number[] = [];
+    for (let y = start; y <= end; y += 1) years.push(y);
+    const selected = Number(selectedYear);
+    if (selectedYear && Number.isFinite(selected) && !years.includes(selected)) {
+        years.push(selected);
+        years.sort((a, b) => a - b);
+    }
+    return years;
+}
+
 function ExpiryFields(props: {
     doc: UserDocumentDto;
     disabled: boolean;
@@ -522,10 +567,41 @@ function ExpiryFields(props: {
     }) => void;
 }) {
     const { doc, disabled, onPatch } = props;
+    const parsed = parseYmd(doc.expiresAt);
+    const [year, setYear] = useState(parsed.year);
+    const [month, setMonth] = useState(parsed.month);
+    const [day, setDay] = useState(parsed.day);
+
+    useEffect(() => {
+        const next = parseYmd(doc.expiresAt);
+        setYear(next.year);
+        setMonth(next.month);
+        setDay(next.day);
+    }, [doc.expiresAt, doc.id]);
+
+    const yearNum = Number(year) || new Date().getFullYear();
+    const monthNum = Number(month) || 1;
+    const maxDay = daysInMonth(yearNum, monthNum);
+    const selectClass =
+        "min-h-11 rounded-xl border bg-white px-2 py-2 text-sm disabled:bg-slate-50";
+
+    function commitParts(nextYear: string, nextMonth: string, nextDay: string) {
+        // Pas opslaan als dag/maand/jaar compleet zijn; tussentijds wissen
+        // alleen via de Wissen-knop (voorkomt API-calls tijdens invullen).
+        if (!nextYear || !nextMonth || !nextDay) return;
+        const y = Number(nextYear);
+        const m = Number(nextMonth);
+        const d = Number(nextDay);
+        const cappedDay = Math.min(d, daysInMonth(y, m));
+        const ymd = `${String(y).padStart(4, "0")}-${String(m).padStart(2, "0")}-${String(cappedDay).padStart(2, "0")}`;
+        if (ymd !== doc.expiresAt) {
+            onPatch({ neverExpires: false, expiresAt: ymd });
+        }
+    }
 
     return (
-        <div className="mt-0.5 space-y-2">
-            <label className="flex min-h-11 items-center gap-2 text-sm">
+        <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <label className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm whitespace-nowrap">
                 <input
                     type="checkbox"
                     checked={doc.neverExpires}
@@ -542,19 +618,104 @@ function ExpiryFields(props: {
                 Verloopt niet
             </label>
             {!doc.neverExpires ? (
-                <input
-                    type="date"
-                    value={doc.expiresAt ?? ""}
-                    disabled={disabled}
-                    onChange={(e) => {
-                        const v = e.target.value;
-                        onPatch({
-                            neverExpires: false,
-                            expiresAt: v || null,
-                        });
-                    }}
-                    className="w-full min-h-11 rounded-xl border bg-white px-3 py-2 text-sm disabled:bg-slate-50"
-                />
+                <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                    <select
+                        aria-label="Dag"
+                        value={day}
+                        disabled={disabled}
+                        onChange={(e) => {
+                            const nextDay = e.target.value;
+                            setDay(nextDay);
+                            commitParts(year, month, nextDay);
+                        }}
+                        className={`${selectClass} w-[4.25rem]`}
+                    >
+                        <option value="">dag</option>
+                        {Array.from({ length: maxDay }, (_, i) => {
+                            const value = String(i + 1).padStart(2, "0");
+                            return (
+                                <option key={value} value={value}>
+                                    {i + 1}
+                                </option>
+                            );
+                        })}
+                    </select>
+                    <select
+                        aria-label="Maand"
+                        value={month}
+                        disabled={disabled}
+                        onChange={(e) => {
+                            const nextMonth = e.target.value;
+                            const nextMax = daysInMonth(
+                                Number(year) || new Date().getFullYear(),
+                                Number(nextMonth) || 1
+                            );
+                            const nextDay =
+                                day && Number(day) > nextMax
+                                    ? String(nextMax).padStart(2, "0")
+                                    : day;
+                            setMonth(nextMonth);
+                            setDay(nextDay);
+                            commitParts(year, nextMonth, nextDay);
+                        }}
+                        className={`${selectClass} w-[5.5rem]`}
+                    >
+                        <option value="">maand</option>
+                        {MONTH_LABELS_NL.map((label, i) => {
+                            const value = String(i + 1).padStart(2, "0");
+                            return (
+                                <option key={value} value={value}>
+                                    {label}
+                                </option>
+                            );
+                        })}
+                    </select>
+                    <select
+                        aria-label="Jaar"
+                        value={year}
+                        disabled={disabled}
+                        onChange={(e) => {
+                            const nextYear = e.target.value;
+                            const nextMax = daysInMonth(
+                                Number(nextYear) || new Date().getFullYear(),
+                                Number(month) || 1
+                            );
+                            const nextDay =
+                                day && Number(day) > nextMax
+                                    ? String(nextMax).padStart(2, "0")
+                                    : day;
+                            setYear(nextYear);
+                            setDay(nextDay);
+                            commitParts(nextYear, month, nextDay);
+                        }}
+                        className={`${selectClass} w-[5.25rem]`}
+                    >
+                        <option value="">jaar</option>
+                        {buildYearOptions(year).map((y) => (
+                            <option key={y} value={String(y)}>
+                                {y}
+                            </option>
+                        ))}
+                    </select>
+                    {doc.expiresAt || year || month || day ? (
+                        <button
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => {
+                                setYear("");
+                                setMonth("");
+                                setDay("");
+                                onPatch({
+                                    neverExpires: false,
+                                    expiresAt: null,
+                                });
+                            }}
+                            className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 px-2.5 text-xs font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                        >
+                            Wissen
+                        </button>
+                    ) : null}
+                </div>
             ) : null}
         </div>
     );
