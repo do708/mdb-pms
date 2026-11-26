@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, type SessionUser } from "./session";
 import { prisma } from "@/lib/prisma";
-import { ensureProductionSchema } from "@/lib/prismaEnsure";
+import { ensureGereedschapUserColumns } from "@/lib/prismaEnsure";
 
 type GuardResult =
     | { ok: true; user: SessionUser }
@@ -39,9 +39,10 @@ export async function requireApiRole(
         };
     }
 
-    // Vangnet: ontbrekende migraties (o.a. User.gereedschap*) laten
-    // Prisma-includes als assignedUser:true crashen → dashboard rood.
-    await ensureProductionSchema();
+    // Alleen de drie User-capability-kolommen (snelle ALTER IF NOT EXISTS).
+    // Geen Tool*-DDL hier: dat hing/timeoutte op Neon-pooler en knalde
+    // elke authenticated route (projects, dashboard, …).
+    await ensureGereedschapUserColumns();
 
     return { ok: true, user };
 }

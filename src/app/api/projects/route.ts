@@ -37,10 +37,18 @@ export async function GET() {
         return NextResponse.json(projects);
     } catch (error) {
         console.error("PROJECTS GET ERROR", error);
+        const code =
+            error && typeof error === "object" && "code" in error
+                ? String((error as { code: unknown }).code)
+                : undefined;
 
         return NextResponse.json(
             {
-                error: "Projecten ophalen mislukt",
+                error:
+                    code === "P2022"
+                        ? "Database-schema mist kolommen. Draai npm run db:migrate tegen Production."
+                        : "Projecten ophalen mislukt",
+                code: code ?? "PROJECTS_ERROR",
             },
             {
                 status: 500,
