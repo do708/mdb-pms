@@ -6,10 +6,7 @@ import { archiveSlug } from "@/lib/archive/formatArchiveLocationName";
 import {
     synologyUploadFile,
 } from "@/lib/nas/synologyClient";
-import {
-    isArchiveStorageReady,
-    joinNasPath,
-} from "@/lib/nas/synologyConfig";
+import { isArchiveStorageReady } from "@/lib/nas/synologyConfig";
 import { supabase } from "@/lib/supabase/admin";
 
 export async function POST(
