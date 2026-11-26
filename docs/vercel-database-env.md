@@ -67,16 +67,20 @@ API-call na deploy).
 
 | Variabele | Build | Runtime | Opmerking |
 |-----------|-------|---------|-----------|
-| `DATABASE_URL` | nee (niet nodig voor build) | **ja** | Postgres-URL voor de app |
-| `DIRECT_URL` | nee | optioneel | Directe URL; vooral nuttig bij `npm run db:migrate` |
+| `DATABASE_URL` | nee | **ja** | **Gepoolde** Neon-URL (`…-pooler…` / poort 6543) voor de app |
+| `DIRECT_URL` | nee | nee (alleen migrate) | Non-pooling URL — **niet** als runtime-primary |
+| `PG_POOL_MAX` | nee | optioneel | Default `3` per serverless isolate |
 
-Zet `DATABASE_URL` in ieder geval op **Production** (en Preview als Preview de DB moet praten).
-Build Time is voor migrate niet meer verplicht.
+Zet `DATABASE_URL` op **Production** (en Preview) op de **pooled** connection string.
+Zet `DIRECT_URL` alleen voor `npm run db:migrate` — de app mag die niet prefereren
+(serverless × directe connecties → Neon “too many connections”, vaak als Prisma **P2039**).
 
 ## Aliassen
 
-`scripts/prisma-migrate-deploy.mjs` en `prisma.config.ts` lezen ook:
+Runtime (`src/lib/dbUrl.ts` → `resolveRuntimeDatabaseUrl`):
 
-- `POSTGRES_URL_NON_POOLING`
-- `POSTGRES_PRISMA_URL`
-- `POSTGRES_URL`
+- `DATABASE_URL` → `POSTGRES_PRISMA_URL` → `POSTGRES_URL` → pas daarna direct
+
+Migrate (`scripts/prisma-migrate-deploy.mjs` / `prisma.config.ts`):
+
+- `DIRECT_URL` / `POSTGRES_URL_NON_POOLING` eerst, dan pooled fallbacks
