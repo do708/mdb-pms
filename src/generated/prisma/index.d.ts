@@ -69,6 +69,12 @@ export type Workorder = $Result.DefaultSelection<Prisma.$WorkorderPayload>
  */
 export type ArchiveFolder = $Result.DefaultSelection<Prisma.$ArchiveFolderPayload>
 /**
+ * Model ArchiveHiddenPath
+ * Verwijderde archiefmap-paden: virtuele boom mag ze niet opnieuw tonen.
+ * Opdrachten zelf blijven bestaan.
+ */
+export type ArchiveHiddenPath = $Result.DefaultSelection<Prisma.$ArchiveHiddenPathPayload>
+/**
  * Model WorkorderHour
  * 
  */
@@ -414,6 +420,16 @@ export class PrismaClient<
     * ```
     */
   get archiveFolder(): Prisma.ArchiveFolderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.archiveHiddenPath`: Exposes CRUD operations for the **ArchiveHiddenPath** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ArchiveHiddenPaths
+    * const archiveHiddenPaths = await prisma.archiveHiddenPath.findMany()
+    * ```
+    */
+  get archiveHiddenPath(): Prisma.ArchiveHiddenPathDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.workorderHour`: Exposes CRUD operations for the **WorkorderHour** model.
@@ -1102,6 +1118,7 @@ export namespace Prisma {
     ProjectAttachment: 'ProjectAttachment',
     Workorder: 'Workorder',
     ArchiveFolder: 'ArchiveFolder',
+    ArchiveHiddenPath: 'ArchiveHiddenPath',
     WorkorderHour: 'WorkorderHour',
     WorkorderMaterial: 'WorkorderMaterial',
     WorkorderHardware: 'WorkorderHardware',
@@ -1140,7 +1157,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userDocument" | "customer" | "archiveFile" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "projectAttachment" | "workorder" | "archiveFolder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "pakbon" | "pakbonWorkorder" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache" | "toolAsset" | "toolInspection" | "toolIdSequence"
+      modelProps: "user" | "userDocument" | "customer" | "archiveFile" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "projectAttachment" | "workorder" | "archiveFolder" | "archiveHiddenPath" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "pakbon" | "pakbonWorkorder" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache" | "toolAsset" | "toolInspection" | "toolIdSequence"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1955,6 +1972,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ArchiveFolderCountArgs<ExtArgs>
             result: $Utils.Optional<ArchiveFolderCountAggregateOutputType> | number
+          }
+        }
+      }
+      ArchiveHiddenPath: {
+        payload: Prisma.$ArchiveHiddenPathPayload<ExtArgs>
+        fields: Prisma.ArchiveHiddenPathFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ArchiveHiddenPathFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ArchiveHiddenPathFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>
+          }
+          findFirst: {
+            args: Prisma.ArchiveHiddenPathFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ArchiveHiddenPathFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>
+          }
+          findMany: {
+            args: Prisma.ArchiveHiddenPathFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>[]
+          }
+          create: {
+            args: Prisma.ArchiveHiddenPathCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>
+          }
+          createMany: {
+            args: Prisma.ArchiveHiddenPathCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ArchiveHiddenPathCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>[]
+          }
+          delete: {
+            args: Prisma.ArchiveHiddenPathDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>
+          }
+          update: {
+            args: Prisma.ArchiveHiddenPathUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>
+          }
+          deleteMany: {
+            args: Prisma.ArchiveHiddenPathDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ArchiveHiddenPathUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ArchiveHiddenPathUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>[]
+          }
+          upsert: {
+            args: Prisma.ArchiveHiddenPathUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveHiddenPathPayload>
+          }
+          aggregate: {
+            args: Prisma.ArchiveHiddenPathAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateArchiveHiddenPath>
+          }
+          groupBy: {
+            args: Prisma.ArchiveHiddenPathGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ArchiveHiddenPathGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ArchiveHiddenPathCountArgs<ExtArgs>
+            result: $Utils.Optional<ArchiveHiddenPathCountAggregateOutputType> | number
           }
         }
       }
@@ -3794,6 +3885,7 @@ export namespace Prisma {
     projectAttachment?: ProjectAttachmentOmit
     workorder?: WorkorderOmit
     archiveFolder?: ArchiveFolderOmit
+    archiveHiddenPath?: ArchiveHiddenPathOmit
     workorderHour?: WorkorderHourOmit
     workorderMaterial?: WorkorderMaterialOmit
     workorderHardware?: WorkorderHardwareOmit
@@ -19187,6 +19279,983 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ArchiveFolderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ArchiveHiddenPath
+   */
+
+  export type AggregateArchiveHiddenPath = {
+    _count: ArchiveHiddenPathCountAggregateOutputType | null
+    _min: ArchiveHiddenPathMinAggregateOutputType | null
+    _max: ArchiveHiddenPathMaxAggregateOutputType | null
+  }
+
+  export type ArchiveHiddenPathMinAggregateOutputType = {
+    id: string | null
+    pathKey: string | null
+    createdAt: Date | null
+  }
+
+  export type ArchiveHiddenPathMaxAggregateOutputType = {
+    id: string | null
+    pathKey: string | null
+    createdAt: Date | null
+  }
+
+  export type ArchiveHiddenPathCountAggregateOutputType = {
+    id: number
+    pathKey: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ArchiveHiddenPathMinAggregateInputType = {
+    id?: true
+    pathKey?: true
+    createdAt?: true
+  }
+
+  export type ArchiveHiddenPathMaxAggregateInputType = {
+    id?: true
+    pathKey?: true
+    createdAt?: true
+  }
+
+  export type ArchiveHiddenPathCountAggregateInputType = {
+    id?: true
+    pathKey?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ArchiveHiddenPathAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArchiveHiddenPath to aggregate.
+     */
+    where?: ArchiveHiddenPathWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveHiddenPaths to fetch.
+     */
+    orderBy?: ArchiveHiddenPathOrderByWithRelationInput | ArchiveHiddenPathOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ArchiveHiddenPathWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveHiddenPaths from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveHiddenPaths.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ArchiveHiddenPaths
+    **/
+    _count?: true | ArchiveHiddenPathCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ArchiveHiddenPathMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ArchiveHiddenPathMaxAggregateInputType
+  }
+
+  export type GetArchiveHiddenPathAggregateType<T extends ArchiveHiddenPathAggregateArgs> = {
+        [P in keyof T & keyof AggregateArchiveHiddenPath]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateArchiveHiddenPath[P]>
+      : GetScalarType<T[P], AggregateArchiveHiddenPath[P]>
+  }
+
+
+
+
+  export type ArchiveHiddenPathGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArchiveHiddenPathWhereInput
+    orderBy?: ArchiveHiddenPathOrderByWithAggregationInput | ArchiveHiddenPathOrderByWithAggregationInput[]
+    by: ArchiveHiddenPathScalarFieldEnum[] | ArchiveHiddenPathScalarFieldEnum
+    having?: ArchiveHiddenPathScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ArchiveHiddenPathCountAggregateInputType | true
+    _min?: ArchiveHiddenPathMinAggregateInputType
+    _max?: ArchiveHiddenPathMaxAggregateInputType
+  }
+
+  export type ArchiveHiddenPathGroupByOutputType = {
+    id: string
+    pathKey: string
+    createdAt: Date
+    _count: ArchiveHiddenPathCountAggregateOutputType | null
+    _min: ArchiveHiddenPathMinAggregateOutputType | null
+    _max: ArchiveHiddenPathMaxAggregateOutputType | null
+  }
+
+  type GetArchiveHiddenPathGroupByPayload<T extends ArchiveHiddenPathGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ArchiveHiddenPathGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ArchiveHiddenPathGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ArchiveHiddenPathGroupByOutputType[P]>
+            : GetScalarType<T[P], ArchiveHiddenPathGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ArchiveHiddenPathSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pathKey?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["archiveHiddenPath"]>
+
+  export type ArchiveHiddenPathSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pathKey?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["archiveHiddenPath"]>
+
+  export type ArchiveHiddenPathSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pathKey?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["archiveHiddenPath"]>
+
+  export type ArchiveHiddenPathSelectScalar = {
+    id?: boolean
+    pathKey?: boolean
+    createdAt?: boolean
+  }
+
+  export type ArchiveHiddenPathOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pathKey" | "createdAt", ExtArgs["result"]["archiveHiddenPath"]>
+
+  export type $ArchiveHiddenPathPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ArchiveHiddenPath"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * Genormaliseerde pad-sleutel, bv. "wibra/almere"
+       */
+      pathKey: string
+      createdAt: Date
+    }, ExtArgs["result"]["archiveHiddenPath"]>
+    composites: {}
+  }
+
+  type ArchiveHiddenPathGetPayload<S extends boolean | null | undefined | ArchiveHiddenPathDefaultArgs> = $Result.GetResult<Prisma.$ArchiveHiddenPathPayload, S>
+
+  type ArchiveHiddenPathCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ArchiveHiddenPathFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ArchiveHiddenPathCountAggregateInputType | true
+    }
+
+  export interface ArchiveHiddenPathDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ArchiveHiddenPath'], meta: { name: 'ArchiveHiddenPath' } }
+    /**
+     * Find zero or one ArchiveHiddenPath that matches the filter.
+     * @param {ArchiveHiddenPathFindUniqueArgs} args - Arguments to find a ArchiveHiddenPath
+     * @example
+     * // Get one ArchiveHiddenPath
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ArchiveHiddenPathFindUniqueArgs>(args: SelectSubset<T, ArchiveHiddenPathFindUniqueArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ArchiveHiddenPath that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ArchiveHiddenPathFindUniqueOrThrowArgs} args - Arguments to find a ArchiveHiddenPath
+     * @example
+     * // Get one ArchiveHiddenPath
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ArchiveHiddenPathFindUniqueOrThrowArgs>(args: SelectSubset<T, ArchiveHiddenPathFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArchiveHiddenPath that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveHiddenPathFindFirstArgs} args - Arguments to find a ArchiveHiddenPath
+     * @example
+     * // Get one ArchiveHiddenPath
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ArchiveHiddenPathFindFirstArgs>(args?: SelectSubset<T, ArchiveHiddenPathFindFirstArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArchiveHiddenPath that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveHiddenPathFindFirstOrThrowArgs} args - Arguments to find a ArchiveHiddenPath
+     * @example
+     * // Get one ArchiveHiddenPath
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ArchiveHiddenPathFindFirstOrThrowArgs>(args?: SelectSubset<T, ArchiveHiddenPathFindFirstOrThrowArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ArchiveHiddenPaths that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveHiddenPathFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ArchiveHiddenPaths
+     * const archiveHiddenPaths = await prisma.archiveHiddenPath.findMany()
+     * 
+     * // Get first 10 ArchiveHiddenPaths
+     * const archiveHiddenPaths = await prisma.archiveHiddenPath.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const archiveHiddenPathWithIdOnly = await prisma.archiveHiddenPath.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ArchiveHiddenPathFindManyArgs>(args?: SelectSubset<T, ArchiveHiddenPathFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ArchiveHiddenPath.
+     * @param {ArchiveHiddenPathCreateArgs} args - Arguments to create a ArchiveHiddenPath.
+     * @example
+     * // Create one ArchiveHiddenPath
+     * const ArchiveHiddenPath = await prisma.archiveHiddenPath.create({
+     *   data: {
+     *     // ... data to create a ArchiveHiddenPath
+     *   }
+     * })
+     * 
+     */
+    create<T extends ArchiveHiddenPathCreateArgs>(args: SelectSubset<T, ArchiveHiddenPathCreateArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ArchiveHiddenPaths.
+     * @param {ArchiveHiddenPathCreateManyArgs} args - Arguments to create many ArchiveHiddenPaths.
+     * @example
+     * // Create many ArchiveHiddenPaths
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ArchiveHiddenPathCreateManyArgs>(args?: SelectSubset<T, ArchiveHiddenPathCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ArchiveHiddenPaths and returns the data saved in the database.
+     * @param {ArchiveHiddenPathCreateManyAndReturnArgs} args - Arguments to create many ArchiveHiddenPaths.
+     * @example
+     * // Create many ArchiveHiddenPaths
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ArchiveHiddenPaths and only return the `id`
+     * const archiveHiddenPathWithIdOnly = await prisma.archiveHiddenPath.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ArchiveHiddenPathCreateManyAndReturnArgs>(args?: SelectSubset<T, ArchiveHiddenPathCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ArchiveHiddenPath.
+     * @param {ArchiveHiddenPathDeleteArgs} args - Arguments to delete one ArchiveHiddenPath.
+     * @example
+     * // Delete one ArchiveHiddenPath
+     * const ArchiveHiddenPath = await prisma.archiveHiddenPath.delete({
+     *   where: {
+     *     // ... filter to delete one ArchiveHiddenPath
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ArchiveHiddenPathDeleteArgs>(args: SelectSubset<T, ArchiveHiddenPathDeleteArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ArchiveHiddenPath.
+     * @param {ArchiveHiddenPathUpdateArgs} args - Arguments to update one ArchiveHiddenPath.
+     * @example
+     * // Update one ArchiveHiddenPath
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ArchiveHiddenPathUpdateArgs>(args: SelectSubset<T, ArchiveHiddenPathUpdateArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ArchiveHiddenPaths.
+     * @param {ArchiveHiddenPathDeleteManyArgs} args - Arguments to filter ArchiveHiddenPaths to delete.
+     * @example
+     * // Delete a few ArchiveHiddenPaths
+     * const { count } = await prisma.archiveHiddenPath.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ArchiveHiddenPathDeleteManyArgs>(args?: SelectSubset<T, ArchiveHiddenPathDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArchiveHiddenPaths.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveHiddenPathUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ArchiveHiddenPaths
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ArchiveHiddenPathUpdateManyArgs>(args: SelectSubset<T, ArchiveHiddenPathUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArchiveHiddenPaths and returns the data updated in the database.
+     * @param {ArchiveHiddenPathUpdateManyAndReturnArgs} args - Arguments to update many ArchiveHiddenPaths.
+     * @example
+     * // Update many ArchiveHiddenPaths
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ArchiveHiddenPaths and only return the `id`
+     * const archiveHiddenPathWithIdOnly = await prisma.archiveHiddenPath.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ArchiveHiddenPathUpdateManyAndReturnArgs>(args: SelectSubset<T, ArchiveHiddenPathUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ArchiveHiddenPath.
+     * @param {ArchiveHiddenPathUpsertArgs} args - Arguments to update or create a ArchiveHiddenPath.
+     * @example
+     * // Update or create a ArchiveHiddenPath
+     * const archiveHiddenPath = await prisma.archiveHiddenPath.upsert({
+     *   create: {
+     *     // ... data to create a ArchiveHiddenPath
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ArchiveHiddenPath we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ArchiveHiddenPathUpsertArgs>(args: SelectSubset<T, ArchiveHiddenPathUpsertArgs<ExtArgs>>): Prisma__ArchiveHiddenPathClient<$Result.GetResult<Prisma.$ArchiveHiddenPathPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ArchiveHiddenPaths.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveHiddenPathCountArgs} args - Arguments to filter ArchiveHiddenPaths to count.
+     * @example
+     * // Count the number of ArchiveHiddenPaths
+     * const count = await prisma.archiveHiddenPath.count({
+     *   where: {
+     *     // ... the filter for the ArchiveHiddenPaths we want to count
+     *   }
+     * })
+    **/
+    count<T extends ArchiveHiddenPathCountArgs>(
+      args?: Subset<T, ArchiveHiddenPathCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ArchiveHiddenPathCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ArchiveHiddenPath.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveHiddenPathAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ArchiveHiddenPathAggregateArgs>(args: Subset<T, ArchiveHiddenPathAggregateArgs>): Prisma.PrismaPromise<GetArchiveHiddenPathAggregateType<T>>
+
+    /**
+     * Group by ArchiveHiddenPath.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveHiddenPathGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ArchiveHiddenPathGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ArchiveHiddenPathGroupByArgs['orderBy'] }
+        : { orderBy?: ArchiveHiddenPathGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ArchiveHiddenPathGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetArchiveHiddenPathGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ArchiveHiddenPath model
+   */
+  readonly fields: ArchiveHiddenPathFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ArchiveHiddenPath.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ArchiveHiddenPathClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ArchiveHiddenPath model
+   */
+  interface ArchiveHiddenPathFieldRefs {
+    readonly id: FieldRef<"ArchiveHiddenPath", 'String'>
+    readonly pathKey: FieldRef<"ArchiveHiddenPath", 'String'>
+    readonly createdAt: FieldRef<"ArchiveHiddenPath", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ArchiveHiddenPath findUnique
+   */
+  export type ArchiveHiddenPathFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * Filter, which ArchiveHiddenPath to fetch.
+     */
+    where: ArchiveHiddenPathWhereUniqueInput
+  }
+
+  /**
+   * ArchiveHiddenPath findUniqueOrThrow
+   */
+  export type ArchiveHiddenPathFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * Filter, which ArchiveHiddenPath to fetch.
+     */
+    where: ArchiveHiddenPathWhereUniqueInput
+  }
+
+  /**
+   * ArchiveHiddenPath findFirst
+   */
+  export type ArchiveHiddenPathFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * Filter, which ArchiveHiddenPath to fetch.
+     */
+    where?: ArchiveHiddenPathWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveHiddenPaths to fetch.
+     */
+    orderBy?: ArchiveHiddenPathOrderByWithRelationInput | ArchiveHiddenPathOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArchiveHiddenPaths.
+     */
+    cursor?: ArchiveHiddenPathWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveHiddenPaths from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveHiddenPaths.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveHiddenPaths.
+     */
+    distinct?: ArchiveHiddenPathScalarFieldEnum | ArchiveHiddenPathScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveHiddenPath findFirstOrThrow
+   */
+  export type ArchiveHiddenPathFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * Filter, which ArchiveHiddenPath to fetch.
+     */
+    where?: ArchiveHiddenPathWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveHiddenPaths to fetch.
+     */
+    orderBy?: ArchiveHiddenPathOrderByWithRelationInput | ArchiveHiddenPathOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArchiveHiddenPaths.
+     */
+    cursor?: ArchiveHiddenPathWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveHiddenPaths from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveHiddenPaths.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveHiddenPaths.
+     */
+    distinct?: ArchiveHiddenPathScalarFieldEnum | ArchiveHiddenPathScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveHiddenPath findMany
+   */
+  export type ArchiveHiddenPathFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * Filter, which ArchiveHiddenPaths to fetch.
+     */
+    where?: ArchiveHiddenPathWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveHiddenPaths to fetch.
+     */
+    orderBy?: ArchiveHiddenPathOrderByWithRelationInput | ArchiveHiddenPathOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ArchiveHiddenPaths.
+     */
+    cursor?: ArchiveHiddenPathWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveHiddenPaths from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveHiddenPaths.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveHiddenPaths.
+     */
+    distinct?: ArchiveHiddenPathScalarFieldEnum | ArchiveHiddenPathScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveHiddenPath create
+   */
+  export type ArchiveHiddenPathCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ArchiveHiddenPath.
+     */
+    data: XOR<ArchiveHiddenPathCreateInput, ArchiveHiddenPathUncheckedCreateInput>
+  }
+
+  /**
+   * ArchiveHiddenPath createMany
+   */
+  export type ArchiveHiddenPathCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ArchiveHiddenPaths.
+     */
+    data: ArchiveHiddenPathCreateManyInput | ArchiveHiddenPathCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ArchiveHiddenPath createManyAndReturn
+   */
+  export type ArchiveHiddenPathCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * The data used to create many ArchiveHiddenPaths.
+     */
+    data: ArchiveHiddenPathCreateManyInput | ArchiveHiddenPathCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ArchiveHiddenPath update
+   */
+  export type ArchiveHiddenPathUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ArchiveHiddenPath.
+     */
+    data: XOR<ArchiveHiddenPathUpdateInput, ArchiveHiddenPathUncheckedUpdateInput>
+    /**
+     * Choose, which ArchiveHiddenPath to update.
+     */
+    where: ArchiveHiddenPathWhereUniqueInput
+  }
+
+  /**
+   * ArchiveHiddenPath updateMany
+   */
+  export type ArchiveHiddenPathUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ArchiveHiddenPaths.
+     */
+    data: XOR<ArchiveHiddenPathUpdateManyMutationInput, ArchiveHiddenPathUncheckedUpdateManyInput>
+    /**
+     * Filter which ArchiveHiddenPaths to update
+     */
+    where?: ArchiveHiddenPathWhereInput
+    /**
+     * Limit how many ArchiveHiddenPaths to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArchiveHiddenPath updateManyAndReturn
+   */
+  export type ArchiveHiddenPathUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * The data used to update ArchiveHiddenPaths.
+     */
+    data: XOR<ArchiveHiddenPathUpdateManyMutationInput, ArchiveHiddenPathUncheckedUpdateManyInput>
+    /**
+     * Filter which ArchiveHiddenPaths to update
+     */
+    where?: ArchiveHiddenPathWhereInput
+    /**
+     * Limit how many ArchiveHiddenPaths to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArchiveHiddenPath upsert
+   */
+  export type ArchiveHiddenPathUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ArchiveHiddenPath to update in case it exists.
+     */
+    where: ArchiveHiddenPathWhereUniqueInput
+    /**
+     * In case the ArchiveHiddenPath found by the `where` argument doesn't exist, create a new ArchiveHiddenPath with this data.
+     */
+    create: XOR<ArchiveHiddenPathCreateInput, ArchiveHiddenPathUncheckedCreateInput>
+    /**
+     * In case the ArchiveHiddenPath was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ArchiveHiddenPathUpdateInput, ArchiveHiddenPathUncheckedUpdateInput>
+  }
+
+  /**
+   * ArchiveHiddenPath delete
+   */
+  export type ArchiveHiddenPathDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
+    /**
+     * Filter which ArchiveHiddenPath to delete.
+     */
+    where: ArchiveHiddenPathWhereUniqueInput
+  }
+
+  /**
+   * ArchiveHiddenPath deleteMany
+   */
+  export type ArchiveHiddenPathDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArchiveHiddenPaths to delete
+     */
+    where?: ArchiveHiddenPathWhereInput
+    /**
+     * Limit how many ArchiveHiddenPaths to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArchiveHiddenPath without action
+   */
+  export type ArchiveHiddenPathDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveHiddenPath
+     */
+    select?: ArchiveHiddenPathSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveHiddenPath
+     */
+    omit?: ArchiveHiddenPathOmit<ExtArgs> | null
   }
 
 
@@ -45109,6 +46178,15 @@ export namespace Prisma {
   export type ArchiveFolderScalarFieldEnum = (typeof ArchiveFolderScalarFieldEnum)[keyof typeof ArchiveFolderScalarFieldEnum]
 
 
+  export const ArchiveHiddenPathScalarFieldEnum: {
+    id: 'id',
+    pathKey: 'pathKey',
+    createdAt: 'createdAt'
+  };
+
+  export type ArchiveHiddenPathScalarFieldEnum = (typeof ArchiveHiddenPathScalarFieldEnum)[keyof typeof ArchiveHiddenPathScalarFieldEnum]
+
+
   export const WorkorderHourScalarFieldEnum: {
     id: 'id',
     workorderId: 'workorderId',
@@ -46940,6 +48018,48 @@ export namespace Prisma {
     workorderId?: StringNullableWithAggregatesFilter<"ArchiveFolder"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ArchiveFolder"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ArchiveFolder"> | Date | string
+  }
+
+  export type ArchiveHiddenPathWhereInput = {
+    AND?: ArchiveHiddenPathWhereInput | ArchiveHiddenPathWhereInput[]
+    OR?: ArchiveHiddenPathWhereInput[]
+    NOT?: ArchiveHiddenPathWhereInput | ArchiveHiddenPathWhereInput[]
+    id?: StringFilter<"ArchiveHiddenPath"> | string
+    pathKey?: StringFilter<"ArchiveHiddenPath"> | string
+    createdAt?: DateTimeFilter<"ArchiveHiddenPath"> | Date | string
+  }
+
+  export type ArchiveHiddenPathOrderByWithRelationInput = {
+    id?: SortOrder
+    pathKey?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ArchiveHiddenPathWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    pathKey?: string
+    AND?: ArchiveHiddenPathWhereInput | ArchiveHiddenPathWhereInput[]
+    OR?: ArchiveHiddenPathWhereInput[]
+    NOT?: ArchiveHiddenPathWhereInput | ArchiveHiddenPathWhereInput[]
+    createdAt?: DateTimeFilter<"ArchiveHiddenPath"> | Date | string
+  }, "id" | "pathKey">
+
+  export type ArchiveHiddenPathOrderByWithAggregationInput = {
+    id?: SortOrder
+    pathKey?: SortOrder
+    createdAt?: SortOrder
+    _count?: ArchiveHiddenPathCountOrderByAggregateInput
+    _max?: ArchiveHiddenPathMaxOrderByAggregateInput
+    _min?: ArchiveHiddenPathMinOrderByAggregateInput
+  }
+
+  export type ArchiveHiddenPathScalarWhereWithAggregatesInput = {
+    AND?: ArchiveHiddenPathScalarWhereWithAggregatesInput | ArchiveHiddenPathScalarWhereWithAggregatesInput[]
+    OR?: ArchiveHiddenPathScalarWhereWithAggregatesInput[]
+    NOT?: ArchiveHiddenPathScalarWhereWithAggregatesInput | ArchiveHiddenPathScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ArchiveHiddenPath"> | string
+    pathKey?: StringWithAggregatesFilter<"ArchiveHiddenPath"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ArchiveHiddenPath"> | Date | string
   }
 
   export type WorkorderHourWhereInput = {
@@ -50154,6 +51274,48 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ArchiveHiddenPathCreateInput = {
+    id?: string
+    pathKey: string
+    createdAt?: Date | string
+  }
+
+  export type ArchiveHiddenPathUncheckedCreateInput = {
+    id?: string
+    pathKey: string
+    createdAt?: Date | string
+  }
+
+  export type ArchiveHiddenPathUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pathKey?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveHiddenPathUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pathKey?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveHiddenPathCreateManyInput = {
+    id?: string
+    pathKey: string
+    createdAt?: Date | string
+  }
+
+  export type ArchiveHiddenPathUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pathKey?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveHiddenPathUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pathKey?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WorkorderHourCreateInput = {
     id?: string
     date?: Date | string | null
@@ -53130,6 +54292,24 @@ export namespace Prisma {
     workorderId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type ArchiveHiddenPathCountOrderByAggregateInput = {
+    id?: SortOrder
+    pathKey?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ArchiveHiddenPathMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pathKey?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ArchiveHiddenPathMinOrderByAggregateInput = {
+    id?: SortOrder
+    pathKey?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type WorkorderScalarRelationFilter = {

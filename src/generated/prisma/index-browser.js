@@ -333,6 +333,12 @@ exports.Prisma.ArchiveFolderScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ArchiveHiddenPathScalarFieldEnum = {
+  id: 'id',
+  pathKey: 'pathKey',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.WorkorderHourScalarFieldEnum = {
   id: 'id',
   workorderId: 'workorderId',
@@ -617,6 +623,7 @@ exports.Prisma.ModelName = {
   ProjectAttachment: 'ProjectAttachment',
   Workorder: 'Workorder',
   ArchiveFolder: 'ArchiveFolder',
+  ArchiveHiddenPath: 'ArchiveHiddenPath',
   WorkorderHour: 'WorkorderHour',
   WorkorderMaterial: 'WorkorderMaterial',
   WorkorderHardware: 'WorkorderHardware',

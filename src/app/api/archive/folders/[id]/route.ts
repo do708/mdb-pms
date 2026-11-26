@@ -5,6 +5,7 @@ import {
     deleteArchiveFolder,
     renameArchiveFolder,
 } from "@/lib/archive/ensureArchiveFolders";
+import { hideArchiveFolderPath } from "@/lib/archive/ensureArchiveHiddenPaths";
 import { supabase } from "@/lib/supabase/admin";
 
 export async function PATCH(
@@ -50,7 +51,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-    _request: NextRequest,
+    request: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) {
     const guard = await requireApiRole(["admin", "office"]);
@@ -61,6 +62,18 @@ export async function DELETE(
 
     try {
         const { id } = await context.params;
+        const body = (await request.json().catch(() => null)) as {
+            path?: string[];
+        } | null;
+
+        const path = Array.isArray(body?.path)
+            ? body.path.filter((part): part is string => typeof part === "string")
+            : [];
+
+        if (path.length > 0) {
+            await hideArchiveFolderPath(path);
+        }
+
         const files = await deleteArchiveFolder(id);
         const supabasePaths = files
             .filter((file) => file.storage !== "nas")

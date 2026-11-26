@@ -52,6 +52,43 @@ export function normalizeKey(value: string): string {
     return value.trim().toLowerCase().replace(/\s+/g, "");
 }
 
+/** Genormaliseerde pad-sleutel voor archiefboom (bedrijf/locatie/…). */
+export function archiveFolderPathKey(path: string[]): string {
+    return path
+        .map((part) => normalizeKey(part))
+        .filter(Boolean)
+        .join("/");
+}
+
+export function isArchivePathHidden(
+    path: string[],
+    hiddenKeys: Iterable<string>
+): boolean {
+    const key = archiveFolderPathKey(path);
+
+    if (!key) {
+        return false;
+    }
+
+    const hidden = hiddenKeys instanceof Set
+        ? hiddenKeys
+        : new Set(hiddenKeys);
+
+    if (hidden.has(key)) {
+        return true;
+    }
+
+    const parts = key.split("/");
+
+    for (let i = 1; i < parts.length; i++) {
+        if (hidden.has(parts.slice(0, i).join("/"))) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function titleCaseWord(word: string): string {
     if (!word) {
         return "";

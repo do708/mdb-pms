@@ -330,6 +330,15 @@ model ArchiveFolder {
   @@index([customerId])
 }
 
+/// Verwijderde archiefmap-paden: virtuele boom mag ze niet opnieuw tonen.
+/// Opdrachten zelf blijven bestaan.
+model ArchiveHiddenPath {
+  id        String   @id @default(cuid())
+  /// Genormaliseerde pad-sleutel, bv. "wibra/almere"
+  pathKey   String   @unique
+  createdAt DateTime @default(now())
+}
+
 model WorkorderHour {
   id          String    @id @default(cuid())
   workorderId String
