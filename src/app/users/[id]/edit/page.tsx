@@ -285,7 +285,7 @@ export default function EditUserPage(){
             space-y-6
             w-full
             max-w-lg
-            md:max-w-6xl
+            md:max-w-7xl
         ">
 
 

@@ -287,28 +287,25 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
                 </p>
             ) : (
                 <>
-                    {/* Desktop / tablet table — volle breedte, één rij per document */}
-                    <div className="hidden overflow-x-auto md:block">
-                        <table className="w-full min-w-[56rem] table-fixed border-collapse text-left text-sm">
-                            <colgroup>
-                                <col className="w-[12rem]" />
-                                <col className="w-[9rem]" />
-                                <col />
-                                <col className="w-[14rem]" />
-                            </colgroup>
+                    {/* Eenvoudige tabel vanaf lg — geen horizontale scroll */}
+                    <div className="hidden lg:block">
+                        <table className="w-full border-collapse text-left text-sm">
                             <thead>
                                 <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
-                                    <th className="py-2 pr-2 font-semibold">
+                                    <th className="py-2 pr-3 font-semibold">
                                         Type
                                     </th>
-                                    <th className="py-2 pr-2 font-semibold">
+                                    <th className="py-2 pr-3 font-semibold">
                                         Nummer
                                     </th>
-                                    <th className="py-2 pr-2 font-semibold">
+                                    <th className="py-2 pr-3 font-semibold">
                                         Verloop
                                     </th>
-                                    <th className="py-2 font-semibold">
+                                    <th className="py-2 pr-3 font-semibold">
                                         Bestand
+                                    </th>
+                                    <th className="py-2 font-semibold">
+                                        Acties
                                     </th>
                                 </tr>
                             </thead>
@@ -327,8 +324,8 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
                         </table>
                     </div>
 
-                    {/* Mobile cards */}
-                    <ul className="space-y-3 md:hidden">
+                    {/* Mobiel / tablet: gestapelde kaarten */}
+                    <ul className="space-y-3 lg:hidden">
                         {docs.map((doc) => (
                             <li
                                 key={doc.id}
@@ -368,44 +365,46 @@ function DocumentTableRow(props: {
     const { doc, canEdit, busy, onPatch, onRemove } = props;
 
     return (
-        <tr className="border-b border-slate-100 align-middle">
-            <td className="py-3 pr-2 align-middle">
+        <tr className="border-b border-slate-100">
+            <td className="py-2.5 pr-3 align-middle">
                 <TypeSelect
                     value={doc.type}
                     disabled={!canEdit || busy}
                     onChange={(type) => void onPatch(doc.id, { type })}
                 />
             </td>
-            <td className="py-3 pr-2 align-middle">
+            <td className="py-2.5 pr-3 align-middle">
                 <NumberInput
                     value={doc.number}
                     disabled={!canEdit || busy}
                     onCommit={(number) => void onPatch(doc.id, { number })}
                 />
             </td>
-            <td className="py-3 pr-2 align-middle">
+            <td className="py-2.5 pr-3 align-middle whitespace-nowrap">
                 <ExpiryFields
                     doc={doc}
                     disabled={!canEdit || busy}
                     onPatch={(patch) => void onPatch(doc.id, patch)}
                 />
             </td>
-            <td className="py-3 align-middle">
-                <div className="flex items-center gap-2">
-                    <FileLink doc={doc} />
-                    {canEdit ? (
-                        <button
-                            type="button"
-                            disabled={busy}
-                            onClick={() => void onRemove(doc.id)}
-                            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
-                            aria-label="Document verwijderen"
-                            title="Verwijderen"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </button>
-                    ) : null}
-                </div>
+            <td className="py-2.5 pr-3 align-middle">
+                <FileLink doc={doc} />
+            </td>
+            <td className="py-2.5 align-middle">
+                {canEdit ? (
+                    <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => void onRemove(doc.id)}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                        aria-label="Document verwijderen"
+                        title="Verwijderen"
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </button>
+                ) : (
+                    <span className="text-slate-400">—</span>
+                )}
             </td>
         </tr>
     );
@@ -482,7 +481,7 @@ function TypeSelect(props: {
             value={props.value}
             disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
-            className="mt-0.5 w-full min-h-11 rounded-xl border bg-white px-3 py-2 text-sm disabled:bg-slate-50"
+            className="h-9 w-full max-w-[10.5rem] rounded-lg border bg-white px-2 text-sm disabled:bg-slate-50"
         >
             {USER_DOCUMENT_TYPES.map((t) => (
                 <option key={t} value={t}>
@@ -512,7 +511,7 @@ function NumberInput(props: {
                 if (local !== props.value) props.onCommit(local);
             }}
             placeholder="Optioneel"
-            className="mt-0.5 w-full min-h-11 rounded-xl border px-3 py-2 text-sm disabled:bg-slate-50"
+            className="h-9 w-full max-w-[8rem] rounded-lg border px-2 text-sm disabled:bg-slate-50"
         />
     );
 }
@@ -587,7 +586,7 @@ function ExpiryFields(props: {
     const monthNum = Number(month) || 1;
     const maxDay = daysInMonth(yearNum, monthNum);
     const selectClass =
-        "min-h-11 rounded-xl border bg-white px-2 py-2 text-sm disabled:bg-slate-50";
+        "h-9 rounded-lg border bg-white px-1.5 text-sm disabled:bg-slate-50";
 
     function commitParts(nextYear: string, nextMonth: string, nextDay: string) {
         // Pas opslaan als dag/maand/jaar compleet zijn; tussentijds wissen
@@ -603,9 +602,16 @@ function ExpiryFields(props: {
         }
     }
 
+    function clearDate() {
+        setYear("");
+        setMonth("");
+        setDay("");
+        onPatch({ neverExpires: false, expiresAt: null });
+    }
+
     return (
-        <div className="mt-0.5 flex flex-nowrap items-center gap-2 overflow-x-auto">
-            <label className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm whitespace-nowrap">
+        <div className="inline-flex flex-wrap items-center gap-1.5 lg:flex-nowrap lg:whitespace-nowrap">
+            <label className="inline-flex h-9 items-center gap-1.5 text-xs text-slate-700 whitespace-nowrap">
                 <input
                     type="checkbox"
                     checked={doc.neverExpires}
@@ -622,7 +628,7 @@ function ExpiryFields(props: {
                 Verloopt niet
             </label>
             {!doc.neverExpires ? (
-                <div className="flex shrink-0 flex-nowrap items-center gap-1.5">
+                <>
                     <select
                         aria-label="Dag"
                         value={day}
@@ -632,7 +638,7 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(year, month, nextDay);
                         }}
-                        className={`${selectClass} w-[4.25rem]`}
+                        className={`${selectClass} w-[3.25rem]`}
                     >
                         <option value="">dag</option>
                         {Array.from({ length: maxDay }, (_, i) => {
@@ -662,9 +668,9 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(year, nextMonth, nextDay);
                         }}
-                        className={`${selectClass} w-[5.5rem]`}
+                        className={`${selectClass} w-[3.75rem]`}
                     >
-                        <option value="">maand</option>
+                        <option value="">mnd</option>
                         {MONTH_LABELS_NL.map((label, i) => {
                             const value = String(i + 1).padStart(2, "0");
                             return (
@@ -692,7 +698,7 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(nextYear, month, nextDay);
                         }}
-                        className={`${selectClass} w-[5.25rem]`}
+                        className={`${selectClass} w-[4.25rem]`}
                     >
                         <option value="">jaar</option>
                         {buildYearOptions(year).map((y) => (
@@ -705,23 +711,15 @@ function ExpiryFields(props: {
                         <button
                             type="button"
                             disabled={disabled}
-                            onClick={() => {
-                                setYear("");
-                                setMonth("");
-                                setDay("");
-                                onPatch({
-                                    neverExpires: false,
-                                    expiresAt: null,
-                                });
-                            }}
-                            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-50"
+                            onClick={clearDate}
+                            className="inline-flex h-9 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
                             aria-label="Datum wissen"
                             title="Datum wissen"
                         >
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5" />
                         </button>
                     ) : null}
-                </div>
+                </>
             ) : null}
         </div>
     );
@@ -734,7 +732,7 @@ function FileLink({ doc }: { doc: UserDocumentDto }) {
             href={doc.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-w-0 max-w-[9rem] items-center gap-1.5 text-sm font-medium text-[#0066FF] hover:underline"
+            className="inline-flex max-w-[11rem] items-center gap-1 text-sm font-medium text-[#0066FF] hover:underline"
             title={label}
         >
             <ExternalLink className="h-3.5 w-3.5 shrink-0" />
