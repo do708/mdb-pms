@@ -10,6 +10,7 @@ import {
     loadNietGereedMeldingen,
 } from "@/lib/officeNotifications";
 import { loadForgottenProjectHours } from "@/lib/projects/forgottenHours";
+import { ensureProductionSchema } from "@/lib/prismaEnsure";
 
 
 
@@ -24,6 +25,9 @@ export async function GET(){
 
 
     try {
+        // Extra expliciet: dashboard include't assignedUser (alle User-kolommen).
+        // Zonder gereedschap-migratie → P2022 → rode migratie-melding in UI.
+        await ensureProductionSchema();
 
         if (guard.user.role === "magazijn") {
             const materiaalWaarschuwing = await loadMateriaalKlaarzettenUrgent();

@@ -244,3 +244,16 @@ export async function ensureGereedschapSchema(): Promise<void> {
         console.error("ENSURE GEREEDSCHAP SCHEMA", error);
     }
 }
+
+/**
+ * Alle bekende “schema achter migratie”-vangnetten in één keer.
+ * Aanroepen vanuit auth-guards zodat o.a. dashboard (`assignedUser: true`)
+ * niet crasht wanneer `npm run db:migrate` nog niet op Production is gedraaid.
+ */
+export async function ensureProductionSchema(): Promise<void> {
+    await Promise.all([
+        ensureWorkorderOpdrachtnummerKolom(),
+        ensurePakbonTables(),
+        ensureGereedschapSchema(),
+    ]);
+}
