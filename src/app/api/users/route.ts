@@ -21,6 +21,9 @@ export async function GET() {
                 role: true,
                 staffKind: true,
                 active: true,
+                gereedschapBeheer: true,
+                keurmeester: true,
+                overzichtAlleAssets: true,
             },
             orderBy: { name: "asc" },
         });
@@ -112,6 +115,9 @@ export async function POST(request: Request) {
                 staffKind,
                 stagiaireUntil,
                 active: true,
+                gereedschapBeheer: Boolean(body.gereedschapBeheer),
+                keurmeester: Boolean(body.keurmeester),
+                overzichtAlleAssets: Boolean(body.overzichtAlleAssets),
             },
             select: {
                 id: true,
@@ -121,6 +127,9 @@ export async function POST(request: Request) {
                 staffKind: true,
                 stagiaireUntil: true,
                 active: true,
+                gereedschapBeheer: true,
+                keurmeester: true,
+                overzichtAlleAssets: true,
             },
         });
 

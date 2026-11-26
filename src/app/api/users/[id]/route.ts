@@ -28,6 +28,9 @@ export async function GET(request: NextRequest, context: Ctx) {
                 staffKind: true,
                 stagiaireUntil: true,
                 active: true,
+                gereedschapBeheer: true,
+                keurmeester: true,
+                overzichtAlleAssets: true,
             },
         });
 
@@ -115,6 +118,9 @@ export async function PUT(request: NextRequest, context: Ctx) {
             stagiaireUntil?: Date | null;
             active?: boolean;
             password?: string;
+            gereedschapBeheer?: boolean;
+            keurmeester?: boolean;
+            overzichtAlleAssets?: boolean;
         } = {};
 
         if (body.name !== undefined) data.name = body.name;
@@ -134,6 +140,16 @@ export async function PUT(request: NextRequest, context: Ctx) {
         }
 
         if (body.active !== undefined) data.active = Boolean(body.active);
+
+        if (body.gereedschapBeheer !== undefined) {
+            data.gereedschapBeheer = Boolean(body.gereedschapBeheer);
+        }
+        if (body.keurmeester !== undefined) {
+            data.keurmeester = Boolean(body.keurmeester);
+        }
+        if (body.overzichtAlleAssets !== undefined) {
+            data.overzichtAlleAssets = Boolean(body.overzichtAlleAssets);
+        }
 
         // Wachtwoord reset: alleen als er een nieuw wachtwoord is meegestuurd
         if (body.password) {
@@ -214,6 +230,9 @@ export async function PUT(request: NextRequest, context: Ctx) {
                 staffKind: true,
                 stagiaireUntil: true,
                 active: true,
+                gereedschapBeheer: true,
+                keurmeester: true,
+                overzichtAlleAssets: true,
             },
         });
 

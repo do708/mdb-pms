@@ -18,6 +18,9 @@ export default function NewUserPage() {
     const [role, setRole] = useState("engineer");
     const [staffKind, setStaffKind] = useState<StaffKind>("monteur");
     const [stagiaireUntil, setStagiaireUntil] = useState("");
+    const [gereedschapBeheer, setGereedschapBeheer] = useState(false);
+    const [keurmeester, setKeurmeester] = useState(false);
+    const [overzichtAlleAssets, setOverzichtAlleAssets] = useState(false);
     const [saving, setSaving] = useState(false);
 
     async function createUser() {
@@ -40,6 +43,9 @@ export default function NewUserPage() {
                         role === "engineer" && staffKind === "stagiaire"
                             ? stagiaireUntil
                             : null,
+                    gereedschapBeheer,
+                    keurmeester,
+                    overzichtAlleAssets,
                 }),
             });
 
@@ -144,6 +150,44 @@ export default function NewUserPage() {
                             </label>
                         ) : null}
                     </div>
+                ) : null}
+
+                {(role === "office" || role === "engineer" || role === "admin") ? (
+                    <fieldset className="space-y-3 rounded-xl border border-slate-200 p-4">
+                        <legend className="px-1 text-sm font-semibold text-slate-700">
+                            Gereedschap-rechten
+                        </legend>
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={gereedschapBeheer}
+                                onChange={(e) =>
+                                    setGereedschapBeheer(e.target.checked)
+                                }
+                            />
+                            Gereedschap beheer
+                        </label>
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={keurmeester}
+                                onChange={(e) =>
+                                    setKeurmeester(e.target.checked)
+                                }
+                            />
+                            Keurmeester
+                        </label>
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                checked={overzichtAlleAssets}
+                                onChange={(e) =>
+                                    setOverzichtAlleAssets(e.target.checked)
+                                }
+                            />
+                            Overzicht alle assets
+                        </label>
+                    </fieldset>
                 ) : null}
 
                 <button
