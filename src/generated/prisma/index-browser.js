@@ -136,6 +136,22 @@ exports.Prisma.UserScalarFieldEnum = {
   overzichtAlleAssets: 'overzichtAlleAssets'
 };
 
+exports.Prisma.UserDocumentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  number: 'number',
+  expiresAt: 'expiresAt',
+  neverExpires: 'neverExpires',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  originalName: 'originalName',
+  contentType: 'contentType',
+  expiryNotifiedAt: 'expiryNotifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CustomerScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -591,6 +607,7 @@ exports.Prisma.JsonNullValueFilter = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  UserDocument: 'UserDocument',
   Customer: 'Customer',
   ArchiveFile: 'ArchiveFile',
   Aanvraag: 'Aanvraag',

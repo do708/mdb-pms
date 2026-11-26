@@ -39,6 +39,33 @@ model User {
   toolAssetsAssigned     ToolAsset[]       @relation("ToolAssetAssigned")
   toolAssetsCreated      ToolAsset[]       @relation("ToolAssetCreatedBy")
   toolInspections        ToolInspection[]  @relation("ToolInspectionInspector")
+  documents              UserDocument[]
+}
+
+/// Persoonsdocumenten (ID, rijbewijs, certificaat, VOG, …) bij een gebruiker.
+model UserDocument {
+  id               String    @id @default(cuid())
+  userId           String
+  /// id_kaart | rijbewijs | certificaat | vog | anders
+  type             String
+  /// Documentnummer / kenmerk (optioneel)
+  number           String?
+  /// null + neverExpires=true → verloopt niet
+  expiresAt        DateTime?
+  neverExpires     Boolean   @default(false)
+  fileUrl          String
+  fileName         String?
+  originalName     String?
+  contentType      String?
+  /// Wanneer de 1-maand-voor-verloop-mail is verstuurd
+  expiryNotifiedAt DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([expiryNotifiedAt])
 }
 
 model Customer {

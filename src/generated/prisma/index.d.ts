@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model UserDocument
+ * Persoonsdocumenten (ID, rijbewijs, certificaat, VOG, …) bij een gebruiker.
+ */
+export type UserDocument = $Result.DefaultSelection<Prisma.$UserDocumentPayload>
+/**
  * Model Customer
  * 
  */
@@ -309,6 +314,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userDocument`: Exposes CRUD operations for the **UserDocument** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserDocuments
+    * const userDocuments = await prisma.userDocument.findMany()
+    * ```
+    */
+  get userDocument(): Prisma.UserDocumentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.customer`: Exposes CRUD operations for the **Customer** model.
@@ -1077,6 +1092,7 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    UserDocument: 'UserDocument',
     Customer: 'Customer',
     ArchiveFile: 'ArchiveFile',
     Aanvraag: 'Aanvraag',
@@ -1124,7 +1140,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "archiveFile" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "projectAttachment" | "workorder" | "archiveFolder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "pakbon" | "pakbonWorkorder" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache" | "toolAsset" | "toolInspection" | "toolIdSequence"
+      modelProps: "user" | "userDocument" | "customer" | "archiveFile" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "projectAttachment" | "workorder" | "archiveFolder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "pakbon" | "pakbonWorkorder" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache" | "toolAsset" | "toolInspection" | "toolIdSequence"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1199,6 +1215,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserDocument: {
+        payload: Prisma.$UserDocumentPayload<ExtArgs>
+        fields: Prisma.UserDocumentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserDocumentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserDocumentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>
+          }
+          findFirst: {
+            args: Prisma.UserDocumentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserDocumentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>
+          }
+          findMany: {
+            args: Prisma.UserDocumentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>[]
+          }
+          create: {
+            args: Prisma.UserDocumentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>
+          }
+          createMany: {
+            args: Prisma.UserDocumentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserDocumentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>[]
+          }
+          delete: {
+            args: Prisma.UserDocumentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>
+          }
+          update: {
+            args: Prisma.UserDocumentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserDocumentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserDocumentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserDocumentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserDocumentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDocumentPayload>
+          }
+          aggregate: {
+            args: Prisma.UserDocumentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserDocument>
+          }
+          groupBy: {
+            args: Prisma.UserDocumentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserDocumentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserDocumentCountArgs<ExtArgs>
+            result: $Utils.Optional<UserDocumentCountAggregateOutputType> | number
           }
         }
       }
@@ -3694,6 +3784,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    userDocument?: UserDocumentOmit
     customer?: CustomerOmit
     archiveFile?: ArchiveFileOmit
     aanvraag?: AanvraagOmit
@@ -3817,6 +3908,7 @@ export namespace Prisma {
     toolAssetsAssigned: number
     toolAssetsCreated: number
     toolInspections: number
+    documents: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3831,6 +3923,7 @@ export namespace Prisma {
     toolAssetsAssigned?: boolean | UserCountOutputTypeCountToolAssetsAssignedArgs
     toolAssetsCreated?: boolean | UserCountOutputTypeCountToolAssetsCreatedArgs
     toolInspections?: boolean | UserCountOutputTypeCountToolInspectionsArgs
+    documents?: boolean | UserCountOutputTypeCountDocumentsArgs
   }
 
   // Custom InputTypes
@@ -3919,6 +4012,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountToolInspectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ToolInspectionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserDocumentWhereInput
   }
 
 
@@ -4584,6 +4684,7 @@ export namespace Prisma {
     toolAssetsAssigned?: boolean | User$toolAssetsAssignedArgs<ExtArgs>
     toolAssetsCreated?: boolean | User$toolAssetsCreatedArgs<ExtArgs>
     toolInspections?: boolean | User$toolInspectionsArgs<ExtArgs>
+    documents?: boolean | User$documentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4648,6 +4749,7 @@ export namespace Prisma {
     toolAssetsAssigned?: boolean | User$toolAssetsAssignedArgs<ExtArgs>
     toolAssetsCreated?: boolean | User$toolAssetsCreatedArgs<ExtArgs>
     toolInspections?: boolean | User$toolInspectionsArgs<ExtArgs>
+    documents?: boolean | User$documentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4667,6 +4769,7 @@ export namespace Prisma {
       toolAssetsAssigned: Prisma.$ToolAssetPayload<ExtArgs>[]
       toolAssetsCreated: Prisma.$ToolAssetPayload<ExtArgs>[]
       toolInspections: Prisma.$ToolInspectionPayload<ExtArgs>[]
+      documents: Prisma.$UserDocumentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5108,6 +5211,7 @@ export namespace Prisma {
     toolAssetsAssigned<T extends User$toolAssetsAssignedArgs<ExtArgs> = {}>(args?: Subset<T, User$toolAssetsAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     toolAssetsCreated<T extends User$toolAssetsCreatedArgs<ExtArgs> = {}>(args?: Subset<T, User$toolAssetsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     toolInspections<T extends User$toolInspectionsArgs<ExtArgs> = {}>(args?: Subset<T, User$toolInspectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ToolInspectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    documents<T extends User$documentsArgs<ExtArgs> = {}>(args?: Subset<T, User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5807,6 +5911,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.documents
+   */
+  export type User$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    where?: UserDocumentWhereInput
+    orderBy?: UserDocumentOrderByWithRelationInput | UserDocumentOrderByWithRelationInput[]
+    cursor?: UserDocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserDocumentScalarFieldEnum | UserDocumentScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5822,6 +5950,1185 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserDocument
+   */
+
+  export type AggregateUserDocument = {
+    _count: UserDocumentCountAggregateOutputType | null
+    _min: UserDocumentMinAggregateOutputType | null
+    _max: UserDocumentMaxAggregateOutputType | null
+  }
+
+  export type UserDocumentMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    type: string | null
+    number: string | null
+    expiresAt: Date | null
+    neverExpires: boolean | null
+    fileUrl: string | null
+    fileName: string | null
+    originalName: string | null
+    contentType: string | null
+    expiryNotifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserDocumentMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    type: string | null
+    number: string | null
+    expiresAt: Date | null
+    neverExpires: boolean | null
+    fileUrl: string | null
+    fileName: string | null
+    originalName: string | null
+    contentType: string | null
+    expiryNotifiedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserDocumentCountAggregateOutputType = {
+    id: number
+    userId: number
+    type: number
+    number: number
+    expiresAt: number
+    neverExpires: number
+    fileUrl: number
+    fileName: number
+    originalName: number
+    contentType: number
+    expiryNotifiedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserDocumentMinAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    number?: true
+    expiresAt?: true
+    neverExpires?: true
+    fileUrl?: true
+    fileName?: true
+    originalName?: true
+    contentType?: true
+    expiryNotifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserDocumentMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    number?: true
+    expiresAt?: true
+    neverExpires?: true
+    fileUrl?: true
+    fileName?: true
+    originalName?: true
+    contentType?: true
+    expiryNotifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserDocumentCountAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    number?: true
+    expiresAt?: true
+    neverExpires?: true
+    fileUrl?: true
+    fileName?: true
+    originalName?: true
+    contentType?: true
+    expiryNotifiedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserDocumentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserDocument to aggregate.
+     */
+    where?: UserDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDocuments to fetch.
+     */
+    orderBy?: UserDocumentOrderByWithRelationInput | UserDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserDocuments
+    **/
+    _count?: true | UserDocumentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserDocumentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserDocumentMaxAggregateInputType
+  }
+
+  export type GetUserDocumentAggregateType<T extends UserDocumentAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserDocument]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserDocument[P]>
+      : GetScalarType<T[P], AggregateUserDocument[P]>
+  }
+
+
+
+
+  export type UserDocumentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserDocumentWhereInput
+    orderBy?: UserDocumentOrderByWithAggregationInput | UserDocumentOrderByWithAggregationInput[]
+    by: UserDocumentScalarFieldEnum[] | UserDocumentScalarFieldEnum
+    having?: UserDocumentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserDocumentCountAggregateInputType | true
+    _min?: UserDocumentMinAggregateInputType
+    _max?: UserDocumentMaxAggregateInputType
+  }
+
+  export type UserDocumentGroupByOutputType = {
+    id: string
+    userId: string
+    type: string
+    number: string | null
+    expiresAt: Date | null
+    neverExpires: boolean
+    fileUrl: string
+    fileName: string | null
+    originalName: string | null
+    contentType: string | null
+    expiryNotifiedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: UserDocumentCountAggregateOutputType | null
+    _min: UserDocumentMinAggregateOutputType | null
+    _max: UserDocumentMaxAggregateOutputType | null
+  }
+
+  type GetUserDocumentGroupByPayload<T extends UserDocumentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserDocumentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserDocumentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserDocumentGroupByOutputType[P]>
+            : GetScalarType<T[P], UserDocumentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserDocumentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    number?: boolean
+    expiresAt?: boolean
+    neverExpires?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    expiryNotifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDocument"]>
+
+  export type UserDocumentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    number?: boolean
+    expiresAt?: boolean
+    neverExpires?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    expiryNotifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDocument"]>
+
+  export type UserDocumentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    number?: boolean
+    expiresAt?: boolean
+    neverExpires?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    expiryNotifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDocument"]>
+
+  export type UserDocumentSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    number?: boolean
+    expiresAt?: boolean
+    neverExpires?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    expiryNotifiedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "number" | "expiresAt" | "neverExpires" | "fileUrl" | "fileName" | "originalName" | "contentType" | "expiryNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["userDocument"]>
+  export type UserDocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserDocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserDocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserDocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserDocument"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      /**
+       * id_kaart | rijbewijs | certificaat | vog | anders
+       */
+      type: string
+      /**
+       * Documentnummer / kenmerk (optioneel)
+       */
+      number: string | null
+      /**
+       * null + neverExpires=true → verloopt niet
+       */
+      expiresAt: Date | null
+      neverExpires: boolean
+      fileUrl: string
+      fileName: string | null
+      originalName: string | null
+      contentType: string | null
+      /**
+       * Wanneer de 1-maand-voor-verloop-mail is verstuurd
+       */
+      expiryNotifiedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userDocument"]>
+    composites: {}
+  }
+
+  type UserDocumentGetPayload<S extends boolean | null | undefined | UserDocumentDefaultArgs> = $Result.GetResult<Prisma.$UserDocumentPayload, S>
+
+  type UserDocumentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserDocumentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserDocumentCountAggregateInputType | true
+    }
+
+  export interface UserDocumentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserDocument'], meta: { name: 'UserDocument' } }
+    /**
+     * Find zero or one UserDocument that matches the filter.
+     * @param {UserDocumentFindUniqueArgs} args - Arguments to find a UserDocument
+     * @example
+     * // Get one UserDocument
+     * const userDocument = await prisma.userDocument.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserDocumentFindUniqueArgs>(args: SelectSubset<T, UserDocumentFindUniqueArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserDocument that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserDocumentFindUniqueOrThrowArgs} args - Arguments to find a UserDocument
+     * @example
+     * // Get one UserDocument
+     * const userDocument = await prisma.userDocument.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserDocumentFindUniqueOrThrowArgs>(args: SelectSubset<T, UserDocumentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserDocument that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDocumentFindFirstArgs} args - Arguments to find a UserDocument
+     * @example
+     * // Get one UserDocument
+     * const userDocument = await prisma.userDocument.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserDocumentFindFirstArgs>(args?: SelectSubset<T, UserDocumentFindFirstArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserDocument that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDocumentFindFirstOrThrowArgs} args - Arguments to find a UserDocument
+     * @example
+     * // Get one UserDocument
+     * const userDocument = await prisma.userDocument.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserDocumentFindFirstOrThrowArgs>(args?: SelectSubset<T, UserDocumentFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserDocuments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDocumentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserDocuments
+     * const userDocuments = await prisma.userDocument.findMany()
+     * 
+     * // Get first 10 UserDocuments
+     * const userDocuments = await prisma.userDocument.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userDocumentWithIdOnly = await prisma.userDocument.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserDocumentFindManyArgs>(args?: SelectSubset<T, UserDocumentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserDocument.
+     * @param {UserDocumentCreateArgs} args - Arguments to create a UserDocument.
+     * @example
+     * // Create one UserDocument
+     * const UserDocument = await prisma.userDocument.create({
+     *   data: {
+     *     // ... data to create a UserDocument
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserDocumentCreateArgs>(args: SelectSubset<T, UserDocumentCreateArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserDocuments.
+     * @param {UserDocumentCreateManyArgs} args - Arguments to create many UserDocuments.
+     * @example
+     * // Create many UserDocuments
+     * const userDocument = await prisma.userDocument.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserDocumentCreateManyArgs>(args?: SelectSubset<T, UserDocumentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserDocuments and returns the data saved in the database.
+     * @param {UserDocumentCreateManyAndReturnArgs} args - Arguments to create many UserDocuments.
+     * @example
+     * // Create many UserDocuments
+     * const userDocument = await prisma.userDocument.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserDocuments and only return the `id`
+     * const userDocumentWithIdOnly = await prisma.userDocument.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserDocumentCreateManyAndReturnArgs>(args?: SelectSubset<T, UserDocumentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserDocument.
+     * @param {UserDocumentDeleteArgs} args - Arguments to delete one UserDocument.
+     * @example
+     * // Delete one UserDocument
+     * const UserDocument = await prisma.userDocument.delete({
+     *   where: {
+     *     // ... filter to delete one UserDocument
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserDocumentDeleteArgs>(args: SelectSubset<T, UserDocumentDeleteArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserDocument.
+     * @param {UserDocumentUpdateArgs} args - Arguments to update one UserDocument.
+     * @example
+     * // Update one UserDocument
+     * const userDocument = await prisma.userDocument.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserDocumentUpdateArgs>(args: SelectSubset<T, UserDocumentUpdateArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserDocuments.
+     * @param {UserDocumentDeleteManyArgs} args - Arguments to filter UserDocuments to delete.
+     * @example
+     * // Delete a few UserDocuments
+     * const { count } = await prisma.userDocument.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserDocumentDeleteManyArgs>(args?: SelectSubset<T, UserDocumentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDocumentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserDocuments
+     * const userDocument = await prisma.userDocument.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserDocumentUpdateManyArgs>(args: SelectSubset<T, UserDocumentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserDocuments and returns the data updated in the database.
+     * @param {UserDocumentUpdateManyAndReturnArgs} args - Arguments to update many UserDocuments.
+     * @example
+     * // Update many UserDocuments
+     * const userDocument = await prisma.userDocument.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserDocuments and only return the `id`
+     * const userDocumentWithIdOnly = await prisma.userDocument.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserDocumentUpdateManyAndReturnArgs>(args: SelectSubset<T, UserDocumentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserDocument.
+     * @param {UserDocumentUpsertArgs} args - Arguments to update or create a UserDocument.
+     * @example
+     * // Update or create a UserDocument
+     * const userDocument = await prisma.userDocument.upsert({
+     *   create: {
+     *     // ... data to create a UserDocument
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserDocument we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserDocumentUpsertArgs>(args: SelectSubset<T, UserDocumentUpsertArgs<ExtArgs>>): Prisma__UserDocumentClient<$Result.GetResult<Prisma.$UserDocumentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDocumentCountArgs} args - Arguments to filter UserDocuments to count.
+     * @example
+     * // Count the number of UserDocuments
+     * const count = await prisma.userDocument.count({
+     *   where: {
+     *     // ... the filter for the UserDocuments we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserDocumentCountArgs>(
+      args?: Subset<T, UserDocumentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserDocumentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDocumentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserDocumentAggregateArgs>(args: Subset<T, UserDocumentAggregateArgs>): Prisma.PrismaPromise<GetUserDocumentAggregateType<T>>
+
+    /**
+     * Group by UserDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDocumentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserDocumentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserDocumentGroupByArgs['orderBy'] }
+        : { orderBy?: UserDocumentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserDocumentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserDocumentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserDocument model
+   */
+  readonly fields: UserDocumentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserDocument.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserDocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserDocument model
+   */
+  interface UserDocumentFieldRefs {
+    readonly id: FieldRef<"UserDocument", 'String'>
+    readonly userId: FieldRef<"UserDocument", 'String'>
+    readonly type: FieldRef<"UserDocument", 'String'>
+    readonly number: FieldRef<"UserDocument", 'String'>
+    readonly expiresAt: FieldRef<"UserDocument", 'DateTime'>
+    readonly neverExpires: FieldRef<"UserDocument", 'Boolean'>
+    readonly fileUrl: FieldRef<"UserDocument", 'String'>
+    readonly fileName: FieldRef<"UserDocument", 'String'>
+    readonly originalName: FieldRef<"UserDocument", 'String'>
+    readonly contentType: FieldRef<"UserDocument", 'String'>
+    readonly expiryNotifiedAt: FieldRef<"UserDocument", 'DateTime'>
+    readonly createdAt: FieldRef<"UserDocument", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserDocument", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserDocument findUnique
+   */
+  export type UserDocumentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDocument to fetch.
+     */
+    where: UserDocumentWhereUniqueInput
+  }
+
+  /**
+   * UserDocument findUniqueOrThrow
+   */
+  export type UserDocumentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDocument to fetch.
+     */
+    where: UserDocumentWhereUniqueInput
+  }
+
+  /**
+   * UserDocument findFirst
+   */
+  export type UserDocumentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDocument to fetch.
+     */
+    where?: UserDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDocuments to fetch.
+     */
+    orderBy?: UserDocumentOrderByWithRelationInput | UserDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserDocuments.
+     */
+    cursor?: UserDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDocuments.
+     */
+    distinct?: UserDocumentScalarFieldEnum | UserDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * UserDocument findFirstOrThrow
+   */
+  export type UserDocumentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDocument to fetch.
+     */
+    where?: UserDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDocuments to fetch.
+     */
+    orderBy?: UserDocumentOrderByWithRelationInput | UserDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserDocuments.
+     */
+    cursor?: UserDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDocuments.
+     */
+    distinct?: UserDocumentScalarFieldEnum | UserDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * UserDocument findMany
+   */
+  export type UserDocumentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDocuments to fetch.
+     */
+    where?: UserDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDocuments to fetch.
+     */
+    orderBy?: UserDocumentOrderByWithRelationInput | UserDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserDocuments.
+     */
+    cursor?: UserDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDocuments.
+     */
+    distinct?: UserDocumentScalarFieldEnum | UserDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * UserDocument create
+   */
+  export type UserDocumentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserDocument.
+     */
+    data: XOR<UserDocumentCreateInput, UserDocumentUncheckedCreateInput>
+  }
+
+  /**
+   * UserDocument createMany
+   */
+  export type UserDocumentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserDocuments.
+     */
+    data: UserDocumentCreateManyInput | UserDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserDocument createManyAndReturn
+   */
+  export type UserDocumentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserDocuments.
+     */
+    data: UserDocumentCreateManyInput | UserDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserDocument update
+   */
+  export type UserDocumentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserDocument.
+     */
+    data: XOR<UserDocumentUpdateInput, UserDocumentUncheckedUpdateInput>
+    /**
+     * Choose, which UserDocument to update.
+     */
+    where: UserDocumentWhereUniqueInput
+  }
+
+  /**
+   * UserDocument updateMany
+   */
+  export type UserDocumentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserDocuments.
+     */
+    data: XOR<UserDocumentUpdateManyMutationInput, UserDocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which UserDocuments to update
+     */
+    where?: UserDocumentWhereInput
+    /**
+     * Limit how many UserDocuments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserDocument updateManyAndReturn
+   */
+  export type UserDocumentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * The data used to update UserDocuments.
+     */
+    data: XOR<UserDocumentUpdateManyMutationInput, UserDocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which UserDocuments to update
+     */
+    where?: UserDocumentWhereInput
+    /**
+     * Limit how many UserDocuments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserDocument upsert
+   */
+  export type UserDocumentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserDocument to update in case it exists.
+     */
+    where: UserDocumentWhereUniqueInput
+    /**
+     * In case the UserDocument found by the `where` argument doesn't exist, create a new UserDocument with this data.
+     */
+    create: XOR<UserDocumentCreateInput, UserDocumentUncheckedCreateInput>
+    /**
+     * In case the UserDocument was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserDocumentUpdateInput, UserDocumentUncheckedUpdateInput>
+  }
+
+  /**
+   * UserDocument delete
+   */
+  export type UserDocumentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
+    /**
+     * Filter which UserDocument to delete.
+     */
+    where: UserDocumentWhereUniqueInput
+  }
+
+  /**
+   * UserDocument deleteMany
+   */
+  export type UserDocumentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserDocuments to delete
+     */
+    where?: UserDocumentWhereInput
+    /**
+     * Limit how many UserDocuments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserDocument without action
+   */
+  export type UserDocumentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDocument
+     */
+    select?: UserDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDocument
+     */
+    omit?: UserDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDocumentInclude<ExtArgs> | null
   }
 
 
@@ -43575,6 +44882,25 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const UserDocumentScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    type: 'type',
+    number: 'number',
+    expiresAt: 'expiresAt',
+    neverExpires: 'neverExpires',
+    fileUrl: 'fileUrl',
+    fileName: 'fileName',
+    originalName: 'originalName',
+    contentType: 'contentType',
+    expiryNotifiedAt: 'expiryNotifiedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserDocumentScalarFieldEnum = (typeof UserDocumentScalarFieldEnum)[keyof typeof UserDocumentScalarFieldEnum]
+
+
   export const CustomerScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -44282,6 +45608,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetListRelationFilter
     toolAssetsCreated?: ToolAssetListRelationFilter
     toolInspections?: ToolInspectionListRelationFilter
+    documents?: UserDocumentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -44309,6 +45636,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetOrderByRelationAggregateInput
     toolAssetsCreated?: ToolAssetOrderByRelationAggregateInput
     toolInspections?: ToolInspectionOrderByRelationAggregateInput
+    documents?: UserDocumentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -44339,6 +45667,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetListRelationFilter
     toolAssetsCreated?: ToolAssetListRelationFilter
     toolInspections?: ToolInspectionListRelationFilter
+    documents?: UserDocumentListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -44377,6 +45706,101 @@ export namespace Prisma {
     gereedschapBeheer?: BoolWithAggregatesFilter<"User"> | boolean
     keurmeester?: BoolWithAggregatesFilter<"User"> | boolean
     overzichtAlleAssets?: BoolWithAggregatesFilter<"User"> | boolean
+  }
+
+  export type UserDocumentWhereInput = {
+    AND?: UserDocumentWhereInput | UserDocumentWhereInput[]
+    OR?: UserDocumentWhereInput[]
+    NOT?: UserDocumentWhereInput | UserDocumentWhereInput[]
+    id?: StringFilter<"UserDocument"> | string
+    userId?: StringFilter<"UserDocument"> | string
+    type?: StringFilter<"UserDocument"> | string
+    number?: StringNullableFilter<"UserDocument"> | string | null
+    expiresAt?: DateTimeNullableFilter<"UserDocument"> | Date | string | null
+    neverExpires?: BoolFilter<"UserDocument"> | boolean
+    fileUrl?: StringFilter<"UserDocument"> | string
+    fileName?: StringNullableFilter<"UserDocument"> | string | null
+    originalName?: StringNullableFilter<"UserDocument"> | string | null
+    contentType?: StringNullableFilter<"UserDocument"> | string | null
+    expiryNotifiedAt?: DateTimeNullableFilter<"UserDocument"> | Date | string | null
+    createdAt?: DateTimeFilter<"UserDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDocument"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserDocumentOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    number?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    neverExpires?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    expiryNotifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserDocumentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: UserDocumentWhereInput | UserDocumentWhereInput[]
+    OR?: UserDocumentWhereInput[]
+    NOT?: UserDocumentWhereInput | UserDocumentWhereInput[]
+    userId?: StringFilter<"UserDocument"> | string
+    type?: StringFilter<"UserDocument"> | string
+    number?: StringNullableFilter<"UserDocument"> | string | null
+    expiresAt?: DateTimeNullableFilter<"UserDocument"> | Date | string | null
+    neverExpires?: BoolFilter<"UserDocument"> | boolean
+    fileUrl?: StringFilter<"UserDocument"> | string
+    fileName?: StringNullableFilter<"UserDocument"> | string | null
+    originalName?: StringNullableFilter<"UserDocument"> | string | null
+    contentType?: StringNullableFilter<"UserDocument"> | string | null
+    expiryNotifiedAt?: DateTimeNullableFilter<"UserDocument"> | Date | string | null
+    createdAt?: DateTimeFilter<"UserDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDocument"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type UserDocumentOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    number?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    neverExpires?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    expiryNotifiedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserDocumentCountOrderByAggregateInput
+    _max?: UserDocumentMaxOrderByAggregateInput
+    _min?: UserDocumentMinOrderByAggregateInput
+  }
+
+  export type UserDocumentScalarWhereWithAggregatesInput = {
+    AND?: UserDocumentScalarWhereWithAggregatesInput | UserDocumentScalarWhereWithAggregatesInput[]
+    OR?: UserDocumentScalarWhereWithAggregatesInput[]
+    NOT?: UserDocumentScalarWhereWithAggregatesInput | UserDocumentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserDocument"> | string
+    userId?: StringWithAggregatesFilter<"UserDocument"> | string
+    type?: StringWithAggregatesFilter<"UserDocument"> | string
+    number?: StringNullableWithAggregatesFilter<"UserDocument"> | string | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"UserDocument"> | Date | string | null
+    neverExpires?: BoolWithAggregatesFilter<"UserDocument"> | boolean
+    fileUrl?: StringWithAggregatesFilter<"UserDocument"> | string
+    fileName?: StringNullableWithAggregatesFilter<"UserDocument"> | string | null
+    originalName?: StringNullableWithAggregatesFilter<"UserDocument"> | string | null
+    contentType?: StringNullableWithAggregatesFilter<"UserDocument"> | string | null
+    expiryNotifiedAt?: DateTimeNullableWithAggregatesFilter<"UserDocument"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"UserDocument"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserDocument"> | Date | string
   }
 
   export type CustomerWhereInput = {
@@ -47140,6 +48564,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -47167,6 +48592,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -47194,6 +48620,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -47221,6 +48648,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -47269,6 +48697,117 @@ export namespace Prisma {
     gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
     keurmeester?: BoolFieldUpdateOperationsInput | boolean
     overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type UserDocumentCreateInput = {
+    id?: string
+    type: string
+    number?: string | null
+    expiresAt?: Date | string | null
+    neverExpires?: boolean
+    fileUrl: string
+    fileName?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    expiryNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutDocumentsInput
+  }
+
+  export type UserDocumentUncheckedCreateInput = {
+    id?: string
+    userId: string
+    type: string
+    number?: string | null
+    expiresAt?: Date | string | null
+    neverExpires?: boolean
+    fileUrl: string
+    fileName?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    expiryNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDocumentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    neverExpires?: BoolFieldUpdateOperationsInput | boolean
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    expiryNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDocumentsNestedInput
+  }
+
+  export type UserDocumentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    neverExpires?: BoolFieldUpdateOperationsInput | boolean
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    expiryNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDocumentCreateManyInput = {
+    id?: string
+    userId: string
+    type: string
+    number?: string | null
+    expiresAt?: Date | string | null
+    neverExpires?: boolean
+    fileUrl: string
+    fileName?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    expiryNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDocumentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    neverExpires?: BoolFieldUpdateOperationsInput | boolean
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    expiryNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDocumentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    neverExpires?: BoolFieldUpdateOperationsInput | boolean
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    expiryNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CustomerCreateInput = {
@@ -50406,6 +51945,12 @@ export namespace Prisma {
     none?: ToolInspectionWhereInput
   }
 
+  export type UserDocumentListRelationFilter = {
+    every?: UserDocumentWhereInput
+    some?: UserDocumentWhereInput
+    none?: UserDocumentWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -50440,6 +51985,10 @@ export namespace Prisma {
   }
 
   export type ToolInspectionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserDocumentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -50561,6 +52110,59 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type UserDocumentCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    number?: SortOrder
+    expiresAt?: SortOrder
+    neverExpires?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    expiryNotifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserDocumentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    number?: SortOrder
+    expiresAt?: SortOrder
+    neverExpires?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    expiryNotifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserDocumentMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    number?: SortOrder
+    expiresAt?: SortOrder
+    neverExpires?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    expiryNotifiedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -51024,11 +52626,6 @@ export namespace Prisma {
   export type ProjectScalarRelationFilter = {
     is?: ProjectWhereInput
     isNot?: ProjectWhereInput
-  }
-
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -52574,6 +54171,13 @@ export namespace Prisma {
     connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
   }
 
+  export type UserDocumentCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserDocumentCreateWithoutUserInput, UserDocumentUncheckedCreateWithoutUserInput> | UserDocumentCreateWithoutUserInput[] | UserDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDocumentCreateOrConnectWithoutUserInput | UserDocumentCreateOrConnectWithoutUserInput[]
+    createMany?: UserDocumentCreateManyUserInputEnvelope
+    connect?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+  }
+
   export type AssignmentUserUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -52649,6 +54253,13 @@ export namespace Prisma {
     connectOrCreate?: ToolInspectionCreateOrConnectWithoutInspectorInput | ToolInspectionCreateOrConnectWithoutInspectorInput[]
     createMany?: ToolInspectionCreateManyInspectorInputEnvelope
     connect?: ToolInspectionWhereUniqueInput | ToolInspectionWhereUniqueInput[]
+  }
+
+  export type UserDocumentUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserDocumentCreateWithoutUserInput, UserDocumentUncheckedCreateWithoutUserInput> | UserDocumentCreateWithoutUserInput[] | UserDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDocumentCreateOrConnectWithoutUserInput | UserDocumentCreateOrConnectWithoutUserInput[]
+    createMany?: UserDocumentCreateManyUserInputEnvelope
+    connect?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -52825,6 +54436,20 @@ export namespace Prisma {
     deleteMany?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
   }
 
+  export type UserDocumentUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserDocumentCreateWithoutUserInput, UserDocumentUncheckedCreateWithoutUserInput> | UserDocumentCreateWithoutUserInput[] | UserDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDocumentCreateOrConnectWithoutUserInput | UserDocumentCreateOrConnectWithoutUserInput[]
+    upsert?: UserDocumentUpsertWithWhereUniqueWithoutUserInput | UserDocumentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserDocumentCreateManyUserInputEnvelope
+    set?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    disconnect?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    delete?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    connect?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    update?: UserDocumentUpdateWithWhereUniqueWithoutUserInput | UserDocumentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserDocumentUpdateManyWithWhereWithoutUserInput | UserDocumentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserDocumentScalarWhereInput | UserDocumentScalarWhereInput[]
+  }
+
   export type AssignmentUserUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AssignmentUserCreateWithoutUserInput, AssignmentUserUncheckedCreateWithoutUserInput> | AssignmentUserCreateWithoutUserInput[] | AssignmentUserUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AssignmentUserCreateOrConnectWithoutUserInput | AssignmentUserCreateOrConnectWithoutUserInput[]
@@ -52977,6 +54602,34 @@ export namespace Prisma {
     update?: ToolInspectionUpdateWithWhereUniqueWithoutInspectorInput | ToolInspectionUpdateWithWhereUniqueWithoutInspectorInput[]
     updateMany?: ToolInspectionUpdateManyWithWhereWithoutInspectorInput | ToolInspectionUpdateManyWithWhereWithoutInspectorInput[]
     deleteMany?: ToolInspectionScalarWhereInput | ToolInspectionScalarWhereInput[]
+  }
+
+  export type UserDocumentUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserDocumentCreateWithoutUserInput, UserDocumentUncheckedCreateWithoutUserInput> | UserDocumentCreateWithoutUserInput[] | UserDocumentUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDocumentCreateOrConnectWithoutUserInput | UserDocumentCreateOrConnectWithoutUserInput[]
+    upsert?: UserDocumentUpsertWithWhereUniqueWithoutUserInput | UserDocumentUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserDocumentCreateManyUserInputEnvelope
+    set?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    disconnect?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    delete?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    connect?: UserDocumentWhereUniqueInput | UserDocumentWhereUniqueInput[]
+    update?: UserDocumentUpdateWithWhereUniqueWithoutUserInput | UserDocumentUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserDocumentUpdateManyWithWhereWithoutUserInput | UserDocumentUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserDocumentScalarWhereInput | UserDocumentScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutDocumentsInput = {
+    create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutDocumentsNestedInput = {
+    create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
+    upsert?: UserUpsertWithoutDocumentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDocumentsInput, UserUpdateWithoutDocumentsInput>, UserUncheckedUpdateWithoutDocumentsInput>
   }
 
   export type AssignmentCreateNestedManyWithoutCustomerInput = {
@@ -55665,6 +57318,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserDocumentCreateWithoutUserInput = {
+    id?: string
+    type: string
+    number?: string | null
+    expiresAt?: Date | string | null
+    neverExpires?: boolean
+    fileUrl: string
+    fileName?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    expiryNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDocumentUncheckedCreateWithoutUserInput = {
+    id?: string
+    type: string
+    number?: string | null
+    expiresAt?: Date | string | null
+    neverExpires?: boolean
+    fileUrl: string
+    fileName?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    expiryNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDocumentCreateOrConnectWithoutUserInput = {
+    where: UserDocumentWhereUniqueInput
+    create: XOR<UserDocumentCreateWithoutUserInput, UserDocumentUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserDocumentCreateManyUserInputEnvelope = {
+    data: UserDocumentCreateManyUserInput | UserDocumentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AssignmentUserUpsertWithWhereUniqueWithoutUserInput = {
     where: AssignmentUserWhereUniqueInput
     update: XOR<AssignmentUserUpdateWithoutUserInput, AssignmentUserUncheckedUpdateWithoutUserInput>
@@ -56002,6 +57695,165 @@ export namespace Prisma {
     validUntil?: DateTimeNullableFilter<"ToolInspection"> | Date | string | null
     pdfUrl?: StringNullableFilter<"ToolInspection"> | string | null
     createdAt?: DateTimeFilter<"ToolInspection"> | Date | string
+  }
+
+  export type UserDocumentUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserDocumentWhereUniqueInput
+    update: XOR<UserDocumentUpdateWithoutUserInput, UserDocumentUncheckedUpdateWithoutUserInput>
+    create: XOR<UserDocumentCreateWithoutUserInput, UserDocumentUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserDocumentUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserDocumentWhereUniqueInput
+    data: XOR<UserDocumentUpdateWithoutUserInput, UserDocumentUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserDocumentUpdateManyWithWhereWithoutUserInput = {
+    where: UserDocumentScalarWhereInput
+    data: XOR<UserDocumentUpdateManyMutationInput, UserDocumentUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserDocumentScalarWhereInput = {
+    AND?: UserDocumentScalarWhereInput | UserDocumentScalarWhereInput[]
+    OR?: UserDocumentScalarWhereInput[]
+    NOT?: UserDocumentScalarWhereInput | UserDocumentScalarWhereInput[]
+    id?: StringFilter<"UserDocument"> | string
+    userId?: StringFilter<"UserDocument"> | string
+    type?: StringFilter<"UserDocument"> | string
+    number?: StringNullableFilter<"UserDocument"> | string | null
+    expiresAt?: DateTimeNullableFilter<"UserDocument"> | Date | string | null
+    neverExpires?: BoolFilter<"UserDocument"> | boolean
+    fileUrl?: StringFilter<"UserDocument"> | string
+    fileName?: StringNullableFilter<"UserDocument"> | string | null
+    originalName?: StringNullableFilter<"UserDocument"> | string | null
+    contentType?: StringNullableFilter<"UserDocument"> | string | null
+    expiryNotifiedAt?: DateTimeNullableFilter<"UserDocument"> | Date | string | null
+    createdAt?: DateTimeFilter<"UserDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDocument"> | Date | string
+  }
+
+  export type UserCreateWithoutDocumentsInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserCreateNestedManyWithoutUserInput
+    workorders?: WorkorderCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+  }
+
+  export type UserUncheckedCreateWithoutDocumentsInput = {
+    id?: string
+    name?: string | null
+    email: string
+    password: string
+    role?: string
+    staffKind?: string
+    stagiaireUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    active?: boolean
+    gereedschapBeheer?: boolean
+    keurmeester?: boolean
+    overzichtAlleAssets?: boolean
+    assignments?: AssignmentUserUncheckedCreateNestedManyWithoutUserInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutAssignedUserInput
+    extraWorkorders?: WorkorderEngineerUncheckedCreateNestedManyWithoutUserInput
+    forms?: FormSubmissionUncheckedCreateNestedManyWithoutUserInput
+    projectUren?: ProjectUurUncheckedCreateNestedManyWithoutUserInput
+    projectUrenGeboekt?: ProjectUurUncheckedCreateNestedManyWithoutBookedByInput
+    planningEventsAssigned?: PlanningEventUncheckedCreateNestedManyWithoutAssignedUserInput
+    planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
+    toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
+    toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+  }
+
+  export type UserCreateOrConnectWithoutDocumentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+  }
+
+  export type UserUpsertWithoutDocumentsInput = {
+    update: XOR<UserUpdateWithoutDocumentsInput, UserUncheckedUpdateWithoutDocumentsInput>
+    create: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDocumentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDocumentsInput, UserUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type UserUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    staffKind?: StringFieldUpdateOperationsInput | string
+    stagiaireUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    active?: BoolFieldUpdateOperationsInput | boolean
+    gereedschapBeheer?: BoolFieldUpdateOperationsInput | boolean
+    keurmeester?: BoolFieldUpdateOperationsInput | boolean
+    overzichtAlleAssets?: BoolFieldUpdateOperationsInput | boolean
+    assignments?: AssignmentUserUncheckedUpdateManyWithoutUserNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutAssignedUserNestedInput
+    extraWorkorders?: WorkorderEngineerUncheckedUpdateManyWithoutUserNestedInput
+    forms?: FormSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    projectUren?: ProjectUurUncheckedUpdateManyWithoutUserNestedInput
+    projectUrenGeboekt?: ProjectUurUncheckedUpdateManyWithoutBookedByNestedInput
+    planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
+    planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
+    toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
   }
 
   export type AssignmentCreateWithoutCustomerInput = {
@@ -57263,6 +59115,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProjectUrenInput = {
@@ -57289,6 +59142,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProjectUrenInput = {
@@ -57320,6 +59174,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProjectUrenGeboektInput = {
@@ -57346,6 +59201,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProjectUrenGeboektInput = {
@@ -57479,6 +59335,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectUrenInput = {
@@ -57505,6 +59362,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutProjectUrenGeboektInput = {
@@ -57542,6 +59400,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectUrenGeboektInput = {
@@ -57568,6 +59427,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProjectCreateWithoutMaterialenInput = {
@@ -57972,6 +59832,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWorkordersInput = {
@@ -57998,6 +59859,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWorkordersInput = {
@@ -58499,6 +60361,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWorkordersInput = {
@@ -58525,6 +60388,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssignmentUpsertWithoutWorkordersInput = {
@@ -62359,6 +64223,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAssignmentsInput = {
@@ -62385,6 +64250,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAssignmentsInput = {
@@ -62472,6 +64338,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAssignmentsInput = {
@@ -62498,6 +64365,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssignmentCreateWithoutInvoicesInput = {
@@ -62608,6 +64476,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutFormsInput = {
@@ -62634,6 +64503,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutFormsInput = {
@@ -62676,6 +64546,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFormsInput = {
@@ -62702,6 +64573,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutPlanningEventsAssignedInput = {
@@ -62728,6 +64600,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPlanningEventsAssignedInput = {
@@ -62754,6 +64627,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPlanningEventsAssignedInput = {
@@ -62785,6 +64659,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPlanningEventsCreatedInput = {
@@ -62811,6 +64686,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPlanningEventsCreatedInput = {
@@ -62938,6 +64814,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPlanningEventsAssignedInput = {
@@ -62964,6 +64841,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutPlanningEventsCreatedInput = {
@@ -63001,6 +64879,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPlanningEventsCreatedInput = {
@@ -63027,6 +64906,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProjectUpsertWithoutPlanningEventsInput = {
@@ -63267,6 +65147,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutExtraWorkordersInput = {
@@ -63293,6 +65174,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutExtraWorkordersInput = {
@@ -63464,6 +65346,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExtraWorkordersInput = {
@@ -63490,6 +65373,7 @@ export namespace Prisma {
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutToolAssetsAssignedInput = {
@@ -63516,6 +65400,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutToolAssetsAssignedInput = {
@@ -63542,6 +65427,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutToolAssetsAssignedInput = {
@@ -63573,6 +65459,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolInspections?: ToolInspectionCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutToolAssetsCreatedInput = {
@@ -63599,6 +65486,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolInspections?: ToolInspectionUncheckedCreateNestedManyWithoutInspectorInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutToolAssetsCreatedInput = {
@@ -63675,6 +65563,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutToolAssetsAssignedInput = {
@@ -63701,6 +65590,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutToolAssetsCreatedInput = {
@@ -63738,6 +65628,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolInspections?: ToolInspectionUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutToolAssetsCreatedInput = {
@@ -63764,6 +65655,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolInspections?: ToolInspectionUncheckedUpdateManyWithoutInspectorNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ToolInspectionUpsertWithWhereUniqueWithoutAssetInput = {
@@ -63853,6 +65745,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventCreateNestedManyWithoutCreatedByInput
     toolAssetsAssigned?: ToolAssetCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetCreateNestedManyWithoutCreatedByInput
+    documents?: UserDocumentCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutToolInspectionsInput = {
@@ -63879,6 +65772,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUncheckedCreateNestedManyWithoutCreatedByInput
     toolAssetsAssigned?: ToolAssetUncheckedCreateNestedManyWithoutAssignedUserInput
     toolAssetsCreated?: ToolAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    documents?: UserDocumentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutToolInspectionsInput = {
@@ -63974,6 +65868,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUpdateManyWithoutCreatedByNestedInput
     toolAssetsAssigned?: ToolAssetUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUpdateManyWithoutCreatedByNestedInput
+    documents?: UserDocumentUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutToolInspectionsInput = {
@@ -64000,6 +65895,7 @@ export namespace Prisma {
     planningEventsCreated?: PlanningEventUncheckedUpdateManyWithoutCreatedByNestedInput
     toolAssetsAssigned?: ToolAssetUncheckedUpdateManyWithoutAssignedUserNestedInput
     toolAssetsCreated?: ToolAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    documents?: UserDocumentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AssignmentUserCreateManyUserInput = {
@@ -64181,6 +66077,21 @@ export namespace Prisma {
     validUntil?: Date | string | null
     pdfUrl?: string | null
     createdAt?: Date | string
+  }
+
+  export type UserDocumentCreateManyUserInput = {
+    id?: string
+    type: string
+    number?: string | null
+    expiresAt?: Date | string | null
+    neverExpires?: boolean
+    fileUrl: string
+    fileName?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    expiryNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AssignmentUserUpdateWithoutUserInput = {
@@ -64750,6 +66661,51 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     pdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDocumentUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    neverExpires?: BoolFieldUpdateOperationsInput | boolean
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    expiryNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDocumentUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    neverExpires?: BoolFieldUpdateOperationsInput | boolean
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    expiryNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDocumentUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    neverExpires?: BoolFieldUpdateOperationsInput | boolean
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    expiryNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AssignmentCreateManyCustomerInput = {

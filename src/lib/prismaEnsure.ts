@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ensureUserDocumentsTable } from "@/lib/users/ensureUserDocuments";
 
 let kolomKlaar = false;
 let pakbonTabellenKlaar = false;
@@ -276,5 +277,6 @@ export async function ensureProductionSchema(): Promise<void> {
         ensureWorkorderOpdrachtnummerKolom(),
         ensurePakbonTables(),
         ensureGereedschapSchema(),
+        ensureUserDocumentsTable(),
     ]);
 }
