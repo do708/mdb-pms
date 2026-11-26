@@ -279,14 +279,7 @@ export default function EditUserPage(){
 
     return (
 
-        <main className="
-            p-4
-            sm:p-6
-            space-y-6
-            w-full
-            max-w-lg
-            md:max-w-7xl
-        ">
+        <div className="w-full max-w-none space-y-6">
 
 
             <header>
@@ -713,7 +706,7 @@ export default function EditUserPage(){
             </div>
 
 
-        </main>
+        </div>
 
     );
 

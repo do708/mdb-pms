@@ -181,7 +181,7 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
     }
 
     return (
-        <section className="space-y-4 rounded-2xl border bg-white p-4 sm:p-5">
+        <section className="@container w-full min-w-0 space-y-4 rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
             <header className="space-y-1">
                 <h2 className="text-lg font-bold text-slate-900">
                     Documenten
@@ -287,45 +287,38 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
                 </p>
             ) : (
                 <>
-                    {/* Eenvoudige tabel vanaf lg — geen horizontale scroll */}
-                    <div className="hidden lg:block">
-                        <table className="w-full border-collapse text-left text-sm">
-                            <thead>
-                                <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
-                                    <th className="py-2 pr-3 font-semibold">
-                                        Type
-                                    </th>
-                                    <th className="py-2 pr-3 font-semibold">
-                                        Nummer
-                                    </th>
-                                    <th className="py-2 pr-3 font-semibold">
-                                        Verloop
-                                    </th>
-                                    <th className="py-2 pr-3 font-semibold">
-                                        Bestand
-                                    </th>
-                                    <th className="py-2 font-semibold">
-                                        Acties
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {docs.map((doc) => (
-                                    <DocumentTableRow
-                                        key={doc.id}
-                                        doc={doc}
-                                        canEdit={canEdit}
-                                        busy={savingId === doc.id}
-                                        onPatch={patchDoc}
-                                        onRemove={removeDoc}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
+                    {/*
+                      Tabel alleen als het Documenten-vak zelf breed genoeg is
+                      (~53rem). Viewport-lg is misleidend: na sidebar blijft
+                      te weinig ruimte → stack/scrollbar. Pagina is max-w-none.
+                    */}
+                    <div className="hidden w-full @[53rem]:block">
+                        <div
+                            className={`${DOC_ROW_GRID} border-b border-slate-200 pb-2 text-xs uppercase tracking-wide text-slate-500`}
+                            role="row"
+                        >
+                            <div className="font-semibold">Type</div>
+                            <div className="font-semibold">Nummer</div>
+                            <div className="font-semibold">Verloop</div>
+                            <div className="font-semibold">Bestand</div>
+                            <div className="font-semibold">Acties</div>
+                        </div>
+                        <ul className="w-full">
+                            {docs.map((doc) => (
+                                <DocumentTableRow
+                                    key={doc.id}
+                                    doc={doc}
+                                    canEdit={canEdit}
+                                    busy={savingId === doc.id}
+                                    onPatch={patchDoc}
+                                    onRemove={removeDoc}
+                                />
+                            ))}
+                        </ul>
                     </div>
 
-                    {/* Mobiel / tablet: gestapelde kaarten */}
-                    <ul className="space-y-3 lg:hidden">
+                    {/* Te smal: kaarten i.p.v. geperste tabel */}
+                    <ul className="space-y-3 @[53rem]:hidden">
                         {docs.map((doc) => (
                             <li
                                 key={doc.id}
@@ -347,6 +340,10 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
     );
 }
 
+/** Vaste kolommen zodat Verloop nooit knijpt/stackt (min. ~53rem). */
+const DOC_ROW_GRID =
+    "grid w-full grid-cols-[10rem_8rem_minmax(24rem,1fr)_minmax(8rem,12rem)_2.75rem] items-center gap-x-3";
+
 function DocumentTableRow(props: {
     doc: UserDocumentDto;
     canEdit: boolean;
@@ -365,32 +362,36 @@ function DocumentTableRow(props: {
     const { doc, canEdit, busy, onPatch, onRemove } = props;
 
     return (
-        <tr className="border-b border-slate-100">
-            <td className="py-2.5 pr-3 align-middle">
+        <li
+            className={`${DOC_ROW_GRID} border-b border-slate-100 py-2.5`}
+            role="row"
+        >
+            <div>
                 <TypeSelect
                     value={doc.type}
                     disabled={!canEdit || busy}
                     onChange={(type) => void onPatch(doc.id, { type })}
                 />
-            </td>
-            <td className="py-2.5 pr-3 align-middle">
+            </div>
+            <div>
                 <NumberInput
                     value={doc.number}
                     disabled={!canEdit || busy}
                     onCommit={(number) => void onPatch(doc.id, { number })}
                 />
-            </td>
-            <td className="py-2.5 pr-3 align-middle whitespace-nowrap">
+            </div>
+            <div className="min-w-0">
                 <ExpiryFields
                     doc={doc}
                     disabled={!canEdit || busy}
                     onPatch={(patch) => void onPatch(doc.id, patch)}
+                    singleRow
                 />
-            </td>
-            <td className="py-2.5 pr-3 align-middle">
+            </div>
+            <div className="min-w-0">
                 <FileLink doc={doc} />
-            </td>
-            <td className="py-2.5 align-middle">
+            </div>
+            <div>
                 {canEdit ? (
                     <button
                         type="button"
@@ -405,8 +406,8 @@ function DocumentTableRow(props: {
                 ) : (
                     <span className="text-slate-400">—</span>
                 )}
-            </td>
-        </tr>
+            </div>
+        </li>
     );
 }
 
@@ -481,7 +482,7 @@ function TypeSelect(props: {
             value={props.value}
             disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
-            className="h-9 w-full max-w-[10.5rem] rounded-lg border bg-white px-2 text-sm disabled:bg-slate-50"
+            className="h-9 w-full rounded-lg border bg-white px-2 text-sm disabled:bg-slate-50"
         >
             {USER_DOCUMENT_TYPES.map((t) => (
                 <option key={t} value={t}>
@@ -511,7 +512,7 @@ function NumberInput(props: {
                 if (local !== props.value) props.onCommit(local);
             }}
             placeholder="Optioneel"
-            className="h-9 w-full max-w-[8rem] rounded-lg border px-2 text-sm disabled:bg-slate-50"
+            className="h-9 w-full rounded-lg border px-2 text-sm disabled:bg-slate-50"
         />
     );
 }
@@ -568,8 +569,10 @@ function ExpiryFields(props: {
         expiresAt?: string | null;
         neverExpires?: boolean;
     }) => void;
+    /** Desktop-rij: checkbox + datum altijd op één lijn. */
+    singleRow?: boolean;
 }) {
-    const { doc, disabled, onPatch } = props;
+    const { doc, disabled, onPatch, singleRow = false } = props;
     const parsed = parseYmd(doc.expiresAt);
     const [year, setYear] = useState(parsed.year);
     const [month, setMonth] = useState(parsed.month);
@@ -610,8 +613,14 @@ function ExpiryFields(props: {
     }
 
     return (
-        <div className="inline-flex flex-wrap items-center gap-1.5 lg:flex-nowrap lg:whitespace-nowrap">
-            <label className="inline-flex h-9 items-center gap-1.5 text-xs text-slate-700 whitespace-nowrap">
+        <div
+            className={
+                singleRow
+                    ? "flex flex-nowrap items-center gap-1.5 whitespace-nowrap"
+                    : "flex flex-wrap items-center gap-1.5"
+            }
+        >
+            <label className="inline-flex h-9 shrink-0 items-center gap-1.5 text-xs text-slate-700 whitespace-nowrap">
                 <input
                     type="checkbox"
                     checked={doc.neverExpires}
@@ -732,7 +741,7 @@ function FileLink({ doc }: { doc: UserDocumentDto }) {
             href={doc.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex max-w-[11rem] items-center gap-1 text-sm font-medium text-[#0066FF] hover:underline"
+            className="inline-flex max-w-full items-center gap-1 text-sm font-medium text-[#0066FF] hover:underline"
             title={label}
         >
             <ExternalLink className="h-3.5 w-3.5 shrink-0" />
