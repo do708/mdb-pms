@@ -1,6 +1,3 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-
 import { rgb } from "pdf-lib";
 
 import { MDB_LOGO_PNG_BASE64 } from "@/lib/pdf/mdbLogoBase64";
@@ -12,20 +9,8 @@ export const MDB_PINK = rgb(214 / 255, 0, 126 / 255);
 export const MDB_NAVY = rgb(10 / 255, 37 / 255, 64 / 255);
 export const MDB_SECTION_BG = rgb(244 / 255, 247 / 255, 251 / 255);
 
+/** Embedded logo — geen fs/cwd-paden (voorkomt Next NFT-warnings bij build). */
 export function loadMdbLogoPng(): Buffer {
-    const candidates = [
-        join(process.cwd(), "public", "images", "MDB-Logo.png"),
-        join(process.cwd(), "images", "MDB-Logo.png"),
-    ];
-
-    for (const path of candidates) {
-        try {
-            return readFileSync(path);
-        } catch {
-            /* volgende pad */
-        }
-    }
-
     return Buffer.from(MDB_LOGO_PNG_BASE64, "base64");
 }
 
