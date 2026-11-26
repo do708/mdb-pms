@@ -54,3 +54,6 @@ next-env.d.ts
 backup_*.sql
 backups/
 *.zip
+
+# Lokale NAS-archief mock (dev)
+.data/

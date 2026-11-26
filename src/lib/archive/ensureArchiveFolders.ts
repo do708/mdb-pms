@@ -12,7 +12,10 @@ import {
     synologyEnsureFolder,
     synologyRename,
 } from "@/lib/nas/synologyClient";
-import { joinNasPath, isNasArchiveEnabled } from "@/lib/nas/synologyConfig";
+import {
+    joinNasPath,
+    isArchiveStorageReady,
+} from "@/lib/nas/synologyConfig";
 
 export async function ensureCustomerArchiveFolder(customerId: string) {
     const customer = await prisma.customer.findUnique({
@@ -38,7 +41,7 @@ export async function ensureCustomerArchiveFolder(customerId: string) {
         return existing;
     }
 
-    if (isNasArchiveEnabled()) {
+    if (isArchiveStorageReady()) {
         await synologyEnsureFolder(nasPath);
     }
 
@@ -79,7 +82,7 @@ export async function ensureLocationArchiveFolder(
 
     const nasPath = joinNasPath(customerFolder.nasPath, slug);
 
-    if (isNasArchiveEnabled()) {
+    if (isArchiveStorageReady()) {
         await synologyEnsureFolder(nasPath);
     }
 
@@ -129,7 +132,7 @@ export async function ensureProjectArchiveFolder(project: {
         joinNasPath(customerFolder.nasPath, slug)
     );
 
-    if (isNasArchiveEnabled()) {
+    if (isArchiveStorageReady()) {
         await synologyEnsureFolder(nasPath);
     }
 
@@ -190,7 +193,7 @@ export async function ensureWorkorderArchiveFolder(
         return existing;
     }
 
-    if (isNasArchiveEnabled()) {
+    if (isArchiveStorageReady()) {
         await synologyEnsureFolder(nasPath);
     }
 
@@ -289,7 +292,7 @@ export async function ensureNamedArchiveFolder(opts: {
         joinNasPath(parent?.nasPath || defaultArchiveRoot(), slug)
     );
 
-    if (isNasArchiveEnabled()) {
+    if (isArchiveStorageReady()) {
         await synologyEnsureFolder(nasPath);
     }
 
@@ -342,7 +345,7 @@ export async function renameArchiveFolder(
     const parentPath = folder.nasPath.replace(/\/[^/]+$/, "") || defaultArchiveRoot();
     const nextNasPath = await uniqueNasPath(joinNasPath(parentPath, slug));
 
-    if (isNasArchiveEnabled() && folder.nasPath !== nextNasPath) {
+    if (isArchiveStorageReady() && folder.nasPath !== nextNasPath) {
         await synologyRename(folder.nasPath, slug);
     }
 
@@ -387,15 +390,47 @@ export async function renameArchiveFolder(
     });
 }
 
-/** Verwijder een map inclusief submappen en bestanden (DB + NAS). */
-export async function deleteArchiveFolder(folderId: string) {
+/**
+ * Mag deze archiefmap gewist worden?
+ * - custom / lege mappen: ja
+ * - mappen met uploads: ja
+ * - workorder-mappen gekoppeld aan nog openstaande (niet-gefactureerde) klussen: nee
+ * Opdrachten in de UI blijven sowieso zichtbaar via de virtuele boom.
+ */
+export async function assertArchiveFolderDeletable(folderId: string) {
     const folder = await prisma.archiveFolder.findUnique({
         where: { id: folderId },
+        include: {
+            workorder: { select: { id: true, status: true, number: true } },
+            files: { select: { id: true }, take: 1 },
+            children: { select: { id: true }, take: 1 },
+        },
     });
 
     if (!folder) {
         throw new Error("Map niet gevonden");
     }
+
+    if (folder.kind === "workorder" && folder.workorder) {
+        const status = folder.workorder.status;
+        const closed =
+            status === "gefactureerd"
+            || status === "afgerond"
+            || status === "betaald";
+
+        if (!closed) {
+            throw new Error(
+                `Map van openstaande opdracht ${folder.workorder.number} kan niet worden verwijderd`
+            );
+        }
+    }
+
+    return folder;
+}
+
+/** Verwijder een map inclusief submappen en bestanden (DB + NAS). */
+export async function deleteArchiveFolder(folderId: string) {
+    const folder = await assertArchiveFolderDeletable(folderId);
 
     const folders = await prisma.archiveFolder.findMany({
         where: {
@@ -404,14 +439,24 @@ export async function deleteArchiveFolder(folderId: string) {
                 { nasPath: { startsWith: `${folder.nasPath}/` } },
             ],
         },
-        select: { id: true },
+        select: { id: true, kind: true, workorderId: true },
     });
+
+    for (const child of folders) {
+        if (child.id === folder.id) {
+            continue;
+        }
+
+        if (child.kind === "workorder" && child.workorderId) {
+            await assertArchiveFolderDeletable(child.id);
+        }
+    }
 
     const files = await prisma.archiveFile.findMany({
         where: { folderId: { in: folders.map((item) => item.id) } },
     });
 
-    if (isNasArchiveEnabled()) {
+    if (isArchiveStorageReady()) {
         for (const file of files) {
             if (file.storage === "nas") {
                 await synologyDeleteFile(file.storagePath).catch(() => {});

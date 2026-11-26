@@ -6,7 +6,7 @@ import { archiveSlug } from "@/lib/archive/formatArchiveLocationName";
 import {
     synologyUploadFile,
 } from "@/lib/nas/synologyClient";
-import { isNasArchiveEnabled, joinNasPath } from "@/lib/nas/synologyConfig";
+import { isArchiveStorageReady } from "@/lib/nas/synologyConfig";
 import { supabase } from "@/lib/supabase/admin";
 
 export async function POST(
@@ -55,7 +55,7 @@ export async function POST(
         let storagePath = `archief/${folder.id}/${safeName}`;
         let url: string | null = null;
 
-        if (isNasArchiveEnabled()) {
+        if (isArchiveStorageReady()) {
             storage = "nas";
             storagePath = await synologyUploadFile(
                 folder.nasPath,

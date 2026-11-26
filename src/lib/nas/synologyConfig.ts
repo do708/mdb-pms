@@ -1,3 +1,5 @@
+import path from "node:path";
+
 export function isNasArchiveEnabled(): boolean {
     return process.env.STORAGE_ARCHIVE_ENABLED === "true";
 }
@@ -14,6 +16,52 @@ export function synologyArchiveRoot(): string {
         || "/mdb-pms/archief";
 
     return root.startsWith("/") ? root : `/${root}`;
+}
+
+/**
+ * Lokale mount of dev-mock van de NAS-archiefmap.
+ * - Productie: mount van de SMB/NFS-share (punt naar dezelfde map als SYNO_ARCHIVE_ROOT).
+ * - Dev zonder Synology-credentials: default `.data/nas-archief`.
+ */
+export function archiveFsRoot(): string | null {
+    const explicit =
+        process.env.NAS_MOUNT_PATH?.trim()
+        || process.env.ARCHIVE_FS_ROOT?.trim();
+
+    if (explicit) {
+        return path.resolve(explicit);
+    }
+
+    if (
+        isNasArchiveEnabled()
+        && !process.env.SYNO_USERNAME?.trim()
+        && process.env.NODE_ENV !== "production"
+    ) {
+        return path.resolve(process.cwd(), ".data/nas-archief");
+    }
+
+    return null;
+}
+
+/** Synology FileStation API (credentials) of lokale mount/mock. */
+export function archiveStorageMode(): "synology" | "fs" | "off" {
+    if (!isNasArchiveEnabled()) {
+        return "off";
+    }
+
+    if (synologyCredentials()) {
+        return "synology";
+    }
+
+    if (archiveFsRoot()) {
+        return "fs";
+    }
+
+    return "off";
+}
+
+export function isArchiveStorageReady(): boolean {
+    return archiveStorageMode() !== "off";
 }
 
 /** Referer voor QuickConnect-relay (bijv. https://mdbnetworks.quickconnect.to/). */
@@ -104,5 +152,5 @@ export function nasPathFromStored(
 }
 
 export function isNasConfigured(): boolean {
-    return isNasArchiveEnabled() && Boolean(synologyCredentials());
+    return isArchiveStorageReady();
 }

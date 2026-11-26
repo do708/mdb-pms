@@ -8,7 +8,7 @@ import { requireApiRole } from "@/lib/auth/guard";
 
 import { migrateStatus } from "@/constants/workorderStatus";
 import { archiveWorkorderToNas } from "@/lib/archive/archiveWorkorderToNas";
-import { isNasArchiveEnabled } from "@/lib/nas/synologyConfig";
+import { isArchiveStorageReady } from "@/lib/nas/synologyConfig";
 
 import { mergeOpleverData, applyPlannedTravelToFormData } from "@/types/oplever";
 
@@ -990,7 +990,7 @@ export async function PUT(
         }
 
         if (
-            isNasArchiveEnabled()
+            isArchiveStorageReady()
             && session.user.role !== "engineer"
             && migrateStatus(workorder.status) === "gefactureerd"
             && migrateStatus(existingWorkorder.status) !== "gefactureerd"

@@ -24,6 +24,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Customer = $Result.DefaultSelection<Prisma.$CustomerPayload>
 /**
+ * Model ArchiveFile
+ * 
+ */
+export type ArchiveFile = $Result.DefaultSelection<Prisma.$ArchiveFilePayload>
+/**
  * Model Aanvraag
  * 
  */
@@ -44,10 +49,20 @@ export type ProjectUur = $Result.DefaultSelection<Prisma.$ProjectUurPayload>
  */
 export type ProjectMateriaal = $Result.DefaultSelection<Prisma.$ProjectMateriaalPayload>
 /**
+ * Model ProjectAttachment
+ * 
+ */
+export type ProjectAttachment = $Result.DefaultSelection<Prisma.$ProjectAttachmentPayload>
+/**
  * Model Workorder
  * 
  */
 export type Workorder = $Result.DefaultSelection<Prisma.$WorkorderPayload>
+/**
+ * Model ArchiveFolder
+ * 
+ */
+export type ArchiveFolder = $Result.DefaultSelection<Prisma.$ArchiveFolderPayload>
 /**
  * Model WorkorderHour
  * 
@@ -73,6 +88,16 @@ export type WorkorderPhoto = $Result.DefaultSelection<Prisma.$WorkorderPhotoPayl
  * 
  */
 export type WorkorderAttachment = $Result.DefaultSelection<Prisma.$WorkorderAttachmentPayload>
+/**
+ * Model Pakbon
+ * Magazijn-pakbon; één bestand kan bij meerdere klussen horen.
+ */
+export type Pakbon = $Result.DefaultSelection<Prisma.$PakbonPayload>
+/**
+ * Model PakbonWorkorder
+ * 
+ */
+export type PakbonWorkorder = $Result.DefaultSelection<Prisma.$PakbonWorkorderPayload>
 /**
  * Model WorkorderSignature
  * 
@@ -281,6 +306,16 @@ export class PrismaClient<
   get customer(): Prisma.CustomerDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.archiveFile`: Exposes CRUD operations for the **ArchiveFile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ArchiveFiles
+    * const archiveFiles = await prisma.archiveFile.findMany()
+    * ```
+    */
+  get archiveFile(): Prisma.ArchiveFileDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.aanvraag`: Exposes CRUD operations for the **Aanvraag** model.
     * Example usage:
     * ```ts
@@ -321,6 +356,16 @@ export class PrismaClient<
   get projectMateriaal(): Prisma.ProjectMateriaalDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.projectAttachment`: Exposes CRUD operations for the **ProjectAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProjectAttachments
+    * const projectAttachments = await prisma.projectAttachment.findMany()
+    * ```
+    */
+  get projectAttachment(): Prisma.ProjectAttachmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.workorder`: Exposes CRUD operations for the **Workorder** model.
     * Example usage:
     * ```ts
@@ -329,6 +374,16 @@ export class PrismaClient<
     * ```
     */
   get workorder(): Prisma.WorkorderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.archiveFolder`: Exposes CRUD operations for the **ArchiveFolder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ArchiveFolders
+    * const archiveFolders = await prisma.archiveFolder.findMany()
+    * ```
+    */
+  get archiveFolder(): Prisma.ArchiveFolderDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.workorderHour`: Exposes CRUD operations for the **WorkorderHour** model.
@@ -379,6 +434,26 @@ export class PrismaClient<
     * ```
     */
   get workorderAttachment(): Prisma.WorkorderAttachmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pakbon`: Exposes CRUD operations for the **Pakbon** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Pakbons
+    * const pakbons = await prisma.pakbon.findMany()
+    * ```
+    */
+  get pakbon(): Prisma.PakbonDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pakbonWorkorder`: Exposes CRUD operations for the **PakbonWorkorder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PakbonWorkorders
+    * const pakbonWorkorders = await prisma.pakbonWorkorder.findMany()
+    * ```
+    */
+  get pakbonWorkorder(): Prisma.PakbonWorkorderDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.workorderSignature`: Exposes CRUD operations for the **WorkorderSignature** model.
@@ -559,7 +634,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.9.1
+   * Prisma Client JS version: 7.9.0
    * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
    */
   export type PrismaVersion = {
@@ -958,16 +1033,21 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Customer: 'Customer',
+    ArchiveFile: 'ArchiveFile',
     Aanvraag: 'Aanvraag',
     Project: 'Project',
     ProjectUur: 'ProjectUur',
     ProjectMateriaal: 'ProjectMateriaal',
+    ProjectAttachment: 'ProjectAttachment',
     Workorder: 'Workorder',
+    ArchiveFolder: 'ArchiveFolder',
     WorkorderHour: 'WorkorderHour',
     WorkorderMaterial: 'WorkorderMaterial',
     WorkorderHardware: 'WorkorderHardware',
     WorkorderPhoto: 'WorkorderPhoto',
     WorkorderAttachment: 'WorkorderAttachment',
+    Pakbon: 'Pakbon',
+    PakbonWorkorder: 'PakbonWorkorder',
     WorkorderSignature: 'WorkorderSignature',
     Document: 'Document',
     Notification: 'Notification',
@@ -996,7 +1076,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "customer" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "workorder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache"
+      modelProps: "user" | "customer" | "archiveFile" | "aanvraag" | "project" | "projectUur" | "projectMateriaal" | "projectAttachment" | "workorder" | "archiveFolder" | "workorderHour" | "workorderMaterial" | "workorderHardware" | "workorderPhoto" | "workorderAttachment" | "pakbon" | "pakbonWorkorder" | "workorderSignature" | "document" | "notification" | "formType" | "workorderForm" | "assignment" | "assignmentUser" | "invoice" | "formSubmission" | "planningEvent" | "workorderEngineer" | "travelGeocodeCache" | "travelRouteCache"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1145,6 +1225,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CustomerCountArgs<ExtArgs>
             result: $Utils.Optional<CustomerCountAggregateOutputType> | number
+          }
+        }
+      }
+      ArchiveFile: {
+        payload: Prisma.$ArchiveFilePayload<ExtArgs>
+        fields: Prisma.ArchiveFileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ArchiveFileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ArchiveFileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>
+          }
+          findFirst: {
+            args: Prisma.ArchiveFileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ArchiveFileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>
+          }
+          findMany: {
+            args: Prisma.ArchiveFileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>[]
+          }
+          create: {
+            args: Prisma.ArchiveFileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>
+          }
+          createMany: {
+            args: Prisma.ArchiveFileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ArchiveFileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>[]
+          }
+          delete: {
+            args: Prisma.ArchiveFileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>
+          }
+          update: {
+            args: Prisma.ArchiveFileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>
+          }
+          deleteMany: {
+            args: Prisma.ArchiveFileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ArchiveFileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ArchiveFileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>[]
+          }
+          upsert: {
+            args: Prisma.ArchiveFileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFilePayload>
+          }
+          aggregate: {
+            args: Prisma.ArchiveFileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateArchiveFile>
+          }
+          groupBy: {
+            args: Prisma.ArchiveFileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ArchiveFileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ArchiveFileCountArgs<ExtArgs>
+            result: $Utils.Optional<ArchiveFileCountAggregateOutputType> | number
           }
         }
       }
@@ -1444,6 +1598,80 @@ export namespace Prisma {
           }
         }
       }
+      ProjectAttachment: {
+        payload: Prisma.$ProjectAttachmentPayload<ExtArgs>
+        fields: Prisma.ProjectAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProjectAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProjectAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.ProjectAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProjectAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.ProjectAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.ProjectAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.ProjectAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProjectAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.ProjectAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>
+          }
+          update: {
+            args: Prisma.ProjectAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProjectAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProjectAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProjectAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProjectAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.ProjectAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProjectAttachment>
+          }
+          groupBy: {
+            args: Prisma.ProjectAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProjectAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProjectAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<ProjectAttachmentCountAggregateOutputType> | number
+          }
+        }
+      }
       Workorder: {
         payload: Prisma.$WorkorderPayload<ExtArgs>
         fields: Prisma.WorkorderFieldRefs
@@ -1515,6 +1743,80 @@ export namespace Prisma {
           count: {
             args: Prisma.WorkorderCountArgs<ExtArgs>
             result: $Utils.Optional<WorkorderCountAggregateOutputType> | number
+          }
+        }
+      }
+      ArchiveFolder: {
+        payload: Prisma.$ArchiveFolderPayload<ExtArgs>
+        fields: Prisma.ArchiveFolderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ArchiveFolderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ArchiveFolderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>
+          }
+          findFirst: {
+            args: Prisma.ArchiveFolderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ArchiveFolderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>
+          }
+          findMany: {
+            args: Prisma.ArchiveFolderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>[]
+          }
+          create: {
+            args: Prisma.ArchiveFolderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>
+          }
+          createMany: {
+            args: Prisma.ArchiveFolderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ArchiveFolderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>[]
+          }
+          delete: {
+            args: Prisma.ArchiveFolderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>
+          }
+          update: {
+            args: Prisma.ArchiveFolderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>
+          }
+          deleteMany: {
+            args: Prisma.ArchiveFolderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ArchiveFolderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ArchiveFolderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>[]
+          }
+          upsert: {
+            args: Prisma.ArchiveFolderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ArchiveFolderPayload>
+          }
+          aggregate: {
+            args: Prisma.ArchiveFolderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateArchiveFolder>
+          }
+          groupBy: {
+            args: Prisma.ArchiveFolderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ArchiveFolderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ArchiveFolderCountArgs<ExtArgs>
+            result: $Utils.Optional<ArchiveFolderCountAggregateOutputType> | number
           }
         }
       }
@@ -1885,6 +2187,154 @@ export namespace Prisma {
           count: {
             args: Prisma.WorkorderAttachmentCountArgs<ExtArgs>
             result: $Utils.Optional<WorkorderAttachmentCountAggregateOutputType> | number
+          }
+        }
+      }
+      Pakbon: {
+        payload: Prisma.$PakbonPayload<ExtArgs>
+        fields: Prisma.PakbonFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PakbonFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PakbonFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>
+          }
+          findFirst: {
+            args: Prisma.PakbonFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PakbonFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>
+          }
+          findMany: {
+            args: Prisma.PakbonFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>[]
+          }
+          create: {
+            args: Prisma.PakbonCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>
+          }
+          createMany: {
+            args: Prisma.PakbonCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PakbonCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>[]
+          }
+          delete: {
+            args: Prisma.PakbonDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>
+          }
+          update: {
+            args: Prisma.PakbonUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>
+          }
+          deleteMany: {
+            args: Prisma.PakbonDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PakbonUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PakbonUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>[]
+          }
+          upsert: {
+            args: Prisma.PakbonUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonPayload>
+          }
+          aggregate: {
+            args: Prisma.PakbonAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePakbon>
+          }
+          groupBy: {
+            args: Prisma.PakbonGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PakbonGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PakbonCountArgs<ExtArgs>
+            result: $Utils.Optional<PakbonCountAggregateOutputType> | number
+          }
+        }
+      }
+      PakbonWorkorder: {
+        payload: Prisma.$PakbonWorkorderPayload<ExtArgs>
+        fields: Prisma.PakbonWorkorderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PakbonWorkorderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PakbonWorkorderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>
+          }
+          findFirst: {
+            args: Prisma.PakbonWorkorderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PakbonWorkorderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>
+          }
+          findMany: {
+            args: Prisma.PakbonWorkorderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>[]
+          }
+          create: {
+            args: Prisma.PakbonWorkorderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>
+          }
+          createMany: {
+            args: Prisma.PakbonWorkorderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PakbonWorkorderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>[]
+          }
+          delete: {
+            args: Prisma.PakbonWorkorderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>
+          }
+          update: {
+            args: Prisma.PakbonWorkorderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>
+          }
+          deleteMany: {
+            args: Prisma.PakbonWorkorderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PakbonWorkorderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PakbonWorkorderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>[]
+          }
+          upsert: {
+            args: Prisma.PakbonWorkorderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PakbonWorkorderPayload>
+          }
+          aggregate: {
+            args: Prisma.PakbonWorkorderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePakbonWorkorder>
+          }
+          groupBy: {
+            args: Prisma.PakbonWorkorderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PakbonWorkorderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PakbonWorkorderCountArgs<ExtArgs>
+            result: $Utils.Optional<PakbonWorkorderCountAggregateOutputType> | number
           }
         }
       }
@@ -2975,16 +3425,21 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     customer?: CustomerOmit
+    archiveFile?: ArchiveFileOmit
     aanvraag?: AanvraagOmit
     project?: ProjectOmit
     projectUur?: ProjectUurOmit
     projectMateriaal?: ProjectMateriaalOmit
+    projectAttachment?: ProjectAttachmentOmit
     workorder?: WorkorderOmit
+    archiveFolder?: ArchiveFolderOmit
     workorderHour?: WorkorderHourOmit
     workorderMaterial?: WorkorderMaterialOmit
     workorderHardware?: WorkorderHardwareOmit
     workorderPhoto?: WorkorderPhotoOmit
     workorderAttachment?: WorkorderAttachmentOmit
+    pakbon?: PakbonOmit
+    pakbonWorkorder?: PakbonWorkorderOmit
     workorderSignature?: WorkorderSignatureOmit
     document?: DocumentOmit
     notification?: NotificationOmit
@@ -3176,6 +3631,7 @@ export namespace Prisma {
     projects: number
     workorders: number
     aanvragen: number
+    archiveFolders: number
   }
 
   export type CustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3183,6 +3639,7 @@ export namespace Prisma {
     projects?: boolean | CustomerCountOutputTypeCountProjectsArgs
     workorders?: boolean | CustomerCountOutputTypeCountWorkordersArgs
     aanvragen?: boolean | CustomerCountOutputTypeCountAanvragenArgs
+    archiveFolders?: boolean | CustomerCountOutputTypeCountArchiveFoldersArgs
   }
 
   // Custom InputTypes
@@ -3224,6 +3681,13 @@ export namespace Prisma {
     where?: AanvraagWhereInput
   }
 
+  /**
+   * CustomerCountOutputType without action
+   */
+  export type CustomerCountOutputTypeCountArchiveFoldersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArchiveFolderWhereInput
+  }
+
 
   /**
    * Count Type ProjectCountOutputType
@@ -3233,12 +3697,16 @@ export namespace Prisma {
     workorders: number
     uren: number
     materialen: number
+    bijlagen: number
+    planningEvents: number
   }
 
   export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workorders?: boolean | ProjectCountOutputTypeCountWorkordersArgs
     uren?: boolean | ProjectCountOutputTypeCountUrenArgs
     materialen?: boolean | ProjectCountOutputTypeCountMaterialenArgs
+    bijlagen?: boolean | ProjectCountOutputTypeCountBijlagenArgs
+    planningEvents?: boolean | ProjectCountOutputTypeCountPlanningEventsArgs
   }
 
   // Custom InputTypes
@@ -3273,6 +3741,20 @@ export namespace Prisma {
     where?: ProjectMateriaalWhereInput
   }
 
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountBijlagenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectAttachmentWhereInput
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountPlanningEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlanningEventWhereInput
+  }
+
 
   /**
    * Count Type WorkorderCountOutputType
@@ -3287,6 +3769,7 @@ export namespace Prisma {
     attachments: number
     extraEngineers: number
     forms: number
+    pakbonnen: number
   }
 
   export type WorkorderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3298,6 +3781,7 @@ export namespace Prisma {
     attachments?: boolean | WorkorderCountOutputTypeCountAttachmentsArgs
     extraEngineers?: boolean | WorkorderCountOutputTypeCountExtraEngineersArgs
     forms?: boolean | WorkorderCountOutputTypeCountFormsArgs
+    pakbonnen?: boolean | WorkorderCountOutputTypeCountPakbonnenArgs
   }
 
   // Custom InputTypes
@@ -3365,6 +3849,84 @@ export namespace Prisma {
    */
   export type WorkorderCountOutputTypeCountFormsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkorderFormWhereInput
+  }
+
+  /**
+   * WorkorderCountOutputType without action
+   */
+  export type WorkorderCountOutputTypeCountPakbonnenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PakbonWorkorderWhereInput
+  }
+
+
+  /**
+   * Count Type ArchiveFolderCountOutputType
+   */
+
+  export type ArchiveFolderCountOutputType = {
+    children: number
+    files: number
+  }
+
+  export type ArchiveFolderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    children?: boolean | ArchiveFolderCountOutputTypeCountChildrenArgs
+    files?: boolean | ArchiveFolderCountOutputTypeCountFilesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ArchiveFolderCountOutputType without action
+   */
+  export type ArchiveFolderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolderCountOutputType
+     */
+    select?: ArchiveFolderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ArchiveFolderCountOutputType without action
+   */
+  export type ArchiveFolderCountOutputTypeCountChildrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArchiveFolderWhereInput
+  }
+
+  /**
+   * ArchiveFolderCountOutputType without action
+   */
+  export type ArchiveFolderCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArchiveFileWhereInput
+  }
+
+
+  /**
+   * Count Type PakbonCountOutputType
+   */
+
+  export type PakbonCountOutputType = {
+    workorders: number
+  }
+
+  export type PakbonCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorders?: boolean | PakbonCountOutputTypeCountWorkordersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PakbonCountOutputType without action
+   */
+  export type PakbonCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonCountOutputType
+     */
+    select?: PakbonCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PakbonCountOutputType without action
+   */
+  export type PakbonCountOutputTypeCountWorkordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PakbonWorkorderWhereInput
   }
 
 
@@ -3738,6 +4300,9 @@ export namespace Prisma {
       name: string | null
       email: string
       password: string
+      /**
+       * admin | office | engineer | magazijn
+       */
       role: string
       /**
        * monteur | inlener | stagiaire — alleen relevant bij role=engineer
@@ -3749,6 +4314,9 @@ export namespace Prisma {
       stagiaireUntil: Date | null
       createdAt: Date
       updatedAt: Date
+      /**
+       * Mag inloggen. Geen filter voor planning-zichtbaarheid.
+       */
       active: boolean
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -4998,6 +5566,7 @@ export namespace Prisma {
     projects?: boolean | Customer$projectsArgs<ExtArgs>
     workorders?: boolean | Customer$workordersArgs<ExtArgs>
     aanvragen?: boolean | Customer$aanvragenArgs<ExtArgs>
+    archiveFolders?: boolean | Customer$archiveFoldersArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
@@ -5046,6 +5615,7 @@ export namespace Prisma {
     projects?: boolean | Customer$projectsArgs<ExtArgs>
     workorders?: boolean | Customer$workordersArgs<ExtArgs>
     aanvragen?: boolean | Customer$aanvragenArgs<ExtArgs>
+    archiveFolders?: boolean | Customer$archiveFoldersArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5058,6 +5628,7 @@ export namespace Prisma {
       projects: Prisma.$ProjectPayload<ExtArgs>[]
       workorders: Prisma.$WorkorderPayload<ExtArgs>[]
       aanvragen: Prisma.$AanvraagPayload<ExtArgs>[]
+      archiveFolders: Prisma.$ArchiveFolderPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5468,6 +6039,7 @@ export namespace Prisma {
     projects<T extends Customer$projectsArgs<ExtArgs> = {}>(args?: Subset<T, Customer$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     workorders<T extends Customer$workordersArgs<ExtArgs> = {}>(args?: Subset<T, Customer$workordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     aanvragen<T extends Customer$aanvragenArgs<ExtArgs> = {}>(args?: Subset<T, Customer$aanvragenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AanvraagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    archiveFolders<T extends Customer$archiveFoldersArgs<ExtArgs> = {}>(args?: Subset<T, Customer$archiveFoldersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5996,6 +6568,30 @@ export namespace Prisma {
   }
 
   /**
+   * Customer.archiveFolders
+   */
+  export type Customer$archiveFoldersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    where?: ArchiveFolderWhereInput
+    orderBy?: ArchiveFolderOrderByWithRelationInput | ArchiveFolderOrderByWithRelationInput[]
+    cursor?: ArchiveFolderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ArchiveFolderScalarFieldEnum | ArchiveFolderScalarFieldEnum[]
+  }
+
+  /**
    * Customer without action
    */
   export type CustomerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6011,6 +6607,1171 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CustomerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ArchiveFile
+   */
+
+  export type AggregateArchiveFile = {
+    _count: ArchiveFileCountAggregateOutputType | null
+    _avg: ArchiveFileAvgAggregateOutputType | null
+    _sum: ArchiveFileSumAggregateOutputType | null
+    _min: ArchiveFileMinAggregateOutputType | null
+    _max: ArchiveFileMaxAggregateOutputType | null
+  }
+
+  export type ArchiveFileAvgAggregateOutputType = {
+    size: number | null
+  }
+
+  export type ArchiveFileSumAggregateOutputType = {
+    size: number | null
+  }
+
+  export type ArchiveFileMinAggregateOutputType = {
+    id: string | null
+    folderId: string | null
+    name: string | null
+    storage: string | null
+    storagePath: string | null
+    url: string | null
+    contentType: string | null
+    size: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ArchiveFileMaxAggregateOutputType = {
+    id: string | null
+    folderId: string | null
+    name: string | null
+    storage: string | null
+    storagePath: string | null
+    url: string | null
+    contentType: string | null
+    size: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ArchiveFileCountAggregateOutputType = {
+    id: number
+    folderId: number
+    name: number
+    storage: number
+    storagePath: number
+    url: number
+    contentType: number
+    size: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ArchiveFileAvgAggregateInputType = {
+    size?: true
+  }
+
+  export type ArchiveFileSumAggregateInputType = {
+    size?: true
+  }
+
+  export type ArchiveFileMinAggregateInputType = {
+    id?: true
+    folderId?: true
+    name?: true
+    storage?: true
+    storagePath?: true
+    url?: true
+    contentType?: true
+    size?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ArchiveFileMaxAggregateInputType = {
+    id?: true
+    folderId?: true
+    name?: true
+    storage?: true
+    storagePath?: true
+    url?: true
+    contentType?: true
+    size?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ArchiveFileCountAggregateInputType = {
+    id?: true
+    folderId?: true
+    name?: true
+    storage?: true
+    storagePath?: true
+    url?: true
+    contentType?: true
+    size?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ArchiveFileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArchiveFile to aggregate.
+     */
+    where?: ArchiveFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFiles to fetch.
+     */
+    orderBy?: ArchiveFileOrderByWithRelationInput | ArchiveFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ArchiveFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ArchiveFiles
+    **/
+    _count?: true | ArchiveFileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ArchiveFileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ArchiveFileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ArchiveFileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ArchiveFileMaxAggregateInputType
+  }
+
+  export type GetArchiveFileAggregateType<T extends ArchiveFileAggregateArgs> = {
+        [P in keyof T & keyof AggregateArchiveFile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateArchiveFile[P]>
+      : GetScalarType<T[P], AggregateArchiveFile[P]>
+  }
+
+
+
+
+  export type ArchiveFileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArchiveFileWhereInput
+    orderBy?: ArchiveFileOrderByWithAggregationInput | ArchiveFileOrderByWithAggregationInput[]
+    by: ArchiveFileScalarFieldEnum[] | ArchiveFileScalarFieldEnum
+    having?: ArchiveFileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ArchiveFileCountAggregateInputType | true
+    _avg?: ArchiveFileAvgAggregateInputType
+    _sum?: ArchiveFileSumAggregateInputType
+    _min?: ArchiveFileMinAggregateInputType
+    _max?: ArchiveFileMaxAggregateInputType
+  }
+
+  export type ArchiveFileGroupByOutputType = {
+    id: string
+    folderId: string
+    name: string
+    storage: string
+    storagePath: string
+    url: string | null
+    contentType: string | null
+    size: number | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ArchiveFileCountAggregateOutputType | null
+    _avg: ArchiveFileAvgAggregateOutputType | null
+    _sum: ArchiveFileSumAggregateOutputType | null
+    _min: ArchiveFileMinAggregateOutputType | null
+    _max: ArchiveFileMaxAggregateOutputType | null
+  }
+
+  type GetArchiveFileGroupByPayload<T extends ArchiveFileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ArchiveFileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ArchiveFileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ArchiveFileGroupByOutputType[P]>
+            : GetScalarType<T[P], ArchiveFileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ArchiveFileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    folderId?: boolean
+    name?: boolean
+    storage?: boolean
+    storagePath?: boolean
+    url?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    folder?: boolean | ArchiveFolderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["archiveFile"]>
+
+  export type ArchiveFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    folderId?: boolean
+    name?: boolean
+    storage?: boolean
+    storagePath?: boolean
+    url?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    folder?: boolean | ArchiveFolderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["archiveFile"]>
+
+  export type ArchiveFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    folderId?: boolean
+    name?: boolean
+    storage?: boolean
+    storagePath?: boolean
+    url?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    folder?: boolean | ArchiveFolderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["archiveFile"]>
+
+  export type ArchiveFileSelectScalar = {
+    id?: boolean
+    folderId?: boolean
+    name?: boolean
+    storage?: boolean
+    storagePath?: boolean
+    url?: boolean
+    contentType?: boolean
+    size?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ArchiveFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "folderId" | "name" | "storage" | "storagePath" | "url" | "contentType" | "size" | "createdAt" | "updatedAt", ExtArgs["result"]["archiveFile"]>
+  export type ArchiveFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | ArchiveFolderDefaultArgs<ExtArgs>
+  }
+  export type ArchiveFileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | ArchiveFolderDefaultArgs<ExtArgs>
+  }
+  export type ArchiveFileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | ArchiveFolderDefaultArgs<ExtArgs>
+  }
+
+  export type $ArchiveFilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ArchiveFile"
+    objects: {
+      folder: Prisma.$ArchiveFolderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      folderId: string
+      name: string
+      /**
+       * nas | supabase
+       */
+      storage: string
+      storagePath: string
+      url: string | null
+      contentType: string | null
+      size: number | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["archiveFile"]>
+    composites: {}
+  }
+
+  type ArchiveFileGetPayload<S extends boolean | null | undefined | ArchiveFileDefaultArgs> = $Result.GetResult<Prisma.$ArchiveFilePayload, S>
+
+  type ArchiveFileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ArchiveFileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ArchiveFileCountAggregateInputType | true
+    }
+
+  export interface ArchiveFileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ArchiveFile'], meta: { name: 'ArchiveFile' } }
+    /**
+     * Find zero or one ArchiveFile that matches the filter.
+     * @param {ArchiveFileFindUniqueArgs} args - Arguments to find a ArchiveFile
+     * @example
+     * // Get one ArchiveFile
+     * const archiveFile = await prisma.archiveFile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ArchiveFileFindUniqueArgs>(args: SelectSubset<T, ArchiveFileFindUniqueArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ArchiveFile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ArchiveFileFindUniqueOrThrowArgs} args - Arguments to find a ArchiveFile
+     * @example
+     * // Get one ArchiveFile
+     * const archiveFile = await prisma.archiveFile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ArchiveFileFindUniqueOrThrowArgs>(args: SelectSubset<T, ArchiveFileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArchiveFile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFileFindFirstArgs} args - Arguments to find a ArchiveFile
+     * @example
+     * // Get one ArchiveFile
+     * const archiveFile = await prisma.archiveFile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ArchiveFileFindFirstArgs>(args?: SelectSubset<T, ArchiveFileFindFirstArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArchiveFile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFileFindFirstOrThrowArgs} args - Arguments to find a ArchiveFile
+     * @example
+     * // Get one ArchiveFile
+     * const archiveFile = await prisma.archiveFile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ArchiveFileFindFirstOrThrowArgs>(args?: SelectSubset<T, ArchiveFileFindFirstOrThrowArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ArchiveFiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ArchiveFiles
+     * const archiveFiles = await prisma.archiveFile.findMany()
+     * 
+     * // Get first 10 ArchiveFiles
+     * const archiveFiles = await prisma.archiveFile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const archiveFileWithIdOnly = await prisma.archiveFile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ArchiveFileFindManyArgs>(args?: SelectSubset<T, ArchiveFileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ArchiveFile.
+     * @param {ArchiveFileCreateArgs} args - Arguments to create a ArchiveFile.
+     * @example
+     * // Create one ArchiveFile
+     * const ArchiveFile = await prisma.archiveFile.create({
+     *   data: {
+     *     // ... data to create a ArchiveFile
+     *   }
+     * })
+     * 
+     */
+    create<T extends ArchiveFileCreateArgs>(args: SelectSubset<T, ArchiveFileCreateArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ArchiveFiles.
+     * @param {ArchiveFileCreateManyArgs} args - Arguments to create many ArchiveFiles.
+     * @example
+     * // Create many ArchiveFiles
+     * const archiveFile = await prisma.archiveFile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ArchiveFileCreateManyArgs>(args?: SelectSubset<T, ArchiveFileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ArchiveFiles and returns the data saved in the database.
+     * @param {ArchiveFileCreateManyAndReturnArgs} args - Arguments to create many ArchiveFiles.
+     * @example
+     * // Create many ArchiveFiles
+     * const archiveFile = await prisma.archiveFile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ArchiveFiles and only return the `id`
+     * const archiveFileWithIdOnly = await prisma.archiveFile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ArchiveFileCreateManyAndReturnArgs>(args?: SelectSubset<T, ArchiveFileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ArchiveFile.
+     * @param {ArchiveFileDeleteArgs} args - Arguments to delete one ArchiveFile.
+     * @example
+     * // Delete one ArchiveFile
+     * const ArchiveFile = await prisma.archiveFile.delete({
+     *   where: {
+     *     // ... filter to delete one ArchiveFile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ArchiveFileDeleteArgs>(args: SelectSubset<T, ArchiveFileDeleteArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ArchiveFile.
+     * @param {ArchiveFileUpdateArgs} args - Arguments to update one ArchiveFile.
+     * @example
+     * // Update one ArchiveFile
+     * const archiveFile = await prisma.archiveFile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ArchiveFileUpdateArgs>(args: SelectSubset<T, ArchiveFileUpdateArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ArchiveFiles.
+     * @param {ArchiveFileDeleteManyArgs} args - Arguments to filter ArchiveFiles to delete.
+     * @example
+     * // Delete a few ArchiveFiles
+     * const { count } = await prisma.archiveFile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ArchiveFileDeleteManyArgs>(args?: SelectSubset<T, ArchiveFileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArchiveFiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ArchiveFiles
+     * const archiveFile = await prisma.archiveFile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ArchiveFileUpdateManyArgs>(args: SelectSubset<T, ArchiveFileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArchiveFiles and returns the data updated in the database.
+     * @param {ArchiveFileUpdateManyAndReturnArgs} args - Arguments to update many ArchiveFiles.
+     * @example
+     * // Update many ArchiveFiles
+     * const archiveFile = await prisma.archiveFile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ArchiveFiles and only return the `id`
+     * const archiveFileWithIdOnly = await prisma.archiveFile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ArchiveFileUpdateManyAndReturnArgs>(args: SelectSubset<T, ArchiveFileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ArchiveFile.
+     * @param {ArchiveFileUpsertArgs} args - Arguments to update or create a ArchiveFile.
+     * @example
+     * // Update or create a ArchiveFile
+     * const archiveFile = await prisma.archiveFile.upsert({
+     *   create: {
+     *     // ... data to create a ArchiveFile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ArchiveFile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ArchiveFileUpsertArgs>(args: SelectSubset<T, ArchiveFileUpsertArgs<ExtArgs>>): Prisma__ArchiveFileClient<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ArchiveFiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFileCountArgs} args - Arguments to filter ArchiveFiles to count.
+     * @example
+     * // Count the number of ArchiveFiles
+     * const count = await prisma.archiveFile.count({
+     *   where: {
+     *     // ... the filter for the ArchiveFiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends ArchiveFileCountArgs>(
+      args?: Subset<T, ArchiveFileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ArchiveFileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ArchiveFile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ArchiveFileAggregateArgs>(args: Subset<T, ArchiveFileAggregateArgs>): Prisma.PrismaPromise<GetArchiveFileAggregateType<T>>
+
+    /**
+     * Group by ArchiveFile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ArchiveFileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ArchiveFileGroupByArgs['orderBy'] }
+        : { orderBy?: ArchiveFileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ArchiveFileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetArchiveFileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ArchiveFile model
+   */
+  readonly fields: ArchiveFileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ArchiveFile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ArchiveFileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    folder<T extends ArchiveFolderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ArchiveFolderDefaultArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ArchiveFile model
+   */
+  interface ArchiveFileFieldRefs {
+    readonly id: FieldRef<"ArchiveFile", 'String'>
+    readonly folderId: FieldRef<"ArchiveFile", 'String'>
+    readonly name: FieldRef<"ArchiveFile", 'String'>
+    readonly storage: FieldRef<"ArchiveFile", 'String'>
+    readonly storagePath: FieldRef<"ArchiveFile", 'String'>
+    readonly url: FieldRef<"ArchiveFile", 'String'>
+    readonly contentType: FieldRef<"ArchiveFile", 'String'>
+    readonly size: FieldRef<"ArchiveFile", 'Int'>
+    readonly createdAt: FieldRef<"ArchiveFile", 'DateTime'>
+    readonly updatedAt: FieldRef<"ArchiveFile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ArchiveFile findUnique
+   */
+  export type ArchiveFileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFile to fetch.
+     */
+    where: ArchiveFileWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFile findUniqueOrThrow
+   */
+  export type ArchiveFileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFile to fetch.
+     */
+    where: ArchiveFileWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFile findFirst
+   */
+  export type ArchiveFileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFile to fetch.
+     */
+    where?: ArchiveFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFiles to fetch.
+     */
+    orderBy?: ArchiveFileOrderByWithRelationInput | ArchiveFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArchiveFiles.
+     */
+    cursor?: ArchiveFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveFiles.
+     */
+    distinct?: ArchiveFileScalarFieldEnum | ArchiveFileScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFile findFirstOrThrow
+   */
+  export type ArchiveFileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFile to fetch.
+     */
+    where?: ArchiveFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFiles to fetch.
+     */
+    orderBy?: ArchiveFileOrderByWithRelationInput | ArchiveFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArchiveFiles.
+     */
+    cursor?: ArchiveFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveFiles.
+     */
+    distinct?: ArchiveFileScalarFieldEnum | ArchiveFileScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFile findMany
+   */
+  export type ArchiveFileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFiles to fetch.
+     */
+    where?: ArchiveFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFiles to fetch.
+     */
+    orderBy?: ArchiveFileOrderByWithRelationInput | ArchiveFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ArchiveFiles.
+     */
+    cursor?: ArchiveFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveFiles.
+     */
+    distinct?: ArchiveFileScalarFieldEnum | ArchiveFileScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFile create
+   */
+  export type ArchiveFileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ArchiveFile.
+     */
+    data: XOR<ArchiveFileCreateInput, ArchiveFileUncheckedCreateInput>
+  }
+
+  /**
+   * ArchiveFile createMany
+   */
+  export type ArchiveFileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ArchiveFiles.
+     */
+    data: ArchiveFileCreateManyInput | ArchiveFileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ArchiveFile createManyAndReturn
+   */
+  export type ArchiveFileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * The data used to create many ArchiveFiles.
+     */
+    data: ArchiveFileCreateManyInput | ArchiveFileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ArchiveFile update
+   */
+  export type ArchiveFileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ArchiveFile.
+     */
+    data: XOR<ArchiveFileUpdateInput, ArchiveFileUncheckedUpdateInput>
+    /**
+     * Choose, which ArchiveFile to update.
+     */
+    where: ArchiveFileWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFile updateMany
+   */
+  export type ArchiveFileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ArchiveFiles.
+     */
+    data: XOR<ArchiveFileUpdateManyMutationInput, ArchiveFileUncheckedUpdateManyInput>
+    /**
+     * Filter which ArchiveFiles to update
+     */
+    where?: ArchiveFileWhereInput
+    /**
+     * Limit how many ArchiveFiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArchiveFile updateManyAndReturn
+   */
+  export type ArchiveFileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * The data used to update ArchiveFiles.
+     */
+    data: XOR<ArchiveFileUpdateManyMutationInput, ArchiveFileUncheckedUpdateManyInput>
+    /**
+     * Filter which ArchiveFiles to update
+     */
+    where?: ArchiveFileWhereInput
+    /**
+     * Limit how many ArchiveFiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ArchiveFile upsert
+   */
+  export type ArchiveFileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ArchiveFile to update in case it exists.
+     */
+    where: ArchiveFileWhereUniqueInput
+    /**
+     * In case the ArchiveFile found by the `where` argument doesn't exist, create a new ArchiveFile with this data.
+     */
+    create: XOR<ArchiveFileCreateInput, ArchiveFileUncheckedCreateInput>
+    /**
+     * In case the ArchiveFile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ArchiveFileUpdateInput, ArchiveFileUncheckedUpdateInput>
+  }
+
+  /**
+   * ArchiveFile delete
+   */
+  export type ArchiveFileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    /**
+     * Filter which ArchiveFile to delete.
+     */
+    where: ArchiveFileWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFile deleteMany
+   */
+  export type ArchiveFileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArchiveFiles to delete
+     */
+    where?: ArchiveFileWhereInput
+    /**
+     * Limit how many ArchiveFiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArchiveFile without action
+   */
+  export type ArchiveFileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
   }
 
 
@@ -7253,11 +9014,13 @@ export namespace Prisma {
   export type ProjectAvgAggregateOutputType = {
     geoffreerdeUren: Decimal | null
     geoffreerdBedrag: Decimal | null
+    termijnAantal: number | null
   }
 
   export type ProjectSumAggregateOutputType = {
     geoffreerdeUren: Decimal | null
     geoffreerdBedrag: Decimal | null
+    termijnAantal: number | null
   }
 
   export type ProjectMinAggregateOutputType = {
@@ -7271,7 +9034,14 @@ export namespace Prisma {
     geoffreerdBedrag: Decimal | null
     offerteUrl: string | null
     offerteFilename: string | null
+    bunniOfferteId: string | null
+    bunniOfferteNummer: string | null
+    bunniOffertePdfUrl: string | null
+    bunniFactuurId: string | null
+    bunniFactuurNummer: string | null
+    bunniFactuurPdfUrl: string | null
     status: string | null
+    termijnAantal: number | null
     termijn1Gefactureerd: boolean | null
     termijn2Gefactureerd: boolean | null
     termijn3Gefactureerd: boolean | null
@@ -7284,6 +9054,7 @@ export namespace Prisma {
     termijn2Factuurnummer: string | null
     termijn3Factuurnummer: string | null
     termijn4Factuurnummer: string | null
+    intakeTekst: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7299,7 +9070,14 @@ export namespace Prisma {
     geoffreerdBedrag: Decimal | null
     offerteUrl: string | null
     offerteFilename: string | null
+    bunniOfferteId: string | null
+    bunniOfferteNummer: string | null
+    bunniOffertePdfUrl: string | null
+    bunniFactuurId: string | null
+    bunniFactuurNummer: string | null
+    bunniFactuurPdfUrl: string | null
     status: string | null
+    termijnAantal: number | null
     termijn1Gefactureerd: boolean | null
     termijn2Gefactureerd: boolean | null
     termijn3Gefactureerd: boolean | null
@@ -7312,6 +9090,7 @@ export namespace Prisma {
     termijn2Factuurnummer: string | null
     termijn3Factuurnummer: string | null
     termijn4Factuurnummer: string | null
+    intakeTekst: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7327,7 +9106,14 @@ export namespace Prisma {
     geoffreerdBedrag: number
     offerteUrl: number
     offerteFilename: number
+    bunniOfferteId: number
+    bunniOfferteNummer: number
+    bunniOffertePdfUrl: number
+    bunniFactuurId: number
+    bunniFactuurNummer: number
+    bunniFactuurPdfUrl: number
     status: number
+    termijnAantal: number
     termijn1Gefactureerd: number
     termijn2Gefactureerd: number
     termijn3Gefactureerd: number
@@ -7340,6 +9126,7 @@ export namespace Prisma {
     termijn2Factuurnummer: number
     termijn3Factuurnummer: number
     termijn4Factuurnummer: number
+    intakeTekst: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7349,11 +9136,13 @@ export namespace Prisma {
   export type ProjectAvgAggregateInputType = {
     geoffreerdeUren?: true
     geoffreerdBedrag?: true
+    termijnAantal?: true
   }
 
   export type ProjectSumAggregateInputType = {
     geoffreerdeUren?: true
     geoffreerdBedrag?: true
+    termijnAantal?: true
   }
 
   export type ProjectMinAggregateInputType = {
@@ -7367,7 +9156,14 @@ export namespace Prisma {
     geoffreerdBedrag?: true
     offerteUrl?: true
     offerteFilename?: true
+    bunniOfferteId?: true
+    bunniOfferteNummer?: true
+    bunniOffertePdfUrl?: true
+    bunniFactuurId?: true
+    bunniFactuurNummer?: true
+    bunniFactuurPdfUrl?: true
     status?: true
+    termijnAantal?: true
     termijn1Gefactureerd?: true
     termijn2Gefactureerd?: true
     termijn3Gefactureerd?: true
@@ -7380,6 +9176,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: true
     termijn3Factuurnummer?: true
     termijn4Factuurnummer?: true
+    intakeTekst?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7395,7 +9192,14 @@ export namespace Prisma {
     geoffreerdBedrag?: true
     offerteUrl?: true
     offerteFilename?: true
+    bunniOfferteId?: true
+    bunniOfferteNummer?: true
+    bunniOffertePdfUrl?: true
+    bunniFactuurId?: true
+    bunniFactuurNummer?: true
+    bunniFactuurPdfUrl?: true
     status?: true
+    termijnAantal?: true
     termijn1Gefactureerd?: true
     termijn2Gefactureerd?: true
     termijn3Gefactureerd?: true
@@ -7408,6 +9212,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: true
     termijn3Factuurnummer?: true
     termijn4Factuurnummer?: true
+    intakeTekst?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7423,7 +9228,14 @@ export namespace Prisma {
     geoffreerdBedrag?: true
     offerteUrl?: true
     offerteFilename?: true
+    bunniOfferteId?: true
+    bunniOfferteNummer?: true
+    bunniOffertePdfUrl?: true
+    bunniFactuurId?: true
+    bunniFactuurNummer?: true
+    bunniFactuurPdfUrl?: true
     status?: true
+    termijnAantal?: true
     termijn1Gefactureerd?: true
     termijn2Gefactureerd?: true
     termijn3Gefactureerd?: true
@@ -7436,6 +9248,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: true
     termijn3Factuurnummer?: true
     termijn4Factuurnummer?: true
+    intakeTekst?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7538,7 +9351,14 @@ export namespace Prisma {
     geoffreerdBedrag: Decimal | null
     offerteUrl: string | null
     offerteFilename: string | null
+    bunniOfferteId: string | null
+    bunniOfferteNummer: string | null
+    bunniOffertePdfUrl: string | null
+    bunniFactuurId: string | null
+    bunniFactuurNummer: string | null
+    bunniFactuurPdfUrl: string | null
     status: string
+    termijnAantal: number | null
     termijn1Gefactureerd: boolean
     termijn2Gefactureerd: boolean
     termijn3Gefactureerd: boolean
@@ -7551,6 +9371,7 @@ export namespace Prisma {
     termijn2Factuurnummer: string | null
     termijn3Factuurnummer: string | null
     termijn4Factuurnummer: string | null
+    intakeTekst: string | null
     createdAt: Date
     updatedAt: Date
     _count: ProjectCountAggregateOutputType | null
@@ -7585,7 +9406,14 @@ export namespace Prisma {
     geoffreerdBedrag?: boolean
     offerteUrl?: boolean
     offerteFilename?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     status?: boolean
+    termijnAantal?: boolean
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -7598,12 +9426,15 @@ export namespace Prisma {
     termijn2Factuurnummer?: boolean
     termijn3Factuurnummer?: boolean
     termijn4Factuurnummer?: boolean
+    intakeTekst?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     workorders?: boolean | Project$workordersArgs<ExtArgs>
     uren?: boolean | Project$urenArgs<ExtArgs>
     materialen?: boolean | Project$materialenArgs<ExtArgs>
+    bijlagen?: boolean | Project$bijlagenArgs<ExtArgs>
+    planningEvents?: boolean | Project$planningEventsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
@@ -7618,7 +9449,14 @@ export namespace Prisma {
     geoffreerdBedrag?: boolean
     offerteUrl?: boolean
     offerteFilename?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     status?: boolean
+    termijnAantal?: boolean
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -7631,6 +9469,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: boolean
     termijn3Factuurnummer?: boolean
     termijn4Factuurnummer?: boolean
+    intakeTekst?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -7647,7 +9486,14 @@ export namespace Prisma {
     geoffreerdBedrag?: boolean
     offerteUrl?: boolean
     offerteFilename?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     status?: boolean
+    termijnAantal?: boolean
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -7660,6 +9506,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: boolean
     termijn3Factuurnummer?: boolean
     termijn4Factuurnummer?: boolean
+    intakeTekst?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -7676,7 +9523,14 @@ export namespace Prisma {
     geoffreerdBedrag?: boolean
     offerteUrl?: boolean
     offerteFilename?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     status?: boolean
+    termijnAantal?: boolean
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -7689,16 +9543,19 @@ export namespace Prisma {
     termijn2Factuurnummer?: boolean
     termijn3Factuurnummer?: boolean
     termijn4Factuurnummer?: boolean
+    intakeTekst?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "location" | "plaats" | "customerId" | "geoffreerdeUren" | "geoffreerdBedrag" | "offerteUrl" | "offerteFilename" | "status" | "termijn1Gefactureerd" | "termijn2Gefactureerd" | "termijn3Gefactureerd" | "termijn4Gefactureerd" | "termijn1GefactureerdOp" | "termijn2GefactureerdOp" | "termijn3GefactureerdOp" | "termijn4GefactureerdOp" | "termijn1Factuurnummer" | "termijn2Factuurnummer" | "termijn3Factuurnummer" | "termijn4Factuurnummer" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "name" | "location" | "plaats" | "customerId" | "geoffreerdeUren" | "geoffreerdBedrag" | "offerteUrl" | "offerteFilename" | "bunniOfferteId" | "bunniOfferteNummer" | "bunniOffertePdfUrl" | "bunniFactuurId" | "bunniFactuurNummer" | "bunniFactuurPdfUrl" | "status" | "termijnAantal" | "termijn1Gefactureerd" | "termijn2Gefactureerd" | "termijn3Gefactureerd" | "termijn4Gefactureerd" | "termijn1GefactureerdOp" | "termijn2GefactureerdOp" | "termijn3GefactureerdOp" | "termijn4GefactureerdOp" | "termijn1Factuurnummer" | "termijn2Factuurnummer" | "termijn3Factuurnummer" | "termijn4Factuurnummer" | "intakeTekst" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     workorders?: boolean | Project$workordersArgs<ExtArgs>
     uren?: boolean | Project$urenArgs<ExtArgs>
     materialen?: boolean | Project$materialenArgs<ExtArgs>
+    bijlagen?: boolean | Project$bijlagenArgs<ExtArgs>
+    planningEvents?: boolean | Project$planningEventsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7715,6 +9572,8 @@ export namespace Prisma {
       workorders: Prisma.$WorkorderPayload<ExtArgs>[]
       uren: Prisma.$ProjectUurPayload<ExtArgs>[]
       materialen: Prisma.$ProjectMateriaalPayload<ExtArgs>[]
+      bijlagen: Prisma.$ProjectAttachmentPayload<ExtArgs>[]
+      planningEvents: Prisma.$PlanningEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7733,7 +9592,23 @@ export namespace Prisma {
       geoffreerdBedrag: Prisma.Decimal | null
       offerteUrl: string | null
       offerteFilename: string | null
+      /**
+       * Gekoppelde Bunni-offerte
+       */
+      bunniOfferteId: string | null
+      bunniOfferteNummer: string | null
+      bunniOffertePdfUrl: string | null
+      /**
+       * Gekoppelde Bunni-factuur
+       */
+      bunniFactuurId: string | null
+      bunniFactuurNummer: string | null
+      bunniFactuurPdfUrl: string | null
       status: string
+      /**
+       * 1 = één factuur (100%), 4 = 30/30/30/10. Leeg = nog niet gekozen.
+       */
+      termijnAantal: number | null
       /**
        * Facturatie van projecturen per termijn (1–4)
        */
@@ -7752,6 +9627,10 @@ export namespace Prisma {
       termijn2Factuurnummer: string | null
       termijn3Factuurnummer: string | null
       termijn4Factuurnummer: string | null
+      /**
+       * Vrije intake-notities (wens klant, toelichting)
+       */
+      intakeTekst: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["project"]>
@@ -8152,6 +10031,8 @@ export namespace Prisma {
     workorders<T extends Project$workordersArgs<ExtArgs> = {}>(args?: Subset<T, Project$workordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     uren<T extends Project$urenArgs<ExtArgs> = {}>(args?: Subset<T, Project$urenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectUurPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     materialen<T extends Project$materialenArgs<ExtArgs> = {}>(args?: Subset<T, Project$materialenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectMateriaalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bijlagen<T extends Project$bijlagenArgs<ExtArgs> = {}>(args?: Subset<T, Project$bijlagenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    planningEvents<T extends Project$planningEventsArgs<ExtArgs> = {}>(args?: Subset<T, Project$planningEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanningEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8191,7 +10072,14 @@ export namespace Prisma {
     readonly geoffreerdBedrag: FieldRef<"Project", 'Decimal'>
     readonly offerteUrl: FieldRef<"Project", 'String'>
     readonly offerteFilename: FieldRef<"Project", 'String'>
+    readonly bunniOfferteId: FieldRef<"Project", 'String'>
+    readonly bunniOfferteNummer: FieldRef<"Project", 'String'>
+    readonly bunniOffertePdfUrl: FieldRef<"Project", 'String'>
+    readonly bunniFactuurId: FieldRef<"Project", 'String'>
+    readonly bunniFactuurNummer: FieldRef<"Project", 'String'>
+    readonly bunniFactuurPdfUrl: FieldRef<"Project", 'String'>
     readonly status: FieldRef<"Project", 'String'>
+    readonly termijnAantal: FieldRef<"Project", 'Int'>
     readonly termijn1Gefactureerd: FieldRef<"Project", 'Boolean'>
     readonly termijn2Gefactureerd: FieldRef<"Project", 'Boolean'>
     readonly termijn3Gefactureerd: FieldRef<"Project", 'Boolean'>
@@ -8204,6 +10092,7 @@ export namespace Prisma {
     readonly termijn2Factuurnummer: FieldRef<"Project", 'String'>
     readonly termijn3Factuurnummer: FieldRef<"Project", 'String'>
     readonly termijn4Factuurnummer: FieldRef<"Project", 'String'>
+    readonly intakeTekst: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
   }
@@ -8679,6 +10568,54 @@ export namespace Prisma {
   }
 
   /**
+   * Project.bijlagen
+   */
+  export type Project$bijlagenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    where?: ProjectAttachmentWhereInput
+    orderBy?: ProjectAttachmentOrderByWithRelationInput | ProjectAttachmentOrderByWithRelationInput[]
+    cursor?: ProjectAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectAttachmentScalarFieldEnum | ProjectAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * Project.planningEvents
+   */
+  export type Project$planningEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlanningEvent
+     */
+    select?: PlanningEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlanningEvent
+     */
+    omit?: PlanningEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PlanningEventInclude<ExtArgs> | null
+    where?: PlanningEventWhereInput
+    orderBy?: PlanningEventOrderByWithRelationInput | PlanningEventOrderByWithRelationInput[]
+    cursor?: PlanningEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PlanningEventScalarFieldEnum | PlanningEventScalarFieldEnum[]
+  }
+
+  /**
    * Project without action
    */
   export type ProjectDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8712,11 +10649,13 @@ export namespace Prisma {
   export type ProjectUurAvgAggregateOutputType = {
     uren: Decimal | null
     kilometers: number | null
+    parkeerkosten: Decimal | null
   }
 
   export type ProjectUurSumAggregateOutputType = {
     uren: Decimal | null
     kilometers: number | null
+    parkeerkosten: Decimal | null
   }
 
   export type ProjectUurMinAggregateOutputType = {
@@ -8728,6 +10667,7 @@ export namespace Prisma {
     uren: Decimal | null
     omschrijving: string | null
     kilometers: number | null
+    parkeerkosten: Decimal | null
     createdAt: Date | null
   }
 
@@ -8740,6 +10680,7 @@ export namespace Prisma {
     uren: Decimal | null
     omschrijving: string | null
     kilometers: number | null
+    parkeerkosten: Decimal | null
     createdAt: Date | null
   }
 
@@ -8752,6 +10693,7 @@ export namespace Prisma {
     uren: number
     omschrijving: number
     kilometers: number
+    parkeerkosten: number
     createdAt: number
     _all: number
   }
@@ -8760,11 +10702,13 @@ export namespace Prisma {
   export type ProjectUurAvgAggregateInputType = {
     uren?: true
     kilometers?: true
+    parkeerkosten?: true
   }
 
   export type ProjectUurSumAggregateInputType = {
     uren?: true
     kilometers?: true
+    parkeerkosten?: true
   }
 
   export type ProjectUurMinAggregateInputType = {
@@ -8776,6 +10720,7 @@ export namespace Prisma {
     uren?: true
     omschrijving?: true
     kilometers?: true
+    parkeerkosten?: true
     createdAt?: true
   }
 
@@ -8788,6 +10733,7 @@ export namespace Prisma {
     uren?: true
     omschrijving?: true
     kilometers?: true
+    parkeerkosten?: true
     createdAt?: true
   }
 
@@ -8800,6 +10746,7 @@ export namespace Prisma {
     uren?: true
     omschrijving?: true
     kilometers?: true
+    parkeerkosten?: true
     createdAt?: true
     _all?: true
   }
@@ -8899,6 +10846,7 @@ export namespace Prisma {
     uren: Decimal
     omschrijving: string | null
     kilometers: number | null
+    parkeerkosten: Decimal | null
     createdAt: Date
     _count: ProjectUurCountAggregateOutputType | null
     _avg: ProjectUurAvgAggregateOutputType | null
@@ -8930,6 +10878,7 @@ export namespace Prisma {
     uren?: boolean
     omschrijving?: boolean
     kilometers?: boolean
+    parkeerkosten?: boolean
     createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -8945,6 +10894,7 @@ export namespace Prisma {
     uren?: boolean
     omschrijving?: boolean
     kilometers?: boolean
+    parkeerkosten?: boolean
     createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -8960,6 +10910,7 @@ export namespace Prisma {
     uren?: boolean
     omschrijving?: boolean
     kilometers?: boolean
+    parkeerkosten?: boolean
     createdAt?: boolean
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -8975,10 +10926,11 @@ export namespace Prisma {
     uren?: boolean
     omschrijving?: boolean
     kilometers?: boolean
+    parkeerkosten?: boolean
     createdAt?: boolean
   }
 
-  export type ProjectUurOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "userId" | "bookedByUserId" | "datum" | "uren" | "omschrijving" | "kilometers" | "createdAt", ExtArgs["result"]["projectUur"]>
+  export type ProjectUurOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "userId" | "bookedByUserId" | "datum" | "uren" | "omschrijving" | "kilometers" | "parkeerkosten" | "createdAt", ExtArgs["result"]["projectUur"]>
   export type ProjectUurInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9014,6 +10966,10 @@ export namespace Prisma {
       uren: Prisma.Decimal
       omschrijving: string | null
       kilometers: number | null
+      /**
+       * Optionele parkeerkosten (euro) bij deze urenregel
+       */
+      parkeerkosten: Prisma.Decimal | null
       createdAt: Date
     }, ExtArgs["result"]["projectUur"]>
     composites: {}
@@ -9449,6 +11405,7 @@ export namespace Prisma {
     readonly uren: FieldRef<"ProjectUur", 'Decimal'>
     readonly omschrijving: FieldRef<"ProjectUur", 'String'>
     readonly kilometers: FieldRef<"ProjectUur", 'Float'>
+    readonly parkeerkosten: FieldRef<"ProjectUur", 'Decimal'>
     readonly createdAt: FieldRef<"ProjectUur", 'DateTime'>
   }
     
@@ -11025,6 +12982,1111 @@ export namespace Prisma {
 
 
   /**
+   * Model ProjectAttachment
+   */
+
+  export type AggregateProjectAttachment = {
+    _count: ProjectAttachmentCountAggregateOutputType | null
+    _min: ProjectAttachmentMinAggregateOutputType | null
+    _max: ProjectAttachmentMaxAggregateOutputType | null
+  }
+
+  export type ProjectAttachmentMinAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    url: string | null
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    kind: string | null
+    createdAt: Date | null
+  }
+
+  export type ProjectAttachmentMaxAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    url: string | null
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    kind: string | null
+    createdAt: Date | null
+  }
+
+  export type ProjectAttachmentCountAggregateOutputType = {
+    id: number
+    projectId: number
+    url: number
+    filename: number
+    originalName: number
+    contentType: number
+    kind: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ProjectAttachmentMinAggregateInputType = {
+    id?: true
+    projectId?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    kind?: true
+    createdAt?: true
+  }
+
+  export type ProjectAttachmentMaxAggregateInputType = {
+    id?: true
+    projectId?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    kind?: true
+    createdAt?: true
+  }
+
+  export type ProjectAttachmentCountAggregateInputType = {
+    id?: true
+    projectId?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    kind?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ProjectAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProjectAttachment to aggregate.
+     */
+    where?: ProjectAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectAttachments to fetch.
+     */
+    orderBy?: ProjectAttachmentOrderByWithRelationInput | ProjectAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProjectAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProjectAttachments
+    **/
+    _count?: true | ProjectAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProjectAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProjectAttachmentMaxAggregateInputType
+  }
+
+  export type GetProjectAttachmentAggregateType<T extends ProjectAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateProjectAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProjectAttachment[P]>
+      : GetScalarType<T[P], AggregateProjectAttachment[P]>
+  }
+
+
+
+
+  export type ProjectAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectAttachmentWhereInput
+    orderBy?: ProjectAttachmentOrderByWithAggregationInput | ProjectAttachmentOrderByWithAggregationInput[]
+    by: ProjectAttachmentScalarFieldEnum[] | ProjectAttachmentScalarFieldEnum
+    having?: ProjectAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProjectAttachmentCountAggregateInputType | true
+    _min?: ProjectAttachmentMinAggregateInputType
+    _max?: ProjectAttachmentMaxAggregateInputType
+  }
+
+  export type ProjectAttachmentGroupByOutputType = {
+    id: string
+    projectId: string
+    url: string
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    kind: string
+    createdAt: Date
+    _count: ProjectAttachmentCountAggregateOutputType | null
+    _min: ProjectAttachmentMinAggregateOutputType | null
+    _max: ProjectAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetProjectAttachmentGroupByPayload<T extends ProjectAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProjectAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProjectAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProjectAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], ProjectAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProjectAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    kind?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectAttachment"]>
+
+  export type ProjectAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    kind?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectAttachment"]>
+
+  export type ProjectAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    kind?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["projectAttachment"]>
+
+  export type ProjectAttachmentSelectScalar = {
+    id?: boolean
+    projectId?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    kind?: boolean
+    createdAt?: boolean
+  }
+
+  export type ProjectAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "url" | "filename" | "originalName" | "contentType" | "kind" | "createdAt", ExtArgs["result"]["projectAttachment"]>
+  export type ProjectAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type ProjectAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type ProjectAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+
+  export type $ProjectAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProjectAttachment"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      projectId: string
+      url: string
+      filename: string | null
+      originalName: string | null
+      contentType: string | null
+      /**
+       * plattegrond | intake
+       */
+      kind: string
+      createdAt: Date
+    }, ExtArgs["result"]["projectAttachment"]>
+    composites: {}
+  }
+
+  type ProjectAttachmentGetPayload<S extends boolean | null | undefined | ProjectAttachmentDefaultArgs> = $Result.GetResult<Prisma.$ProjectAttachmentPayload, S>
+
+  type ProjectAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProjectAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProjectAttachmentCountAggregateInputType | true
+    }
+
+  export interface ProjectAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProjectAttachment'], meta: { name: 'ProjectAttachment' } }
+    /**
+     * Find zero or one ProjectAttachment that matches the filter.
+     * @param {ProjectAttachmentFindUniqueArgs} args - Arguments to find a ProjectAttachment
+     * @example
+     * // Get one ProjectAttachment
+     * const projectAttachment = await prisma.projectAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProjectAttachmentFindUniqueArgs>(args: SelectSubset<T, ProjectAttachmentFindUniqueArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProjectAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProjectAttachmentFindUniqueOrThrowArgs} args - Arguments to find a ProjectAttachment
+     * @example
+     * // Get one ProjectAttachment
+     * const projectAttachment = await prisma.projectAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProjectAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, ProjectAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProjectAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAttachmentFindFirstArgs} args - Arguments to find a ProjectAttachment
+     * @example
+     * // Get one ProjectAttachment
+     * const projectAttachment = await prisma.projectAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProjectAttachmentFindFirstArgs>(args?: SelectSubset<T, ProjectAttachmentFindFirstArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProjectAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAttachmentFindFirstOrThrowArgs} args - Arguments to find a ProjectAttachment
+     * @example
+     * // Get one ProjectAttachment
+     * const projectAttachment = await prisma.projectAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProjectAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, ProjectAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProjectAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProjectAttachments
+     * const projectAttachments = await prisma.projectAttachment.findMany()
+     * 
+     * // Get first 10 ProjectAttachments
+     * const projectAttachments = await prisma.projectAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const projectAttachmentWithIdOnly = await prisma.projectAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProjectAttachmentFindManyArgs>(args?: SelectSubset<T, ProjectAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProjectAttachment.
+     * @param {ProjectAttachmentCreateArgs} args - Arguments to create a ProjectAttachment.
+     * @example
+     * // Create one ProjectAttachment
+     * const ProjectAttachment = await prisma.projectAttachment.create({
+     *   data: {
+     *     // ... data to create a ProjectAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProjectAttachmentCreateArgs>(args: SelectSubset<T, ProjectAttachmentCreateArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProjectAttachments.
+     * @param {ProjectAttachmentCreateManyArgs} args - Arguments to create many ProjectAttachments.
+     * @example
+     * // Create many ProjectAttachments
+     * const projectAttachment = await prisma.projectAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProjectAttachmentCreateManyArgs>(args?: SelectSubset<T, ProjectAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProjectAttachments and returns the data saved in the database.
+     * @param {ProjectAttachmentCreateManyAndReturnArgs} args - Arguments to create many ProjectAttachments.
+     * @example
+     * // Create many ProjectAttachments
+     * const projectAttachment = await prisma.projectAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProjectAttachments and only return the `id`
+     * const projectAttachmentWithIdOnly = await prisma.projectAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProjectAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, ProjectAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProjectAttachment.
+     * @param {ProjectAttachmentDeleteArgs} args - Arguments to delete one ProjectAttachment.
+     * @example
+     * // Delete one ProjectAttachment
+     * const ProjectAttachment = await prisma.projectAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one ProjectAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProjectAttachmentDeleteArgs>(args: SelectSubset<T, ProjectAttachmentDeleteArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProjectAttachment.
+     * @param {ProjectAttachmentUpdateArgs} args - Arguments to update one ProjectAttachment.
+     * @example
+     * // Update one ProjectAttachment
+     * const projectAttachment = await prisma.projectAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProjectAttachmentUpdateArgs>(args: SelectSubset<T, ProjectAttachmentUpdateArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProjectAttachments.
+     * @param {ProjectAttachmentDeleteManyArgs} args - Arguments to filter ProjectAttachments to delete.
+     * @example
+     * // Delete a few ProjectAttachments
+     * const { count } = await prisma.projectAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProjectAttachmentDeleteManyArgs>(args?: SelectSubset<T, ProjectAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProjectAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProjectAttachments
+     * const projectAttachment = await prisma.projectAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProjectAttachmentUpdateManyArgs>(args: SelectSubset<T, ProjectAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProjectAttachments and returns the data updated in the database.
+     * @param {ProjectAttachmentUpdateManyAndReturnArgs} args - Arguments to update many ProjectAttachments.
+     * @example
+     * // Update many ProjectAttachments
+     * const projectAttachment = await prisma.projectAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProjectAttachments and only return the `id`
+     * const projectAttachmentWithIdOnly = await prisma.projectAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProjectAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, ProjectAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProjectAttachment.
+     * @param {ProjectAttachmentUpsertArgs} args - Arguments to update or create a ProjectAttachment.
+     * @example
+     * // Update or create a ProjectAttachment
+     * const projectAttachment = await prisma.projectAttachment.upsert({
+     *   create: {
+     *     // ... data to create a ProjectAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProjectAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProjectAttachmentUpsertArgs>(args: SelectSubset<T, ProjectAttachmentUpsertArgs<ExtArgs>>): Prisma__ProjectAttachmentClient<$Result.GetResult<Prisma.$ProjectAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProjectAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAttachmentCountArgs} args - Arguments to filter ProjectAttachments to count.
+     * @example
+     * // Count the number of ProjectAttachments
+     * const count = await prisma.projectAttachment.count({
+     *   where: {
+     *     // ... the filter for the ProjectAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProjectAttachmentCountArgs>(
+      args?: Subset<T, ProjectAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProjectAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProjectAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProjectAttachmentAggregateArgs>(args: Subset<T, ProjectAttachmentAggregateArgs>): Prisma.PrismaPromise<GetProjectAttachmentAggregateType<T>>
+
+    /**
+     * Group by ProjectAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProjectAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProjectAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: ProjectAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProjectAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProjectAttachment model
+   */
+  readonly fields: ProjectAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProjectAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProjectAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProjectAttachment model
+   */
+  interface ProjectAttachmentFieldRefs {
+    readonly id: FieldRef<"ProjectAttachment", 'String'>
+    readonly projectId: FieldRef<"ProjectAttachment", 'String'>
+    readonly url: FieldRef<"ProjectAttachment", 'String'>
+    readonly filename: FieldRef<"ProjectAttachment", 'String'>
+    readonly originalName: FieldRef<"ProjectAttachment", 'String'>
+    readonly contentType: FieldRef<"ProjectAttachment", 'String'>
+    readonly kind: FieldRef<"ProjectAttachment", 'String'>
+    readonly createdAt: FieldRef<"ProjectAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProjectAttachment findUnique
+   */
+  export type ProjectAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectAttachment to fetch.
+     */
+    where: ProjectAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProjectAttachment findUniqueOrThrow
+   */
+  export type ProjectAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectAttachment to fetch.
+     */
+    where: ProjectAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProjectAttachment findFirst
+   */
+  export type ProjectAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectAttachment to fetch.
+     */
+    where?: ProjectAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectAttachments to fetch.
+     */
+    orderBy?: ProjectAttachmentOrderByWithRelationInput | ProjectAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProjectAttachments.
+     */
+    cursor?: ProjectAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectAttachments.
+     */
+    distinct?: ProjectAttachmentScalarFieldEnum | ProjectAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectAttachment findFirstOrThrow
+   */
+  export type ProjectAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectAttachment to fetch.
+     */
+    where?: ProjectAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectAttachments to fetch.
+     */
+    orderBy?: ProjectAttachmentOrderByWithRelationInput | ProjectAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProjectAttachments.
+     */
+    cursor?: ProjectAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectAttachments.
+     */
+    distinct?: ProjectAttachmentScalarFieldEnum | ProjectAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectAttachment findMany
+   */
+  export type ProjectAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which ProjectAttachments to fetch.
+     */
+    where?: ProjectAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProjectAttachments to fetch.
+     */
+    orderBy?: ProjectAttachmentOrderByWithRelationInput | ProjectAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProjectAttachments.
+     */
+    cursor?: ProjectAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProjectAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProjectAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProjectAttachments.
+     */
+    distinct?: ProjectAttachmentScalarFieldEnum | ProjectAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * ProjectAttachment create
+   */
+  export type ProjectAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProjectAttachment.
+     */
+    data: XOR<ProjectAttachmentCreateInput, ProjectAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * ProjectAttachment createMany
+   */
+  export type ProjectAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProjectAttachments.
+     */
+    data: ProjectAttachmentCreateManyInput | ProjectAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProjectAttachment createManyAndReturn
+   */
+  export type ProjectAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProjectAttachments.
+     */
+    data: ProjectAttachmentCreateManyInput | ProjectAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProjectAttachment update
+   */
+  export type ProjectAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProjectAttachment.
+     */
+    data: XOR<ProjectAttachmentUpdateInput, ProjectAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which ProjectAttachment to update.
+     */
+    where: ProjectAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProjectAttachment updateMany
+   */
+  export type ProjectAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProjectAttachments.
+     */
+    data: XOR<ProjectAttachmentUpdateManyMutationInput, ProjectAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which ProjectAttachments to update
+     */
+    where?: ProjectAttachmentWhereInput
+    /**
+     * Limit how many ProjectAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProjectAttachment updateManyAndReturn
+   */
+  export type ProjectAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update ProjectAttachments.
+     */
+    data: XOR<ProjectAttachmentUpdateManyMutationInput, ProjectAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which ProjectAttachments to update
+     */
+    where?: ProjectAttachmentWhereInput
+    /**
+     * Limit how many ProjectAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProjectAttachment upsert
+   */
+  export type ProjectAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProjectAttachment to update in case it exists.
+     */
+    where: ProjectAttachmentWhereUniqueInput
+    /**
+     * In case the ProjectAttachment found by the `where` argument doesn't exist, create a new ProjectAttachment with this data.
+     */
+    create: XOR<ProjectAttachmentCreateInput, ProjectAttachmentUncheckedCreateInput>
+    /**
+     * In case the ProjectAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProjectAttachmentUpdateInput, ProjectAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * ProjectAttachment delete
+   */
+  export type ProjectAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which ProjectAttachment to delete.
+     */
+    where: ProjectAttachmentWhereUniqueInput
+  }
+
+  /**
+   * ProjectAttachment deleteMany
+   */
+  export type ProjectAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProjectAttachments to delete
+     */
+    where?: ProjectAttachmentWhereInput
+    /**
+     * Limit how many ProjectAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProjectAttachment without action
+   */
+  export type ProjectAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectAttachment
+     */
+    select?: ProjectAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProjectAttachment
+     */
+    omit?: ProjectAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectAttachmentInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Workorder
    */
 
@@ -11066,10 +14128,17 @@ export namespace Prisma {
     updatedAt: Date | null
     description: string | null
     werkInstructie: string | null
+    opdrachtnummerOpdrachtgever: string | null
     workDate: Date | null
     internalNotes: string | null
     onHoldNotes: string | null
     number: string | null
+    bunniOfferteId: string | null
+    bunniOfferteNummer: string | null
+    bunniOffertePdfUrl: string | null
+    bunniFactuurId: string | null
+    bunniFactuurNummer: string | null
+    bunniFactuurPdfUrl: string | null
     assignedUserId: string | null
     plannedDate: Date | null
     plannedEndDate: Date | null
@@ -11080,6 +14149,11 @@ export namespace Prisma {
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
     sentAt: Date | null
+    archiveNasPath: string | null
+    archiveLocationLabel: string | null
+    archivedAt: Date | null
+    archiveStatus: string | null
+    archiveError: string | null
   }
 
   export type WorkorderMaxAggregateOutputType = {
@@ -11100,10 +14174,17 @@ export namespace Prisma {
     updatedAt: Date | null
     description: string | null
     werkInstructie: string | null
+    opdrachtnummerOpdrachtgever: string | null
     workDate: Date | null
     internalNotes: string | null
     onHoldNotes: string | null
     number: string | null
+    bunniOfferteId: string | null
+    bunniOfferteNummer: string | null
+    bunniOffertePdfUrl: string | null
+    bunniFactuurId: string | null
+    bunniFactuurNummer: string | null
+    bunniFactuurPdfUrl: string | null
     assignedUserId: string | null
     plannedDate: Date | null
     plannedEndDate: Date | null
@@ -11114,6 +14195,11 @@ export namespace Prisma {
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
     sentAt: Date | null
+    archiveNasPath: string | null
+    archiveLocationLabel: string | null
+    archivedAt: Date | null
+    archiveStatus: string | null
+    archiveError: string | null
   }
 
   export type WorkorderCountAggregateOutputType = {
@@ -11134,10 +14220,17 @@ export namespace Prisma {
     updatedAt: number
     description: number
     werkInstructie: number
+    opdrachtnummerOpdrachtgever: number
     workDate: number
     internalNotes: number
     onHoldNotes: number
     number: number
+    bunniOfferteId: number
+    bunniOfferteNummer: number
+    bunniOffertePdfUrl: number
+    bunniFactuurId: number
+    bunniFactuurNummer: number
+    bunniFactuurPdfUrl: number
     assignedUserId: number
     plannedDate: number
     plannedEndDate: number
@@ -11146,10 +14239,16 @@ export namespace Prisma {
     plannedReisuren: number
     assignmentId: number
     formData: number
+    opleverModules: number
     aanvraagSpecificaties: number
     pdfData: number
     pdfGeneratedAt: number
     sentAt: number
+    archiveNasPath: number
+    archiveLocationLabel: number
+    archivedAt: number
+    archiveStatus: number
+    archiveError: number
     _all: number
   }
 
@@ -11184,10 +14283,17 @@ export namespace Prisma {
     updatedAt?: true
     description?: true
     werkInstructie?: true
+    opdrachtnummerOpdrachtgever?: true
     workDate?: true
     internalNotes?: true
     onHoldNotes?: true
     number?: true
+    bunniOfferteId?: true
+    bunniOfferteNummer?: true
+    bunniOffertePdfUrl?: true
+    bunniFactuurId?: true
+    bunniFactuurNummer?: true
+    bunniFactuurPdfUrl?: true
     assignedUserId?: true
     plannedDate?: true
     plannedEndDate?: true
@@ -11198,6 +14304,11 @@ export namespace Prisma {
     pdfData?: true
     pdfGeneratedAt?: true
     sentAt?: true
+    archiveNasPath?: true
+    archiveLocationLabel?: true
+    archivedAt?: true
+    archiveStatus?: true
+    archiveError?: true
   }
 
   export type WorkorderMaxAggregateInputType = {
@@ -11218,10 +14329,17 @@ export namespace Prisma {
     updatedAt?: true
     description?: true
     werkInstructie?: true
+    opdrachtnummerOpdrachtgever?: true
     workDate?: true
     internalNotes?: true
     onHoldNotes?: true
     number?: true
+    bunniOfferteId?: true
+    bunniOfferteNummer?: true
+    bunniOffertePdfUrl?: true
+    bunniFactuurId?: true
+    bunniFactuurNummer?: true
+    bunniFactuurPdfUrl?: true
     assignedUserId?: true
     plannedDate?: true
     plannedEndDate?: true
@@ -11232,6 +14350,11 @@ export namespace Prisma {
     pdfData?: true
     pdfGeneratedAt?: true
     sentAt?: true
+    archiveNasPath?: true
+    archiveLocationLabel?: true
+    archivedAt?: true
+    archiveStatus?: true
+    archiveError?: true
   }
 
   export type WorkorderCountAggregateInputType = {
@@ -11252,10 +14375,17 @@ export namespace Prisma {
     updatedAt?: true
     description?: true
     werkInstructie?: true
+    opdrachtnummerOpdrachtgever?: true
     workDate?: true
     internalNotes?: true
     onHoldNotes?: true
     number?: true
+    bunniOfferteId?: true
+    bunniOfferteNummer?: true
+    bunniOffertePdfUrl?: true
+    bunniFactuurId?: true
+    bunniFactuurNummer?: true
+    bunniFactuurPdfUrl?: true
     assignedUserId?: true
     plannedDate?: true
     plannedEndDate?: true
@@ -11264,10 +14394,16 @@ export namespace Prisma {
     plannedReisuren?: true
     assignmentId?: true
     formData?: true
+    opleverModules?: true
     aanvraagSpecificaties?: true
     pdfData?: true
     pdfGeneratedAt?: true
     sentAt?: true
+    archiveNasPath?: true
+    archiveLocationLabel?: true
+    archivedAt?: true
+    archiveStatus?: true
+    archiveError?: true
     _all?: true
   }
 
@@ -11375,10 +14511,17 @@ export namespace Prisma {
     updatedAt: Date
     description: string | null
     werkInstructie: string | null
+    opdrachtnummerOpdrachtgever: string | null
     workDate: Date | null
     internalNotes: string | null
     onHoldNotes: string | null
     number: string
+    bunniOfferteId: string | null
+    bunniOfferteNummer: string | null
+    bunniOffertePdfUrl: string | null
+    bunniFactuurId: string | null
+    bunniFactuurNummer: string | null
+    bunniFactuurPdfUrl: string | null
     assignedUserId: string | null
     plannedDate: Date | null
     plannedEndDate: Date | null
@@ -11387,10 +14530,16 @@ export namespace Prisma {
     plannedReisuren: number | null
     assignmentId: string | null
     formData: JsonValue | null
+    opleverModules: JsonValue | null
     aanvraagSpecificaties: JsonValue | null
     pdfData: Bytes | null
     pdfGeneratedAt: Date | null
     sentAt: Date | null
+    archiveNasPath: string | null
+    archiveLocationLabel: string | null
+    archivedAt: Date | null
+    archiveStatus: string | null
+    archiveError: string | null
     _count: WorkorderCountAggregateOutputType | null
     _avg: WorkorderAvgAggregateOutputType | null
     _sum: WorkorderSumAggregateOutputType | null
@@ -11430,10 +14579,17 @@ export namespace Prisma {
     updatedAt?: boolean
     description?: boolean
     werkInstructie?: boolean
+    opdrachtnummerOpdrachtgever?: boolean
     workDate?: boolean
     internalNotes?: boolean
     onHoldNotes?: boolean
     number?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
@@ -11442,10 +14598,16 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    opleverModules?: boolean
     aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
+    archiveNasPath?: boolean
+    archiveLocationLabel?: boolean
+    archivedAt?: boolean
+    archiveStatus?: boolean
+    archiveError?: boolean
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
     assignment?: boolean | Workorder$assignmentArgs<ExtArgs>
@@ -11459,6 +14621,8 @@ export namespace Prisma {
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
     extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
     forms?: boolean | Workorder$formsArgs<ExtArgs>
+    pakbonnen?: boolean | Workorder$pakbonnenArgs<ExtArgs>
+    archiveFolder?: boolean | Workorder$archiveFolderArgs<ExtArgs>
     _count?: boolean | WorkorderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["workorder"]>
 
@@ -11480,10 +14644,17 @@ export namespace Prisma {
     updatedAt?: boolean
     description?: boolean
     werkInstructie?: boolean
+    opdrachtnummerOpdrachtgever?: boolean
     workDate?: boolean
     internalNotes?: boolean
     onHoldNotes?: boolean
     number?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
@@ -11492,10 +14663,16 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    opleverModules?: boolean
     aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
+    archiveNasPath?: boolean
+    archiveLocationLabel?: boolean
+    archivedAt?: boolean
+    archiveStatus?: boolean
+    archiveError?: boolean
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
     assignment?: boolean | Workorder$assignmentArgs<ExtArgs>
     project?: boolean | Workorder$projectArgs<ExtArgs>
@@ -11520,10 +14697,17 @@ export namespace Prisma {
     updatedAt?: boolean
     description?: boolean
     werkInstructie?: boolean
+    opdrachtnummerOpdrachtgever?: boolean
     workDate?: boolean
     internalNotes?: boolean
     onHoldNotes?: boolean
     number?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
@@ -11532,10 +14716,16 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    opleverModules?: boolean
     aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
+    archiveNasPath?: boolean
+    archiveLocationLabel?: boolean
+    archivedAt?: boolean
+    archiveStatus?: boolean
+    archiveError?: boolean
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
     assignment?: boolean | Workorder$assignmentArgs<ExtArgs>
     project?: boolean | Workorder$projectArgs<ExtArgs>
@@ -11560,10 +14750,17 @@ export namespace Prisma {
     updatedAt?: boolean
     description?: boolean
     werkInstructie?: boolean
+    opdrachtnummerOpdrachtgever?: boolean
     workDate?: boolean
     internalNotes?: boolean
     onHoldNotes?: boolean
     number?: boolean
+    bunniOfferteId?: boolean
+    bunniOfferteNummer?: boolean
+    bunniOffertePdfUrl?: boolean
+    bunniFactuurId?: boolean
+    bunniFactuurNummer?: boolean
+    bunniFactuurPdfUrl?: boolean
     assignedUserId?: boolean
     plannedDate?: boolean
     plannedEndDate?: boolean
@@ -11572,13 +14769,19 @@ export namespace Prisma {
     plannedReisuren?: boolean
     assignmentId?: boolean
     formData?: boolean
+    opleverModules?: boolean
     aanvraagSpecificaties?: boolean
     pdfData?: boolean
     pdfGeneratedAt?: boolean
     sentAt?: boolean
+    archiveNasPath?: boolean
+    archiveLocationLabel?: boolean
+    archivedAt?: boolean
+    archiveStatus?: boolean
+    archiveError?: boolean
   }
 
-  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "straat" | "huisnummer" | "postcode" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "workDate" | "internalNotes" | "onHoldNotes" | "number" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "aanvraagSpecificaties" | "pdfData" | "pdfGeneratedAt" | "sentAt", ExtArgs["result"]["workorder"]>
+  export type WorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "projectId" | "customerId" | "location" | "straat" | "huisnummer" | "postcode" | "city" | "contactPersoon" | "contactEmail" | "contactPhone" | "createdAt" | "updatedAt" | "description" | "werkInstructie" | "opdrachtnummerOpdrachtgever" | "workDate" | "internalNotes" | "onHoldNotes" | "number" | "bunniOfferteId" | "bunniOfferteNummer" | "bunniOffertePdfUrl" | "bunniFactuurId" | "bunniFactuurNummer" | "bunniFactuurPdfUrl" | "assignedUserId" | "plannedDate" | "plannedEndDate" | "plannedHours" | "plannedRoundTripKm" | "plannedReisuren" | "assignmentId" | "formData" | "opleverModules" | "aanvraagSpecificaties" | "pdfData" | "pdfGeneratedAt" | "sentAt" | "archiveNasPath" | "archiveLocationLabel" | "archivedAt" | "archiveStatus" | "archiveError", ExtArgs["result"]["workorder"]>
   export type WorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | Workorder$documentsArgs<ExtArgs>
     assignedUser?: boolean | Workorder$assignedUserArgs<ExtArgs>
@@ -11593,6 +14796,8 @@ export namespace Prisma {
     signature?: boolean | Workorder$signatureArgs<ExtArgs>
     extraEngineers?: boolean | Workorder$extraEngineersArgs<ExtArgs>
     forms?: boolean | Workorder$formsArgs<ExtArgs>
+    pakbonnen?: boolean | Workorder$pakbonnenArgs<ExtArgs>
+    archiveFolder?: boolean | Workorder$archiveFolderArgs<ExtArgs>
     _count?: boolean | WorkorderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type WorkorderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11624,6 +14829,8 @@ export namespace Prisma {
       signature: Prisma.$WorkorderSignaturePayload<ExtArgs> | null
       extraEngineers: Prisma.$WorkorderEngineerPayload<ExtArgs>[]
       forms: Prisma.$WorkorderFormPayload<ExtArgs>[]
+      pakbonnen: Prisma.$PakbonWorkorderPayload<ExtArgs>[]
+      archiveFolder: Prisma.$ArchiveFolderPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11646,6 +14853,10 @@ export namespace Prisma {
       updatedAt: Date
       description: string | null
       werkInstructie: string | null
+      /**
+       * Optioneel referentienummer van de opdrachtgever
+       */
+      opdrachtnummerOpdrachtgever: string | null
       workDate: Date | null
       internalNotes: string | null
       /**
@@ -11653,6 +14864,12 @@ export namespace Prisma {
        */
       onHoldNotes: string | null
       number: string
+      bunniOfferteId: string | null
+      bunniOfferteNummer: string | null
+      bunniOffertePdfUrl: string | null
+      bunniFactuurId: string | null
+      bunniFactuurNummer: string | null
+      bunniFactuurPdfUrl: string | null
       assignedUserId: string | null
       plannedDate: Date | null
       plannedEndDate: Date | null
@@ -11668,12 +14885,30 @@ export namespace Prisma {
       assignmentId: string | null
       formData: Prisma.JsonValue | null
       /**
+       * Aangevinkte oplever-onderdelen (uren, schermen montage, …)
+       */
+      opleverModules: Prisma.JsonValue | null
+      /**
        * Snapshot van klantaanvraag-specificaties (voor gestructureerde weergave bij in behandeling)
        */
       aanvraagSpecificaties: Prisma.JsonValue | null
       pdfData: Prisma.Bytes | null
       pdfGeneratedAt: Date | null
       sentAt: Date | null
+      /**
+       * NAS-pad na archivering (gefactureerd)
+       */
+      archiveNasPath: string | null
+      /**
+       * Weergavenaam locatiemap, bv. "Appeltje Eitje, Amsterdam"
+       */
+      archiveLocationLabel: string | null
+      archivedAt: Date | null
+      /**
+       * pending | completed | failed
+       */
+      archiveStatus: string | null
+      archiveError: string | null
     }, ExtArgs["result"]["workorder"]>
     composites: {}
   }
@@ -12081,6 +15316,8 @@ export namespace Prisma {
     signature<T extends Workorder$signatureArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$signatureArgs<ExtArgs>>): Prisma__WorkorderSignatureClient<$Result.GetResult<Prisma.$WorkorderSignaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     extraEngineers<T extends Workorder$extraEngineersArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$extraEngineersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderEngineerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     forms<T extends Workorder$formsArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$formsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkorderFormPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pakbonnen<T extends Workorder$pakbonnenArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$pakbonnenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    archiveFolder<T extends Workorder$archiveFolderArgs<ExtArgs> = {}>(args?: Subset<T, Workorder$archiveFolderArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12127,10 +15364,17 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Workorder", 'DateTime'>
     readonly description: FieldRef<"Workorder", 'String'>
     readonly werkInstructie: FieldRef<"Workorder", 'String'>
+    readonly opdrachtnummerOpdrachtgever: FieldRef<"Workorder", 'String'>
     readonly workDate: FieldRef<"Workorder", 'DateTime'>
     readonly internalNotes: FieldRef<"Workorder", 'String'>
     readonly onHoldNotes: FieldRef<"Workorder", 'String'>
     readonly number: FieldRef<"Workorder", 'String'>
+    readonly bunniOfferteId: FieldRef<"Workorder", 'String'>
+    readonly bunniOfferteNummer: FieldRef<"Workorder", 'String'>
+    readonly bunniOffertePdfUrl: FieldRef<"Workorder", 'String'>
+    readonly bunniFactuurId: FieldRef<"Workorder", 'String'>
+    readonly bunniFactuurNummer: FieldRef<"Workorder", 'String'>
+    readonly bunniFactuurPdfUrl: FieldRef<"Workorder", 'String'>
     readonly assignedUserId: FieldRef<"Workorder", 'String'>
     readonly plannedDate: FieldRef<"Workorder", 'DateTime'>
     readonly plannedEndDate: FieldRef<"Workorder", 'DateTime'>
@@ -12139,10 +15383,16 @@ export namespace Prisma {
     readonly plannedReisuren: FieldRef<"Workorder", 'Float'>
     readonly assignmentId: FieldRef<"Workorder", 'String'>
     readonly formData: FieldRef<"Workorder", 'Json'>
+    readonly opleverModules: FieldRef<"Workorder", 'Json'>
     readonly aanvraagSpecificaties: FieldRef<"Workorder", 'Json'>
     readonly pdfData: FieldRef<"Workorder", 'Bytes'>
     readonly pdfGeneratedAt: FieldRef<"Workorder", 'DateTime'>
     readonly sentAt: FieldRef<"Workorder", 'DateTime'>
+    readonly archiveNasPath: FieldRef<"Workorder", 'String'>
+    readonly archiveLocationLabel: FieldRef<"Workorder", 'String'>
+    readonly archivedAt: FieldRef<"Workorder", 'DateTime'>
+    readonly archiveStatus: FieldRef<"Workorder", 'String'>
+    readonly archiveError: FieldRef<"Workorder", 'String'>
   }
     
 
@@ -12831,6 +16081,49 @@ export namespace Prisma {
   }
 
   /**
+   * Workorder.pakbonnen
+   */
+  export type Workorder$pakbonnenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    where?: PakbonWorkorderWhereInput
+    orderBy?: PakbonWorkorderOrderByWithRelationInput | PakbonWorkorderOrderByWithRelationInput[]
+    cursor?: PakbonWorkorderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PakbonWorkorderScalarFieldEnum | PakbonWorkorderScalarFieldEnum[]
+  }
+
+  /**
+   * Workorder.archiveFolder
+   */
+  export type Workorder$archiveFolderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    where?: ArchiveFolderWhereInput
+  }
+
+  /**
    * Workorder without action
    */
   export type WorkorderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12846,6 +16139,1284 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: WorkorderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ArchiveFolder
+   */
+
+  export type AggregateArchiveFolder = {
+    _count: ArchiveFolderCountAggregateOutputType | null
+    _min: ArchiveFolderMinAggregateOutputType | null
+    _max: ArchiveFolderMaxAggregateOutputType | null
+  }
+
+  export type ArchiveFolderMinAggregateOutputType = {
+    id: string | null
+    kind: string | null
+    name: string | null
+    nasPath: string | null
+    slug: string | null
+    parentId: string | null
+    customerId: string | null
+    locationKey: string | null
+    workorderId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ArchiveFolderMaxAggregateOutputType = {
+    id: string | null
+    kind: string | null
+    name: string | null
+    nasPath: string | null
+    slug: string | null
+    parentId: string | null
+    customerId: string | null
+    locationKey: string | null
+    workorderId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ArchiveFolderCountAggregateOutputType = {
+    id: number
+    kind: number
+    name: number
+    nasPath: number
+    slug: number
+    parentId: number
+    customerId: number
+    locationKey: number
+    workorderId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ArchiveFolderMinAggregateInputType = {
+    id?: true
+    kind?: true
+    name?: true
+    nasPath?: true
+    slug?: true
+    parentId?: true
+    customerId?: true
+    locationKey?: true
+    workorderId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ArchiveFolderMaxAggregateInputType = {
+    id?: true
+    kind?: true
+    name?: true
+    nasPath?: true
+    slug?: true
+    parentId?: true
+    customerId?: true
+    locationKey?: true
+    workorderId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ArchiveFolderCountAggregateInputType = {
+    id?: true
+    kind?: true
+    name?: true
+    nasPath?: true
+    slug?: true
+    parentId?: true
+    customerId?: true
+    locationKey?: true
+    workorderId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ArchiveFolderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArchiveFolder to aggregate.
+     */
+    where?: ArchiveFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFolders to fetch.
+     */
+    orderBy?: ArchiveFolderOrderByWithRelationInput | ArchiveFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ArchiveFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFolders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ArchiveFolders
+    **/
+    _count?: true | ArchiveFolderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ArchiveFolderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ArchiveFolderMaxAggregateInputType
+  }
+
+  export type GetArchiveFolderAggregateType<T extends ArchiveFolderAggregateArgs> = {
+        [P in keyof T & keyof AggregateArchiveFolder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateArchiveFolder[P]>
+      : GetScalarType<T[P], AggregateArchiveFolder[P]>
+  }
+
+
+
+
+  export type ArchiveFolderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArchiveFolderWhereInput
+    orderBy?: ArchiveFolderOrderByWithAggregationInput | ArchiveFolderOrderByWithAggregationInput[]
+    by: ArchiveFolderScalarFieldEnum[] | ArchiveFolderScalarFieldEnum
+    having?: ArchiveFolderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ArchiveFolderCountAggregateInputType | true
+    _min?: ArchiveFolderMinAggregateInputType
+    _max?: ArchiveFolderMaxAggregateInputType
+  }
+
+  export type ArchiveFolderGroupByOutputType = {
+    id: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId: string | null
+    customerId: string | null
+    locationKey: string | null
+    workorderId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ArchiveFolderCountAggregateOutputType | null
+    _min: ArchiveFolderMinAggregateOutputType | null
+    _max: ArchiveFolderMaxAggregateOutputType | null
+  }
+
+  type GetArchiveFolderGroupByPayload<T extends ArchiveFolderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ArchiveFolderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ArchiveFolderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ArchiveFolderGroupByOutputType[P]>
+            : GetScalarType<T[P], ArchiveFolderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ArchiveFolderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kind?: boolean
+    name?: boolean
+    nasPath?: boolean
+    slug?: boolean
+    parentId?: boolean
+    customerId?: boolean
+    locationKey?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    parent?: boolean | ArchiveFolder$parentArgs<ExtArgs>
+    children?: boolean | ArchiveFolder$childrenArgs<ExtArgs>
+    files?: boolean | ArchiveFolder$filesArgs<ExtArgs>
+    customer?: boolean | ArchiveFolder$customerArgs<ExtArgs>
+    workorder?: boolean | ArchiveFolder$workorderArgs<ExtArgs>
+    _count?: boolean | ArchiveFolderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["archiveFolder"]>
+
+  export type ArchiveFolderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kind?: boolean
+    name?: boolean
+    nasPath?: boolean
+    slug?: boolean
+    parentId?: boolean
+    customerId?: boolean
+    locationKey?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    parent?: boolean | ArchiveFolder$parentArgs<ExtArgs>
+    customer?: boolean | ArchiveFolder$customerArgs<ExtArgs>
+    workorder?: boolean | ArchiveFolder$workorderArgs<ExtArgs>
+  }, ExtArgs["result"]["archiveFolder"]>
+
+  export type ArchiveFolderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kind?: boolean
+    name?: boolean
+    nasPath?: boolean
+    slug?: boolean
+    parentId?: boolean
+    customerId?: boolean
+    locationKey?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    parent?: boolean | ArchiveFolder$parentArgs<ExtArgs>
+    customer?: boolean | ArchiveFolder$customerArgs<ExtArgs>
+    workorder?: boolean | ArchiveFolder$workorderArgs<ExtArgs>
+  }, ExtArgs["result"]["archiveFolder"]>
+
+  export type ArchiveFolderSelectScalar = {
+    id?: boolean
+    kind?: boolean
+    name?: boolean
+    nasPath?: boolean
+    slug?: boolean
+    parentId?: boolean
+    customerId?: boolean
+    locationKey?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ArchiveFolderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kind" | "name" | "nasPath" | "slug" | "parentId" | "customerId" | "locationKey" | "workorderId" | "createdAt" | "updatedAt", ExtArgs["result"]["archiveFolder"]>
+  export type ArchiveFolderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | ArchiveFolder$parentArgs<ExtArgs>
+    children?: boolean | ArchiveFolder$childrenArgs<ExtArgs>
+    files?: boolean | ArchiveFolder$filesArgs<ExtArgs>
+    customer?: boolean | ArchiveFolder$customerArgs<ExtArgs>
+    workorder?: boolean | ArchiveFolder$workorderArgs<ExtArgs>
+    _count?: boolean | ArchiveFolderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ArchiveFolderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | ArchiveFolder$parentArgs<ExtArgs>
+    customer?: boolean | ArchiveFolder$customerArgs<ExtArgs>
+    workorder?: boolean | ArchiveFolder$workorderArgs<ExtArgs>
+  }
+  export type ArchiveFolderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    parent?: boolean | ArchiveFolder$parentArgs<ExtArgs>
+    customer?: boolean | ArchiveFolder$customerArgs<ExtArgs>
+    workorder?: boolean | ArchiveFolder$workorderArgs<ExtArgs>
+  }
+
+  export type $ArchiveFolderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ArchiveFolder"
+    objects: {
+      parent: Prisma.$ArchiveFolderPayload<ExtArgs> | null
+      children: Prisma.$ArchiveFolderPayload<ExtArgs>[]
+      files: Prisma.$ArchiveFilePayload<ExtArgs>[]
+      customer: Prisma.$CustomerPayload<ExtArgs> | null
+      workorder: Prisma.$WorkorderPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * customer | location | workorder | project | custom
+       */
+      kind: string
+      name: string
+      nasPath: string
+      slug: string
+      parentId: string | null
+      customerId: string | null
+      /**
+       * Unieke sleutel per opdrachtgever voor locatiemappen
+       */
+      locationKey: string | null
+      workorderId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["archiveFolder"]>
+    composites: {}
+  }
+
+  type ArchiveFolderGetPayload<S extends boolean | null | undefined | ArchiveFolderDefaultArgs> = $Result.GetResult<Prisma.$ArchiveFolderPayload, S>
+
+  type ArchiveFolderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ArchiveFolderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ArchiveFolderCountAggregateInputType | true
+    }
+
+  export interface ArchiveFolderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ArchiveFolder'], meta: { name: 'ArchiveFolder' } }
+    /**
+     * Find zero or one ArchiveFolder that matches the filter.
+     * @param {ArchiveFolderFindUniqueArgs} args - Arguments to find a ArchiveFolder
+     * @example
+     * // Get one ArchiveFolder
+     * const archiveFolder = await prisma.archiveFolder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ArchiveFolderFindUniqueArgs>(args: SelectSubset<T, ArchiveFolderFindUniqueArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ArchiveFolder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ArchiveFolderFindUniqueOrThrowArgs} args - Arguments to find a ArchiveFolder
+     * @example
+     * // Get one ArchiveFolder
+     * const archiveFolder = await prisma.archiveFolder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ArchiveFolderFindUniqueOrThrowArgs>(args: SelectSubset<T, ArchiveFolderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArchiveFolder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFolderFindFirstArgs} args - Arguments to find a ArchiveFolder
+     * @example
+     * // Get one ArchiveFolder
+     * const archiveFolder = await prisma.archiveFolder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ArchiveFolderFindFirstArgs>(args?: SelectSubset<T, ArchiveFolderFindFirstArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ArchiveFolder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFolderFindFirstOrThrowArgs} args - Arguments to find a ArchiveFolder
+     * @example
+     * // Get one ArchiveFolder
+     * const archiveFolder = await prisma.archiveFolder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ArchiveFolderFindFirstOrThrowArgs>(args?: SelectSubset<T, ArchiveFolderFindFirstOrThrowArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ArchiveFolders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFolderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ArchiveFolders
+     * const archiveFolders = await prisma.archiveFolder.findMany()
+     * 
+     * // Get first 10 ArchiveFolders
+     * const archiveFolders = await prisma.archiveFolder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const archiveFolderWithIdOnly = await prisma.archiveFolder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ArchiveFolderFindManyArgs>(args?: SelectSubset<T, ArchiveFolderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ArchiveFolder.
+     * @param {ArchiveFolderCreateArgs} args - Arguments to create a ArchiveFolder.
+     * @example
+     * // Create one ArchiveFolder
+     * const ArchiveFolder = await prisma.archiveFolder.create({
+     *   data: {
+     *     // ... data to create a ArchiveFolder
+     *   }
+     * })
+     * 
+     */
+    create<T extends ArchiveFolderCreateArgs>(args: SelectSubset<T, ArchiveFolderCreateArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ArchiveFolders.
+     * @param {ArchiveFolderCreateManyArgs} args - Arguments to create many ArchiveFolders.
+     * @example
+     * // Create many ArchiveFolders
+     * const archiveFolder = await prisma.archiveFolder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ArchiveFolderCreateManyArgs>(args?: SelectSubset<T, ArchiveFolderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ArchiveFolders and returns the data saved in the database.
+     * @param {ArchiveFolderCreateManyAndReturnArgs} args - Arguments to create many ArchiveFolders.
+     * @example
+     * // Create many ArchiveFolders
+     * const archiveFolder = await prisma.archiveFolder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ArchiveFolders and only return the `id`
+     * const archiveFolderWithIdOnly = await prisma.archiveFolder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ArchiveFolderCreateManyAndReturnArgs>(args?: SelectSubset<T, ArchiveFolderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ArchiveFolder.
+     * @param {ArchiveFolderDeleteArgs} args - Arguments to delete one ArchiveFolder.
+     * @example
+     * // Delete one ArchiveFolder
+     * const ArchiveFolder = await prisma.archiveFolder.delete({
+     *   where: {
+     *     // ... filter to delete one ArchiveFolder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ArchiveFolderDeleteArgs>(args: SelectSubset<T, ArchiveFolderDeleteArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ArchiveFolder.
+     * @param {ArchiveFolderUpdateArgs} args - Arguments to update one ArchiveFolder.
+     * @example
+     * // Update one ArchiveFolder
+     * const archiveFolder = await prisma.archiveFolder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ArchiveFolderUpdateArgs>(args: SelectSubset<T, ArchiveFolderUpdateArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ArchiveFolders.
+     * @param {ArchiveFolderDeleteManyArgs} args - Arguments to filter ArchiveFolders to delete.
+     * @example
+     * // Delete a few ArchiveFolders
+     * const { count } = await prisma.archiveFolder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ArchiveFolderDeleteManyArgs>(args?: SelectSubset<T, ArchiveFolderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArchiveFolders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFolderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ArchiveFolders
+     * const archiveFolder = await prisma.archiveFolder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ArchiveFolderUpdateManyArgs>(args: SelectSubset<T, ArchiveFolderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ArchiveFolders and returns the data updated in the database.
+     * @param {ArchiveFolderUpdateManyAndReturnArgs} args - Arguments to update many ArchiveFolders.
+     * @example
+     * // Update many ArchiveFolders
+     * const archiveFolder = await prisma.archiveFolder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ArchiveFolders and only return the `id`
+     * const archiveFolderWithIdOnly = await prisma.archiveFolder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ArchiveFolderUpdateManyAndReturnArgs>(args: SelectSubset<T, ArchiveFolderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ArchiveFolder.
+     * @param {ArchiveFolderUpsertArgs} args - Arguments to update or create a ArchiveFolder.
+     * @example
+     * // Update or create a ArchiveFolder
+     * const archiveFolder = await prisma.archiveFolder.upsert({
+     *   create: {
+     *     // ... data to create a ArchiveFolder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ArchiveFolder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ArchiveFolderUpsertArgs>(args: SelectSubset<T, ArchiveFolderUpsertArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ArchiveFolders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFolderCountArgs} args - Arguments to filter ArchiveFolders to count.
+     * @example
+     * // Count the number of ArchiveFolders
+     * const count = await prisma.archiveFolder.count({
+     *   where: {
+     *     // ... the filter for the ArchiveFolders we want to count
+     *   }
+     * })
+    **/
+    count<T extends ArchiveFolderCountArgs>(
+      args?: Subset<T, ArchiveFolderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ArchiveFolderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ArchiveFolder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFolderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ArchiveFolderAggregateArgs>(args: Subset<T, ArchiveFolderAggregateArgs>): Prisma.PrismaPromise<GetArchiveFolderAggregateType<T>>
+
+    /**
+     * Group by ArchiveFolder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ArchiveFolderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ArchiveFolderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ArchiveFolderGroupByArgs['orderBy'] }
+        : { orderBy?: ArchiveFolderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ArchiveFolderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetArchiveFolderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ArchiveFolder model
+   */
+  readonly fields: ArchiveFolderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ArchiveFolder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ArchiveFolderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    parent<T extends ArchiveFolder$parentArgs<ExtArgs> = {}>(args?: Subset<T, ArchiveFolder$parentArgs<ExtArgs>>): Prisma__ArchiveFolderClient<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    children<T extends ArchiveFolder$childrenArgs<ExtArgs> = {}>(args?: Subset<T, ArchiveFolder$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    files<T extends ArchiveFolder$filesArgs<ExtArgs> = {}>(args?: Subset<T, ArchiveFolder$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArchiveFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    customer<T extends ArchiveFolder$customerArgs<ExtArgs> = {}>(args?: Subset<T, ArchiveFolder$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    workorder<T extends ArchiveFolder$workorderArgs<ExtArgs> = {}>(args?: Subset<T, ArchiveFolder$workorderArgs<ExtArgs>>): Prisma__WorkorderClient<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ArchiveFolder model
+   */
+  interface ArchiveFolderFieldRefs {
+    readonly id: FieldRef<"ArchiveFolder", 'String'>
+    readonly kind: FieldRef<"ArchiveFolder", 'String'>
+    readonly name: FieldRef<"ArchiveFolder", 'String'>
+    readonly nasPath: FieldRef<"ArchiveFolder", 'String'>
+    readonly slug: FieldRef<"ArchiveFolder", 'String'>
+    readonly parentId: FieldRef<"ArchiveFolder", 'String'>
+    readonly customerId: FieldRef<"ArchiveFolder", 'String'>
+    readonly locationKey: FieldRef<"ArchiveFolder", 'String'>
+    readonly workorderId: FieldRef<"ArchiveFolder", 'String'>
+    readonly createdAt: FieldRef<"ArchiveFolder", 'DateTime'>
+    readonly updatedAt: FieldRef<"ArchiveFolder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ArchiveFolder findUnique
+   */
+  export type ArchiveFolderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFolder to fetch.
+     */
+    where: ArchiveFolderWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFolder findUniqueOrThrow
+   */
+  export type ArchiveFolderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFolder to fetch.
+     */
+    where: ArchiveFolderWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFolder findFirst
+   */
+  export type ArchiveFolderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFolder to fetch.
+     */
+    where?: ArchiveFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFolders to fetch.
+     */
+    orderBy?: ArchiveFolderOrderByWithRelationInput | ArchiveFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArchiveFolders.
+     */
+    cursor?: ArchiveFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFolders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveFolders.
+     */
+    distinct?: ArchiveFolderScalarFieldEnum | ArchiveFolderScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFolder findFirstOrThrow
+   */
+  export type ArchiveFolderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFolder to fetch.
+     */
+    where?: ArchiveFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFolders to fetch.
+     */
+    orderBy?: ArchiveFolderOrderByWithRelationInput | ArchiveFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ArchiveFolders.
+     */
+    cursor?: ArchiveFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFolders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveFolders.
+     */
+    distinct?: ArchiveFolderScalarFieldEnum | ArchiveFolderScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFolder findMany
+   */
+  export type ArchiveFolderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * Filter, which ArchiveFolders to fetch.
+     */
+    where?: ArchiveFolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ArchiveFolders to fetch.
+     */
+    orderBy?: ArchiveFolderOrderByWithRelationInput | ArchiveFolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ArchiveFolders.
+     */
+    cursor?: ArchiveFolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ArchiveFolders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ArchiveFolders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ArchiveFolders.
+     */
+    distinct?: ArchiveFolderScalarFieldEnum | ArchiveFolderScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFolder create
+   */
+  export type ArchiveFolderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ArchiveFolder.
+     */
+    data: XOR<ArchiveFolderCreateInput, ArchiveFolderUncheckedCreateInput>
+  }
+
+  /**
+   * ArchiveFolder createMany
+   */
+  export type ArchiveFolderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ArchiveFolders.
+     */
+    data: ArchiveFolderCreateManyInput | ArchiveFolderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ArchiveFolder createManyAndReturn
+   */
+  export type ArchiveFolderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * The data used to create many ArchiveFolders.
+     */
+    data: ArchiveFolderCreateManyInput | ArchiveFolderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ArchiveFolder update
+   */
+  export type ArchiveFolderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ArchiveFolder.
+     */
+    data: XOR<ArchiveFolderUpdateInput, ArchiveFolderUncheckedUpdateInput>
+    /**
+     * Choose, which ArchiveFolder to update.
+     */
+    where: ArchiveFolderWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFolder updateMany
+   */
+  export type ArchiveFolderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ArchiveFolders.
+     */
+    data: XOR<ArchiveFolderUpdateManyMutationInput, ArchiveFolderUncheckedUpdateManyInput>
+    /**
+     * Filter which ArchiveFolders to update
+     */
+    where?: ArchiveFolderWhereInput
+    /**
+     * Limit how many ArchiveFolders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArchiveFolder updateManyAndReturn
+   */
+  export type ArchiveFolderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * The data used to update ArchiveFolders.
+     */
+    data: XOR<ArchiveFolderUpdateManyMutationInput, ArchiveFolderUncheckedUpdateManyInput>
+    /**
+     * Filter which ArchiveFolders to update
+     */
+    where?: ArchiveFolderWhereInput
+    /**
+     * Limit how many ArchiveFolders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ArchiveFolder upsert
+   */
+  export type ArchiveFolderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ArchiveFolder to update in case it exists.
+     */
+    where: ArchiveFolderWhereUniqueInput
+    /**
+     * In case the ArchiveFolder found by the `where` argument doesn't exist, create a new ArchiveFolder with this data.
+     */
+    create: XOR<ArchiveFolderCreateInput, ArchiveFolderUncheckedCreateInput>
+    /**
+     * In case the ArchiveFolder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ArchiveFolderUpdateInput, ArchiveFolderUncheckedUpdateInput>
+  }
+
+  /**
+   * ArchiveFolder delete
+   */
+  export type ArchiveFolderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    /**
+     * Filter which ArchiveFolder to delete.
+     */
+    where: ArchiveFolderWhereUniqueInput
+  }
+
+  /**
+   * ArchiveFolder deleteMany
+   */
+  export type ArchiveFolderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ArchiveFolders to delete
+     */
+    where?: ArchiveFolderWhereInput
+    /**
+     * Limit how many ArchiveFolders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ArchiveFolder.parent
+   */
+  export type ArchiveFolder$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    where?: ArchiveFolderWhereInput
+  }
+
+  /**
+   * ArchiveFolder.children
+   */
+  export type ArchiveFolder$childrenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
+    where?: ArchiveFolderWhereInput
+    orderBy?: ArchiveFolderOrderByWithRelationInput | ArchiveFolderOrderByWithRelationInput[]
+    cursor?: ArchiveFolderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ArchiveFolderScalarFieldEnum | ArchiveFolderScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFolder.files
+   */
+  export type ArchiveFolder$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFile
+     */
+    select?: ArchiveFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFile
+     */
+    omit?: ArchiveFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFileInclude<ExtArgs> | null
+    where?: ArchiveFileWhereInput
+    orderBy?: ArchiveFileOrderByWithRelationInput | ArchiveFileOrderByWithRelationInput[]
+    cursor?: ArchiveFileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ArchiveFileScalarFieldEnum | ArchiveFileScalarFieldEnum[]
+  }
+
+  /**
+   * ArchiveFolder.customer
+   */
+  export type ArchiveFolder$customerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Customer
+     */
+    select?: CustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Customer
+     */
+    omit?: CustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInclude<ExtArgs> | null
+    where?: CustomerWhereInput
+  }
+
+  /**
+   * ArchiveFolder.workorder
+   */
+  export type ArchiveFolder$workorderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Workorder
+     */
+    select?: WorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Workorder
+     */
+    omit?: WorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkorderInclude<ExtArgs> | null
+    where?: WorkorderWhereInput
+  }
+
+  /**
+   * ArchiveFolder without action
+   */
+  export type ArchiveFolderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ArchiveFolder
+     */
+    select?: ArchiveFolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ArchiveFolder
+     */
+    omit?: ArchiveFolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArchiveFolderInclude<ExtArgs> | null
   }
 
 
@@ -18453,6 +23024,2139 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: WorkorderAttachmentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Pakbon
+   */
+
+  export type AggregatePakbon = {
+    _count: PakbonCountAggregateOutputType | null
+    _min: PakbonMinAggregateOutputType | null
+    _max: PakbonMaxAggregateOutputType | null
+  }
+
+  export type PakbonMinAggregateOutputType = {
+    id: string | null
+    url: string | null
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    createdAt: Date | null
+  }
+
+  export type PakbonMaxAggregateOutputType = {
+    id: string | null
+    url: string | null
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    createdAt: Date | null
+  }
+
+  export type PakbonCountAggregateOutputType = {
+    id: number
+    url: number
+    filename: number
+    originalName: number
+    contentType: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PakbonMinAggregateInputType = {
+    id?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    createdAt?: true
+  }
+
+  export type PakbonMaxAggregateInputType = {
+    id?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    createdAt?: true
+  }
+
+  export type PakbonCountAggregateInputType = {
+    id?: true
+    url?: true
+    filename?: true
+    originalName?: true
+    contentType?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PakbonAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Pakbon to aggregate.
+     */
+    where?: PakbonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pakbons to fetch.
+     */
+    orderBy?: PakbonOrderByWithRelationInput | PakbonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PakbonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pakbons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pakbons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Pakbons
+    **/
+    _count?: true | PakbonCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PakbonMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PakbonMaxAggregateInputType
+  }
+
+  export type GetPakbonAggregateType<T extends PakbonAggregateArgs> = {
+        [P in keyof T & keyof AggregatePakbon]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePakbon[P]>
+      : GetScalarType<T[P], AggregatePakbon[P]>
+  }
+
+
+
+
+  export type PakbonGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PakbonWhereInput
+    orderBy?: PakbonOrderByWithAggregationInput | PakbonOrderByWithAggregationInput[]
+    by: PakbonScalarFieldEnum[] | PakbonScalarFieldEnum
+    having?: PakbonScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PakbonCountAggregateInputType | true
+    _min?: PakbonMinAggregateInputType
+    _max?: PakbonMaxAggregateInputType
+  }
+
+  export type PakbonGroupByOutputType = {
+    id: string
+    url: string
+    filename: string | null
+    originalName: string | null
+    contentType: string | null
+    createdAt: Date
+    _count: PakbonCountAggregateOutputType | null
+    _min: PakbonMinAggregateOutputType | null
+    _max: PakbonMaxAggregateOutputType | null
+  }
+
+  type GetPakbonGroupByPayload<T extends PakbonGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PakbonGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PakbonGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PakbonGroupByOutputType[P]>
+            : GetScalarType<T[P], PakbonGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PakbonSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+    workorders?: boolean | Pakbon$workordersArgs<ExtArgs>
+    _count?: boolean | PakbonCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pakbon"]>
+
+  export type PakbonSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["pakbon"]>
+
+  export type PakbonSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["pakbon"]>
+
+  export type PakbonSelectScalar = {
+    id?: boolean
+    url?: boolean
+    filename?: boolean
+    originalName?: boolean
+    contentType?: boolean
+    createdAt?: boolean
+  }
+
+  export type PakbonOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "filename" | "originalName" | "contentType" | "createdAt", ExtArgs["result"]["pakbon"]>
+  export type PakbonInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workorders?: boolean | Pakbon$workordersArgs<ExtArgs>
+    _count?: boolean | PakbonCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PakbonIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type PakbonIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $PakbonPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Pakbon"
+    objects: {
+      workorders: Prisma.$PakbonWorkorderPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      url: string
+      filename: string | null
+      originalName: string | null
+      contentType: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["pakbon"]>
+    composites: {}
+  }
+
+  type PakbonGetPayload<S extends boolean | null | undefined | PakbonDefaultArgs> = $Result.GetResult<Prisma.$PakbonPayload, S>
+
+  type PakbonCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PakbonFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PakbonCountAggregateInputType | true
+    }
+
+  export interface PakbonDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Pakbon'], meta: { name: 'Pakbon' } }
+    /**
+     * Find zero or one Pakbon that matches the filter.
+     * @param {PakbonFindUniqueArgs} args - Arguments to find a Pakbon
+     * @example
+     * // Get one Pakbon
+     * const pakbon = await prisma.pakbon.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PakbonFindUniqueArgs>(args: SelectSubset<T, PakbonFindUniqueArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Pakbon that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PakbonFindUniqueOrThrowArgs} args - Arguments to find a Pakbon
+     * @example
+     * // Get one Pakbon
+     * const pakbon = await prisma.pakbon.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PakbonFindUniqueOrThrowArgs>(args: SelectSubset<T, PakbonFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Pakbon that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonFindFirstArgs} args - Arguments to find a Pakbon
+     * @example
+     * // Get one Pakbon
+     * const pakbon = await prisma.pakbon.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PakbonFindFirstArgs>(args?: SelectSubset<T, PakbonFindFirstArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Pakbon that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonFindFirstOrThrowArgs} args - Arguments to find a Pakbon
+     * @example
+     * // Get one Pakbon
+     * const pakbon = await prisma.pakbon.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PakbonFindFirstOrThrowArgs>(args?: SelectSubset<T, PakbonFindFirstOrThrowArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Pakbons that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Pakbons
+     * const pakbons = await prisma.pakbon.findMany()
+     * 
+     * // Get first 10 Pakbons
+     * const pakbons = await prisma.pakbon.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pakbonWithIdOnly = await prisma.pakbon.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PakbonFindManyArgs>(args?: SelectSubset<T, PakbonFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Pakbon.
+     * @param {PakbonCreateArgs} args - Arguments to create a Pakbon.
+     * @example
+     * // Create one Pakbon
+     * const Pakbon = await prisma.pakbon.create({
+     *   data: {
+     *     // ... data to create a Pakbon
+     *   }
+     * })
+     * 
+     */
+    create<T extends PakbonCreateArgs>(args: SelectSubset<T, PakbonCreateArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Pakbons.
+     * @param {PakbonCreateManyArgs} args - Arguments to create many Pakbons.
+     * @example
+     * // Create many Pakbons
+     * const pakbon = await prisma.pakbon.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PakbonCreateManyArgs>(args?: SelectSubset<T, PakbonCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Pakbons and returns the data saved in the database.
+     * @param {PakbonCreateManyAndReturnArgs} args - Arguments to create many Pakbons.
+     * @example
+     * // Create many Pakbons
+     * const pakbon = await prisma.pakbon.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Pakbons and only return the `id`
+     * const pakbonWithIdOnly = await prisma.pakbon.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PakbonCreateManyAndReturnArgs>(args?: SelectSubset<T, PakbonCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Pakbon.
+     * @param {PakbonDeleteArgs} args - Arguments to delete one Pakbon.
+     * @example
+     * // Delete one Pakbon
+     * const Pakbon = await prisma.pakbon.delete({
+     *   where: {
+     *     // ... filter to delete one Pakbon
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PakbonDeleteArgs>(args: SelectSubset<T, PakbonDeleteArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Pakbon.
+     * @param {PakbonUpdateArgs} args - Arguments to update one Pakbon.
+     * @example
+     * // Update one Pakbon
+     * const pakbon = await prisma.pakbon.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PakbonUpdateArgs>(args: SelectSubset<T, PakbonUpdateArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Pakbons.
+     * @param {PakbonDeleteManyArgs} args - Arguments to filter Pakbons to delete.
+     * @example
+     * // Delete a few Pakbons
+     * const { count } = await prisma.pakbon.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PakbonDeleteManyArgs>(args?: SelectSubset<T, PakbonDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Pakbons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Pakbons
+     * const pakbon = await prisma.pakbon.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PakbonUpdateManyArgs>(args: SelectSubset<T, PakbonUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Pakbons and returns the data updated in the database.
+     * @param {PakbonUpdateManyAndReturnArgs} args - Arguments to update many Pakbons.
+     * @example
+     * // Update many Pakbons
+     * const pakbon = await prisma.pakbon.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Pakbons and only return the `id`
+     * const pakbonWithIdOnly = await prisma.pakbon.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PakbonUpdateManyAndReturnArgs>(args: SelectSubset<T, PakbonUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Pakbon.
+     * @param {PakbonUpsertArgs} args - Arguments to update or create a Pakbon.
+     * @example
+     * // Update or create a Pakbon
+     * const pakbon = await prisma.pakbon.upsert({
+     *   create: {
+     *     // ... data to create a Pakbon
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Pakbon we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PakbonUpsertArgs>(args: SelectSubset<T, PakbonUpsertArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Pakbons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonCountArgs} args - Arguments to filter Pakbons to count.
+     * @example
+     * // Count the number of Pakbons
+     * const count = await prisma.pakbon.count({
+     *   where: {
+     *     // ... the filter for the Pakbons we want to count
+     *   }
+     * })
+    **/
+    count<T extends PakbonCountArgs>(
+      args?: Subset<T, PakbonCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PakbonCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Pakbon.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PakbonAggregateArgs>(args: Subset<T, PakbonAggregateArgs>): Prisma.PrismaPromise<GetPakbonAggregateType<T>>
+
+    /**
+     * Group by Pakbon.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PakbonGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PakbonGroupByArgs['orderBy'] }
+        : { orderBy?: PakbonGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PakbonGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPakbonGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Pakbon model
+   */
+  readonly fields: PakbonFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Pakbon.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PakbonClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    workorders<T extends Pakbon$workordersArgs<ExtArgs> = {}>(args?: Subset<T, Pakbon$workordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Pakbon model
+   */
+  interface PakbonFieldRefs {
+    readonly id: FieldRef<"Pakbon", 'String'>
+    readonly url: FieldRef<"Pakbon", 'String'>
+    readonly filename: FieldRef<"Pakbon", 'String'>
+    readonly originalName: FieldRef<"Pakbon", 'String'>
+    readonly contentType: FieldRef<"Pakbon", 'String'>
+    readonly createdAt: FieldRef<"Pakbon", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Pakbon findUnique
+   */
+  export type PakbonFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * Filter, which Pakbon to fetch.
+     */
+    where: PakbonWhereUniqueInput
+  }
+
+  /**
+   * Pakbon findUniqueOrThrow
+   */
+  export type PakbonFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * Filter, which Pakbon to fetch.
+     */
+    where: PakbonWhereUniqueInput
+  }
+
+  /**
+   * Pakbon findFirst
+   */
+  export type PakbonFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * Filter, which Pakbon to fetch.
+     */
+    where?: PakbonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pakbons to fetch.
+     */
+    orderBy?: PakbonOrderByWithRelationInput | PakbonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Pakbons.
+     */
+    cursor?: PakbonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pakbons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pakbons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Pakbons.
+     */
+    distinct?: PakbonScalarFieldEnum | PakbonScalarFieldEnum[]
+  }
+
+  /**
+   * Pakbon findFirstOrThrow
+   */
+  export type PakbonFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * Filter, which Pakbon to fetch.
+     */
+    where?: PakbonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pakbons to fetch.
+     */
+    orderBy?: PakbonOrderByWithRelationInput | PakbonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Pakbons.
+     */
+    cursor?: PakbonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pakbons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pakbons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Pakbons.
+     */
+    distinct?: PakbonScalarFieldEnum | PakbonScalarFieldEnum[]
+  }
+
+  /**
+   * Pakbon findMany
+   */
+  export type PakbonFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * Filter, which Pakbons to fetch.
+     */
+    where?: PakbonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pakbons to fetch.
+     */
+    orderBy?: PakbonOrderByWithRelationInput | PakbonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Pakbons.
+     */
+    cursor?: PakbonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pakbons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pakbons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Pakbons.
+     */
+    distinct?: PakbonScalarFieldEnum | PakbonScalarFieldEnum[]
+  }
+
+  /**
+   * Pakbon create
+   */
+  export type PakbonCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Pakbon.
+     */
+    data: XOR<PakbonCreateInput, PakbonUncheckedCreateInput>
+  }
+
+  /**
+   * Pakbon createMany
+   */
+  export type PakbonCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Pakbons.
+     */
+    data: PakbonCreateManyInput | PakbonCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Pakbon createManyAndReturn
+   */
+  export type PakbonCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * The data used to create many Pakbons.
+     */
+    data: PakbonCreateManyInput | PakbonCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Pakbon update
+   */
+  export type PakbonUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Pakbon.
+     */
+    data: XOR<PakbonUpdateInput, PakbonUncheckedUpdateInput>
+    /**
+     * Choose, which Pakbon to update.
+     */
+    where: PakbonWhereUniqueInput
+  }
+
+  /**
+   * Pakbon updateMany
+   */
+  export type PakbonUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Pakbons.
+     */
+    data: XOR<PakbonUpdateManyMutationInput, PakbonUncheckedUpdateManyInput>
+    /**
+     * Filter which Pakbons to update
+     */
+    where?: PakbonWhereInput
+    /**
+     * Limit how many Pakbons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pakbon updateManyAndReturn
+   */
+  export type PakbonUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * The data used to update Pakbons.
+     */
+    data: XOR<PakbonUpdateManyMutationInput, PakbonUncheckedUpdateManyInput>
+    /**
+     * Filter which Pakbons to update
+     */
+    where?: PakbonWhereInput
+    /**
+     * Limit how many Pakbons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pakbon upsert
+   */
+  export type PakbonUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Pakbon to update in case it exists.
+     */
+    where: PakbonWhereUniqueInput
+    /**
+     * In case the Pakbon found by the `where` argument doesn't exist, create a new Pakbon with this data.
+     */
+    create: XOR<PakbonCreateInput, PakbonUncheckedCreateInput>
+    /**
+     * In case the Pakbon was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PakbonUpdateInput, PakbonUncheckedUpdateInput>
+  }
+
+  /**
+   * Pakbon delete
+   */
+  export type PakbonDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+    /**
+     * Filter which Pakbon to delete.
+     */
+    where: PakbonWhereUniqueInput
+  }
+
+  /**
+   * Pakbon deleteMany
+   */
+  export type PakbonDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Pakbons to delete
+     */
+    where?: PakbonWhereInput
+    /**
+     * Limit how many Pakbons to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pakbon.workorders
+   */
+  export type Pakbon$workordersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    where?: PakbonWorkorderWhereInput
+    orderBy?: PakbonWorkorderOrderByWithRelationInput | PakbonWorkorderOrderByWithRelationInput[]
+    cursor?: PakbonWorkorderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PakbonWorkorderScalarFieldEnum | PakbonWorkorderScalarFieldEnum[]
+  }
+
+  /**
+   * Pakbon without action
+   */
+  export type PakbonDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pakbon
+     */
+    select?: PakbonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pakbon
+     */
+    omit?: PakbonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PakbonWorkorder
+   */
+
+  export type AggregatePakbonWorkorder = {
+    _count: PakbonWorkorderCountAggregateOutputType | null
+    _min: PakbonWorkorderMinAggregateOutputType | null
+    _max: PakbonWorkorderMaxAggregateOutputType | null
+  }
+
+  export type PakbonWorkorderMinAggregateOutputType = {
+    pakbonId: string | null
+    workorderId: string | null
+    createdAt: Date | null
+  }
+
+  export type PakbonWorkorderMaxAggregateOutputType = {
+    pakbonId: string | null
+    workorderId: string | null
+    createdAt: Date | null
+  }
+
+  export type PakbonWorkorderCountAggregateOutputType = {
+    pakbonId: number
+    workorderId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PakbonWorkorderMinAggregateInputType = {
+    pakbonId?: true
+    workorderId?: true
+    createdAt?: true
+  }
+
+  export type PakbonWorkorderMaxAggregateInputType = {
+    pakbonId?: true
+    workorderId?: true
+    createdAt?: true
+  }
+
+  export type PakbonWorkorderCountAggregateInputType = {
+    pakbonId?: true
+    workorderId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PakbonWorkorderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PakbonWorkorder to aggregate.
+     */
+    where?: PakbonWorkorderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PakbonWorkorders to fetch.
+     */
+    orderBy?: PakbonWorkorderOrderByWithRelationInput | PakbonWorkorderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PakbonWorkorderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PakbonWorkorders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PakbonWorkorders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PakbonWorkorders
+    **/
+    _count?: true | PakbonWorkorderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PakbonWorkorderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PakbonWorkorderMaxAggregateInputType
+  }
+
+  export type GetPakbonWorkorderAggregateType<T extends PakbonWorkorderAggregateArgs> = {
+        [P in keyof T & keyof AggregatePakbonWorkorder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePakbonWorkorder[P]>
+      : GetScalarType<T[P], AggregatePakbonWorkorder[P]>
+  }
+
+
+
+
+  export type PakbonWorkorderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PakbonWorkorderWhereInput
+    orderBy?: PakbonWorkorderOrderByWithAggregationInput | PakbonWorkorderOrderByWithAggregationInput[]
+    by: PakbonWorkorderScalarFieldEnum[] | PakbonWorkorderScalarFieldEnum
+    having?: PakbonWorkorderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PakbonWorkorderCountAggregateInputType | true
+    _min?: PakbonWorkorderMinAggregateInputType
+    _max?: PakbonWorkorderMaxAggregateInputType
+  }
+
+  export type PakbonWorkorderGroupByOutputType = {
+    pakbonId: string
+    workorderId: string
+    createdAt: Date
+    _count: PakbonWorkorderCountAggregateOutputType | null
+    _min: PakbonWorkorderMinAggregateOutputType | null
+    _max: PakbonWorkorderMaxAggregateOutputType | null
+  }
+
+  type GetPakbonWorkorderGroupByPayload<T extends PakbonWorkorderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PakbonWorkorderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PakbonWorkorderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PakbonWorkorderGroupByOutputType[P]>
+            : GetScalarType<T[P], PakbonWorkorderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PakbonWorkorderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    pakbonId?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+    pakbon?: boolean | PakbonDefaultArgs<ExtArgs>
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pakbonWorkorder"]>
+
+  export type PakbonWorkorderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    pakbonId?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+    pakbon?: boolean | PakbonDefaultArgs<ExtArgs>
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pakbonWorkorder"]>
+
+  export type PakbonWorkorderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    pakbonId?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+    pakbon?: boolean | PakbonDefaultArgs<ExtArgs>
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pakbonWorkorder"]>
+
+  export type PakbonWorkorderSelectScalar = {
+    pakbonId?: boolean
+    workorderId?: boolean
+    createdAt?: boolean
+  }
+
+  export type PakbonWorkorderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"pakbonId" | "workorderId" | "createdAt", ExtArgs["result"]["pakbonWorkorder"]>
+  export type PakbonWorkorderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pakbon?: boolean | PakbonDefaultArgs<ExtArgs>
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }
+  export type PakbonWorkorderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pakbon?: boolean | PakbonDefaultArgs<ExtArgs>
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }
+  export type PakbonWorkorderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pakbon?: boolean | PakbonDefaultArgs<ExtArgs>
+    workorder?: boolean | WorkorderDefaultArgs<ExtArgs>
+  }
+
+  export type $PakbonWorkorderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PakbonWorkorder"
+    objects: {
+      pakbon: Prisma.$PakbonPayload<ExtArgs>
+      workorder: Prisma.$WorkorderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      pakbonId: string
+      workorderId: string
+      createdAt: Date
+    }, ExtArgs["result"]["pakbonWorkorder"]>
+    composites: {}
+  }
+
+  type PakbonWorkorderGetPayload<S extends boolean | null | undefined | PakbonWorkorderDefaultArgs> = $Result.GetResult<Prisma.$PakbonWorkorderPayload, S>
+
+  type PakbonWorkorderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PakbonWorkorderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PakbonWorkorderCountAggregateInputType | true
+    }
+
+  export interface PakbonWorkorderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PakbonWorkorder'], meta: { name: 'PakbonWorkorder' } }
+    /**
+     * Find zero or one PakbonWorkorder that matches the filter.
+     * @param {PakbonWorkorderFindUniqueArgs} args - Arguments to find a PakbonWorkorder
+     * @example
+     * // Get one PakbonWorkorder
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PakbonWorkorderFindUniqueArgs>(args: SelectSubset<T, PakbonWorkorderFindUniqueArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PakbonWorkorder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PakbonWorkorderFindUniqueOrThrowArgs} args - Arguments to find a PakbonWorkorder
+     * @example
+     * // Get one PakbonWorkorder
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PakbonWorkorderFindUniqueOrThrowArgs>(args: SelectSubset<T, PakbonWorkorderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PakbonWorkorder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonWorkorderFindFirstArgs} args - Arguments to find a PakbonWorkorder
+     * @example
+     * // Get one PakbonWorkorder
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PakbonWorkorderFindFirstArgs>(args?: SelectSubset<T, PakbonWorkorderFindFirstArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PakbonWorkorder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonWorkorderFindFirstOrThrowArgs} args - Arguments to find a PakbonWorkorder
+     * @example
+     * // Get one PakbonWorkorder
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PakbonWorkorderFindFirstOrThrowArgs>(args?: SelectSubset<T, PakbonWorkorderFindFirstOrThrowArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PakbonWorkorders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonWorkorderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PakbonWorkorders
+     * const pakbonWorkorders = await prisma.pakbonWorkorder.findMany()
+     * 
+     * // Get first 10 PakbonWorkorders
+     * const pakbonWorkorders = await prisma.pakbonWorkorder.findMany({ take: 10 })
+     * 
+     * // Only select the `pakbonId`
+     * const pakbonWorkorderWithPakbonIdOnly = await prisma.pakbonWorkorder.findMany({ select: { pakbonId: true } })
+     * 
+     */
+    findMany<T extends PakbonWorkorderFindManyArgs>(args?: SelectSubset<T, PakbonWorkorderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PakbonWorkorder.
+     * @param {PakbonWorkorderCreateArgs} args - Arguments to create a PakbonWorkorder.
+     * @example
+     * // Create one PakbonWorkorder
+     * const PakbonWorkorder = await prisma.pakbonWorkorder.create({
+     *   data: {
+     *     // ... data to create a PakbonWorkorder
+     *   }
+     * })
+     * 
+     */
+    create<T extends PakbonWorkorderCreateArgs>(args: SelectSubset<T, PakbonWorkorderCreateArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PakbonWorkorders.
+     * @param {PakbonWorkorderCreateManyArgs} args - Arguments to create many PakbonWorkorders.
+     * @example
+     * // Create many PakbonWorkorders
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PakbonWorkorderCreateManyArgs>(args?: SelectSubset<T, PakbonWorkorderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PakbonWorkorders and returns the data saved in the database.
+     * @param {PakbonWorkorderCreateManyAndReturnArgs} args - Arguments to create many PakbonWorkorders.
+     * @example
+     * // Create many PakbonWorkorders
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PakbonWorkorders and only return the `pakbonId`
+     * const pakbonWorkorderWithPakbonIdOnly = await prisma.pakbonWorkorder.createManyAndReturn({
+     *   select: { pakbonId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PakbonWorkorderCreateManyAndReturnArgs>(args?: SelectSubset<T, PakbonWorkorderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PakbonWorkorder.
+     * @param {PakbonWorkorderDeleteArgs} args - Arguments to delete one PakbonWorkorder.
+     * @example
+     * // Delete one PakbonWorkorder
+     * const PakbonWorkorder = await prisma.pakbonWorkorder.delete({
+     *   where: {
+     *     // ... filter to delete one PakbonWorkorder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PakbonWorkorderDeleteArgs>(args: SelectSubset<T, PakbonWorkorderDeleteArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PakbonWorkorder.
+     * @param {PakbonWorkorderUpdateArgs} args - Arguments to update one PakbonWorkorder.
+     * @example
+     * // Update one PakbonWorkorder
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PakbonWorkorderUpdateArgs>(args: SelectSubset<T, PakbonWorkorderUpdateArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PakbonWorkorders.
+     * @param {PakbonWorkorderDeleteManyArgs} args - Arguments to filter PakbonWorkorders to delete.
+     * @example
+     * // Delete a few PakbonWorkorders
+     * const { count } = await prisma.pakbonWorkorder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PakbonWorkorderDeleteManyArgs>(args?: SelectSubset<T, PakbonWorkorderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PakbonWorkorders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonWorkorderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PakbonWorkorders
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PakbonWorkorderUpdateManyArgs>(args: SelectSubset<T, PakbonWorkorderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PakbonWorkorders and returns the data updated in the database.
+     * @param {PakbonWorkorderUpdateManyAndReturnArgs} args - Arguments to update many PakbonWorkorders.
+     * @example
+     * // Update many PakbonWorkorders
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PakbonWorkorders and only return the `pakbonId`
+     * const pakbonWorkorderWithPakbonIdOnly = await prisma.pakbonWorkorder.updateManyAndReturn({
+     *   select: { pakbonId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PakbonWorkorderUpdateManyAndReturnArgs>(args: SelectSubset<T, PakbonWorkorderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PakbonWorkorder.
+     * @param {PakbonWorkorderUpsertArgs} args - Arguments to update or create a PakbonWorkorder.
+     * @example
+     * // Update or create a PakbonWorkorder
+     * const pakbonWorkorder = await prisma.pakbonWorkorder.upsert({
+     *   create: {
+     *     // ... data to create a PakbonWorkorder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PakbonWorkorder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PakbonWorkorderUpsertArgs>(args: SelectSubset<T, PakbonWorkorderUpsertArgs<ExtArgs>>): Prisma__PakbonWorkorderClient<$Result.GetResult<Prisma.$PakbonWorkorderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PakbonWorkorders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonWorkorderCountArgs} args - Arguments to filter PakbonWorkorders to count.
+     * @example
+     * // Count the number of PakbonWorkorders
+     * const count = await prisma.pakbonWorkorder.count({
+     *   where: {
+     *     // ... the filter for the PakbonWorkorders we want to count
+     *   }
+     * })
+    **/
+    count<T extends PakbonWorkorderCountArgs>(
+      args?: Subset<T, PakbonWorkorderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PakbonWorkorderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PakbonWorkorder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonWorkorderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PakbonWorkorderAggregateArgs>(args: Subset<T, PakbonWorkorderAggregateArgs>): Prisma.PrismaPromise<GetPakbonWorkorderAggregateType<T>>
+
+    /**
+     * Group by PakbonWorkorder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PakbonWorkorderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PakbonWorkorderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PakbonWorkorderGroupByArgs['orderBy'] }
+        : { orderBy?: PakbonWorkorderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PakbonWorkorderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPakbonWorkorderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PakbonWorkorder model
+   */
+  readonly fields: PakbonWorkorderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PakbonWorkorder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PakbonWorkorderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    pakbon<T extends PakbonDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PakbonDefaultArgs<ExtArgs>>): Prisma__PakbonClient<$Result.GetResult<Prisma.$PakbonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    workorder<T extends WorkorderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkorderDefaultArgs<ExtArgs>>): Prisma__WorkorderClient<$Result.GetResult<Prisma.$WorkorderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PakbonWorkorder model
+   */
+  interface PakbonWorkorderFieldRefs {
+    readonly pakbonId: FieldRef<"PakbonWorkorder", 'String'>
+    readonly workorderId: FieldRef<"PakbonWorkorder", 'String'>
+    readonly createdAt: FieldRef<"PakbonWorkorder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PakbonWorkorder findUnique
+   */
+  export type PakbonWorkorderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * Filter, which PakbonWorkorder to fetch.
+     */
+    where: PakbonWorkorderWhereUniqueInput
+  }
+
+  /**
+   * PakbonWorkorder findUniqueOrThrow
+   */
+  export type PakbonWorkorderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * Filter, which PakbonWorkorder to fetch.
+     */
+    where: PakbonWorkorderWhereUniqueInput
+  }
+
+  /**
+   * PakbonWorkorder findFirst
+   */
+  export type PakbonWorkorderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * Filter, which PakbonWorkorder to fetch.
+     */
+    where?: PakbonWorkorderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PakbonWorkorders to fetch.
+     */
+    orderBy?: PakbonWorkorderOrderByWithRelationInput | PakbonWorkorderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PakbonWorkorders.
+     */
+    cursor?: PakbonWorkorderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PakbonWorkorders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PakbonWorkorders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PakbonWorkorders.
+     */
+    distinct?: PakbonWorkorderScalarFieldEnum | PakbonWorkorderScalarFieldEnum[]
+  }
+
+  /**
+   * PakbonWorkorder findFirstOrThrow
+   */
+  export type PakbonWorkorderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * Filter, which PakbonWorkorder to fetch.
+     */
+    where?: PakbonWorkorderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PakbonWorkorders to fetch.
+     */
+    orderBy?: PakbonWorkorderOrderByWithRelationInput | PakbonWorkorderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PakbonWorkorders.
+     */
+    cursor?: PakbonWorkorderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PakbonWorkorders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PakbonWorkorders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PakbonWorkorders.
+     */
+    distinct?: PakbonWorkorderScalarFieldEnum | PakbonWorkorderScalarFieldEnum[]
+  }
+
+  /**
+   * PakbonWorkorder findMany
+   */
+  export type PakbonWorkorderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * Filter, which PakbonWorkorders to fetch.
+     */
+    where?: PakbonWorkorderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PakbonWorkorders to fetch.
+     */
+    orderBy?: PakbonWorkorderOrderByWithRelationInput | PakbonWorkorderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PakbonWorkorders.
+     */
+    cursor?: PakbonWorkorderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PakbonWorkorders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PakbonWorkorders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PakbonWorkorders.
+     */
+    distinct?: PakbonWorkorderScalarFieldEnum | PakbonWorkorderScalarFieldEnum[]
+  }
+
+  /**
+   * PakbonWorkorder create
+   */
+  export type PakbonWorkorderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PakbonWorkorder.
+     */
+    data: XOR<PakbonWorkorderCreateInput, PakbonWorkorderUncheckedCreateInput>
+  }
+
+  /**
+   * PakbonWorkorder createMany
+   */
+  export type PakbonWorkorderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PakbonWorkorders.
+     */
+    data: PakbonWorkorderCreateManyInput | PakbonWorkorderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PakbonWorkorder createManyAndReturn
+   */
+  export type PakbonWorkorderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * The data used to create many PakbonWorkorders.
+     */
+    data: PakbonWorkorderCreateManyInput | PakbonWorkorderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PakbonWorkorder update
+   */
+  export type PakbonWorkorderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PakbonWorkorder.
+     */
+    data: XOR<PakbonWorkorderUpdateInput, PakbonWorkorderUncheckedUpdateInput>
+    /**
+     * Choose, which PakbonWorkorder to update.
+     */
+    where: PakbonWorkorderWhereUniqueInput
+  }
+
+  /**
+   * PakbonWorkorder updateMany
+   */
+  export type PakbonWorkorderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PakbonWorkorders.
+     */
+    data: XOR<PakbonWorkorderUpdateManyMutationInput, PakbonWorkorderUncheckedUpdateManyInput>
+    /**
+     * Filter which PakbonWorkorders to update
+     */
+    where?: PakbonWorkorderWhereInput
+    /**
+     * Limit how many PakbonWorkorders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PakbonWorkorder updateManyAndReturn
+   */
+  export type PakbonWorkorderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * The data used to update PakbonWorkorders.
+     */
+    data: XOR<PakbonWorkorderUpdateManyMutationInput, PakbonWorkorderUncheckedUpdateManyInput>
+    /**
+     * Filter which PakbonWorkorders to update
+     */
+    where?: PakbonWorkorderWhereInput
+    /**
+     * Limit how many PakbonWorkorders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PakbonWorkorder upsert
+   */
+  export type PakbonWorkorderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PakbonWorkorder to update in case it exists.
+     */
+    where: PakbonWorkorderWhereUniqueInput
+    /**
+     * In case the PakbonWorkorder found by the `where` argument doesn't exist, create a new PakbonWorkorder with this data.
+     */
+    create: XOR<PakbonWorkorderCreateInput, PakbonWorkorderUncheckedCreateInput>
+    /**
+     * In case the PakbonWorkorder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PakbonWorkorderUpdateInput, PakbonWorkorderUncheckedUpdateInput>
+  }
+
+  /**
+   * PakbonWorkorder delete
+   */
+  export type PakbonWorkorderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
+    /**
+     * Filter which PakbonWorkorder to delete.
+     */
+    where: PakbonWorkorderWhereUniqueInput
+  }
+
+  /**
+   * PakbonWorkorder deleteMany
+   */
+  export type PakbonWorkorderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PakbonWorkorders to delete
+     */
+    where?: PakbonWorkorderWhereInput
+    /**
+     * Limit how many PakbonWorkorders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PakbonWorkorder without action
+   */
+  export type PakbonWorkorderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PakbonWorkorder
+     */
+    select?: PakbonWorkorderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PakbonWorkorder
+     */
+    omit?: PakbonWorkorderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PakbonWorkorderInclude<ExtArgs> | null
   }
 
 
@@ -28438,6 +35142,7 @@ export namespace Prisma {
     recurrenceNth: number | null
     recurrenceUntil: Date | null
     assignedUserId: string | null
+    projectId: string | null
     createdById: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -28456,6 +35161,7 @@ export namespace Prisma {
     recurrenceNth: number | null
     recurrenceUntil: Date | null
     assignedUserId: string | null
+    projectId: string | null
     createdById: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -28474,6 +35180,7 @@ export namespace Prisma {
     recurrenceNth: number
     recurrenceUntil: number
     assignedUserId: number
+    projectId: number
     createdById: number
     createdAt: number
     updatedAt: number
@@ -28506,6 +35213,7 @@ export namespace Prisma {
     recurrenceNth?: true
     recurrenceUntil?: true
     assignedUserId?: true
+    projectId?: true
     createdById?: true
     createdAt?: true
     updatedAt?: true
@@ -28524,6 +35232,7 @@ export namespace Prisma {
     recurrenceNth?: true
     recurrenceUntil?: true
     assignedUserId?: true
+    projectId?: true
     createdById?: true
     createdAt?: true
     updatedAt?: true
@@ -28542,6 +35251,7 @@ export namespace Prisma {
     recurrenceNth?: true
     recurrenceUntil?: true
     assignedUserId?: true
+    projectId?: true
     createdById?: true
     createdAt?: true
     updatedAt?: true
@@ -28647,6 +35357,7 @@ export namespace Prisma {
     recurrenceNth: number | null
     recurrenceUntil: Date | null
     assignedUserId: string | null
+    projectId: string | null
     createdById: string
     createdAt: Date
     updatedAt: Date
@@ -28684,11 +35395,13 @@ export namespace Prisma {
     recurrenceNth?: boolean
     recurrenceUntil?: boolean
     assignedUserId?: boolean
+    projectId?: boolean
     createdById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | PlanningEvent$projectArgs<ExtArgs>
   }, ExtArgs["result"]["planningEvent"]>
 
   export type PlanningEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -28704,11 +35417,13 @@ export namespace Prisma {
     recurrenceNth?: boolean
     recurrenceUntil?: boolean
     assignedUserId?: boolean
+    projectId?: boolean
     createdById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | PlanningEvent$projectArgs<ExtArgs>
   }, ExtArgs["result"]["planningEvent"]>
 
   export type PlanningEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -28724,11 +35439,13 @@ export namespace Prisma {
     recurrenceNth?: boolean
     recurrenceUntil?: boolean
     assignedUserId?: boolean
+    projectId?: boolean
     createdById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | PlanningEvent$projectArgs<ExtArgs>
   }, ExtArgs["result"]["planningEvent"]>
 
   export type PlanningEventSelectScalar = {
@@ -28744,23 +35461,27 @@ export namespace Prisma {
     recurrenceNth?: boolean
     recurrenceUntil?: boolean
     assignedUserId?: boolean
+    projectId?: boolean
     createdById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PlanningEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "notes" | "startAt" | "endAt" | "allDay" | "recurrenceFreq" | "recurrenceInterval" | "recurrenceWeekday" | "recurrenceNth" | "recurrenceUntil" | "assignedUserId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["planningEvent"]>
+  export type PlanningEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "notes" | "startAt" | "endAt" | "allDay" | "recurrenceFreq" | "recurrenceInterval" | "recurrenceWeekday" | "recurrenceNth" | "recurrenceUntil" | "assignedUserId" | "projectId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["planningEvent"]>
   export type PlanningEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | PlanningEvent$projectArgs<ExtArgs>
   }
   export type PlanningEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | PlanningEvent$projectArgs<ExtArgs>
   }
   export type PlanningEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedUser?: boolean | PlanningEvent$assignedUserArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    project?: boolean | PlanningEvent$projectArgs<ExtArgs>
   }
 
   export type $PlanningEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -28768,6 +35489,7 @@ export namespace Prisma {
     objects: {
       assignedUser: Prisma.$UserPayload<ExtArgs> | null
       createdBy: Prisma.$UserPayload<ExtArgs>
+      project: Prisma.$ProjectPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -28777,7 +35499,7 @@ export namespace Prisma {
       endAt: Date | null
       allDay: boolean
       /**
-       * none | weekly | monthly | monthly_weekday
+       * none | weekly | monthly | monthly_weekday | yearly
        */
       recurrenceFreq: string
       /**
@@ -28794,6 +35516,10 @@ export namespace Prisma {
       recurrenceNth: number | null
       recurrenceUntil: Date | null
       assignedUserId: string | null
+      /**
+       * Optioneel gekoppeld project: monteur staat die dag op het project
+       */
+      projectId: string | null
       createdById: string
       createdAt: Date
       updatedAt: Date
@@ -29193,6 +35919,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     assignedUser<T extends PlanningEvent$assignedUserArgs<ExtArgs> = {}>(args?: Subset<T, PlanningEvent$assignedUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    project<T extends PlanningEvent$projectArgs<ExtArgs> = {}>(args?: Subset<T, PlanningEvent$projectArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -29234,6 +35961,7 @@ export namespace Prisma {
     readonly recurrenceNth: FieldRef<"PlanningEvent", 'Int'>
     readonly recurrenceUntil: FieldRef<"PlanningEvent", 'DateTime'>
     readonly assignedUserId: FieldRef<"PlanningEvent", 'String'>
+    readonly projectId: FieldRef<"PlanningEvent", 'String'>
     readonly createdById: FieldRef<"PlanningEvent", 'String'>
     readonly createdAt: FieldRef<"PlanningEvent", 'DateTime'>
     readonly updatedAt: FieldRef<"PlanningEvent", 'DateTime'>
@@ -29654,6 +36382,25 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
+  }
+
+  /**
+   * PlanningEvent.project
+   */
+  export type PlanningEvent$projectArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    where?: ProjectWhereInput
   }
 
   /**
@@ -32916,6 +39663,22 @@ export namespace Prisma {
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
 
 
+  export const ArchiveFileScalarFieldEnum: {
+    id: 'id',
+    folderId: 'folderId',
+    name: 'name',
+    storage: 'storage',
+    storagePath: 'storagePath',
+    url: 'url',
+    contentType: 'contentType',
+    size: 'size',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ArchiveFileScalarFieldEnum = (typeof ArchiveFileScalarFieldEnum)[keyof typeof ArchiveFileScalarFieldEnum]
+
+
   export const AanvraagScalarFieldEnum: {
     id: 'id',
     customerId: 'customerId',
@@ -32951,7 +39714,14 @@ export namespace Prisma {
     geoffreerdBedrag: 'geoffreerdBedrag',
     offerteUrl: 'offerteUrl',
     offerteFilename: 'offerteFilename',
+    bunniOfferteId: 'bunniOfferteId',
+    bunniOfferteNummer: 'bunniOfferteNummer',
+    bunniOffertePdfUrl: 'bunniOffertePdfUrl',
+    bunniFactuurId: 'bunniFactuurId',
+    bunniFactuurNummer: 'bunniFactuurNummer',
+    bunniFactuurPdfUrl: 'bunniFactuurPdfUrl',
     status: 'status',
+    termijnAantal: 'termijnAantal',
     termijn1Gefactureerd: 'termijn1Gefactureerd',
     termijn2Gefactureerd: 'termijn2Gefactureerd',
     termijn3Gefactureerd: 'termijn3Gefactureerd',
@@ -32964,6 +39734,7 @@ export namespace Prisma {
     termijn2Factuurnummer: 'termijn2Factuurnummer',
     termijn3Factuurnummer: 'termijn3Factuurnummer',
     termijn4Factuurnummer: 'termijn4Factuurnummer',
+    intakeTekst: 'intakeTekst',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -32980,6 +39751,7 @@ export namespace Prisma {
     uren: 'uren',
     omschrijving: 'omschrijving',
     kilometers: 'kilometers',
+    parkeerkosten: 'parkeerkosten',
     createdAt: 'createdAt'
   };
 
@@ -33000,6 +39772,20 @@ export namespace Prisma {
   export type ProjectMateriaalScalarFieldEnum = (typeof ProjectMateriaalScalarFieldEnum)[keyof typeof ProjectMateriaalScalarFieldEnum]
 
 
+  export const ProjectAttachmentScalarFieldEnum: {
+    id: 'id',
+    projectId: 'projectId',
+    url: 'url',
+    filename: 'filename',
+    originalName: 'originalName',
+    contentType: 'contentType',
+    kind: 'kind',
+    createdAt: 'createdAt'
+  };
+
+  export type ProjectAttachmentScalarFieldEnum = (typeof ProjectAttachmentScalarFieldEnum)[keyof typeof ProjectAttachmentScalarFieldEnum]
+
+
   export const WorkorderScalarFieldEnum: {
     id: 'id',
     title: 'title',
@@ -33018,10 +39804,17 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     description: 'description',
     werkInstructie: 'werkInstructie',
+    opdrachtnummerOpdrachtgever: 'opdrachtnummerOpdrachtgever',
     workDate: 'workDate',
     internalNotes: 'internalNotes',
     onHoldNotes: 'onHoldNotes',
     number: 'number',
+    bunniOfferteId: 'bunniOfferteId',
+    bunniOfferteNummer: 'bunniOfferteNummer',
+    bunniOffertePdfUrl: 'bunniOffertePdfUrl',
+    bunniFactuurId: 'bunniFactuurId',
+    bunniFactuurNummer: 'bunniFactuurNummer',
+    bunniFactuurPdfUrl: 'bunniFactuurPdfUrl',
     assignedUserId: 'assignedUserId',
     plannedDate: 'plannedDate',
     plannedEndDate: 'plannedEndDate',
@@ -33030,13 +39823,36 @@ export namespace Prisma {
     plannedReisuren: 'plannedReisuren',
     assignmentId: 'assignmentId',
     formData: 'formData',
+    opleverModules: 'opleverModules',
     aanvraagSpecificaties: 'aanvraagSpecificaties',
     pdfData: 'pdfData',
     pdfGeneratedAt: 'pdfGeneratedAt',
-    sentAt: 'sentAt'
+    sentAt: 'sentAt',
+    archiveNasPath: 'archiveNasPath',
+    archiveLocationLabel: 'archiveLocationLabel',
+    archivedAt: 'archivedAt',
+    archiveStatus: 'archiveStatus',
+    archiveError: 'archiveError'
   };
 
   export type WorkorderScalarFieldEnum = (typeof WorkorderScalarFieldEnum)[keyof typeof WorkorderScalarFieldEnum]
+
+
+  export const ArchiveFolderScalarFieldEnum: {
+    id: 'id',
+    kind: 'kind',
+    name: 'name',
+    nasPath: 'nasPath',
+    slug: 'slug',
+    parentId: 'parentId',
+    customerId: 'customerId',
+    locationKey: 'locationKey',
+    workorderId: 'workorderId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ArchiveFolderScalarFieldEnum = (typeof ArchiveFolderScalarFieldEnum)[keyof typeof ArchiveFolderScalarFieldEnum]
 
 
   export const WorkorderHourScalarFieldEnum: {
@@ -33106,6 +39922,27 @@ export namespace Prisma {
   };
 
   export type WorkorderAttachmentScalarFieldEnum = (typeof WorkorderAttachmentScalarFieldEnum)[keyof typeof WorkorderAttachmentScalarFieldEnum]
+
+
+  export const PakbonScalarFieldEnum: {
+    id: 'id',
+    url: 'url',
+    filename: 'filename',
+    originalName: 'originalName',
+    contentType: 'contentType',
+    createdAt: 'createdAt'
+  };
+
+  export type PakbonScalarFieldEnum = (typeof PakbonScalarFieldEnum)[keyof typeof PakbonScalarFieldEnum]
+
+
+  export const PakbonWorkorderScalarFieldEnum: {
+    pakbonId: 'pakbonId',
+    workorderId: 'workorderId',
+    createdAt: 'createdAt'
+  };
+
+  export type PakbonWorkorderScalarFieldEnum = (typeof PakbonWorkorderScalarFieldEnum)[keyof typeof PakbonWorkorderScalarFieldEnum]
 
 
   export const WorkorderSignatureScalarFieldEnum: {
@@ -33235,6 +40072,7 @@ export namespace Prisma {
     recurrenceNth: 'recurrenceNth',
     recurrenceUntil: 'recurrenceUntil',
     assignedUserId: 'assignedUserId',
+    projectId: 'projectId',
     createdById: 'createdById',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -33382,6 +40220,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Decimal'
    */
   export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -33420,20 +40272,6 @@ export namespace Prisma {
    * Reference to a field of type 'Bytes[]'
    */
   export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
   /**
    * Deep Input Types
@@ -33559,6 +40397,7 @@ export namespace Prisma {
     projects?: ProjectListRelationFilter
     workorders?: WorkorderListRelationFilter
     aanvragen?: AanvraagListRelationFilter
+    archiveFolders?: ArchiveFolderListRelationFilter
   }
 
   export type CustomerOrderByWithRelationInput = {
@@ -33576,6 +40415,7 @@ export namespace Prisma {
     projects?: ProjectOrderByRelationAggregateInput
     workorders?: WorkorderOrderByRelationAggregateInput
     aanvragen?: AanvraagOrderByRelationAggregateInput
+    archiveFolders?: ArchiveFolderOrderByRelationAggregateInput
   }
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
@@ -33596,6 +40436,7 @@ export namespace Prisma {
     projects?: ProjectListRelationFilter
     workorders?: WorkorderListRelationFilter
     aanvragen?: AanvraagListRelationFilter
+    archiveFolders?: ArchiveFolderListRelationFilter
   }, "id" | "publicToken">
 
   export type CustomerOrderByWithAggregationInput = {
@@ -33628,6 +40469,88 @@ export namespace Prisma {
     color?: StringWithAggregatesFilter<"Customer"> | string
     formSchema?: JsonNullableWithAggregatesFilter<"Customer">
     publicToken?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+  }
+
+  export type ArchiveFileWhereInput = {
+    AND?: ArchiveFileWhereInput | ArchiveFileWhereInput[]
+    OR?: ArchiveFileWhereInput[]
+    NOT?: ArchiveFileWhereInput | ArchiveFileWhereInput[]
+    id?: StringFilter<"ArchiveFile"> | string
+    folderId?: StringFilter<"ArchiveFile"> | string
+    name?: StringFilter<"ArchiveFile"> | string
+    storage?: StringFilter<"ArchiveFile"> | string
+    storagePath?: StringFilter<"ArchiveFile"> | string
+    url?: StringNullableFilter<"ArchiveFile"> | string | null
+    contentType?: StringNullableFilter<"ArchiveFile"> | string | null
+    size?: IntNullableFilter<"ArchiveFile"> | number | null
+    createdAt?: DateTimeFilter<"ArchiveFile"> | Date | string
+    updatedAt?: DateTimeFilter<"ArchiveFile"> | Date | string
+    folder?: XOR<ArchiveFolderScalarRelationFilter, ArchiveFolderWhereInput>
+  }
+
+  export type ArchiveFileOrderByWithRelationInput = {
+    id?: SortOrder
+    folderId?: SortOrder
+    name?: SortOrder
+    storage?: SortOrder
+    storagePath?: SortOrder
+    url?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    size?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    folder?: ArchiveFolderOrderByWithRelationInput
+  }
+
+  export type ArchiveFileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ArchiveFileWhereInput | ArchiveFileWhereInput[]
+    OR?: ArchiveFileWhereInput[]
+    NOT?: ArchiveFileWhereInput | ArchiveFileWhereInput[]
+    folderId?: StringFilter<"ArchiveFile"> | string
+    name?: StringFilter<"ArchiveFile"> | string
+    storage?: StringFilter<"ArchiveFile"> | string
+    storagePath?: StringFilter<"ArchiveFile"> | string
+    url?: StringNullableFilter<"ArchiveFile"> | string | null
+    contentType?: StringNullableFilter<"ArchiveFile"> | string | null
+    size?: IntNullableFilter<"ArchiveFile"> | number | null
+    createdAt?: DateTimeFilter<"ArchiveFile"> | Date | string
+    updatedAt?: DateTimeFilter<"ArchiveFile"> | Date | string
+    folder?: XOR<ArchiveFolderScalarRelationFilter, ArchiveFolderWhereInput>
+  }, "id">
+
+  export type ArchiveFileOrderByWithAggregationInput = {
+    id?: SortOrder
+    folderId?: SortOrder
+    name?: SortOrder
+    storage?: SortOrder
+    storagePath?: SortOrder
+    url?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    size?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ArchiveFileCountOrderByAggregateInput
+    _avg?: ArchiveFileAvgOrderByAggregateInput
+    _max?: ArchiveFileMaxOrderByAggregateInput
+    _min?: ArchiveFileMinOrderByAggregateInput
+    _sum?: ArchiveFileSumOrderByAggregateInput
+  }
+
+  export type ArchiveFileScalarWhereWithAggregatesInput = {
+    AND?: ArchiveFileScalarWhereWithAggregatesInput | ArchiveFileScalarWhereWithAggregatesInput[]
+    OR?: ArchiveFileScalarWhereWithAggregatesInput[]
+    NOT?: ArchiveFileScalarWhereWithAggregatesInput | ArchiveFileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ArchiveFile"> | string
+    folderId?: StringWithAggregatesFilter<"ArchiveFile"> | string
+    name?: StringWithAggregatesFilter<"ArchiveFile"> | string
+    storage?: StringWithAggregatesFilter<"ArchiveFile"> | string
+    storagePath?: StringWithAggregatesFilter<"ArchiveFile"> | string
+    url?: StringNullableWithAggregatesFilter<"ArchiveFile"> | string | null
+    contentType?: StringNullableWithAggregatesFilter<"ArchiveFile"> | string | null
+    size?: IntNullableWithAggregatesFilter<"ArchiveFile"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"ArchiveFile"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ArchiveFile"> | Date | string
   }
 
   export type AanvraagWhereInput = {
@@ -33764,7 +40687,14 @@ export namespace Prisma {
     geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: StringNullableFilter<"Project"> | string | null
     offerteFilename?: StringNullableFilter<"Project"> | string | null
+    bunniOfferteId?: StringNullableFilter<"Project"> | string | null
+    bunniOfferteNummer?: StringNullableFilter<"Project"> | string | null
+    bunniOffertePdfUrl?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurId?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurNummer?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurPdfUrl?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
+    termijnAantal?: IntNullableFilter<"Project"> | number | null
     termijn1Gefactureerd?: BoolFilter<"Project"> | boolean
     termijn2Gefactureerd?: BoolFilter<"Project"> | boolean
     termijn3Gefactureerd?: BoolFilter<"Project"> | boolean
@@ -33777,12 +40707,15 @@ export namespace Prisma {
     termijn2Factuurnummer?: StringNullableFilter<"Project"> | string | null
     termijn3Factuurnummer?: StringNullableFilter<"Project"> | string | null
     termijn4Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    intakeTekst?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     workorders?: WorkorderListRelationFilter
     uren?: ProjectUurListRelationFilter
     materialen?: ProjectMateriaalListRelationFilter
+    bijlagen?: ProjectAttachmentListRelationFilter
+    planningEvents?: PlanningEventListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -33796,7 +40729,14 @@ export namespace Prisma {
     geoffreerdBedrag?: SortOrderInput | SortOrder
     offerteUrl?: SortOrderInput | SortOrder
     offerteFilename?: SortOrderInput | SortOrder
+    bunniOfferteId?: SortOrderInput | SortOrder
+    bunniOfferteNummer?: SortOrderInput | SortOrder
+    bunniOffertePdfUrl?: SortOrderInput | SortOrder
+    bunniFactuurId?: SortOrderInput | SortOrder
+    bunniFactuurNummer?: SortOrderInput | SortOrder
+    bunniFactuurPdfUrl?: SortOrderInput | SortOrder
     status?: SortOrder
+    termijnAantal?: SortOrderInput | SortOrder
     termijn1Gefactureerd?: SortOrder
     termijn2Gefactureerd?: SortOrder
     termijn3Gefactureerd?: SortOrder
@@ -33809,12 +40749,15 @@ export namespace Prisma {
     termijn2Factuurnummer?: SortOrderInput | SortOrder
     termijn3Factuurnummer?: SortOrderInput | SortOrder
     termijn4Factuurnummer?: SortOrderInput | SortOrder
+    intakeTekst?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     customer?: CustomerOrderByWithRelationInput
     workorders?: WorkorderOrderByRelationAggregateInput
     uren?: ProjectUurOrderByRelationAggregateInput
     materialen?: ProjectMateriaalOrderByRelationAggregateInput
+    bijlagen?: ProjectAttachmentOrderByRelationAggregateInput
+    planningEvents?: PlanningEventOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -33831,7 +40774,14 @@ export namespace Prisma {
     geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: StringNullableFilter<"Project"> | string | null
     offerteFilename?: StringNullableFilter<"Project"> | string | null
+    bunniOfferteId?: StringNullableFilter<"Project"> | string | null
+    bunniOfferteNummer?: StringNullableFilter<"Project"> | string | null
+    bunniOffertePdfUrl?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurId?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurNummer?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurPdfUrl?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
+    termijnAantal?: IntNullableFilter<"Project"> | number | null
     termijn1Gefactureerd?: BoolFilter<"Project"> | boolean
     termijn2Gefactureerd?: BoolFilter<"Project"> | boolean
     termijn3Gefactureerd?: BoolFilter<"Project"> | boolean
@@ -33844,12 +40794,15 @@ export namespace Prisma {
     termijn2Factuurnummer?: StringNullableFilter<"Project"> | string | null
     termijn3Factuurnummer?: StringNullableFilter<"Project"> | string | null
     termijn4Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    intakeTekst?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     workorders?: WorkorderListRelationFilter
     uren?: ProjectUurListRelationFilter
     materialen?: ProjectMateriaalListRelationFilter
+    bijlagen?: ProjectAttachmentListRelationFilter
+    planningEvents?: PlanningEventListRelationFilter
   }, "id" | "number">
 
   export type ProjectOrderByWithAggregationInput = {
@@ -33863,7 +40816,14 @@ export namespace Prisma {
     geoffreerdBedrag?: SortOrderInput | SortOrder
     offerteUrl?: SortOrderInput | SortOrder
     offerteFilename?: SortOrderInput | SortOrder
+    bunniOfferteId?: SortOrderInput | SortOrder
+    bunniOfferteNummer?: SortOrderInput | SortOrder
+    bunniOffertePdfUrl?: SortOrderInput | SortOrder
+    bunniFactuurId?: SortOrderInput | SortOrder
+    bunniFactuurNummer?: SortOrderInput | SortOrder
+    bunniFactuurPdfUrl?: SortOrderInput | SortOrder
     status?: SortOrder
+    termijnAantal?: SortOrderInput | SortOrder
     termijn1Gefactureerd?: SortOrder
     termijn2Gefactureerd?: SortOrder
     termijn3Gefactureerd?: SortOrder
@@ -33876,6 +40836,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: SortOrderInput | SortOrder
     termijn3Factuurnummer?: SortOrderInput | SortOrder
     termijn4Factuurnummer?: SortOrderInput | SortOrder
+    intakeTekst?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
@@ -33899,7 +40860,14 @@ export namespace Prisma {
     geoffreerdBedrag?: DecimalNullableWithAggregatesFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
     offerteFilename?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    bunniOfferteId?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    bunniOfferteNummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    bunniOffertePdfUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    bunniFactuurId?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    bunniFactuurNummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    bunniFactuurPdfUrl?: StringNullableWithAggregatesFilter<"Project"> | string | null
     status?: StringWithAggregatesFilter<"Project"> | string
+    termijnAantal?: IntNullableWithAggregatesFilter<"Project"> | number | null
     termijn1Gefactureerd?: BoolWithAggregatesFilter<"Project"> | boolean
     termijn2Gefactureerd?: BoolWithAggregatesFilter<"Project"> | boolean
     termijn3Gefactureerd?: BoolWithAggregatesFilter<"Project"> | boolean
@@ -33912,6 +40880,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
     termijn3Factuurnummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
     termijn4Factuurnummer?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    intakeTekst?: StringNullableWithAggregatesFilter<"Project"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
   }
@@ -33928,6 +40897,7 @@ export namespace Prisma {
     uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
     kilometers?: FloatNullableFilter<"ProjectUur"> | number | null
+    parkeerkosten?: DecimalNullableFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -33943,6 +40913,7 @@ export namespace Prisma {
     uren?: SortOrder
     omschrijving?: SortOrderInput | SortOrder
     kilometers?: SortOrderInput | SortOrder
+    parkeerkosten?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     project?: ProjectOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
@@ -33961,6 +40932,7 @@ export namespace Prisma {
     uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
     kilometers?: FloatNullableFilter<"ProjectUur"> | number | null
+    parkeerkosten?: DecimalNullableFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
     project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -33976,6 +40948,7 @@ export namespace Prisma {
     uren?: SortOrder
     omschrijving?: SortOrderInput | SortOrder
     kilometers?: SortOrderInput | SortOrder
+    parkeerkosten?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ProjectUurCountOrderByAggregateInput
     _avg?: ProjectUurAvgOrderByAggregateInput
@@ -33996,6 +40969,7 @@ export namespace Prisma {
     uren?: DecimalWithAggregatesFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableWithAggregatesFilter<"ProjectUur"> | string | null
     kilometers?: FloatNullableWithAggregatesFilter<"ProjectUur"> | number | null
+    parkeerkosten?: DecimalNullableWithAggregatesFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ProjectUur"> | Date | string
   }
 
@@ -34071,6 +41045,76 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ProjectMateriaal"> | Date | string
   }
 
+  export type ProjectAttachmentWhereInput = {
+    AND?: ProjectAttachmentWhereInput | ProjectAttachmentWhereInput[]
+    OR?: ProjectAttachmentWhereInput[]
+    NOT?: ProjectAttachmentWhereInput | ProjectAttachmentWhereInput[]
+    id?: StringFilter<"ProjectAttachment"> | string
+    projectId?: StringFilter<"ProjectAttachment"> | string
+    url?: StringFilter<"ProjectAttachment"> | string
+    filename?: StringNullableFilter<"ProjectAttachment"> | string | null
+    originalName?: StringNullableFilter<"ProjectAttachment"> | string | null
+    contentType?: StringNullableFilter<"ProjectAttachment"> | string | null
+    kind?: StringFilter<"ProjectAttachment"> | string
+    createdAt?: DateTimeFilter<"ProjectAttachment"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }
+
+  export type ProjectAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    kind?: SortOrder
+    createdAt?: SortOrder
+    project?: ProjectOrderByWithRelationInput
+  }
+
+  export type ProjectAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ProjectAttachmentWhereInput | ProjectAttachmentWhereInput[]
+    OR?: ProjectAttachmentWhereInput[]
+    NOT?: ProjectAttachmentWhereInput | ProjectAttachmentWhereInput[]
+    projectId?: StringFilter<"ProjectAttachment"> | string
+    url?: StringFilter<"ProjectAttachment"> | string
+    filename?: StringNullableFilter<"ProjectAttachment"> | string | null
+    originalName?: StringNullableFilter<"ProjectAttachment"> | string | null
+    contentType?: StringNullableFilter<"ProjectAttachment"> | string | null
+    kind?: StringFilter<"ProjectAttachment"> | string
+    createdAt?: DateTimeFilter<"ProjectAttachment"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }, "id">
+
+  export type ProjectAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    kind?: SortOrder
+    createdAt?: SortOrder
+    _count?: ProjectAttachmentCountOrderByAggregateInput
+    _max?: ProjectAttachmentMaxOrderByAggregateInput
+    _min?: ProjectAttachmentMinOrderByAggregateInput
+  }
+
+  export type ProjectAttachmentScalarWhereWithAggregatesInput = {
+    AND?: ProjectAttachmentScalarWhereWithAggregatesInput | ProjectAttachmentScalarWhereWithAggregatesInput[]
+    OR?: ProjectAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: ProjectAttachmentScalarWhereWithAggregatesInput | ProjectAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProjectAttachment"> | string
+    projectId?: StringWithAggregatesFilter<"ProjectAttachment"> | string
+    url?: StringWithAggregatesFilter<"ProjectAttachment"> | string
+    filename?: StringNullableWithAggregatesFilter<"ProjectAttachment"> | string | null
+    originalName?: StringNullableWithAggregatesFilter<"ProjectAttachment"> | string | null
+    contentType?: StringNullableWithAggregatesFilter<"ProjectAttachment"> | string | null
+    kind?: StringWithAggregatesFilter<"ProjectAttachment"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ProjectAttachment"> | Date | string
+  }
+
   export type WorkorderWhereInput = {
     AND?: WorkorderWhereInput | WorkorderWhereInput[]
     OR?: WorkorderWhereInput[]
@@ -34092,10 +41136,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Workorder"> | Date | string
     description?: StringNullableFilter<"Workorder"> | string | null
     werkInstructie?: StringNullableFilter<"Workorder"> | string | null
+    opdrachtnummerOpdrachtgever?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
     onHoldNotes?: StringNullableFilter<"Workorder"> | string | null
     number?: StringFilter<"Workorder"> | string
+    bunniOfferteId?: StringNullableFilter<"Workorder"> | string | null
+    bunniOfferteNummer?: StringNullableFilter<"Workorder"> | string | null
+    bunniOffertePdfUrl?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurId?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurNummer?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurPdfUrl?: StringNullableFilter<"Workorder"> | string | null
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -34104,10 +41155,16 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
+    opleverModules?: JsonNullableFilter<"Workorder">
     aanvraagSpecificaties?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    archiveNasPath?: StringNullableFilter<"Workorder"> | string | null
+    archiveLocationLabel?: StringNullableFilter<"Workorder"> | string | null
+    archivedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    archiveStatus?: StringNullableFilter<"Workorder"> | string | null
+    archiveError?: StringNullableFilter<"Workorder"> | string | null
     documents?: DocumentListRelationFilter
     assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     assignment?: XOR<AssignmentNullableScalarRelationFilter, AssignmentWhereInput> | null
@@ -34121,6 +41178,8 @@ export namespace Prisma {
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
     extraEngineers?: WorkorderEngineerListRelationFilter
     forms?: WorkorderFormListRelationFilter
+    pakbonnen?: PakbonWorkorderListRelationFilter
+    archiveFolder?: XOR<ArchiveFolderNullableScalarRelationFilter, ArchiveFolderWhereInput> | null
   }
 
   export type WorkorderOrderByWithRelationInput = {
@@ -34141,10 +41200,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
     description?: SortOrderInput | SortOrder
     werkInstructie?: SortOrderInput | SortOrder
+    opdrachtnummerOpdrachtgever?: SortOrderInput | SortOrder
     workDate?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
     onHoldNotes?: SortOrderInput | SortOrder
     number?: SortOrder
+    bunniOfferteId?: SortOrderInput | SortOrder
+    bunniOfferteNummer?: SortOrderInput | SortOrder
+    bunniOffertePdfUrl?: SortOrderInput | SortOrder
+    bunniFactuurId?: SortOrderInput | SortOrder
+    bunniFactuurNummer?: SortOrderInput | SortOrder
+    bunniFactuurPdfUrl?: SortOrderInput | SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
     plannedEndDate?: SortOrderInput | SortOrder
@@ -34153,10 +41219,16 @@ export namespace Prisma {
     plannedReisuren?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
+    opleverModules?: SortOrderInput | SortOrder
     aanvraagSpecificaties?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
     pdfGeneratedAt?: SortOrderInput | SortOrder
     sentAt?: SortOrderInput | SortOrder
+    archiveNasPath?: SortOrderInput | SortOrder
+    archiveLocationLabel?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
+    archiveStatus?: SortOrderInput | SortOrder
+    archiveError?: SortOrderInput | SortOrder
     documents?: DocumentOrderByRelationAggregateInput
     assignedUser?: UserOrderByWithRelationInput
     assignment?: AssignmentOrderByWithRelationInput
@@ -34170,6 +41242,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureOrderByWithRelationInput
     extraEngineers?: WorkorderEngineerOrderByRelationAggregateInput
     forms?: WorkorderFormOrderByRelationAggregateInput
+    pakbonnen?: PakbonWorkorderOrderByRelationAggregateInput
+    archiveFolder?: ArchiveFolderOrderByWithRelationInput
   }
 
   export type WorkorderWhereUniqueInput = Prisma.AtLeast<{
@@ -34194,9 +41268,16 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Workorder"> | Date | string
     description?: StringNullableFilter<"Workorder"> | string | null
     werkInstructie?: StringNullableFilter<"Workorder"> | string | null
+    opdrachtnummerOpdrachtgever?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
     onHoldNotes?: StringNullableFilter<"Workorder"> | string | null
+    bunniOfferteId?: StringNullableFilter<"Workorder"> | string | null
+    bunniOfferteNummer?: StringNullableFilter<"Workorder"> | string | null
+    bunniOffertePdfUrl?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurId?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurNummer?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurPdfUrl?: StringNullableFilter<"Workorder"> | string | null
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -34205,10 +41286,16 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
+    opleverModules?: JsonNullableFilter<"Workorder">
     aanvraagSpecificaties?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    archiveNasPath?: StringNullableFilter<"Workorder"> | string | null
+    archiveLocationLabel?: StringNullableFilter<"Workorder"> | string | null
+    archivedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    archiveStatus?: StringNullableFilter<"Workorder"> | string | null
+    archiveError?: StringNullableFilter<"Workorder"> | string | null
     documents?: DocumentListRelationFilter
     assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     assignment?: XOR<AssignmentNullableScalarRelationFilter, AssignmentWhereInput> | null
@@ -34222,6 +41309,8 @@ export namespace Prisma {
     signature?: XOR<WorkorderSignatureNullableScalarRelationFilter, WorkorderSignatureWhereInput> | null
     extraEngineers?: WorkorderEngineerListRelationFilter
     forms?: WorkorderFormListRelationFilter
+    pakbonnen?: PakbonWorkorderListRelationFilter
+    archiveFolder?: XOR<ArchiveFolderNullableScalarRelationFilter, ArchiveFolderWhereInput> | null
   }, "id" | "number">
 
   export type WorkorderOrderByWithAggregationInput = {
@@ -34242,10 +41331,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
     description?: SortOrderInput | SortOrder
     werkInstructie?: SortOrderInput | SortOrder
+    opdrachtnummerOpdrachtgever?: SortOrderInput | SortOrder
     workDate?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
     onHoldNotes?: SortOrderInput | SortOrder
     number?: SortOrder
+    bunniOfferteId?: SortOrderInput | SortOrder
+    bunniOfferteNummer?: SortOrderInput | SortOrder
+    bunniOffertePdfUrl?: SortOrderInput | SortOrder
+    bunniFactuurId?: SortOrderInput | SortOrder
+    bunniFactuurNummer?: SortOrderInput | SortOrder
+    bunniFactuurPdfUrl?: SortOrderInput | SortOrder
     assignedUserId?: SortOrderInput | SortOrder
     plannedDate?: SortOrderInput | SortOrder
     plannedEndDate?: SortOrderInput | SortOrder
@@ -34254,10 +41350,16 @@ export namespace Prisma {
     plannedReisuren?: SortOrderInput | SortOrder
     assignmentId?: SortOrderInput | SortOrder
     formData?: SortOrderInput | SortOrder
+    opleverModules?: SortOrderInput | SortOrder
     aanvraagSpecificaties?: SortOrderInput | SortOrder
     pdfData?: SortOrderInput | SortOrder
     pdfGeneratedAt?: SortOrderInput | SortOrder
     sentAt?: SortOrderInput | SortOrder
+    archiveNasPath?: SortOrderInput | SortOrder
+    archiveLocationLabel?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
+    archiveStatus?: SortOrderInput | SortOrder
+    archiveError?: SortOrderInput | SortOrder
     _count?: WorkorderCountOrderByAggregateInput
     _avg?: WorkorderAvgOrderByAggregateInput
     _max?: WorkorderMaxOrderByAggregateInput
@@ -34286,10 +41388,17 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Workorder"> | Date | string
     description?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     werkInstructie?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    opdrachtnummerOpdrachtgever?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     onHoldNotes?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     number?: StringWithAggregatesFilter<"Workorder"> | string
+    bunniOfferteId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    bunniOfferteNummer?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    bunniOffertePdfUrl?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    bunniFactuurId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    bunniFactuurNummer?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    bunniFactuurPdfUrl?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     assignedUserId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
@@ -34298,10 +41407,115 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableWithAggregatesFilter<"Workorder"> | number | null
     assignmentId?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
     formData?: JsonNullableWithAggregatesFilter<"Workorder">
+    opleverModules?: JsonNullableWithAggregatesFilter<"Workorder">
     aanvraagSpecificaties?: JsonNullableWithAggregatesFilter<"Workorder">
     pdfData?: BytesNullableWithAggregatesFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
+    archiveNasPath?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    archiveLocationLabel?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    archivedAt?: DateTimeNullableWithAggregatesFilter<"Workorder"> | Date | string | null
+    archiveStatus?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+    archiveError?: StringNullableWithAggregatesFilter<"Workorder"> | string | null
+  }
+
+  export type ArchiveFolderWhereInput = {
+    AND?: ArchiveFolderWhereInput | ArchiveFolderWhereInput[]
+    OR?: ArchiveFolderWhereInput[]
+    NOT?: ArchiveFolderWhereInput | ArchiveFolderWhereInput[]
+    id?: StringFilter<"ArchiveFolder"> | string
+    kind?: StringFilter<"ArchiveFolder"> | string
+    name?: StringFilter<"ArchiveFolder"> | string
+    nasPath?: StringFilter<"ArchiveFolder"> | string
+    slug?: StringFilter<"ArchiveFolder"> | string
+    parentId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    customerId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    locationKey?: StringNullableFilter<"ArchiveFolder"> | string | null
+    workorderId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    createdAt?: DateTimeFilter<"ArchiveFolder"> | Date | string
+    updatedAt?: DateTimeFilter<"ArchiveFolder"> | Date | string
+    parent?: XOR<ArchiveFolderNullableScalarRelationFilter, ArchiveFolderWhereInput> | null
+    children?: ArchiveFolderListRelationFilter
+    files?: ArchiveFileListRelationFilter
+    customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
+    workorder?: XOR<WorkorderNullableScalarRelationFilter, WorkorderWhereInput> | null
+  }
+
+  export type ArchiveFolderOrderByWithRelationInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    name?: SortOrder
+    nasPath?: SortOrder
+    slug?: SortOrder
+    parentId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    locationKey?: SortOrderInput | SortOrder
+    workorderId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    parent?: ArchiveFolderOrderByWithRelationInput
+    children?: ArchiveFolderOrderByRelationAggregateInput
+    files?: ArchiveFileOrderByRelationAggregateInput
+    customer?: CustomerOrderByWithRelationInput
+    workorder?: WorkorderOrderByWithRelationInput
+  }
+
+  export type ArchiveFolderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    nasPath?: string
+    workorderId?: string
+    parentId_slug?: ArchiveFolderParentIdSlugCompoundUniqueInput
+    customerId_locationKey?: ArchiveFolderCustomerIdLocationKeyCompoundUniqueInput
+    AND?: ArchiveFolderWhereInput | ArchiveFolderWhereInput[]
+    OR?: ArchiveFolderWhereInput[]
+    NOT?: ArchiveFolderWhereInput | ArchiveFolderWhereInput[]
+    kind?: StringFilter<"ArchiveFolder"> | string
+    name?: StringFilter<"ArchiveFolder"> | string
+    slug?: StringFilter<"ArchiveFolder"> | string
+    parentId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    customerId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    locationKey?: StringNullableFilter<"ArchiveFolder"> | string | null
+    createdAt?: DateTimeFilter<"ArchiveFolder"> | Date | string
+    updatedAt?: DateTimeFilter<"ArchiveFolder"> | Date | string
+    parent?: XOR<ArchiveFolderNullableScalarRelationFilter, ArchiveFolderWhereInput> | null
+    children?: ArchiveFolderListRelationFilter
+    files?: ArchiveFileListRelationFilter
+    customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
+    workorder?: XOR<WorkorderNullableScalarRelationFilter, WorkorderWhereInput> | null
+  }, "id" | "nasPath" | "workorderId" | "parentId_slug" | "customerId_locationKey">
+
+  export type ArchiveFolderOrderByWithAggregationInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    name?: SortOrder
+    nasPath?: SortOrder
+    slug?: SortOrder
+    parentId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    locationKey?: SortOrderInput | SortOrder
+    workorderId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ArchiveFolderCountOrderByAggregateInput
+    _max?: ArchiveFolderMaxOrderByAggregateInput
+    _min?: ArchiveFolderMinOrderByAggregateInput
+  }
+
+  export type ArchiveFolderScalarWhereWithAggregatesInput = {
+    AND?: ArchiveFolderScalarWhereWithAggregatesInput | ArchiveFolderScalarWhereWithAggregatesInput[]
+    OR?: ArchiveFolderScalarWhereWithAggregatesInput[]
+    NOT?: ArchiveFolderScalarWhereWithAggregatesInput | ArchiveFolderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ArchiveFolder"> | string
+    kind?: StringWithAggregatesFilter<"ArchiveFolder"> | string
+    name?: StringWithAggregatesFilter<"ArchiveFolder"> | string
+    nasPath?: StringWithAggregatesFilter<"ArchiveFolder"> | string
+    slug?: StringWithAggregatesFilter<"ArchiveFolder"> | string
+    parentId?: StringNullableWithAggregatesFilter<"ArchiveFolder"> | string | null
+    customerId?: StringNullableWithAggregatesFilter<"ArchiveFolder"> | string | null
+    locationKey?: StringNullableWithAggregatesFilter<"ArchiveFolder"> | string | null
+    workorderId?: StringNullableWithAggregatesFilter<"ArchiveFolder"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ArchiveFolder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ArchiveFolder"> | Date | string
   }
 
   export type WorkorderHourWhereInput = {
@@ -34653,6 +41867,115 @@ export namespace Prisma {
     originalName?: StringNullableWithAggregatesFilter<"WorkorderAttachment"> | string | null
     contentType?: StringNullableWithAggregatesFilter<"WorkorderAttachment"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"WorkorderAttachment"> | Date | string
+  }
+
+  export type PakbonWhereInput = {
+    AND?: PakbonWhereInput | PakbonWhereInput[]
+    OR?: PakbonWhereInput[]
+    NOT?: PakbonWhereInput | PakbonWhereInput[]
+    id?: StringFilter<"Pakbon"> | string
+    url?: StringFilter<"Pakbon"> | string
+    filename?: StringNullableFilter<"Pakbon"> | string | null
+    originalName?: StringNullableFilter<"Pakbon"> | string | null
+    contentType?: StringNullableFilter<"Pakbon"> | string | null
+    createdAt?: DateTimeFilter<"Pakbon"> | Date | string
+    workorders?: PakbonWorkorderListRelationFilter
+  }
+
+  export type PakbonOrderByWithRelationInput = {
+    id?: SortOrder
+    url?: SortOrder
+    filename?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    workorders?: PakbonWorkorderOrderByRelationAggregateInput
+  }
+
+  export type PakbonWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PakbonWhereInput | PakbonWhereInput[]
+    OR?: PakbonWhereInput[]
+    NOT?: PakbonWhereInput | PakbonWhereInput[]
+    url?: StringFilter<"Pakbon"> | string
+    filename?: StringNullableFilter<"Pakbon"> | string | null
+    originalName?: StringNullableFilter<"Pakbon"> | string | null
+    contentType?: StringNullableFilter<"Pakbon"> | string | null
+    createdAt?: DateTimeFilter<"Pakbon"> | Date | string
+    workorders?: PakbonWorkorderListRelationFilter
+  }, "id">
+
+  export type PakbonOrderByWithAggregationInput = {
+    id?: SortOrder
+    url?: SortOrder
+    filename?: SortOrderInput | SortOrder
+    originalName?: SortOrderInput | SortOrder
+    contentType?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PakbonCountOrderByAggregateInput
+    _max?: PakbonMaxOrderByAggregateInput
+    _min?: PakbonMinOrderByAggregateInput
+  }
+
+  export type PakbonScalarWhereWithAggregatesInput = {
+    AND?: PakbonScalarWhereWithAggregatesInput | PakbonScalarWhereWithAggregatesInput[]
+    OR?: PakbonScalarWhereWithAggregatesInput[]
+    NOT?: PakbonScalarWhereWithAggregatesInput | PakbonScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Pakbon"> | string
+    url?: StringWithAggregatesFilter<"Pakbon"> | string
+    filename?: StringNullableWithAggregatesFilter<"Pakbon"> | string | null
+    originalName?: StringNullableWithAggregatesFilter<"Pakbon"> | string | null
+    contentType?: StringNullableWithAggregatesFilter<"Pakbon"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Pakbon"> | Date | string
+  }
+
+  export type PakbonWorkorderWhereInput = {
+    AND?: PakbonWorkorderWhereInput | PakbonWorkorderWhereInput[]
+    OR?: PakbonWorkorderWhereInput[]
+    NOT?: PakbonWorkorderWhereInput | PakbonWorkorderWhereInput[]
+    pakbonId?: StringFilter<"PakbonWorkorder"> | string
+    workorderId?: StringFilter<"PakbonWorkorder"> | string
+    createdAt?: DateTimeFilter<"PakbonWorkorder"> | Date | string
+    pakbon?: XOR<PakbonScalarRelationFilter, PakbonWhereInput>
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+  }
+
+  export type PakbonWorkorderOrderByWithRelationInput = {
+    pakbonId?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+    pakbon?: PakbonOrderByWithRelationInput
+    workorder?: WorkorderOrderByWithRelationInput
+  }
+
+  export type PakbonWorkorderWhereUniqueInput = Prisma.AtLeast<{
+    pakbonId_workorderId?: PakbonWorkorderPakbonIdWorkorderIdCompoundUniqueInput
+    AND?: PakbonWorkorderWhereInput | PakbonWorkorderWhereInput[]
+    OR?: PakbonWorkorderWhereInput[]
+    NOT?: PakbonWorkorderWhereInput | PakbonWorkorderWhereInput[]
+    pakbonId?: StringFilter<"PakbonWorkorder"> | string
+    workorderId?: StringFilter<"PakbonWorkorder"> | string
+    createdAt?: DateTimeFilter<"PakbonWorkorder"> | Date | string
+    pakbon?: XOR<PakbonScalarRelationFilter, PakbonWhereInput>
+    workorder?: XOR<WorkorderScalarRelationFilter, WorkorderWhereInput>
+  }, "pakbonId_workorderId">
+
+  export type PakbonWorkorderOrderByWithAggregationInput = {
+    pakbonId?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+    _count?: PakbonWorkorderCountOrderByAggregateInput
+    _max?: PakbonWorkorderMaxOrderByAggregateInput
+    _min?: PakbonWorkorderMinOrderByAggregateInput
+  }
+
+  export type PakbonWorkorderScalarWhereWithAggregatesInput = {
+    AND?: PakbonWorkorderScalarWhereWithAggregatesInput | PakbonWorkorderScalarWhereWithAggregatesInput[]
+    OR?: PakbonWorkorderScalarWhereWithAggregatesInput[]
+    NOT?: PakbonWorkorderScalarWhereWithAggregatesInput | PakbonWorkorderScalarWhereWithAggregatesInput[]
+    pakbonId?: StringWithAggregatesFilter<"PakbonWorkorder"> | string
+    workorderId?: StringWithAggregatesFilter<"PakbonWorkorder"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PakbonWorkorder"> | Date | string
   }
 
   export type WorkorderSignatureWhereInput = {
@@ -35260,11 +42583,13 @@ export namespace Prisma {
     recurrenceNth?: IntNullableFilter<"PlanningEvent"> | number | null
     recurrenceUntil?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
+    projectId?: StringNullableFilter<"PlanningEvent"> | string | null
     createdById?: StringFilter<"PlanningEvent"> | string
     createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     updatedAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
   }
 
   export type PlanningEventOrderByWithRelationInput = {
@@ -35280,11 +42605,13 @@ export namespace Prisma {
     recurrenceNth?: SortOrderInput | SortOrder
     recurrenceUntil?: SortOrderInput | SortOrder
     assignedUserId?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     assignedUser?: UserOrderByWithRelationInput
     createdBy?: UserOrderByWithRelationInput
+    project?: ProjectOrderByWithRelationInput
   }
 
   export type PlanningEventWhereUniqueInput = Prisma.AtLeast<{
@@ -35303,11 +42630,13 @@ export namespace Prisma {
     recurrenceNth?: IntNullableFilter<"PlanningEvent"> | number | null
     recurrenceUntil?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
+    projectId?: StringNullableFilter<"PlanningEvent"> | string | null
     createdById?: StringFilter<"PlanningEvent"> | string
     createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     updatedAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     assignedUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
   }, "id">
 
   export type PlanningEventOrderByWithAggregationInput = {
@@ -35323,6 +42652,7 @@ export namespace Prisma {
     recurrenceNth?: SortOrderInput | SortOrder
     recurrenceUntil?: SortOrderInput | SortOrder
     assignedUserId?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -35349,6 +42679,7 @@ export namespace Prisma {
     recurrenceNth?: IntNullableWithAggregatesFilter<"PlanningEvent"> | number | null
     recurrenceUntil?: DateTimeNullableWithAggregatesFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableWithAggregatesFilter<"PlanningEvent"> | string | null
+    projectId?: StringNullableWithAggregatesFilter<"PlanningEvent"> | string | null
     createdById?: StringWithAggregatesFilter<"PlanningEvent"> | string
     createdAt?: DateTimeWithAggregatesFilter<"PlanningEvent"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"PlanningEvent"> | Date | string
@@ -35674,6 +43005,7 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateInput = {
@@ -35691,6 +43023,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUpdateInput = {
@@ -35708,6 +43041,7 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateInput = {
@@ -35725,6 +43059,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerCreateManyInput = {
@@ -35764,6 +43099,96 @@ export namespace Prisma {
     color?: StringFieldUpdateOperationsInput | string
     formSchema?: NullableJsonNullValueInput | InputJsonValue
     publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ArchiveFileCreateInput = {
+    id?: string
+    name: string
+    storage?: string
+    storagePath: string
+    url?: string | null
+    contentType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    folder: ArchiveFolderCreateNestedOneWithoutFilesInput
+  }
+
+  export type ArchiveFileUncheckedCreateInput = {
+    id?: string
+    folderId: string
+    name: string
+    storage?: string
+    storagePath: string
+    url?: string | null
+    contentType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    storage?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: ArchiveFolderUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type ArchiveFileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    storage?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveFileCreateManyInput = {
+    id?: string
+    folderId: string
+    name: string
+    storage?: string
+    storagePath: string
+    url?: string | null
+    contentType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    storage?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveFileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    storage?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AanvraagCreateInput = {
@@ -35922,7 +43347,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -35935,12 +43367,15 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
     workorders?: WorkorderCreateNestedManyWithoutProjectInput
     uren?: ProjectUurCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -35954,7 +43389,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -35967,11 +43409,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
     uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentUncheckedCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -35984,7 +43429,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -35997,12 +43449,15 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
     workorders?: WorkorderUpdateManyWithoutProjectNestedInput
     uren?: ProjectUurUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -36016,7 +43471,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -36029,11 +43491,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
     uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUncheckedUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -36047,7 +43512,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -36060,6 +43532,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -36074,7 +43547,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -36087,6 +43567,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -36102,7 +43583,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -36115,6 +43603,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -36125,6 +43614,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     project: ProjectCreateNestedOneWithoutUrenInput
     user: UserCreateNestedOneWithoutProjectUrenInput
@@ -36140,6 +43630,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -36149,6 +43640,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
     user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
@@ -36164,6 +43656,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -36176,6 +43669,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -36185,6 +43679,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -36197,6 +43692,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -36276,6 +43772,82 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ProjectAttachmentCreateInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    kind?: string
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutBijlagenInput
+  }
+
+  export type ProjectAttachmentUncheckedCreateInput = {
+    id?: string
+    projectId: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    kind?: string
+    createdAt?: Date | string
+  }
+
+  export type ProjectAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutBijlagenNestedInput
+  }
+
+  export type ProjectAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAttachmentCreateManyInput = {
+    id?: string
+    projectId: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    kind?: string
+    createdAt?: Date | string
+  }
+
+  export type ProjectAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WorkorderCreateInput = {
     id?: string
     title: string
@@ -36292,20 +43864,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -36319,6 +43904,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateInput = {
@@ -36339,10 +43926,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -36351,10 +43945,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -36364,6 +43964,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUpdateInput = {
@@ -36382,20 +43984,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -36409,6 +44024,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateInput = {
@@ -36429,10 +44046,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36441,10 +44065,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -36454,6 +44084,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateManyInput = {
@@ -36474,10 +44106,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -36486,10 +44125,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
   }
 
   export type WorkorderUpdateManyMutationInput = {
@@ -36508,20 +44153,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type WorkorderUncheckedUpdateManyInput = {
@@ -36542,10 +44200,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -36554,10 +44219,119 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ArchiveFolderCreateInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    locationKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ArchiveFolderCreateNestedOneWithoutChildrenInput
+    children?: ArchiveFolderCreateNestedManyWithoutParentInput
+    files?: ArchiveFileCreateNestedManyWithoutFolderInput
+    customer?: CustomerCreateNestedOneWithoutArchiveFoldersInput
+    workorder?: WorkorderCreateNestedOneWithoutArchiveFolderInput
+  }
+
+  export type ArchiveFolderUncheckedCreateInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId?: string | null
+    customerId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ArchiveFolderUncheckedCreateNestedManyWithoutParentInput
+    files?: ArchiveFileUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type ArchiveFolderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ArchiveFolderUpdateOneWithoutChildrenNestedInput
+    children?: ArchiveFolderUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUpdateManyWithoutFolderNestedInput
+    customer?: CustomerUpdateOneWithoutArchiveFoldersNestedInput
+    workorder?: WorkorderUpdateOneWithoutArchiveFolderNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ArchiveFolderUncheckedUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUncheckedUpdateManyWithoutFolderNestedInput
+  }
+
+  export type ArchiveFolderCreateManyInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId?: string | null
+    customerId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFolderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveFolderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type WorkorderHourCreateInput = {
@@ -36930,6 +44704,113 @@ export namespace Prisma {
     filename?: NullableStringFieldUpdateOperationsInput | string | null
     originalName?: NullableStringFieldUpdateOperationsInput | string | null
     contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonCreateInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+    workorders?: PakbonWorkorderCreateNestedManyWithoutPakbonInput
+  }
+
+  export type PakbonUncheckedCreateInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+    workorders?: PakbonWorkorderUncheckedCreateNestedManyWithoutPakbonInput
+  }
+
+  export type PakbonUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorders?: PakbonWorkorderUpdateManyWithoutPakbonNestedInput
+  }
+
+  export type PakbonUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorders?: PakbonWorkorderUncheckedUpdateManyWithoutPakbonNestedInput
+  }
+
+  export type PakbonCreateManyInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PakbonUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonWorkorderCreateInput = {
+    createdAt?: Date | string
+    pakbon: PakbonCreateNestedOneWithoutWorkordersInput
+    workorder: WorkorderCreateNestedOneWithoutPakbonnenInput
+  }
+
+  export type PakbonWorkorderUncheckedCreateInput = {
+    pakbonId: string
+    workorderId: string
+    createdAt?: Date | string
+  }
+
+  export type PakbonWorkorderUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pakbon?: PakbonUpdateOneRequiredWithoutWorkordersNestedInput
+    workorder?: WorkorderUpdateOneRequiredWithoutPakbonnenNestedInput
+  }
+
+  export type PakbonWorkorderUncheckedUpdateInput = {
+    pakbonId?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonWorkorderCreateManyInput = {
+    pakbonId: string
+    workorderId: string
+    createdAt?: Date | string
+  }
+
+  export type PakbonWorkorderUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonWorkorderUncheckedUpdateManyInput = {
+    pakbonId?: StringFieldUpdateOperationsInput | string
+    workorderId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -37565,6 +45446,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     assignedUser?: UserCreateNestedOneWithoutPlanningEventsAssignedInput
     createdBy: UserCreateNestedOneWithoutPlanningEventsCreatedInput
+    project?: ProjectCreateNestedOneWithoutPlanningEventsInput
   }
 
   export type PlanningEventUncheckedCreateInput = {
@@ -37580,6 +45462,7 @@ export namespace Prisma {
     recurrenceNth?: number | null
     recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
+    projectId?: string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37601,6 +45484,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedUser?: UserUpdateOneWithoutPlanningEventsAssignedNestedInput
     createdBy?: UserUpdateOneRequiredWithoutPlanningEventsCreatedNestedInput
+    project?: ProjectUpdateOneWithoutPlanningEventsNestedInput
   }
 
   export type PlanningEventUncheckedUpdateInput = {
@@ -37616,6 +45500,7 @@ export namespace Prisma {
     recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37634,6 +45519,7 @@ export namespace Prisma {
     recurrenceNth?: number | null
     recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
+    projectId?: string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37668,6 +45554,7 @@ export namespace Prisma {
     recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38134,6 +46021,12 @@ export namespace Prisma {
     none?: AanvraagWhereInput
   }
 
+  export type ArchiveFolderListRelationFilter = {
+    every?: ArchiveFolderWhereInput
+    some?: ArchiveFolderWhereInput
+    none?: ArchiveFolderWhereInput
+  }
+
   export type AssignmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -38143,6 +46036,10 @@ export namespace Prisma {
   }
 
   export type AanvraagOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ArchiveFolderOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -38207,6 +46104,85 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type ArchiveFolderScalarRelationFilter = {
+    is?: ArchiveFolderWhereInput
+    isNot?: ArchiveFolderWhereInput
+  }
+
+  export type ArchiveFileCountOrderByAggregateInput = {
+    id?: SortOrder
+    folderId?: SortOrder
+    name?: SortOrder
+    storage?: SortOrder
+    storagePath?: SortOrder
+    url?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArchiveFileAvgOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type ArchiveFileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    folderId?: SortOrder
+    name?: SortOrder
+    storage?: SortOrder
+    storagePath?: SortOrder
+    url?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArchiveFileMinOrderByAggregateInput = {
+    id?: SortOrder
+    folderId?: SortOrder
+    name?: SortOrder
+    storage?: SortOrder
+    storagePath?: SortOrder
+    url?: SortOrder
+    contentType?: SortOrder
+    size?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArchiveFileSumOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type CustomerScalarRelationFilter = {
@@ -38290,7 +46266,17 @@ export namespace Prisma {
     none?: ProjectMateriaalWhereInput
   }
 
+  export type ProjectAttachmentListRelationFilter = {
+    every?: ProjectAttachmentWhereInput
+    some?: ProjectAttachmentWhereInput
+    none?: ProjectAttachmentWhereInput
+  }
+
   export type ProjectMateriaalOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProjectAttachmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -38305,7 +46291,14 @@ export namespace Prisma {
     geoffreerdBedrag?: SortOrder
     offerteUrl?: SortOrder
     offerteFilename?: SortOrder
+    bunniOfferteId?: SortOrder
+    bunniOfferteNummer?: SortOrder
+    bunniOffertePdfUrl?: SortOrder
+    bunniFactuurId?: SortOrder
+    bunniFactuurNummer?: SortOrder
+    bunniFactuurPdfUrl?: SortOrder
     status?: SortOrder
+    termijnAantal?: SortOrder
     termijn1Gefactureerd?: SortOrder
     termijn2Gefactureerd?: SortOrder
     termijn3Gefactureerd?: SortOrder
@@ -38318,6 +46311,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: SortOrder
     termijn3Factuurnummer?: SortOrder
     termijn4Factuurnummer?: SortOrder
+    intakeTekst?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -38325,6 +46319,7 @@ export namespace Prisma {
   export type ProjectAvgOrderByAggregateInput = {
     geoffreerdeUren?: SortOrder
     geoffreerdBedrag?: SortOrder
+    termijnAantal?: SortOrder
   }
 
   export type ProjectMaxOrderByAggregateInput = {
@@ -38338,7 +46333,14 @@ export namespace Prisma {
     geoffreerdBedrag?: SortOrder
     offerteUrl?: SortOrder
     offerteFilename?: SortOrder
+    bunniOfferteId?: SortOrder
+    bunniOfferteNummer?: SortOrder
+    bunniOffertePdfUrl?: SortOrder
+    bunniFactuurId?: SortOrder
+    bunniFactuurNummer?: SortOrder
+    bunniFactuurPdfUrl?: SortOrder
     status?: SortOrder
+    termijnAantal?: SortOrder
     termijn1Gefactureerd?: SortOrder
     termijn2Gefactureerd?: SortOrder
     termijn3Gefactureerd?: SortOrder
@@ -38351,6 +46353,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: SortOrder
     termijn3Factuurnummer?: SortOrder
     termijn4Factuurnummer?: SortOrder
+    intakeTekst?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -38366,7 +46369,14 @@ export namespace Prisma {
     geoffreerdBedrag?: SortOrder
     offerteUrl?: SortOrder
     offerteFilename?: SortOrder
+    bunniOfferteId?: SortOrder
+    bunniOfferteNummer?: SortOrder
+    bunniOffertePdfUrl?: SortOrder
+    bunniFactuurId?: SortOrder
+    bunniFactuurNummer?: SortOrder
+    bunniFactuurPdfUrl?: SortOrder
     status?: SortOrder
+    termijnAantal?: SortOrder
     termijn1Gefactureerd?: SortOrder
     termijn2Gefactureerd?: SortOrder
     termijn3Gefactureerd?: SortOrder
@@ -38379,6 +46389,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: SortOrder
     termijn3Factuurnummer?: SortOrder
     termijn4Factuurnummer?: SortOrder
+    intakeTekst?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -38386,6 +46397,7 @@ export namespace Prisma {
   export type ProjectSumOrderByAggregateInput = {
     geoffreerdeUren?: SortOrder
     geoffreerdBedrag?: SortOrder
+    termijnAantal?: SortOrder
   }
 
   export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -38450,12 +46462,14 @@ export namespace Prisma {
     uren?: SortOrder
     omschrijving?: SortOrder
     kilometers?: SortOrder
+    parkeerkosten?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ProjectUurAvgOrderByAggregateInput = {
     uren?: SortOrder
     kilometers?: SortOrder
+    parkeerkosten?: SortOrder
   }
 
   export type ProjectUurMaxOrderByAggregateInput = {
@@ -38467,6 +46481,7 @@ export namespace Prisma {
     uren?: SortOrder
     omschrijving?: SortOrder
     kilometers?: SortOrder
+    parkeerkosten?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -38479,12 +46494,14 @@ export namespace Prisma {
     uren?: SortOrder
     omschrijving?: SortOrder
     kilometers?: SortOrder
+    parkeerkosten?: SortOrder
     createdAt?: SortOrder
   }
 
   export type ProjectUurSumOrderByAggregateInput = {
     uren?: SortOrder
     kilometers?: SortOrder
+    parkeerkosten?: SortOrder
   }
 
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -38560,6 +46577,39 @@ export namespace Prisma {
     kosten?: SortOrder
   }
 
+  export type ProjectAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    kind?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    kind?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ProjectAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    kind?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type BytesNullableFilter<$PrismaModel = never> = {
     equals?: Bytes | BytesFieldRefInput<$PrismaModel> | null
     in?: Bytes[] | ListBytesFieldRefInput<$PrismaModel> | null
@@ -38629,6 +46679,17 @@ export namespace Prisma {
     none?: WorkorderFormWhereInput
   }
 
+  export type PakbonWorkorderListRelationFilter = {
+    every?: PakbonWorkorderWhereInput
+    some?: PakbonWorkorderWhereInput
+    none?: PakbonWorkorderWhereInput
+  }
+
+  export type ArchiveFolderNullableScalarRelationFilter = {
+    is?: ArchiveFolderWhereInput | null
+    isNot?: ArchiveFolderWhereInput | null
+  }
+
   export type DocumentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -38657,6 +46718,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type PakbonWorkorderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type WorkorderCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -38675,10 +46740,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
     description?: SortOrder
     werkInstructie?: SortOrder
+    opdrachtnummerOpdrachtgever?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
     onHoldNotes?: SortOrder
     number?: SortOrder
+    bunniOfferteId?: SortOrder
+    bunniOfferteNummer?: SortOrder
+    bunniOffertePdfUrl?: SortOrder
+    bunniFactuurId?: SortOrder
+    bunniFactuurNummer?: SortOrder
+    bunniFactuurPdfUrl?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
@@ -38687,10 +46759,16 @@ export namespace Prisma {
     plannedReisuren?: SortOrder
     assignmentId?: SortOrder
     formData?: SortOrder
+    opleverModules?: SortOrder
     aanvraagSpecificaties?: SortOrder
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
     sentAt?: SortOrder
+    archiveNasPath?: SortOrder
+    archiveLocationLabel?: SortOrder
+    archivedAt?: SortOrder
+    archiveStatus?: SortOrder
+    archiveError?: SortOrder
   }
 
   export type WorkorderAvgOrderByAggregateInput = {
@@ -38717,10 +46795,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
     description?: SortOrder
     werkInstructie?: SortOrder
+    opdrachtnummerOpdrachtgever?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
     onHoldNotes?: SortOrder
     number?: SortOrder
+    bunniOfferteId?: SortOrder
+    bunniOfferteNummer?: SortOrder
+    bunniOffertePdfUrl?: SortOrder
+    bunniFactuurId?: SortOrder
+    bunniFactuurNummer?: SortOrder
+    bunniFactuurPdfUrl?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
@@ -38731,6 +46816,11 @@ export namespace Prisma {
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
     sentAt?: SortOrder
+    archiveNasPath?: SortOrder
+    archiveLocationLabel?: SortOrder
+    archivedAt?: SortOrder
+    archiveStatus?: SortOrder
+    archiveError?: SortOrder
   }
 
   export type WorkorderMinOrderByAggregateInput = {
@@ -38751,10 +46841,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
     description?: SortOrder
     werkInstructie?: SortOrder
+    opdrachtnummerOpdrachtgever?: SortOrder
     workDate?: SortOrder
     internalNotes?: SortOrder
     onHoldNotes?: SortOrder
     number?: SortOrder
+    bunniOfferteId?: SortOrder
+    bunniOfferteNummer?: SortOrder
+    bunniOffertePdfUrl?: SortOrder
+    bunniFactuurId?: SortOrder
+    bunniFactuurNummer?: SortOrder
+    bunniFactuurPdfUrl?: SortOrder
     assignedUserId?: SortOrder
     plannedDate?: SortOrder
     plannedEndDate?: SortOrder
@@ -38765,6 +46862,11 @@ export namespace Prisma {
     pdfData?: SortOrder
     pdfGeneratedAt?: SortOrder
     sentAt?: SortOrder
+    archiveNasPath?: SortOrder
+    archiveLocationLabel?: SortOrder
+    archivedAt?: SortOrder
+    archiveStatus?: SortOrder
+    archiveError?: SortOrder
   }
 
   export type WorkorderSumOrderByAggregateInput = {
@@ -38781,6 +46883,73 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBytesNullableFilter<$PrismaModel>
     _max?: NestedBytesNullableFilter<$PrismaModel>
+  }
+
+  export type ArchiveFileListRelationFilter = {
+    every?: ArchiveFileWhereInput
+    some?: ArchiveFileWhereInput
+    none?: ArchiveFileWhereInput
+  }
+
+  export type WorkorderNullableScalarRelationFilter = {
+    is?: WorkorderWhereInput | null
+    isNot?: WorkorderWhereInput | null
+  }
+
+  export type ArchiveFileOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ArchiveFolderParentIdSlugCompoundUniqueInput = {
+    parentId: string
+    slug: string
+  }
+
+  export type ArchiveFolderCustomerIdLocationKeyCompoundUniqueInput = {
+    customerId: string
+    locationKey: string
+  }
+
+  export type ArchiveFolderCountOrderByAggregateInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    name?: SortOrder
+    nasPath?: SortOrder
+    slug?: SortOrder
+    parentId?: SortOrder
+    customerId?: SortOrder
+    locationKey?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArchiveFolderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    name?: SortOrder
+    nasPath?: SortOrder
+    slug?: SortOrder
+    parentId?: SortOrder
+    customerId?: SortOrder
+    locationKey?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ArchiveFolderMinOrderByAggregateInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    name?: SortOrder
+    nasPath?: SortOrder
+    slug?: SortOrder
+    parentId?: SortOrder
+    customerId?: SortOrder
+    locationKey?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type WorkorderScalarRelationFilter = {
@@ -39032,6 +47201,61 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type PakbonCountOrderByAggregateInput = {
+    id?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PakbonMaxOrderByAggregateInput = {
+    id?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PakbonMinOrderByAggregateInput = {
+    id?: SortOrder
+    url?: SortOrder
+    filename?: SortOrder
+    originalName?: SortOrder
+    contentType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PakbonScalarRelationFilter = {
+    is?: PakbonWhereInput
+    isNot?: PakbonWhereInput
+  }
+
+  export type PakbonWorkorderPakbonIdWorkorderIdCompoundUniqueInput = {
+    pakbonId: string
+    workorderId: string
+  }
+
+  export type PakbonWorkorderCountOrderByAggregateInput = {
+    pakbonId?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PakbonWorkorderMaxOrderByAggregateInput = {
+    pakbonId?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PakbonWorkorderMinOrderByAggregateInput = {
+    pakbonId?: SortOrder
+    workorderId?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type WorkorderSignatureCountOrderByAggregateInput = {
     id?: SortOrder
     workorderId?: SortOrder
@@ -39054,11 +47278,6 @@ export namespace Prisma {
     customerName?: SortOrder
     signatureUrl?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type WorkorderNullableScalarRelationFilter = {
-    is?: WorkorderWhereInput | null
-    isNot?: WorkorderWhereInput | null
   }
 
   export type DocumentCountOrderByAggregateInput = {
@@ -39392,17 +47611,6 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type PlanningEventCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -39416,6 +47624,7 @@ export namespace Prisma {
     recurrenceNth?: SortOrder
     recurrenceUntil?: SortOrder
     assignedUserId?: SortOrder
+    projectId?: SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -39440,6 +47649,7 @@ export namespace Prisma {
     recurrenceNth?: SortOrder
     recurrenceUntil?: SortOrder
     assignedUserId?: SortOrder
+    projectId?: SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -39458,6 +47668,7 @@ export namespace Prisma {
     recurrenceNth?: SortOrder
     recurrenceUntil?: SortOrder
     assignedUserId?: SortOrder
+    projectId?: SortOrder
     createdById?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -39467,22 +47678,6 @@ export namespace Prisma {
     recurrenceInterval?: SortOrder
     recurrenceWeekday?: SortOrder
     recurrenceNth?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type WorkorderEngineerWorkorderIdUserIdCompoundUniqueInput = {
@@ -39975,6 +48170,13 @@ export namespace Prisma {
     connect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
   }
 
+  export type ArchiveFolderCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<ArchiveFolderCreateWithoutCustomerInput, ArchiveFolderUncheckedCreateWithoutCustomerInput> | ArchiveFolderCreateWithoutCustomerInput[] | ArchiveFolderUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutCustomerInput | ArchiveFolderCreateOrConnectWithoutCustomerInput[]
+    createMany?: ArchiveFolderCreateManyCustomerInputEnvelope
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+  }
+
   export type AssignmentUncheckedCreateNestedManyWithoutCustomerInput = {
     create?: XOR<AssignmentCreateWithoutCustomerInput, AssignmentUncheckedCreateWithoutCustomerInput> | AssignmentCreateWithoutCustomerInput[] | AssignmentUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: AssignmentCreateOrConnectWithoutCustomerInput | AssignmentCreateOrConnectWithoutCustomerInput[]
@@ -40001,6 +48203,13 @@ export namespace Prisma {
     connectOrCreate?: AanvraagCreateOrConnectWithoutCustomerInput | AanvraagCreateOrConnectWithoutCustomerInput[]
     createMany?: AanvraagCreateManyCustomerInputEnvelope
     connect?: AanvraagWhereUniqueInput | AanvraagWhereUniqueInput[]
+  }
+
+  export type ArchiveFolderUncheckedCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<ArchiveFolderCreateWithoutCustomerInput, ArchiveFolderUncheckedCreateWithoutCustomerInput> | ArchiveFolderCreateWithoutCustomerInput[] | ArchiveFolderUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutCustomerInput | ArchiveFolderCreateOrConnectWithoutCustomerInput[]
+    createMany?: ArchiveFolderCreateManyCustomerInputEnvelope
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
   }
 
   export type AssignmentUpdateManyWithoutCustomerNestedInput = {
@@ -40059,6 +48268,20 @@ export namespace Prisma {
     deleteMany?: AanvraagScalarWhereInput | AanvraagScalarWhereInput[]
   }
 
+  export type ArchiveFolderUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutCustomerInput, ArchiveFolderUncheckedCreateWithoutCustomerInput> | ArchiveFolderCreateWithoutCustomerInput[] | ArchiveFolderUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutCustomerInput | ArchiveFolderCreateOrConnectWithoutCustomerInput[]
+    upsert?: ArchiveFolderUpsertWithWhereUniqueWithoutCustomerInput | ArchiveFolderUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: ArchiveFolderCreateManyCustomerInputEnvelope
+    set?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    disconnect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    delete?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    update?: ArchiveFolderUpdateWithWhereUniqueWithoutCustomerInput | ArchiveFolderUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: ArchiveFolderUpdateManyWithWhereWithoutCustomerInput | ArchiveFolderUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: ArchiveFolderScalarWhereInput | ArchiveFolderScalarWhereInput[]
+  }
+
   export type AssignmentUncheckedUpdateManyWithoutCustomerNestedInput = {
     create?: XOR<AssignmentCreateWithoutCustomerInput, AssignmentUncheckedCreateWithoutCustomerInput> | AssignmentCreateWithoutCustomerInput[] | AssignmentUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: AssignmentCreateOrConnectWithoutCustomerInput | AssignmentCreateOrConnectWithoutCustomerInput[]
@@ -40115,6 +48338,42 @@ export namespace Prisma {
     deleteMany?: AanvraagScalarWhereInput | AanvraagScalarWhereInput[]
   }
 
+  export type ArchiveFolderUncheckedUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutCustomerInput, ArchiveFolderUncheckedCreateWithoutCustomerInput> | ArchiveFolderCreateWithoutCustomerInput[] | ArchiveFolderUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutCustomerInput | ArchiveFolderCreateOrConnectWithoutCustomerInput[]
+    upsert?: ArchiveFolderUpsertWithWhereUniqueWithoutCustomerInput | ArchiveFolderUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: ArchiveFolderCreateManyCustomerInputEnvelope
+    set?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    disconnect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    delete?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    update?: ArchiveFolderUpdateWithWhereUniqueWithoutCustomerInput | ArchiveFolderUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: ArchiveFolderUpdateManyWithWhereWithoutCustomerInput | ArchiveFolderUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: ArchiveFolderScalarWhereInput | ArchiveFolderScalarWhereInput[]
+  }
+
+  export type ArchiveFolderCreateNestedOneWithoutFilesInput = {
+    create?: XOR<ArchiveFolderCreateWithoutFilesInput, ArchiveFolderUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutFilesInput
+    connect?: ArchiveFolderWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ArchiveFolderUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutFilesInput, ArchiveFolderUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutFilesInput
+    upsert?: ArchiveFolderUpsertWithoutFilesInput
+    connect?: ArchiveFolderWhereUniqueInput
+    update?: XOR<XOR<ArchiveFolderUpdateToOneWithWhereWithoutFilesInput, ArchiveFolderUpdateWithoutFilesInput>, ArchiveFolderUncheckedUpdateWithoutFilesInput>
+  }
+
   export type CustomerCreateNestedOneWithoutAanvragenInput = {
     create?: XOR<CustomerCreateWithoutAanvragenInput, CustomerUncheckedCreateWithoutAanvragenInput>
     connectOrCreate?: CustomerCreateOrConnectWithoutAanvragenInput
@@ -40156,6 +48415,20 @@ export namespace Prisma {
     connect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
   }
 
+  export type ProjectAttachmentCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectAttachmentCreateWithoutProjectInput, ProjectAttachmentUncheckedCreateWithoutProjectInput> | ProjectAttachmentCreateWithoutProjectInput[] | ProjectAttachmentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAttachmentCreateOrConnectWithoutProjectInput | ProjectAttachmentCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectAttachmentCreateManyProjectInputEnvelope
+    connect?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+  }
+
+  export type PlanningEventCreateNestedManyWithoutProjectInput = {
+    create?: XOR<PlanningEventCreateWithoutProjectInput, PlanningEventUncheckedCreateWithoutProjectInput> | PlanningEventCreateWithoutProjectInput[] | PlanningEventUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutProjectInput | PlanningEventCreateOrConnectWithoutProjectInput[]
+    createMany?: PlanningEventCreateManyProjectInputEnvelope
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+  }
+
   export type WorkorderUncheckedCreateNestedManyWithoutProjectInput = {
     create?: XOR<WorkorderCreateWithoutProjectInput, WorkorderUncheckedCreateWithoutProjectInput> | WorkorderCreateWithoutProjectInput[] | WorkorderUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: WorkorderCreateOrConnectWithoutProjectInput | WorkorderCreateOrConnectWithoutProjectInput[]
@@ -40175,6 +48448,20 @@ export namespace Prisma {
     connectOrCreate?: ProjectMateriaalCreateOrConnectWithoutProjectInput | ProjectMateriaalCreateOrConnectWithoutProjectInput[]
     createMany?: ProjectMateriaalCreateManyProjectInputEnvelope
     connect?: ProjectMateriaalWhereUniqueInput | ProjectMateriaalWhereUniqueInput[]
+  }
+
+  export type ProjectAttachmentUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<ProjectAttachmentCreateWithoutProjectInput, ProjectAttachmentUncheckedCreateWithoutProjectInput> | ProjectAttachmentCreateWithoutProjectInput[] | ProjectAttachmentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAttachmentCreateOrConnectWithoutProjectInput | ProjectAttachmentCreateOrConnectWithoutProjectInput[]
+    createMany?: ProjectAttachmentCreateManyProjectInputEnvelope
+    connect?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+  }
+
+  export type PlanningEventUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<PlanningEventCreateWithoutProjectInput, PlanningEventUncheckedCreateWithoutProjectInput> | PlanningEventCreateWithoutProjectInput[] | PlanningEventUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutProjectInput | PlanningEventCreateOrConnectWithoutProjectInput[]
+    createMany?: PlanningEventCreateManyProjectInputEnvelope
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
   }
 
   export type NullableDecimalFieldUpdateOperationsInput = {
@@ -40235,6 +48522,34 @@ export namespace Prisma {
     deleteMany?: ProjectMateriaalScalarWhereInput | ProjectMateriaalScalarWhereInput[]
   }
 
+  export type ProjectAttachmentUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectAttachmentCreateWithoutProjectInput, ProjectAttachmentUncheckedCreateWithoutProjectInput> | ProjectAttachmentCreateWithoutProjectInput[] | ProjectAttachmentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAttachmentCreateOrConnectWithoutProjectInput | ProjectAttachmentCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectAttachmentUpsertWithWhereUniqueWithoutProjectInput | ProjectAttachmentUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectAttachmentCreateManyProjectInputEnvelope
+    set?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    disconnect?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    delete?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    connect?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    update?: ProjectAttachmentUpdateWithWhereUniqueWithoutProjectInput | ProjectAttachmentUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectAttachmentUpdateManyWithWhereWithoutProjectInput | ProjectAttachmentUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectAttachmentScalarWhereInput | ProjectAttachmentScalarWhereInput[]
+  }
+
+  export type PlanningEventUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<PlanningEventCreateWithoutProjectInput, PlanningEventUncheckedCreateWithoutProjectInput> | PlanningEventCreateWithoutProjectInput[] | PlanningEventUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutProjectInput | PlanningEventCreateOrConnectWithoutProjectInput[]
+    upsert?: PlanningEventUpsertWithWhereUniqueWithoutProjectInput | PlanningEventUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: PlanningEventCreateManyProjectInputEnvelope
+    set?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    disconnect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    delete?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    update?: PlanningEventUpdateWithWhereUniqueWithoutProjectInput | PlanningEventUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: PlanningEventUpdateManyWithWhereWithoutProjectInput | PlanningEventUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
+  }
+
   export type WorkorderUncheckedUpdateManyWithoutProjectNestedInput = {
     create?: XOR<WorkorderCreateWithoutProjectInput, WorkorderUncheckedCreateWithoutProjectInput> | WorkorderCreateWithoutProjectInput[] | WorkorderUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: WorkorderCreateOrConnectWithoutProjectInput | WorkorderCreateOrConnectWithoutProjectInput[]
@@ -40275,6 +48590,34 @@ export namespace Prisma {
     update?: ProjectMateriaalUpdateWithWhereUniqueWithoutProjectInput | ProjectMateriaalUpdateWithWhereUniqueWithoutProjectInput[]
     updateMany?: ProjectMateriaalUpdateManyWithWhereWithoutProjectInput | ProjectMateriaalUpdateManyWithWhereWithoutProjectInput[]
     deleteMany?: ProjectMateriaalScalarWhereInput | ProjectMateriaalScalarWhereInput[]
+  }
+
+  export type ProjectAttachmentUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<ProjectAttachmentCreateWithoutProjectInput, ProjectAttachmentUncheckedCreateWithoutProjectInput> | ProjectAttachmentCreateWithoutProjectInput[] | ProjectAttachmentUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: ProjectAttachmentCreateOrConnectWithoutProjectInput | ProjectAttachmentCreateOrConnectWithoutProjectInput[]
+    upsert?: ProjectAttachmentUpsertWithWhereUniqueWithoutProjectInput | ProjectAttachmentUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: ProjectAttachmentCreateManyProjectInputEnvelope
+    set?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    disconnect?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    delete?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    connect?: ProjectAttachmentWhereUniqueInput | ProjectAttachmentWhereUniqueInput[]
+    update?: ProjectAttachmentUpdateWithWhereUniqueWithoutProjectInput | ProjectAttachmentUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: ProjectAttachmentUpdateManyWithWhereWithoutProjectInput | ProjectAttachmentUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: ProjectAttachmentScalarWhereInput | ProjectAttachmentScalarWhereInput[]
+  }
+
+  export type PlanningEventUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<PlanningEventCreateWithoutProjectInput, PlanningEventUncheckedCreateWithoutProjectInput> | PlanningEventCreateWithoutProjectInput[] | PlanningEventUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: PlanningEventCreateOrConnectWithoutProjectInput | PlanningEventCreateOrConnectWithoutProjectInput[]
+    upsert?: PlanningEventUpsertWithWhereUniqueWithoutProjectInput | PlanningEventUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: PlanningEventCreateManyProjectInputEnvelope
+    set?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    disconnect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    delete?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    connect?: PlanningEventWhereUniqueInput | PlanningEventWhereUniqueInput[]
+    update?: PlanningEventUpdateWithWhereUniqueWithoutProjectInput | PlanningEventUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: PlanningEventUpdateManyWithWhereWithoutProjectInput | PlanningEventUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: PlanningEventScalarWhereInput | PlanningEventScalarWhereInput[]
   }
 
   export type ProjectCreateNestedOneWithoutUrenInput = {
@@ -40349,6 +48692,20 @@ export namespace Prisma {
     upsert?: ProjectUpsertWithoutMaterialenInput
     connect?: ProjectWhereUniqueInput
     update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutMaterialenInput, ProjectUpdateWithoutMaterialenInput>, ProjectUncheckedUpdateWithoutMaterialenInput>
+  }
+
+  export type ProjectCreateNestedOneWithoutBijlagenInput = {
+    create?: XOR<ProjectCreateWithoutBijlagenInput, ProjectUncheckedCreateWithoutBijlagenInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutBijlagenInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type ProjectUpdateOneRequiredWithoutBijlagenNestedInput = {
+    create?: XOR<ProjectCreateWithoutBijlagenInput, ProjectUncheckedCreateWithoutBijlagenInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutBijlagenInput
+    upsert?: ProjectUpsertWithoutBijlagenInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutBijlagenInput, ProjectUpdateWithoutBijlagenInput>, ProjectUncheckedUpdateWithoutBijlagenInput>
   }
 
   export type DocumentCreateNestedManyWithoutWorkorderInput = {
@@ -40437,6 +48794,19 @@ export namespace Prisma {
     connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
   }
 
+  export type PakbonWorkorderCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutWorkorderInput, PakbonWorkorderUncheckedCreateWithoutWorkorderInput> | PakbonWorkorderCreateWithoutWorkorderInput[] | PakbonWorkorderUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutWorkorderInput | PakbonWorkorderCreateOrConnectWithoutWorkorderInput[]
+    createMany?: PakbonWorkorderCreateManyWorkorderInputEnvelope
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+  }
+
+  export type ArchiveFolderCreateNestedOneWithoutWorkorderInput = {
+    create?: XOR<ArchiveFolderCreateWithoutWorkorderInput, ArchiveFolderUncheckedCreateWithoutWorkorderInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutWorkorderInput
+    connect?: ArchiveFolderWhereUniqueInput
+  }
+
   export type DocumentUncheckedCreateNestedManyWithoutWorkorderInput = {
     create?: XOR<DocumentCreateWithoutWorkorderInput, DocumentUncheckedCreateWithoutWorkorderInput> | DocumentCreateWithoutWorkorderInput[] | DocumentUncheckedCreateWithoutWorkorderInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutWorkorderInput | DocumentCreateOrConnectWithoutWorkorderInput[]
@@ -40497,6 +48867,19 @@ export namespace Prisma {
     connectOrCreate?: WorkorderFormCreateOrConnectWithoutWorkorderInput | WorkorderFormCreateOrConnectWithoutWorkorderInput[]
     createMany?: WorkorderFormCreateManyWorkorderInputEnvelope
     connect?: WorkorderFormWhereUniqueInput | WorkorderFormWhereUniqueInput[]
+  }
+
+  export type PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutWorkorderInput, PakbonWorkorderUncheckedCreateWithoutWorkorderInput> | PakbonWorkorderCreateWithoutWorkorderInput[] | PakbonWorkorderUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutWorkorderInput | PakbonWorkorderCreateOrConnectWithoutWorkorderInput[]
+    createMany?: PakbonWorkorderCreateManyWorkorderInputEnvelope
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+  }
+
+  export type ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput = {
+    create?: XOR<ArchiveFolderCreateWithoutWorkorderInput, ArchiveFolderUncheckedCreateWithoutWorkorderInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutWorkorderInput
+    connect?: ArchiveFolderWhereUniqueInput
   }
 
   export type NullableBytesFieldUpdateOperationsInput = {
@@ -40665,6 +49048,30 @@ export namespace Prisma {
     deleteMany?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
   }
 
+  export type PakbonWorkorderUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutWorkorderInput, PakbonWorkorderUncheckedCreateWithoutWorkorderInput> | PakbonWorkorderCreateWithoutWorkorderInput[] | PakbonWorkorderUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutWorkorderInput | PakbonWorkorderCreateOrConnectWithoutWorkorderInput[]
+    upsert?: PakbonWorkorderUpsertWithWhereUniqueWithoutWorkorderInput | PakbonWorkorderUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: PakbonWorkorderCreateManyWorkorderInputEnvelope
+    set?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    disconnect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    delete?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    update?: PakbonWorkorderUpdateWithWhereUniqueWithoutWorkorderInput | PakbonWorkorderUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: PakbonWorkorderUpdateManyWithWhereWithoutWorkorderInput | PakbonWorkorderUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: PakbonWorkorderScalarWhereInput | PakbonWorkorderScalarWhereInput[]
+  }
+
+  export type ArchiveFolderUpdateOneWithoutWorkorderNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutWorkorderInput, ArchiveFolderUncheckedCreateWithoutWorkorderInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutWorkorderInput
+    upsert?: ArchiveFolderUpsertWithoutWorkorderInput
+    disconnect?: ArchiveFolderWhereInput | boolean
+    delete?: ArchiveFolderWhereInput | boolean
+    connect?: ArchiveFolderWhereUniqueInput
+    update?: XOR<XOR<ArchiveFolderUpdateToOneWithWhereWithoutWorkorderInput, ArchiveFolderUpdateWithoutWorkorderInput>, ArchiveFolderUncheckedUpdateWithoutWorkorderInput>
+  }
+
   export type DocumentUncheckedUpdateManyWithoutWorkorderNestedInput = {
     create?: XOR<DocumentCreateWithoutWorkorderInput, DocumentUncheckedCreateWithoutWorkorderInput> | DocumentCreateWithoutWorkorderInput[] | DocumentUncheckedCreateWithoutWorkorderInput[]
     connectOrCreate?: DocumentCreateOrConnectWithoutWorkorderInput | DocumentCreateOrConnectWithoutWorkorderInput[]
@@ -40787,6 +49194,162 @@ export namespace Prisma {
     deleteMany?: WorkorderFormScalarWhereInput | WorkorderFormScalarWhereInput[]
   }
 
+  export type PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutWorkorderInput, PakbonWorkorderUncheckedCreateWithoutWorkorderInput> | PakbonWorkorderCreateWithoutWorkorderInput[] | PakbonWorkorderUncheckedCreateWithoutWorkorderInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutWorkorderInput | PakbonWorkorderCreateOrConnectWithoutWorkorderInput[]
+    upsert?: PakbonWorkorderUpsertWithWhereUniqueWithoutWorkorderInput | PakbonWorkorderUpsertWithWhereUniqueWithoutWorkorderInput[]
+    createMany?: PakbonWorkorderCreateManyWorkorderInputEnvelope
+    set?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    disconnect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    delete?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    update?: PakbonWorkorderUpdateWithWhereUniqueWithoutWorkorderInput | PakbonWorkorderUpdateWithWhereUniqueWithoutWorkorderInput[]
+    updateMany?: PakbonWorkorderUpdateManyWithWhereWithoutWorkorderInput | PakbonWorkorderUpdateManyWithWhereWithoutWorkorderInput[]
+    deleteMany?: PakbonWorkorderScalarWhereInput | PakbonWorkorderScalarWhereInput[]
+  }
+
+  export type ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutWorkorderInput, ArchiveFolderUncheckedCreateWithoutWorkorderInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutWorkorderInput
+    upsert?: ArchiveFolderUpsertWithoutWorkorderInput
+    disconnect?: ArchiveFolderWhereInput | boolean
+    delete?: ArchiveFolderWhereInput | boolean
+    connect?: ArchiveFolderWhereUniqueInput
+    update?: XOR<XOR<ArchiveFolderUpdateToOneWithWhereWithoutWorkorderInput, ArchiveFolderUpdateWithoutWorkorderInput>, ArchiveFolderUncheckedUpdateWithoutWorkorderInput>
+  }
+
+  export type ArchiveFolderCreateNestedOneWithoutChildrenInput = {
+    create?: XOR<ArchiveFolderCreateWithoutChildrenInput, ArchiveFolderUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutChildrenInput
+    connect?: ArchiveFolderWhereUniqueInput
+  }
+
+  export type ArchiveFolderCreateNestedManyWithoutParentInput = {
+    create?: XOR<ArchiveFolderCreateWithoutParentInput, ArchiveFolderUncheckedCreateWithoutParentInput> | ArchiveFolderCreateWithoutParentInput[] | ArchiveFolderUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutParentInput | ArchiveFolderCreateOrConnectWithoutParentInput[]
+    createMany?: ArchiveFolderCreateManyParentInputEnvelope
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+  }
+
+  export type ArchiveFileCreateNestedManyWithoutFolderInput = {
+    create?: XOR<ArchiveFileCreateWithoutFolderInput, ArchiveFileUncheckedCreateWithoutFolderInput> | ArchiveFileCreateWithoutFolderInput[] | ArchiveFileUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: ArchiveFileCreateOrConnectWithoutFolderInput | ArchiveFileCreateOrConnectWithoutFolderInput[]
+    createMany?: ArchiveFileCreateManyFolderInputEnvelope
+    connect?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+  }
+
+  export type CustomerCreateNestedOneWithoutArchiveFoldersInput = {
+    create?: XOR<CustomerCreateWithoutArchiveFoldersInput, CustomerUncheckedCreateWithoutArchiveFoldersInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutArchiveFoldersInput
+    connect?: CustomerWhereUniqueInput
+  }
+
+  export type WorkorderCreateNestedOneWithoutArchiveFolderInput = {
+    create?: XOR<WorkorderCreateWithoutArchiveFolderInput, WorkorderUncheckedCreateWithoutArchiveFolderInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutArchiveFolderInput
+    connect?: WorkorderWhereUniqueInput
+  }
+
+  export type ArchiveFolderUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<ArchiveFolderCreateWithoutParentInput, ArchiveFolderUncheckedCreateWithoutParentInput> | ArchiveFolderCreateWithoutParentInput[] | ArchiveFolderUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutParentInput | ArchiveFolderCreateOrConnectWithoutParentInput[]
+    createMany?: ArchiveFolderCreateManyParentInputEnvelope
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+  }
+
+  export type ArchiveFileUncheckedCreateNestedManyWithoutFolderInput = {
+    create?: XOR<ArchiveFileCreateWithoutFolderInput, ArchiveFileUncheckedCreateWithoutFolderInput> | ArchiveFileCreateWithoutFolderInput[] | ArchiveFileUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: ArchiveFileCreateOrConnectWithoutFolderInput | ArchiveFileCreateOrConnectWithoutFolderInput[]
+    createMany?: ArchiveFileCreateManyFolderInputEnvelope
+    connect?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+  }
+
+  export type ArchiveFolderUpdateOneWithoutChildrenNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutChildrenInput, ArchiveFolderUncheckedCreateWithoutChildrenInput>
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutChildrenInput
+    upsert?: ArchiveFolderUpsertWithoutChildrenInput
+    disconnect?: ArchiveFolderWhereInput | boolean
+    delete?: ArchiveFolderWhereInput | boolean
+    connect?: ArchiveFolderWhereUniqueInput
+    update?: XOR<XOR<ArchiveFolderUpdateToOneWithWhereWithoutChildrenInput, ArchiveFolderUpdateWithoutChildrenInput>, ArchiveFolderUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type ArchiveFolderUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutParentInput, ArchiveFolderUncheckedCreateWithoutParentInput> | ArchiveFolderCreateWithoutParentInput[] | ArchiveFolderUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutParentInput | ArchiveFolderCreateOrConnectWithoutParentInput[]
+    upsert?: ArchiveFolderUpsertWithWhereUniqueWithoutParentInput | ArchiveFolderUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ArchiveFolderCreateManyParentInputEnvelope
+    set?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    disconnect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    delete?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    update?: ArchiveFolderUpdateWithWhereUniqueWithoutParentInput | ArchiveFolderUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ArchiveFolderUpdateManyWithWhereWithoutParentInput | ArchiveFolderUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ArchiveFolderScalarWhereInput | ArchiveFolderScalarWhereInput[]
+  }
+
+  export type ArchiveFileUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<ArchiveFileCreateWithoutFolderInput, ArchiveFileUncheckedCreateWithoutFolderInput> | ArchiveFileCreateWithoutFolderInput[] | ArchiveFileUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: ArchiveFileCreateOrConnectWithoutFolderInput | ArchiveFileCreateOrConnectWithoutFolderInput[]
+    upsert?: ArchiveFileUpsertWithWhereUniqueWithoutFolderInput | ArchiveFileUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: ArchiveFileCreateManyFolderInputEnvelope
+    set?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    disconnect?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    delete?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    connect?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    update?: ArchiveFileUpdateWithWhereUniqueWithoutFolderInput | ArchiveFileUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: ArchiveFileUpdateManyWithWhereWithoutFolderInput | ArchiveFileUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: ArchiveFileScalarWhereInput | ArchiveFileScalarWhereInput[]
+  }
+
+  export type CustomerUpdateOneWithoutArchiveFoldersNestedInput = {
+    create?: XOR<CustomerCreateWithoutArchiveFoldersInput, CustomerUncheckedCreateWithoutArchiveFoldersInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutArchiveFoldersInput
+    upsert?: CustomerUpsertWithoutArchiveFoldersInput
+    disconnect?: CustomerWhereInput | boolean
+    delete?: CustomerWhereInput | boolean
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutArchiveFoldersInput, CustomerUpdateWithoutArchiveFoldersInput>, CustomerUncheckedUpdateWithoutArchiveFoldersInput>
+  }
+
+  export type WorkorderUpdateOneWithoutArchiveFolderNestedInput = {
+    create?: XOR<WorkorderCreateWithoutArchiveFolderInput, WorkorderUncheckedCreateWithoutArchiveFolderInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutArchiveFolderInput
+    upsert?: WorkorderUpsertWithoutArchiveFolderInput
+    disconnect?: WorkorderWhereInput | boolean
+    delete?: WorkorderWhereInput | boolean
+    connect?: WorkorderWhereUniqueInput
+    update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutArchiveFolderInput, WorkorderUpdateWithoutArchiveFolderInput>, WorkorderUncheckedUpdateWithoutArchiveFolderInput>
+  }
+
+  export type ArchiveFolderUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<ArchiveFolderCreateWithoutParentInput, ArchiveFolderUncheckedCreateWithoutParentInput> | ArchiveFolderCreateWithoutParentInput[] | ArchiveFolderUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: ArchiveFolderCreateOrConnectWithoutParentInput | ArchiveFolderCreateOrConnectWithoutParentInput[]
+    upsert?: ArchiveFolderUpsertWithWhereUniqueWithoutParentInput | ArchiveFolderUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: ArchiveFolderCreateManyParentInputEnvelope
+    set?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    disconnect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    delete?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    connect?: ArchiveFolderWhereUniqueInput | ArchiveFolderWhereUniqueInput[]
+    update?: ArchiveFolderUpdateWithWhereUniqueWithoutParentInput | ArchiveFolderUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: ArchiveFolderUpdateManyWithWhereWithoutParentInput | ArchiveFolderUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: ArchiveFolderScalarWhereInput | ArchiveFolderScalarWhereInput[]
+  }
+
+  export type ArchiveFileUncheckedUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<ArchiveFileCreateWithoutFolderInput, ArchiveFileUncheckedCreateWithoutFolderInput> | ArchiveFileCreateWithoutFolderInput[] | ArchiveFileUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: ArchiveFileCreateOrConnectWithoutFolderInput | ArchiveFileCreateOrConnectWithoutFolderInput[]
+    upsert?: ArchiveFileUpsertWithWhereUniqueWithoutFolderInput | ArchiveFileUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: ArchiveFileCreateManyFolderInputEnvelope
+    set?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    disconnect?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    delete?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    connect?: ArchiveFileWhereUniqueInput | ArchiveFileWhereUniqueInput[]
+    update?: ArchiveFileUpdateWithWhereUniqueWithoutFolderInput | ArchiveFileUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: ArchiveFileUpdateManyWithWhereWithoutFolderInput | ArchiveFileUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: ArchiveFileScalarWhereInput | ArchiveFileScalarWhereInput[]
+  }
+
   export type WorkorderCreateNestedOneWithoutHoursInput = {
     create?: XOR<WorkorderCreateWithoutHoursInput, WorkorderUncheckedCreateWithoutHoursInput>
     connectOrCreate?: WorkorderCreateOrConnectWithoutHoursInput
@@ -40871,6 +49434,76 @@ export namespace Prisma {
     upsert?: WorkorderUpsertWithoutAttachmentsInput
     connect?: WorkorderWhereUniqueInput
     update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutAttachmentsInput, WorkorderUpdateWithoutAttachmentsInput>, WorkorderUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type PakbonWorkorderCreateNestedManyWithoutPakbonInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutPakbonInput, PakbonWorkorderUncheckedCreateWithoutPakbonInput> | PakbonWorkorderCreateWithoutPakbonInput[] | PakbonWorkorderUncheckedCreateWithoutPakbonInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutPakbonInput | PakbonWorkorderCreateOrConnectWithoutPakbonInput[]
+    createMany?: PakbonWorkorderCreateManyPakbonInputEnvelope
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+  }
+
+  export type PakbonWorkorderUncheckedCreateNestedManyWithoutPakbonInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutPakbonInput, PakbonWorkorderUncheckedCreateWithoutPakbonInput> | PakbonWorkorderCreateWithoutPakbonInput[] | PakbonWorkorderUncheckedCreateWithoutPakbonInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutPakbonInput | PakbonWorkorderCreateOrConnectWithoutPakbonInput[]
+    createMany?: PakbonWorkorderCreateManyPakbonInputEnvelope
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+  }
+
+  export type PakbonWorkorderUpdateManyWithoutPakbonNestedInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutPakbonInput, PakbonWorkorderUncheckedCreateWithoutPakbonInput> | PakbonWorkorderCreateWithoutPakbonInput[] | PakbonWorkorderUncheckedCreateWithoutPakbonInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutPakbonInput | PakbonWorkorderCreateOrConnectWithoutPakbonInput[]
+    upsert?: PakbonWorkorderUpsertWithWhereUniqueWithoutPakbonInput | PakbonWorkorderUpsertWithWhereUniqueWithoutPakbonInput[]
+    createMany?: PakbonWorkorderCreateManyPakbonInputEnvelope
+    set?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    disconnect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    delete?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    update?: PakbonWorkorderUpdateWithWhereUniqueWithoutPakbonInput | PakbonWorkorderUpdateWithWhereUniqueWithoutPakbonInput[]
+    updateMany?: PakbonWorkorderUpdateManyWithWhereWithoutPakbonInput | PakbonWorkorderUpdateManyWithWhereWithoutPakbonInput[]
+    deleteMany?: PakbonWorkorderScalarWhereInput | PakbonWorkorderScalarWhereInput[]
+  }
+
+  export type PakbonWorkorderUncheckedUpdateManyWithoutPakbonNestedInput = {
+    create?: XOR<PakbonWorkorderCreateWithoutPakbonInput, PakbonWorkorderUncheckedCreateWithoutPakbonInput> | PakbonWorkorderCreateWithoutPakbonInput[] | PakbonWorkorderUncheckedCreateWithoutPakbonInput[]
+    connectOrCreate?: PakbonWorkorderCreateOrConnectWithoutPakbonInput | PakbonWorkorderCreateOrConnectWithoutPakbonInput[]
+    upsert?: PakbonWorkorderUpsertWithWhereUniqueWithoutPakbonInput | PakbonWorkorderUpsertWithWhereUniqueWithoutPakbonInput[]
+    createMany?: PakbonWorkorderCreateManyPakbonInputEnvelope
+    set?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    disconnect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    delete?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    connect?: PakbonWorkorderWhereUniqueInput | PakbonWorkorderWhereUniqueInput[]
+    update?: PakbonWorkorderUpdateWithWhereUniqueWithoutPakbonInput | PakbonWorkorderUpdateWithWhereUniqueWithoutPakbonInput[]
+    updateMany?: PakbonWorkorderUpdateManyWithWhereWithoutPakbonInput | PakbonWorkorderUpdateManyWithWhereWithoutPakbonInput[]
+    deleteMany?: PakbonWorkorderScalarWhereInput | PakbonWorkorderScalarWhereInput[]
+  }
+
+  export type PakbonCreateNestedOneWithoutWorkordersInput = {
+    create?: XOR<PakbonCreateWithoutWorkordersInput, PakbonUncheckedCreateWithoutWorkordersInput>
+    connectOrCreate?: PakbonCreateOrConnectWithoutWorkordersInput
+    connect?: PakbonWhereUniqueInput
+  }
+
+  export type WorkorderCreateNestedOneWithoutPakbonnenInput = {
+    create?: XOR<WorkorderCreateWithoutPakbonnenInput, WorkorderUncheckedCreateWithoutPakbonnenInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutPakbonnenInput
+    connect?: WorkorderWhereUniqueInput
+  }
+
+  export type PakbonUpdateOneRequiredWithoutWorkordersNestedInput = {
+    create?: XOR<PakbonCreateWithoutWorkordersInput, PakbonUncheckedCreateWithoutWorkordersInput>
+    connectOrCreate?: PakbonCreateOrConnectWithoutWorkordersInput
+    upsert?: PakbonUpsertWithoutWorkordersInput
+    connect?: PakbonWhereUniqueInput
+    update?: XOR<XOR<PakbonUpdateToOneWithWhereWithoutWorkordersInput, PakbonUpdateWithoutWorkordersInput>, PakbonUncheckedUpdateWithoutWorkordersInput>
+  }
+
+  export type WorkorderUpdateOneRequiredWithoutPakbonnenNestedInput = {
+    create?: XOR<WorkorderCreateWithoutPakbonnenInput, WorkorderUncheckedCreateWithoutPakbonnenInput>
+    connectOrCreate?: WorkorderCreateOrConnectWithoutPakbonnenInput
+    upsert?: WorkorderUpsertWithoutPakbonnenInput
+    connect?: WorkorderWhereUniqueInput
+    update?: XOR<XOR<WorkorderUpdateToOneWithWhereWithoutPakbonnenInput, WorkorderUpdateWithoutPakbonnenInput>, WorkorderUncheckedUpdateWithoutPakbonnenInput>
   }
 
   export type WorkorderCreateNestedOneWithoutSignatureInput = {
@@ -41183,12 +49816,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type ProjectCreateNestedOneWithoutPlanningEventsInput = {
+    create?: XOR<ProjectCreateWithoutPlanningEventsInput, ProjectUncheckedCreateWithoutPlanningEventsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutPlanningEventsInput
+    connect?: ProjectWhereUniqueInput
   }
 
   export type UserUpdateOneWithoutPlanningEventsAssignedNestedInput = {
@@ -41207,6 +49838,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutPlanningEventsCreatedInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPlanningEventsCreatedInput, UserUpdateWithoutPlanningEventsCreatedInput>, UserUncheckedUpdateWithoutPlanningEventsCreatedInput>
+  }
+
+  export type ProjectUpdateOneWithoutPlanningEventsNestedInput = {
+    create?: XOR<ProjectCreateWithoutPlanningEventsInput, ProjectUncheckedCreateWithoutPlanningEventsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutPlanningEventsInput
+    upsert?: ProjectUpsertWithoutPlanningEventsInput
+    disconnect?: ProjectWhereInput | boolean
+    delete?: ProjectWhereInput | boolean
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutPlanningEventsInput, ProjectUpdateWithoutPlanningEventsInput>, ProjectUncheckedUpdateWithoutPlanningEventsInput>
   }
 
   export type WorkorderCreateNestedOneWithoutExtraEngineersInput = {
@@ -41407,6 +50048,33 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDecimalNullableFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
@@ -41443,17 +50111,6 @@ export namespace Prisma {
     gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -41571,22 +50228,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
   export type AssignmentUserCreateWithoutUserInput = {
     id?: string
     createdAt?: Date | string
@@ -41625,20 +50266,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
     project?: ProjectCreateNestedOneWithoutWorkordersInput
@@ -41651,6 +50305,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutAssignedUserInput = {
@@ -41671,10 +50327,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
@@ -41682,10 +50345,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -41695,6 +50364,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutAssignedUserInput = {
@@ -41763,6 +50434,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     project: ProjectCreateNestedOneWithoutUrenInput
     bookedBy?: UserCreateNestedOneWithoutProjectUrenGeboektInput
@@ -41776,6 +50448,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -41795,6 +50468,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     project: ProjectCreateNestedOneWithoutUrenInput
     user: UserCreateNestedOneWithoutProjectUrenInput
@@ -41808,6 +50482,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -41836,6 +50511,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutPlanningEventsCreatedInput
+    project?: ProjectCreateNestedOneWithoutPlanningEventsInput
   }
 
   export type PlanningEventUncheckedCreateWithoutAssignedUserInput = {
@@ -41850,6 +50526,7 @@ export namespace Prisma {
     recurrenceWeekday?: number | null
     recurrenceNth?: number | null
     recurrenceUntil?: Date | string | null
+    projectId?: string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41880,6 +50557,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedUser?: UserCreateNestedOneWithoutPlanningEventsAssignedInput
+    project?: ProjectCreateNestedOneWithoutPlanningEventsInput
   }
 
   export type PlanningEventUncheckedCreateWithoutCreatedByInput = {
@@ -41895,6 +50573,7 @@ export namespace Prisma {
     recurrenceNth?: number | null
     recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
+    projectId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -41972,10 +50651,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Workorder"> | Date | string
     description?: StringNullableFilter<"Workorder"> | string | null
     werkInstructie?: StringNullableFilter<"Workorder"> | string | null
+    opdrachtnummerOpdrachtgever?: StringNullableFilter<"Workorder"> | string | null
     workDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     internalNotes?: StringNullableFilter<"Workorder"> | string | null
     onHoldNotes?: StringNullableFilter<"Workorder"> | string | null
     number?: StringFilter<"Workorder"> | string
+    bunniOfferteId?: StringNullableFilter<"Workorder"> | string | null
+    bunniOfferteNummer?: StringNullableFilter<"Workorder"> | string | null
+    bunniOffertePdfUrl?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurId?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurNummer?: StringNullableFilter<"Workorder"> | string | null
+    bunniFactuurPdfUrl?: StringNullableFilter<"Workorder"> | string | null
     assignedUserId?: StringNullableFilter<"Workorder"> | string | null
     plannedDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     plannedEndDate?: DateTimeNullableFilter<"Workorder"> | Date | string | null
@@ -41984,10 +50670,16 @@ export namespace Prisma {
     plannedReisuren?: FloatNullableFilter<"Workorder"> | number | null
     assignmentId?: StringNullableFilter<"Workorder"> | string | null
     formData?: JsonNullableFilter<"Workorder">
+    opleverModules?: JsonNullableFilter<"Workorder">
     aanvraagSpecificaties?: JsonNullableFilter<"Workorder">
     pdfData?: BytesNullableFilter<"Workorder"> | Bytes | null
     pdfGeneratedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
     sentAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    archiveNasPath?: StringNullableFilter<"Workorder"> | string | null
+    archiveLocationLabel?: StringNullableFilter<"Workorder"> | string | null
+    archivedAt?: DateTimeNullableFilter<"Workorder"> | Date | string | null
+    archiveStatus?: StringNullableFilter<"Workorder"> | string | null
+    archiveError?: StringNullableFilter<"Workorder"> | string | null
   }
 
   export type WorkorderEngineerUpsertWithWhereUniqueWithoutUserInput = {
@@ -42073,6 +50765,7 @@ export namespace Prisma {
     uren?: DecimalFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string
     omschrijving?: StringNullableFilter<"ProjectUur"> | string | null
     kilometers?: FloatNullableFilter<"ProjectUur"> | number | null
+    parkeerkosten?: DecimalNullableFilter<"ProjectUur"> | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFilter<"ProjectUur"> | Date | string
   }
 
@@ -42124,6 +50817,7 @@ export namespace Prisma {
     recurrenceNth?: IntNullableFilter<"PlanningEvent"> | number | null
     recurrenceUntil?: DateTimeNullableFilter<"PlanningEvent"> | Date | string | null
     assignedUserId?: StringNullableFilter<"PlanningEvent"> | string | null
+    projectId?: StringNullableFilter<"PlanningEvent"> | string | null
     createdById?: StringFilter<"PlanningEvent"> | string
     createdAt?: DateTimeFilter<"PlanningEvent"> | Date | string
     updatedAt?: DateTimeFilter<"PlanningEvent"> | Date | string
@@ -42199,7 +50893,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -42212,11 +50913,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderCreateNestedManyWithoutProjectInput
     uren?: ProjectUurCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutCustomerInput = {
@@ -42229,7 +50933,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -42242,11 +50953,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
     uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentUncheckedCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutCustomerInput = {
@@ -42275,20 +50989,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -42301,6 +51028,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutCustomerInput = {
@@ -42320,10 +51049,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -42332,10 +51068,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -42345,6 +51087,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutCustomerInput = {
@@ -42404,6 +51148,46 @@ export namespace Prisma {
 
   export type AanvraagCreateManyCustomerInputEnvelope = {
     data: AanvraagCreateManyCustomerInput | AanvraagCreateManyCustomerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ArchiveFolderCreateWithoutCustomerInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    locationKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ArchiveFolderCreateNestedOneWithoutChildrenInput
+    children?: ArchiveFolderCreateNestedManyWithoutParentInput
+    files?: ArchiveFileCreateNestedManyWithoutFolderInput
+    workorder?: WorkorderCreateNestedOneWithoutArchiveFolderInput
+  }
+
+  export type ArchiveFolderUncheckedCreateWithoutCustomerInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ArchiveFolderUncheckedCreateNestedManyWithoutParentInput
+    files?: ArchiveFileUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type ArchiveFolderCreateOrConnectWithoutCustomerInput = {
+    where: ArchiveFolderWhereUniqueInput
+    create: XOR<ArchiveFolderCreateWithoutCustomerInput, ArchiveFolderUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type ArchiveFolderCreateManyCustomerInputEnvelope = {
+    data: ArchiveFolderCreateManyCustomerInput | ArchiveFolderCreateManyCustomerInput[]
     skipDuplicates?: boolean
   }
 
@@ -42471,7 +51255,14 @@ export namespace Prisma {
     geoffreerdBedrag?: DecimalNullableFilter<"Project"> | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: StringNullableFilter<"Project"> | string | null
     offerteFilename?: StringNullableFilter<"Project"> | string | null
+    bunniOfferteId?: StringNullableFilter<"Project"> | string | null
+    bunniOfferteNummer?: StringNullableFilter<"Project"> | string | null
+    bunniOffertePdfUrl?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurId?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurNummer?: StringNullableFilter<"Project"> | string | null
+    bunniFactuurPdfUrl?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
+    termijnAantal?: IntNullableFilter<"Project"> | number | null
     termijn1Gefactureerd?: BoolFilter<"Project"> | boolean
     termijn2Gefactureerd?: BoolFilter<"Project"> | boolean
     termijn3Gefactureerd?: BoolFilter<"Project"> | boolean
@@ -42484,6 +51275,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: StringNullableFilter<"Project"> | string | null
     termijn3Factuurnummer?: StringNullableFilter<"Project"> | string | null
     termijn4Factuurnummer?: StringNullableFilter<"Project"> | string | null
+    intakeTekst?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
   }
@@ -42544,6 +51336,115 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Aanvraag"> | Date | string
   }
 
+  export type ArchiveFolderUpsertWithWhereUniqueWithoutCustomerInput = {
+    where: ArchiveFolderWhereUniqueInput
+    update: XOR<ArchiveFolderUpdateWithoutCustomerInput, ArchiveFolderUncheckedUpdateWithoutCustomerInput>
+    create: XOR<ArchiveFolderCreateWithoutCustomerInput, ArchiveFolderUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type ArchiveFolderUpdateWithWhereUniqueWithoutCustomerInput = {
+    where: ArchiveFolderWhereUniqueInput
+    data: XOR<ArchiveFolderUpdateWithoutCustomerInput, ArchiveFolderUncheckedUpdateWithoutCustomerInput>
+  }
+
+  export type ArchiveFolderUpdateManyWithWhereWithoutCustomerInput = {
+    where: ArchiveFolderScalarWhereInput
+    data: XOR<ArchiveFolderUpdateManyMutationInput, ArchiveFolderUncheckedUpdateManyWithoutCustomerInput>
+  }
+
+  export type ArchiveFolderScalarWhereInput = {
+    AND?: ArchiveFolderScalarWhereInput | ArchiveFolderScalarWhereInput[]
+    OR?: ArchiveFolderScalarWhereInput[]
+    NOT?: ArchiveFolderScalarWhereInput | ArchiveFolderScalarWhereInput[]
+    id?: StringFilter<"ArchiveFolder"> | string
+    kind?: StringFilter<"ArchiveFolder"> | string
+    name?: StringFilter<"ArchiveFolder"> | string
+    nasPath?: StringFilter<"ArchiveFolder"> | string
+    slug?: StringFilter<"ArchiveFolder"> | string
+    parentId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    customerId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    locationKey?: StringNullableFilter<"ArchiveFolder"> | string | null
+    workorderId?: StringNullableFilter<"ArchiveFolder"> | string | null
+    createdAt?: DateTimeFilter<"ArchiveFolder"> | Date | string
+    updatedAt?: DateTimeFilter<"ArchiveFolder"> | Date | string
+  }
+
+  export type ArchiveFolderCreateWithoutFilesInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    locationKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ArchiveFolderCreateNestedOneWithoutChildrenInput
+    children?: ArchiveFolderCreateNestedManyWithoutParentInput
+    customer?: CustomerCreateNestedOneWithoutArchiveFoldersInput
+    workorder?: WorkorderCreateNestedOneWithoutArchiveFolderInput
+  }
+
+  export type ArchiveFolderUncheckedCreateWithoutFilesInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId?: string | null
+    customerId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ArchiveFolderUncheckedCreateNestedManyWithoutParentInput
+  }
+
+  export type ArchiveFolderCreateOrConnectWithoutFilesInput = {
+    where: ArchiveFolderWhereUniqueInput
+    create: XOR<ArchiveFolderCreateWithoutFilesInput, ArchiveFolderUncheckedCreateWithoutFilesInput>
+  }
+
+  export type ArchiveFolderUpsertWithoutFilesInput = {
+    update: XOR<ArchiveFolderUpdateWithoutFilesInput, ArchiveFolderUncheckedUpdateWithoutFilesInput>
+    create: XOR<ArchiveFolderCreateWithoutFilesInput, ArchiveFolderUncheckedCreateWithoutFilesInput>
+    where?: ArchiveFolderWhereInput
+  }
+
+  export type ArchiveFolderUpdateToOneWithWhereWithoutFilesInput = {
+    where?: ArchiveFolderWhereInput
+    data: XOR<ArchiveFolderUpdateWithoutFilesInput, ArchiveFolderUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type ArchiveFolderUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ArchiveFolderUpdateOneWithoutChildrenNestedInput
+    children?: ArchiveFolderUpdateManyWithoutParentNestedInput
+    customer?: CustomerUpdateOneWithoutArchiveFoldersNestedInput
+    workorder?: WorkorderUpdateOneWithoutArchiveFolderNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ArchiveFolderUncheckedUpdateManyWithoutParentNestedInput
+  }
+
   export type CustomerCreateWithoutAanvragenInput = {
     id?: string
     name: string
@@ -42558,6 +51459,7 @@ export namespace Prisma {
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutAanvragenInput = {
@@ -42574,6 +51476,7 @@ export namespace Prisma {
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutAanvragenInput = {
@@ -42606,6 +51509,7 @@ export namespace Prisma {
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutAanvragenInput = {
@@ -42622,6 +51526,7 @@ export namespace Prisma {
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerCreateWithoutProjectsInput = {
@@ -42638,6 +51543,7 @@ export namespace Prisma {
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutProjectsInput = {
@@ -42654,6 +51560,7 @@ export namespace Prisma {
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutProjectsInput = {
@@ -42677,20 +51584,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -42703,6 +51623,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutProjectInput = {
@@ -42722,10 +51644,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -42734,10 +51663,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -42747,6 +51682,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutProjectInput = {
@@ -42765,6 +51702,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutProjectUrenInput
     bookedBy?: UserCreateNestedOneWithoutProjectUrenGeboektInput
@@ -42778,6 +51716,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -42821,6 +51760,82 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ProjectAttachmentCreateWithoutProjectInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    kind?: string
+    createdAt?: Date | string
+  }
+
+  export type ProjectAttachmentUncheckedCreateWithoutProjectInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    kind?: string
+    createdAt?: Date | string
+  }
+
+  export type ProjectAttachmentCreateOrConnectWithoutProjectInput = {
+    where: ProjectAttachmentWhereUniqueInput
+    create: XOR<ProjectAttachmentCreateWithoutProjectInput, ProjectAttachmentUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ProjectAttachmentCreateManyProjectInputEnvelope = {
+    data: ProjectAttachmentCreateManyProjectInput | ProjectAttachmentCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PlanningEventCreateWithoutProjectInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceWeekday?: number | null
+    recurrenceNth?: number | null
+    recurrenceUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedUser?: UserCreateNestedOneWithoutPlanningEventsAssignedInput
+    createdBy: UserCreateNestedOneWithoutPlanningEventsCreatedInput
+  }
+
+  export type PlanningEventUncheckedCreateWithoutProjectInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceWeekday?: number | null
+    recurrenceNth?: number | null
+    recurrenceUntil?: Date | string | null
+    assignedUserId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PlanningEventCreateOrConnectWithoutProjectInput = {
+    where: PlanningEventWhereUniqueInput
+    create: XOR<PlanningEventCreateWithoutProjectInput, PlanningEventUncheckedCreateWithoutProjectInput>
+  }
+
+  export type PlanningEventCreateManyProjectInputEnvelope = {
+    data: PlanningEventCreateManyProjectInput | PlanningEventCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CustomerUpsertWithoutProjectsInput = {
     update: XOR<CustomerUpdateWithoutProjectsInput, CustomerUncheckedUpdateWithoutProjectsInput>
     create: XOR<CustomerCreateWithoutProjectsInput, CustomerUncheckedCreateWithoutProjectsInput>
@@ -42846,6 +51861,7 @@ export namespace Prisma {
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutProjectsInput = {
@@ -42862,6 +51878,7 @@ export namespace Prisma {
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type WorkorderUpsertWithWhereUniqueWithoutProjectInput = {
@@ -42926,6 +51943,52 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ProjectMateriaal"> | Date | string
   }
 
+  export type ProjectAttachmentUpsertWithWhereUniqueWithoutProjectInput = {
+    where: ProjectAttachmentWhereUniqueInput
+    update: XOR<ProjectAttachmentUpdateWithoutProjectInput, ProjectAttachmentUncheckedUpdateWithoutProjectInput>
+    create: XOR<ProjectAttachmentCreateWithoutProjectInput, ProjectAttachmentUncheckedCreateWithoutProjectInput>
+  }
+
+  export type ProjectAttachmentUpdateWithWhereUniqueWithoutProjectInput = {
+    where: ProjectAttachmentWhereUniqueInput
+    data: XOR<ProjectAttachmentUpdateWithoutProjectInput, ProjectAttachmentUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type ProjectAttachmentUpdateManyWithWhereWithoutProjectInput = {
+    where: ProjectAttachmentScalarWhereInput
+    data: XOR<ProjectAttachmentUpdateManyMutationInput, ProjectAttachmentUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type ProjectAttachmentScalarWhereInput = {
+    AND?: ProjectAttachmentScalarWhereInput | ProjectAttachmentScalarWhereInput[]
+    OR?: ProjectAttachmentScalarWhereInput[]
+    NOT?: ProjectAttachmentScalarWhereInput | ProjectAttachmentScalarWhereInput[]
+    id?: StringFilter<"ProjectAttachment"> | string
+    projectId?: StringFilter<"ProjectAttachment"> | string
+    url?: StringFilter<"ProjectAttachment"> | string
+    filename?: StringNullableFilter<"ProjectAttachment"> | string | null
+    originalName?: StringNullableFilter<"ProjectAttachment"> | string | null
+    contentType?: StringNullableFilter<"ProjectAttachment"> | string | null
+    kind?: StringFilter<"ProjectAttachment"> | string
+    createdAt?: DateTimeFilter<"ProjectAttachment"> | Date | string
+  }
+
+  export type PlanningEventUpsertWithWhereUniqueWithoutProjectInput = {
+    where: PlanningEventWhereUniqueInput
+    update: XOR<PlanningEventUpdateWithoutProjectInput, PlanningEventUncheckedUpdateWithoutProjectInput>
+    create: XOR<PlanningEventCreateWithoutProjectInput, PlanningEventUncheckedCreateWithoutProjectInput>
+  }
+
+  export type PlanningEventUpdateWithWhereUniqueWithoutProjectInput = {
+    where: PlanningEventWhereUniqueInput
+    data: XOR<PlanningEventUpdateWithoutProjectInput, PlanningEventUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type PlanningEventUpdateManyWithWhereWithoutProjectInput = {
+    where: PlanningEventScalarWhereInput
+    data: XOR<PlanningEventUpdateManyMutationInput, PlanningEventUncheckedUpdateManyWithoutProjectInput>
+  }
+
   export type ProjectCreateWithoutUrenInput = {
     id?: string
     number: string
@@ -42936,7 +51999,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -42949,11 +52019,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
     workorders?: WorkorderCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutUrenInput = {
@@ -42967,7 +52040,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -42980,10 +52060,13 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentUncheckedCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutUrenInput = {
@@ -43102,7 +52185,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -43115,11 +52205,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
     workorders?: WorkorderUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutUrenInput = {
@@ -43133,7 +52226,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -43146,10 +52246,13 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUncheckedUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UserUpsertWithoutProjectUrenInput = {
@@ -43264,7 +52367,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -43277,11 +52387,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
     workorders?: WorkorderCreateNestedManyWithoutProjectInput
     uren?: ProjectUurCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutMaterialenInput = {
@@ -43295,7 +52408,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -43308,10 +52428,13 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
     uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentUncheckedCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutMaterialenInput = {
@@ -43340,7 +52463,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -43353,11 +52483,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
     workorders?: WorkorderUpdateManyWithoutProjectNestedInput
     uren?: ProjectUurUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutMaterialenInput = {
@@ -43371,7 +52504,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -43384,10 +52524,189 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
     uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUncheckedUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectCreateWithoutBijlagenInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    plaats?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    status?: string
+    termijnAantal?: number | null
+    termijn1Gefactureerd?: boolean
+    termijn2Gefactureerd?: boolean
+    termijn3Gefactureerd?: boolean
+    termijn4Gefactureerd?: boolean
+    termijn1GefactureerdOp?: Date | string | null
+    termijn2GefactureerdOp?: Date | string | null
+    termijn3GefactureerdOp?: Date | string | null
+    termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutProjectsInput
+    workorders?: WorkorderCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutBijlagenInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    plaats?: string | null
+    customerId: string
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    status?: string
+    termijnAantal?: number | null
+    termijn1Gefactureerd?: boolean
+    termijn2Gefactureerd?: boolean
+    termijn3Gefactureerd?: boolean
+    termijn4Gefactureerd?: boolean
+    termijn1GefactureerdOp?: Date | string | null
+    termijn2GefactureerdOp?: Date | string | null
+    termijn3GefactureerdOp?: Date | string | null
+    termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutBijlagenInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutBijlagenInput, ProjectUncheckedCreateWithoutBijlagenInput>
+  }
+
+  export type ProjectUpsertWithoutBijlagenInput = {
+    update: XOR<ProjectUpdateWithoutBijlagenInput, ProjectUncheckedUpdateWithoutBijlagenInput>
+    create: XOR<ProjectCreateWithoutBijlagenInput, ProjectUncheckedCreateWithoutBijlagenInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutBijlagenInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutBijlagenInput, ProjectUncheckedUpdateWithoutBijlagenInput>
+  }
+
+  export type ProjectUpdateWithoutBijlagenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
+    termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn4Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn1GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
+    workorders?: WorkorderUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutBijlagenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
+    termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn4Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn1GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type DocumentCreateWithoutWorkorderInput = {
@@ -43510,7 +52829,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -43523,11 +52849,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutProjectsInput
     uren?: ProjectUurCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutWorkordersInput = {
@@ -43541,7 +52870,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -43554,10 +52890,13 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
     materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentUncheckedCreateNestedManyWithoutProjectInput
+    planningEvents?: PlanningEventUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutWorkordersInput = {
@@ -43579,6 +52918,7 @@ export namespace Prisma {
     assignments?: AssignmentCreateNestedManyWithoutCustomerInput
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutWorkordersInput = {
@@ -43595,6 +52935,7 @@ export namespace Prisma {
     assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutWorkordersInput = {
@@ -43815,6 +53156,61 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PakbonWorkorderCreateWithoutWorkorderInput = {
+    createdAt?: Date | string
+    pakbon: PakbonCreateNestedOneWithoutWorkordersInput
+  }
+
+  export type PakbonWorkorderUncheckedCreateWithoutWorkorderInput = {
+    pakbonId: string
+    createdAt?: Date | string
+  }
+
+  export type PakbonWorkorderCreateOrConnectWithoutWorkorderInput = {
+    where: PakbonWorkorderWhereUniqueInput
+    create: XOR<PakbonWorkorderCreateWithoutWorkorderInput, PakbonWorkorderUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type PakbonWorkorderCreateManyWorkorderInputEnvelope = {
+    data: PakbonWorkorderCreateManyWorkorderInput | PakbonWorkorderCreateManyWorkorderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ArchiveFolderCreateWithoutWorkorderInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    locationKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ArchiveFolderCreateNestedOneWithoutChildrenInput
+    children?: ArchiveFolderCreateNestedManyWithoutParentInput
+    files?: ArchiveFileCreateNestedManyWithoutFolderInput
+    customer?: CustomerCreateNestedOneWithoutArchiveFoldersInput
+  }
+
+  export type ArchiveFolderUncheckedCreateWithoutWorkorderInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId?: string | null
+    customerId?: string | null
+    locationKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ArchiveFolderUncheckedCreateNestedManyWithoutParentInput
+    files?: ArchiveFileUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type ArchiveFolderCreateOrConnectWithoutWorkorderInput = {
+    where: ArchiveFolderWhereUniqueInput
+    create: XOR<ArchiveFolderCreateWithoutWorkorderInput, ArchiveFolderUncheckedCreateWithoutWorkorderInput>
+  }
+
   export type DocumentUpsertWithWhereUniqueWithoutWorkorderInput = {
     where: DocumentWhereUniqueInput
     update: XOR<DocumentUpdateWithoutWorkorderInput, DocumentUncheckedUpdateWithoutWorkorderInput>
@@ -43960,7 +53356,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -43973,11 +53376,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
     uren?: ProjectUurUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutWorkordersInput = {
@@ -43991,7 +53397,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -44004,10 +53417,13 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUncheckedUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type CustomerUpsertWithoutWorkordersInput = {
@@ -44035,6 +53451,7 @@ export namespace Prisma {
     assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutWorkordersInput = {
@@ -44051,6 +53468,7 @@ export namespace Prisma {
     assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type WorkorderHardwareUpsertWithWhereUniqueWithoutWorkorderInput = {
@@ -44271,6 +53689,606 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"WorkorderForm"> | Date | string
   }
 
+  export type PakbonWorkorderUpsertWithWhereUniqueWithoutWorkorderInput = {
+    where: PakbonWorkorderWhereUniqueInput
+    update: XOR<PakbonWorkorderUpdateWithoutWorkorderInput, PakbonWorkorderUncheckedUpdateWithoutWorkorderInput>
+    create: XOR<PakbonWorkorderCreateWithoutWorkorderInput, PakbonWorkorderUncheckedCreateWithoutWorkorderInput>
+  }
+
+  export type PakbonWorkorderUpdateWithWhereUniqueWithoutWorkorderInput = {
+    where: PakbonWorkorderWhereUniqueInput
+    data: XOR<PakbonWorkorderUpdateWithoutWorkorderInput, PakbonWorkorderUncheckedUpdateWithoutWorkorderInput>
+  }
+
+  export type PakbonWorkorderUpdateManyWithWhereWithoutWorkorderInput = {
+    where: PakbonWorkorderScalarWhereInput
+    data: XOR<PakbonWorkorderUpdateManyMutationInput, PakbonWorkorderUncheckedUpdateManyWithoutWorkorderInput>
+  }
+
+  export type PakbonWorkorderScalarWhereInput = {
+    AND?: PakbonWorkorderScalarWhereInput | PakbonWorkorderScalarWhereInput[]
+    OR?: PakbonWorkorderScalarWhereInput[]
+    NOT?: PakbonWorkorderScalarWhereInput | PakbonWorkorderScalarWhereInput[]
+    pakbonId?: StringFilter<"PakbonWorkorder"> | string
+    workorderId?: StringFilter<"PakbonWorkorder"> | string
+    createdAt?: DateTimeFilter<"PakbonWorkorder"> | Date | string
+  }
+
+  export type ArchiveFolderUpsertWithoutWorkorderInput = {
+    update: XOR<ArchiveFolderUpdateWithoutWorkorderInput, ArchiveFolderUncheckedUpdateWithoutWorkorderInput>
+    create: XOR<ArchiveFolderCreateWithoutWorkorderInput, ArchiveFolderUncheckedCreateWithoutWorkorderInput>
+    where?: ArchiveFolderWhereInput
+  }
+
+  export type ArchiveFolderUpdateToOneWithWhereWithoutWorkorderInput = {
+    where?: ArchiveFolderWhereInput
+    data: XOR<ArchiveFolderUpdateWithoutWorkorderInput, ArchiveFolderUncheckedUpdateWithoutWorkorderInput>
+  }
+
+  export type ArchiveFolderUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ArchiveFolderUpdateOneWithoutChildrenNestedInput
+    children?: ArchiveFolderUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUpdateManyWithoutFolderNestedInput
+    customer?: CustomerUpdateOneWithoutArchiveFoldersNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateWithoutWorkorderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ArchiveFolderUncheckedUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUncheckedUpdateManyWithoutFolderNestedInput
+  }
+
+  export type ArchiveFolderCreateWithoutChildrenInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    locationKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    parent?: ArchiveFolderCreateNestedOneWithoutChildrenInput
+    files?: ArchiveFileCreateNestedManyWithoutFolderInput
+    customer?: CustomerCreateNestedOneWithoutArchiveFoldersInput
+    workorder?: WorkorderCreateNestedOneWithoutArchiveFolderInput
+  }
+
+  export type ArchiveFolderUncheckedCreateWithoutChildrenInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId?: string | null
+    customerId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    files?: ArchiveFileUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type ArchiveFolderCreateOrConnectWithoutChildrenInput = {
+    where: ArchiveFolderWhereUniqueInput
+    create: XOR<ArchiveFolderCreateWithoutChildrenInput, ArchiveFolderUncheckedCreateWithoutChildrenInput>
+  }
+
+  export type ArchiveFolderCreateWithoutParentInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    locationKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ArchiveFolderCreateNestedManyWithoutParentInput
+    files?: ArchiveFileCreateNestedManyWithoutFolderInput
+    customer?: CustomerCreateNestedOneWithoutArchiveFoldersInput
+    workorder?: WorkorderCreateNestedOneWithoutArchiveFolderInput
+  }
+
+  export type ArchiveFolderUncheckedCreateWithoutParentInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    customerId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: ArchiveFolderUncheckedCreateNestedManyWithoutParentInput
+    files?: ArchiveFileUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type ArchiveFolderCreateOrConnectWithoutParentInput = {
+    where: ArchiveFolderWhereUniqueInput
+    create: XOR<ArchiveFolderCreateWithoutParentInput, ArchiveFolderUncheckedCreateWithoutParentInput>
+  }
+
+  export type ArchiveFolderCreateManyParentInputEnvelope = {
+    data: ArchiveFolderCreateManyParentInput | ArchiveFolderCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ArchiveFileCreateWithoutFolderInput = {
+    id?: string
+    name: string
+    storage?: string
+    storagePath: string
+    url?: string | null
+    contentType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFileUncheckedCreateWithoutFolderInput = {
+    id?: string
+    name: string
+    storage?: string
+    storagePath: string
+    url?: string | null
+    contentType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFileCreateOrConnectWithoutFolderInput = {
+    where: ArchiveFileWhereUniqueInput
+    create: XOR<ArchiveFileCreateWithoutFolderInput, ArchiveFileUncheckedCreateWithoutFolderInput>
+  }
+
+  export type ArchiveFileCreateManyFolderInputEnvelope = {
+    data: ArchiveFileCreateManyFolderInput | ArchiveFileCreateManyFolderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerCreateWithoutArchiveFoldersInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
+    assignments?: AssignmentCreateNestedManyWithoutCustomerInput
+    projects?: ProjectCreateNestedManyWithoutCustomerInput
+    workorders?: WorkorderCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutArchiveFoldersInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    color?: string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: string | null
+    assignments?: AssignmentUncheckedCreateNestedManyWithoutCustomerInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
+    aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutArchiveFoldersInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutArchiveFoldersInput, CustomerUncheckedCreateWithoutArchiveFoldersInput>
+  }
+
+  export type WorkorderCreateWithoutArchiveFolderInput = {
+    id?: string
+    title: string
+    status?: string
+    location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    onHoldNotes?: string | null
+    number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
+    documents?: DocumentCreateNestedManyWithoutWorkorderInput
+    assignedUser?: UserCreateNestedOneWithoutWorkordersInput
+    assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
+    project?: ProjectCreateNestedOneWithoutWorkordersInput
+    customer?: CustomerCreateNestedOneWithoutWorkordersInput
+    hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+  }
+
+  export type WorkorderUncheckedCreateWithoutArchiveFolderInput = {
+    id?: string
+    title: string
+    status?: string
+    projectId?: string | null
+    customerId?: string | null
+    location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    onHoldNotes?: string | null
+    number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    assignedUserId?: string | null
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
+    assignmentId?: string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
+    documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
+    hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+  }
+
+  export type WorkorderCreateOrConnectWithoutArchiveFolderInput = {
+    where: WorkorderWhereUniqueInput
+    create: XOR<WorkorderCreateWithoutArchiveFolderInput, WorkorderUncheckedCreateWithoutArchiveFolderInput>
+  }
+
+  export type ArchiveFolderUpsertWithoutChildrenInput = {
+    update: XOR<ArchiveFolderUpdateWithoutChildrenInput, ArchiveFolderUncheckedUpdateWithoutChildrenInput>
+    create: XOR<ArchiveFolderCreateWithoutChildrenInput, ArchiveFolderUncheckedCreateWithoutChildrenInput>
+    where?: ArchiveFolderWhereInput
+  }
+
+  export type ArchiveFolderUpdateToOneWithWhereWithoutChildrenInput = {
+    where?: ArchiveFolderWhereInput
+    data: XOR<ArchiveFolderUpdateWithoutChildrenInput, ArchiveFolderUncheckedUpdateWithoutChildrenInput>
+  }
+
+  export type ArchiveFolderUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ArchiveFolderUpdateOneWithoutChildrenNestedInput
+    files?: ArchiveFileUpdateManyWithoutFolderNestedInput
+    customer?: CustomerUpdateOneWithoutArchiveFoldersNestedInput
+    workorder?: WorkorderUpdateOneWithoutArchiveFolderNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateWithoutChildrenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: ArchiveFileUncheckedUpdateManyWithoutFolderNestedInput
+  }
+
+  export type ArchiveFolderUpsertWithWhereUniqueWithoutParentInput = {
+    where: ArchiveFolderWhereUniqueInput
+    update: XOR<ArchiveFolderUpdateWithoutParentInput, ArchiveFolderUncheckedUpdateWithoutParentInput>
+    create: XOR<ArchiveFolderCreateWithoutParentInput, ArchiveFolderUncheckedCreateWithoutParentInput>
+  }
+
+  export type ArchiveFolderUpdateWithWhereUniqueWithoutParentInput = {
+    where: ArchiveFolderWhereUniqueInput
+    data: XOR<ArchiveFolderUpdateWithoutParentInput, ArchiveFolderUncheckedUpdateWithoutParentInput>
+  }
+
+  export type ArchiveFolderUpdateManyWithWhereWithoutParentInput = {
+    where: ArchiveFolderScalarWhereInput
+    data: XOR<ArchiveFolderUpdateManyMutationInput, ArchiveFolderUncheckedUpdateManyWithoutParentInput>
+  }
+
+  export type ArchiveFileUpsertWithWhereUniqueWithoutFolderInput = {
+    where: ArchiveFileWhereUniqueInput
+    update: XOR<ArchiveFileUpdateWithoutFolderInput, ArchiveFileUncheckedUpdateWithoutFolderInput>
+    create: XOR<ArchiveFileCreateWithoutFolderInput, ArchiveFileUncheckedCreateWithoutFolderInput>
+  }
+
+  export type ArchiveFileUpdateWithWhereUniqueWithoutFolderInput = {
+    where: ArchiveFileWhereUniqueInput
+    data: XOR<ArchiveFileUpdateWithoutFolderInput, ArchiveFileUncheckedUpdateWithoutFolderInput>
+  }
+
+  export type ArchiveFileUpdateManyWithWhereWithoutFolderInput = {
+    where: ArchiveFileScalarWhereInput
+    data: XOR<ArchiveFileUpdateManyMutationInput, ArchiveFileUncheckedUpdateManyWithoutFolderInput>
+  }
+
+  export type ArchiveFileScalarWhereInput = {
+    AND?: ArchiveFileScalarWhereInput | ArchiveFileScalarWhereInput[]
+    OR?: ArchiveFileScalarWhereInput[]
+    NOT?: ArchiveFileScalarWhereInput | ArchiveFileScalarWhereInput[]
+    id?: StringFilter<"ArchiveFile"> | string
+    folderId?: StringFilter<"ArchiveFile"> | string
+    name?: StringFilter<"ArchiveFile"> | string
+    storage?: StringFilter<"ArchiveFile"> | string
+    storagePath?: StringFilter<"ArchiveFile"> | string
+    url?: StringNullableFilter<"ArchiveFile"> | string | null
+    contentType?: StringNullableFilter<"ArchiveFile"> | string | null
+    size?: IntNullableFilter<"ArchiveFile"> | number | null
+    createdAt?: DateTimeFilter<"ArchiveFile"> | Date | string
+    updatedAt?: DateTimeFilter<"ArchiveFile"> | Date | string
+  }
+
+  export type CustomerUpsertWithoutArchiveFoldersInput = {
+    update: XOR<CustomerUpdateWithoutArchiveFoldersInput, CustomerUncheckedUpdateWithoutArchiveFoldersInput>
+    create: XOR<CustomerCreateWithoutArchiveFoldersInput, CustomerUncheckedCreateWithoutArchiveFoldersInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutArchiveFoldersInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutArchiveFoldersInput, CustomerUncheckedUpdateWithoutArchiveFoldersInput>
+  }
+
+  export type CustomerUpdateWithoutArchiveFoldersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: AssignmentUpdateManyWithoutCustomerNestedInput
+    projects?: ProjectUpdateManyWithoutCustomerNestedInput
+    workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutArchiveFoldersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: StringFieldUpdateOperationsInput | string
+    formSchema?: NullableJsonNullValueInput | InputJsonValue
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: AssignmentUncheckedUpdateManyWithoutCustomerNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
+    workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
+    aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type WorkorderUpsertWithoutArchiveFolderInput = {
+    update: XOR<WorkorderUpdateWithoutArchiveFolderInput, WorkorderUncheckedUpdateWithoutArchiveFolderInput>
+    create: XOR<WorkorderCreateWithoutArchiveFolderInput, WorkorderUncheckedCreateWithoutArchiveFolderInput>
+    where?: WorkorderWhereInput
+  }
+
+  export type WorkorderUpdateToOneWithWhereWithoutArchiveFolderInput = {
+    where?: WorkorderWhereInput
+    data: XOR<WorkorderUpdateWithoutArchiveFolderInput, WorkorderUncheckedUpdateWithoutArchiveFolderInput>
+  }
+
+  export type WorkorderUpdateWithoutArchiveFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
+    documents?: DocumentUpdateManyWithoutWorkorderNestedInput
+    assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
+    assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
+    project?: ProjectUpdateOneWithoutWorkordersNestedInput
+    customer?: CustomerUpdateOneWithoutWorkordersNestedInput
+    hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+  }
+
+  export type WorkorderUncheckedUpdateWithoutArchiveFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
+    documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
+    hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+  }
+
   export type WorkorderCreateWithoutHoursInput = {
     id?: string
     title: string
@@ -44287,20 +54305,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -44313,6 +54344,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutHoursInput = {
@@ -44333,10 +54366,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44345,10 +54385,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
@@ -44357,6 +54403,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutHoursInput = {
@@ -44391,20 +54439,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -44417,6 +54478,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutHoursInput = {
@@ -44437,10 +54500,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44449,10 +54519,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -44461,6 +54537,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutMaterialsInput = {
@@ -44479,20 +54557,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -44505,6 +54596,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutMaterialsInput = {
@@ -44525,10 +54618,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44537,10 +54637,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -44549,6 +54655,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutMaterialsInput = {
@@ -44583,20 +54691,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -44609,6 +54730,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutMaterialsInput = {
@@ -44629,10 +54752,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44641,10 +54771,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -44653,6 +54789,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutHardwareInput = {
@@ -44671,20 +54809,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -44697,6 +54848,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutHardwareInput = {
@@ -44717,10 +54870,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44729,10 +54889,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
@@ -44741,6 +54907,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutHardwareInput = {
@@ -44775,20 +54943,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -44801,6 +54982,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutHardwareInput = {
@@ -44821,10 +55004,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -44833,10 +55023,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -44845,6 +55041,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutPhotosInput = {
@@ -44863,20 +55061,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -44889,6 +55100,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutPhotosInput = {
@@ -44909,10 +55122,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -44921,10 +55141,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -44933,6 +55159,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutPhotosInput = {
@@ -44967,20 +55195,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -44993,6 +55234,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutPhotosInput = {
@@ -45013,10 +55256,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45025,10 +55275,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -45037,6 +55293,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutAttachmentsInput = {
@@ -45055,20 +55313,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -45081,6 +55352,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutAttachmentsInput = {
@@ -45101,10 +55374,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45113,10 +55393,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -45125,6 +55411,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutAttachmentsInput = {
@@ -45159,20 +55447,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -45185,6 +55486,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutAttachmentsInput = {
@@ -45205,10 +55508,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45217,10 +55527,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -45229,6 +55545,348 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
+  }
+
+  export type PakbonWorkorderCreateWithoutPakbonInput = {
+    createdAt?: Date | string
+    workorder: WorkorderCreateNestedOneWithoutPakbonnenInput
+  }
+
+  export type PakbonWorkorderUncheckedCreateWithoutPakbonInput = {
+    workorderId: string
+    createdAt?: Date | string
+  }
+
+  export type PakbonWorkorderCreateOrConnectWithoutPakbonInput = {
+    where: PakbonWorkorderWhereUniqueInput
+    create: XOR<PakbonWorkorderCreateWithoutPakbonInput, PakbonWorkorderUncheckedCreateWithoutPakbonInput>
+  }
+
+  export type PakbonWorkorderCreateManyPakbonInputEnvelope = {
+    data: PakbonWorkorderCreateManyPakbonInput | PakbonWorkorderCreateManyPakbonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PakbonWorkorderUpsertWithWhereUniqueWithoutPakbonInput = {
+    where: PakbonWorkorderWhereUniqueInput
+    update: XOR<PakbonWorkorderUpdateWithoutPakbonInput, PakbonWorkorderUncheckedUpdateWithoutPakbonInput>
+    create: XOR<PakbonWorkorderCreateWithoutPakbonInput, PakbonWorkorderUncheckedCreateWithoutPakbonInput>
+  }
+
+  export type PakbonWorkorderUpdateWithWhereUniqueWithoutPakbonInput = {
+    where: PakbonWorkorderWhereUniqueInput
+    data: XOR<PakbonWorkorderUpdateWithoutPakbonInput, PakbonWorkorderUncheckedUpdateWithoutPakbonInput>
+  }
+
+  export type PakbonWorkorderUpdateManyWithWhereWithoutPakbonInput = {
+    where: PakbonWorkorderScalarWhereInput
+    data: XOR<PakbonWorkorderUpdateManyMutationInput, PakbonWorkorderUncheckedUpdateManyWithoutPakbonInput>
+  }
+
+  export type PakbonCreateWithoutWorkordersInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PakbonUncheckedCreateWithoutWorkordersInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PakbonCreateOrConnectWithoutWorkordersInput = {
+    where: PakbonWhereUniqueInput
+    create: XOR<PakbonCreateWithoutWorkordersInput, PakbonUncheckedCreateWithoutWorkordersInput>
+  }
+
+  export type WorkorderCreateWithoutPakbonnenInput = {
+    id?: string
+    title: string
+    status?: string
+    location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    onHoldNotes?: string | null
+    number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
+    documents?: DocumentCreateNestedManyWithoutWorkorderInput
+    assignedUser?: UserCreateNestedOneWithoutWorkordersInput
+    assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
+    project?: ProjectCreateNestedOneWithoutWorkordersInput
+    customer?: CustomerCreateNestedOneWithoutWorkordersInput
+    hardware?: WorkorderHardwareCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
+  }
+
+  export type WorkorderUncheckedCreateWithoutPakbonnenInput = {
+    id?: string
+    title: string
+    status?: string
+    projectId?: string | null
+    customerId?: string | null
+    location?: string | null
+    straat?: string | null
+    huisnummer?: string | null
+    postcode?: string | null
+    city?: string | null
+    contactPersoon?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
+    workDate?: Date | string | null
+    internalNotes?: string | null
+    onHoldNotes?: string | null
+    number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    assignedUserId?: string | null
+    plannedDate?: Date | string | null
+    plannedEndDate?: Date | string | null
+    plannedHours?: number | null
+    plannedRoundTripKm?: number | null
+    plannedReisuren?: number | null
+    assignmentId?: string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: Bytes | null
+    pdfGeneratedAt?: Date | string | null
+    sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
+    documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
+    hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
+    hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
+    materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
+    photos?: WorkorderPhotoUncheckedCreateNestedManyWithoutWorkorderInput
+    attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
+    signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
+    extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
+  }
+
+  export type WorkorderCreateOrConnectWithoutPakbonnenInput = {
+    where: WorkorderWhereUniqueInput
+    create: XOR<WorkorderCreateWithoutPakbonnenInput, WorkorderUncheckedCreateWithoutPakbonnenInput>
+  }
+
+  export type PakbonUpsertWithoutWorkordersInput = {
+    update: XOR<PakbonUpdateWithoutWorkordersInput, PakbonUncheckedUpdateWithoutWorkordersInput>
+    create: XOR<PakbonCreateWithoutWorkordersInput, PakbonUncheckedCreateWithoutWorkordersInput>
+    where?: PakbonWhereInput
+  }
+
+  export type PakbonUpdateToOneWithWhereWithoutWorkordersInput = {
+    where?: PakbonWhereInput
+    data: XOR<PakbonUpdateWithoutWorkordersInput, PakbonUncheckedUpdateWithoutWorkordersInput>
+  }
+
+  export type PakbonUpdateWithoutWorkordersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonUncheckedUpdateWithoutWorkordersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkorderUpsertWithoutPakbonnenInput = {
+    update: XOR<WorkorderUpdateWithoutPakbonnenInput, WorkorderUncheckedUpdateWithoutPakbonnenInput>
+    create: XOR<WorkorderCreateWithoutPakbonnenInput, WorkorderUncheckedCreateWithoutPakbonnenInput>
+    where?: WorkorderWhereInput
+  }
+
+  export type WorkorderUpdateToOneWithWhereWithoutPakbonnenInput = {
+    where?: WorkorderWhereInput
+    data: XOR<WorkorderUpdateWithoutPakbonnenInput, WorkorderUncheckedUpdateWithoutPakbonnenInput>
+  }
+
+  export type WorkorderUpdateWithoutPakbonnenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
+    documents?: DocumentUpdateManyWithoutWorkorderNestedInput
+    assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
+    assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
+    project?: ProjectUpdateOneWithoutWorkordersNestedInput
+    customer?: CustomerUpdateOneWithoutWorkordersNestedInput
+    hardware?: WorkorderHardwareUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
+  }
+
+  export type WorkorderUncheckedUpdateWithoutPakbonnenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    straat?: NullableStringFieldUpdateOperationsInput | string | null
+    huisnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    postcode?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPersoon?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
+    workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
+    plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
+    aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
+    pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
+    pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
+    documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
+    hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
+    hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
+    materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
+    photos?: WorkorderPhotoUncheckedUpdateManyWithoutWorkorderNestedInput
+    attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
+    signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
+    extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutSignatureInput = {
@@ -45247,20 +55905,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -45273,6 +55944,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutSignatureInput = {
@@ -45293,10 +55966,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45305,10 +55985,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -45317,6 +56003,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutSignatureInput = {
@@ -45351,20 +56039,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -45377,6 +56078,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutSignatureInput = {
@@ -45397,10 +56100,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45409,10 +56119,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -45421,6 +56137,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderCreateWithoutDocumentsInput = {
@@ -45439,20 +56157,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
     project?: ProjectCreateNestedOneWithoutWorkordersInput
@@ -45465,6 +56196,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutDocumentsInput = {
@@ -45485,10 +56218,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45497,10 +56237,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
     materials?: WorkorderMaterialUncheckedCreateNestedManyWithoutWorkorderInput
@@ -45509,6 +56255,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutDocumentsInput = {
@@ -45543,20 +56291,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
     project?: ProjectUpdateOneWithoutWorkordersNestedInput
@@ -45569,6 +56330,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutDocumentsInput = {
@@ -45589,10 +56352,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45601,10 +56371,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
     materials?: WorkorderMaterialUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -45613,6 +56389,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderFormCreateWithoutFormTypeInput = {
@@ -45673,20 +56451,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -45699,6 +56490,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutFormsInput = {
@@ -45719,10 +56512,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -45731,10 +56531,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -45743,6 +56549,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutFormsInput = {
@@ -45800,20 +56608,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -45826,6 +56647,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutFormsInput = {
@@ -45846,10 +56669,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -45858,10 +56688,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -45870,6 +56706,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type FormTypeUpsertWithoutWorkorderFormsInput = {
@@ -45915,6 +56753,7 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutAssignmentsInput = {
@@ -45931,6 +56770,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutCustomerInput
     workorders?: WorkorderUncheckedCreateNestedManyWithoutCustomerInput
     aanvragen?: AanvraagUncheckedCreateNestedManyWithoutCustomerInput
+    archiveFolders?: ArchiveFolderUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutAssignmentsInput = {
@@ -46002,20 +56842,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     project?: ProjectCreateNestedOneWithoutWorkordersInput
@@ -46028,6 +56881,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutAssignmentInput = {
@@ -46048,10 +56903,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -46059,10 +56921,16 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -46072,6 +56940,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     extraEngineers?: WorkorderEngineerUncheckedCreateNestedManyWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutAssignmentInput = {
@@ -46109,6 +56979,7 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutAssignmentsInput = {
@@ -46125,6 +56996,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutCustomerNestedInput
     workorders?: WorkorderUncheckedUpdateManyWithoutCustomerNestedInput
     aanvragen?: AanvraagUncheckedUpdateManyWithoutCustomerNestedInput
+    archiveFolders?: ArchiveFolderUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type AssignmentUserUpsertWithWhereUniqueWithoutAssignmentInput = {
@@ -46637,6 +57509,91 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutPlanningEventsCreatedInput, UserUncheckedCreateWithoutPlanningEventsCreatedInput>
   }
 
+  export type ProjectCreateWithoutPlanningEventsInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    plaats?: string | null
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    status?: string
+    termijnAantal?: number | null
+    termijn1Gefactureerd?: boolean
+    termijn2Gefactureerd?: boolean
+    termijn3Gefactureerd?: boolean
+    termijn4Gefactureerd?: boolean
+    termijn1GefactureerdOp?: Date | string | null
+    termijn2GefactureerdOp?: Date | string | null
+    termijn3GefactureerdOp?: Date | string | null
+    termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutProjectsInput
+    workorders?: WorkorderCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutPlanningEventsInput = {
+    id?: string
+    number: string
+    name: string
+    location?: string | null
+    plaats?: string | null
+    customerId: string
+    geoffreerdeUren?: Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: string | null
+    offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
+    status?: string
+    termijnAantal?: number | null
+    termijn1Gefactureerd?: boolean
+    termijn2Gefactureerd?: boolean
+    termijn3Gefactureerd?: boolean
+    termijn4Gefactureerd?: boolean
+    termijn1GefactureerdOp?: Date | string | null
+    termijn2GefactureerdOp?: Date | string | null
+    termijn3GefactureerdOp?: Date | string | null
+    termijn4GefactureerdOp?: Date | string | null
+    termijn1Factuurnummer?: string | null
+    termijn2Factuurnummer?: string | null
+    termijn3Factuurnummer?: string | null
+    termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workorders?: WorkorderUncheckedCreateNestedManyWithoutProjectInput
+    uren?: ProjectUurUncheckedCreateNestedManyWithoutProjectInput
+    materialen?: ProjectMateriaalUncheckedCreateNestedManyWithoutProjectInput
+    bijlagen?: ProjectAttachmentUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutPlanningEventsInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutPlanningEventsInput, ProjectUncheckedCreateWithoutPlanningEventsInput>
+  }
+
   export type UserUpsertWithoutPlanningEventsAssignedInput = {
     update: XOR<UserUpdateWithoutPlanningEventsAssignedInput, UserUncheckedUpdateWithoutPlanningEventsAssignedInput>
     create: XOR<UserCreateWithoutPlanningEventsAssignedInput, UserUncheckedCreateWithoutPlanningEventsAssignedInput>
@@ -46739,6 +57696,97 @@ export namespace Prisma {
     planningEventsAssigned?: PlanningEventUncheckedUpdateManyWithoutAssignedUserNestedInput
   }
 
+  export type ProjectUpsertWithoutPlanningEventsInput = {
+    update: XOR<ProjectUpdateWithoutPlanningEventsInput, ProjectUncheckedUpdateWithoutPlanningEventsInput>
+    create: XOR<ProjectCreateWithoutPlanningEventsInput, ProjectUncheckedCreateWithoutPlanningEventsInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutPlanningEventsInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutPlanningEventsInput, ProjectUncheckedUpdateWithoutPlanningEventsInput>
+  }
+
+  export type ProjectUpdateWithoutPlanningEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
+    termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn4Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn1GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutProjectsNestedInput
+    workorders?: WorkorderUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutPlanningEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    plaats?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+    geoffreerdeUren?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
+    termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn4Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
+    termijn1GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn2GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn3GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn4GefactureerdOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    termijn1Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
+    uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
+    materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
   export type WorkorderCreateWithoutExtraEngineersInput = {
     id?: string
     title: string
@@ -46755,20 +57803,33 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentCreateNestedManyWithoutWorkorderInput
     assignedUser?: UserCreateNestedOneWithoutWorkordersInput
     assignment?: AssignmentCreateNestedOneWithoutWorkordersInput
@@ -46781,6 +57842,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureCreateNestedOneWithoutWorkorderInput
     forms?: WorkorderFormCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderUncheckedCreateWithoutExtraEngineersInput = {
@@ -46801,10 +57864,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -46813,10 +57883,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
     documents?: DocumentUncheckedCreateNestedManyWithoutWorkorderInput
     hardware?: WorkorderHardwareUncheckedCreateNestedManyWithoutWorkorderInput
     hours?: WorkorderHourUncheckedCreateNestedManyWithoutWorkorderInput
@@ -46825,6 +57901,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUncheckedCreateNestedManyWithoutWorkorderInput
     signature?: WorkorderSignatureUncheckedCreateNestedOneWithoutWorkorderInput
     forms?: WorkorderFormUncheckedCreateNestedManyWithoutWorkorderInput
+    pakbonnen?: PakbonWorkorderUncheckedCreateNestedManyWithoutWorkorderInput
+    archiveFolder?: ArchiveFolderUncheckedCreateNestedOneWithoutWorkorderInput
   }
 
   export type WorkorderCreateOrConnectWithoutExtraEngineersInput = {
@@ -46904,20 +57982,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -46930,6 +58021,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutExtraEngineersInput = {
@@ -46950,10 +58043,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -46962,10 +58062,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -46974,6 +58080,8 @@ export namespace Prisma {
     attachments?: WorkorderAttachmentUncheckedUpdateManyWithoutWorkorderNestedInput
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type UserUpsertWithoutExtraWorkordersInput = {
@@ -47051,10 +58159,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
     plannedHours?: number | null
@@ -47062,10 +58177,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
   }
 
   export type WorkorderEngineerCreateManyUserInput = {
@@ -47091,6 +58212,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -47102,6 +58224,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -47117,6 +58240,7 @@ export namespace Prisma {
     recurrenceWeekday?: number | null
     recurrenceNth?: number | null
     recurrenceUntil?: Date | string | null
+    projectId?: string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -47135,6 +58259,7 @@ export namespace Prisma {
     recurrenceNth?: number | null
     recurrenceUntil?: Date | string | null
     assignedUserId?: string | null
+    projectId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -47173,20 +58298,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
     project?: ProjectUpdateOneWithoutWorkordersNestedInput
@@ -47199,6 +58337,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutAssignedUserInput = {
@@ -47219,10 +58359,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -47230,10 +58377,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -47243,6 +58396,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutAssignedUserInput = {
@@ -47263,10 +58418,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -47274,10 +58436,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type WorkorderEngineerUpdateWithoutUserInput = {
@@ -47331,6 +58499,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
     bookedBy?: UserUpdateOneWithoutProjectUrenGeboektNestedInput
@@ -47344,6 +58513,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -47355,6 +58525,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -47364,6 +58535,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutUrenNestedInput
     user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
@@ -47377,6 +58549,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -47388,6 +58561,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -47406,6 +58580,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutPlanningEventsCreatedNestedInput
+    project?: ProjectUpdateOneWithoutPlanningEventsNestedInput
   }
 
   export type PlanningEventUncheckedUpdateWithoutAssignedUserInput = {
@@ -47420,6 +58595,7 @@ export namespace Prisma {
     recurrenceWeekday?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47437,6 +58613,7 @@ export namespace Prisma {
     recurrenceWeekday?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47457,6 +58634,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedUser?: UserUpdateOneWithoutPlanningEventsAssignedNestedInput
+    project?: ProjectUpdateOneWithoutPlanningEventsNestedInput
   }
 
   export type PlanningEventUncheckedUpdateWithoutCreatedByInput = {
@@ -47472,6 +58650,7 @@ export namespace Prisma {
     recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47489,6 +58668,7 @@ export namespace Prisma {
     recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
     recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47517,7 +58697,14 @@ export namespace Prisma {
     geoffreerdBedrag?: Decimal | DecimalJsLike | number | string | null
     offerteUrl?: string | null
     offerteFilename?: string | null
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     status?: string
+    termijnAantal?: number | null
     termijn1Gefactureerd?: boolean
     termijn2Gefactureerd?: boolean
     termijn3Gefactureerd?: boolean
@@ -47530,6 +58717,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: string | null
     termijn3Factuurnummer?: string | null
     termijn4Factuurnummer?: string | null
+    intakeTekst?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -47551,10 +58739,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -47563,10 +58758,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
   }
 
   export type AanvraagCreateManyCustomerInput = {
@@ -47585,6 +58786,19 @@ export namespace Prisma {
     specificaties?: NullableJsonNullValueInput | InputJsonValue
     bijlagen?: NullableJsonNullValueInput | InputJsonValue
     status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFolderCreateManyCustomerInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    parentId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -47647,7 +58861,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -47660,11 +58881,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUpdateManyWithoutProjectNestedInput
     uren?: ProjectUurUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutCustomerInput = {
@@ -47677,7 +58901,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -47690,11 +58921,14 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workorders?: WorkorderUncheckedUpdateManyWithoutProjectNestedInput
     uren?: ProjectUurUncheckedUpdateManyWithoutProjectNestedInput
     materialen?: ProjectMateriaalUncheckedUpdateManyWithoutProjectNestedInput
+    bijlagen?: ProjectAttachmentUncheckedUpdateManyWithoutProjectNestedInput
+    planningEvents?: PlanningEventUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutCustomerInput = {
@@ -47707,7 +58941,14 @@ export namespace Prisma {
     geoffreerdBedrag?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     offerteUrl?: NullableStringFieldUpdateOperationsInput | string | null
     offerteFilename?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    termijnAantal?: NullableIntFieldUpdateOperationsInput | number | null
     termijn1Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn2Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
     termijn3Gefactureerd?: BoolFieldUpdateOperationsInput | boolean
@@ -47720,6 +58961,7 @@ export namespace Prisma {
     termijn2Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn3Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
     termijn4Factuurnummer?: NullableStringFieldUpdateOperationsInput | string | null
+    intakeTekst?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47740,20 +58982,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -47766,6 +59021,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutCustomerInput = {
@@ -47785,10 +59042,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47797,10 +59061,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -47810,6 +59080,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutCustomerInput = {
@@ -47829,10 +59101,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47841,10 +59120,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AanvraagUpdateWithoutCustomerInput = {
@@ -47907,6 +59192,49 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ArchiveFolderUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    parent?: ArchiveFolderUpdateOneWithoutChildrenNestedInput
+    children?: ArchiveFolderUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUpdateManyWithoutFolderNestedInput
+    workorder?: WorkorderUpdateOneWithoutArchiveFolderNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ArchiveFolderUncheckedUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUncheckedUpdateManyWithoutFolderNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateManyWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WorkorderCreateManyProjectInput = {
     id?: string
     title: string
@@ -47924,10 +59252,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -47936,10 +59271,16 @@ export namespace Prisma {
     plannedReisuren?: number | null
     assignmentId?: string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
   }
 
   export type ProjectUurCreateManyProjectInput = {
@@ -47950,6 +59291,7 @@ export namespace Prisma {
     uren: Decimal | DecimalJsLike | number | string
     omschrijving?: string | null
     kilometers?: number | null
+    parkeerkosten?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
   }
 
@@ -47961,6 +59303,34 @@ export namespace Prisma {
     kosten: Decimal | DecimalJsLike | number | string
     ingekochtOp?: Date | string | null
     createdAt?: Date | string
+  }
+
+  export type ProjectAttachmentCreateManyProjectInput = {
+    id?: string
+    url: string
+    filename?: string | null
+    originalName?: string | null
+    contentType?: string | null
+    kind?: string
+    createdAt?: Date | string
+  }
+
+  export type PlanningEventCreateManyProjectInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    startAt: Date | string
+    endAt?: Date | string | null
+    allDay?: boolean
+    recurrenceFreq?: string
+    recurrenceInterval?: number
+    recurrenceWeekday?: number | null
+    recurrenceNth?: number | null
+    recurrenceUntil?: Date | string | null
+    assignedUserId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type WorkorderUpdateWithoutProjectInput = {
@@ -47979,20 +59349,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     assignment?: AssignmentUpdateOneWithoutWorkordersNestedInput
@@ -48005,6 +59388,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutProjectInput = {
@@ -48024,10 +59409,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48036,10 +59428,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -48049,6 +59447,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutProjectInput = {
@@ -48068,10 +59468,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48080,10 +59487,16 @@ export namespace Prisma {
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProjectUurUpdateWithoutProjectInput = {
@@ -48092,6 +59505,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectUrenNestedInput
     bookedBy?: UserUpdateOneWithoutProjectUrenGeboektNestedInput
@@ -48105,6 +59519,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -48116,6 +59531,7 @@ export namespace Prisma {
     uren?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     omschrijving?: NullableStringFieldUpdateOperationsInput | string | null
     kilometers?: NullableFloatFieldUpdateOperationsInput | number | null
+    parkeerkosten?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -48147,6 +59563,90 @@ export namespace Prisma {
     kosten?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     ingekochtOp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAttachmentUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAttachmentUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectAttachmentUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    kind?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceWeekday?: NullableIntFieldUpdateOperationsInput | number | null
+    recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedUser?: UserUpdateOneWithoutPlanningEventsAssignedNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutPlanningEventsCreatedNestedInput
+  }
+
+  export type PlanningEventUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceWeekday?: NullableIntFieldUpdateOperationsInput | number | null
+    recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlanningEventUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    startAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allDay?: BoolFieldUpdateOperationsInput | boolean
+    recurrenceFreq?: StringFieldUpdateOperationsInput | string
+    recurrenceInterval?: IntFieldUpdateOperationsInput | number
+    recurrenceWeekday?: NullableIntFieldUpdateOperationsInput | number | null
+    recurrenceNth?: NullableIntFieldUpdateOperationsInput | number | null
+    recurrenceUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DocumentCreateManyWorkorderInput = {
@@ -48217,6 +59717,11 @@ export namespace Prisma {
     formData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type PakbonWorkorderCreateManyWorkorderInput = {
+    pakbonId: string
+    createdAt?: Date | string
   }
 
   export type DocumentUpdateWithoutWorkorderInput = {
@@ -48429,6 +59934,145 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PakbonWorkorderUpdateWithoutWorkorderInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pakbon?: PakbonUpdateOneRequiredWithoutWorkordersNestedInput
+  }
+
+  export type PakbonWorkorderUncheckedUpdateWithoutWorkorderInput = {
+    pakbonId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonWorkorderUncheckedUpdateManyWithoutWorkorderInput = {
+    pakbonId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveFolderCreateManyParentInput = {
+    id?: string
+    kind: string
+    name: string
+    nasPath: string
+    slug: string
+    customerId?: string | null
+    locationKey?: string | null
+    workorderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFileCreateManyFolderInput = {
+    id?: string
+    name: string
+    storage?: string
+    storagePath: string
+    url?: string | null
+    contentType?: string | null
+    size?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ArchiveFolderUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ArchiveFolderUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUpdateManyWithoutFolderNestedInput
+    customer?: CustomerUpdateOneWithoutArchiveFoldersNestedInput
+    workorder?: WorkorderUpdateOneWithoutArchiveFolderNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: ArchiveFolderUncheckedUpdateManyWithoutParentNestedInput
+    files?: ArchiveFileUncheckedUpdateManyWithoutFolderNestedInput
+  }
+
+  export type ArchiveFolderUncheckedUpdateManyWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    nasPath?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationKey?: NullableStringFieldUpdateOperationsInput | string | null
+    workorderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveFileUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    storage?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveFileUncheckedUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    storage?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArchiveFileUncheckedUpdateManyWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    storage?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    contentType?: NullableStringFieldUpdateOperationsInput | string | null
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonWorkorderCreateManyPakbonInput = {
+    workorderId: string
+    createdAt?: Date | string
+  }
+
+  export type PakbonWorkorderUpdateWithoutPakbonInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workorder?: WorkorderUpdateOneRequiredWithoutPakbonnenNestedInput
+  }
+
+  export type PakbonWorkorderUncheckedUpdateWithoutPakbonInput = {
+    workorderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PakbonWorkorderUncheckedUpdateManyWithoutPakbonInput = {
+    workorderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WorkorderFormCreateManyFormTypeInput = {
     id?: string
     workorderId: string
@@ -48493,10 +60137,17 @@ export namespace Prisma {
     updatedAt?: Date | string
     description?: string | null
     werkInstructie?: string | null
+    opdrachtnummerOpdrachtgever?: string | null
     workDate?: Date | string | null
     internalNotes?: string | null
     onHoldNotes?: string | null
     number: string
+    bunniOfferteId?: string | null
+    bunniOfferteNummer?: string | null
+    bunniOffertePdfUrl?: string | null
+    bunniFactuurId?: string | null
+    bunniFactuurNummer?: string | null
+    bunniFactuurPdfUrl?: string | null
     assignedUserId?: string | null
     plannedDate?: Date | string | null
     plannedEndDate?: Date | string | null
@@ -48504,10 +60155,16 @@ export namespace Prisma {
     plannedRoundTripKm?: number | null
     plannedReisuren?: number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: Bytes | null
     pdfGeneratedAt?: Date | string | null
     sentAt?: Date | string | null
+    archiveNasPath?: string | null
+    archiveLocationLabel?: string | null
+    archivedAt?: Date | string | null
+    archiveStatus?: string | null
+    archiveError?: string | null
   }
 
   export type AssignmentUserUpdateWithoutAssignmentInput = {
@@ -48568,20 +60225,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedHours?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUpdateManyWithoutWorkorderNestedInput
     assignedUser?: UserUpdateOneWithoutWorkordersNestedInput
     project?: ProjectUpdateOneWithoutWorkordersNestedInput
@@ -48594,6 +60264,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateWithoutAssignmentInput = {
@@ -48614,10 +60286,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48625,10 +60304,16 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
     documents?: DocumentUncheckedUpdateManyWithoutWorkorderNestedInput
     hardware?: WorkorderHardwareUncheckedUpdateManyWithoutWorkorderNestedInput
     hours?: WorkorderHourUncheckedUpdateManyWithoutWorkorderNestedInput
@@ -48638,6 +60323,8 @@ export namespace Prisma {
     signature?: WorkorderSignatureUncheckedUpdateOneWithoutWorkorderNestedInput
     extraEngineers?: WorkorderEngineerUncheckedUpdateManyWithoutWorkorderNestedInput
     forms?: WorkorderFormUncheckedUpdateManyWithoutWorkorderNestedInput
+    pakbonnen?: PakbonWorkorderUncheckedUpdateManyWithoutWorkorderNestedInput
+    archiveFolder?: ArchiveFolderUncheckedUpdateOneWithoutWorkorderNestedInput
   }
 
   export type WorkorderUncheckedUpdateManyWithoutAssignmentInput = {
@@ -48658,10 +60345,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     werkInstructie?: NullableStringFieldUpdateOperationsInput | string | null
+    opdrachtnummerOpdrachtgever?: NullableStringFieldUpdateOperationsInput | string | null
     workDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     onHoldNotes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: StringFieldUpdateOperationsInput | string
+    bunniOfferteId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOfferteNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniOffertePdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurId?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurNummer?: NullableStringFieldUpdateOperationsInput | string | null
+    bunniFactuurPdfUrl?: NullableStringFieldUpdateOperationsInput | string | null
     assignedUserId?: NullableStringFieldUpdateOperationsInput | string | null
     plannedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     plannedEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -48669,10 +60363,16 @@ export namespace Prisma {
     plannedRoundTripKm?: NullableFloatFieldUpdateOperationsInput | number | null
     plannedReisuren?: NullableFloatFieldUpdateOperationsInput | number | null
     formData?: NullableJsonNullValueInput | InputJsonValue
+    opleverModules?: NullableJsonNullValueInput | InputJsonValue
     aanvraagSpecificaties?: NullableJsonNullValueInput | InputJsonValue
     pdfData?: NullableBytesFieldUpdateOperationsInput | Bytes | null
     pdfGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveNasPath?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveLocationLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    archiveError?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 
