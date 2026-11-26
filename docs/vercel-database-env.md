@@ -1,21 +1,34 @@
-# Vercel: database-env voor Prisma-build
+# Vercel: database-env voor Prisma
 
-`npm run build` draait `prisma generate` + `prisma migrate deploy` + `next build`.
-Prisma 7 leest de URL uit `prisma.config.ts` (niet uit `schema.prisma`).
+`npm run build` draait alleen `prisma generate` + `next build`.
+**Migraties staan niet in de Vercel-build** — Preview kan zo zonder `DATABASE_URL` bouwen.
 
-## Verplicht op Vercel
+Prisma 7 leest de datasource-URL uit `prisma.config.ts` (niet uit `schema.prisma`).
+
+## Migraties (apart van de build)
+
+Voer migraties handmatig / in release-CI uit met een database-URL:
+
+```bash
+npm run db:migrate
+# = node scripts/prisma-migrate-deploy.mjs → prisma migrate deploy
+```
+
+Benodigd: `DATABASE_URL` (én bij voorkeur `DIRECT_URL` zonder pooler).
+
+## Runtime op Vercel
 
 | Variabele | Build | Runtime | Opmerking |
 |-----------|-------|---------|-----------|
-| `DATABASE_URL` | ja | ja | Postgres-URL (pooler mag voor de app) |
-| `DIRECT_URL` | aanbevolen | optioneel | Directe URL zonder pooler voor migraties |
+| `DATABASE_URL` | nee (niet nodig voor build) | **ja** | Postgres-URL voor de app |
+| `DIRECT_URL` | nee | optioneel | Directe URL; vooral nuttig bij `npm run db:migrate` |
 
-Zet beide op **Production** en **Preview**, en vink **Available at Build Time** aan.
-Zonder URL faalt de build met een duidelijke fout uit `scripts/prisma-migrate-deploy.mjs`.
+Zet `DATABASE_URL` in ieder geval op **Production** (en Preview als Preview de DB moet praten).
+Build Time is voor migrate niet meer verplicht.
 
 ## Aliassen
 
-Als alleen Supabase/Vercel-Postgres-integratievars bestaan, worden ook gelezen:
+`scripts/prisma-migrate-deploy.mjs` en `prisma.config.ts` lezen ook:
 
 - `POSTGRES_URL_NON_POOLING`
 - `POSTGRES_PRISMA_URL`
