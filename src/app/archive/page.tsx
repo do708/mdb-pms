@@ -9,6 +9,7 @@ import ArchiveTree, {
     type ArchiveWorkorder,
     type StoredFolder,
 } from "@/components/archive/ArchiveTree";
+import DeleteButton from "@/components/DeleteButton";
 import {
     PageShell,
     SpecFieldLabel,
@@ -18,6 +19,7 @@ import {
     specInputClassName,
     specSelectClassName,
 } from "@/components/ui/SpecLayout";
+import { canAccessOffice } from "@/lib/auth/checkRole";
 
 function formIcon(type: string): string {
     return FORM_DEFINITIONS.find((d) => d.type === type)?.icon ?? "📝";
@@ -35,7 +37,7 @@ interface Form {
 export default function ArchivePage() {
     const { data: session } = useSession();
     const role = session?.user?.role ?? "";
-    const canManage = role === "admin" || role === "office";
+    const canManage = canAccessOffice(role);
     const showMonteurFilter = canManage;
 
     const [q, setQ] = useState("");
@@ -276,26 +278,40 @@ export default function ArchivePage() {
 
                     <div className="space-y-2">
                         {forms.map((form) => (
-                            <a
+                            <div
                                 key={form.id}
-                                href={`/forms/${form.id}`}
-                                className="block"
+                                className="flex items-center gap-2"
                             >
-                                <SpecListRow className="flex justify-between items-center hover:bg-gray-50">
-                                    <div className="min-w-0">
-                                        <p className="font-medium text-sm truncate">
-                                            {formIcon(form.type)} {form.title}
-                                        </p>
-                                        <p className="text-xs text-gray-500 truncate">
-                                            {form.user?.name ?? ""}
-                                            {" · "}
-                                            {new Date(
-                                                form.createdAt
-                                            ).toLocaleDateString("nl-NL")}
-                                        </p>
-                                    </div>
-                                </SpecListRow>
-                            </a>
+                                <a
+                                    href={`/forms/${form.id}`}
+                                    className="flex-1 min-w-0"
+                                >
+                                    <SpecListRow className="flex justify-between items-center hover:bg-gray-50">
+                                        <div className="min-w-0">
+                                            <p className="font-medium text-sm truncate">
+                                                {formIcon(form.type)}{" "}
+                                                {form.title}
+                                            </p>
+                                            <p className="text-xs text-gray-500 truncate">
+                                                {form.user?.name ?? ""}
+                                                {" · "}
+                                                {new Date(
+                                                    form.createdAt
+                                                ).toLocaleDateString("nl-NL")}
+                                            </p>
+                                        </div>
+                                    </SpecListRow>
+                                </a>
+
+                                {canManage ? (
+                                    <DeleteButton
+                                        url={`/api/forms/${form.id}`}
+                                        label={`formulier "${form.title}"`}
+                                        onDeleted={search}
+                                        compact
+                                    />
+                                ) : null}
+                            </div>
                         ))}
 
                         {!loading && forms.length === 0 && (

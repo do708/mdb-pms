@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 
@@ -19,8 +19,11 @@ import {
     nlFormDate,
     verlofSubtitle,
 } from "@/lib/forms/formDisplay";
+import DeleteButton from "@/components/DeleteButton";
 import VacationBalanceBar from "@/components/forms/VacationBalanceBar";
 import VacationTeamOverview from "@/components/forms/VacationTeamOverview";
+import { archiveCutoff } from "@/lib/archive";
+import { canAccessOffice } from "@/lib/auth/checkRole";
 import {
     isKortVerlof,
     type VacationBalance,
@@ -64,6 +67,8 @@ export default function FormDetailPage(){
     const params =
         useParams();
 
+    const router = useRouter();
+
 
     const id =
         params.id as string;
@@ -74,8 +79,7 @@ export default function FormDetailPage(){
 
 
     const canManage =
-        session?.user?.role === "admin" ||
-        session?.user?.role === "office";
+        canAccessOffice(session?.user?.role ?? "");
 
 
     const [busy,setBusy] =
@@ -163,6 +167,17 @@ export default function FormDetailPage(){
 
     const definition =
         getFormDefinition(form.type);
+
+    const canDelete =
+        canManage ||
+        (!!session?.user?.id &&
+            !!form.user?.id &&
+            session.user.id === form.user.id);
+
+    const formTitle =
+        form.type === "verlof"
+            ? buildVerlofTitle(form.data, form.user.name)
+            : form.title;
 
 
     async function setStatus(
@@ -397,6 +412,8 @@ export default function FormDetailPage(){
             <header>
 
 
+                <div className="flex items-start justify-between gap-3">
+
                 <h1 className="
                     text-2xl
                     font-bold
@@ -404,13 +421,29 @@ export default function FormDetailPage(){
 
                     {definition?.icon}{" "}
                     {form.type === "verlof"
-                        ? buildVerlofTitle(form.data, form.user.name)
+                        ? formTitle
                         : form.title.replace(
                             /,\s*\d{2}-\d{2}-\d{4}\s*$/,
                             ""
                         )}
 
                 </h1>
+
+                {canDelete ? (
+                    <DeleteButton
+                        url={`/api/forms/${form.id}`}
+                        label={`formulier "${formTitle}"`}
+                        onDeleted={() => {
+                            const archived =
+                                new Date(form.createdAt) < archiveCutoff();
+                            router.push(
+                                archived ? "/archive" : "/forms"
+                            );
+                        }}
+                    />
+                ) : null}
+
+                </div>
 
 
                 <p className="

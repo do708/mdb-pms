@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 import { requireApiUser, requireApiRole } from "@/lib/auth/guard";
+import { canAccessOffice } from "@/lib/auth/checkRole";
 import {
     leaveDaysFromData,
     parseLeaveOmvang,
@@ -245,14 +246,13 @@ export async function DELETE(
 
 
 
-        // Monteur mag alleen eigen formulieren verwijderen;
-        // admin/office mogen alles.
+        // Monteur mag alleen eigen formulieren verwijderen
+        // (ook gearchiveerde); kantoor/admin mogen alles.
         const isOwner =
             form.userId === guard.user.id;
 
         const isManager =
-            guard.user.role === "admin" ||
-            guard.user.role === "office";
+            canAccessOffice(guard.user.role);
 
 
         if(!isOwner && !isManager){
