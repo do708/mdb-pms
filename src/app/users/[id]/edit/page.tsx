@@ -82,6 +82,9 @@ export default function EditUserPage(){
     const [error,setError] =
         useState("");
 
+    const [savedOk, setSavedOk] =
+        useState(false);
+
 
 
 
@@ -154,6 +157,7 @@ export default function EditUserPage(){
 
 
         setError("");
+        setSavedOk(false);
 
         setSaving(true);
 
@@ -223,9 +227,8 @@ export default function EditUserPage(){
 
             if(response.ok){
 
-
-                router.push("/users");
-
+                setPassword("");
+                setSavedOk(true);
 
             } else {
 
@@ -276,13 +279,7 @@ export default function EditUserPage(){
 
     return (
 
-        <main className="
-            p-4
-            sm:p-6
-            space-y-6
-            max-w-lg
-            md:max-w-3xl
-        ">
+        <div className="w-full max-w-none space-y-6">
 
 
             <header>
@@ -297,6 +294,12 @@ export default function EditUserPage(){
                 </h1>
 
             </header>
+
+            {savedOk ? (
+                <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                    Opgeslagen. Je blijft op deze pagina; documenten staan hieronder.
+                </p>
+            ) : null}
 
 
 
@@ -329,6 +332,8 @@ export default function EditUserPage(){
                 rounded-2xl
                 p-5
                 space-y-4
+                w-full
+                max-w-none
             ">
 
 
@@ -702,7 +707,7 @@ export default function EditUserPage(){
             </div>
 
 
-        </main>
+        </div>
 
     );
 

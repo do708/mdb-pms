@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FileUp, Trash2, ExternalLink } from "lucide-react";
+import { FileUp, Trash2, ExternalLink, X } from "lucide-react";
 
 import {
     USER_DOCUMENT_TYPES,
@@ -181,7 +181,24 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
     }
 
     return (
-        <section className="space-y-4 rounded-2xl border bg-white p-4 sm:p-5">
+        // Full-bleed t.o.v. AppShell-padding zodat Type|Nummer|Verloop|Bestand|Acties
+        // in de content-kolom passen zonder horizontale scroll.
+        <section
+            className="
+                @container
+                relative
+                -mx-4 sm:-mx-6 lg:-mx-8
+                w-auto
+                space-y-4
+                rounded-none sm:rounded-2xl
+                border-y sm:border
+                border-slate-200
+                bg-white
+                px-4 py-4
+                sm:px-6 sm:py-5
+                lg:px-8 lg:py-6
+            "
+        >
             <header className="space-y-1">
                 <h2 className="text-lg font-bold text-slate-900">
                     Documenten
@@ -287,45 +304,38 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
                 </p>
             ) : (
                 <>
-                    {/* Desktop / tablet table */}
-                    <div className="hidden overflow-x-auto md:block">
-                        <table className="w-full min-w-[48rem] border-collapse text-left text-sm">
-                            <thead>
-                                <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
-                                    <th className="py-2 pr-2 font-semibold">
-                                        Type
-                                    </th>
-                                    <th className="py-2 pr-2 font-semibold">
-                                        Nummer
-                                    </th>
-                                    <th className="py-2 pr-2 font-semibold">
-                                        Verloop
-                                    </th>
-                                    <th className="py-2 pr-2 font-semibold">
-                                        Bestand
-                                    </th>
-                                    <th className="py-2 font-semibold">
-                                        <span className="sr-only">Acties</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {docs.map((doc) => (
-                                    <DocumentTableRow
-                                        key={doc.id}
-                                        doc={doc}
-                                        canEdit={canEdit}
-                                        busy={savingId === doc.id}
-                                        onPatch={patchDoc}
-                                        onRemove={removeDoc}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
+                    {/*
+                      Compacte grid (~46rem + gaps). Container-query drempel
+                      LIGT BOVEN die breedte, anders toont de tabel te vroeg
+                      en ontstaat juist een horizontale scrollbar.
+                    */}
+                    <div className="hidden w-full @[48rem]:block">
+                        <div
+                            className={`${DOC_ROW_GRID} border-b border-slate-200 pb-2 text-xs uppercase tracking-wide text-slate-500`}
+                            role="row"
+                        >
+                            <div className="font-semibold">Type</div>
+                            <div className="font-semibold">Nummer</div>
+                            <div className="font-semibold">Verloop</div>
+                            <div className="font-semibold">Bestand</div>
+                            <div className="font-semibold">Acties</div>
+                        </div>
+                        <ul className="w-full">
+                            {docs.map((doc) => (
+                                <DocumentTableRow
+                                    key={doc.id}
+                                    doc={doc}
+                                    canEdit={canEdit}
+                                    busy={savingId === doc.id}
+                                    onPatch={patchDoc}
+                                    onRemove={removeDoc}
+                                />
+                            ))}
+                        </ul>
                     </div>
 
-                    {/* Mobile cards */}
-                    <ul className="space-y-3 md:hidden">
+                    {/* Te smal: kaarten i.p.v. geperste tabel */}
+                    <ul className="space-y-3 @[48rem]:hidden">
                         {docs.map((doc) => (
                             <li
                                 key={doc.id}
@@ -347,6 +357,13 @@ export default function UserDocumentsPanel({ userId, canEdit }: Props) {
     );
 }
 
+/**
+ * Type 9 + Nummer 7 + Verloop 20 + Bestand 7 + Acties 2.5 = 45.5rem
+ * + 4× gap-x-2 (0.5rem) = 47.5rem → container @[48rem] past.
+ */
+const DOC_ROW_GRID =
+    "grid w-full grid-cols-[9rem_7rem_minmax(20rem,1fr)_minmax(7rem,1fr)_2.5rem] items-center gap-x-2";
+
 function DocumentTableRow(props: {
     doc: UserDocumentDto;
     canEdit: boolean;
@@ -365,45 +382,52 @@ function DocumentTableRow(props: {
     const { doc, canEdit, busy, onPatch, onRemove } = props;
 
     return (
-        <tr className="border-b border-slate-100 align-middle">
-            <td className="py-3 pr-2">
+        <li
+            className={`${DOC_ROW_GRID} border-b border-slate-100 py-2.5`}
+            role="row"
+        >
+            <div>
                 <TypeSelect
                     value={doc.type}
                     disabled={!canEdit || busy}
                     onChange={(type) => void onPatch(doc.id, { type })}
                 />
-            </td>
-            <td className="py-3 pr-2">
+            </div>
+            <div>
                 <NumberInput
                     value={doc.number}
                     disabled={!canEdit || busy}
                     onCommit={(number) => void onPatch(doc.id, { number })}
                 />
-            </td>
-            <td className="py-3 pr-2">
+            </div>
+            <div className="overflow-visible">
                 <ExpiryFields
                     doc={doc}
                     disabled={!canEdit || busy}
                     onPatch={(patch) => void onPatch(doc.id, patch)}
+                    singleRow
                 />
-            </td>
-            <td className="py-3 pr-2">
+            </div>
+            <div className="min-w-0 overflow-hidden">
                 <FileLink doc={doc} />
-            </td>
-            <td className="py-3">
+            </div>
+            <div>
                 {canEdit ? (
                     <button
                         type="button"
                         disabled={busy}
                         onClick={() => void onRemove(doc.id)}
-                        className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
-                        aria-label="Verwijderen"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                        aria-label="Document verwijderen"
+                        title="Verwijderen"
                     >
                         <Trash2 className="h-4 w-4" />
                     </button>
-                ) : null}
-            </td>
-        </tr>
+                ) : (
+                    <span className="text-slate-400">—</span>
+                )}
+            </div>
+        </li>
     );
 }
 
@@ -478,7 +502,7 @@ function TypeSelect(props: {
             value={props.value}
             disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
-            className="mt-0.5 w-full min-h-11 rounded-xl border bg-white px-3 py-2 text-sm disabled:bg-slate-50"
+            className="h-9 w-full rounded-lg border bg-white px-2 text-sm disabled:bg-slate-50"
         >
             {USER_DOCUMENT_TYPES.map((t) => (
                 <option key={t} value={t}>
@@ -508,7 +532,7 @@ function NumberInput(props: {
                 if (local !== props.value) props.onCommit(local);
             }}
             placeholder="Optioneel"
-            className="mt-0.5 w-full min-h-11 rounded-xl border px-3 py-2 text-sm disabled:bg-slate-50"
+            className="h-9 w-full rounded-lg border px-2 text-sm disabled:bg-slate-50"
         />
     );
 }
@@ -565,8 +589,10 @@ function ExpiryFields(props: {
         expiresAt?: string | null;
         neverExpires?: boolean;
     }) => void;
+    /** Desktop-rij: checkbox + datum altijd op één lijn. */
+    singleRow?: boolean;
 }) {
-    const { doc, disabled, onPatch } = props;
+    const { doc, disabled, onPatch, singleRow = false } = props;
     const parsed = parseYmd(doc.expiresAt);
     const [year, setYear] = useState(parsed.year);
     const [month, setMonth] = useState(parsed.month);
@@ -583,11 +609,11 @@ function ExpiryFields(props: {
     const monthNum = Number(month) || 1;
     const maxDay = daysInMonth(yearNum, monthNum);
     const selectClass =
-        "min-h-11 rounded-xl border bg-white px-2 py-2 text-sm disabled:bg-slate-50";
+        "h-9 shrink-0 rounded-lg border bg-white px-1 text-sm disabled:bg-slate-50";
 
     function commitParts(nextYear: string, nextMonth: string, nextDay: string) {
         // Pas opslaan als dag/maand/jaar compleet zijn; tussentijds wissen
-        // alleen via de Wissen-knop (voorkomt API-calls tijdens invullen).
+        // alleen via de X-knop (voorkomt API-calls tijdens invullen).
         if (!nextYear || !nextMonth || !nextDay) return;
         const y = Number(nextYear);
         const m = Number(nextMonth);
@@ -599,9 +625,22 @@ function ExpiryFields(props: {
         }
     }
 
+    function clearDate() {
+        setYear("");
+        setMonth("");
+        setDay("");
+        onPatch({ neverExpires: false, expiresAt: null });
+    }
+
     return (
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <label className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm whitespace-nowrap">
+        <div
+            className={
+                singleRow
+                    ? "flex flex-nowrap items-center gap-1.5 whitespace-nowrap"
+                    : "flex flex-wrap items-center gap-1.5"
+            }
+        >
+            <label className="inline-flex h-9 shrink-0 items-center gap-1.5 text-xs text-slate-700 whitespace-nowrap">
                 <input
                     type="checkbox"
                     checked={doc.neverExpires}
@@ -618,7 +657,7 @@ function ExpiryFields(props: {
                 Verloopt niet
             </label>
             {!doc.neverExpires ? (
-                <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                <>
                     <select
                         aria-label="Dag"
                         value={day}
@@ -628,7 +667,7 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(year, month, nextDay);
                         }}
-                        className={`${selectClass} w-[4.25rem]`}
+                        className={`${selectClass} w-[3rem]`}
                     >
                         <option value="">dag</option>
                         {Array.from({ length: maxDay }, (_, i) => {
@@ -658,9 +697,9 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(year, nextMonth, nextDay);
                         }}
-                        className={`${selectClass} w-[5.5rem]`}
+                        className={`${selectClass} w-[3.5rem]`}
                     >
-                        <option value="">maand</option>
+                        <option value="">mnd</option>
                         {MONTH_LABELS_NL.map((label, i) => {
                             const value = String(i + 1).padStart(2, "0");
                             return (
@@ -688,7 +727,7 @@ function ExpiryFields(props: {
                             setDay(nextDay);
                             commitParts(nextYear, month, nextDay);
                         }}
-                        className={`${selectClass} w-[5.25rem]`}
+                        className={`${selectClass} w-[4rem]`}
                     >
                         <option value="">jaar</option>
                         {buildYearOptions(year).map((y) => (
@@ -701,21 +740,15 @@ function ExpiryFields(props: {
                         <button
                             type="button"
                             disabled={disabled}
-                            onClick={() => {
-                                setYear("");
-                                setMonth("");
-                                setDay("");
-                                onPatch({
-                                    neverExpires: false,
-                                    expiresAt: null,
-                                });
-                            }}
-                            className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 px-2.5 text-xs font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                            onClick={clearDate}
+                            className="inline-flex h-9 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+                            aria-label="Datum wissen"
+                            title="Datum wissen"
                         >
-                            Wissen
+                            <X className="h-3.5 w-3.5" />
                         </button>
                     ) : null}
-                </div>
+                </>
             ) : null}
         </div>
     );
@@ -728,7 +761,7 @@ function FileLink({ doc }: { doc: UserDocumentDto }) {
             href={doc.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex max-w-[12rem] items-center gap-1.5 text-sm font-medium text-[#0066FF] hover:underline"
+            className="inline-flex max-w-full items-center gap-1 text-sm font-medium text-[#0066FF] hover:underline"
             title={label}
         >
             <ExternalLink className="h-3.5 w-3.5 shrink-0" />
