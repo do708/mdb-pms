@@ -12,6 +12,7 @@ import {
     type StaffKind,
 } from "@/constants/staffKind";
 import { canAccessAdmin } from "@/lib/auth/checkRole";
+import UserDocumentsPanel from "@/components/users/UserDocumentsPanel";
 
 
 
@@ -276,9 +277,11 @@ export default function EditUserPage(){
     return (
 
         <main className="
-            p-6
+            p-4
+            sm:p-6
             space-y-6
             max-w-lg
+            md:max-w-3xl
         ">
 
 
@@ -639,11 +642,16 @@ export default function EditUserPage(){
 
             </section>
 
-
-
+            {isAdmin || session?.user?.role === "office" ? (
+                <UserDocumentsPanel
+                    userId={id}
+                    canEdit={isAdmin}
+                />
+            ) : null}
 
             <div className="
                 flex
+                flex-wrap
                 gap-3
             ">
 

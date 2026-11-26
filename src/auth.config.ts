@@ -55,7 +55,9 @@ export const authConfig = {
                 pathname.startsWith("/api/aanvraag/") ||
                 // Publieke QR-statuspagina + read-only API
                 pathname.startsWith("/asset/") ||
-                pathname.startsWith("/api/asset/")
+                pathname.startsWith("/api/asset/") ||
+                // Vercel Cron: auth via CRON_SECRET in de route zelf
+                pathname.startsWith("/api/cron/")
             ) {
                 // Al ingelogd? Niet nog een keer het loginscherm tonen.
                 if (user && pathname === "/login") {
