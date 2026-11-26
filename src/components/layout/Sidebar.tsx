@@ -129,7 +129,7 @@ const menu:MenuItem[] = [
         name:"Gereedschap",
         href:"/gereedschap",
         icon:Wrench,
-        title:"Digitaal gereedschapsbeheer, keuringen en QR-status",
+        title:"QR scannen, eigen voorraad, keuringen en beheer",
         roles:["admin","office","engineer","magazijn"]
     },
 
