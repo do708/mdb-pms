@@ -2,7 +2,32 @@ import { prisma } from "@/lib/prisma";
 
 let kolomKlaar = false;
 let pakbonTabellenKlaar = false;
+let gereedschapUserColsKlaar = false;
 let gereedschapSchemaKlaar = false;
+
+/** User-capability kolommen die Prisma bij `assignedUser: true` altijd SELECT't. */
+export async function ensureGereedschapUserColumns(): Promise<boolean> {
+    if (gereedschapUserColsKlaar) {
+        return true;
+    }
+
+    try {
+        await prisma.$executeRawUnsafe(
+            `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "gereedschapBeheer" BOOLEAN NOT NULL DEFAULT false`
+        );
+        await prisma.$executeRawUnsafe(
+            `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "keurmeester" BOOLEAN NOT NULL DEFAULT false`
+        );
+        await prisma.$executeRawUnsafe(
+            `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "overzichtAlleAssets" BOOLEAN NOT NULL DEFAULT false`
+        );
+        gereedschapUserColsKlaar = true;
+        return true;
+    } catch (error) {
+        console.error("ENSURE GEREEDSCHAP USER COLUMNS", error);
+        return false;
+    }
+}
 
 /** Zorgt dat productie de kolom heeft die Prisma  al in het schema verwacht. */
 export async function ensureWorkorderOpdrachtnummerKolom(): Promise<void> {
@@ -89,17 +114,11 @@ export async function ensureGereedschapSchema(): Promise<void> {
         return;
     }
 
-    try {
-        await prisma.$executeRawUnsafe(
-            `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "gereedschapBeheer" BOOLEAN NOT NULL DEFAULT false`
-        );
-        await prisma.$executeRawUnsafe(
-            `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "keurmeester" BOOLEAN NOT NULL DEFAULT false`
-        );
-        await prisma.$executeRawUnsafe(
-            `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "overzichtAlleAssets" BOOLEAN NOT NULL DEFAULT false`
-        );
+    // User-kolommen eerst en apart: dashboard/workorders crashen hierop,
+    // ook als Tool*-DDL op de pooler faalt.
+    await ensureGereedschapUserColumns();
 
+    try {
         await prisma.$executeRawUnsafe(`
             CREATE TABLE IF NOT EXISTS "ToolAsset" (
                 "id" TEXT NOT NULL,
@@ -251,6 +270,8 @@ export async function ensureGereedschapSchema(): Promise<void> {
  * niet crasht wanneer `npm run db:migrate` nog niet op Production is gedraaid.
  */
 export async function ensureProductionSchema(): Promise<void> {
+    // User-cols synchroon eerst — daarna parallel de rest.
+    await ensureGereedschapUserColumns();
     await Promise.all([
         ensureWorkorderOpdrachtnummerKolom(),
         ensurePakbonTables(),

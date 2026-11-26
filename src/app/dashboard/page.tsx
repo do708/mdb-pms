@@ -370,6 +370,7 @@ interface DashboardData {
 
 export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null);
+    const [loadError, setLoadError] = useState("");
     const [loading, setLoading] = useState(true);
     const { data: session, status } = useSession();
     const userRole = session?.user?.role ?? "";
@@ -381,16 +382,31 @@ export default function DashboardPage() {
         }
 
         async function load() {
+            setLoadError("");
             try {
                 const response = await fetch("/api/dashboard");
-                const result = await response.json();
-                if (!response.ok || result?.error) {
+                const result = await response.json().catch(() => null);
+                if (!response.ok || result?.error || !result?.counters) {
                     setData(null);
+                    const detail =
+                        result &&
+                        typeof result === "object" &&
+                        typeof result.error === "string"
+                            ? result.error
+                            : "Dashboardgegevens konden niet worden geladen.";
+                    const code =
+                        result &&
+                        typeof result === "object" &&
+                        typeof result.code === "string"
+                            ? ` (${result.code})`
+                            : "";
+                    setLoadError(`${detail}${code}`);
                 } else {
                     setData(result);
                 }
             } catch {
                 setData(null);
+                setLoadError("Dashboardgegevens konden niet worden geladen.");
             } finally {
                 setLoading(false);
             }
@@ -425,12 +441,17 @@ export default function DashboardPage() {
         return (
             <PageShell>
                 <p className="text-sm text-red-600">
-                    Dashboardgegevens konden niet worden geladen. Vernieuw de
-                    pagina. Blijft dit zo, dan ontbreekt waarschijnlijk een
-                    database-migratie — draai lokaal{" "}
-                    <code className="text-xs">npm run db:migrate</code> met de
-                    Production <code className="text-xs">DATABASE_URL</code>{" "}
-                    (zie docs/vercel-database-env.md).
+                    {loadError ||
+                        "Dashboardgegevens konden niet worden geladen."}
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                    Vernieuw de pagina. Blijft dit zo:{" "}
+                    <code className="text-xs">
+                        vercel env pull .env.local --environment=production
+                    </code>{" "}
+                    en daarna{" "}
+                    <code className="text-xs">npm run db:migrate</code> (zie
+                    docs/vercel-database-env.md).
                 </p>
             </PageShell>
         );
